@@ -1,0 +1,154 @@
+<Project name="osiris" fileversion="2.0" language="C#" clr-version="Net_2_0" ctype="DotNetProject">
+  <Configurations active="Debug">
+    <Configuration name="Debug" ctype="DotNetProjectConfiguration">
+      <Output directory="../bin/Debug" assembly="osiris" />
+      <Build debugmode="True" target="Exe" />
+      <Execution runwithwarnings="True" consolepause="True" runtime="MsNet" clr-version="Net_2_0" />
+      <CodeGeneration compiler="Csc" warninglevel="4" optimize="True" unsafecodeallowed="False" generateoverflowchecks="True" generatexmldocumentation="False" ctype="CSharpCompilerParameters" />
+    </Configuration>
+    <Configuration name="Release" ctype="DotNetProjectConfiguration">
+      <Output directory="../bin/Release" assembly="osiris" />
+      <Build debugmode="False" target="Exe" />
+      <Execution runwithwarnings="True" consolepause="True" runtime="MsNet" clr-version="Net_2_0" />
+      <CodeGeneration compiler="Csc" warninglevel="4" optimize="True" unsafecodeallowed="False" generateoverflowchecks="True" generatexmldocumentation="False" ctype="CSharpCompilerParameters" />
+    </Configuration>
+  </Configurations>
+  <Contents>
+    <File name="osiris.cs" subtype="Code" buildaction="Compile" />
+    <File name="AssemblyInfo.cs" subtype="Code" buildaction="Compile" />
+    <File name="registro_admision.cs" subtype="Code" buildaction="Compile" />
+    <File name="caja.cs" subtype="Code" buildaction="Compile" />
+    <File name="hospitalizacion_cargos.cs" subtype="Code" buildaction="Compile" />
+    <File name="rpt_prot_admision.cs" subtype="Code" buildaction="Compile" />
+    <File name="rpt_rep1_admision.cs" subtype="Code" buildaction="Compile" />
+    <File name="rpt_cons_informado.cs" subtype="Code" buildaction="Compile" />
+    <File name="rpt_cont_prestaciones.cs" subtype="Code" buildaction="Compile" />
+    <File name="../glade" subtype="Directory" buildaction="Compile" />
+    <File name="caja.glade" subtype="Code" buildaction="EmbedAsResource" />
+    <File name="hospitalizacion.glade" subtype="Code" buildaction="EmbedAsResource" />
+    <File name="hscmty.glade" subtype="Code" buildaction="EmbedAsResource" />
+    <File name="registro_admision.glade" subtype="Code" buildaction="EmbedAsResource" />
+    <File name="reportes.glade" subtype="Code" buildaction="EmbedAsResource" />
+    <File name="impr_documentos.glade" subtype="Code" buildaction="EmbedAsResource" />
+    <File name="rpd_doc_pacientes.cs" subtype="Code" buildaction="Compile" />
+    <File name="rpt_proc_cobranza.cs" subtype="Code" buildaction="Compile" />
+    <File name="rpt_caja_comprobante.cs" subtype="Code" buildaction="Compile" />
+    <File name="traductor_num.cs" subtype="Code" buildaction="Compile" />
+    <File name="rpt_comprobante_serv.cs" subtype="Code" buildaction="Compile" />
+    <File name="rpt_proc_totales.cs" subtype="Code" buildaction="Compile" />
+    <File name="hospitalizacion.cs" subtype="Code" buildaction="Compile" />
+    <File name="admision.cs" subtype="Code" buildaction="Compile" />
+    <File name="solicitud_materiales_medicos.cs" subtype="Code" buildaction="Compile" />
+    <File name="quirofano.cs" subtype="Code" buildaction="Compile" />
+    <File name="quirofano_cargos.cs" subtype="Code" buildaction="Compile" />
+    <File name="quirofano.glade" subtype="Code" buildaction="EmbedAsResource" />
+    <File name="rpt_honorario_medicos.cs" subtype="Code" buildaction="Compile" />
+    <File name="herramientas.glade" subtype="Code" buildaction="EmbedAsResource" />
+    <File name="herramientas.cs" subtype="Code" buildaction="Compile" />
+    <File name="paquetes_quirurgicos.cs" subtype="Code" buildaction="Compile" />
+    <File name="rpt_paquetes.cs" subtype="Code" buildaction="Compile" />
+    <File name="tesoreria.cs" subtype="Code" buildaction="Compile" />
+    <File name="laboratorio.cs" subtype="Code" buildaction="Compile" />
+    <File name="imagenologia.cs" subtype="Code" buildaction="Compile" />
+    <File name="laboratorio.glade" subtype="Code" buildaction="EmbedAsResource" />
+    <File name="imagenologia.glade" subtype="Code" buildaction="EmbedAsResource" />
+    <File name="terapia_adulto.glade" subtype="Code" buildaction="EmbedAsResource" />
+    <File name="terapia_pediatrica.glade" subtype="Code" buildaction="EmbedAsResource" />
+    <File name="urgencia.glade" subtype="Code" buildaction="EmbedAsResource" />
+    <File name="terapia_adulto.cs" subtype="Code" buildaction="Compile" />
+    <File name="terapia_pediatria.cs" subtype="Code" buildaction="Compile" />
+    <File name="urgencia.cs" subtype="Code" buildaction="Compile" />
+    <File name="laboratorio_cargos.cs" subtype="Code" buildaction="Compile" />
+    <File name="terapia_adulto_cargos.cs" subtype="Code" buildaction="Compile" />
+    <File name="terapia_pediatria_cargos.cs" subtype="Code" buildaction="Compile" />
+    <File name="urgencia_cargos.cs" subtype="Code" buildaction="Compile" />
+    <File name="imagenologia_cargos.cs" subtype="Code" buildaction="Compile" />
+    <File name="rpt_hoja_de_cargos.cs" subtype="Code" buildaction="Compile" />
+    <File name="facturador.cs" subtype="Code" buildaction="Compile" />
+    <File name="notas_de_cargos.cs" subtype="Code" buildaction="Compile" />
+    <File name="presupuestos_quirurgicos.cs" subtype="Code" buildaction="Compile" />
+    <File name="terapia_neonatal.cs" subtype="Code" buildaction="Compile" />
+    <File name="endoscopia.cs" subtype="Code" buildaction="Compile" />
+    <File name="tococirugia_ginecologia.cs" subtype="Code" buildaction="Compile" />
+    <File name="terapia_neonatal.glade" subtype="Code" buildaction="EmbedAsResource" />
+    <File name="endoscopia.glade" subtype="Code" buildaction="EmbedAsResource" />
+    <File name="tococirugia_ginecologia.glade" subtype="Code" buildaction="EmbedAsResource" />
+    <File name="tococirugia_ginecologia_cargos.cs" subtype="Code" buildaction="Compile" />
+    <File name="terapia_neonatal_cargos.cs" subtype="Code" buildaction="Compile" />
+    <File name="endoscopia_cargos.cs" subtype="Code" buildaction="Compile" />
+    <File name="catalogos.glade" subtype="Code" buildaction="EmbedAsResource" />
+    <File name="catalogos.cs" subtype="Code" buildaction="Compile" />
+    <File name="almacen_costos_compras.glade" subtype="Code" buildaction="EmbedAsResource" />
+    <File name="almacen.cs" subtype="Code" buildaction="Compile" />
+    <File name="almacen_inventario.cs" subtype="Code" buildaction="Compile" />
+    <File name="rpt_almacen.cs" subtype="Code" buildaction="Compile" />
+    <File name="rpt_formato_factura.cs" subtype="Code" buildaction="Compile" />
+    <File name="rpt_proc_facturados.cs" subtype="Code" buildaction="Compile" />
+    <File name="requisicion_compras.cs" subtype="Code" buildaction="Compile" />
+    <File name="costos.cs" subtype="Code" buildaction="Compile" />
+    <File name="costos.glade" subtype="Code" buildaction="EmbedAsResource" />
+    <File name="recursos_humanos.glade" subtype="Code" buildaction="EmbedAsResource" />
+    <File name="recursos_humanos.cs" subtype="Code" buildaction="Compile" />
+    <File name="compras.cs" subtype="Code" buildaction="Compile" />
+    <File name="rpt_lista_precios.cs" subtype="Code" buildaction="Compile" />
+    <File name="catalogo_productos.cs" subtype="Code" buildaction="Compile" />
+    <File name="rpt_proc_cerrados.cs" subtype="Code" buildaction="Compile" />
+    <File name="envio_mat_subalmacenes.cs" subtype="Code" buildaction="Compile" />
+    <File name="rpt_paciente_sin_alta.cs" subtype="Code" buildaction="Compile" />
+    <File name="rpt_paciente_con_alta.cs" subtype="Code" buildaction="Compile" />
+    <File name="autorizacion_doctores_compra.cs" subtype="Code" buildaction="Compile" />
+    <File name="cambia_paciente.cs" subtype="Code" buildaction="Compile" />
+    <File name="rpt_resultado_lab.cs" subtype="Code" buildaction="Compile" />
+    <File name="rpt_consumo_productos.cs" subtype="Code" buildaction="Compile" />
+    <File name="cargos_extras.cs" subtype="Code" buildaction="Compile" />
+    <File name="rpt_envio_mat_almacen.cs" subtype="Code" buildaction="Compile" />
+    <File name="rpt_reg_pac_lab_rx.cs" subtype="Code" buildaction="Compile" />
+    <File name="rpt_presupuestos.cs" subtype="Code" buildaction="Compile" />
+    <File name="abonos.cs" subtype="Code" buildaction="Compile" />
+    <File name="rpt_abonos.cs" subtype="Code" buildaction="Compile" />
+    <File name="inv_sub_almacen.cs" subtype="Code" buildaction="Compile" />
+    <File name="captura_fac_ordenes_compra.cs" subtype="Code" buildaction="Compile" />
+    <File name="rpt_contrato_empleado.cs" subtype="Code" buildaction="Compile" />
+    <File name="rpt_detalle_empleados.cs" subtype="Code" buildaction="Compile" />
+    <File name="rpt_empleados_contratos.cs" subtype="Code" buildaction="Compile" />
+    <File name="movimientos_productos_paciente.cs" subtype="Code" buildaction="Compile" />
+    <File name="rpt_mov_productos.cs" subtype="Code" buildaction="Compile" />
+    <File name="asignacion_habitacion.cs" subtype="Code" buildaction="Compile" />
+    <File name="rpt_separacion_de_paquetes.cs" subtype="Code" buildaction="Compile" />
+    <File name="costeo.cs" subtype="Code" buildaction="Compile" />
+    <File name="rpt_solicitud_de_cheque.cs" subtype="Code" buildaction="Compile" />
+    <File name="envio_de_facturas.cs" subtype="Code" buildaction="Compile" />
+    <File name="reservacion_de_paquetes.cs" subtype="Code" buildaction="Compile" />
+    <File name="rpt_reservacion_paquetes.cs" subtype="Code" buildaction="Compile" />
+    <File name="nutricion.glade" subtype="Code" buildaction="EmbedAsResource" />
+    <File name="nutricion.cs" subtype="Code" buildaction="Compile" />
+    <File name="rpt_envio_de_facturas.cs" subtype="Code" buildaction="Compile" />
+    <File name="imagenologia_cargos_b.cs" subtype="Code" buildaction="Compile" />
+    <File name="alta_productos_proveedores.cs" subtype="Code" buildaction="Compile" />
+    <File name="rpt_compras_farmacia.cs" subtype="Code" buildaction="Compile" />
+    <File name="ordenes_de_compras.cs" subtype="Code" buildaction="Compile" />
+    <File name="historia_clinica.cs" subtype="Code" buildaction="Compile" />
+    <File name="rpt_historia_clinica.cs" subtype="Code" buildaction="Compile" />
+    <File name="rpt_requisicion_compras.cs" subtype="Code" buildaction="Compile" />
+    <File name="calendario_quirofano.cs" subtype="Code" buildaction="Compile" />
+    <File name="rpt_orden_compras.cs" subtype="Code" buildaction="Compile" />
+    <File name="hemodialisis.cs" subtype="Code" buildaction="Compile" />
+    <File name="hemodialisis_cargos.cs" subtype="Code" buildaction="Compile" />
+  </Contents>
+  <References>
+    <ProjectReference type="Gac" localcopy="True" refto="gdk-sharp, Version=2.4.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
+    <ProjectReference type="Gac" localcopy="True" refto="glade-sharp, Version=2.4.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
+    <ProjectReference type="Gac" localcopy="True" refto="gnome-sharp, Version=2.4.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
+    <ProjectReference type="Gac" localcopy="True" refto="gtk-sharp, Version=2.4.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
+    <ProjectReference type="Gac" localcopy="True" refto="Mono.Cairo, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756" />
+    <ProjectReference type="Gac" localcopy="True" refto="System, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+    <ProjectReference type="Gac" localcopy="True" refto="Npgsql, Version=2.0.0.0, Culture=neutral, PublicKeyToken=5d8b90d52f46fda7" />
+    <ProjectReference type="Gac" localcopy="True" refto="System.Data, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+    <ProjectReference type="Gac" localcopy="True" refto="System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+    <ProjectReference type="Gac" localcopy="True" refto="System.Security, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+    <ProjectReference type="Assembly" localcopy="True" refto="../bin/gnomeprint-sharp.dll" />
+  </References>
+  <DeploymentInformation strategy="File">
+    <excludeFiles />
+  </DeploymentInformation>
+</Project>

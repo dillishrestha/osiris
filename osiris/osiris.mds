@@ -1,0 +1,16 @@
+<Combine name="osiris" fileversion="2.0">
+  <Configurations active="Debug">
+    <Configuration name="Debug" ctype="CombineConfiguration">
+      <Entry configuration="Debug" build="True" name="osiris" />
+    </Configuration>
+    <Configuration name="Release" ctype="CombineConfiguration">
+      <Entry configuration="Debug" build="True" name="osiris" />
+    </Configuration>
+  </Configurations>
+  <StartMode startupentry="osiris" single="True">
+    <Execute type="None" entry="osiris" />
+  </StartMode>
+  <Entries>
+    <Entry filename="./osiris.mdp" />
+  </Entries>
+</Combine>

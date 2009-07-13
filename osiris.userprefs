@@ -1,0 +1,27 @@
+﻿<UserCombinePreferences version="1.0" filename="/home/dolivares/Proyectos/osiris/osiris.mds">
+  <Files>
+    <File name="Bienvenido" />
+    <File name="osiris/osiris.cs" line="199" column="97" />
+    <File name="osiris/registro_admision.cs" line="2531" column="52" />
+    <File name="osiris/hospitalizacion_cargos.cs" line="1392" column="117" />
+  </Files>
+  <Views>
+    <ViewMemento id="ProjectPad">
+      <Node expanded="True">
+        <Node name="osiris" expanded="True">
+          <Node name="hospitalizacion_cargos.cs" selected="True" />
+        </Node>
+      </Node>
+    </ViewMemento>
+    <ViewMemento id="ClassPad">
+      <Node expanded="True" />
+    </ViewMemento>
+    <ViewMemento id="ConnectionManagerPad">
+      <Node />
+    </ViewMemento>
+  </Views>
+  <Properties>
+    <Property key="ActiveWindow" value="/home/dolivares/Proyectos/osiris/osiris/hospitalizacion_cargos.cs" />
+    <Property key="ActiveConfiguration" value="Debug" />
+  </Properties>
+</UserCombinePreferences>

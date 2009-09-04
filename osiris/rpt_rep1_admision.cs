@@ -1,77 +1,75 @@
 using System;
 using Gtk;
-using Gnome;
 using Npgsql;
 using System.Data;
 using Glade;
 using System.Collections;
-using GtkSharp;
+using Cairo;
 
 namespace osiris
 {
 	public class rptAdmision
 	{
-		[Widget] Gtk.Window rango_rep_adm;
+		[Widget] Gtk.Window rango_rep_adm = null;
 		// Boton general para salir de las ventanas
 		// Todas la ventanas en glade este boton debe estra declarado identico
-		[Widget] Gtk.Button button_salir;
+		[Widget] Gtk.Button button_salir = null;
 		
 		// Entradas y botones de la ventana
-		[Widget] Gtk.Entry entry_dia_inicial;
-		[Widget] Gtk.Entry entry_mes_inicial;
-		[Widget] Gtk.Entry entry_ano_inicial;
-		[Widget] Gtk.Entry entry_dia_final;
-		[Widget] Gtk.Entry entry_mes_final;
-		[Widget] Gtk.Entry entry_ano_final;
-		[Widget] Gtk.Entry entry_empresa;
-		[Widget] Gtk.Entry entry_doctor;
-		[Widget] Gtk.Entry entry_aseguradora;
+		[Widget] Gtk.Entry entry_dia_inicial = null;
+		[Widget] Gtk.Entry entry_mes_inicial = null;
+		[Widget] Gtk.Entry entry_ano_inicial = null;
+		[Widget] Gtk.Entry entry_dia_final = null;
+		[Widget] Gtk.Entry entry_mes_final = null;
+		[Widget] Gtk.Entry entry_ano_final = null;
+		[Widget] Gtk.Entry entry_empresa = null;
+		[Widget] Gtk.Entry entry_doctor = null;
+		[Widget] Gtk.Entry entry_aseguradora = null;
 		
 		//ComboBox
-		[Widget] Gtk.ComboBox combobox_tipo_admision;
-		[Widget] Gtk.ComboBox combobox_tipo_paciente;
+		[Widget] Gtk.ComboBox combobox_tipo_admision = null;
+		[Widget] Gtk.ComboBox combobox_tipo_paciente = null;
 		
 		//CheckButtons
-		[Widget] Gtk.CheckButton checkbutton_todas_fechas;
-		[Widget] Gtk.CheckButton checkbutton_todos_admision;
-		[Widget] Gtk.CheckButton checkbutton_todos_paciente;
-		[Widget] Gtk.CheckButton checkbutton_todas_empresas;
-		[Widget] Gtk.CheckButton checkbutton_todos_doctores;
-		[Widget] Gtk.CheckButton checkbutton_todas_aseguradoras;
-		
-		
+		[Widget] Gtk.CheckButton checkbutton_todas_fechas = null;
+		[Widget] Gtk.CheckButton checkbutton_todos_admision = null;
+		[Widget] Gtk.CheckButton checkbutton_todos_paciente = null;
+		[Widget] Gtk.CheckButton checkbutton_todas_empresas = null;
+		[Widget] Gtk.CheckButton checkbutton_todos_doctores = null;
+		[Widget] Gtk.CheckButton checkbutton_todas_aseguradoras = null;
+				
 		//radio buttons
-		[Widget] Gtk.RadioButton radiobutton_masculino;
-		[Widget] Gtk.RadioButton radiobutton_femenino;
-		[Widget] Gtk.RadioButton radiobutton_ambos_sexos;
-		[Widget] Gtk.RadioButton radiobutton_cancelados;
-		[Widget] Gtk.RadioButton radiobutton_no_cancelados;
-		[Widget] Gtk.RadioButton radiobutton_reporte_general;
-		[Widget] Gtk.RadioButton radiobutton_folio_servicio;
-		[Widget] Gtk.RadioButton radiobutton_pid_paciente;
-		[Widget] Gtk.RadioButton radiobutton_nombres;
-		[Widget] Gtk.RadioButton radiobutton_doctores;
-		[Widget] Gtk.RadioButton radiobutton_tipo_admision;
+		[Widget] Gtk.RadioButton radiobutton_masculino = null;
+		[Widget] Gtk.RadioButton radiobutton_femenino = null;
+		[Widget] Gtk.RadioButton radiobutton_ambos_sexos = null;
+		[Widget] Gtk.RadioButton radiobutton_cancelados = null;
+		[Widget] Gtk.RadioButton radiobutton_no_cancelados = null;
+		[Widget] Gtk.RadioButton radiobutton_reporte_general = null;
+		[Widget] Gtk.RadioButton radiobutton_folio_servicio = null;
+		[Widget] Gtk.RadioButton radiobutton_pid_paciente = null;
+		[Widget] Gtk.RadioButton radiobutton_nombres = null;
+		[Widget] Gtk.RadioButton radiobutton_doctores = null;
+		[Widget] Gtk.RadioButton radiobutton_tipo_admision = null;
 		
 		//botones
-		[Widget] Gtk.Button button_busca_empresa;
-		[Widget] Gtk.Button button_busca_doctores;
-		[Widget] Gtk.Button button_busca_aseguradoras;
-		[Widget] Gtk.Button button_imprimir;
+		[Widget] Gtk.Button button_busca_empresa = null;
+		[Widget] Gtk.Button button_busca_doctores = null;
+		[Widget] Gtk.Button button_busca_aseguradoras = null;
+		[Widget] Gtk.Button button_imprimir = null;
 		
 		// Para todas las busquedas este es el nombre asignado
 		// se declara una vez
-		[Widget] Gtk.Entry entry_expresion;
-		[Widget] Gtk.Button button_selecciona;
-		[Widget] Gtk.Button button_buscar_busqueda;
+		[Widget] Gtk.Entry entry_expresion = null;
+		[Widget] Gtk.Button button_selecciona = null;
+		[Widget] Gtk.Button button_buscar_busqueda = null;
 		
 		//ventana de busqueda de medicos
-		[Widget] Gtk.TreeView lista_de_medicos;
-		[Widget] Gtk.ComboBox combobox_tipo_busqueda;
+		[Widget] Gtk.TreeView lista_de_medicos = null;
+		[Widget] Gtk.ComboBox combobox_tipo_busqueda = null;
 		
 		//ventana de busqueda de empresas
-		[Widget] Gtk.TreeView lista_de_empresas;
-		[Widget] Gtk.Button button_busca_empresas;
+		[Widget] Gtk.TreeView lista_de_empresas = null;
+		[Widget] Gtk.Button button_busca_empresas = null;
 		
 		private TreeStore treeViewEngineMedicos;
 		private ListStore treeViewEngineEmpresa;
@@ -79,47 +77,52 @@ namespace osiris
 		
 		protected Gtk.Window MyWinError;
 		
-		public string connectionString = "Server=localhost;" +
+		string connectionString = "Server=localhost;" +
             	                         "Port=5432;" +
                 	                     "User ID=admin;" +
                     	                 "Password=1qaz2wsx;";
-        public string nombrebd;
-	    public string tipointernamiento = "CENTRO MEDICO";
-   		public int idtipointernamiento = 10;
-   	    public string tipopaciente = "Membresias"; 
-		public int id_tipopaciente = 100;
-		public int idmedico = 1;
-		public int idempresa = 1;
-		public int idaseguradora = 1;
-		public string motivo = "";
-		public string tipobusqueda = "AND hscmty_his_medicos.nombre1_medico LIKE '";
-		public string busqueda = "";
-		public int 	filas = 684;
-		public int numpage = 1;
-		public int contador = 1;
+        string nombrebd;
+	    string tipointernamiento = "CENTRO MEDICO";
+   		int idtipointernamiento = 10;
+   	    string tipopaciente = "Membresias"; 
+		int id_tipopaciente = 100;
+		int idmedico = 1;
+		int idempresa = 1;
+		int idaseguradora = 1;
+		string motivo = "";
+		string tipobusqueda = "AND hscmty_his_medicos.nombre1_medico LIKE '";
+		string busqueda = "";
+		int 	filas = 684;
+		int numpage = 1;
+		int contador = 1;
 		
-    	public string query_reporte = "";
-    	public string query_tipo_admision  = "AND hscmty_erp_movcargos.id_tipo_admisiones = '0' ";
-		public string query_tipo_paciente = "AND hscmty_erp_movcargos.id_tipo_paciente = '200' ";
-    	public string query_rango_fechas = "AND to_char(hscmty_erp_movcargos.fechahora_admision_registro,'yyyy-MM-dd') >= '"+DateTime.Now.ToString("yyyy")+"-"+DateTime.Now.ToString("MM")+"-"+DateTime.Now.ToString("dd")+"' "+
+    	string query_reporte = "";
+    	string query_tipo_admision  = "AND hscmty_erp_movcargos.id_tipo_admisiones = '0' ";
+		string query_tipo_paciente = "AND hscmty_erp_movcargos.id_tipo_paciente = '200' ";
+    	string query_rango_fechas = "AND to_char(hscmty_erp_movcargos.fechahora_admision_registro,'yyyy-MM-dd') >= '"+DateTime.Now.ToString("yyyy")+"-"+DateTime.Now.ToString("MM")+"-"+DateTime.Now.ToString("dd")+"' "+
 										"AND to_char(hscmty_erp_movcargos.fechahora_admision_registro,'yyyy-MM-dd') <= '"+DateTime.Now.ToString("yyyy")+"-"+DateTime.Now.ToString("MM")+"-"+DateTime.Now.ToString("dd")+"' "; 
     	/*query_rango_fechas = "AND to_number(to_char(hscmty_erp_movcargos.fechahora_admision_registro,'yyyy'),9999) >= '"+DateTime.Now.ToString("yyyy")+"' AND to_number(to_char(hscmty_erp_movcargos.fechahora_admision_registro,'yyyy'),9999) <= '"+DateTime.Now.ToString("yyyy")+"' "+  
     									"AND to_number(to_char(hscmty_erp_movcargos.fechahora_admision_registro,'MM'),99) >= '"+DateTime.Now.ToString("MM")+"' AND to_number(to_char(hscmty_erp_movcargos.fechahora_admision_registro,'MM'),99) <= '"+DateTime.Now.ToString("MM")+"' "+
     									"AND to_number(to_char(hscmty_erp_movcargos.fechahora_admision_registro,'dd'),99) >= '"+DateTime.Now.ToString("dd")+"'  AND to_number(to_char(hscmty_erp_movcargos.fechahora_admision_registro,'dd'),99) <= '"+DateTime.Now.ToString("dd")+"' " ;
 		*/
-		public string query_sexo = " "; 
-    	public string query_empresa = " "; //"AND hscmty_erp_cobros_enca.id_empresa = 3 "; 
-    	public string query_aseguradora = " ";
-    	public string query_tipo_reporte = " ";
-    	public string query_medico = " ";
-    	public string query_orden =  "ORDER BY hscmty_erp_movcargos.folio_de_servicio;";
+		string query_sexo = " "; 
+    	string query_empresa = " "; //"AND hscmty_erp_cobros_enca.id_empresa = 3 "; 
+    	string query_aseguradora = " ";
+    	string query_tipo_reporte = " ";
+    	string query_medico = " ";
+    	string query_orden =  "ORDER BY hscmty_erp_movcargos.folio_de_servicio;";
     	
-    	// Crear una fuente de tipo Impact
-		public Gnome.Font fuente = Gnome.Font.FindClosest("Bitstream Vera Sans", 12);
-		public Gnome.Font fuente2 = Gnome.Font.FindClosest("Bitstream Vera Sans", 36);
-		public Gnome.Font fuente3 = Gnome.Font.FindClosest("Bitstream Vera Sans", 9);
-		public Gnome.Font fuente4 = Gnome.Font.FindClosest("Bitstream Vera Sans", 6);
-		public Gnome.Font fuente1 = Gnome.Font.FindClosest("Bitstream Vera Sans", 7);
+		private static double headerHeight = (10*72/25.4);
+		private static double headerGap = (3*72/25.4);
+		private static int pangoScale = 1024;
+
+		private PrintOperation print;
+
+		private double fontSize = 10.0;
+		private int linesPerPage;
+		private string[] lines;
+		private int numLines;
+		private int numPages;
                                
 		//////PARTE PRINCIPAL (MAIN) DEL PROGRAMA/////////                       	          
 		public rptAdmision (string _nombrebd_)
@@ -859,46 +862,8 @@ namespace osiris
 				if(busqueda == "empresa") { this.llenando_lista_empresas(); }
 			}
 		}
-////////////////////////////////////VOID PARA IMPRESION DE PAGINA/////////////////////////////	
-		void on_button_imprimir_clicked(object sender, EventArgs a)
-		{		
-			numpage = 1;
-			filas = 684;
-			contador = 1;
-			tipo_de_reporte_a_mostrar(sender, a);
-	    	tipo_de_sexo(sender, a);
-			tipo_orden_query(sender, a);
-			
-			Gnome.PrintJob trabajoImpresion  = new Gnome.PrintJob (PrintConfig.Default ());
-       		Gnome.PrintDialog dialogoimpresion   = new Gnome.PrintDialog (trabajoImpresion, "REPORTE DE ADMISION", 0);
-       		 int respuesta = dialogoimpresion.Run ();
-          	if (respuesta == (int) PrintButtons.Cancel) 
-			{
-				dialogoimpresion.Hide (); 
-				dialogoimpresion.Dispose (); 
-				return;
-			}
 		
-			Gnome.PrintContext contextoImprimir = trabajoImpresion.Context;
-			ComponerPagina (contextoImprimir, trabajoImpresion);
-       	 	trabajoImpresion.Close (); 
-        
-        	switch (respuesta)
-        	{
-				case (int) PrintButtons.Print:   
-					trabajoImpresion.Print (); 
-         	   		break;
-         	    case (int) PrintButtons.Preview:
-         	     	PrintJobPreview vistaprevia = new PrintJobPreview(trabajoImpresion, "REPORTE DE ADMISION");
-         	       	vistaprevia.Show();
-         	    break;
-        	}
-
-			dialogoimpresion.Hide (); dialogoimpresion.Dispose ();
-       	 
-		}
-    	
-    	void tipo_de_reporte_a_mostrar(object sender, EventArgs args)
+		void tipo_de_reporte_a_mostrar(object sender, EventArgs args)
 		{
 			if(radiobutton_reporte_general.Active == true) { query_tipo_reporte = " "; }
 			if(radiobutton_cancelados.Active == true) { query_tipo_reporte = " AND cancelado = 'true' "; }
@@ -920,9 +885,145 @@ namespace osiris
 			if(radiobutton_doctores.Active == true) { query_orden = "ORDER BY  nombre1_medico || ' ' || nombre2_medico || ' ' || apellido_paterno_medico || ' ' || apellido_materno_medico ;"; }
 			if(radiobutton_tipo_admision.Active == true) { query_orden = "ORDER BY hscmty_his_tipo_admisiones.id_tipo_admisiones ;"; }
 		}
+////////////////////////////////////VOID PARA IMPRESION DE PAGINA/////////////////////////////	
+		void on_button_imprimir_clicked(object sender, EventArgs a)
+		{
+			print = new PrintOperation ();
+			
+			print.BeginPrint += new BeginPrintHandler (OnBeginPrint);
+			print.DrawPage += new DrawPageHandler (OnDrawPage);
+			print.EndPrint += new EndPrintHandler (OnEndPrint);
+
+			print.Run (PrintOperationAction.PrintDialog, null);
+		}
+		
+		private void OnBeginPrint (object obj, Gtk.BeginPrintArgs args)
+		{
+			string contents;
+			double height;
+
+			PrintContext context = args.Context;
+			height = context.Height;
+			
+			print.NPages = 1; //numPages;			
+		}
+
+		private void OnDrawPage (object obj, Gtk.DrawPageArgs args)
+		{
+			PrintContext context = args.Context;
+
+			Cairo.Context cr = context.CairoContext;
+			double width = context.Width;
+
+			//cr.Rectangle (0, 0, width, headerHeight);
+			//cr.SetSourceRGB (0.8, 0.8, 0.8);
+			//cr.FillPreserve ();
+
+			//cr.SetSourceRGB (0, 0, 0);
+			//cr.LineWidth = 1;
+			//cr.Stroke();
+
+			Pango.Layout layout = context.CreatePangoLayout ();
+			
+			Pango.FontDescription desc = Pango.FontDescription.FromString ("sans 10");
+			layout.FontDescription = desc;
+			
+			//layout.SetText ("Titulo del Reporte");
+			//layout.SetText (fileName);
+			//layout.Width = (int)width;
+			//layout.Alignment = Pango.Alignment.Center;
+
+			int layoutWidth, layoutHeight;
+			layout.GetSize (out layoutWidth, out layoutHeight);
+			double textHeight = (double)layoutHeight / (double)pangoScale;
+
+			//cr.MoveTo (width/2, (headerHeight - textHeight) / 2);
+			//Pango.CairoHelper.ShowLayout (cr, layout);
+
+			string pageStr = String.Format ("{0}/{1}", args.PageNr + 1, numPages);
+			layout.SetText (pageStr);
+			layout.Alignment = Pango.Alignment.Right;
+
+			//cr.MoveTo (width - 2, (headerHeight - textHeight) / 2);
+			//Pango.CairoHelper.ShowLayout (cr, layout);
+						
+			layout = null;
+			layout = context.CreatePangoLayout ();
+			desc.Size = (int)(fontSize * pangoScale);
+			layout.FontDescription = desc;
+			
+			cr.MoveTo(100,100);	layout.SetText("Prueba de Impresion");
+			Pango.CairoHelper.ShowLayout (cr, layout);
+			
+			cr.MoveTo(19.5, 10);		   	layout.SetText("Hospital Santa Cecilia");
+			cr.MoveTo(20, 10);		    	layout.SetText("Hospital Santa Cecilia");
+			Pango.CairoHelper.ShowLayout (cr, layout);
+			
+			//------------------------------------------
+			layout = null;
+			layout = context.CreatePangoLayout ();
+			desc.Size = (int)(fontSize * pangoScale);
+			layout.FontDescription = desc;			
+			
+			cr.MoveTo (0, headerHeight + headerGap);
+			int line = args.PageNr * linesPerPage;
+			for (int i=0; i < linesPerPage && line < numLines; i++)
+			{
+				layout.SetText (lines[line]);
+				Pango.CairoHelper.ShowLayout (cr, layout);
+				cr.RelMoveTo (0, fontSize);
+				line++;
+			}
+			(cr as IDisposable).Dispose ();
+			layout = null;
+		}
+
+		private void OnEndPrint (object obj, Gtk.EndPrintArgs args)
+		{
+		}
+		
+		/*
+		void on_button_imprimir_clicked(object sender, EventArgs a)
+		{		
+			numpage = 1;
+			filas = 684;
+			contador = 1;
+			tipo_de_reporte_a_mostrar(sender, a);
+	    	tipo_de_sexo(sender, a);
+			tipo_orden_query(sender, a);
+			
+			Gnome.PrintJob trabajoImpresion  = new Gnome.PrintJob();
+       		Gnome.PrintDialog dialogoimpresion   = new Gnome.PrintDialog (trabajoImpresion, "REPORTE DE ADMISION", 0);
+       		 int respuesta = dialogoimpresion.Run ();
+          	if (respuesta == (int) Gnome.PrintButtons.Cancel) 
+			{
+				dialogoimpresion.Hide (); 
+				dialogoimpresion.Dispose (); 
+				return;
+			}
+		
+			Gnome.PrintContext contextoImprimir = trabajoImpresion.Context;
+			ComponerPagina (contextoImprimir, trabajoImpresion);
+       	 	trabajoImpresion.Close (); 
+        
+        	switch (respuesta)
+        	{
+				case (int) Gnome.PrintButtons.Print:   
+					trabajoImpresion.Print (); 
+         	   		break;
+         	    case (int) Gnome.PrintButtons.Preview:
+         	     	Gnome.PrintJobPreview vistaprevia = new Gnome.PrintJobPreview(trabajoImpresion, "REPORTE DE ADMISION");
+         	       	vistaprevia.Show();
+         	    break;
+        	}
+
+			dialogoimpresion.Hide (); dialogoimpresion.Dispose ();
+       	 
+		}   	
     	
 ////////////////////////////////////VOID PARA FORMATO DE PAGINA/////////////////////////////
-    	void imprime_encabezado(Gnome.PrintContext ContextoImp, Gnome.PrintJob trabajoImpresion)
+    	
+		void imprime_encabezado(Gnome.PrintContext ContextoImp, Gnome.PrintJob trabajoImpresion)
 		{
 			// Cambiar la fuente
 			//Console.WriteLine("imprimo encabezado");
@@ -987,7 +1088,7 @@ namespace osiris
 			}
 		}
     	
-		void ComponerPagina (Gnome.PrintContext ContextoImp, Gnome.PrintJob trabajoImpresion )
+		void ComponerPagina (Gnome.PrintContext ContextoImp, Gnome.PrintJob trabajoImpresion)
 		{
 			
 			NpgsqlConnection conexion; 
@@ -1143,15 +1244,15 @@ namespace osiris
 					}
 					
 					total +=1;
-					/*
-					if (contador >= 62)
-					{
-						ContextoImp.ShowPage();
-						ContextoImp.BeginPage("Pagina N");
-						filas = 684;
-						contador = 1;
-						salto_pagina(ContextoImp, trabajoImpresion);
-					}*/
+					
+					//if (contador >= 62)
+					//{
+					//	ContextoImp.ShowPage();
+					//	ContextoImp.BeginPage("Pagina N");
+					//	filas = 684;
+					//	contador = 1;
+					//	salto_pagina(ContextoImp, trabajoImpresion);
+					//}
 					//Console.WriteLine("folio de registro "+folioregist.ToString());
 				}	
 				if(total == 0){
@@ -1188,5 +1289,6 @@ namespace osiris
 				return; 
 			}
 		}
+		*/	
 	}
 }

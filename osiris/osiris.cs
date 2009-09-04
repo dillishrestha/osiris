@@ -34,9 +34,7 @@ using Npgsql;
 using System.Data;
 using Gtk;
 using Glade;
-using Gnome;
 using System.Collections;
-using GtkSharp;
 using System.Security.Cryptography;
 
 namespace osiris
@@ -50,42 +48,43 @@ namespace osiris
 		// Menu Principal
 		
 		// HIS
-		[Widget] Gtk.Button button_cargos_hospital;
-		[Widget] Gtk.Button button_cargos_urgencia;
-		[Widget] Gtk.Button button_cargos_quirofano;
-		[Widget] Gtk.Button button_endoscopia;
-		[Widget] Gtk.Button button_terapia_adulto;
-		[Widget] Gtk.Button button_terapia_nino;
-		[Widget] Gtk.Button button_terapia_neonatal;
-		[Widget] Gtk.Button button_ginecologia;
-		[Widget] Gtk.Button button_laboratorio;
-		[Widget] Gtk.Button button_imagenologia;
-		[Widget] Gtk.Button button_inhaloterapia;
-		[Widget] Gtk.Button button_nutricion;
-		[Widget] Gtk.Button button_hemodialisis;
+		[Widget] Gtk.Window menuprincipal = null;
+		[Widget] Gtk.Button button_cargos_hospital = null;
+		[Widget] Gtk.Button button_cargos_urgencia = null;
+		[Widget] Gtk.Button button_cargos_quirofano = null;
+		[Widget] Gtk.Button button_endoscopia = null;
+		[Widget] Gtk.Button button_terapia_adulto = null;
+		[Widget] Gtk.Button button_terapia_nino = null;
+		[Widget] Gtk.Button button_terapia_neonatal = null;
+		[Widget] Gtk.Button button_ginecologia = null;
+		[Widget] Gtk.Button button_laboratorio = null;
+		[Widget] Gtk.Button button_imagenologia = null;
+		[Widget] Gtk.Button button_inhaloterapia = null;
+		[Widget] Gtk.Button button_nutricion = null;
+		[Widget] Gtk.Button button_hemodialisis = null;
 		
-		[Widget] Gtk.Button button_imagenologia_b;
+		[Widget] Gtk.Button button_imagenologia_b = null;
 		
 		// ERP
-		[Widget] Gtk.Button button_registro_admision;
-		[Widget] Gtk.Button button_caja;
-		[Widget] Gtk.Button button_compras;
-		[Widget] Gtk.Button button_almacen;
-		[Widget] Gtk.Button button_costos;
-		[Widget] Gtk.Button button_farmacia;
-		[Widget] Gtk.Button button_recursos_humanos;
-		[Widget] Gtk.Button button_herramientas;
+		[Widget] Gtk.Button button_registro_admision = null;
+		[Widget] Gtk.Button button_caja = null;
+		[Widget] Gtk.Button button_compras = null;
+		[Widget] Gtk.Button button_almacen = null;
+		[Widget] Gtk.Button button_costos = null;
+		[Widget] Gtk.Button button_farmacia = null;
+		[Widget] Gtk.Button button_recursos_humanos = null;
+		[Widget] Gtk.Button button_herramientas = null;
 		
 		// opciones generales
-		[Widget] Gtk.Button button_medicos;
-		[Widget] Gtk.Button button_ocupacion_hscmty;
-		[Widget] Gtk.Button button_cambio_contraseña;
-		[Widget] Gtk.Button button_agredecimientos;
+		[Widget] Gtk.Button button_medicos = null;
+		[Widget] Gtk.Button button_ocupacion_hscmty = null;
+		[Widget] Gtk.Button button_cambio_contraseña = null;
+		[Widget] Gtk.Button button_agredecimientos = null;
 		
 		// Salir
-		[Widget] Gtk.Button button_salir;
+		[Widget] Gtk.Button button_salir  = null;
 		
-		[Widget] Gtk.Image hscmtylogo;
+		[Widget] Gtk.Image hscmtylogo = null;
 				
 		/*// Pregunta de Admision
 		[Widget] Gtk.Window nuevo_paciente_si_no;
@@ -94,34 +93,34 @@ namespace osiris
 		[Widget] Gtk.Button button_salir_pregunta;*/
 		
 		//ventana de acceso al sistema
-		//[Widget] Gtk.Window acceso_sistema;
-		//[Widget] Gtk.Button button_cancelar;
-		//[Widget] Gtk.Button button_conectar;
-		//[Widget] Gtk.Entry entry_usuario;
-		//[Widget] Gtk.Entry entry_password;
+		[Widget] Gtk.Window acceso_sistema = null;
+		[Widget] Gtk.Button button_cancelar = null;
+		//[Widget] Gtk.Button button_aceptar = null;
+		[Widget] Gtk.Entry entry_login = null;
+		[Widget] Gtk.Entry entry_password = null;
 		
 		//Ventana agradecimientos
 		//[Widget] Gtk.Window agradece;
-		[Widget] Gtk.Button button_aceptar;
+		[Widget] Gtk.Button button_aceptar  = null;
 		
 		//cambio de contraseña
-		[Widget] Gtk.Window password;
-		[Widget] Gtk.Button button_graba_password;
-		[Widget] Gtk.Entry entry_nueva_contraseña1;
-		[Widget] Gtk.Entry entry_nueva_contraseña2;
+		[Widget] Gtk.Window password  = null;
+		[Widget] Gtk.Button button_graba_password = null;
+		[Widget] Gtk.Entry entry_nueva_contraseña1 = null;
+		[Widget] Gtk.Entry entry_nueva_contraseña2 = null;
 		
 		//ventana de medicos
 		//[Widget] Gtk.Button button_selecciona;
 		//[Widget] Gtk.Button button_llena_medicos;
 		//[Widget] Gtk.TreeView lista_medicos;
-		[Widget] Gtk.Entry entry_expresion;
-		[Widget] Gtk.Button button_buscar_busqueda;
-		[Widget] Gtk.Button button_selecciona;
-		[Widget] Gtk.ComboBox combobox_tipo_busqueda;
-		[Widget] Gtk.TreeView lista_de_medicos;
+		[Widget] Gtk.Entry entry_expresion  = null;
+		[Widget] Gtk.Button button_buscar_busqueda  = null;
+		[Widget] Gtk.Button button_selecciona = null;
+		[Widget] Gtk.ComboBox combobox_tipo_busqueda = null;
+		[Widget] Gtk.TreeView lista_de_medicos = null;
 				
 		// Barra de status
-		[Widget] Gtk.Statusbar statusbar_menu;
+		[Widget] Gtk.Statusbar statusbar_menu = null;
 				
 		// Variable publicas, 
 		public string LoginEmpleado;
@@ -158,22 +157,42 @@ namespace osiris
 
 		public principal (string[] args) 
 		{	
-			//int itenciones = 1
-			//while(itenciones < 4) {
 			Application.Init ();
+			pantalla_login();
+			Application.Run ();
+			//verifica_usuariopasswd();
 			
-			PasswordDialog dialogoPwd = new Gnome.PasswordDialog("Hospital Santa Cecilia de Monterrey", "Accesando al Sistema",
-                                                                   "",
-                                                                   "", false);
-        	dialogoPwd.Response      += new ResponseHandler (OnResponse);
-        	ResponseType respuesta = (ResponseType) dialogoPwd.Run(); 
+		}
+		
+		void pantalla_login()
+		{
+			Glade.XML gxml = new Glade.XML (null, "osiris.glade", "acceso_sistema", null);
+			gxml.Autoconnect (this);
+			
+			acceso_sistema.Show();
+												
+			button_cancelar.Clicked += new EventHandler(on_button_salir_clicked);
+			button_aceptar.Clicked += new EventHandler(on_AceptarActivated_clicked);
+			// activacion de la tecla Enter en los entry
+			//entry_login.KeyPressEvent += onKeyPressEvent_enter;
+			//entry_password.KeyPressEvent += onKeyPressEvent_enter;
+		}
+		
+		private void on_AceptarActivated_clicked(object o, EventArgs args)
+    	{
+			verifica_usuariopasswd();
+			//pantalla_principal();
+		}
+			
+		void verifica_usuariopasswd()
+		{
+			bool respuesta = true; 
         
-        	// Recibo los parametros del usuario y contraseña
-        	string usuario_entrada = dialogoPwd.Username;
-        	string clave_entrada  = dialogoPwd.Password;
+			string usuario_entrada = entry_login.Text.Trim(); //"dolivares"
+        	string clave_entrada  = "1aq2sw3derf4"; //this.entry_password.Text.Trim(); // 
         	
-        	// Verfico si acepto
-        	if (respuesta == ResponseType.Ok){                      
+        	
+        	if (respuesta == true){                      
             	NpgsqlConnection conexion; 
             	conexion = new NpgsqlConnection(connectionString+nombrebd);
             	// Verifica que la base de datos este conectada
@@ -194,6 +213,7 @@ namespace osiris
             		NpgsqlDataReader lector = comando.ExecuteReader ();
             		            		
             		if ((bool)lector.Read ()){
+						acceso_sistema.Destroy();
                			// Asignacion de Variables
 						LoginEmpleado = (string) lector["login_empleado"];
 						NomEmpleado = (string) lector["nombre1_empleado"]+" "+(string) lector["nombre2_empleado"];
@@ -220,19 +240,22 @@ namespace osiris
 						if (usuario_entrada.ToUpper() == LoginEmpleado) {
 							if ( (string) CreatePasswordMD5(clave_entrada.Trim()) == PassEmpleado){
 						 	//if ( (string) clave_entrada.Trim() == PassEmpleado){
-								dialogoPwd.Destroy(); 
+								//dialogoPwd.Destroy(); 
 								
 								//MessageBox.Show("Hola Bill, no me gusta tu sistema");								
 								
-								Glade.XML gxml = new Glade.XML (null, "hscmty.glade", "menuprincipal", null);
+								Glade.XML gxml = new Glade.XML (null, "osiris.glade", "menuprincipal", null);
 								gxml.Autoconnect (this);
+								menuprincipal.Show();
 					 			
 								//hscmtylogo.Pixbuf = new Gdk.Pixbuf("/opt/osiris/img/hsc_logo_menu1.png");
 					 					 											
 								verificapermisos(accesoHIS,accesoERP,accesoGENERAL,autorizaHIS,autorizaERP,autorizaGENERAL);
 												 
 								// llamando a los eventos
+								
 					 			button_registro_admision.Clicked += new EventHandler( on_button_registro_admision_clicked );
+								/*
 					 			button_cargos_hospital.Clicked += new EventHandler( on_button_cargos_hospital_clicked );
 					 			button_cargos_quirofano.Clicked += new EventHandler( on_button_cargos_quirofano_clicked );
 					 			button_cargos_urgencia.Clicked += new EventHandler( on_button_cargos_urgencia_clicked );
@@ -246,7 +269,6 @@ namespace osiris
 					 			button_almacen.Clicked += new EventHandler(on_button_almacen_clicked);
 					 			button_caja.Clicked += new EventHandler( on_button_caja_clicked );
 					 			button_medicos.Clicked += new EventHandler(on_button_medicos_clicked);
-					 			button_salir.Clicked += new EventHandler(on_button_salir_clicked);
 					 			button_agredecimientos.Clicked += new EventHandler(on_button_agredecimientos_clicked);
 					 			button_costos.Clicked += new EventHandler(on_button_costos_clicked);
 					 			button_compras.Clicked += new EventHandler(on_button_compras_clicked);
@@ -257,15 +279,14 @@ namespace osiris
 					 			button_ocupacion_hscmty.Clicked += new EventHandler(on_button_ocupacion_hscmty_clicked);
 					 			button_nutricion.Clicked += new EventHandler(on_button_nutricion_clicked);
 					 			button_hemodialisis.Clicked += new EventHandler(on_button_hemodialisis_clicked);
-					 			
+					 			*/
 					 			//button_imagenologia_b.Clicked += new EventHandler( on_button_imagenologia_b_clicked );
-					 			
+								
+					 			button_salir.Clicked += new EventHandler(on_button_salir_clicked);
 					 			// Actulizando statusbar
 					 			statusbar_menu.Pop(0);
 					 			statusbar_menu.Push(1, "login:"+(string)LoginEmpleado+"|Usuario:"+(string)NomEmpleado+" "+(string)AppEmpleado+" "+(string)ApmEmpleado);
-					 			statusbar_menu.HasResizeGrip = false;
-					 
-					 			Application.Run ();
+					 			statusbar_menu.HasResizeGrip = false;				 			
 					 		}else{
 					 			MessageDialog msgBox = new MessageDialog (MyWinError,DialogFlags.Modal,
 										MessageType.Error,ButtonsType.Close,"Su contraseña es INCORRECTA \n"+
@@ -321,114 +342,114 @@ namespace osiris
 		// Ocupacion Hospitalaria
 		public void on_button_ocupacion_hscmty_clicked (object sender, EventArgs a)
 		{
-			new osiris.reporte_pacientes_sin_alta(this.nombrebd);
+			//new osiris.reporte_pacientes_sin_alta(this.nombrebd);
 		}
 		
 		// llamada de pantalla para cargos de enfermeria
 		// cargos_hospitalizacion.cs
 		public void on_button_cargos_hospital_clicked (object sender, EventArgs args)
 		{
-			new osiris.hospitalizacion(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);   	
+			//new osiris.hospitalizacion(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);   	
 		}
 		
 		public void on_button_cargos_quirofano_clicked (object sender, EventArgs args)
 		{
-			new osiris.quirofano(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);   	
+			//new osiris.quirofano(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);   	
 		}
 	
 		public void on_button_cargos_urgencia_clicked (object sender, EventArgs args)
 		{
-			new osiris.urgencia(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
+			//new osiris.urgencia(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
 		}
 		
 		public void on_button_endoscopia_clicked (object sender, EventArgs args)
 		{
-			new osiris.endoscopia(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
+			//new osiris.endoscopia(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
 		}
 		
 		public void on_button_laboratorio_clicked (object sender, EventArgs args)
 		{
-			new osiris.laboratorio (LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
+			//new osiris.laboratorio (LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
 		}
 		
 		public void on_button_hemodialisis_clicked (object sender, EventArgs args)
 		{
-			new osiris.hemodialisis (LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
+			//new osiris.hemodialisis (LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
 		}
 		
 		///////////////////
 		public void on_button_imagenologia_clicked (object sender, EventArgs args)
 		{
-			new osiris.imagenologia(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
+			//new osiris.imagenologia(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
 		}
 		
 		public void on_button_terapia_adulto_clicked (object sender, EventArgs args)
 		{
-			new osiris.terapia_adulto(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
+			//new osiris.terapia_adulto(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
 		}
 		
 		public void on_button_terapia_pediatrica_clicked (object sender, EventArgs args)
 		{
-			new osiris.terapia_pediatrica(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
+			//new osiris.terapia_pediatrica(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
 		}
 		
 		public void on_button_terapia_neonatal_clicked (object sender, EventArgs args)
 		{
-			new osiris.terapia_neonatal(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
+			//new osiris.terapia_neonatal(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
 		}
 		
 		public void on_button_ginecologia_clicked (object sender, EventArgs args)
 		{
-			new osiris.tococirugia_ginecologia(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
+			//new osiris.tococirugia_ginecologia(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
 		}
 		
 		public void on_button_almacen_clicked(object sender, EventArgs args)
 		{
-			new osiris.almacen(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
+			//new osiris.almacen(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
 		} 
 		
 		// llamada de modulo de caja caja.cs	
 		public void on_button_caja_clicked (object sender, EventArgs args)
 		{
-			new osiris.tesoreria_menu(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
+			//new osiris.tesoreria_menu(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
 		}
 		
 		public void on_button_costos_clicked (object sender, EventArgs args)
 		{	
 			// new osiris.nuevos_prod(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
-			new osiris.costos_consultas(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
+			//new osiris.costos_consultas(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
 		}
 		
 		void on_button_herramientas_clicked (object sender, EventArgs args)
 		{
 			//if( LoginEmpleado == "DOLIVARES" || LoginEmpleado == "JPENA" || LoginEmpleado == "HVARGAS" ){ 
-			new osiris.herramientas_del_sistemas(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);//}
+			//new osiris.herramientas_del_sistemas(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);//}
 		}
 		
 		void on_button_recursos_humanos_clicked(object sender, EventArgs args)
 		{
-			new osiris.recursoshumanos(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);//}
+			//new osiris.recursoshumanos(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);//}
 		}
 		
 		void on_button_compras_clicked(object sender, EventArgs args)
 		{
-			new osiris.compras_consultas(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
+			//new osiris.compras_consultas(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
 		}
 		
 		void on_button_farmacia_clicked(object sender, EventArgs args)
 		{
-			new osiris.orden_compra_urgencias(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,0,"",26,"COMERCIALIZADORA MEDIX S. A. DE C. V.");
+			//new osiris.orden_compra_urgencias(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,0,"",26,"COMERCIALIZADORA MEDIX S. A. DE C. V.");
 		}
 		
 		void on_button_nutricion_clicked(object sender, EventArgs args)
 		{
-			new osiris.nutricion(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
+			//new osiris.nutricion(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
 		}
 		
 		void on_button_cambio_contraseña_clicked (object sender, EventArgs args)
 		{
 			enter_en = "contraseña";
-			Glade.XML gxml = new Glade.XML (null, "hscmty.glade", "password", null);
+			Glade.XML gxml = new Glade.XML (null, "osiris.glade", "password", null);
 			gxml.Autoconnect (this);
 			password.Show();
 			this.entry_nueva_contraseña2.KeyPressEvent += onKeyPressEvent_enter_pass;
@@ -496,7 +517,7 @@ namespace osiris
 		
 		public void on_button_agredecimientos_clicked (object sender, EventArgs args)
 		{
-			Glade.XML gxml = new Glade.XML (null, "hscmty.glade", "agradece", null);
+			Glade.XML gxml = new Glade.XML (null, "osiris.glade", "agradece", null);
 			gxml.Autoconnect (this);
 			
 			button_aceptar.Clicked += new EventHandler(on_cierraventanas_clicked);

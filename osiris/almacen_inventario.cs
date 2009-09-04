@@ -43,48 +43,48 @@ namespace osiris
 	{
 		// Boton general para salir de las ventanas
 		// Todas la ventanas en glade este boton debe estra declarado identico
-		[Widget] Gtk.Button button_salir;
+		[Widget] Gtk.Button button_salir = null;
 		
 		// Para todas las busquedas este es el nombre asignado
 		// se declara una vez
-		[Widget] Gtk.Entry entry_expresion;
-		[Widget] Gtk.Button button_selecciona;
-		[Widget] Gtk.Button button_buscar_busqueda;
+		[Widget] Gtk.Entry entry_expresion = null;
+		[Widget] Gtk.Button button_selecciona = null;
+		[Widget] Gtk.Button button_buscar_busqueda = null;
 		
 		// Declarando ventana principal
-		[Widget] Gtk.Window inventario;
-		[Widget] Gtk.Entry entry_id_almacen;
-		[Widget] Gtk.Entry entry_almacen;
-		[Widget] Gtk.Entry entry_ano_inventario;
+		[Widget] Gtk.Window inventario = null;
+		[Widget] Gtk.Entry entry_id_almacen = null;
+		[Widget] Gtk.Entry entry_almacen = null;
+		[Widget] Gtk.Entry entry_ano_inventario = null;
 		
 		//Declaracion de checkbuttons
-		[Widget] Gtk.Button button_copia_productos;
+		[Widget] Gtk.Button button_copia_productos = null;
 		
 		//Declaracion de radiobuttons
-		[Widget] Gtk.ComboBox combobox_mes_inventario;
-		[Widget] Gtk.TreeView lista_de_inventario;
+		[Widget] Gtk.ComboBox combobox_mes_inventario = null;
+		[Widget] Gtk.TreeView lista_de_inventario = null;
 		
 		//[Widget] Gtk.ProgressBar progressbar_status_llenado;
-		[Widget] Gtk.Button button_quitar_aplicados;
-		[Widget] Gtk.Button button_actualizar;
-		[Widget] Gtk.Button button_buscar_almacen;
-		[Widget] Gtk.Button button_selec_id;
-		[Widget] Gtk.Button button_graba_inventario;
-		[Widget] Gtk.Button button_limpiar;
-		[Widget] Gtk.Button button_busca_producto;
-		[Widget] Gtk.Button button_reporte;
+		[Widget] Gtk.Button button_quitar_aplicados = null;
+		[Widget] Gtk.Button button_actualizar = null;
+		[Widget] Gtk.Button button_buscar_almacen = null;
+		[Widget] Gtk.Button button_selec_id = null;
+		[Widget] Gtk.Button button_graba_inventario = null;
+		[Widget] Gtk.Button button_limpiar = null;
+		[Widget] Gtk.Button button_busca_producto = null;
+		[Widget] Gtk.Button button_reporte = null;
 		
 		//Declarando la barra de estado
-		[Widget] Gtk.Statusbar statusbar_inventario;
+		[Widget] Gtk.Statusbar statusbar_inventario = null;
 		
 		/////// Ventana Busqueda de productos\\\\\\\\
 		//[Widget] Gtk.Window busca_producto;
-		[Widget] Gtk.TreeView lista_de_producto;
+		[Widget] Gtk.TreeView lista_de_producto = null;
 		
-		[Widget] Gtk.Entry entry_cantidad_aplicada;
+		[Widget] Gtk.Entry entry_cantidad_aplicada = null;
 		
 		///////Ventana de Busqueda de almacenes
-		[Widget] Gtk.TreeView lista_almacenes;
+		[Widget] Gtk.TreeView lista_almacenes = null;
 		
 		private TreeStore treeViewEngineBusca;
 		private TreeStore treeViewEngineBusca2;

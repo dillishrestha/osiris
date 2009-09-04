@@ -44,18 +44,18 @@ namespace osiris
 	{
 		// Boton general para salir de las ventanas
 		// Todas la ventanas en glade este boton debe estra declarado identico
-		[Widget] Gtk.Button button_salir;
+		[Widget] Gtk.Button button_salir = null;
 		
 		// Declarando ventana principal de Hospitalizacion
-		[Widget] Gtk.Window menu_almacen;
-		[Widget] Gtk.Button button_inventario;
-		[Widget] Gtk.Button button_inv_subalmacen;
-		[Widget] Gtk.Button button_requi_materiales;
-		[Widget] Gtk.Button button_envios_subalmacenes;
-		[Widget] Gtk.Button button_captura_fact_orden_comp;
-		[Widget] Gtk.Button button_autorizacion_medicamento;
-		[Widget] Gtk.Button button_productos_aplicados;
-		[Widget] Gtk.Button button_traspaso_subalmacenes;
+		[Widget] Gtk.Window menu_almacen = null;
+		[Widget] Gtk.Button button_inventario = null;
+		[Widget] Gtk.Button button_inv_subalmacen = null;
+		[Widget] Gtk.Button button_requi_materiales = null;
+		[Widget] Gtk.Button button_envios_subalmacenes = null;
+		[Widget] Gtk.Button button_captura_fact_orden_comp = null;
+		[Widget] Gtk.Button button_autorizacion_medicamento = null;
+		[Widget] Gtk.Button button_productos_aplicados = null;
+		[Widget] Gtk.Button button_traspaso_subalmacenes = null;
 		//[Widget] Gtk.Button button_soli_material;
 		
 		public string LoginEmpleado;

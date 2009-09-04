@@ -87,14 +87,14 @@ namespace osiris
 								
 		// Declarando variable de fuente para la impresion
 		// Declaracion de fuentes tipo Bitstream Vera sans
-		public Gnome.Font fuente6 = Gnome.Font.FindClosest("Bitstream Vera Sans", 6);
-		public Gnome.Font fuente7 = Gnome.Font.FindClosest("Bitstream Vera Sans", 7);
-		public Gnome.Font fuente8 = Gnome.Font.FindClosest("Bitstream Vera Sans", 8);
-		public Gnome.Font fuente9 = Gnome.Font.FindClosest("Bitstream Vera Sans", 9);
-		public Gnome.Font fuente10 = Gnome.Font.FindClosest("Bitstream Vera Sans", 10);
-		public Gnome.Font fuente11 = Gnome.Font.FindClosest("Bitstream Vera Sans", 11);
-		public Gnome.Font fuente12 = Gnome.Font.FindClosest("Bitstream Vera Sans", 12);
-		public Gnome.Font fuente36 = Gnome.Font.FindClosest("Bitstream Vera Sans", 36);
+		//public Gnome.Font fuente6 = Gnome.Font.FindClosest("Bitstream Vera Sans", 6);
+		//public Gnome.Font fuente7 = Gnome.Font.FindClosest("Bitstream Vera Sans", 7);
+		//public Gnome.Font fuente8 = Gnome.Font.FindClosest("Bitstream Vera Sans", 8);
+		//public Gnome.Font fuente9 = Gnome.Font.FindClosest("Bitstream Vera Sans", 9);
+		//public Gnome.Font fuente10 = Gnome.Font.FindClosest("Bitstream Vera Sans", 10);
+		//public Gnome.Font fuente11 = Gnome.Font.FindClosest("Bitstream Vera Sans", 11);
+		//public Gnome.Font fuente12 = Gnome.Font.FindClosest("Bitstream Vera Sans", 12);
+		//public Gnome.Font fuente36 = Gnome.Font.FindClosest("Bitstream Vera Sans", 36);
 		
 		//Declaracion de ventana de error
 		protected Gtk.Window MyWinError;
@@ -437,7 +437,7 @@ namespace osiris
         	dialogo.Hide (); dialogo.Dispose ();
 		}
 		
-		void ComponerPagina (Gnome.PrintContext ContextoImp, Gnome.PrintJob trabajoImpresion)
+		void ComponerPagina (object ContextoImp, object trabajoImpresion)
 		{	
 			ContextoImp.BeginPage("Pagina 1");
 			ContextoImp.Rotate(90);
@@ -447,7 +447,7 @@ namespace osiris
 		
 ///////////////////////////////REPORTE DE OCUPACION/////////////////////////////////////////////////////////
 ///////////////////////////////REPORTE DE OCUPACION/////////////////////////////////////////////////////////
-		void imprime_rpt_ocupacion(Gnome.PrintContext ContextoImp, Gnome.PrintJob trabajoImpresion)
+		void imprime_rpt_ocupacion(object ContextoImp, object trabajoImpresion)
 		{	
 				TreeIter iter;
 				string tomovalor1 = "";
@@ -583,7 +583,7 @@ namespace osiris
 				salto_pagina(ContextoImp,trabajoImpresion);				
 		}
 		
-		void imprime_encabezado(Gnome.PrintContext ContextoImp, Gnome.PrintJob trabajoImpresion)
+		void imprime_encabezado(object ContextoImp, object trabajoImpresion)
 		{
 	 		// Cambiar la fuente
 			Gnome.Print.Setfont (ContextoImp, fuente6);
@@ -604,7 +604,7 @@ namespace osiris
 			imprime_titulo(ContextoImp,trabajoImpresion);
 	  	}
 		
-		void imprime_titulo(Gnome.PrintContext ContextoImp, Gnome.PrintJob trabajoImpresion)
+		void imprime_titulo(object ContextoImp, object trabajoImpresion)
 		{	
 			Gnome.Print.Setfont(ContextoImp,fuente9);
 			ContextoImp.MoveTo(55.5, -65);					ContextoImp.Show("Pid"); //| Fecha | Nº Atencion | Paciente | SubTotal al 15 | SubTotal al 0 | IVA | SubTotal Deducible | Coaseguro | Total | Hono. Medico");
@@ -644,7 +644,7 @@ namespace osiris
 			ContextoImp.MoveTo(716, -65);					ContextoImp.Show("Aseg./Empresa");
 		} 
 		
-		void salto_pagina(Gnome.PrintContext ContextoImp, Gnome.PrintJob trabajoImpresion)
+		void salto_pagina(object ContextoImp, object trabajoImpresion)
 		{
 	        if (contador > 55 ){
 	        	numpage +=1;        	contador=1;

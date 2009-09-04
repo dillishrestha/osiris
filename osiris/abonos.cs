@@ -44,24 +44,24 @@ namespace osiris
 	public class abonos
 	{
 		//Declarando ventana de cambios de datos de paciente
-		[Widget] Gtk.Window abonar_procedimientos;
-		[Widget] Gtk.Entry entry_monto_abono;
-		[Widget] Gtk.Entry entry_recibo_caja;
-		[Widget] Gtk.Entry entry_presupuesto;
-		[Widget] Gtk.Entry entry_paquete;
-		[Widget] Gtk.Entry entry_dia;
-		[Widget] Gtk.Entry entry_mes;
-		[Widget] Gtk.Entry entry_ano;
-		[Widget] Gtk.Entry entry_concepto_abono;
-		[Widget] Gtk.Entry entry_total_abonos;
-		[Widget] Gtk.CheckButton checkbutton_nuevo_abono;
-		[Widget] Gtk.Button button_guardar;
-		[Widget] Gtk.Button button_imprimir;
-		[Widget] Gtk.Button button_salir;
-		[Widget] Gtk.Button button_resumen;
-		[Widget] Gtk.TreeView lista_abonos;
-		[Widget] Gtk.Statusbar statusbar_abonos;
-		[Widget] Gtk.ComboBox combobox_formapago;
+		[Widget] Gtk.Window abonar_procedimientos  = null;
+		[Widget] Gtk.Entry entry_monto_abono = null;
+		[Widget] Gtk.Entry entry_recibo_caja = null;
+		[Widget] Gtk.Entry entry_presupuesto = null;
+		[Widget] Gtk.Entry entry_paquete = null;
+		[Widget] Gtk.Entry entry_dia = null;
+		[Widget] Gtk.Entry entry_mes = null;
+		[Widget] Gtk.Entry entry_ano = null;
+		[Widget] Gtk.Entry entry_concepto_abono = null;
+		[Widget] Gtk.Entry entry_total_abonos = null;
+		[Widget] Gtk.CheckButton checkbutton_nuevo_abono = null;
+		[Widget] Gtk.Button button_guardar = null;
+		[Widget] Gtk.Button button_imprimir = null;
+		[Widget] Gtk.Button button_salir = null;
+		[Widget] Gtk.Button button_resumen = null;
+		[Widget] Gtk.TreeView lista_abonos = null;
+		[Widget] Gtk.Statusbar statusbar_abonos = null;
+		[Widget] Gtk.ComboBox combobox_formapago = null;
 		
 		public string nombrebd;
 		public int PidPaciente = 0;

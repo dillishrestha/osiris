@@ -1211,8 +1211,7 @@ namespace osiris
 								
 											strsql4 =											 
 											"UPDATE hscmty_erp_cobros_deta SET numero_factura = '"+entry_numero_factura.Text.Trim()+"' "+
-											"WHERE hscmty_erp_cobros_deta.folio_de_servicio IN ('"+numeros_folios_seleccionado.Trim()+"') ;";
-				 							
+											"WHERE hscmty_erp_cobros_deta.folio_de_servicio IN ('"+numeros_folios_seleccionado.Trim()+"') ;";				 							
 				 							
 											comando4.CommandText = strsql4;
 											

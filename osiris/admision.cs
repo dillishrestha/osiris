@@ -35,9 +35,7 @@ using Npgsql;
 using System.Data;
 using Gtk;
 using Glade;
-using Gnome;
 using System.Collections;
-using GtkSharp;
 
 namespace osiris
 {
@@ -45,29 +43,29 @@ namespace osiris
 	{
 		// Boton general para salir de las ventanas
 		// Todas la ventanas en glade este boton debe estra declarado identico
-		[Widget] Gtk.Button button_salir;
+		[Widget] Gtk.Button button_salir = null;
 		
 		// Declarando ventana principal de Admision
-		[Widget] Gtk.Window menu_admision;
-		[Widget] Gtk.Button button_reg_admision;
-		[Widget] Gtk.Button button_reportes_regadmin;
-		[Widget] Gtk.Button button_imprime_prot;
-		[Widget] Gtk.Button button_paquetes;
-		[Widget] Gtk.Button button_presupuestos;
-		[Widget] Gtk.Button button_cambia_datos_paciente;
-		[Widget] Gtk.Button button_cancela_folios;
-		[Widget] Gtk.Button button_reportes_de_ocupacion;
-		[Widget] Gtk.Button button_rpt_pacientes_alta;
-		[Widget] Gtk.Button button_rpt_presupuestos;
-		[Widget] Gtk.Button button_rpt_separacion_paquetes;
-		[Widget] Gtk.Button button_asignacion_habitacion;	
-		[Widget] Gtk.Button button_separa_folio;	
+		[Widget] Gtk.Window menu_admision = null;
+		[Widget] Gtk.Button button_reg_admision = null;
+		[Widget] Gtk.Button button_reportes_regadmin = null;
+		[Widget] Gtk.Button button_imprime_prot = null;
+		[Widget] Gtk.Button button_paquetes = null;
+		[Widget] Gtk.Button button_presupuestos = null;
+		[Widget] Gtk.Button button_cambia_datos_paciente = null;
+		[Widget] Gtk.Button button_cancela_folios = null;
+		[Widget] Gtk.Button button_reportes_de_ocupacion = null;
+		[Widget] Gtk.Button button_rpt_pacientes_alta = null;
+		[Widget] Gtk.Button button_rpt_presupuestos = null;
+		[Widget] Gtk.Button button_rpt_separacion_paquetes = null;
+		[Widget] Gtk.Button button_asignacion_habitacion = null;	
+		[Widget] Gtk.Button button_separa_folio = null;	
 				
 		//Ventana de cancelacion de folios
-		[Widget] Gtk.Window cancelador_folios;
-		[Widget] Gtk.Button button_cancelar;
-		[Widget] Gtk.Entry entry_folio;
-		[Widget] Gtk.Entry entry_motivo;
+		[Widget] Gtk.Window cancelador_folios = null;
+		[Widget] Gtk.Button button_cancelar = null;
+		[Widget] Gtk.Entry entry_folio = null;
+		[Widget] Gtk.Entry entry_motivo = null;
 		
 		// Pregunta de Admision
 		//[Widget] Gtk.Window nuevo_paciente_si_no;
@@ -121,17 +119,17 @@ namespace osiris
 		
 		void on_button_reportes_de_ocupacion_clicked(object sender, EventArgs args)
 		{
-			new osiris.reporte_pacientes_sin_alta(nombrebd);
+			//new osiris.reporte_pacientes_sin_alta(nombrebd);
 		}
 		
 		void on_button_rpt_separacion_paquetes_clicked(object sender, EventArgs args)
 		{
-			new osiris.rpt_separacion_de_paquetes(nombrebd);
+			//new osiris.rpt_separacion_de_paquetes(nombrebd);
 		}
 		
 		void on_button_separa_folio_clicked(object sender, EventArgs a)
 		{
-			new osiris.reservacion_de_paquetes(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,0,false);
+			//new osiris.reservacion_de_paquetes(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,0,false);
 		}
 		
 		void on_button_asignacion_habitacion_clicked(object sender, EventArgs args)
@@ -173,7 +171,7 @@ namespace osiris
 		public void on_button_paquetes_clicked(object sender, EventArgs a)
 		{
 			//if (LoginEmpleado =="DOLIVARES" || LoginEmpleado =="HVARGAS" || LoginEmpleado =="JPENA" ||  LoginEmpleado == "N000169"){
- 				new osiris.paquetes_cirugias (LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
+ 				//new osiris.paquetes_cirugias (LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
 			/*}else{
 				MessageDialog msgBox = new MessageDialog (MyWin,DialogFlags.Modal,
 				MessageType.Error,ButtonsType.Ok,"No esta autorizado para esta opcion...");
@@ -184,7 +182,7 @@ namespace osiris
 		public void on_button_imprime_prot_clicked (object sender, EventArgs a)
 		{
 			string folioserv = "";
-			new osiris.impr_doc_pacientes(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,folioserv,2);
+			//new osiris.impr_doc_pacientes(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,folioserv,2);
 		}
 		
 		void on_button_reportes_regadmin_clicked (object sender, EventArgs args)
@@ -194,22 +192,22 @@ namespace osiris
 		
 		void on_button_cambia_datos_paciente_clicked (object sender, EventArgs args)
 		{
-			new osiris.cambia_paciente(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
+			//new osiris.cambia_paciente(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
 		}
 		
 		void on_button_rpt_pacientes_alta_clicked(object sender, EventArgs args)
 		{
-			new osiris.reporte_pacientes_con_alta(nombrebd);
+			//new osiris.reporte_pacientes_con_alta(nombrebd);
 		}
 				
 		void on_button_presupuestos_clicked (object sender, EventArgs args)
 		{
-			new osiris.presupuestos_cirugias(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
+			//new osiris.presupuestos_cirugias(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
 		}
 		
 		void on_button_rpt_presupuestos_clicked(object sender, EventArgs args)
 		{
-			new osiris.rpt_presupuesto(nombrebd);
+			//new osiris.rpt_presupuesto(nombrebd);
 		}
 		
 		void on_button_cancela_folios_clicked(object sender, EventArgs args)

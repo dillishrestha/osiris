@@ -32,45 +32,43 @@ using Npgsql;
 using System.Data;
 using Gtk;
 using Glade;
-using Gnome;
 using System.Collections;
-using GtkSharp;
 
 namespace osiris
 {	
 	public class asignacion_de_habitacion
 	{       		
-       	[Widget] Gtk.Window asignacion_habitacion;
-		[Widget] Gtk.Button button_salir;
-		[Widget] Gtk.Button button_aceptar;
-		[Widget] Gtk.Button button_cancelar;
-		[Widget] Gtk.Button button_reporte;
-        [Widget] Gtk.Button button_lista_espera;
-		[Widget] Gtk.Entry entry_id_habitacion;
-		[Widget] Gtk.Entry entry_area;
-		[Widget] Gtk.Entry entry_folio;
-		[Widget] Gtk.Entry entry_numero_habitacion;
-		[Widget] Gtk.Entry entry_descripcion;
-		[Widget] Gtk.Entry entry_paciente;
-		[Widget] Gtk.Entry entry_dia_ocupacion;
-		[Widget] Gtk.Entry entry_mes_ocupacion;
-		[Widget] Gtk.Entry entry_anno_ocupacion;
-		[Widget] Gtk.TreeView treeview_habitaciones;
-		[Widget] Gtk.CheckButton checkbutton_todas;
-        [Widget] Gtk.ComboBox combobox_area; 		
-		[Widget] Gtk.CheckButton check_cambio_habitacion;
-		[Widget] Gtk.CheckButton check_lista_espera;
+       	[Widget] Gtk.Window asignacion_habitacion = null;
+		[Widget] Gtk.Button button_salir = null;
+		[Widget] Gtk.Button button_aceptar = null;
+		[Widget] Gtk.Button button_cancelar = null;
+		[Widget] Gtk.Button button_reporte = null;
+        [Widget] Gtk.Button button_lista_espera = null;
+		[Widget] Gtk.Entry entry_id_habitacion = null;
+		[Widget] Gtk.Entry entry_area = null;
+		[Widget] Gtk.Entry entry_folio = null;
+		[Widget] Gtk.Entry entry_numero_habitacion = null;
+		[Widget] Gtk.Entry entry_descripcion = null;
+		[Widget] Gtk.Entry entry_paciente = null;
+		[Widget] Gtk.Entry entry_dia_ocupacion = null;
+		[Widget] Gtk.Entry entry_mes_ocupacion = null;
+		[Widget] Gtk.Entry entry_anno_ocupacion = null;
+		[Widget] Gtk.TreeView treeview_habitaciones = null;
+		[Widget] Gtk.CheckButton checkbutton_todas = null;
+        [Widget] Gtk.ComboBox combobox_area = null; 		
+		[Widget] Gtk.CheckButton check_cambio_habitacion = null;
+		[Widget] Gtk.CheckButton check_lista_espera = null;
         	/////// Elementos Busqueda de paciente\\\\\\\\
-		[Widget] Gtk.Window busca_paciente;
-		[Widget] Gtk.TreeView lista_de_Pacientes;
-		[Widget] Gtk.TreeView lista_de_Pacientes_asignados;
-		[Widget] Gtk.Button button_nuevo_paciente;
-		[Widget] Gtk.RadioButton radiobutton_busca_apellido;
-		[Widget] Gtk.RadioButton radiobutton_busca_nombre;
-		[Widget] Gtk.RadioButton radiobutton_busca_expediente;
-		[Widget] Gtk.Entry entry_expresion;
-		[Widget] Gtk.Button button_selecciona;
-		[Widget] Gtk.Button button_buscar_busqueda;		
+		[Widget] Gtk.Window busca_paciente = null;
+		[Widget] Gtk.TreeView lista_de_Pacientes = null;
+		[Widget] Gtk.TreeView lista_de_Pacientes_asignados = null;
+		[Widget] Gtk.Button button_nuevo_paciente = null;
+		[Widget] Gtk.RadioButton radiobutton_busca_apellido = null;
+		[Widget] Gtk.RadioButton radiobutton_busca_nombre = null;
+		[Widget] Gtk.RadioButton radiobutton_busca_expediente = null;
+		[Widget] Gtk.Entry entry_expresion = null;
+		[Widget] Gtk.Button button_selecciona = null;
+		[Widget] Gtk.Button button_buscar_busqueda = null;		
 				
 		public string LoginEmpleado;
 		public string NomEmpleado;
@@ -1271,7 +1269,7 @@ namespace osiris
 
 		void on_reporte_clicked(object sender, EventArgs args)
 		{
-			new osiris.reporte_pacientes_sin_alta(nombrebd);
+			//new osiris.reporte_pacientes_sin_alta(nombrebd);
 		}
 		
 		void on_cierraventanas_clicked(object sender, EventArgs args)

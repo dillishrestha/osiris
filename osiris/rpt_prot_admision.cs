@@ -61,8 +61,8 @@ namespace osiris
 			nombrebd = _nombrebd_;
 			//medico_tratante = medico_tratante_;
 		
-			Gnome.PrintJob    trabajo   = new Gnome.PrintJob (PrintConfig.Default());
-        	Gnome.PrintDialog dialogo   = new Gnome.PrintDialog (trabajo, "PROTOCOLO DE ADMISION", 0);
+			PrintJob trabajo   = new PrintJob (PrintConfig.Default());
+        	PrintDialog dialogo   = new PrintDialog (trabajo, "PROTOCOLO DE ADMISION", 0);
         	int         respuesta = dialogo.Run ();
         
 			if (respuesta == (int) PrintButtons.Cancel) 
@@ -72,7 +72,7 @@ namespace osiris
 				return;
 			}
 
-        	Gnome.PrintContext ctx = trabajo.Context;
+        	PrintContext ctx = trabajo.Context;
         
         	ComponerPagina(ctx, trabajo); 
 

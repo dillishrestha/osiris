@@ -37,9 +37,7 @@ using Npgsql;
 using System.Data;
 using Gtk;
 using Glade;
-using Gnome;
 using System.Collections;
-using GtkSharp;
 
 namespace osiris
 {	
@@ -47,155 +45,155 @@ namespace osiris
 	{
 		// Boton general para salir de las ventanas
 		// Todas la ventanas en glade este boton debe estra declarado identico
-		[Widget] Gtk.Button button_salir;
+		[Widget] Gtk.Button button_salir = null;
 		
 		// Para todas las busquedas este es el nombre asignado
 		// se declara una vez
-		[Widget] Gtk.Entry entry_expresion;
-		[Widget] Gtk.Button button_selecciona;
+		[Widget] Gtk.Entry entry_expresion = null;
+		[Widget] Gtk.Button button_selecciona = null;
 		
 		/////// Ventana Busqueda de paciente\\\\\\\\
-		[Widget] Gtk.Window busca_paciente;
-		[Widget] Gtk.TreeView lista_de_Pacientes;
-		[Widget] Gtk.Button button_buscar_busqueda;
-		[Widget] Gtk.Button button_nuevo_paciente;
-		[Widget] Gtk.RadioButton radiobutton_busca_apellido;
-		[Widget] Gtk.RadioButton radiobutton_busca_nombre;
-		[Widget] Gtk.RadioButton radiobutton_busca_expediente;
+		[Widget] Gtk.Window busca_paciente = null;
+		[Widget] Gtk.TreeView lista_de_Pacientes = null;
+		[Widget] Gtk.Button button_buscar_busqueda = null;
+		[Widget] Gtk.Button button_nuevo_paciente = null;
+		[Widget] Gtk.RadioButton radiobutton_busca_apellido = null;
+		[Widget] Gtk.RadioButton radiobutton_busca_nombre = null;
+		[Widget] Gtk.RadioButton radiobutton_busca_expediente = null;
 						
 		private TreeStore treeViewEngineBusca;
 		
 		//// Ventana Busqueda de Empresas \\\\\\
-		[Widget] Gtk.Window busca_empresas;
-		[Widget] Gtk.TreeView lista_empresas;
-		[Widget] Gtk.Button button_busca_empresas;
+		[Widget] Gtk.Window busca_empresas = null;
+		[Widget] Gtk.TreeView lista_empresas = null;
+		[Widget] Gtk.Button button_busca_empresas = null;
 		
 		private ListStore treeViewEngineBuscaEmpresa;
 		
 		////// Ventana de Registro y Admision \\\\\\\\
-		[Widget] Gtk.Window registro;
+		[Widget] Gtk.Window registro = null;
 		
 		// Widget de Combos
-		[Widget] Gtk.ComboBox combobox_estado_civil;
-		[Widget] Gtk.ComboBox combobox_tipo_paciente;
-		[Widget] Gtk.ComboBox combobox_aseguradora;
-		[Widget] Gtk.ComboBox combobox_municipios;
-		[Widget] Gtk.ComboBox combobox_estado;
-		[Widget] Gtk.ComboBox combobox_tipo_busqueda;
+		[Widget] Gtk.ComboBox combobox_estado_civil = null;
+		[Widget] Gtk.ComboBox combobox_tipo_paciente = null;
+		[Widget] Gtk.ComboBox combobox_aseguradora = null;
+		[Widget] Gtk.ComboBox combobox_municipios = null;
+		[Widget] Gtk.ComboBox combobox_estado = null;
+		[Widget] Gtk.ComboBox combobox_tipo_busqueda = null;
 						
 		// Widget butons
-		[Widget] Gtk.Button button_buscar_paciente;
+		[Widget] Gtk.Button button_buscar_paciente = null;
 				
-		[Widget] Gtk.Button button_grabar;
-		[Widget] Gtk.CheckButton checkbutton_modificar;
+		[Widget] Gtk.Button button_grabar = null;
+		[Widget] Gtk.CheckButton checkbutton_modificar = null;
 		//[Widget] Gtk.Button button_eliminar;
 		//[Widget] Gtk.Button button_limpiar;
 		//[Widget] Gtk.Button button_tarjeta_descuento;
-		[Widget] Gtk.Button button_responsable;
-		[Widget] Gtk.Button button_imprimir_protocolo;
-		[Widget] Gtk.Button button_cancelar_pid;
+		[Widget] Gtk.Button button_responsable = null;
+		[Widget] Gtk.Button button_imprimir_protocolo = null;
+		[Widget] Gtk.Button button_cancelar_pid = null;
 		
-		[Widget] Gtk.Button button_admision;
-		[Widget] Gtk.Button button_contrata_paquete;
+		[Widget] Gtk.Button button_admision = null;
+		[Widget] Gtk.Button button_contrata_paquete = null;
 		//[Widget] Gtk.Button button_imprimir;
 								
 		// Widget Entry, radio y check
-		[Widget] Gtk.Entry entry_nombre_1;
-		[Widget] Gtk.Entry entry_nombre_2;
-		[Widget] Gtk.Entry entry_apellido_paterno;
-		[Widget] Gtk.Entry entry_apellido_materno;
-		[Widget] Gtk.Entry entry_dia_nacimiento;
-		[Widget] Gtk.Entry entry_mes_nacimiento;
-		[Widget] Gtk.Entry entry_ano_nacimiento;
-		[Widget] Gtk.Entry entry_rfc;
-		[Widget] Gtk.Entry entry_curp;
+		[Widget] Gtk.Entry entry_nombre_1 = null;
+		[Widget] Gtk.Entry entry_nombre_2 = null;
+		[Widget] Gtk.Entry entry_apellido_paterno = null;
+		[Widget] Gtk.Entry entry_apellido_materno = null;
+		[Widget] Gtk.Entry entry_dia_nacimiento = null;
+		[Widget] Gtk.Entry entry_mes_nacimiento = null;
+		[Widget] Gtk.Entry entry_ano_nacimiento = null;
+		[Widget] Gtk.Entry entry_rfc = null;
+		[Widget] Gtk.Entry entry_curp = null;
 		
-		[Widget] Gtk.Entry entry_ocupacion;		
-		[Widget] Gtk.Entry entry_empresa;
-		[Widget] Gtk.Button button_lista_empresas;
+		[Widget] Gtk.Entry entry_ocupacion = null;		
+		[Widget] Gtk.Entry entry_empresa = null;
+		[Widget] Gtk.Button button_lista_empresas = null;
 		
-		[Widget] Gtk.RadioButton radiobutton_masculino;
-		[Widget] Gtk.RadioButton radiobutton_femenino;
+		[Widget] Gtk.RadioButton radiobutton_masculino = null;
+		[Widget] Gtk.RadioButton radiobutton_femenino = null;
 		
-		[Widget] Gtk.Entry entry_email;
+		[Widget] Gtk.Entry entry_email = null;
 		
 		// Direccion de Paciente
-		[Widget] Gtk.Entry entry_calle;
-		[Widget] Gtk.Entry entry_numero;
-		[Widget] Gtk.Entry entry_colonia;
-		[Widget] Gtk.Entry entry_CP;
-		[Widget] Gtk.Entry entry_telcasa;
-		[Widget] Gtk.Entry entry_teloficina;
-		[Widget] Gtk.Entry entry_telcelular;
+		[Widget] Gtk.Entry entry_calle = null;
+		[Widget] Gtk.Entry entry_numero = null;
+		[Widget] Gtk.Entry entry_colonia = null;
+		[Widget] Gtk.Entry entry_CP = null;
+		[Widget] Gtk.Entry entry_telcasa = null;
+		[Widget] Gtk.Entry entry_teloficina = null;
+		[Widget] Gtk.Entry entry_telcelular = null;
 		
-		[Widget] Gtk.CheckButton checkbutton_consulta;
-		[Widget] Gtk.Entry entry_medico_cm;
-		[Widget] Gtk.Button button_busca_medicos;
-		[Widget] Gtk.Entry entry_esp_med_cm; 
-		[Widget] Gtk.CheckButton checkbutton_laboratorio;
-		[Widget] Gtk.CheckButton checkbutton_imagenologia;
-		[Widget] Gtk.CheckButton checkbutton_rehabilitacion;
-		[Widget] Gtk.CheckButton checkbutton_checkup;
-		[Widget] Gtk.CheckButton checkbutton_otros_servicios;
-		[Widget] Gtk.Entry entry_observacion_otros_serv;
+		[Widget] Gtk.CheckButton checkbutton_consulta = null;
+		[Widget] Gtk.Entry entry_medico_cm = null;
+		[Widget] Gtk.Button button_busca_medicos = null;
+		[Widget] Gtk.Entry entry_esp_med_cm = null; 
+		[Widget] Gtk.CheckButton checkbutton_laboratorio = null;
+		[Widget] Gtk.CheckButton checkbutton_imagenologia = null;
+		[Widget] Gtk.CheckButton checkbutton_rehabilitacion = null;
+		[Widget] Gtk.CheckButton checkbutton_checkup = null;
+		[Widget] Gtk.CheckButton checkbutton_otros_servicios = null;
+		[Widget] Gtk.Entry entry_observacion_otros_serv = null;
 				
-		[Widget] Gtk.TreeView treeview_servicios;
+		[Widget] Gtk.TreeView treeview_servicios = null;
 		
-		[Widget] Gtk.Entry entry_pid_paciente;
-		[Widget] Gtk.Entry entry_folio_paciente;
-		[Widget] Gtk.Entry entry_folio_interno_dep;
+		[Widget] Gtk.Entry entry_pid_paciente = null;
+		[Widget] Gtk.Entry entry_folio_paciente = null;
+		[Widget] Gtk.Entry entry_folio_interno_dep = null;
 		
-		[Widget] Gtk.Statusbar statusbar_registro;
+		[Widget] Gtk.Statusbar statusbar_registro = null;
 				
-		[Widget] Gtk.Button button_separa_folio;
+		[Widget] Gtk.Button button_separa_folio = null;
 		// Ventana de Internar al paciente en urgencias, hospital, etc.
-		[Widget] Gtk.Window admision;
-		[Widget] Gtk.Button button_graba_admision;
-		[Widget] Gtk.Entry entry_pid_admision;
-		[Widget] Gtk.Entry entry_paciente_admision;
-		[Widget] Gtk.Entry entry_descrip_cirugia;
+		[Widget] Gtk.Window admision = null;
+		[Widget] Gtk.Button button_graba_admision = null;
+		[Widget] Gtk.Entry entry_pid_admision = null;
+		[Widget] Gtk.Entry entry_paciente_admision = null;
+		[Widget] Gtk.Entry entry_descrip_cirugia = null;
 		//[Widget] Gtk.Button button_busca_cirugia;
-		[Widget] Gtk.Entry entry_diag_admision;
-		[Widget] Gtk.Entry entry_id_medico;
-		[Widget] Gtk.Entry entry_nombre_medico;
-		[Widget] Gtk.Entry entry_especialidad_medico;
-		[Widget] Gtk.Entry entry_tel_medico;
-		[Widget] Gtk.Entry entry_cedula_medico;
-		[Widget] Gtk.Button button_busca_medico;
-		[Widget] Gtk.ComboBox combobox_tipo_admision;
-		[Widget] Gtk.ComboBox combobox_tipo_cirugia;
+		[Widget] Gtk.Entry entry_diag_admision = null;
+		[Widget] Gtk.Entry entry_id_medico = null;
+		[Widget] Gtk.Entry entry_nombre_medico = null;
+		[Widget] Gtk.Entry entry_especialidad_medico = null;
+		[Widget] Gtk.Entry entry_tel_medico = null;
+		[Widget] Gtk.Entry entry_cedula_medico = null;
+		[Widget] Gtk.Button button_busca_medico = null;
+		[Widget] Gtk.ComboBox combobox_tipo_admision = null;
+		[Widget] Gtk.ComboBox combobox_tipo_cirugia = null;
 				
 		// Ventana Busqueda de cirugias
-		[Widget] Gtk.Window busca_cirugias;
-		[Widget] Gtk.TreeView lista_cirugia;
-		[Widget] Gtk.Button button_llena_cirugias;
+		[Widget] Gtk.Window busca_cirugias = null;
+		[Widget] Gtk.TreeView lista_cirugia = null;
+		[Widget] Gtk.Button button_llena_cirugias = null;
 		
 		// Ventana Busqueda de Medicos
-		[Widget] Gtk.Window buscador_medicos;
+		[Widget] Gtk.Window buscador_medicos = null;
 		//[Widget] Gtk.TreeView lista_medicos;
 		//[Widget] Gtk.Button button_llena_medicos;
-		[Widget] Gtk.TreeView lista_de_medicos;
+		[Widget] Gtk.TreeView lista_de_medicos = null;
 		private TreeStore treeViewEngineMedicos;
 		
 		// Ventana de datos del responsable de la cuenta
-		[Widget] Gtk.Window datos_del_responsable;
-		[Widget] Gtk.Button button_graba_responsable;
-		[Widget] Gtk.Button button_paciente_responsable;
-		[Widget] Gtk.Button button_misma_direccion;
-		[Widget] Gtk.Button button_asignacion_habitacion;
+		[Widget] Gtk.Window datos_del_responsable = null;
+		[Widget] Gtk.Button button_graba_responsable = null;
+		[Widget] Gtk.Button button_paciente_responsable = null;
+		[Widget] Gtk.Button button_misma_direccion = null;
+		[Widget] Gtk.Button button_asignacion_habitacion = null;
 		
-		[Widget] Gtk.Entry entry_nombre_responsable;
-		[Widget] Gtk.Entry entry_telefono_responsable;
-		[Widget] Gtk.Entry entry_direcc_responsable;
-		[Widget] Gtk.Entry entry_empresa_responsable;
-		[Widget] Gtk.Entry entry_aseguradora_responsable;
-		[Widget] Gtk.Entry entry_ocupacion_responsable;
-		[Widget] Gtk.Entry entry_dire_emp_responsable;
-		[Widget] Gtk.Entry entry_poliza_responsable;
-		[Widget] Gtk.Entry entry_certificado_acta;
-		[Widget] Gtk.Entry entry_tel_emp_responsable;
+		[Widget] Gtk.Entry entry_nombre_responsable = null;
+		[Widget] Gtk.Entry entry_telefono_responsable = null;
+		[Widget] Gtk.Entry entry_direcc_responsable = null;
+		[Widget] Gtk.Entry entry_empresa_responsable = null;
+		[Widget] Gtk.Entry entry_aseguradora_responsable = null;
+		[Widget] Gtk.Entry entry_ocupacion_responsable = null;
+		[Widget] Gtk.Entry entry_dire_emp_responsable = null;
+		[Widget] Gtk.Entry entry_poliza_responsable = null;
+		[Widget] Gtk.Entry entry_certificado_acta = null;
+		[Widget] Gtk.Entry entry_tel_emp_responsable = null;
 		
-		[Widget] Gtk.ComboBox combobox_parent_responsable;
+		[Widget] Gtk.ComboBox combobox_parent_responsable = null;
 		
 		// Declaracion de variables publicas
 		public int PidPaciente = 0;		 // Toma la actualizacion del pid del paciente
@@ -332,7 +330,7 @@ namespace osiris
 		
 		void on_button_asignacion_habitacion_clicked(object sender, EventArgs args)
 		{
-		   new osiris.asignacion_de_habitacion(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,0);
+		   //new osiris.asignacion_de_habitacion(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,0);
 		}
 		
 		void on_button_nuevo_paciente_clicked(object sender, EventArgs args)
@@ -779,7 +777,7 @@ namespace osiris
 	    // Imprime protocolo de admision
 		void on_button_imprimir_protocolo_clicked (object sender, EventArgs args)
 		{
-			new osiris.impr_doc_pacientes(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,entry_folio_paciente.Text,1);//,nombmedico);
+			//new osiris.impr_doc_pacientes(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,entry_folio_paciente.Text,1);//,nombmedico);
 		}
 	    
 		// busco un paciente pantalla de ingreso de nuevo paciente
@@ -2214,7 +2212,7 @@ namespace osiris
 			TreeIter iterSelected;
 			if (this.treeview_servicios.Selection.GetSelected(out model, out iterSelected)){
 				folioservicio = int.Parse((string) model.GetValue(iterSelected, 4));
-				new osiris.reservacion_de_paquetes(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,folioservicio,true);
+				//new osiris.reservacion_de_paquetes(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,folioservicio,true);
 			}	//treeViewEngine,descripcion_cirugia
 		}
 

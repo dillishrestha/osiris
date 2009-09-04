@@ -41,50 +41,47 @@ namespace osiris
 	{
 		
 		//nuevos productos
-		[Widget] Gtk.Window alta_producto;
-		[Widget] Gtk.Button button_nuevo_producto;
-		[Widget] Gtk.CheckButton checkbutton_nuevo_producto;
-		[Widget] Gtk.Entry entry_tipo_unidad;
-		[Widget] Gtk.Entry entry_embalaje;
-		[Widget] Gtk.Entry entry_codigo;
-		[Widget] Gtk.Entry entry_cod_barras;
-		[Widget] Gtk.Button button_busca_provedor;
-		[Widget] Gtk.Button button_guarda;
-		[Widget] Gtk.Button button_editar;		
-		[Widget] Gtk.Button button_salir;
-		[Widget] Gtk.Entry entry_provedor;
-		[Widget] Gtk.Entry entry_producto;
-		[Widget] Gtk.Entry entry_precio;
-		[Widget] Gtk.TreeView lista_productos_agregados;
-		[Widget] Gtk.Button button_agrega;
-		[Widget] Gtk.Button button_quita;
-		[Widget] Gtk.Button button_aprobar;
-		[Widget] Gtk.Entry entry_clave;
-		[Widget] Gtk.TreeView lista_precios_proveedor;
-		[Widget] Gtk.CheckButton checkbutton_aprobar;
-		[Widget] Gtk.Entry entry_id_provedor;
-		[Widget] Gtk.Label label_titulo_cantidad;
-		[Widget] Gtk.ComboBox combobox_tipo_unidad;
-		[Widget] Gtk.Statusbar statusbar_alta_producto;
-		
-		
-
+		[Widget] Gtk.Window alta_producto = null;
+		[Widget] Gtk.Button button_nuevo_producto = null;
+		[Widget] Gtk.CheckButton checkbutton_nuevo_producto = null;
+		[Widget] Gtk.Entry entry_tipo_unidad = null;
+		[Widget] Gtk.Entry entry_embalaje = null;
+		[Widget] Gtk.Entry entry_codigo = null;
+		[Widget] Gtk.Entry entry_cod_barras = null;
+		[Widget] Gtk.Button button_busca_provedor = null;
+		[Widget] Gtk.Button button_guarda = null;
+		[Widget] Gtk.Button button_editar = null;		
+		[Widget] Gtk.Button button_salir = null;
+		[Widget] Gtk.Entry entry_provedor = null;
+		[Widget] Gtk.Entry entry_producto = null;
+		[Widget] Gtk.Entry entry_precio = null;
+		[Widget] Gtk.TreeView lista_productos_agregados = null;
+		[Widget] Gtk.Button button_agrega = null;
+		[Widget] Gtk.Button button_quita = null;
+		[Widget] Gtk.Button button_aprobar = null;
+		[Widget] Gtk.Entry entry_clave = null;
+		[Widget] Gtk.TreeView lista_precios_proveedor = null;
+		[Widget] Gtk.CheckButton checkbutton_aprobar = null;
+		[Widget] Gtk.Entry entry_id_provedor = null;
+		[Widget] Gtk.Label label_titulo_cantidad = null;
+		[Widget] Gtk.ComboBox combobox_tipo_unidad = null;
+		[Widget] Gtk.Statusbar statusbar_alta_producto = null;
 		
 		/////// Ventana Busqueda de productos\\\\\\\\
-		[Widget] Gtk.TreeView lista_de_producto;
-		[Widget] Gtk.RadioButton radiobutton_nombre;
-		[Widget] Gtk.RadioButton radiobutton_codigo;
-		[Widget] Gtk.Label label_cantidad;
+		[Widget] Gtk.TreeView lista_de_producto = null;
+		[Widget] Gtk.RadioButton radiobutton_nombre = null;
+		[Widget] Gtk.RadioButton radiobutton_codigo = null;
+		[Widget] Gtk.Label label_cantidad = null;
 		//[Widget] Gtk.Button button_agrega_extra;
-		[Widget] Gtk.Entry entry_cantidad_aplicada;
+		[Widget] Gtk.Entry entry_cantidad_aplicada = null;
 		
 		//provedores
-		[Widget] Gtk.Window catalogo_proveedore;
-		[Widget] Gtk.Button button_buscar_busqueda;
-		[Widget] Gtk.Entry entry_expresion;
-		[Widget] Gtk.Button button_selecciona;
+		[Widget] Gtk.Window catalogo_proveedore  = null;
+		[Widget] Gtk.Button button_buscar_busqueda = null;
+		[Widget] Gtk.Entry entry_expresion = null;
+		[Widget] Gtk.Button button_selecciona = null;
 			
-		[Widget] Gtk.TreeView lista_de_busqueda;
+		[Widget] Gtk.TreeView lista_de_busqueda = null;
 		
 		public string LoginEmpleado;
 		public string NomEmpleado;

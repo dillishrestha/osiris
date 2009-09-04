@@ -70,7 +70,7 @@ namespace osiris
     	{
     	 	nombrebd = nombrebd_;
     	 	requisicion = requisicion_;
-    		status_requisicion = status_requisicion;
+    		status_requisicion = status_requisicion_;
     		fecha_solicitud = fecha_solicitud_;
     		dia_requerida = dia_requerida_;
     		mes_requerida = mes_requerida_;

@@ -196,8 +196,8 @@ namespace osiris
 		
 		public historia_clinica(string nombre_paciente_,string pid_paciente_,string edad_,string LoginEmp, string NomEmpleado_, string AppEmpleado_, string ApmEmpleado_, string _nombrebd_,string fecha_admision_,string fecha_nacimiento_ ) 
 		{
-			nombre_paciente = nombre_paciente;
-			pid_paciente = pid_paciente;
+			nombre_paciente = nombre_paciente_;
+			pid_paciente = pid_paciente_;
 			edad = edad_;
 			LoginEmpleado = LoginEmp;
 			nombrebd = _nombrebd_;

@@ -32,9 +32,6 @@ using Npgsql;
 using System.Data;
 using Gtk;
 using Glade;
-using Gnome;
-using System.Collections;
-using GtkSharp;
 
 namespace osiris
 {
@@ -283,7 +280,7 @@ namespace osiris
 		
 		void on_imprime_orden_clicked(object sender, EventArgs args)
 		{
-			new osiris.rpt_orden_compras(this.nombrebd,this.lista_productos_a_comprar,this.treeViewEngineProductosaComprar);
+			//new osiris.rpt_orden_compras(this.nombrebd,this.lista_productos_a_comprar,this.treeViewEngineProductosaComprar);
 		}	
 		
 		void onComboBoxChanged_tipo_admision (object sender, EventArgs args)

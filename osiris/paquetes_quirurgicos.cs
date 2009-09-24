@@ -1,4 +1,4 @@
-///////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////
 // project created on 24/10/2006 at 10:20 a
 // Hospital Santa Cecilia
 // Monterrey - Mexico
@@ -32,9 +32,7 @@ using Npgsql;
 using System.Data;
 using Gtk;
 using Glade;
-using Gnome;
 using System.Collections;
-using GtkSharp;
 
 namespace osiris
 {
@@ -154,7 +152,7 @@ namespace osiris
 		
 		public string LoginEmpleado;
 			
-		public string connectionString = "Server=localhost;" +
+		public string connectionString = "Server=192.168.1.148;" +
 						"Port=5432;" +
 						 "User ID=admin;" +
 						"Password=1qaz2wsx;";
@@ -297,8 +295,9 @@ namespace osiris
 							"existente para que el  se muestre \n"+"o no a pulsado el boton ''Seleccionar''");
 				msgBoxError.Run ();				msgBoxError.Destroy();
 			}else{
-				new paquetes_reporte (int.Parse(entry_id_cirugia.Text),entry_cirugia.Text," ",nombrebd,"paquetes",
+				/*new paquetes_reporte (int.Parse(entry_id_cirugia.Text),entry_cirugia.Text," ",nombrebd,"paquetes",
 					entry_deposito_minimo.Text.Trim(),entry_dias_internamiento.Text.Trim(),"","","","","",true,"0");   // rpt_proc_cobranza.cs
+					*/
 			}
 		}
 		
@@ -312,8 +311,9 @@ namespace osiris
 							"existente para que el  se muestre \n"+"o no a pulsado el boton ''Seleccionar''");
 				msgBoxError.Run ();				msgBoxError.Destroy();
 			}else{
-				new paquetes_reporte (int.Parse(entry_id_cirugia.Text),entry_cirugia.Text," ",nombrebd,"paquetes",
+				/*new paquetes_reporte (int.Parse(entry_id_cirugia.Text),entry_cirugia.Text," ",nombrebd,"paquetes",
 					entry_deposito_minimo.Text.Trim(),entry_dias_internamiento.Text.Trim(),"","","","","",false,"0");   // rpt_proc_cobranza.cs
+					*/
 			}
 		}
 		

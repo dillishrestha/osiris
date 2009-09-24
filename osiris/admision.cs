@@ -79,7 +79,7 @@ namespace osiris
 		public string ApmEmpleado;
 		public string nombrebd;
 		
-		public string connectionString = "Server=localhost;" +
+		public string connectionString = "Server=192.168.1.148;" +
         	    	                     "Port=5432;" +
             	    	                 "User ID=admin;" +
                 	    	             "Password=1qaz2wsx;";
@@ -129,7 +129,7 @@ namespace osiris
 		
 		void on_button_separa_folio_clicked(object sender, EventArgs a)
 		{
-			//new osiris.reservacion_de_paquetes(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,0,false);
+			new osiris.reservacion_de_paquetes(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,0,false);
 		}
 		
 		void on_button_asignacion_habitacion_clicked(object sender, EventArgs args)
@@ -170,13 +170,13 @@ namespace osiris
 		
 		public void on_button_paquetes_clicked(object sender, EventArgs a)
 		{
-			//if (LoginEmpleado =="DOLIVARES" || LoginEmpleado =="HVARGAS" || LoginEmpleado =="JPENA" ||  LoginEmpleado == "N000169"){
- 				//new osiris.paquetes_cirugias (LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
-			/*}else{
+			if (LoginEmpleado =="DOLIVARES"){
+ 				new osiris.paquetes_cirugias (LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
+			}else{
 				MessageDialog msgBox = new MessageDialog (MyWin,DialogFlags.Modal,
 				MessageType.Error,ButtonsType.Ok,"No esta autorizado para esta opcion...");
 				msgBox.Run();			msgBox.Destroy();
-			}*/
+			}
 		}
 				
 		public void on_button_imprime_prot_clicked (object sender, EventArgs a)
@@ -192,7 +192,7 @@ namespace osiris
 		
 		void on_button_cambia_datos_paciente_clicked (object sender, EventArgs args)
 		{
-			//new osiris.cambia_paciente(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
+			new osiris.cambia_paciente(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);  // cambia_pacientes.cs
 		}
 		
 		void on_button_rpt_pacientes_alta_clicked(object sender, EventArgs args)
@@ -202,7 +202,7 @@ namespace osiris
 				
 		void on_button_presupuestos_clicked (object sender, EventArgs args)
 		{
-			//new osiris.presupuestos_cirugias(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
+			new osiris.presupuestos_cirugias(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
 		}
 		
 		void on_button_rpt_presupuestos_clicked(object sender, EventArgs args)

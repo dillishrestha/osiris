@@ -4,7 +4,6 @@ using Npgsql;
 using System.Data;
 using Glade;
 using System.Collections;
-using Cairo;
 
 namespace osiris
 {
@@ -77,7 +76,7 @@ namespace osiris
 		
 		protected Gtk.Window MyWinError;
 		
-		string connectionString = "Server=localhost;" +
+		string connectionString = "Server=192.168.1.148;" +
             	                         "Port=5432;" +
                 	                     "User ID=admin;" +
                     	                 "Password=1qaz2wsx;";

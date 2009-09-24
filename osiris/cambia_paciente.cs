@@ -36,9 +36,7 @@ using Npgsql;
 using System.Data;
 using Gtk;
 using Glade;
-using Gnome;
 using System.Collections;
-using GtkSharp;
 
 namespace osiris
 {
@@ -112,7 +110,7 @@ namespace osiris
 		public string nombrebd;
 		public string nomcatalogo;
 		public string busqueda = "";
-		public string connectionString = "Server=localhost;" +
+		public string connectionString = "Server=192.168.1.148;" +
 									"Port=5432;" +
 									 "User ID=admin;" +
 									"Password=1qaz2wsx;";		

@@ -139,7 +139,7 @@ namespace osiris
     	
     	public string tipobusqueda = "AND hscmty_his_medicos.nombre1_medico LIKE '";
     	
-    	public string connectionString = "Server=localhost;" +
+    	public string connectionString = "Server=192.168.1.148;" +
             	                          "Port=5432;" +
             	                          "User ID=admin;" +
             	                          "Password=1qaz2wsx;";
@@ -255,6 +255,9 @@ namespace osiris
 								// llamando a los eventos
 								
 					 			button_registro_admision.Clicked += new EventHandler( on_button_registro_admision_clicked );
+								button_compras.Clicked += new EventHandler(on_button_compras_clicked);
+								button_almacen.Clicked += new EventHandler(on_button_almacen_clicked);
+								
 								/*
 					 			button_cargos_hospital.Clicked += new EventHandler( on_button_cargos_hospital_clicked );
 					 			button_cargos_quirofano.Clicked += new EventHandler( on_button_cargos_quirofano_clicked );
@@ -266,12 +269,12 @@ namespace osiris
 					 			button_terapia_nino.Clicked += new EventHandler( on_button_terapia_pediatrica_clicked );
 					 			button_terapia_neonatal.Clicked += new EventHandler(on_button_terapia_neonatal_clicked);
 					 			button_ginecologia.Clicked += new EventHandler(on_button_ginecologia_clicked);
-					 			button_almacen.Clicked += new EventHandler(on_button_almacen_clicked);
+					 			
 					 			button_caja.Clicked += new EventHandler( on_button_caja_clicked );
 					 			button_medicos.Clicked += new EventHandler(on_button_medicos_clicked);
 					 			button_agredecimientos.Clicked += new EventHandler(on_button_agredecimientos_clicked);
 					 			button_costos.Clicked += new EventHandler(on_button_costos_clicked);
-					 			button_compras.Clicked += new EventHandler(on_button_compras_clicked);
+					 			
 					 			button_herramientas.Clicked += new EventHandler(on_button_herramientas_clicked);
 					 			button_cambio_contraseña.Clicked += new EventHandler(on_button_cambio_contraseña_clicked);
 					 			button_recursos_humanos.Clicked += new EventHandler(on_button_recursos_humanos_clicked);
@@ -405,7 +408,8 @@ namespace osiris
 		
 		public void on_button_almacen_clicked(object sender, EventArgs args)
 		{
-			//new osiris.almacen(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
+			// almacen.cs
+			new osiris.almacen(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
 		} 
 		
 		// llamada de modulo de caja caja.cs	
@@ -433,7 +437,7 @@ namespace osiris
 		
 		void on_button_compras_clicked(object sender, EventArgs args)
 		{
-			//new osiris.compras_consultas(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
+			new osiris.compras_consultas(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
 		}
 		
 		void on_button_farmacia_clicked(object sender, EventArgs args)

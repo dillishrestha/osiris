@@ -43,6 +43,17 @@
     <File name="asignacion_habitacion.cs" subtype="Code" buildaction="Compile" />
     <File name="nutricion.glade" subtype="Code" buildaction="EmbedAsResource" />
     <File name="rpt_rep1_admision.cs" subtype="Code" buildaction="Compile" />
+    <File name="cambia_paciente.cs" subtype="Code" buildaction="Compile" />
+    <File name="reservacion_de_paquetes.cs" subtype="Code" buildaction="Compile" />
+    <File name="presupuestos_quirurgicos.cs" subtype="Code" buildaction="Compile" />
+    <File name="paquetes_quirurgicos.cs" subtype="Code" buildaction="Compile" />
+    <File name="compras.cs" subtype="Code" buildaction="Compile" />
+    <File name="ordenes_de_compras.cs" subtype="Code" buildaction="Compile" />
+    <File name="catalogos.cs" subtype="Code" buildaction="Compile" />
+    <File name="almacen.cs" subtype="Code" buildaction="Compile" />
+    <File name="inv_sub_almacen.cs" subtype="Code" buildaction="Compile" />
+    <File name="almacen_inventario.cs" subtype="Code" buildaction="Compile" />
+    <File name="requisicion_compras.cs" subtype="Code" buildaction="Compile" />
   </Contents>
   <References>
     <ProjectReference type="Gac" localcopy="True" refto="gdk-sharp, Version=2.10.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
@@ -51,9 +62,9 @@
     <ProjectReference type="Gac" localcopy="True" refto="gtk-sharp, Version=2.10.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
     <ProjectReference type="Gac" localcopy="True" refto="Mono.Cairo, Version=2.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756" />
     <ProjectReference type="Gac" localcopy="True" refto="Npgsql, Version=2.0.0.0, Culture=neutral, PublicKeyToken=5d8b90d52f46fda7" />
-    <ProjectReference type="Gac" localcopy="True" refto="pango-sharp, Version=2.10.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
     <ProjectReference type="Gac" localcopy="True" refto="System, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
     <ProjectReference type="Gac" localcopy="True" refto="System.Data, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+    <ProjectReference type="Gac" localcopy="True" refto="pango-sharp, Version=2.10.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
   </References>
   <DeploymentInformation strategy="File" />
 </Project>

@@ -34,9 +34,6 @@ using Npgsql;
 using System.Data;
 using Gtk;
 using Glade;
-using Gnome;
-using System.Collections;
-using GtkSharp;
 
 namespace osiris
 {
@@ -96,17 +93,18 @@ namespace osiris
 		
 		void on_button_inventario_clicked(object sender, EventArgs args)
 		{
+			// almacen_inventario.cs
 			new osiris.inventario_almacen(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
 		}
 		
 		void on_button_captura_fact_orden_comp_clicked(object sender, EventArgs args)
 		{
-			new osiris.factura_orden_compra(LoginEmpleado,NomEmpleado+" "+AppEmpleado+" "+ApmEmpleado,nombrebd);
+			//new osiris.factura_orden_compra(LoginEmpleado,NomEmpleado+" "+AppEmpleado+" "+ApmEmpleado,nombrebd);
 		}
 
 		void on_button_autorizacion_medicamento_clicked(object sender, EventArgs args)
 		{
-			 new osiris.orden_compra_urgencias(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,0,"",0,"");
+			 //new osiris.orden_compra_urgencias(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,0,"",0,"");
 		}
 		
 		/*void on_button_soli_material_clicked(object sender, EventArgs args)
@@ -116,29 +114,29 @@ namespace osiris
 
 		void on_button_inv_subalmacen_clicked(object sender, EventArgs args)
 		{
-			new osiris.inventario_sub_almacen(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,2,"ALMACEN 2PISO",1);
+			//new osiris.inventario_sub_almacen(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,2,"ALMACEN 2PISO",1);
 		}
 		
 		void on_button_requi_materiales_clicked(object sender, EventArgs args)
 		{
 			int [] array_idtipoadmisiones = { 0, 3, 18, 205 };
-			new osiris.requisicion_materiales_compras(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,"ALMACEN GENERAL",205,"AND agrupacion IN ('NUT','OTR','MD1','ALM') ",array_idtipoadmisiones,0);
+			//new osiris.requisicion_materiales_compras(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,"ALMACEN GENERAL",205,"AND agrupacion IN ('NUT','OTR','MD1','ALM') ",array_idtipoadmisiones,0);
 			//new osiris.requisicion_materiales_compras(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,"COMPRAS",17,"AND agrupacion IN ('NUT','OTR','MD1','ALM') ",array_idtipoadmisiones,0);
 		}
 		
 		void on_button_productos_aplicados_clicked(object sender, EventArgs args)
 		{
-			new movimientos_productos_paciente(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,0);
+			//new movimientos_productos_paciente(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,0);
 		}
 		
 		void on_button_envios_subalmacenes_clicked(object sender, EventArgs args)
 		{
-			new osiris.envio_de_materiales_subalmacenes(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
+			//new osiris.envio_de_materiales_subalmacenes(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
 		}
 		
 		void on_button_traspaso_subalmacenes_clicked(object sender, EventArgs args)
 		{
-			new osiris.inventario_sub_almacen(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,2,"ALMACEN 2PISO",3);
+			//new osiris.inventario_sub_almacen(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,2,"ALMACEN 2PISO",3);
 		}
 		
 		void on_cierraventanas_clicked (object sender, EventArgs args)

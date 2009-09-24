@@ -34,9 +34,6 @@ using Npgsql;
 using System.Data;
 using Gtk;
 using Glade;
-using Gnome;
-using System.Collections;
-using GtkSharp;
 
 namespace osiris
 {
@@ -104,16 +101,6 @@ namespace osiris
 		public string tiporeporte = "STOCK";
 		public string titulo = "REPORTE DE STOCK HOSPITALIZACION";
 		
-		// Declaracion de fuentes tipo Bitstream Vera sans
-		public Gnome.Font fuente6 = Gnome.Font.FindClosest("Bitstream Vera Sans", 6);
-		public Gnome.Font fuente8 = Gnome.Font.FindClosest("Bitstream Vera Sans", 8);
-		public Gnome.Font fuente12 = Gnome.Font.FindClosest("Bitstream Vera Sans", 12);
-		public Gnome.Font fuente10 = Gnome.Font.FindClosest("Bitstream Vera Sans", 10);
-		public Gnome.Font fuente11 = Gnome.Font.FindClosest("Bitstream Vera Sans", 11);
-		public Gnome.Font fuente36 = Gnome.Font.FindClosest("Bitstream Vera Sans", 36);
-		public Gnome.Font fuente7 = Gnome.Font.FindClosest("Bitstream Vera Sans", 7);
-		public Gnome.Font fuente9 = Gnome.Font.FindClosest("Bitstream Vera Sans", 9);
-		
 		//Declaracion de ventana de error
 		protected Gtk.Window MyWinError;
 		protected Gtk.Window MyWin;
@@ -154,8 +141,8 @@ namespace osiris
 			inventario_sub_almacenes.Show();
 			Console.WriteLine(descsubalmacen+"   almacen");
 			button_salir.Clicked += new EventHandler(on_cierraventanas_clicked);
-			button_imprimir.Clicked += new EventHandler(imprime_reporte_stock);
-			button_imprime_traspaso.Clicked += new EventHandler(imprime_reporte_traspaso);
+			//button_imprimir.Clicked += new EventHandler(imprime_reporte_stock);
+			//button_imprime_traspaso.Clicked += new EventHandler(imprime_reporte_traspaso);
 			button_actualizar.Clicked += new EventHandler(actualizar);
 			checkbutton_sin_stock.Clicked += new EventHandler(on_checkbutton_articulos_sin_stock_clicked);
 			checkbutton_articulos_con_stock.Clicked += new EventHandler(on_checkbutton_articulos_con_stock_clicked);
@@ -1316,7 +1303,7 @@ namespace osiris
 				this.entry_numero_de_traspaso.Text = "0";
 		}	
 		
-		
+		/*
 		void imprime_reporte_traspaso(object sender, EventArgs args)
 		{
 			titulo = "REPORTE DE ENVIO ENTRE SUB-ALMACENES";
@@ -1588,7 +1575,7 @@ namespace osiris
 	        	filas=690;
 	        }
 		}
-		
+		*/
 		void llenado_grupo(string tipo_, string descripciongrupo_,int idgrupoproducto_ )
 		{
 			combobox_grupo.Clear();

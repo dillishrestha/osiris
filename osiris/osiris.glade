@@ -1431,6 +1431,18 @@ Acceso Sistema Osiris
 	  <property name="fill">True</property>
 	</packing>
       </child>
+
+      <child>
+	<widget class="GtkStatusbar" id="statusbar5">
+	  <property name="visible">True</property>
+	  <property name="has_resize_grip">True</property>
+	</widget>
+	<packing>
+	  <property name="padding">0</property>
+	  <property name="expand">False</property>
+	  <property name="fill">False</property>
+	</packing>
+      </child>
     </widget>
   </child>
 </widget>
@@ -1907,6 +1919,18 @@ Acceso Sistema Osiris
 	  <property name="padding">0</property>
 	  <property name="expand">True</property>
 	  <property name="fill">True</property>
+	</packing>
+      </child>
+
+      <child>
+	<widget class="GtkStatusbar" id="statusbar4">
+	  <property name="visible">True</property>
+	  <property name="has_resize_grip">True</property>
+	</widget>
+	<packing>
+	  <property name="padding">0</property>
+	  <property name="expand">False</property>
+	  <property name="fill">False</property>
 	</packing>
       </child>
     </widget>

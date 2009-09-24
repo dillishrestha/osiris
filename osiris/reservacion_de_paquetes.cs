@@ -16,9 +16,7 @@ using Npgsql;
 using System.Data;
 using Gtk;
 using Glade;
-using Gnome;
 using System.Collections;
-using GtkSharp;
 
 namespace osiris
 {	
@@ -83,7 +81,7 @@ namespace osiris
 		public string entry_apellido_paterno;
 		public string entry_apellido_materno;
 		
-		public string connectionString = "Server=localhost;" +
+		public string connectionString = "Server=192.168.1.148;" +
 						"Port=5432;" +
 						 "User ID=admin;" +
 						"Password=1qaz2wsx;";
@@ -845,7 +843,7 @@ namespace osiris
 				msgBoxError.Run ();					msgBoxError.Destroy();
 			
 			}else{ 
-				new osiris.rpt_reservacion_paquete(entry_dia1.Text,entry_mes1.Text,entry_anno1.Text,entry_nombre_paciente.Text,entry_paq_pres.Text,entry_precio_paquete.Text,this.NomEmpleado,this.AppEmpleado,this.ApmEmpleado,this.NomEmpleado,this.nombrebd);
+				//new osiris.rpt_reservacion_paquete(entry_dia1.Text,entry_mes1.Text,entry_anno1.Text,entry_nombre_paciente.Text,entry_paq_pres.Text,entry_precio_paquete.Text,this.NomEmpleado,this.AppEmpleado,this.ApmEmpleado,this.NomEmpleado,this.nombrebd);
 			}
 		}
 			

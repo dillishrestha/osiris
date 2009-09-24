@@ -34,9 +34,6 @@ using Npgsql;
 using System.Data;
 using Gtk;
 using Glade;
-using Gnome;
-using System.Collections;
-using GtkSharp;
 
 namespace osiris
 {
@@ -266,7 +263,7 @@ namespace osiris
 				msgBoxError.Run ();					msgBoxError.Destroy();
 			
 			}else{ 
-		  		new osiris.rpt_requisicion_compras(this.nombrebd,entry_requisicion.Text,entry_status_requisicion.Text,entry_fecha_solicitud.Text,entry_dia_requerida.Text,entry_mes_requerida.Text,entry_ano_requerida.Text,entry_observaciones.Text,entry_nombre_prodrequisado.Text,entry_totalitems_productos.Text,this.lista_requisicion_productos,this.treeViewEngineRequisicion);
+		  		//new osiris.rpt_requisicion_compras(this.nombrebd,entry_requisicion.Text,entry_status_requisicion.Text,entry_fecha_solicitud.Text,entry_dia_requerida.Text,entry_mes_requerida.Text,entry_ano_requerida.Text,entry_observaciones.Text,entry_nombre_prodrequisado.Text,entry_totalitems_productos.Text,this.lista_requisicion_productos,this.treeViewEngineRequisicion);
 			}
 		}
 		

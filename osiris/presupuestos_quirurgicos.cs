@@ -34,9 +34,7 @@ using Npgsql;
 using System.Data;
 using Gtk;
 using Glade;
-using Gnome;
 using System.Collections;
-using GtkSharp;
 
 namespace osiris
 {
@@ -164,23 +162,23 @@ namespace osiris
 		public bool enviado = false;
 		
 		// Sumas Totales para los calculos
-		public float subtotal_al_15;
-		public float subtotal_al_0;
-		public float total_iva;
-		public float sub_total;
-		public float totaldescuento;
+		float subtotal_al_15;
+		float subtotal_al_0;
+		float total_iva;
+		float sub_total;
+		float totaldescuento;
 		
-		public bool aplico_cargos = false;
+		bool aplico_cargos = false;
 		
-		public string LoginEmpleado;
-			
-		public string connectionString = "Server=localhost;" +
+		string LoginEmpleado;
+		
+		string connectionString = "Server=192.168.1.148;" +
 						"Port=5432;" +
 						 "User ID=admin;" +
 						"Password=1qaz2wsx;";
-		public string nombrebd;
+		string nombrebd;
 				
-		public CellRendererText cel_descripcion;
+		CellRendererText cel_descripcion;
 		
 		//Declaracion de ventana de error
 		protected Gtk.Window MyWinError;
@@ -336,9 +334,9 @@ namespace osiris
 				comando.CommandText = "SELECT id_presupuesto,hscmty_his_tipo_cirugias.id_tipo_cirugia,enviado,notas, "+
 									"hscmty_his_tipo_cirugias.id_especialidad,descripcion_cirugia,descripcion_especialidad, "+
 									"hscmty_his_presupuestos_enca.id_medico,medico_provisional, "+
-									"to_char(hscmty_his_presupuestos_enca.deposito_minimo,99999999) AS depominimo, "+
-									"to_char(hscmty_his_presupuestos_enca.dias_internamiento,99999999) AS diasinternamiento, "+
-									"to_char(hscmty_his_presupuestos_enca.precio_convenido,99999999) AS precioconvenido, "+
+									"to_char(hscmty_his_presupuestos_enca.deposito_minimo,'99999999') AS depominimo, "+
+									"to_char(hscmty_his_presupuestos_enca.dias_internamiento,'99999999') AS diasinternamiento, "+
+									"to_char(hscmty_his_presupuestos_enca.precio_convenido,'99999999') AS precioconvenido, "+
 									"hscmty_his_presupuestos_enca.telefono_medico,hscmty_his_presupuestos_enca.telefono,hscmty_his_presupuestos_enca.fax_presupuesto, "+
 									"nombre1_medico,nombre2_medico,apellido_paterno_medico,apellido_materno_medico "+
 									"FROM hscmty_his_presupuestos_enca,hscmty_his_tipo_cirugias,hscmty_his_tipo_especialidad,hscmty_his_medicos "+
@@ -346,7 +344,7 @@ namespace osiris
 					            	"hscmty_his_presupuestos_enca.id_tipo_cirugia = hscmty_his_tipo_cirugias.id_tipo_cirugia "+
 					            	"AND hscmty_his_presupuestos_enca.id_medico = hscmty_his_medicos.id_medico "+
 					            	"AND hscmty_his_tipo_cirugias.id_especialidad = hscmty_his_tipo_especialidad.id_especialidad  "+
-					            	"AND hscmty_his_presupuestos_enca.id_presupuesto = '"+(string)  idpresupuesto +"' ;";
+					            	"AND hscmty_his_presupuestos_enca.id_presupuesto = '"+(string)  idpresupuesto.ToString() +"' ;";
 				//Console.WriteLine(comando.CommandText.ToString());				
 				NpgsqlDataReader lector = comando.ExecuteReader ();
 				
@@ -531,10 +529,11 @@ namespace osiris
 							"existente para que el  se muestre \n"+"o no a pulsado el boton ''Seleccionar''");
 				msgBoxError.Run ();			msgBoxError.Destroy();
 			}else{
-				new paquetes_reporte (int.Parse(entry_id_presupuesto.Text),entry_cirugia.Text,entry_medico.Text,
+				/*new paquetes_reporte (int.Parse(entry_id_presupuesto.Text),entry_cirugia.Text,entry_medico.Text,
 					nombrebd,"presupuestos",entry_deposito_minimo.Text.Trim(),entry_dias_internamiento.Text.Trim(),
 					entry_tel_medico.Text.Trim(),entry_tel_opcional.Text.Trim(),entry_fax.Text.Trim(),
 					entry_id_presupuesto.Text.Trim(),entry_notas.Text.Trim().ToUpper(),true,"0");   // rpt_proc_cobranza.cs
+				*/
 			}
 		}
 		
@@ -546,10 +545,11 @@ namespace osiris
 							"existente para que el  se muestre \n"+"o no a pulsado el boton ''Seleccionar''");
 				msgBoxError.Run ();			msgBoxError.Destroy();
 			}else{
-				new paquetes_reporte (int.Parse(entry_id_presupuesto.Text),entry_cirugia.Text,entry_medico.Text,
+				/*new paquetes_reporte (int.Parse(entry_id_presupuesto.Text),entry_cirugia.Text,entry_medico.Text,
 					nombrebd,"presupuestos",entry_deposito_minimo.Text.Trim(),entry_dias_internamiento.Text.Trim(),
 					entry_tel_medico.Text.Trim(),entry_tel_opcional.Text.Trim(),entry_fax.Text.Trim(),
 					entry_id_presupuesto.Text.Trim(),entry_notas.Text.Trim().ToUpper(),false,"0");   // rpt_proc_cobranza.cs
+				*/
 			}
 		}
 		

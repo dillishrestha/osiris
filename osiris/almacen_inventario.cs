@@ -33,9 +33,6 @@ using Npgsql;
 using System.Data;
 using Gtk;
 using Glade;
-using Gnome;
-using System.Collections;
-using GtkSharp;
 
 namespace osiris
 {
@@ -833,8 +830,8 @@ namespace osiris
 				msgBoxError.Run ();
 				msgBoxError.Destroy();
 			}else{
-				new osiris.inventario_almacen_reporte (int.Parse(entry_id_almacen.Text.ToString()),entry_almacen.Text,mesinventario,entry_ano_inventario.Text,
-													LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
+				//new osiris.inventario_almacen_reporte (int.Parse(entry_id_almacen.Text.ToString()),entry_almacen.Text,mesinventario,entry_ano_inventario.Text,
+				//									LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
 			}
 		}
 				

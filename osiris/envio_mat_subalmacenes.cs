@@ -35,9 +35,6 @@ using Npgsql;
 using System.Data;
 using Gtk;
 using Glade;
-using Gnome;
-using System.Collections;
-using GtkSharp;
 
 namespace osiris
 {
@@ -219,7 +216,7 @@ namespace osiris
 		
 		void on_button_rpt_surtido_clicked(object sender, EventArgs args)
 		{
-			new osiris.rpt_envio_almacen(this.nombrebd,this.idsubalmacen);
+			//new osiris.rpt_envio_almacen(this.nombrebd,this.idsubalmacen);
 		}
 		
 		void on_button_busca_producto_clicked(object sender, EventArgs args)

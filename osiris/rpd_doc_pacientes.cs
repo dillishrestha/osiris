@@ -33,9 +33,6 @@ using Npgsql;
 using System.Data;
 using Gtk;
 using Glade;
-using Gnome;
-using System.Collections;
-using GtkSharp;
 
 namespace osiris
 {
@@ -954,7 +951,8 @@ namespace osiris
 				msgBoxError.Run ();
 				msgBoxError.Destroy();}
 			  else{
-				new protocolo_admision(PidPaciente,int.Parse(entry_folio_servicio.Text),nombrebd,entry_doctor.Text.ToUpper().Trim());}   // rpt_prot_admision.cs
+				//new protocolo_admision(PidPaciente,int.Parse(entry_folio_servicio.Text),nombrebd,entry_doctor.Text.ToUpper().Trim()); // rpt_prot_admision.cs
+			}   
 	   	}
 	   	
 		void on_button_cons_informado_clicked (object sender, EventArgs args)
@@ -968,7 +966,7 @@ namespace osiris
 				msgBoxError.Run ();
 				msgBoxError.Destroy();
 			}else{
-				new conse_info(PidPaciente,int.Parse(entry_folio_servicio.Text),nombrebd,this.entry_med_trat.Text.ToUpper().Trim(),this.entry_cirugia.Text.ToUpper().Trim());   // rpt_cons_informado.cs
+				//new conse_info(PidPaciente,int.Parse(entry_folio_servicio.Text),nombrebd,this.entry_med_trat.Text.ToUpper().Trim(),this.entry_cirugia.Text.ToUpper().Trim());   // rpt_cons_informado.cs
 			}
 		}
 		
@@ -982,7 +980,7 @@ namespace osiris
 				msgBoxError.Run ();
 				msgBoxError.Destroy();
 			}else{
-				new con_prest(PidPaciente,int.Parse(entry_folio_servicio.Text),nombrebd,entry_doctor.Text);   // rpt_cons_informado.cs
+				//new con_prest(PidPaciente,int.Parse(entry_folio_servicio.Text),nombrebd,entry_doctor.Text);   // rpt_cons_informado.cs
 			}
 		}
 		

@@ -33,9 +33,7 @@ using Npgsql;
 using System.Data;
 using Gtk;
 using Glade;
-using Gnome;
 using System.Collections;
-using GtkSharp;
 
 namespace osiris
 {
@@ -43,7 +41,7 @@ namespace osiris
 	{
 		// Boton general para salir de las ventanas
 		// Todas la ventanas en glade este boton debe estra declarado identico
-		[Widget] Gtk.Button button_salir;
+		[Widget] Gtk.Button button_salir = null;
 		
 		// Para todas las busquedas este es el nombre asignado
 		// se declara una vez
@@ -530,6 +528,7 @@ namespace osiris
 			if ((int) folioservicio > 0){ 
 				TreeIter iter; TreeModel model;
 				if (lista_de_servicios.Selection.GetSelected (out model, out iter)){
+					
 					new osiris.resultados_lab(false,LoginEmpleado,NomEmpleados,
 											(string)lista_de_servicios.Model.GetValue (iter,2),		// Id del producto seleccionado
 											(string) lista_de_servicios.Model.GetValue (iter,18),    // id de la secuencia
@@ -542,6 +541,7 @@ namespace osiris
 											(string) lista_de_servicios.Model.GetValue (iter,6),
 											this.entry_doctor.Text.Trim(),
 											(string) lista_de_servicios.Model.GetValue (iter,0));
+					
 				}else{
 					MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,MessageType.Info,ButtonsType.Close, "Seleccione un estudio para ver sus parametros");
 					msgBoxError.Run ();	msgBoxError.Destroy();
@@ -895,11 +895,9 @@ namespace osiris
 			radiobutton_defuncion.Clicked += new EventHandler(on_radiobutton_defuncion_clicked);
 			button_acepta_alta.Clicked += new EventHandler(on_button_acepta_alta_clicked);
 			// Sale de la ventana
-			button_salir.Clicked += new EventHandler(on_cierraventanas_clicked);
-			
+			button_salir.Clicked += new EventHandler(on_cierraventanas_clicked);			
 		}
-		
-		
+				
 		
 		void on_button_hoja_cargos_clicked(object sender, EventArgs args)
 		{
@@ -951,26 +949,29 @@ namespace osiris
 						"AND to_char(hscmty_erp_cobros_deta.fechahora_creacion,'MM') <= '"+entry_mes2.Text+"' "+
 						"AND to_char(hscmty_erp_cobros_deta.fechahora_creacion,'dd') >= '"+entry_dia1.Text+"' "+
 						"AND to_char(hscmty_erp_cobros_deta.fechahora_creacion,'dd') <= '"+entry_dia2.Text+"' ";
-			}	   
+			}
+			/*
 			new hoja_cargos (PidPaciente,this.folioservicio,nombrebd,
 						entry_fecha_admision.Text,entry_fechahora_alta.Text,entry_nombre_paciente.Text,
 						entry_telefono_paciente.Text,entry_doctor.Text,entry_tipo_paciente.Text,
 						entry_aseguradora.Text,entry_edad.Text,entry_fecha_nacimiento.Text,dir_pac,
 						entry_cirugia.Text,entry_aseguradora.Text,id_tipopaciente,descripinternamiento,NomEmpleado,
 						AppEmpleado,ApmEmpleado,LoginEmpleado,query,idtipointernamiento);   // rpt_hoja_de_cargos.cs
-						
+			*/			
 			rango_de_fecha.Destroy();
 		}
 		
 		void on_button_notas_de_cargos_clicked(object sender, EventArgs args)
 		{
 			Console.WriteLine("NOTAS DE CARGOS");
+			/*
 			new osiris.notas_de_cargos (PidPaciente,this.folioservicio,nombrebd,
 						entry_fecha_admision.Text,entry_fechahora_alta.Text,entry_nombre_paciente.Text,
 						entry_telefono_paciente.Text,entry_doctor.Text,entry_tipo_paciente.Text,
 						entry_aseguradora.Text,entry_edad.Text,entry_fecha_nacimiento.Text,dir_pac,
 						entry_cirugia.Text,entry_aseguradora.Text,id_tipopaciente,"Hospitalizacion",NomEmpleado,
 						AppEmpleado,ApmEmpleado,LoginEmpleado,"");   // rpt_hoja_de_cargos.cs
+			*/
 		}
 		
 		void on_radiobutton_mejoria_clicked(object sender, EventArgs args)

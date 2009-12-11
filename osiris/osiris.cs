@@ -139,7 +139,7 @@ namespace osiris
     	
     	public string tipobusqueda = "AND hscmty_his_medicos.nombre1_medico LIKE '";
     	
-    	public string connectionString = "Server=192.168.1.148;" +
+    	public string connectionString = "Server=localhost;" +
             	                          "Port=5432;" +
             	                          "User ID=admin;" +
             	                          "Password=1qaz2wsx;";
@@ -248,7 +248,7 @@ namespace osiris
 								gxml.Autoconnect (this);
 								menuprincipal.Show();
 					 			
-								//hscmtylogo.Pixbuf = new Gdk.Pixbuf("/opt/osiris/img/hsc_logo_menu1.png");
+								hscmtylogo.Pixbuf = new Gdk.Pixbuf("soghis_osiris.png");
 					 					 											
 								verificapermisos(accesoHIS,accesoERP,accesoGENERAL,autorizaHIS,autorizaERP,autorizaGENERAL);
 												 
@@ -257,11 +257,14 @@ namespace osiris
 					 			button_registro_admision.Clicked += new EventHandler( on_button_registro_admision_clicked );
 								button_compras.Clicked += new EventHandler(on_button_compras_clicked);
 								button_almacen.Clicked += new EventHandler(on_button_almacen_clicked);
+								button_recursos_humanos.Clicked += new EventHandler(on_button_recursos_humanos_clicked);
+								button_caja.Clicked += new EventHandler(on_button_caja_clicked );
+								button_costos.Clicked += new EventHandler(on_button_costos_clicked);
+								button_cargos_urgencia.Clicked += new EventHandler( on_button_cargos_urgencia_clicked );
 								
 								/*
 					 			button_cargos_hospital.Clicked += new EventHandler( on_button_cargos_hospital_clicked );
-					 			button_cargos_quirofano.Clicked += new EventHandler( on_button_cargos_quirofano_clicked );
-					 			button_cargos_urgencia.Clicked += new EventHandler( on_button_cargos_urgencia_clicked );
+					 			button_cargos_quirofano.Clicked += new EventHandler( on_button_cargos_quirofano_clicked );					 			
 					 			button_endoscopia.Clicked += new EventHandler(on_button_endoscopia_clicked);
 					 			button_laboratorio.Clicked += new EventHandler( on_button_laboratorio_clicked );
 					 			button_imagenologia.Clicked += new EventHandler( on_button_imagenologia_clicked );
@@ -270,14 +273,12 @@ namespace osiris
 					 			button_terapia_neonatal.Clicked += new EventHandler(on_button_terapia_neonatal_clicked);
 					 			button_ginecologia.Clicked += new EventHandler(on_button_ginecologia_clicked);
 					 			
-					 			button_caja.Clicked += new EventHandler( on_button_caja_clicked );
 					 			button_medicos.Clicked += new EventHandler(on_button_medicos_clicked);
 					 			button_agredecimientos.Clicked += new EventHandler(on_button_agredecimientos_clicked);
-					 			button_costos.Clicked += new EventHandler(on_button_costos_clicked);
-					 			
+					 							 			
 					 			button_herramientas.Clicked += new EventHandler(on_button_herramientas_clicked);
 					 			button_cambio_contraseña.Clicked += new EventHandler(on_button_cambio_contraseña_clicked);
-					 			button_recursos_humanos.Clicked += new EventHandler(on_button_recursos_humanos_clicked);
+					 			
 					 			button_farmacia.Clicked += new EventHandler(on_button_farmacia_clicked);
 					 			button_ocupacion_hscmty.Clicked += new EventHandler(on_button_ocupacion_hscmty_clicked);
 					 			button_nutricion.Clicked += new EventHandler(on_button_nutricion_clicked);
@@ -362,7 +363,7 @@ namespace osiris
 	
 		public void on_button_cargos_urgencia_clicked (object sender, EventArgs args)
 		{
-			//new osiris.urgencia(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
+			new osiris.urgencia(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
 		}
 		
 		public void on_button_endoscopia_clicked (object sender, EventArgs args)
@@ -415,13 +416,13 @@ namespace osiris
 		// llamada de modulo de caja caja.cs	
 		public void on_button_caja_clicked (object sender, EventArgs args)
 		{
-			//new osiris.tesoreria_menu(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
+			new osiris.tesoreria(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
 		}
 		
 		public void on_button_costos_clicked (object sender, EventArgs args)
 		{	
 			// new osiris.nuevos_prod(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
-			//new osiris.costos_consultas(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
+			new osiris.costos_consultas(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
 		}
 		
 		void on_button_herramientas_clicked (object sender, EventArgs args)
@@ -432,7 +433,7 @@ namespace osiris
 		
 		void on_button_recursos_humanos_clicked(object sender, EventArgs args)
 		{
-			//new osiris.recursoshumanos(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);//}
+			new osiris.recursoshumanos(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);//}
 		}
 		
 		void on_button_compras_clicked(object sender, EventArgs args)

@@ -35,10 +35,6 @@ using Npgsql;
 using System.Data;
 using Gtk;
 using Glade;
-using Gnome;
-using System.Collections;
-using GtkSharp;
-
 
 namespace osiris
 {
@@ -119,8 +115,7 @@ namespace osiris
 		private TreeStore treeViewEngineBusca2;
 		private TreeStore treeViewEngineAutorizados;
 		private TreeStore treeViewEngineproveedores;
-		public ListStore store2;
-		
+		public ListStore store2;		
 		
 		//public bool checkbutton_nuevo;
 		public int idmedico = 1;
@@ -256,9 +251,7 @@ namespace osiris
 			
 			statusbar_autorizacion_compra.Pop(0);
 			statusbar_autorizacion_compra.Push(1, "login: "+LoginEmpleado+"  |Usuario: "+NomEmpleado+" "+AppEmpleado+" "+ApmEmpleado);
-			statusbar_autorizacion_compra.HasResizeGrip = false;
-			
-			
+			statusbar_autorizacion_compra.HasResizeGrip = false;			
 		}
 		
 		[GLib.ConnectBefore ()]   	  // Esto es indispensable para que funcione    

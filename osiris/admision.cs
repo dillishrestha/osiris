@@ -79,7 +79,7 @@ namespace osiris
 		public string ApmEmpleado;
 		public string nombrebd;
 		
-		public string connectionString = "Server=192.168.1.148;" +
+		public string connectionString = "Server=localhost;" +
         	    	                     "Port=5432;" +
             	    	                 "User ID=admin;" +
                 	    	             "Password=1qaz2wsx;";
@@ -182,7 +182,7 @@ namespace osiris
 		public void on_button_imprime_prot_clicked (object sender, EventArgs a)
 		{
 			string folioserv = "";
-			//new osiris.impr_doc_pacientes(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,folioserv,2);
+			new osiris.impr_doc_pacientes(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,folioserv,2);
 		}
 		
 		void on_button_reportes_regadmin_clicked (object sender, EventArgs args)

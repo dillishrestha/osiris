@@ -33,9 +33,6 @@ using Npgsql;
 using System.Data;
 using Gtk;
 using Glade;
-using Gnome;
-using System.Collections;
-using GtkSharp;
 
 namespace osiris
 {
@@ -155,7 +152,7 @@ namespace osiris
 		
 		void on_button_movtotal_producto_clicked (object sender, EventArgs args)
 		{
-			new osiris.consulta_mensual_productos(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
+			//new osiris.consulta_mensual_productos(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
 		}
 		
 		void on_button_catalogo_productos_clicked (object sender, EventArgs args)
@@ -169,12 +166,12 @@ namespace osiris
 		
 		void on_button_button_farmacia_clicked(object sender, EventArgs args)
 		{
-			new osiris.rpt_compras_farmacia(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
+			//new osiris.rpt_compras_farmacia(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
 		}
 		
 		void on_button_costeo_procedimiento_clicked(object sender, EventArgs args)
 		{
-			new osiris.costeo_productos(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
+			//new osiris.costeo_productos(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
 		}
 		
 		void on_button_productos_aplicados_clicked(object sender, EventArgs args)
@@ -771,11 +768,13 @@ namespace osiris
 		
 		void on_button_imprimir_clicked(object sender, EventArgs args)
 		{
+			/*
 			new osiris.lista_de_precios(this.nombrebd, this.treeViewEnginegrupos, this.treeViewEnginegrupos1, this.treeViewEnginegrupos2,
 										lista_grupo, lista_grupo1, lista_grupo2,
 										this.checkbutton_especiales.Active,this.checkbutton_tarjeta.Active,
 										id_tipopaciente,id_empresa,id_aseguradora,radiobutton_desglosado.Active,radiobutton_con_iva.Active,
 										radiobutton_sin_iva.Active,entry_empresa_aseguradora);
+			*/
 		}
 		
 		// cierra ventanas emergentes
@@ -1383,7 +1382,7 @@ namespace osiris
 		{
 			TreeIter iter;
 			if (this.treeViewEngineResumen.GetIterFirst (out iter)){
-				new osiris.imprime_consumo_productos (this.lista_resumen_productos,this.treeViewEngineResumen,this.ano_seleccionado);
+				//new osiris.imprime_consumo_productos (this.lista_resumen_productos,this.treeViewEngineResumen,this.ano_seleccionado);
 			}else{
 				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
 							MessageType.Error, 

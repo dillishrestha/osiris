@@ -31,12 +31,9 @@
 using System;
 using System.IO;
 using Gtk;
-using Gnome;
 using Npgsql;
 using System.Data;
 using Glade;
-using System.Collections;
-using GtkSharp;
 
 namespace osiris
 {

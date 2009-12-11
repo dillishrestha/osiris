@@ -102,7 +102,7 @@ namespace osiris
 		
 		void on_button_alta_productos_de_proveedores_clicked(object sender, EventArgs args)
 		{
-			//new osiris.alta_productos_proveedores(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
+			new osiris.alta_productos_proveedores(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
 		}
 		
 		void on_button_requisicion_materiales_clicked(object sender, EventArgs args)

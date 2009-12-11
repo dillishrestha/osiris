@@ -33,12 +33,9 @@
 using System;
 using System.IO;
 using Gtk;
-using Gnome;
 using Npgsql;
 using System.Data;
 using Glade;
-using System.Collections;
-using GtkSharp;
 
 namespace osiris
 {
@@ -113,7 +110,7 @@ namespace osiris
 		//Declaracion de ventana de error
 		protected Gtk.Window MyWinError;
 		
-		public validacion_cargos_extras (string folio_,string _nombrebd_)
+		public validacion_cargos_extras(string folio_,string _nombrebd_)
 		{
 			nombrebd = _nombrebd_;
 			folioservicio = folio_;
@@ -590,7 +587,7 @@ namespace osiris
 		
 		void imprime_reporte(object sender, EventArgs args)
 		{
-			new osiris.rpt_cargos_extras(nombrebd,treeViewEngineCargos,treeview_cargos_extras);
+			//new osiris.rpt_cargos_extras(nombrebd,treeViewEngineCargos,treeview_cargos_extras);
 		}
 		
 		void treeview_cargos_extras1()
@@ -806,9 +803,12 @@ namespace osiris
 	//
 	// CLASE PARA IMPRIMIR LOS CARGOS EXTRAS DENTRO DE LOS PROCEDIMIENTOS
 	// 
+	
 	public class rpt_cargos_extras
 	{
+	}
 	
+		/*
 		public string connectionString = "Server=localhost;" +
 	        	    	                     "Port=5432;" +
 	            	    	                 "User ID=admin;" +
@@ -971,6 +971,6 @@ namespace osiris
 			Widget win = (Widget) sender;
 			win.Toplevel.Destroy();
 		}
-	}
+		*/
 }
 		

@@ -34,14 +34,10 @@ using Npgsql;
 using System.Data;
 using Gtk;
 using Glade;
-using Gnome;
-using System.Collections;
-using GtkSharp;
-
 
 namespace osiris
 {
-	public class tesoreria_menu
+	public class tesoreria
 	{
 		// Boton general para salir de las ventanas
 		// Todas la ventanas en glade este boton debe estra declarado identico
@@ -135,7 +131,7 @@ namespace osiris
 		//public string fecha_rango_1;
 		//public string fecha_rango_2;
 		
-		public tesoreria_menu (string LoginEmp_, string NomEmpleado_, string AppEmpleado_, string ApmEmpleado_, string _nombrebd_) 
+		public tesoreria(string LoginEmp_, string NomEmpleado_, string AppEmpleado_, string ApmEmpleado_, string _nombrebd_) 
 		{
 			LoginEmpleado = LoginEmp_;
 			NomEmpleado = NomEmpleado_;
@@ -172,22 +168,22 @@ namespace osiris
 		
 		void on_button_facturador_clicked(object sender, EventArgs args)
 		{
-			new osiris.facturador_tesoreria(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
+			//new osiris.facturador_tesoreria(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
 		}
 		
 		void on_button_clientes_clicked(object sender, EventArgs args)
 		{
-			new osiris.catalogos_generales("cliente",LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
+			//new osiris.catalogos_generales("cliente",LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
 		}
 		
 		void on_button_button_rpt_abonos_clicked(object sender, EventArgs args)
 		{
-			new osiris.reporte_de_abonos(nombrebd);	
+			//new osiris.reporte_de_abonos(nombrebd);	
 		}
 		
 		void on_button_envio_facturas_clicked(object sender, EventArgs args)
 		{
-			new osiris.envio_de_facturas(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
+			//new osiris.envio_de_facturas(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
 		}
 
 		void button_rpt_facturas_pendientes_clicked(object sender, EventArgs args)
@@ -401,7 +397,7 @@ namespace osiris
 			}
 						
 			rango_de_fecha.Destroy();
-			new osiris.rpt_honorario_med_fecha(rango1,rango2,query_fechas,nombrebd,LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,facturados,orden,query_medico);		
+			//new osiris.rpt_honorario_med_fecha(rango1,rango2,query_fechas,nombrebd,LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,facturados,orden,query_medico);		
 			  
 		}
 	
@@ -925,20 +921,20 @@ namespace osiris
 				if (this.pagados == false){			
 					Console.WriteLine("entra");
 					bool pagados = true;
-					new osiris.reporte_porcedimientos_facturados(pagados,rango1,rango2,query_fechas,nombrebd,LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,facturados,orden,query_cliente);
+					//new osiris.reporte_porcedimientos_facturados(pagados,rango1,rango2,query_fechas,nombrebd,LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,facturados,orden,query_cliente);
 				}else{
 					query_fechas =	"AND to_char(hscmty_erp_factura_enca.fechahora_pago_factura,'yyyy-MM-dd') >= '"+entry_ano1.Text+"-"+entry_mes1.Text+"-"+entry_dia1.Text+"' "+
 									"AND to_char(hscmty_erp_factura_enca.fechahora_pago_factura,'yyyy-MM-dd') <= '"+entry_ano2.Text+"-"+entry_mes2.Text+"-"+entry_dia2.Text+"' ";
 										
-					new osiris.reporte_facturas_pagadas(rango1,rango2,query_fechas,nombrebd,LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,facturados,orden,query_cliente,facturas_);
+					//new osiris.reporte_facturas_pagadas(rango1,rango2,query_fechas,nombrebd,LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,facturados,orden,query_cliente,facturas_);
 				}
 			}
 			if (facturados == "NO FACTURADOS"){ 
 					bool pagados = false;
-				new osiris.reporte_porcedimientos_facturados(pagados,rango1,rango2,query_fechas,nombrebd,LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,facturados,"","");
+				//new osiris.reporte_porcedimientos_facturados(pagados,rango1,rango2,query_fechas,nombrebd,LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,facturados,"","");
 			}
 			if (facturados == "CERRADOS"){
-				new osiris.reporte_porcedimientos_cerrados(rango1,rango2,query_fechas,nombrebd,LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,facturados,"","");
+				//new osiris.reporte_porcedimientos_cerrados(rango1,rango2,query_fechas,nombrebd,LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,facturados,"","");
 			}
 		}
 		

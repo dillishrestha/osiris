@@ -30,14 +30,9 @@
 // Objeto		: 
 //////////////////////////////////////////////////////////
 using System;
-using System.IO;
 using Gtk;
-using Gnome;
 using Npgsql;
-using System.Data;
 using Glade;
-using System.Collections;
-using GtkSharp;
 
 namespace osiris
 {
@@ -560,12 +555,13 @@ namespace osiris
 				presupuesto = (string) model.GetValue(iterSelected, 5);
 				paquete = (string) model.GetValue(iterSelected, 6);
 				descripcion = (string) model.GetValue(iterSelected, 7);
-				
+				/*
 				new osiris.comprobante_abono_resumen(tipo_reporte,PidPaciente,folioservicio,nombrebd,
 						fecha_admision,fechahora_alta,nombre_paciente,telefono_paciente,doctor,cirugia,
 						tipo_paciente,id_tipopaciente,aseguradora,edadpac,fecha_nacimiento,dir_pac,
 						empresapac,nombrecajero,LoginEmpleado,monto,fecha,concepto,idcreo,recibo,
 						presupuesto,paquete,this.lista_abonos,this.treeViewEngineabonos,descripcion);
+				*/
 			}
 		}
 		if (tipo_reporte == "resumen")
@@ -578,12 +574,13 @@ namespace osiris
 				presupuesto = "";
 				paquete = "";
 				descripcion = "";
-				
+				/*
 				new osiris.comprobante_abono_resumen(tipo_reporte,PidPaciente,folioservicio,nombrebd,
 						fecha_admision,fechahora_alta,nombre_paciente,telefono_paciente,doctor,cirugia,
 						tipo_paciente,id_tipopaciente,aseguradora,edadpac,fecha_nacimiento,dir_pac,
 						empresapac,nombrecajero,LoginEmpleado,monto,fecha,concepto,idcreo,recibo,
 						presupuesto,paquete,this.lista_abonos,this.treeViewEngineabonos,descripcion);
+				*/
 			}
 		}
 		
@@ -600,7 +597,9 @@ namespace osiris
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 	public class comprobante_abono_resumen
 	{
-				
+		
+	}
+		/*		
 		public string connectionString = "Server=localhost;" +
 									"Port=5432;" +
 									 "User ID=admin;" +
@@ -1055,6 +1054,6 @@ namespace osiris
 			//sTexto = "peso con " + Numeros(dNumero,1);
 			return sTexto;
 		}	        
-	}
+	}*/
 }
 	

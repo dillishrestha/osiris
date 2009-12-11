@@ -77,7 +77,7 @@ namespace osiris
 		public string NomEmpleados;
 		public int tipo_admicion_clase;			
 					
-		public string connectionString = "Server=192.168.1.148;" +
+		public string connectionString = "Server=localhost;" +
 						"Port=5432;" +
 						 "User ID=admin;" +
 						"Password=1qaz2wsx;";

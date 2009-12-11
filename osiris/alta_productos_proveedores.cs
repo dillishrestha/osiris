@@ -30,10 +30,6 @@ using Npgsql;
 using System.Data;
 using Gtk;
 using Glade;
-using Gnome;
-using System.Collections;
-using GtkSharp;
-
 
 namespace osiris
 {
@@ -1060,8 +1056,7 @@ namespace osiris
 				conexion.Open ();
 				NpgsqlCommand comando; 
 				comando = conexion.CreateCommand ();
-				if ((string) entry_expresion.Text.ToUpper() == "*")
-				{
+				if ((string) entry_expresion.Text.ToUpper() == "*"){
 					comando.CommandText = "SELECT descripcion_proveedor,direccion_proveedor,rfc_proveedor,curp_proveedor, "+
 								"colonia_proveedor,municipio_proveedor,estado_proveedor,telefono1_proveedor, "+ 
 								"telefono2_proveedor,celular_proveedor,cp_proveedor, proveedor_activo, "+
@@ -1070,9 +1065,7 @@ namespace osiris
 								"FROM hscmty_erp_proveedores, hscmty_erp_forma_de_pago "+
 								"WHERE hscmty_erp_proveedores.id_forma_de_pago = hscmty_erp_forma_de_pago.id_forma_de_pago "+
 								"ORDER BY descripcion_proveedor;";															
-				}
-				else
-				{
+				}else{
 					comando.CommandText = "SELECT descripcion_proveedor,direccion_proveedor,rfc_proveedor,curp_proveedor, "+
 								"colonia_proveedor,municipio_proveedor,estado_proveedor,telefono1_proveedor, "+ 
 								"telefono2_proveedor,celular_proveedor,cp_proveedor, proveedor_activo, "+
@@ -1084,8 +1077,7 @@ namespace osiris
 								"ORDER BY descripcion_proveedor;";
 				}
 				NpgsqlDataReader lector = comando.ExecuteReader ();
-				while (lector.Read())
-				{	
+				while (lector.Read()){	
 					treeViewEngineproveedores.AppendValues ((int) lector["id_proveedor"],//0
 													(string) lector["descripcion_proveedor"],//1
 													(string) lector["direccion_proveedor"],//2
@@ -1101,10 +1093,7 @@ namespace osiris
 													(string) lector["descripago"]);//12
 					
 				}
-			}
-			
-			catch (NpgsqlException ex)
-			{
+			}catch (NpgsqlException ex){
 				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
 				                                               MessageType.Error,ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
 				msgBoxError.Run ();			msgBoxError.Destroy();

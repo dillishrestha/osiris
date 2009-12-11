@@ -36,9 +36,6 @@ using Npgsql;
 using System.Data;
 using Gtk;
 using Glade;
-using Gnome;
-using System.Collections;
-using GtkSharp;
 
 namespace osiris
 {
@@ -106,11 +103,11 @@ namespace osiris
 		}
 		
 		void on_button_reportes_clicked (object sender, EventArgs args){
-			new osiris.reportes_empleados(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,"Contrato");
+			//new osiris.reportes_empleados(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,"Contrato");
 		}
 		
 		void on_button_reportes_bajas_clicked (object sender, EventArgs args){
-			new osiris.reportes_empleados(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,"Bajas");
+			//new osiris.reportes_empleados(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,"Bajas");
 		}
 		
 		void on_button_servicios_clicked (object sender, EventArgs args)
@@ -2194,64 +2191,64 @@ namespace osiris
 		void on_button_imp_reg_clicked(object sender, EventArgs args)
 		{
 		
-	     imp_cont_o_reg_alta.Destroy();
-				new rpt_detalle_empleados(
-		entry_contrato_empleado.Text,
-		entry_apellido_paterno_empleado.Text,
-		entry_apellido_materno_empleado.Text,
-		entry_nombre1_empleado.Text,
-		entry_nombre2_empleado.Text,
-		entry_dia_nac.Text, 
-		entry_mes_nac.Text,
-	    entry_anno_nac.Text,
-		entry_lugar_nac.Text,
-		entry_rfc_empleado.Text,
-		entry_curp_empleado.Text,
-		entry_imss_empleado.Text,
-		entry_infonavit_empleado.Text,
-		entry_afore_empleado.Text,
-	    entry_residencia_empleado.Text,
-		entry_nom_padre_empleado.Text,
-		entry_nom_madre_empleado.Text,
-		entry_calle_empleado.Text,
-		entry_codigo_postal_empleado.Text,
-		entry_colonia_empleado.Text,
-		entry_tel1_empleado.Text,
-		entry_notas_empleado.Text,
-		entry_dia_ingreso.Text, 
-		entry_mes_ingreso.Text,
-		entry_anno_ingreso.Text,
-		entry_nombrepuesto_empleado.Text,
-		entry_depto_empleado.Text,
-		entry_id_empleado_etiqueta.Text,
-		entry_edad.Text,
-		entry_numcalle_empleado.Text,
-		tmp_estado_civil,
-		tmp_municipios,
-		tmp_estado,
-		var_tipo_casa,
-		tipo_contrato_oculta,
-		tipo_pago_oculta,
-		entry_numero_locker.Text,
-		sueldo_actual_oculta.Trim());
+			imp_cont_o_reg_alta.Destroy();
+			/*
+			new rpt_detalle_empleados(entry_contrato_empleado.Text,
+										entry_apellido_paterno_empleado.Text,
+										entry_apellido_materno_empleado.Text,
+										entry_nombre1_empleado.Text,
+										entry_nombre2_empleado.Text,
+										entry_dia_nac.Text, 
+										entry_mes_nac.Text,
+	    								entry_anno_nac.Text,
+										entry_lugar_nac.Text,
+										entry_rfc_empleado.Text,
+										entry_curp_empleado.Text,
+										entry_imss_empleado.Text,
+										entry_infonavit_empleado.Text,
+										entry_afore_empleado.Text,
+	    								entry_residencia_empleado.Text,
+										entry_nom_padre_empleado.Text,
+										entry_nom_madre_empleado.Text,
+										entry_calle_empleado.Text,
+										entry_codigo_postal_empleado.Text,
+										entry_colonia_empleado.Text,
+										entry_tel1_empleado.Text,
+										entry_notas_empleado.Text,
+										entry_dia_ingreso.Text, 
+										entry_mes_ingreso.Text,
+										entry_anno_ingreso.Text,
+										entry_nombrepuesto_empleado.Text,
+										entry_depto_empleado.Text,
+										entry_id_empleado_etiqueta.Text,
+										entry_edad.Text,
+										entry_numcalle_empleado.Text,
+										tmp_estado_civil,
+										tmp_municipios,
+										tmp_estado,
+										var_tipo_casa,
+										tipo_contrato_oculta,
+										tipo_pago_oculta,
+										entry_numero_locker.Text,
+										sueldo_actual_oculta.Trim());
 		
-		
+			*/
 		}
 		
 		void on_button_imp_cont_clicked (object sender, EventArgs args)
 		{
 		
-		imp_cont_o_reg_alta.Destroy();
+			imp_cont_o_reg_alta.Destroy();
 		
-		//crea formato dd/mes/aa
-		//string month = Convert.ToString( DateTime.Parse( mes_contrato_oculta+"/01/2000").ToLongDateString());
-		//string fechacontrato = dia_contrato_oculta + "/" + month.Substring(5,month.Length-13).ToUpper() +"/"+anno_contrato_oculta;
+			//crea formato dd/mes/aa
+			//string month = Convert.ToString( DateTime.Parse( mes_contrato_oculta+"/01/2000").ToLongDateString());
+			//string fechacontrato = dia_contrato_oculta + "/" + month.Substring(5,month.Length-13).ToUpper() +"/"+anno_contrato_oculta;
 		
-		// crea formato largo de fecha
-		string fechacontrato = Convert.ToString( Convert.ToDateTime(dia_contrato_oculta + "/" + mes_contrato_oculta +"/"+anno_contrato_oculta).ToLongDateString());
+			// crea formato largo de fecha
+			string fechacontrato = Convert.ToString( Convert.ToDateTime(dia_contrato_oculta + "/" + mes_contrato_oculta +"/"+anno_contrato_oculta).ToLongDateString());
 		
-		
-		new rpt_contrato_empleado(entry_contrato_empleado.Text,
+			/*
+			new rpt_contrato_empleado(entry_contrato_empleado.Text,
 						  		entry_apellido_paterno_empleado.Text,
 						  		entry_apellido_materno_empleado.Text,
 								entry_nombre1_empleado.Text,
@@ -2273,7 +2270,7 @@ namespace osiris
 							    //feca de cobro
 							    
 								);
-		
+			*/
 		}
 		   
 		void on_button_baja_empleado_clicked (object sender, EventArgs args)

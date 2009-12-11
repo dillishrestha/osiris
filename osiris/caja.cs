@@ -33,10 +33,7 @@ using Npgsql;
 using System.Data;
 using Gtk;
 using Glade;
-using Gnome;
 using System.Collections;
-using GtkSharp;
-
 
 namespace osiris
 {
@@ -44,33 +41,33 @@ namespace osiris
 	{
 		// Boton general para salir de las ventanas
 		// Todas la ventanas en glade este boton debe estra declarado identico
-		[Widget] Gtk.Button button_salir;
+		[Widget] Gtk.Button button_salir = null;
 		
 		// Para todas las busquedas este es el nombre asignado
 		// se declara una vez
-		[Widget] Gtk.Entry entry_expresion;
-		[Widget] Gtk.Button button_selecciona;
-		[Widget] Gtk.Button button_buscar_busqueda;
+		[Widget] Gtk.Entry entry_expresion = null;
+		[Widget] Gtk.Button button_selecciona = null;
+		[Widget] Gtk.Button button_buscar_busqueda = null;
 		
 		// Declarando ventana principal de pago
-		[Widget] Gtk.Window caja;
-		[Widget] Gtk.Entry entry_folio_servicio;
+		[Widget] Gtk.Window caja = null;
+		[Widget] Gtk.Entry entry_folio_servicio = null;
 		
-		[Widget] Gtk.Entry entry_ingreso;
-		[Widget] Gtk.Entry entry_egreso;
-		[Widget] Gtk.Entry entry_numero_factura;
+		[Widget] Gtk.Entry entry_ingreso = null;
+		[Widget] Gtk.Entry entry_egreso = null;
+		[Widget] Gtk.Entry entry_numero_factura = null;
 		
-		[Widget] Gtk.Entry entry_pid_paciente;
-		[Widget] Gtk.Entry entry_nombre_paciente;
-		[Widget] Gtk.Entry entry_telefono_paciente;
-		[Widget] Gtk.Entry entry_descrip_cirugia;
+		[Widget] Gtk.Entry entry_pid_paciente = null;
+		[Widget] Gtk.Entry entry_nombre_paciente = null;
+		[Widget] Gtk.Entry entry_telefono_paciente = null;
+		[Widget] Gtk.Entry entry_descrip_cirugia = null;
 		//entry_descrip_cirugia
-		[Widget] Gtk.Entry entry_doctor;
-		[Widget] Gtk.Entry entry_especialidad;
-		[Widget] Gtk.Entry entry_tipo_paciente;
-		[Widget] Gtk.Entry entry_aseguradora;
-		[Widget] Gtk.Entry entry_poliza;
-		[Widget] Gtk.Entry entry_total_abonos_caja;
+		[Widget] Gtk.Entry entry_doctor = null;
+		[Widget] Gtk.Entry entry_especialidad = null;
+		[Widget] Gtk.Entry entry_tipo_paciente = null;
+		[Widget] Gtk.Entry entry_aseguradora = null;
+		[Widget] Gtk.Entry entry_poliza = null;
+		[Widget] Gtk.Entry entry_total_abonos_caja = null;
 		[Widget] Gtk.Entry entry_habitacion;
 		[Widget] Gtk.Entry entry_diagnostico;
 		
@@ -212,7 +209,7 @@ namespace osiris
 		
 		private ArrayList arraycargosextras;		// Para editar cargos extras
 		
-		// Declaracion de variables publicas
+		// Declaracion de variables publicas  
 		public int folioservicio = 0;	        		// Toma el valor de numero de atencion de paciente
 		public int PidPaciente = 0;		   				// Toma la actualizacion del pid del paciente
 		public int id_tipopaciente = 0;           		// Toma el valor del tipo de paciente
@@ -818,7 +815,7 @@ namespace osiris
 				msgBoxError.Run ();
 				msgBoxError.Destroy();
 			}else{
-				new osiris.validacion_cargos_extras(this.folioservicio.ToString().Trim(),this.nombrebd);	
+				//new osiris.cargos_extras(this.folioservicio.ToString().Trim(),this.nombrebd);	
 			}			
 		}
 		
@@ -851,7 +848,7 @@ namespace osiris
 				msgBoxError.Run ();
 				msgBoxError.Destroy();
 			}else{
-				new protocolo_admision(PidPaciente,this.folioservicio,nombrebd,"");   // rpt_prot_admision.cs
+				//new protocolo_admision(PidPaciente,this.folioservicio,nombrebd,"");   // rpt_prot_admision.cs
 			}
 		}
 		
@@ -1066,8 +1063,8 @@ namespace osiris
  			 			
  			if (this.lista_de_honorarios.Selection.GetSelected (out model, out iter)){ 				
 				if((bool) this.lista_de_honorarios.Model.GetValue (iter,8)){					
-					new osiris.rpt_solicitud_cheque((string) this.lista_de_honorarios.Model.GetValue (iter,1),
-				                                (string) this.lista_de_honorarios.Model.GetValue (iter,3), entry_tipo_paciente.Text.Trim(), entry_aseguradora.Text.Trim(), entry_nombre_paciente.Text.Trim(), entry_folio_servicio.Text.Trim());
+					//new osiris.rpt_solicitud_cheque((string) this.lista_de_honorarios.Model.GetValue (iter,1),
+				    //                            (string) this.lista_de_honorarios.Model.GetValue (iter,3), entry_tipo_paciente.Text.Trim(), entry_aseguradora.Text.Trim(), entry_nombre_paciente.Text.Trim(), entry_folio_servicio.Text.Trim());
 				}else{
 					MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
 					                                               MessageType.Error,ButtonsType.Close, "Debe de estar guardado el honorario");
@@ -1450,12 +1447,13 @@ namespace osiris
 		void on_button_imprime_honorarios_clicked(object sender, EventArgs args)
 		{
 			//string  query = " ";
+			/*
 			new rpt_honorario_med(PidPaciente,this.folioservicio,nombrebd,
 						entry_ingreso.Text,entry_egreso.Text,entry_numero_factura.Text,
 						entry_nombre_paciente.Text,entry_telefono_paciente.Text,entry_doctor.Text,
 						entry_tipo_paciente.Text,entry_aseguradora.Text,edadpac+" Años y "+mesespac+" Meses",fecha_nacimiento,
 						dir_pac,cirugia,empresapac,id_tipopaciente,entry_totalbonos_medicos.Text,"0");   // rpt_honorarios_medicos.cs
-			honorario_medico.Destroy();
+			honorario_medico.Destroy();*/
 		}
 						
 		void on_button_guardar_honorario_clicked(object sender, EventArgs args)
@@ -1652,18 +1650,22 @@ namespace osiris
 			}
 			
 			if (tipodereporte == "procedimiento"){
-				new proc_cobranza (PidPaciente,folioservicio,nombrebd,
+				
+				new osiris. proc_cobranza (PidPaciente,folioservicio,nombrebd,
 						entry_ingreso.Text,entry_egreso.Text,entry_numero_factura.Text,
 						entry_nombre_paciente.Text,entry_telefono_paciente.Text,entry_doctor.Text,
 						entry_tipo_paciente.Text,entry_aseguradora.Text,edadpac+" Años y "+mesespac+" Meses",fecha_nacimiento,dir_pac,
 						cirugia,empresapac,id_tipopaciente,query);   // rpt_proc_cobranza.cs
+				
 			}
 			if (tipodereporte == "resumen_factura"){
+				/*
 				new proc_totales (PidPaciente,this.folioservicio,nombrebd,
 						entry_ingreso.Text,entry_egreso.Text,entry_numero_factura.Text,
 						entry_nombre_paciente.Text,entry_telefono_paciente.Text,entry_doctor.Text,
 						entry_tipo_paciente.Text,entry_aseguradora.Text,edadpac+" Años y "+mesespac+" Meses",fecha_nacimiento,dir_pac,
 						cirugia,empresapac,id_tipopaciente,query);   // rpt_proc_cobranza.cs
+				*/
 			}			
 			rango_de_fecha.Destroy();
 		}
@@ -1833,12 +1835,14 @@ namespace osiris
 		
 		void comprobante_de_caja_pago()
 		{
+			/*
 			new caja_comprobante ( PidPaciente,this.folioservicio,nombrebd,
 					entry_ingreso.Text,entry_egreso.Text,entry_numero_factura.Text,
 					entry_nombre_paciente.Text,entry_telefono_paciente.Text,entry_doctor.Text,
 					entry_tipo_paciente.Text,entry_aseguradora.Text,edadpac+" Años y "+mesespac+" Meses",
 					fecha_nacimiento,dir_pac,cirugia,empresapac,id_tipopaciente,NomEmpleado+" "+AppEmpleado+" "+ApmEmpleado,
 					this.entry_total_abonos_caja.Text.Trim());
+			*/
 		}
 		
 		void on_button_compro_serv_clicked(object sender, EventArgs args)
@@ -1850,10 +1854,12 @@ namespace osiris
 							"existente para que el comprobante se muestre \n"+"o no a pulsado el boton ''Seleccionar''");
 				msgBoxError.Run ();				msgBoxError.Destroy();
 			}else{
+				/*
 				new comprobante_serv ( PidPaciente,this.folioservicio,nombrebd,
 						entry_ingreso.Text,entry_egreso.Text,entry_numero_factura.Text,
 						entry_nombre_paciente.Text,entry_telefono_paciente.Text,entry_doctor.Text,
-						entry_tipo_paciente.Text,entry_aseguradora.Text,edadpac+" Años y "+mesespac+" Meses",fecha_nacimiento,dir_pac,cirugia,empresapac,id_tipopaciente);				
+						entry_tipo_paciente.Text,entry_aseguradora.Text,edadpac+" Años y "+mesespac+" Meses",fecha_nacimiento,dir_pac,cirugia,empresapac,id_tipopaciente);
+						*/
 			}
 		}
 		
@@ -2719,7 +2725,7 @@ namespace osiris
 				            	"hscmty_erp_movcargos.id_tipo_admisiones AS idtipoadmision, "+
 				            	"hscmty_his_paciente.direccion_paciente,hscmty_his_paciente.numero_casa_paciente,hscmty_his_paciente.numero_departamento_paciente, "+
 								"hscmty_his_paciente.colonia_paciente,hscmty_his_paciente.municipio_paciente,hscmty_his_paciente.codigo_postal_paciente,hscmty_his_paciente.estado_paciente,  "+
-            					"descripcion_tipo_paciente,hscmty_his_tipo_cirugias.tipo_cirugia,"+
+            					"descripcion_tipo_paciente,hscmty_his_tipo_cirugias.descripcion_cirugia,"+
             					"hscmty_his_paciente.id_empresa AS idempresa,hscmty_empresas.lista_de_precio AS listadeprecio_empresa,"+   ///
             					"descripcion_admisiones,hscmty_his_tipo_especialidad.descripcion_especialidad,"+
 				            	"hscmty_erp_cobros_enca.id_aseguradora,descripcion_aseguradora,hscmty_aseguradoras.lista_de_precio AS listadeprecio_aseguradora,"+   ///
@@ -2824,7 +2830,7 @@ namespace osiris
 					 
             		fecha_nacimiento = (string) lector ["fecha_nac_pa"];
 			       	
-					cirugia = (string) lector["tipo_cirugia"];
+					cirugia = (string) lector["descripcion_cirugia"];
 					
 			       	this.entry_descrip_cirugia.Text = cirugia;
 					this.entry_diagnostico.Text = (string) lector ["descripcion_diagnostico_movcargos"];

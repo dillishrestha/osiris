@@ -33,9 +33,6 @@ using Npgsql;
 using System.Data;
 using Gtk;
 using Glade;
-using Gnome;
-using System.Collections;
-using GtkSharp;
 
 namespace osiris
 {	
@@ -93,7 +90,7 @@ namespace osiris
     	public string AppEmpleado;
     	public string ApmEmpleado;
     	    	
-    	public string query_departamento = "AND  hscmty_his_tipo_admisiones.descripcion_admisiones = '0' ";
+    	public string query_departamento = "AND hscmty_his_tipo_admisiones.descripcion_admisiones = '0' ";
     	public int id_tipo_admisiones = 0; 
 		public string query1 = "" ;
 		public string titulopagina= "MOVIMIENTOS DE PRODUCOS";
@@ -178,9 +175,7 @@ namespace osiris
 				store1.AppendValues ("", 0);
 		        while (lector.Read()){
 					store1.AppendValues ((string) lector["descripcion_admisiones"], (int) lector["id_tipo_admisiones"]);
-				}
-				
-				
+				}				
 			}catch (NpgsqlException ex){
 				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
 												MessageType.Error,ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
@@ -527,8 +522,8 @@ namespace osiris
 			/*if(this.query1.GetIterFirst (out iter)){         
 				new osiris.imprime_mov_productos (this.query1,this.lista_resumen_productos,this.treeViewEngineResumen);*/
 			if (this.treeViewEngineResumen.GetIterFirst (out iter)){
-				Console.WriteLine(query1);                                              
-				new osiris.imprime_mov_productos (entry_total_aplicado.Text,entry_dia1.Text,entry_mes1.Text,entry_ano1.Text,entry_dia2.Text,entry_mes2.Text,entry_ano2.Text, this.lista_resumen_productos,this.treeViewEngineResumen,this.query1,this.nombrebd,this.titulopagina);
+				//Console.WriteLine(query1);                                              
+				//new osiris.imprime_mov_productos (entry_total_aplicado.Text,entry_dia1.Text,entry_mes1.Text,entry_ano1.Text,entry_dia2.Text,entry_mes2.Text,entry_ano2.Text, this.lista_resumen_productos,this.treeViewEngineResumen,this.query1,this.nombrebd,this.titulopagina);
 			}else{
 				
 				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,

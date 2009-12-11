@@ -27,14 +27,12 @@
 // Programa		: hscmty.cs
 // Proposito	: Impresion del procedimiento de cobranza 
 // Objeto		: rpt_proc_cobranza.cs
-using System;
 using Gtk;
-using Gnome;
-using Npgsql;
-using System.Data;
+using Gdk;
+using System;
 using Glade;
-using System.Collections;
-using GtkSharp;
+using Npgsql;
+using Cairo;
 
 namespace osiris
 {
@@ -44,77 +42,81 @@ namespace osiris
         	    	                     "Port=5432;" +
             	    	                 "User ID=admin;" +
                 	    	             "Password=1qaz2wsx;";
-        public string nombrebd;
-		public int PidPaciente = 0;
-		public int folioservicio = 0;
-		public string fecha_admision;
-		public string fechahora_alta;
-		public string nombre_paciente;
-		public string telefono_paciente;
-		public string doctor;
-		public string cirugia;
-		public string fecha_nacimiento;
-		public string edadpac;
-		public int id_tipopaciente = 0;
-		public string tipo_paciente;
-		public string aseguradora;
-		public string dir_pac;
-		public string empresapac;
-		public bool apl_desc_siempre = true;
-		public bool apl_desc;
+		private static int pangoScale = 1024;
+		private PrintOperation print;
+		private double fontSize = 8.0;
 		
-		public int filas=635;
-		public int contador = 1;
-		public int numpage = 1;
+        string nombrebd;
+		int PidPaciente = 0;
+		int folioservicio = 0;
+		string fecha_admision;
+		string fechahora_alta;
+		string nombre_paciente;
+		string telefono_paciente;
+		string doctor;
+		string cirugia;
+		string fecha_nacimiento;
+		string edadpac;
+		int id_tipopaciente = 0;
+		string tipo_paciente;
+		string aseguradora;
+		string dir_pac;
+		string empresapac;
+		bool apl_desc_siempre = true;
+		bool apl_desc;
+		
+		int filas=635;
+		int contador = 1;
+		int numpage = 1;
 		
 		//query de rango de fechas
-		public string query_todo = " ";
-		public string query_rango_fechas = " "; 
+		string query_todo = " ";
+		string query_rango_fechas = " "; 
 		
-		public int idadmision_ = 0;
-		public int idproducto = 0;
-		public string datos = "";
-		public string fcreacion = "";
-		public decimal porcentajedes =  0;
-		public decimal descsiniva = 0;
-		public decimal ivadedesc = 0;
-		public decimal descuento = 0;
-		public decimal ivaprod = 0;
-		public decimal subtotal = 0;
-		public decimal subtotalelim = 0;
-		public decimal subt15 = 0;
-		public decimal subt15elim = 0;
-		public decimal subt0 = 0;
-		public decimal subt0elim = 0;
-		public decimal sumadesc = 0;
-		public decimal sumadescelim = 0;
-		public decimal sumaiva = 0;
-		public decimal sumaivaelim = 0;
-		public decimal total = 0;
-		public decimal totalelim = 0;
-		public decimal totaladm = 0;
-		public decimal totaladmelim = 0;
-		public decimal totaldesc = 0;
-		public decimal subtotaldelmov = 0;
-		public decimal deducible = 0;
-		public decimal coaseguro = 0;
+		int idadmision_ = 0;
+		int idproducto = 0;
+		string datos = "";
+		string fcreacion = "";
+		decimal porcentajedes =  0;
+		decimal descsiniva = 0;
+		decimal ivadedesc = 0;
+		decimal descuento = 0;
+		decimal ivaprod = 0;
+		decimal subtotal = 0;
+		decimal subtotalelim = 0;
+		decimal subt15 = 0;
+		decimal subt15elim = 0;
+		decimal subt0 = 0;
+		decimal subt0elim = 0;
+		decimal sumadesc = 0;
+		decimal sumadescelim = 0;
+		decimal sumaiva = 0;
+		decimal sumaivaelim = 0;
+		decimal total = 0;
+		decimal totalelim = 0;
+		decimal totaladm = 0;
+		decimal totaladmelim = 0;
+		decimal totaldesc = 0;
+		decimal subtotaldelmov = 0;
+		decimal deducible = 0;
+		decimal coaseguro = 0;
 		//public int contdesc = 0;
 		//agrega abonos y pagos honorarios
-		public decimal totabono = 0;
-		public decimal totpago = 0;
-		public decimal honorarios = 0;
+		decimal totabono = 0;
+		decimal totpago = 0;
+		decimal honorarios = 0;
 				
 				
 		// Declarando variable de fuente para la impresion
 		// Declaracion de fuentes tipo Bitstream Vera sans
-		public Gnome.Font fuente6 = Gnome.Font.FindClosest("Bitstream Vera Sans", 6);
-		public Gnome.Font fuente7 = Gnome.Font.FindClosest("Bitstream Vera Sans", 7);
-		public Gnome.Font fuente8 = Gnome.Font.FindClosest("Bitstream Vera Sans", 8);
-		public Gnome.Font fuente9 = Gnome.Font.FindClosest("Bitstream Vera Sans", 9);
-		public Gnome.Font fuente10 = Gnome.Font.FindClosest("Bitstream Vera Sans", 10);
-		public Gnome.Font fuente11 = Gnome.Font.FindClosest("Bitstream Vera Sans", 11);
-		public Gnome.Font fuente12 = Gnome.Font.FindClosest("Bitstream Vera Sans", 12);
-		public Gnome.Font fuente36 = Gnome.Font.FindClosest("Bitstream Vera Sans", 36);
+		//public Gnome.Font fuente6 = Gnome.Font.FindClosest("Bitstream Vera Sans", 6);
+		//public Gnome.Font fuente7 = Gnome.Font.FindClosest("Bitstream Vera Sans", 7);
+		//public Gnome.Font fuente8 = Gnome.Font.FindClosest("Bitstream Vera Sans", 8);
+		//public Gnome.Font fuente9 = Gnome.Font.FindClosest("Bitstream Vera Sans", 9);
+		//public Gnome.Font fuente10 = Gnome.Font.FindClosest("Bitstream Vera Sans", 10);
+		//public Gnome.Font fuente11 = Gnome.Font.FindClosest("Bitstream Vera Sans", 11);
+		//public Gnome.Font fuente12 = Gnome.Font.FindClosest("Bitstream Vera Sans", 12);
+		//public Gnome.Font fuente36 = Gnome.Font.FindClosest("Bitstream Vera Sans", 36);
 		
 				
 		//Declaracion de ventana de error
@@ -141,31 +143,150 @@ namespace osiris
 			fecha_nacimiento = fecha_nacimiento_;//
 			dir_pac = dir_pac_;//
 			empresapac = empresapac_;//
-			query_rango_fechas = query;	
+			query_rango_fechas = query;
 			
-			Gnome.PrintJob    trabajo   = new Gnome.PrintJob (PrintConfig.Default());
-        	Gnome.PrintDialog dialogo   = new Gnome.PrintDialog (trabajo, "PROCEDIMIENTO COBRANZA", 0);
-        	int         respuesta = dialogo.Run ();
-        	if (respuesta == (int) PrintButtons.Cancel) 
-			{
-				dialogo.Hide (); 
-				dialogo.Dispose (); 
-				return;
-			}
-			Gnome.PrintContext ctx = trabajo.Context;
-        	ComponerPagina(ctx, trabajo); 
-			trabajo.Close();
-            switch (respuesta)
-        	{
-				case (int) PrintButtons.Print:   
-                trabajo.Print (); 
-                break;
-                case (int) PrintButtons.Preview:
-                new PrintJobPreview(trabajo, "PROCEDIMIENTO COBRANZA").Show();
-                break;
-        	}
-			dialogo.Hide (); dialogo.Dispose ();
+			print = new PrintOperation ();
+						
+			print.BeginPrint += new BeginPrintHandler (OnBeginPrint);
+			print.DrawPage += new DrawPageHandler (OnDrawPage);
+			print.EndPrint += new EndPrintHandler (OnEndPrint);
+			
+			print.Run (PrintOperationAction.PrintDialog, null);
+			
 		}
+		
+		private void OnBeginPrint (object obj, Gtk.BeginPrintArgs args)
+		{
+			//PrintContext context = args.Context;
+											
+			print.NPages = 1;  // crea cantidad de paginas del reporte
+						
+			// para imprimir horizontalmente el reporte
+			print.PrintSettings.Orientation = PageOrientation.Landscape;			
+			//Console.WriteLine(print.PrintSettings.Orientation.ToString());
+		}
+		
+		private void OnDrawPage (object obj, Gtk.DrawPageArgs args)
+		{			
+			PrintContext context = args.Context;
+			NpgsqlConnection conexion; 
+        	conexion = new NpgsqlConnection (connectionString+nombrebd);
+        	// Verifica que la base de datos este conectada
+        	//Querys
+			query_todo = "SELECT "+
+					"hscmty_erp_cobros_deta.folio_de_servicio,hscmty_erp_cobros_deta.pid_paciente, "+ 
+					"hscmty_his_tipo_admisiones.descripcion_admisiones,aplicar_iva, "+
+					"hscmty_his_tipo_admisiones.id_tipo_admisiones AS idadmisiones,"+
+					"hscmty_grupo_producto.descripcion_grupo_producto, "+
+					"hscmty_productos.id_grupo_producto,  "+
+					"to_char(hscmty_erp_cobros_deta.porcentage_descuento,'999.99') AS porcdesc, "+
+					"to_char(hscmty_erp_cobros_deta.fechahora_creacion,'dd-mm-yyyy') AS fechcreacion,  "+
+					"to_char(hscmty_erp_cobros_deta.fechahora_creacion,'HH:mm') AS horacreacion,  "+
+					"to_char(hscmty_erp_cobros_deta.id_producto,'999999999999') AS idproducto,descripcion_producto, "+
+					"to_char(hscmty_erp_cobros_deta.cantidad_aplicada,'9999.99') AS cantidadaplicada, "+
+					"to_char(hscmty_erp_cobros_deta.precio_producto,'999999.99') AS preciounitario, "+
+					"ltrim(to_char(hscmty_erp_cobros_deta.precio_producto,'9999999.99')) AS preciounitarioprod, "+
+					"to_char(hscmty_erp_cobros_deta.iva_producto,'999999.99') AS ivaproducto, "+
+					"to_char(hscmty_erp_cobros_deta.cantidad_aplicada * hscmty_erp_cobros_deta.precio_producto,'99999999.99') AS ppcantidad,"+
+					//"to_char(hscmty_erp_cobros_deta.precio_por_cantidad,'999999.99') AS ppcantidad, "+					
+					"to_char(hscmty_productos.precio_producto_publico,'999999999.99999') AS preciopublico, "+
+					"to_char(hscmty_erp_cobros_enca.total_abonos,'999999999.999') AS totalabono, "+ 
+					"to_char(hscmty_erp_cobros_enca.honorario_medico,'999999999.999') AS honorario, "+
+					"to_char(hscmty_erp_cobros_enca.total_pago,'999999999.999') AS totalpago "+
+					"FROM "+
+					"hscmty_erp_cobros_deta,hscmty_erp_cobros_enca,hscmty_his_tipo_admisiones,hscmty_productos,hscmty_grupo_producto "+
+					"WHERE "+
+					"hscmty_erp_cobros_deta.id_tipo_admisiones = hscmty_his_tipo_admisiones.id_tipo_admisiones "+
+					"AND hscmty_erp_cobros_deta.id_producto = hscmty_productos.id_producto  "+ 
+					"AND hscmty_productos.id_grupo_producto = hscmty_grupo_producto.id_grupo_producto "+
+					"AND hscmty_erp_cobros_deta.folio_de_servicio = '"+folioservicio.ToString()+"' "+
+					"AND hscmty_erp_cobros_enca.folio_de_servicio = '"+folioservicio.ToString()+"' "+
+		        	"AND hscmty_erp_cobros_deta.eliminado = 'false' ";
+			try{
+ 				conexion.Open ();
+        		NpgsqlCommand comando; 
+        		comando = conexion.CreateCommand (); 
+        		comando.CommandText = query_todo + query_rango_fechas + "ORDER BY  to_char(hscmty_erp_cobros_deta.fechahora_creacion,'yyyy-MM-dd') ASC, hscmty_erp_cobros_deta.id_tipo_admisiones ASC, hscmty_productos.id_grupo_producto,hscmty_erp_cobros_deta.id_secuencia; ";
+				Console.WriteLine(query_todo + query_rango_fechas + "ORDER BY  to_char(hscmty_erp_cobros_deta.fechahora_creacion,'yyyy-MM-dd') ASC, hscmty_erp_cobros_deta.id_tipo_admisiones ASC, hscmty_productos.id_grupo_producto,hscmty_erp_cobros_deta.id_secuencia; ");			
+        		NpgsqlDataReader lector = comando.ExecuteReader ();
+        		//Console.WriteLine("query proc cobr: "+comando.CommandText.ToString());
+				if (lector.Read()){	
+					
+					imprime_encabezado(context);
+					
+					while (lector.Read()){
+							
+					}
+				}
+			}catch (NpgsqlException ex){
+				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+				MessageType.Warning, ButtonsType.Ok, "PostgresSQL error: {0}",ex.Message);
+				msgBoxError.Run ();
+				msgBoxError.Destroy();
+				Console.WriteLine ("PostgresSQL error: {0}",ex.Message);
+			return; 
+			}	
+		}
+			
+		void imprime_encabezado(PrintContext context)
+		{
+			
+			int comienzo_linea = 1;
+			int separacion_linea = 11;
+			int columna_linea = 40;
+			
+			Cairo.Context cr = context.CairoContext;
+				
+			
+			// cr.Rotate(90)  Imprimir Orizontalmente rota la hoja cambian las posiciones de las lineas y columna
+			
+			Pango.Layout layout = context.CreatePangoLayout ();			
+			Pango.FontDescription desc = Pango.FontDescription.FromString ("sans");
+			
+			layout = null;
+			layout = context.CreatePangoLayout ();
+			desc.Size = (int)(fontSize * pangoScale);
+			layout.FontDescription = desc;
+			
+			cr.MoveTo(01,comienzo_linea);					layout.SetText("Sistema Hospitalario OSIRIS");			Pango.CairoHelper.ShowLayout (cr, layout);
+			comienzo_linea += separacion_linea;
+			cr.MoveTo(01,comienzo_linea);					layout.SetText("Direccion: Monterrey - Mexico");			Pango.CairoHelper.ShowLayout (cr, layout);
+			comienzo_linea += separacion_linea;
+			cr.MoveTo(01,comienzo_linea);					layout.SetText("Telefono: (01)(81) 1158-5166");			Pango.CairoHelper.ShowLayout (cr, layout);
+					
+			// Cambiando el tamaño de la fuente
+			fontSize = 12.0;
+			layout = null;
+			layout = context.CreatePangoLayout ();
+			desc.Size = (int)(fontSize * pangoScale);
+			layout.FontDescription = desc;
+			cr.MoveTo(220,comienzo_linea);					layout.SetText("PROCEDIMIENTO DE COBRANZA");			Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(520,comienzo_linea);					layout.SetText(folioservicio.ToString());			Pango.CairoHelper.ShowLayout (cr, layout);
+			
+			// Cambiando el tamaño de la fuente
+			fontSize = 8.0;
+			layout = null;
+			layout = context.CreatePangoLayout ();
+			desc.Size = (int)(fontSize * pangoScale);
+			layout.FontDescription = desc;
+			cr.MoveTo(470,comienzo_linea-15);					layout.SetText("FOLIO DE ATENCION");			Pango.CairoHelper.ShowLayout (cr, layout);			
+						
+			// crea una pagina nueva
+			//cr.ShowPage();
+			//layout = null;
+			//layout = context.CreatePangoLayout ();
+			//desc.Size = (int)(fontSize * pangoScale);
+			//layout.FontDescription = desc;
+			//cr.MoveTo(100,100);	layout.SetText("Prueba de Impresion--------------------------------");
+			//Pango.CairoHelper.ShowLayout (cr, layout);
+		}
+		
+		private void OnEndPrint (object obj, Gtk.EndPrintArgs args)
+		{
+		}
+	}
+}
+		/*
       	
 		void imprime_encabezado(Gnome.PrintContext ContextoImp, Gnome.PrintJob trabajoImpresion)
 		{
@@ -373,8 +494,7 @@ namespace osiris
 					"AND hscmty_erp_cobros_deta.folio_de_servicio = '"+folioservicio.ToString()+"' "+
 					"AND hscmty_erp_cobros_enca.folio_de_servicio = '"+folioservicio.ToString()+"' "+
 		        	"AND hscmty_erp_cobros_deta.eliminado = 'false' ";
-		try 
-        {
+		try{
  			conexion.Open ();
         	NpgsqlCommand comando; 
         	comando = conexion.CreateCommand (); 
@@ -754,5 +874,5 @@ namespace osiris
 			return; 
 		}
 	}
- }    
-}
+ }*/
+

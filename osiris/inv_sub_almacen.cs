@@ -312,8 +312,7 @@ namespace osiris
 			lista_almacenes.AppendColumn(col_autorizado);
 			lista_almacenes.AppendColumn(col_existencia);
 			lista_almacenes.AppendColumn(col_codigo);
-			lista_almacenes.AppendColumn(col_descripcion);
-				
+			lista_almacenes.AppendColumn(col_descripcion);				
 		}
 		
 		enum Col_traspaso
@@ -1212,8 +1211,7 @@ namespace osiris
 							this.checkbutton_ajuste_de_articulos.Sensitive = true;
 							llenando_busqueda_productos();
 							this.entry_numero_de_traspaso.Text = "0";
-						}
-						
+						}						
 					}
 					
 					if (this.checkbutton_ajuste_de_articulos.Active == true){

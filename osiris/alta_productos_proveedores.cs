@@ -1190,7 +1190,7 @@ namespace osiris
 				}
 				
 			TreeIter iterSelected;
-			TreeModel model;
+			//TreeModel model;
 			TreeIter iter;
 			
 			MessageDialog msgBox1 = new MessageDialog (MyWin,DialogFlags.Modal,

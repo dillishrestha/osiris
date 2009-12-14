@@ -110,7 +110,7 @@ namespace osiris
 		public string nombrebd;
 		public string nomcatalogo;
 		public string busqueda = "";
-		public string connectionString = "Server=192.168.1.148;" +
+		public string connectionString = "Server=localhost;" +
 									"Port=5432;" +
 									 "User ID=admin;" +
 									"Password=1qaz2wsx;";		

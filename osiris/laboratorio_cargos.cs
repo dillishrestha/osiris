@@ -101,8 +101,7 @@ namespace osiris
 		[Widget] Gtk.ComboBox combobox_tipo_admision;
 		[Widget] Gtk.Entry entry_fecha_solicitud;
 		[Widget] Gtk.Entry entry_hora_solicitud;
-		[Widget] Gtk.Entry entry_folio_laboratorio;
-		
+		[Widget] Gtk.Entry entry_folio_laboratorio;		
 								
 		private TreeStore treeViewEngineBusca;
 		private TreeStore treeViewEngineBusca2;

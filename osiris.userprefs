@@ -1,27 +1,31 @@
-﻿<UserCombinePreferences version="1.0" filename="/home/dolivares/Proyectos/osiris/osiris.mds">
-  <Files>
-    <File name="Bienvenido" />
-    <File name="osiris/osiris.cs" line="199" column="97" />
-    <File name="osiris/registro_admision.cs" line="2531" column="52" />
-    <File name="osiris/hospitalizacion_cargos.cs" line="1392" column="117" />
-  </Files>
-  <Views>
-    <ViewMemento id="ProjectPad">
-      <Node expanded="True">
-        <Node name="osiris" expanded="True">
-          <Node name="hospitalizacion_cargos.cs" selected="True" />
-        </Node>
-      </Node>
-    </ViewMemento>
-    <ViewMemento id="ClassPad">
-      <Node expanded="True" />
-    </ViewMemento>
-    <ViewMemento id="ConnectionManagerPad">
-      <Node />
-    </ViewMemento>
-  </Views>
-  <Properties>
-    <Property key="ActiveWindow" value="/home/dolivares/Proyectos/osiris/osiris/hospitalizacion_cargos.cs" />
-    <Property key="ActiveConfiguration" value="Debug" />
-  </Properties>
-</UserCombinePreferences>
+﻿<Properties>
+  <MonoDevelop.Ide.Workbench ActiveDocument="osiris/alta_productos_proveedores.cs" ctype="Workbench">
+    <Files>
+      <File FileName="osiris/osiris.cs" Line="362" Column="36" />
+      <File FileName="osiris/rpt_paciente_sin_alta.cs" Line="68" Column="29" />
+      <File FileName="osiris/hospitalizacion.cs" Line="99" Column="55" />
+      <File FileName="osiris/cambia_paciente.cs" Line="121" Column="30" />
+      <File FileName="osiris/costos_consultas.cs" Line="90" Column="32" />
+      <File FileName="osiris/quirofano_cargos.cs" Line="213" Column="36" />
+      <File FileName="osiris/alta_productos_proveedores.cs" Line="1192" Column="26" />
+    </Files>
+    <Pads>
+      <Pad Id="ProjectPad">
+        <State expanded="True">
+          <Node name="osiris" expanded="True">
+            <Node name="References" expanded="True">
+              <Node name="System, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" selected="True" />
+            </Node>
+          </Node>
+        </State>
+      </Pad>
+      <Pad Id="ClassPad">
+        <State expanded="True" selected="True" />
+      </Pad>
+    </Pads>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService>
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" ctype="Workspace" />
+</Properties>

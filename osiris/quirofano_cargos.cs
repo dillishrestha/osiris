@@ -33,9 +33,7 @@ using Npgsql;
 using System.Data;
 using Gtk;
 using Glade;
-using Gnome;
 using System.Collections;
-using GtkSharp;
 
 namespace osiris
 {
@@ -139,86 +137,86 @@ namespace osiris
 		private ArrayList arraycargosextras;
 		
 		// Declaracion de variables publicas
-		public int folioservicio = 0;						// Toma el valor de numero de atencion de paciente
-		public int PidPaciente = 0;							// Toma la actualizacion del pid del paciente
-		public int id_tipopaciente;							// Toma el valor del tipo de paciente
-		public int idempresa_paciente = 0;					// Toma el valor de la empresa que el hospital tiene convenio = 0;					// Toma el valor de la empresa que el hospital tiene convenio
-		public int idtipointernamiento = 700;				// Toma el valor del tipo de internamiento
-		public string descripinternamiento = "QUIROFANO";  	// Toma la descripcion del internamiento
+		int folioservicio = 0;						// Toma el valor de numero de atencion de paciente
+		int PidPaciente = 0;							// Toma la actualizacion del pid del paciente
+		int id_tipopaciente;							// Toma el valor del tipo de paciente
+		int idempresa_paciente = 0;					// Toma el valor de la empresa que el hospital tiene convenio = 0;					// Toma el valor de la empresa que el hospital tiene convenio
+		int idtipointernamiento = 700;				// Toma el valor del tipo de internamiento
+		string descripinternamiento = "QUIROFANO";  	// Toma la descripcion del internamiento
 		
-		public string edadpac;
-		public string fecha_nacimiento;
-		public string dir_pac;
-		public string cirugia;
-		public string empresapac;
-		public string causa_de_alta_paciente;
-		public string observacionesalta;
-		public string sexopaciente;
+		string edadpac;
+		string fecha_nacimiento;
+		string dir_pac;
+		string cirugia;
+		string empresapac;
+		string causa_de_alta_paciente;
+		string observacionesalta;
+		string sexopaciente;
 		
-		public bool cuenta_bloqueada;
-		public bool cuenta_cerrada;
+		bool cuenta_bloqueada;
+		bool cuenta_cerrada;
 		
-		public float valoriva = 15;
-		public bool aplicar_descuento = true;
-		public bool aplicar_siempre = false;
+		float valoriva = 15;
+		bool aplicar_descuento = true;
+		bool aplicar_siempre = false;
 
-		public string id_produ = "";
-		public string desc_produ = "";
-		public string precio_produ ="";
-		public string iva_produ ="";
-		public string total_produ ="";
-		public string descuent_produ ="";
-		public string pre_con_desc_produ ="";
-		public float valor_descuento = 0;
-		public string costo_unitario_producto;
-		public string porcentage_utilidad_producto;
-		public string costo_total_producto;
-		public float ppcantidad = 0;
-		public string ppcant ="";
+		string id_produ = "";
+		string desc_produ = "";
+		string precio_produ ="";
+		string iva_produ ="";
+		string total_produ ="";
+		string descuent_produ ="";
+		string pre_con_desc_produ ="";
+		float valor_descuento = 0;
+		string costo_unitario_producto;
+		string porcentage_utilidad_producto;
+		string costo_total_producto;
+		float ppcantidad = 0;
+		string ppcant ="";
 		
 		//********    //nuevo lista de precios multiples//   *****************/
-		public int idaseguradora_paciente = 0;			// Toma el valor de la aseguradora que ingreso el paciente
-		public bool aplica_precios_aseguradoras = false;// Toma el valor de si se tiene creado la lista de precio en la tabla de Productos
-		public bool aplica_precios_empresas = false;	// Toma el valor de si se tiene creado la lista de precio en la tabla de Productos
+		int idaseguradora_paciente = 0;			// Toma el valor de la aseguradora que ingreso el paciente
+		bool aplica_precios_aseguradoras = false;// Toma el valor de si se tiene creado la lista de precio en la tabla de Productos
+		bool aplica_precios_empresas = false;	// Toma el valor de si se tiene creado la lista de precio en la tabla de Productos
 		//**************/
 		
 		// Variables publicas para le rango de fecha procedimiento
-		public string fecha_rango_1;
-		public string fecha_rango_2;
+		string fecha_rango_1;
+		string fecha_rango_2;
 		
 		// Sumas Totales para los calculos
-		public float subtotal_al_15;
-		public float subtotal_al_0;
-		public float total_iva;
-		public float sub_total;
-		public float totaldescuento;
+		float subtotal_al_15;
+		float subtotal_al_0;
+		float total_iva;
+		float sub_total;
+		float totaldescuento;
 		
-		public bool aplico_cargos = false;
+		bool aplico_cargos = false;
 		
-		public int idsubalmacen = 5;   // Sub-Almacen de Hospitalizacion
+		int idsubalmacen = 5;   // Sub-Almacen de Hospitalizacion
 		
-		public int idhabitacion = 0;						// Toma el id de la habitacion asignada  /*id habitacion*/
+		int idhabitacion = 0;						// Toma el id de la habitacion asignada  /*id habitacion*/
 		
 		
-		public string LoginEmpleado;
-		public string NomEmpleado;
-		public string AppEmpleado;
-		public string ApmEmpleado;
-		public string NomEmpleados;
+		string LoginEmpleado;
+		string NomEmpleado;
+		string AppEmpleado;
+		string ApmEmpleado;
+		string NomEmpleados;
 					
-		public string connectionString = "Server=localhost;" +
-						"Port=5432;" +
-						 "User ID=admin;" +
-						"Password=1qaz2wsx;";
-		public string nombrebd;
+		string connectionString = "Server=localhost;" +
+					"Port=5432;" +
+					 "User ID=admin;" +
+					"Password=1qaz2wsx;";
+		string nombrebd;
 				
 		//declaracion de columnas y celdas de treeview de busqueda
-		public TreeViewColumn col_idproducto;		public CellRendererText cellr0;
-		public TreeViewColumn col_desc_producto;	public CellRendererText cellr1;
-		public TreeViewColumn col_grupoprod;		public CellRendererText cellrt2;
-		public TreeViewColumn col_grupo1prod;		public CellRendererText cellrt3;
-		public TreeViewColumn col_grupo2prod;		public CellRendererText cellrt4;
-		public TreeViewColumn col_stock;			public CellRendererText cellrt13;
+		TreeViewColumn col_idproducto;		CellRendererText cellr0;
+		TreeViewColumn col_desc_producto;	CellRendererText cellr1;
+		TreeViewColumn col_grupoprod;		CellRendererText cellrt2;
+		TreeViewColumn col_grupo1prod;		CellRendererText cellrt3;
+		TreeViewColumn col_grupo2prod;		CellRendererText cellrt4;
+		TreeViewColumn col_stock;			CellRendererText cellrt13;
 				
 		//Declaracion de ventana de error
 		protected Gtk.Window MyWinError;
@@ -877,26 +875,29 @@ namespace osiris
 						"AND to_char(hscmty_erp_cobros_deta.fechahora_creacion,'MM') <= '"+entry_mes2.Text+"' "+
 						"AND to_char(hscmty_erp_cobros_deta.fechahora_creacion,'dd') >= '"+entry_dia1.Text+"' "+
 						"AND to_char(hscmty_erp_cobros_deta.fechahora_creacion,'dd') <= '"+entry_dia2.Text+"' ";
-			}	   
+			}
+			/*
 			new hoja_cargos (PidPaciente,this.folioservicio,nombrebd,
 						entry_fecha_admision.Text,entry_fechahora_alta.Text,entry_nombre_paciente.Text,
 						entry_telefono_paciente.Text,entry_doctor.Text,entry_tipo_paciente.Text,
 						entry_aseguradora.Text,entry_edad.Text,entry_fecha_nacimiento.Text,dir_pac,
 						entry_cirugia.Text,entry_aseguradora.Text,id_tipopaciente,descripinternamiento,NomEmpleado,
 						AppEmpleado,ApmEmpleado,LoginEmpleado,query,idtipointernamiento);   // rpt_hoja_de_cargos.cs
-						
+			*/			
 			rango_de_fecha.Destroy();
 		}
 		
 		void on_button_notas_de_cargos_clicked(object sender, EventArgs args)
 		{
 			Console.WriteLine("NOTAS DE CARGOS");
+			/*
 			new osiris.notas_de_cargos (PidPaciente,this.folioservicio,nombrebd,
 						entry_fecha_admision.Text,entry_fechahora_alta.Text,entry_nombre_paciente.Text,
 						entry_telefono_paciente.Text,entry_doctor.Text,entry_tipo_paciente.Text,
 						entry_aseguradora.Text,entry_edad.Text,entry_fecha_nacimiento.Text,dir_pac,
 						entry_cirugia.Text,entry_aseguradora.Text,id_tipopaciente,"Hospitalizacion",NomEmpleado,
 						AppEmpleado,ApmEmpleado,LoginEmpleado,"");   // rpt_hoja_de_cargos.cs
+			*/
 		}
 		
 		void on_radiobutton_mejoria_clicked(object sender, EventArgs args)

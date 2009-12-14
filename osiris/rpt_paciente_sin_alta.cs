@@ -31,14 +31,10 @@
 // Objeto		: 
 //////////////////////////////////////////////////////////
 using System;
-using System.IO;
 using Gtk;
-using Gnome;
 using Npgsql;
 using System.Data;
 using Glade;
-using System.Collections;
-using GtkSharp;
 
 namespace osiris
 {
@@ -411,7 +407,10 @@ namespace osiris
 		}
 		
 		void imprime_reporte(object sender, EventArgs args)
-		{	
+		{
+			
+		}
+		/*
 			titulo = "REPORTE DE OCUPACION";
 			Gnome.PrintJob    trabajo   = new Gnome.PrintJob (PrintConfig.Default());
         	Gnome.PrintDialog dialogo   = new Gnome.PrintDialog (trabajo, titulo, 0);
@@ -655,6 +654,7 @@ namespace osiris
 				imprime_encabezado(ContextoImp,trabajoImpresion);
 	     	}
 		}
+		*/
 		
 		// Valida entradas que solo sean numericas, se utiliza eb ventana de
 		//de rangos de fechas

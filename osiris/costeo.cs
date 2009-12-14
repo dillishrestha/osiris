@@ -36,10 +36,6 @@ using Npgsql;
 using System.Data;
 using Gtk;
 using Glade;
-using Gnome;
-using System.Collections;
-using GtkSharp;
-
 
 namespace osiris
 {
@@ -78,13 +74,13 @@ namespace osiris
 		private TreeStore treeViewEngineProducto;
 		private TreeStore treeViewEngineDetaFact; 	// Detalle de la Factura 
 		
-		public string LoginEmpleado;
-		public string NomEmpleado;
-		public string AppEmpleado;
-		public string ApmEmpleado;
-		public string nombrebd;
-		public string cirugia;
-		public string connectionString = "Server=localhost;" +
+		string LoginEmpleado;
+		string NomEmpleado;
+		string AppEmpleado;
+		string ApmEmpleado;
+		string nombrebd;
+		string cirugia;
+		string connectionString = "Server=localhost;" +
 						"Port=5432;" +
 						 "User ID=admin;" +
 						"Password=1qaz2wsx;";

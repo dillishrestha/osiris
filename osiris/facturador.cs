@@ -33,9 +33,6 @@ using Npgsql;
 using System.Data;
 using Gtk;
 using Glade;
-using Gnome;
-using System.Collections;
-using GtkSharp;
 
 namespace osiris
 {
@@ -1391,11 +1388,13 @@ namespace osiris
 		
 		void on_button_imprime_factura_clicked (object sender, EventArgs args)
 		{
+			/*
 			new osiris.imprime_formato_factura(entry_numero_factura.Text.Trim(),this.treeview_detalle_de_factura,this.entry_nombre_cliente.Text,this.entry_rfc_cliente.Text,this.entry_curp_cliente.Text,
 									this.entry_cp_cliente.Text,this.entry_direccion_cliente.Text,this.entry_colonia_cliente.Text,this.entry_municipio_cliente.Text,this.entry_estado_cliente.Text,
 									this.entry_telefono_cliente.Text,this.entry_fax_cliente.Text,this.entry_subtotal_15.Text,this.entry_subtotal_0.Text,this.entry_total_iva.Text,this.entry_subtotal.Text,this.entry_deducible_factura.Text,
 									this.entry_coaseguro_porcentage.Text,this.entry_coaseguro_factura.Text,this.entry_total_factura.Text,this.cantidad_en_letras,
 									this.treeViewEngineDetaFact,this.entry_fecha_factura.Text,LoginEmpleado,error_no_existe);
+			*/
 		}
 		
 		void crea_treeview_busqueda(string tipo_busqueda)
@@ -2842,13 +2841,13 @@ namespace osiris
 		// Declarando variable de fuente para la impresion
 		// Declaracion de fuentes tipo Bitstream Vera sans
 		//public Gnome.Font fuente5 = Gnome.Font.FindClosest("Luxi Sans", 5);
-		public Gnome.Font fuente6 = Gnome.Font.FindClosest("Luxi Sans", 6);
-		public Gnome.Font fuente7 = Gnome.Font.FindClosest("Luxi Sans", 7);
-		public Gnome.Font fuente8 = Gnome.Font.FindClosest("Luxi Sans", 8);//Bitstream Vera Sans
-		public Gnome.Font fuente9 = Gnome.Font.FindClosest("Luxi Sans", 9);
-		public Gnome.Font fuente10 = Gnome.Font.FindClosest("Luxi Sans", 10);
-		public Gnome.Font fuente11 = Gnome.Font.FindClosest("Luxi Sans", 11);
-		public Gnome.Font fuente12 = Gnome.Font.FindClosest("Luxi Sans", 12);
+		//public Gnome.Font fuente6 = Gnome.Font.FindClosest("Luxi Sans", 6);
+		//public Gnome.Font fuente7 = Gnome.Font.FindClosest("Luxi Sans", 7);
+		//public Gnome.Font fuente8 = Gnome.Font.FindClosest("Luxi Sans", 8);//Bitstream Vera Sans
+		//public Gnome.Font fuente9 = Gnome.Font.FindClosest("Luxi Sans", 9);
+		//public Gnome.Font fuente10 = Gnome.Font.FindClosest("Luxi Sans", 10);
+		//public Gnome.Font fuente11 = Gnome.Font.FindClosest("Luxi Sans", 11);
+		//public Gnome.Font fuente12 = Gnome.Font.FindClosest("Luxi Sans", 12);
 		
 		public string connectionString = "Server=localhost;" +
 			                             "Port=5432;" +
@@ -3074,6 +3073,10 @@ namespace osiris
 		
 		void on_button_imprimir_clicked(object sender, EventArgs args)
 		{
+			
+		}
+		
+		/*
 
 			Gnome.PrintJob    trabajo   = new Gnome.PrintJob(Gnome.PrintConfig.Default());
         	Gnome.PrintDialog dialogo   = new Gnome.PrintDialog(trabajo, "Nota de Credito", 0);
@@ -3192,7 +3195,8 @@ namespace osiris
 			}	
 				
 		}
-			
+		*/
+		
 		void on_checkbutton_descripcion(object sender, EventArgs args)
 		{
 			if(checkbutton_descripcion.Active == true){				

@@ -261,10 +261,12 @@ namespace osiris
 								button_caja.Clicked += new EventHandler(on_button_caja_clicked );
 								button_costos.Clicked += new EventHandler(on_button_costos_clicked);
 								button_cargos_urgencia.Clicked += new EventHandler( on_button_cargos_urgencia_clicked );
+								button_agredecimientos.Clicked += new EventHandler(on_button_agredecimientos_clicked);
+								button_ocupacion_hscmty.Clicked += new EventHandler(on_button_ocupacion_hscmty_clicked);
+								button_cargos_hospital.Clicked += new EventHandler( on_button_cargos_hospital_clicked );
+								button_cargos_quirofano.Clicked += new EventHandler( on_button_cargos_quirofano_clicked);
 								
-								/*
-					 			button_cargos_hospital.Clicked += new EventHandler( on_button_cargos_hospital_clicked );
-					 			button_cargos_quirofano.Clicked += new EventHandler( on_button_cargos_quirofano_clicked );					 			
+								/*					 			
 					 			button_endoscopia.Clicked += new EventHandler(on_button_endoscopia_clicked);
 					 			button_laboratorio.Clicked += new EventHandler( on_button_laboratorio_clicked );
 					 			button_imagenologia.Clicked += new EventHandler( on_button_imagenologia_clicked );
@@ -273,14 +275,13 @@ namespace osiris
 					 			button_terapia_neonatal.Clicked += new EventHandler(on_button_terapia_neonatal_clicked);
 					 			button_ginecologia.Clicked += new EventHandler(on_button_ginecologia_clicked);
 					 			
-					 			button_medicos.Clicked += new EventHandler(on_button_medicos_clicked);
-					 			button_agredecimientos.Clicked += new EventHandler(on_button_agredecimientos_clicked);
+					 			button_medicos.Clicked += new EventHandler(on_button_medicos_clicked);					 			
 					 							 			
 					 			button_herramientas.Clicked += new EventHandler(on_button_herramientas_clicked);
 					 			button_cambio_contraseña.Clicked += new EventHandler(on_button_cambio_contraseña_clicked);
 					 			
 					 			button_farmacia.Clicked += new EventHandler(on_button_farmacia_clicked);
-					 			button_ocupacion_hscmty.Clicked += new EventHandler(on_button_ocupacion_hscmty_clicked);
+					 			
 					 			button_nutricion.Clicked += new EventHandler(on_button_nutricion_clicked);
 					 			button_hemodialisis.Clicked += new EventHandler(on_button_hemodialisis_clicked);
 					 			*/
@@ -346,19 +347,19 @@ namespace osiris
 		// Ocupacion Hospitalaria
 		public void on_button_ocupacion_hscmty_clicked (object sender, EventArgs a)
 		{
-			//new osiris.reporte_pacientes_sin_alta(this.nombrebd);
+			new osiris.reporte_pacientes_sin_alta(this.nombrebd);
 		}
 		
 		// llamada de pantalla para cargos de enfermeria
 		// cargos_hospitalizacion.cs
 		public void on_button_cargos_hospital_clicked (object sender, EventArgs args)
 		{
-			//new osiris.hospitalizacion(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);   	
+			new osiris.hospitalizacion(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);   	
 		}
 		
 		public void on_button_cargos_quirofano_clicked (object sender, EventArgs args)
 		{
-			//new osiris.quirofano(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);   	
+			new osiris.quirofano(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);   	
 		}
 	
 		public void on_button_cargos_urgencia_clicked (object sender, EventArgs args)

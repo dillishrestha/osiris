@@ -152,7 +152,7 @@ namespace osiris
 		
 		void on_button_movtotal_producto_clicked (object sender, EventArgs args)
 		{
-			//new osiris.consulta_mensual_productos(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
+			new osiris.consulta_mensual_productos(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
 		}
 		
 		void on_button_catalogo_productos_clicked (object sender, EventArgs args)
@@ -171,7 +171,7 @@ namespace osiris
 		
 		void on_button_costeo_procedimiento_clicked(object sender, EventArgs args)
 		{
-			//new osiris.costeo_productos(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
+			new osiris.costeo_productos(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);  // costeo.cs
 		}
 		
 		void on_button_productos_aplicados_clicked(object sender, EventArgs args)

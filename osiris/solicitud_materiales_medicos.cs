@@ -34,9 +34,6 @@ using Npgsql;
 using System.Data;
 using Gtk;
 using Glade;
-using Gnome;
-using System.Collections;
-using GtkSharp;
 
 namespace osiris
 {
@@ -85,41 +82,39 @@ namespace osiris
 		private TreeStore treeViewEngineBusca2;
 		private ListStore treeViewEngineSolicitud;
 		
-
-
 		//imprimir
-		public Gnome.Font fuente5 = Gnome.Font.FindClosest("Luxi Sans", 5);
-		public Gnome.Font fuente6 = Gnome.Font.FindClosest("Luxi Sans", 6);
-		public Gnome.Font fuente7 = Gnome.Font.FindClosest("Luxi Sans", 7);
-		public Gnome.Font fuente8 = Gnome.Font.FindClosest("Luxi Sans", 8);//Bitstream Vera Sans
-		public Gnome.Font fuente9 = Gnome.Font.FindClosest("Luxi Sans", 9);
-		public Gnome.Font fuente10 = Gnome.Font.FindClosest("Luxi Sans", 10);
-		public Gnome.Font fuente11 = Gnome.Font.FindClosest("Luxi Sans", 11);
-		public Gnome.Font fuente12 = Gnome.Font.FindClosest("Luxi Sans", 12);
-		public Gnome.Font fuente36 = Gnome.Font.FindClosest("Luxi Sans", 36);
+		//public Gnome.Font fuente5 = Gnome.Font.FindClosest("Luxi Sans", 5);
+		//public Gnome.Font fuente6 = Gnome.Font.FindClosest("Luxi Sans", 6);
+		//public Gnome.Font fuente7 = Gnome.Font.FindClosest("Luxi Sans", 7);
+		//public Gnome.Font fuente8 = Gnome.Font.FindClosest("Luxi Sans", 8);//Bitstream Vera Sans
+		//public Gnome.Font fuente9 = Gnome.Font.FindClosest("Luxi Sans", 9);
+		//public Gnome.Font fuente10 = Gnome.Font.FindClosest("Luxi Sans", 10);
+		//public Gnome.Font fuente11 = Gnome.Font.FindClosest("Luxi Sans", 11);
+		//public Gnome.Font fuente12 = Gnome.Font.FindClosest("Luxi Sans", 12);
+		//public Gnome.Font fuente36 = Gnome.Font.FindClosest("Luxi Sans", 36);
 		
 		//private ArrayList arraysolicitudmat;
 		
-		public string LoginEmpleado;
-		public string NomEmpleado;
-		public string AppEmpleado;
-		public string ApmEmpleado;
-		public string nombrebd;
-		public string connectionString = "Server=localhost;" +
+		string LoginEmpleado;
+		string NomEmpleado;
+		string AppEmpleado;
+		string ApmEmpleado;
+		string nombrebd;
+		string connectionString = "Server=localhost;" +
 						"Port=5432;" +
 						 "User ID=admin;" +
 						"Password=1qaz2wsx;";
 		
-		public float valoriva = 15;
-		public int idalmacen;    // Esta variable almacena el codigo del almacen de esta clase, se recibe como parametro de la clase
+		float valoriva = 15;
+		int idalmacen;    // Esta variable almacena el codigo del almacen de esta clase, se recibe como parametro de la clase
 		
-		public int ultimasolicitud;		// Toma el ultimo numero de solictud
+		int ultimasolicitud;		// Toma el ultimo numero de solictud
 		
 		bool editar = true;				// me indica si puedo agregar mas productos a la solicitud
 		
-		public int filas=690;
-		public int contador = 1;
-		public int numpage = 1;
+		int filas=690;
+		int contador = 1;
+		int numpage = 1;
 		
 		//Declaracion de ventana de error y pregunta
 		protected Gtk.Window MyWinError;
@@ -181,6 +176,9 @@ namespace osiris
 
 		void on_button_imprime_solicitud_clicked(object sender, EventArgs args)
 		{
+		}
+		
+		/*
 			Gnome.PrintJob    trabajo = new Gnome.PrintJob(Gnome.PrintConfig.Default());
         	Gnome.PrintDialog dialogo = new Gnome.PrintDialog(trabajo, "Envio Materiales Almacen", 0);
         	
@@ -398,6 +396,7 @@ namespace osiris
 			
 			Gnome.Print.Setfont (ContextoImp, fuente8);
 		}
+		*/
 
 		void on_button_busca_producto_clicked(object sender, EventArgs args)
 		{

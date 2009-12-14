@@ -9,9 +9,6 @@ using Npgsql;
 using System.Data;
 using Gtk;
 using Glade;
-using Gnome;
-using System.Collections;
-using GtkSharp;
 
 namespace osiris
  {
@@ -139,52 +136,52 @@ namespace osiris
 		[Widget]Gtk.Entry entry_tipo_anestecia;
 		[Widget]Gtk.Calendar calandario_quirofano;
 		
-		public int idtipocirugia = 1;	        			// Toma el valor de numero de atencion de paciente
-		public string cirugia;
-		public int idtipoesp = 1;
-		public string especialidad;
-		public int iddiagnostico = 1;
-		public string diagnostico;
-		public int id_medico = 1;
+		int idtipocirugia = 1;	        			// Toma el valor de numero de atencion de paciente
+		string cirugia;
+		int idtipoesp = 1;
+		string especialidad;
+		int iddiagnostico = 1;
+		string diagnostico;
+		int id_medico = 1;
 		
-		public int id_cirujano = 1;
-		public int id_neonatologo = 1;
-		public int id_ayudante = 1;
-		public int id_anestesiologo = 1;
-		public int id_circulante1 = 1;
-		public int id_circulante2 = 1;
-		public int id_internista = 1;
-		public int id_seleccion = 1;
+		int id_cirujano = 1;
+		int id_neonatologo = 1;
+		int id_ayudante = 1;
+		int id_anestesiologo = 1;
+		int id_circulante1 = 1;
+		int id_circulante2 = 1;
+		int id_internista = 1;
+		int id_seleccion = 1;
 		
-		public int id_esp_medico = 1;
-		public string iddiag;
-		public string  selcampo = "";
+		int id_esp_medico = 1;
+		string iddiag;
+		string  selcampo = "";
 
-		public int ultimaprogramacion = 1;
+		int ultimaprogramacion = 1;
 		
 		//variables principales
-		public string LoginEmpleado;
-		public string NomEmpleado;
-		public string AppEmpleado;
-		public string ApmEmpleado;
-		public string nombrebd;
-		public string nomcatalogo;
-		public string busqueda = "";
-		public string nombmedico = "";
-		public string nombanestesiologo = "";
-		public string especialidadmed ="";
-		public string paciente_prog = "";		
-		public int tipobusqueda_doctor = 1;
-		public int tipobusqueda_empleado = 1;
-		public int sala_2 = 1;
-		public int sala_1 = 1;		
-		public int iddiagnosticocie10 = 1;	// Toma el valor del id de tabla de diagnosticos
-		public int iddiagnosticofinal = 1;	// toma el valor del id del diagnostico final
-		public int idpresupuesto_qx = 1;		
-		public int folio_servicio = 1;
-		public string tipobusqueda = "AND hscmty_his_medicos.nombre1_medico LIKE '";
+		string LoginEmpleado;
+		string NomEmpleado;
+		string AppEmpleado;
+		string ApmEmpleado;
+		string nombrebd;
+		string nomcatalogo;
+		string busqueda = "";
+		string nombmedico = "";
+		string nombanestesiologo = "";
+		string especialidadmed ="";
+		string paciente_prog = "";		
+		int tipobusqueda_doctor = 1;
+		int tipobusqueda_empleado = 1;
+		int sala_2 = 1;
+		int sala_1 = 1;		
+		int iddiagnosticocie10 = 1;	// Toma el valor del id de tabla de diagnosticos
+		int iddiagnosticofinal = 1;	// toma el valor del id del diagnostico final
+		int idpresupuesto_qx = 1;		
+		int folio_servicio = 1;
+		string tipobusqueda = "AND hscmty_his_medicos.nombre1_medico LIKE '";
 		
-		public string connectionString = "Server=localhost;" +
+		string connectionString = "Server=localhost;" +
 									"Port=5432;" +
 									 "User ID=admin;" +
 									"Password=1qaz2wsx;";		
@@ -201,24 +198,24 @@ namespace osiris
 		private TreeStore treeViewEngineBusca3;
 		
 		///Declaracion de columnas de busqueda de Medicos
-		public TreeViewColumn col_idmedico;			public TreeViewColumn col_nomb1medico;		
-		public TreeViewColumn col_nomb2medico;		public TreeViewColumn col_appmedico;		
-		public TreeViewColumn col_apmmedico;		public TreeViewColumn col_espemedico;		
-		public TreeViewColumn col_telmedico;		public TreeViewColumn col_cedulamedico;		
-		public TreeViewColumn col_telOfmedico;		public TreeViewColumn col_celmedico;		
-		public TreeViewColumn col_celmedico2;		public TreeViewColumn col_nextelmedico;		
-		public TreeViewColumn col_beepermedico;		public TreeViewColumn col_empresamedico;		
-		public TreeViewColumn col_estadomedico;		
+		TreeViewColumn col_idmedico;		TreeViewColumn col_nomb1medico;		
+		TreeViewColumn col_nomb2medico;		TreeViewColumn col_appmedico;		
+		TreeViewColumn col_apmmedico;		TreeViewColumn col_espemedico;		
+		TreeViewColumn col_telmedico;		TreeViewColumn col_cedulamedico;		
+		TreeViewColumn col_telOfmedico;		TreeViewColumn col_celmedico;		
+		TreeViewColumn col_celmedico2;		TreeViewColumn col_nextelmedico;		
+		TreeViewColumn col_beepermedico;	TreeViewColumn col_empresamedico;		
+		TreeViewColumn col_estadomedico;		
 		
 		//Declarando las celdas
-		public CellRendererText cellr0;				public CellRendererText cellrt1;
-		public CellRendererText cellrt2;			public CellRendererText cellrt3;
-		public CellRendererText cellrt4;			public CellRendererText cellrt5;
-		public CellRendererText cellrt6;			public CellRendererText cellrt7;
-		public CellRendererText cellrt8;			public CellRendererText cellrt9;
-		public CellRendererText cellrt10;			public CellRendererText cellrt11;
-		public CellRendererText cellrt12;			public CellRendererText cellrt13;
-		public CellRendererText cellrt37;
+		CellRendererText cellr0;			CellRendererText cellrt1;
+		CellRendererText cellrt2;			CellRendererText cellrt3;
+		CellRendererText cellrt4;			CellRendererText cellrt5;
+		CellRendererText cellrt6;			CellRendererText cellrt7;
+		CellRendererText cellrt8;			CellRendererText cellrt9;
+		CellRendererText cellrt10;			CellRendererText cellrt11;
+		CellRendererText cellrt12;			CellRendererText cellrt13;
+		CellRendererText cellrt37;
 		
 		public calendario_quirofano(string LoginEmp_, string NomEmpleado_, string AppEmpleado_, string ApmEmpleado_, string _nombrebd_) 
 		{
@@ -555,7 +552,7 @@ namespace osiris
 		}
 		void busca_pacientes_prog()
 		{
-			//Console.WriteLine(ventana_principal.ToString());
+			Console.WriteLine("Busca Paciente");
 			busqueda ="paciente";
 			Glade.XML gxml = new Glade.XML (null, "registro_admision.glade", "busca_paciente", null);
 			gxml.Autoconnect (this);
@@ -564,8 +561,9 @@ namespace osiris
 			crea_treeview_busqueda3();
 			this.button_nuevo_paciente.Sensitive = false;
             //button_nuevo_paciente.Clicked += new EventHandler(on_button_nuevo_paciente_clicked);
-			button_salir.Clicked += new EventHandler(on_cierraventanas_clicked); // esta sub-clase esta en hscmty.cs
-			button_buscar_busqueda.Clicked += new EventHandler(on_buscar_busqueda_clicked);if(entry_id_cirugia.Text  == "" || entry_id_cirugia.Text == " "){
+			button_salir.Clicked += new EventHandler(on_cierraventanas_clicked);
+			button_buscar_busqueda.Clicked += new EventHandler(on_buscar_busqueda_clicked);
+			if(entry_id_cirugia.Text  == "" || entry_id_cirugia.Text == " "){
 				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
 				MessageType.Error,ButtonsType.Close, 
 				"Debe de llenar el campo de id cirugia con uno \n"+"existente para que los datos se muestren \n");
@@ -575,8 +573,8 @@ namespace osiris
 				idtipocirugia = int.Parse(entry_id_cirugia.Text.ToString());
 				llenado_de_cirugia(entry_id_cirugia.Text );
 			}
-			button_selecciona.Clicked += new EventHandler(on_selecciona_paciente_clicked);
-			entry_expresion.KeyPressEvent += onKeyPressEvent_enter;
+			//button_selecciona.Clicked += new EventHandler(on_selecciona_paciente_clicked);
+			//entry_expresion.KeyPressEvent += onKeyPressEvent_enter;
 		}
 		// activa busqueda con boton busqueda
 		void on_buscar_busqueda_clicked (object sender, EventArgs a)
@@ -1028,7 +1026,7 @@ namespace osiris
 						if ((string) entry_expresion.Text.ToUpper().Trim() == ""){
 							comando.CommandText = "SELECT id_medico, "+
 										"to_char(id_empresa,'999999') AS idempresa, "+
-										"to_char(hscmty_his_tipo_especialidad.id_especialidad,999999) AS idespecialidad, "+
+										"to_char(hscmty_his_tipo_especialidad.id_especialidad,'999999') AS idespecialidad, "+
 										"nombre_medico,descripcion_empresa,descripcion_especialidad,centro_medico, "+
 										"nombre1_medico,nombre2_medico,apellido_paterno_medico,apellido_materno_medico, "+
 										"telefono1_medico,cedula_medico,telefono2_medico,celular1_medico,celular2_medico, "+
@@ -1049,7 +1047,7 @@ namespace osiris
 						}else{
 							comando.CommandText = "SELECT id_medico, "+
 										"to_char(id_empresa,'999999') AS idempresa, "+
-										"to_char(hscmty_his_tipo_especialidad.id_especialidad,999999) AS idespecialidad, "+
+										"to_char(hscmty_his_tipo_especialidad.id_especialidad,'999999') AS idespecialidad, "+
 										"nombre_medico,descripcion_empresa,descripcion_especialidad,centro_medico, "+
 										"nombre1_medico,nombre2_medico,apellido_paterno_medico,apellido_materno_medico, "+
 										"telefono1_medico,cedula_medico,telefono2_medico,celular1_medico,celular2_medico, "+
@@ -1791,10 +1789,10 @@ namespace osiris
 	              	
 				comando.CommandText = "SELECT hscmty_his_tipo_cirugias.id_tipo_cirugia, "+
 									"descripcion_cirugia,descripcion_especialidad, "+
-									"to_char(precio_de_venta,99999999) AS precioventa, "+
-									"to_char(deposito_minimo,99999999) AS depominimo, "+
-									"to_char(dias_internamiento,99999999) AS diasinternamiento, "+
-									"to_char(hscmty_his_tipo_cirugias.id_especialidad,999999) AS idespecialidad  "+
+									"to_char(precio_de_venta,'99999999') AS precioventa, "+
+									"to_char(deposito_minimo,'99999999') AS depominimo, "+
+									"to_char(dias_internamiento,'99999999') AS diasinternamiento, "+
+									"to_char(hscmty_his_tipo_cirugias.id_especialidad,'999999') AS idespecialidad  "+
 									"FROM hscmty_his_tipo_cirugias,hscmty_his_tipo_especialidad  "+
 					            	"WHERE hscmty_his_tipo_cirugias.id_especialidad = hscmty_his_tipo_especialidad.id_especialidad  "+
 					            	"AND hscmty_his_tipo_cirugias.id_tipo_cirugia = '"+(string)  idcirugia.ToString()+"' ;";
@@ -2539,5 +2537,3 @@ namespace osiris
 		}	
 	}
 }
-	
-	

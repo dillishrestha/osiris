@@ -33,9 +33,7 @@ using Npgsql;
 using System.Data;
 using Gtk;
 using Glade;
-using Gnome;
 using System.Collections;
-using GtkSharp;
 
 namespace osiris
 {
@@ -874,26 +872,29 @@ namespace osiris
 						"AND to_char(hscmty_erp_cobros_deta.fechahora_creacion,'MM') <= '"+entry_mes2.Text+"' "+
 						"AND to_char(hscmty_erp_cobros_deta.fechahora_creacion,'dd') >= '"+entry_dia1.Text+"' "+
 						"AND to_char(hscmty_erp_cobros_deta.fechahora_creacion,'dd') <= '"+entry_dia2.Text+"' ";
-			}	   
+			}   
+			/*
 			new hoja_cargos (PidPaciente,this.folioservicio,nombrebd,
 						entry_fecha_admision.Text,entry_fechahora_alta.Text,entry_nombre_paciente.Text,
 						entry_telefono_paciente.Text,entry_doctor.Text,entry_tipo_paciente.Text,
 						entry_aseguradora.Text,entry_edad.Text,entry_fecha_nacimiento.Text,dir_pac,
 						entry_cirugia.Text,entry_aseguradora.Text,id_tipopaciente,descripinternamiento,NomEmpleado,
 						AppEmpleado,ApmEmpleado,LoginEmpleado,query,idtipointernamiento);   // rpt_hoja_de_cargos.cs
-						
+			*/			
 			rango_de_fecha.Destroy();
 		}
 		
 		void on_button_notas_de_cargos_clicked(object sender, EventArgs args)
 		{
 			Console.WriteLine("NOTAS DE CARGOS");
+			/*
 			new osiris.notas_de_cargos (PidPaciente,this.folioservicio,nombrebd,
 						entry_fecha_admision.Text,entry_fechahora_alta.Text,entry_nombre_paciente.Text,
 						entry_telefono_paciente.Text,entry_doctor.Text,entry_tipo_paciente.Text,
 						entry_aseguradora.Text,entry_edad.Text,entry_fecha_nacimiento.Text,dir_pac,
 						entry_cirugia.Text,entry_aseguradora.Text,id_tipopaciente,"Hospitalizacion",NomEmpleado,
 						AppEmpleado,ApmEmpleado,LoginEmpleado,"");   // rpt_hoja_de_cargos.cs
+			*/
 		}
 		
 		void on_radiobutton_mejoria_clicked(object sender, EventArgs args)

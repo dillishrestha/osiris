@@ -92,27 +92,27 @@ namespace osiris
 		
 		void on_button_soli_material_clicked(object sender, EventArgs args)
 		{
-			//new osiris.solicitud_material(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,4);
+			new osiris.solicitud_material(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,4);
 		}
 		
 		void on_button_autorizacion_medicamento_clicked(object sender, EventArgs args)
 		{
-			 //new osiris.orden_compra_urgencias(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,4,"URGENCIAS",0,"");
+			 new osiris.orden_compra_urgencias(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,4,"URGENCIAS",0,"");
 		}
 		
 		void on_button_inv_subalmacen_clicked(object sender, EventArgs args)
 		{
-			//new osiris.inventario_sub_almacen(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,4,"URGENCIAS",1);
+			new osiris.inventario_sub_almacen(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,4,"URGENCIAS",1);
 		}
 		
 		void on_button_traspaso_subalmacenes_clicked(object sender, EventArgs args)
 		{
-			//new osiris.inventario_sub_almacen(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,4,"URGENCIAS",2);
+			new osiris.inventario_sub_almacen(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,4,"URGENCIAS",2);
 		}
 		
 		void on_button_asignacion_habitacion_clicked(object sender, EventArgs args)
 		{
-		   //new osiris.asignacion_de_habitacion(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd, 0);
+		   new osiris.asignacion_de_habitacion(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd, 0);
 		}
 		
 		void on_cierraventanas_clicked (object sender, EventArgs args)

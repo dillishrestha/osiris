@@ -168,12 +168,12 @@ namespace osiris
 		
 		void on_button_facturador_clicked(object sender, EventArgs args)
 		{
-			//new osiris.facturador_tesoreria(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
+			new osiris.facturador_tesoreria(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
 		}
 		
 		void on_button_clientes_clicked(object sender, EventArgs args)
 		{
-			//new osiris.catalogos_generales("cliente",LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
+			new osiris.catalogos_generales("cliente",LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
 		}
 		
 		void on_button_button_rpt_abonos_clicked(object sender, EventArgs args)
@@ -183,7 +183,7 @@ namespace osiris
 		
 		void on_button_envio_facturas_clicked(object sender, EventArgs args)
 		{
-			//new osiris.envio_de_facturas(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
+			new osiris.envio_de_facturas(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
 		}
 
 		void button_rpt_facturas_pendientes_clicked(object sender, EventArgs args)

@@ -970,7 +970,7 @@ namespace osiris
 				conexion.Open ();
 				NpgsqlCommand comando; 
 				comando = conexion.CreateCommand ();
-				comando.CommandText = "SELECT to_char(hscmty_erp_honorarios_medicos.id_medico, 999999) AS idmedico, "+ 
+				comando.CommandText = "SELECT to_char(hscmty_erp_honorarios_medicos.id_medico,'999999') AS idmedico, "+ 
 									"to_char(monto_del_abono,'9999999.99') AS montodelabono, "+
 									"to_char(fechahora_abono,'dd-mm-yyyy HH24:mi:ss') AS fechaabono, "+
 									"to_char(id_abono,'999999999') AS idabono, "+
@@ -1346,7 +1346,7 @@ namespace osiris
 						if ((string) entry_expresion.Text.ToUpper().Trim() == ""){
 							comando.CommandText = "SELECT id_medico, "+
 										"to_char(id_empresa,'999999') AS idempresa, "+
-										"to_char(hscmty_his_tipo_especialidad.id_especialidad,999999) AS idespecialidad, "+
+										"to_char(hscmty_his_tipo_especialidad.id_especialidad,'999999') AS idespecialidad, "+
 										"nombre_medico,descripcion_empresa,descripcion_especialidad,centro_medico, "+
 										"nombre1_medico,nombre2_medico,apellido_paterno_medico,apellido_materno_medico, "+
 										"telefono1_medico,cedula_medico,telefono2_medico,celular1_medico,celular2_medico, "+
@@ -1367,7 +1367,7 @@ namespace osiris
 						}else{
 							comando.CommandText = "SELECT id_medico, "+
 										"to_char(id_empresa,'999999') AS idempresa, "+
-										"to_char(hscmty_his_tipo_especialidad.id_especialidad,999999) AS idespecialidad, "+
+										"to_char(hscmty_his_tipo_especialidad.id_especialidad,'999999') AS idespecialidad, "+
 										"nombre_medico,descripcion_empresa,descripcion_especialidad,centro_medico, "+
 										"nombre1_medico,nombre2_medico,apellido_paterno_medico,apellido_materno_medico, "+
 										"telefono1_medico,cedula_medico,telefono2_medico,celular1_medico,celular2_medico, "+

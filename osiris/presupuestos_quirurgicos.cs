@@ -172,7 +172,7 @@ namespace osiris
 		
 		string LoginEmpleado;
 		
-		string connectionString = "Server=192.168.1.148;" +
+		string connectionString = "Server=localhost;" +
 						"Port=5432;" +
 						 "User ID=admin;" +
 						"Password=1qaz2wsx;";

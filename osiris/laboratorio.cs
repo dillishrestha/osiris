@@ -35,9 +35,8 @@ using Npgsql;
 using System.Data;
 using Gtk;
 using Glade;
-using Gnome;
 using System.Collections;
-using GtkSharp;
+
 
 namespace osiris
 {
@@ -94,7 +93,7 @@ namespace osiris
 		
 		void on_button_rpt_reg_pacientes_clicked(object sender, EventArgs args)
 		{
-			new osiris.rep_reg_pac_labo_rx(nombrebd,"AND hscmty_grupo_producto.agrupacion = 'LAB' ","LABORATORIO");
+			//new osiris.rep_reg_pac_labo_rx(nombrebd,"AND hscmty_grupo_producto.agrupacion = 'LAB' ","LABORATORIO");
 		}
 		
 		void on_cierraventanas_clicked (object sender, EventArgs args)

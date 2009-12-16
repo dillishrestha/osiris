@@ -266,7 +266,7 @@ namespace osiris
 								button_cargos_hospital.Clicked += new EventHandler( on_button_cargos_hospital_clicked );
 								button_cargos_quirofano.Clicked += new EventHandler( on_button_cargos_quirofano_clicked);
 								
-								/*					 			
+													 			
 					 			button_endoscopia.Clicked += new EventHandler(on_button_endoscopia_clicked);
 					 			button_laboratorio.Clicked += new EventHandler( on_button_laboratorio_clicked );
 					 			button_imagenologia.Clicked += new EventHandler( on_button_imagenologia_clicked );
@@ -274,7 +274,7 @@ namespace osiris
 					 			button_terapia_nino.Clicked += new EventHandler( on_button_terapia_pediatrica_clicked );
 					 			button_terapia_neonatal.Clicked += new EventHandler(on_button_terapia_neonatal_clicked);
 					 			button_ginecologia.Clicked += new EventHandler(on_button_ginecologia_clicked);
-					 			
+					 			/*
 					 			button_medicos.Clicked += new EventHandler(on_button_medicos_clicked);					 			
 					 							 			
 					 			button_herramientas.Clicked += new EventHandler(on_button_herramientas_clicked);
@@ -369,12 +369,12 @@ namespace osiris
 		
 		public void on_button_endoscopia_clicked (object sender, EventArgs args)
 		{
-			//new osiris.endoscopia(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
+			new osiris.endoscopia(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
 		}
 		
 		public void on_button_laboratorio_clicked (object sender, EventArgs args)
 		{
-			//new osiris.laboratorio (LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
+			new osiris.laboratorio (LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
 		}
 		
 		public void on_button_hemodialisis_clicked (object sender, EventArgs args)
@@ -385,27 +385,27 @@ namespace osiris
 		///////////////////
 		public void on_button_imagenologia_clicked (object sender, EventArgs args)
 		{
-			//new osiris.imagenologia(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
+			new osiris.imagenologia(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
 		}
 		
 		public void on_button_terapia_adulto_clicked (object sender, EventArgs args)
 		{
-			//new osiris.terapia_adulto(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
+			new osiris.terapia_adulto(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
 		}
 		
 		public void on_button_terapia_pediatrica_clicked (object sender, EventArgs args)
 		{
-			//new osiris.terapia_pediatrica(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
+			new osiris.terapia_pediatrica(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
 		}
 		
 		public void on_button_terapia_neonatal_clicked (object sender, EventArgs args)
 		{
-			//new osiris.terapia_neonatal(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
+			new osiris.terapia_neonatal(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
 		}
 		
 		public void on_button_ginecologia_clicked (object sender, EventArgs args)
 		{
-			//new osiris.tococirugia_ginecologia(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
+			new osiris.tococirugia_ginecologia(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
 		}
 		
 		public void on_button_almacen_clicked(object sender, EventArgs args)

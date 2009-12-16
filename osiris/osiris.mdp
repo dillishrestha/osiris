@@ -82,6 +82,20 @@
     <File name="calendario_quirofano.cs" subtype="Code" buildaction="Compile" />
     <File name="quirofano_cargos.cs" subtype="Code" buildaction="Compile" />
     <File name="envio_de_facturas.cs" subtype="Code" buildaction="Compile" />
+    <File name="endoscopia.cs" subtype="Code" buildaction="Compile" />
+    <File name="endoscopia_cargos.cs" subtype="Code" buildaction="Compile" />
+    <File name="laboratorio.cs" subtype="Code" buildaction="Compile" />
+    <File name="imagenologia.cs" subtype="Code" buildaction="Compile" />
+    <File name="imagenologia_cargos.cs" subtype="Code" buildaction="Compile" />
+    <File name="imagenologia_cargos_b.cs" subtype="Code" buildaction="Compile" />
+    <File name="terapia_adulto.cs" subtype="Code" buildaction="Compile" />
+    <File name="terapia_adulto_cargos.cs" subtype="Code" buildaction="Compile" />
+    <File name="terapia_pediatria.cs" subtype="Code" buildaction="Compile" />
+    <File name="terapia_pediatria_cargos.cs" subtype="Code" buildaction="Compile" />
+    <File name="terapia_neonatal.cs" subtype="Code" buildaction="Compile" />
+    <File name="terapia_neonatal_cargos.cs" subtype="Code" buildaction="Compile" />
+    <File name="tococirugia_ginecologia.cs" subtype="Code" buildaction="Compile" />
+    <File name="tococirugia_ginecologia_cargos.cs" subtype="Code" buildaction="Compile" />
   </Contents>
   <References>
     <ProjectReference type="Gac" localcopy="True" refto="Mono.Cairo, Version=2.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756" />

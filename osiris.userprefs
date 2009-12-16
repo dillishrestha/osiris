@@ -1,21 +1,14 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workbench ActiveDocument="osiris/alta_productos_proveedores.cs" ctype="Workbench">
+  <MonoDevelop.Ide.Workbench ActiveDocument="osiris/osiris.cs" ctype="Workbench">
     <Files>
-      <File FileName="osiris/osiris.cs" Line="362" Column="36" />
-      <File FileName="osiris/rpt_paciente_sin_alta.cs" Line="68" Column="29" />
-      <File FileName="osiris/hospitalizacion.cs" Line="99" Column="55" />
-      <File FileName="osiris/cambia_paciente.cs" Line="121" Column="30" />
-      <File FileName="osiris/costos_consultas.cs" Line="90" Column="32" />
-      <File FileName="osiris/quirofano_cargos.cs" Line="213" Column="36" />
-      <File FileName="osiris/alta_productos_proveedores.cs" Line="1192" Column="26" />
+      <File FileName="osiris/rpt_proc_cobranza.cs" Line="851" Column="112" />
+      <File FileName="osiris/osiris.cs" Line="282" Column="10" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
         <State expanded="True">
           <Node name="osiris" expanded="True">
-            <Node name="References" expanded="True">
-              <Node name="System, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" selected="True" />
-            </Node>
+            <Node name="osiris.cs" selected="True" />
           </Node>
         </State>
       </Pad>

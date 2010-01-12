@@ -1,7 +1,7 @@
 // created on 25/01/2008 at 11:20 a
 //////////////////////////////////////////////////////////////////////
 // created on 21/01/2008 at 08:28 p
-// Hospital Santa Cecilia
+// Sistema Hospitalario OSIRIS
 // Monterrey - Mexico
 //
 // Autor    	: Ing. Juan Antonio Peña Gonzalez (Programacion) gjuanzz@gmail.com
@@ -52,25 +52,26 @@ namespace osiris
 		[Widget] Gtk.Entry entry_totalabonos;
 		[Widget] Gtk.Entry entry_total_de_pacientes;
 		
-		public string connectionString = "Server=localhost;" +
+		string connectionString = "Server=localhost;" +
         	    	                     "Port=5432;" +
             	    	                 "User ID=admin;" +
                 	    	             "Password=1qaz2wsx;";
-        public string nombrebd;
-		public string tiporeporte = "SINALTA";
-		public string titulo = "REPORTE DE PACIENTES SIN ALTA";
+        string nombrebd;
 		
-		public int fila = -70;
-		public int contador = 1;
-		public int numpage = 1;
+		string tiporeporte = "SINALTA";
+		string titulo = "REPORTE DE PACIENTES SIN ALTA";
 		
-		public string idcuarto = "";
-		public decimal saldos = 0;
-		public decimal totabono = 0;
-		public decimal totcuenta = 0;
-		public decimal sumacuenta = 0;
-		public decimal abono = 0;
-		public decimal abonomuestra = 0;
+		int fila = -70;
+		int contador = 1;
+		int numpage = 1;
+		
+		string idcuarto = "";
+		decimal saldos = 0;
+		decimal totabono = 0;
+		decimal totcuenta = 0;
+		decimal sumacuenta = 0;
+		decimal abono = 0;
+		decimal abonomuestra = 0;
 		
 		private TreeStore treeViewEngineocupacion;
 		
@@ -265,42 +266,42 @@ namespace osiris
 				NpgsqlCommand comando; 
 				comando = conexion.CreateCommand ();
 				// asigna el numero de folio de ingreso de paciente (FOLIO)
-				comando.CommandText ="SELECT DISTINCT(hscmty_erp_movcargos.folio_de_servicio),"+							
-								"to_char(hscmty_erp_movcargos.folio_de_servicio,'9999999999') AS foliodeatencion, "+
-								"to_char(hscmty_erp_cobros_enca.pid_paciente,'9999999999') AS pidpaciente, "+
+				comando.CommandText ="SELECT DISTINCT(osiris_erp_movcargos.folio_de_servicio),"+							
+								"to_char(osiris_erp_movcargos.folio_de_servicio,'9999999999') AS foliodeatencion, "+
+								"to_char(osiris_erp_cobros_enca.pid_paciente,'9999999999') AS pidpaciente, "+
 								"nombre1_paciente || ' ' || nombre2_paciente || ' ' || apellido_paterno_paciente || ' ' || apellido_materno_paciente AS nombre_completo, "+
-								"to_char(to_number(to_char(age('2008-01-26 13:30:39',hscmty_his_paciente.fecha_nacimiento_paciente),'yyyy') ,'9999'),'9999') AS edad, "+
-								"to_char(to_number(to_char(age('2008-01-26 01:30:39',hscmty_his_paciente.fecha_nacimiento_paciente),'MM'),'99'),'99') AS mesesedad, "+
-								"hscmty_erp_cobros_enca.nombre_medico_encabezado, "+
-								"hscmty_erp_cobros_enca.id_medico,nombre_medico, "+
-								"hscmty_erp_cobros_enca.id_medico_tratante,nombre_medico,"+
-								"hscmty_erp_cobros_enca.nombre_medico_tratante,"+
-								"hscmty_erp_cobros_enca.id_aseguradora,descripcion_aseguradora,"+
-								"hscmty_erp_cobros_enca.id_empresa,descripcion_empresa,"+
-								"to_char(hscmty_erp_cobros_enca.id_cuarto,'999999999') AS cuarto, "+
-								"to_char(hscmty_erp_cobros_enca.total_abonos,'99999999.99') AS totabonos, "+
-								"hscmty_erp_movcargos.descripcion_diagnostico_movcargos,"+
-								"to_char(hscmty_erp_cobros_enca.fechahora_creacion,'dd-MM-yyyy HH24:mi') AS fecha_ingreso, "+
-								"to_char(hscmty_erp_cobros_enca.total_procedimiento,'99999999.99') AS totalproc,"+
-								"hscmty_erp_cobros_enca.id_habitacion,to_char(hscmty_his_habitaciones.numero_cuarto,'999999999') AS numerocuarto,"+
-								"hscmty_his_habitaciones.descripcion_cuarto,hscmty_his_habitaciones.id_tipo_admisiones AS idtipoadmisiones_habitacion,"+
-								"hscmty_his_habitaciones.descripcion_cuarto_corta,"+
-								"hscmty_erp_movcargos.id_tipo_paciente AS idtipopaciente, descripcion_tipo_paciente "+
-								"FROM hscmty_erp_cobros_enca,hscmty_his_paciente,hscmty_erp_movcargos,hscmty_his_tipo_pacientes,hscmty_aseguradoras,"+
-								"hscmty_his_habitaciones,"+
-								"hscmty_empresas,hscmty_his_medicos "+
-								"WHERE hscmty_erp_cobros_enca.pid_paciente = hscmty_his_paciente.pid_paciente "+
-								"AND hscmty_erp_movcargos.folio_de_servicio = hscmty_erp_cobros_enca.folio_de_servicio "+
-								"AND hscmty_erp_cobros_enca.id_aseguradora = hscmty_aseguradoras.id_aseguradora "+
-								"AND hscmty_erp_movcargos.id_tipo_paciente = hscmty_his_tipo_pacientes.id_tipo_paciente "+
-								"AND hscmty_his_paciente.id_empresa = hscmty_empresas.id_empresa "+
-								//"AND hscmty_his_medicos.id_medico = hscmty_erp_cobros_enca.id_medico "+
-								"AND hscmty_his_medicos.id_medico = hscmty_erp_cobros_enca.id_medico_tratante "+
-								"AND hscmty_erp_cobros_enca.reservacion = 'false' "+
-								"AND hscmty_erp_cobros_enca.alta_paciente = 'false' "+
-								"AND hscmty_erp_cobros_enca.cancelado = 'false' "+
-								"AND hscmty_erp_movcargos.id_tipo_admisiones > '16' "+
-								"AND hscmty_erp_cobros_enca.id_habitacion = hscmty_his_habitaciones.id_habitacion "+
+								"to_char(to_number(to_char(age('2008-01-26 13:30:39',osiris_his_paciente.fecha_nacimiento_paciente),'yyyy') ,'9999'),'9999') AS edad, "+
+								"to_char(to_number(to_char(age('2008-01-26 01:30:39',osiris_his_paciente.fecha_nacimiento_paciente),'MM'),'99'),'99') AS mesesedad, "+
+								"osiris_erp_cobros_enca.nombre_medico_encabezado, "+
+								"osiris_erp_cobros_enca.id_medico,nombre_medico, "+
+								"osiris_erp_cobros_enca.id_medico_tratante,nombre_medico,"+
+								"osiris_erp_cobros_enca.nombre_medico_tratante,"+
+								"osiris_erp_cobros_enca.id_aseguradora,descripcion_aseguradora,"+
+								"osiris_erp_cobros_enca.id_empresa,descripcion_empresa,"+
+								"to_char(osiris_erp_cobros_enca.id_cuarto,'999999999') AS cuarto, "+
+								"to_char(osiris_erp_cobros_enca.total_abonos,'99999999.99') AS totabonos, "+
+								"osiris_erp_movcargos.descripcion_diagnostico_movcargos,"+
+								"to_char(osiris_erp_cobros_enca.fechahora_creacion,'dd-MM-yyyy HH24:mi') AS fecha_ingreso, "+
+								"to_char(osiris_erp_cobros_enca.total_procedimiento,'99999999.99') AS totalproc,"+
+								"osiris_erp_cobros_enca.id_habitacion,to_char(osiris_his_habitaciones.numero_cuarto,'999999999') AS numerocuarto,"+
+								"osiris_his_habitaciones.descripcion_cuarto,osiris_his_habitaciones.id_tipo_admisiones AS idtipoadmisiones_habitacion,"+
+								"osiris_his_habitaciones.descripcion_cuarto_corta,"+
+								"osiris_erp_movcargos.id_tipo_paciente AS idtipopaciente, descripcion_tipo_paciente "+
+								"FROM osiris_erp_cobros_enca,osiris_his_paciente,osiris_erp_movcargos,osiris_his_tipo_pacientes,osiris_aseguradoras,"+
+								"osiris_his_habitaciones,"+
+								"osiris_empresas,osiris_his_medicos "+
+								"WHERE osiris_erp_cobros_enca.pid_paciente = osiris_his_paciente.pid_paciente "+
+								"AND osiris_erp_movcargos.folio_de_servicio = osiris_erp_cobros_enca.folio_de_servicio "+
+								"AND osiris_erp_cobros_enca.id_aseguradora = osiris_aseguradoras.id_aseguradora "+
+								"AND osiris_erp_movcargos.id_tipo_paciente = osiris_his_tipo_pacientes.id_tipo_paciente "+
+								"AND osiris_his_paciente.id_empresa = osiris_empresas.id_empresa "+
+								//"AND osiris_his_medicos.id_medico = osiris_erp_cobros_enca.id_medico "+
+								"AND osiris_his_medicos.id_medico = osiris_erp_cobros_enca.id_medico_tratante "+
+								"AND osiris_erp_cobros_enca.reservacion = 'false' "+
+								"AND osiris_erp_cobros_enca.alta_paciente = 'false' "+
+								"AND osiris_erp_cobros_enca.cancelado = 'false' "+
+								"AND osiris_erp_movcargos.id_tipo_admisiones > '16' "+
+								"AND osiris_erp_cobros_enca.id_habitacion = osiris_his_habitaciones.id_habitacion "+
 								"ORDER BY nombre_completo ;";
 				//Console.WriteLine(comando.CommandText);
 				NpgsqlDataReader lector = comando.ExecuteReader ();
@@ -328,7 +329,7 @@ namespace osiris
 								"to_char(sum(cantidad_aplicada),'9999999999.99') AS totaldeproductos,"+
 								"to_char(sum(precio_producto * cantidad_aplicada),'9999999999.99') AS totalpreciopublico,"+
 								"to_char(sum(precio_costo_unitario * cantidad_aplicada),'9999999999.99') AS totalpreciocosto "+
-								"FROM hscmty_erp_cobros_deta "+
+								"FROM osiris_erp_cobros_deta "+
 								"WHERE eliminado = 'false' "+
 								"AND folio_de_servicio = '"+foliodeservicio+"' "+
 								"GROUP BY folio_de_servicio; ";
@@ -586,8 +587,8 @@ namespace osiris
 		{
 	 		// Cambiar la fuente
 			Gnome.Print.Setfont (ContextoImp, fuente6);
-			ContextoImp.MoveTo(65.5, -30);			ContextoImp.Show("Hospital Santa Cecilia");
-			ContextoImp.MoveTo(66, -30);			ContextoImp.Show("Hospital Santa Cecilia");
+			ContextoImp.MoveTo(65.5, -30);			ContextoImp.Show("Sistema Hospitalario OSIRIS");
+			ContextoImp.MoveTo(66, -30);			ContextoImp.Show("Sistema Hospitalario OSIRIS");
 			ContextoImp.MoveTo(65.5, -40);			ContextoImp.Show("Direccion: Isacc Garza #200 Ote. Centro Monterrey, NL.");
 			ContextoImp.MoveTo(66, -40);			ContextoImp.Show("Direccion: Isacc Garza #200 Ote. Centro Monterrey, NL.");
 			ContextoImp.MoveTo(65.5, -50);			ContextoImp.Show("Conmutador:(81) 81-25-56-10");

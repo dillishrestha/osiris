@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////
 // created on 22/02/2008 at 10:03 a
-// Hospital Santa Cecilia
+// Sistema Hospitalario OSIRIS
 // Monterrey - Mexico
 //
 // Autor    	: Daniel Olivares - arcangeldoc@gmail.com (Programacion Mono)
@@ -129,7 +129,7 @@ namespace osiris
 		public float total_surtido = 0;
 		public int provedor = 0;
 		public int idmedicos = 0;
-		public string tipobusqueda = "AND hscmty_his_medicos.nombre1_medico LIKE '";
+		public string tipobusqueda = "AND osiris_his_medicos.nombre1_medico LIKE '";
 		public string nombres = "";
 		public int folioservicio = 0;
 		public int idproveedor = 0;
@@ -224,7 +224,7 @@ namespace osiris
 				conexion.Open ();
 				NpgsqlCommand comando; 
 				comando = conexion.CreateCommand ();
-               	comando.CommandText = "SELECT id_almacen,descripcion_almacen,sub_almacen FROM hscmty_almacenes "+
+               	comando.CommandText = "SELECT id_almacen,descripcion_almacen,sub_almacen FROM osiris_almacenes "+
                						"WHERE sub_almacen = 'true'  "+
                						"AND id_almacen != 11 "+
                						" ORDER BY descripcion_almacen;";
@@ -302,33 +302,33 @@ namespace osiris
 				conexion.Open ();
 				NpgsqlCommand comando; 
 				comando = conexion.CreateCommand ();
-               	comando.CommandText = "SELECT to_char(hscmty_erp_compra_farmacia.cantidad_autorizo,'999999') AS autorizo,"+
-               						"to_char(hscmty_erp_compra_farmacia.id_producto,'999999999999') AS codproducto,"+
-               						"to_char(hscmty_erp_compra_farmacia.total_surtir,'999999.99') AS surtir,"+
-               						"to_char(hscmty_erp_compra_farmacia.cantidad_embalaje,'999999.99') AS embalaje,"+
-               						"to_char(hscmty_erp_compra_farmacia.folio_de_servicio,'999999') AS folioatencion,"+
-               						"to_char(hscmty_erp_compra_farmacia.fechahora_autorizacion,'dd-MM-yyyy HH24:mi:ss') AS fechahrautorizacion,"+																				
-               						"hscmty_his_medicos.nombre1_medico || ' ' || hscmty_his_medicos.nombre2_medico || ' ' || hscmty_his_medicos.apellido_paterno_medico || ' ' || hscmty_his_medicos.apellido_materno_medico AS nombremedico,"+
-               						"hscmty_erp_proveedores.descripcion_proveedor,"+
-               						"hscmty_grupo_producto.descripcion_grupo_producto,"+
-               						"hscmty_almacenes.descripcion_almacen AS descripcionalmacen,"+
-               						"hscmty_almacenes.id_almacen,"+
-               						"hscmty_his_paciente.nombre1_paciente || ' ' || hscmty_his_paciente.nombre2_paciente || ' ' || hscmty_his_paciente.apellido_paterno_paciente || ' ' || hscmty_his_paciente.apellido_materno_paciente AS nombre_completo,"+
-               						"hscmty_erp_compra_farmacia.eliminado, "+
-						            "hscmty_productos.descripcion_producto "+
-               						"FROM hscmty_erp_compra_farmacia,hscmty_productos,hscmty_grupo_producto,hscmty_grupo1_producto, "+
-               						"hscmty_grupo2_producto,hscmty_his_paciente,hscmty_erp_cobros_enca,hscmty_erp_proveedores,hscmty_his_medicos,hscmty_almacenes "+
-               						"WHERE hscmty_erp_compra_farmacia.id_producto = hscmty_productos.id_producto "+
-               						"AND hscmty_productos.id_grupo_producto = hscmty_grupo_producto.id_grupo_producto "+
-               						"AND hscmty_productos.id_grupo1_producto = hscmty_grupo1_producto.id_grupo1_producto "+
-									"AND hscmty_productos.id_grupo2_producto = hscmty_grupo2_producto.id_grupo2_producto "+
-               						"AND hscmty_his_paciente.pid_paciente = hscmty_erp_cobros_enca.pid_paciente "+
-               						"AND hscmty_erp_cobros_enca.folio_de_servicio = hscmty_erp_compra_farmacia.folio_de_servicio "+
-               						"AND hscmty_erp_compra_farmacia.id_proveedor = hscmty_erp_proveedores.id_proveedor "+
-               						"AND hscmty_erp_compra_farmacia.id_medico = hscmty_his_medicos.id_medico "+
-               						"AND hscmty_erp_compra_farmacia.id_subalmacen = hscmty_almacenes.id_almacen "+
-               						"AND hscmty_erp_compra_farmacia.eliminado = 'false' "+
-               						"AND hscmty_erp_compra_farmacia.orden_compra = '"+(string) this.entry_orden_compra.Text.Trim()+"' "+
+               	comando.CommandText = "SELECT to_char(osiris_erp_compra_farmacia.cantidad_autorizo,'999999') AS autorizo,"+
+               						"to_char(osiris_erp_compra_farmacia.id_producto,'999999999999') AS codproducto,"+
+               						"to_char(osiris_erp_compra_farmacia.total_surtir,'999999.99') AS surtir,"+
+               						"to_char(osiris_erp_compra_farmacia.cantidad_embalaje,'999999.99') AS embalaje,"+
+               						"to_char(osiris_erp_compra_farmacia.folio_de_servicio,'999999') AS folioatencion,"+
+               						"to_char(osiris_erp_compra_farmacia.fechahora_autorizacion,'dd-MM-yyyy HH24:mi:ss') AS fechahrautorizacion,"+																				
+               						"osiris_his_medicos.nombre1_medico || ' ' || osiris_his_medicos.nombre2_medico || ' ' || osiris_his_medicos.apellido_paterno_medico || ' ' || osiris_his_medicos.apellido_materno_medico AS nombremedico,"+
+               						"osiris_erp_proveedores.descripcion_proveedor,"+
+               						"osiris_grupo_producto.descripcion_grupo_producto,"+
+               						"osiris_almacenes.descripcion_almacen AS descripcionalmacen,"+
+               						"osiris_almacenes.id_almacen,"+
+               						"osiris_his_paciente.nombre1_paciente || ' ' || osiris_his_paciente.nombre2_paciente || ' ' || osiris_his_paciente.apellido_paterno_paciente || ' ' || osiris_his_paciente.apellido_materno_paciente AS nombre_completo,"+
+               						"osiris_erp_compra_farmacia.eliminado, "+
+						            "osiris_productos.descripcion_producto "+
+               						"FROM osiris_erp_compra_farmacia,osiris_productos,osiris_grupo_producto,osiris_grupo1_producto, "+
+               						"osiris_grupo2_producto,osiris_his_paciente,osiris_erp_cobros_enca,osiris_erp_proveedores,osiris_his_medicos,osiris_almacenes "+
+               						"WHERE osiris_erp_compra_farmacia.id_producto = osiris_productos.id_producto "+
+               						"AND osiris_productos.id_grupo_producto = osiris_grupo_producto.id_grupo_producto "+
+               						"AND osiris_productos.id_grupo1_producto = osiris_grupo1_producto.id_grupo1_producto "+
+									"AND osiris_productos.id_grupo2_producto = osiris_grupo2_producto.id_grupo2_producto "+
+               						"AND osiris_his_paciente.pid_paciente = osiris_erp_cobros_enca.pid_paciente "+
+               						"AND osiris_erp_cobros_enca.folio_de_servicio = osiris_erp_compra_farmacia.folio_de_servicio "+
+               						"AND osiris_erp_compra_farmacia.id_proveedor = osiris_erp_proveedores.id_proveedor "+
+               						"AND osiris_erp_compra_farmacia.id_medico = osiris_his_medicos.id_medico "+
+               						"AND osiris_erp_compra_farmacia.id_subalmacen = osiris_almacenes.id_almacen "+
+               						"AND osiris_erp_compra_farmacia.eliminado = 'false' "+
+               						"AND osiris_erp_compra_farmacia.orden_compra = '"+(string) this.entry_orden_compra.Text.Trim()+"' "+
                						"ORDER BY descripcion_producto;";
 				Console.WriteLine(comando.CommandText);
               				
@@ -474,7 +474,7 @@ namespace osiris
 							conexion.Open ();
 							NpgsqlCommand comando; 
 							comando = conexion.CreateCommand ();
-							comando.CommandText = "UPDATE hscmty_erp_compra_farmacia "+
+							comando.CommandText = "UPDATE osiris_erp_compra_farmacia "+
 									"SET eliminado = 'true' , "+
 									"fechahora_eliminado = '"+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"', "+
 									"id_quien_elimino = '"+LoginEmpleado+"' "+								
@@ -495,7 +495,7 @@ namespace osiris
 								conexion2.Open ();
 								NpgsqlCommand comando2; 
 								comando2 = conexion2.CreateCommand();
-								comando2.CommandText = "SELECT id_producto,id_almacen FROM hscmty_catalogo_almacenes "+
+								comando2.CommandText = "SELECT id_producto,id_almacen FROM osiris_catalogo_almacenes "+
 															"WHERE id_almacen = '"+this.idsubalmacen.ToString()+"' "+
 															"AND eliminado = 'false' "+	
 															"AND id_producto = '"+(string) lista_de_autorizacion.Model.GetValue (iter,3)+"' ;";
@@ -508,7 +508,7 @@ namespace osiris
 										conexion3.Open ();
 										NpgsqlCommand comando3; 
 										comando3 = conexion3.CreateCommand();
-										comando3.CommandText = "UPDATE hscmty_catalogo_almacenes SET stock  = stock - '"+(string) lista_de_autorizacion.Model.GetValue (iter,14)+"',"+
+										comando3.CommandText = "UPDATE osiris_catalogo_almacenes SET stock  = stock - '"+(string) lista_de_autorizacion.Model.GetValue (iter,14)+"',"+
 																	//"historial_surtido_material = historial_surtido_material || '"+LoginEmpleado+" "+(string) lista_de_materiales_solicitados.Model.GetValue (iterSelected,2)+" "+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"\n',"+
 																	"fechahora_ultimo_surtimiento = '"+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"' "+
 																	"WHERE id_almacen = '"+this.idsubalmacen.ToString()+"' "+
@@ -543,7 +543,7 @@ namespace osiris
 								conexion2.Open ();
 								NpgsqlCommand comando2; 
 								comando2 = conexion2.CreateCommand();
-								comando2.CommandText = "SELECT id_producto,id_almacen FROM hscmty_catalogo_almacenes "+
+								comando2.CommandText = "SELECT id_producto,id_almacen FROM osiris_catalogo_almacenes "+
 															"WHERE id_almacen = '"+this.idsubalmacen.ToString()+"' "+
 															"AND eliminado = 'false' "+	
 															"AND id_producto = '"+(string) lista_de_autorizacion.Model.GetValue (iter,3)+"' ;";
@@ -556,7 +556,7 @@ namespace osiris
 										conexion3.Open ();
 										NpgsqlCommand comando3; 
 										comando3 = conexion3.CreateCommand();
-										comando3.CommandText = "UPDATE hscmty_catalogo_almacenes SET stock  = stock - '"+(string) lista_de_autorizacion.Model.GetValue (iter,14)+"',"+
+										comando3.CommandText = "UPDATE osiris_catalogo_almacenes SET stock  = stock - '"+(string) lista_de_autorizacion.Model.GetValue (iter,14)+"',"+
 																	//"historial_surtido_material = historial_surtido_material || '"+LoginEmpleado+" "+(string) lista_de_materiales_solicitados.Model.GetValue (iterSelected,2)+" "+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"\n',"+
 																	"fechahora_ultimo_surtimiento = '"+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"' "+
 																	"WHERE id_almacen = '"+this.idsubalmacen.ToString()+"' "+
@@ -604,7 +604,7 @@ namespace osiris
 					NpgsqlCommand comando4; 
 					comando4 = conexion4.CreateCommand ();
 	 				comando4.CommandText = "SELECT orden_compra "+
-									"FROM hscmty_erp_compra_farmacia "+
+									"FROM osiris_erp_compra_farmacia "+
 									"WHERE orden_compra = '"+this.entry_orden_compra.Text.Trim()+"' "+
 									"LIMIT 1 ;";
 	 				//Console.WriteLine("Busca el producto");
@@ -624,7 +624,7 @@ namespace osiris
 									conexion2.Open ();
 									NpgsqlCommand comando2; 
 									comando2 = conexion2.CreateCommand();
-									comando2.CommandText = "SELECT id_producto,id_almacen FROM hscmty_catalogo_almacenes "+
+									comando2.CommandText = "SELECT id_producto,id_almacen FROM osiris_catalogo_almacenes "+
 															"WHERE id_almacen = '"+this.idsubalmacen.ToString()+"' "+
 															"AND eliminado = 'false' "+	
 															"AND id_producto = '"+(string) lista_de_autorizacion.Model.GetValue (iterSelected,3)+"' ;";
@@ -637,7 +637,7 @@ namespace osiris
 											conexion3.Open ();
 											NpgsqlCommand comando3; 
 											comando3 = conexion3.CreateCommand();
-											comando3.CommandText = "UPDATE hscmty_catalogo_almacenes SET stock  = stock + '"+(string) lista_de_autorizacion.Model.GetValue (iterSelected,14)+"',"+
+											comando3.CommandText = "UPDATE osiris_catalogo_almacenes SET stock  = stock + '"+(string) lista_de_autorizacion.Model.GetValue (iterSelected,14)+"',"+
 																	//"historial_surtido_material = historial_surtido_material || '"+LoginEmpleado+" "+(string) lista_de_materiales_solicitados.Model.GetValue (iterSelected,2)+" "+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"\n',"+
 																	"fechahora_ultimo_surtimiento = '"+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"' "+
 																	"WHERE id_almacen = '"+this.idsubalmacen.ToString()+"' "+
@@ -660,7 +660,7 @@ namespace osiris
 											conexion3.Open ();
 											NpgsqlCommand comando3; 
 											comando3 = conexion3.CreateCommand();
-											comando3.CommandText = "INSERT INTO hscmty_catalogo_almacenes("+
+											comando3.CommandText = "INSERT INTO osiris_catalogo_almacenes("+
 																		"id_almacen,"+
 																		"id_producto,"+
 																		"stock,"+
@@ -703,7 +703,7 @@ namespace osiris
 									NpgsqlCommand comando; 
 									comando = conexion.CreateCommand ();
 													
-									comando.CommandText = "INSERT INTO hscmty_erp_compra_farmacia("+
+									comando.CommandText = "INSERT INTO osiris_erp_compra_farmacia("+
 			 												"fechahora_autorizacion,"+
 			 												"folio_de_servicio,"+
 			 												"cantidad_autorizo,"+
@@ -744,7 +744,7 @@ namespace osiris
 												conexion5.Open ();
 												NpgsqlCommand comando5; 
 												comando5 = conexion5.CreateCommand();
-												comando5.CommandText = "SELECT id_producto,id_almacen FROM hscmty_catalogo_almacenes "+
+												comando5.CommandText = "SELECT id_producto,id_almacen FROM osiris_catalogo_almacenes "+
 																		"WHERE id_almacen = '"+this.idsubalmacen.ToString()+"' "+
 																		"AND eliminado = 'false' "+														
 																		"AND id_producto = '"+(string) lista_de_autorizacion.Model.GetValue (iterSelected,3)+"' ;";
@@ -756,7 +756,7 @@ namespace osiris
 														conexion3.Open ();
 														NpgsqlCommand comando3; 
 														comando3 = conexion3.CreateCommand();
-														comando3.CommandText = "UPDATE hscmty_catalogo_almacenes SET stock  = stock + '"+(string) lista_de_autorizacion.Model.GetValue (iterSelected,14)+"',"+
+														comando3.CommandText = "UPDATE osiris_catalogo_almacenes SET stock  = stock + '"+(string) lista_de_autorizacion.Model.GetValue (iterSelected,14)+"',"+
 																	//"historial_surtido_material = historial_surtido_material || '"+LoginEmpleado+" "+(string) lista_de_materiales_solicitados.Model.GetValue (iterSelected,2)+" "+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"\n',"+
 																	"fechahora_ultimo_surtimiento = '"+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"' "+
 																	"WHERE id_almacen = '"+this.idsubalmacen.ToString()+"' "+
@@ -779,7 +779,7 @@ namespace osiris
 														conexion3.Open ();
 														NpgsqlCommand comando3; 
 														comando3 = conexion3.CreateCommand();
-														comando3.CommandText = "INSERT INTO hscmty_catalogo_almacenes("+
+														comando3.CommandText = "INSERT INTO osiris_catalogo_almacenes("+
 																		"id_almacen,"+
 																		"id_producto,"+
 																		"stock,"+
@@ -812,7 +812,7 @@ namespace osiris
 												msgBoxError.Destroy();
 										}
 		    	    	       			conexion5.Close();
-		    	    	       			comando.CommandText = "INSERT INTO hscmty_erp_compra_farmacia("+
+		    	    	       			comando.CommandText = "INSERT INTO osiris_erp_compra_farmacia("+
 		 												"fechahora_autorizacion,"+
 		 												"folio_de_servicio,"+
 		 												"cantidad_autorizo,"+
@@ -1050,21 +1050,21 @@ namespace osiris
 								"colonia_proveedor,municipio_proveedor,estado_proveedor,telefono1_proveedor, "+ 
 								"telefono2_proveedor,celular_proveedor,cp_proveedor, proveedor_activo, "+
 								"id_proveedor,contacto1_proveedor,mail_proveedor,pagina_web_proveedor,"+
-								"hscmty_erp_proveedores.id_forma_de_pago, descripcion_forma_de_pago AS descripago "+
-								"FROM hscmty_erp_proveedores, hscmty_erp_forma_de_pago "+
-								"WHERE hscmty_erp_proveedores.id_forma_de_pago = hscmty_erp_forma_de_pago.id_forma_de_pago "+
-								//"AND hscmty_erp_proveedores.agrupacion4 = ALM "+
+								"osiris_erp_proveedores.id_forma_de_pago, descripcion_forma_de_pago AS descripago "+
+								"FROM osiris_erp_proveedores, osiris_erp_forma_de_pago "+
+								"WHERE osiris_erp_proveedores.id_forma_de_pago = osiris_erp_forma_de_pago.id_forma_de_pago "+
+								//"AND osiris_erp_proveedores.agrupacion4 = ALM "+
 								"ORDER BY descripcion_proveedor;";
 				}else{
 					comando.CommandText = "SELECT descripcion_proveedor,direccion_proveedor,rfc_proveedor,curp_proveedor, "+
 								"colonia_proveedor,municipio_proveedor,estado_proveedor,telefono1_proveedor, "+ 
 								"telefono2_proveedor,celular_proveedor,cp_proveedor, proveedor_activo, "+
 								"id_proveedor,contacto1_proveedor,mail_proveedor,pagina_web_proveedor, "+
-								"hscmty_erp_proveedores.id_forma_de_pago, descripcion_forma_de_pago AS descripago "+
-								"FROM hscmty_erp_proveedores, hscmty_erp_forma_de_pago "+
-								"WHERE hscmty_erp_proveedores.id_forma_de_pago = hscmty_erp_forma_de_pago.id_forma_de_pago "+
+								"osiris_erp_proveedores.id_forma_de_pago, descripcion_forma_de_pago AS descripago "+
+								"FROM osiris_erp_proveedores, osiris_erp_forma_de_pago "+
+								"WHERE osiris_erp_proveedores.id_forma_de_pago = osiris_erp_forma_de_pago.id_forma_de_pago "+
 								"AND descripcion_proveedor LIKE '%"+(string) entry_expresion.Text.ToUpper()+"%' "+
-								//"AND hscmty_erp_proveedores.agrupacion4 = ALM "+
+								//"AND osiris_erp_proveedores.agrupacion4 = ALM "+
 								"ORDER BY descripcion_proveedor;";
 				}
 				NpgsqlDataReader lector = comando.ExecuteReader ();
@@ -1232,13 +1232,13 @@ namespace osiris
 
 		void tipo_de_busqueda_de_medico(int numbusqueda)
 		{
-			if(numbusqueda == 1)  { tipobusqueda = "AND hscmty_his_medicos.nombre1_medico LIKE '";}//	Console.WriteLine(tipobusqueda); }
-			if(numbusqueda == 2)  { tipobusqueda = "AND hscmty_his_medicos.nombre2_medico LIKE '";}//	Console.WriteLine(tipobusqueda); }
-			if(numbusqueda == 3)  { tipobusqueda = "AND hscmty_his_medicos.apellido_paterno_medico LIKE '";}//	Console.WriteLine(tipobusqueda); }
-			if(numbusqueda == 4)  { tipobusqueda = "AND hscmty_his_medicos.apellido_materno_medico LIKE '";}//	Console.WriteLine(tipobusqueda); }
-			if(numbusqueda == 5)  { tipobusqueda = "AND hscmty_his_medicos.cedula_medico LIKE '";}//	Console.WriteLine(tipobusqueda); }
-			if(numbusqueda == 6)  { tipobusqueda = "AND hscmty_his_tipo_especialidad.descripcion_especialidad LIKE '";}//	Console.WriteLine(tipobusqueda); }
-			if(numbusqueda == 7)  { tipobusqueda = "AND hscmty_his_medicos.id_medico LIKE '";}// Console.WriteLine(tipobusqueda); }
+			if(numbusqueda == 1)  { tipobusqueda = "AND osiris_his_medicos.nombre1_medico LIKE '";}//	Console.WriteLine(tipobusqueda); }
+			if(numbusqueda == 2)  { tipobusqueda = "AND osiris_his_medicos.nombre2_medico LIKE '";}//	Console.WriteLine(tipobusqueda); }
+			if(numbusqueda == 3)  { tipobusqueda = "AND osiris_his_medicos.apellido_paterno_medico LIKE '";}//	Console.WriteLine(tipobusqueda); }
+			if(numbusqueda == 4)  { tipobusqueda = "AND osiris_his_medicos.apellido_materno_medico LIKE '";}//	Console.WriteLine(tipobusqueda); }
+			if(numbusqueda == 5)  { tipobusqueda = "AND osiris_his_medicos.cedula_medico LIKE '";}//	Console.WriteLine(tipobusqueda); }
+			if(numbusqueda == 6)  { tipobusqueda = "AND osiris_his_tipo_especialidad.descripcion_especialidad LIKE '";}//	Console.WriteLine(tipobusqueda); }
+			if(numbusqueda == 7)  { tipobusqueda = "AND osiris_his_medicos.id_medico LIKE '";}// Console.WriteLine(tipobusqueda); }
 		}		
 
 		void on_button_llena_medicos_clicked (object sender, EventArgs args)
@@ -1263,22 +1263,22 @@ namespace osiris
 						if ((string) entry_expresion.Text.ToUpper().Trim() == "")
 						{
 							comando.CommandText = "SELECT id_medico, "+
-										"to_char(hscmty_his_tipo_especialidad.id_especialidad,999999) AS idespecialidad, "+
+										"to_char(osiris_his_tipo_especialidad.id_especialidad,999999) AS idespecialidad, "+
 										"nombre1_medico,nombre2_medico,apellido_paterno_medico,apellido_materno_medico, "+
 										"telefono1_medico,telefono2_medico,celular1_medico,celular2_medico,nextel_medico,beeper_medico,"+
 										"descripcion_especialidad,medico_activo,autorizado "+
-										"FROM hscmty_his_medicos,hscmty_his_tipo_especialidad "+
-										"WHERE hscmty_his_medicos.id_especialidad = hscmty_his_tipo_especialidad.id_especialidad "+
+										"FROM osiris_his_medicos,osiris_his_tipo_especialidad "+
+										"WHERE osiris_his_medicos.id_especialidad = osiris_his_tipo_especialidad.id_especialidad "+
 										"AND medico_activo = 'true' "+
 										"ORDER BY id_medico;";
 						}else{
 							comando.CommandText = "SELECT id_medico, "+
-										"to_char(hscmty_his_tipo_especialidad.id_especialidad,999999) AS idespecialidad, "+
+										"to_char(osiris_his_tipo_especialidad.id_especialidad,999999) AS idespecialidad, "+
 										"nombre1_medico,nombre2_medico,apellido_paterno_medico,apellido_materno_medico, "+
 										"telefono1_medico,telefono2_medico,celular1_medico,celular2_medico,nextel_medico,beeper_medico,"+
 										"descripcion_especialidad,medico_activo,autorizado "+
-										"FROM hscmty_his_medicos,hscmty_his_tipo_especialidad "+
-										"WHERE hscmty_his_medicos.id_especialidad = hscmty_his_tipo_especialidad.id_especialidad  "+
+										"FROM osiris_his_medicos,osiris_his_tipo_especialidad "+
+										"WHERE osiris_his_medicos.id_especialidad = osiris_his_tipo_especialidad.id_especialidad  "+
 										"AND medico_activo = 'true' "+
 								  		tipobusqueda+(string) entry_expresion.Text.Trim().ToUpper()+"%'  "+
 										"ORDER BY id_medico;";
@@ -1578,69 +1578,69 @@ namespace osiris
 				comando = conexion.CreateCommand ();
                	               	
 				if ((string) entry_expresion.Text.ToString() == ""){
-					comando.CommandText = "SELECT hscmty_erp_cobros_enca.folio_de_servicio,hscmty_erp_cobros_enca.pid_paciente, "+
+					comando.CommandText = "SELECT osiris_erp_cobros_enca.folio_de_servicio,osiris_erp_cobros_enca.pid_paciente, "+
 							" nombre1_paciente,nombre2_paciente, apellido_paterno_paciente, "+
 							"apellido_materno_paciente, to_char(fecha_nacimiento_paciente,'yyyy-MM-dd') AS fech_nacimiento,"+
 							"to_char(to_number(to_char(age('"+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"',fecha_nacimiento_paciente),'yyyy') ,'9999'),'9999') AS edad, "+
 							"sexo_paciente,to_char(fechahora_registro_paciente,'dd-MM-yyyy HH:mi:ss') AS fech_creacion "+
-							"FROM hscmty_his_paciente,hscmty_erp_cobros_enca "+
+							"FROM osiris_his_paciente,osiris_erp_cobros_enca "+
 							"WHERE alta_paciente = 'false' "+
 							"AND pagado = 'false' "+
 							"AND cerrado = 'false' "+
 							"AND reservacion = 'false' "+
-							"AND hscmty_his_paciente.pid_paciente = hscmty_erp_cobros_enca.pid_paciente "+
-							"AND hscmty_erp_cobros_enca.alta_paciente = false "+
-							"AND hscmty_erp_cobros_enca.cancelado = false "+
+							"AND osiris_his_paciente.pid_paciente = osiris_erp_cobros_enca.pid_paciente "+
+							"AND osiris_erp_cobros_enca.alta_paciente = false "+
+							"AND osiris_erp_cobros_enca.cancelado = false "+
 							"ORDER BY folio_de_servicio;";
 				}else{      
 				
 					if (radiobutton_busca_apellido.Active == true){
-						comando.CommandText = "SELECT hscmty_erp_cobros_enca.folio_de_servicio,hscmty_erp_cobros_enca.pid_paciente, "+
+						comando.CommandText = "SELECT osiris_erp_cobros_enca.folio_de_servicio,osiris_erp_cobros_enca.pid_paciente, "+
 							" nombre1_paciente,nombre2_paciente, apellido_paterno_paciente, "+
 							"apellido_materno_paciente, to_char(fecha_nacimiento_paciente,'yyyy-MM-dd') AS fech_nacimiento,"+
 							"to_char(to_number(to_char(age('"+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"',fecha_nacimiento_paciente),'yyyy') ,'9999'),'9999') AS edad, "+
 							"sexo_paciente,to_char(fechahora_registro_paciente,'dd-MM-yyyy HH:mi:ss') AS fech_creacion "+
-							"FROM hscmty_his_paciente,hscmty_erp_cobros_enca "+
+							"FROM osiris_his_paciente,osiris_erp_cobros_enca "+
 							"WHERE alta_paciente = 'false' "+
 							"AND pagado = 'false' "+
 							"AND cerrado = 'false' "+
 							"AND reservacion = 'false' "+
-							"AND hscmty_his_paciente.pid_paciente = hscmty_erp_cobros_enca.pid_paciente "+
-							"AND hscmty_erp_cobros_enca.alta_paciente = false "+
-							"AND hscmty_erp_cobros_enca.cancelado = false "+
+							"AND osiris_his_paciente.pid_paciente = osiris_erp_cobros_enca.pid_paciente "+
+							"AND osiris_erp_cobros_enca.alta_paciente = false "+
+							"AND osiris_erp_cobros_enca.cancelado = false "+
 							"AND apellido_paterno_paciente LIKE '"+entry_expresion.Text.ToUpper()+"%' ORDER BY folio_de_servicio;";
 					}
 					if (radiobutton_busca_nombre.Active == true){
-						comando.CommandText =  "SELECT hscmty_erp_cobros_enca.folio_de_servicio,hscmty_erp_cobros_enca.pid_paciente, "+
+						comando.CommandText =  "SELECT osiris_erp_cobros_enca.folio_de_servicio,osiris_erp_cobros_enca.pid_paciente, "+
 							" nombre1_paciente,nombre2_paciente, apellido_paterno_paciente, "+
 							"apellido_materno_paciente, to_char(fecha_nacimiento_paciente,'yyyy-MM-dd') AS fech_nacimiento,"+
 							"to_char(to_number(to_char(age('"+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"',fecha_nacimiento_paciente),'yyyy') ,'9999'),'9999') AS edad, "+
 							"sexo_paciente,to_char(fechahora_registro_paciente,'dd-MM-yyyy HH:mi:ss') AS fech_creacion "+
-							"FROM hscmty_his_paciente,hscmty_erp_cobros_enca "+
+							"FROM osiris_his_paciente,osiris_erp_cobros_enca "+
 							"WHERE alta_paciente = 'false' "+
 							"AND pagado = 'false' "+
 							"AND cerrado = 'false' "+
 							"AND reservacion = 'false' "+
-							"AND hscmty_his_paciente.pid_paciente = hscmty_erp_cobros_enca.pid_paciente "+
-							"AND hscmty_erp_cobros_enca.alta_paciente = false "+
-							"AND hscmty_erp_cobros_enca.cancelado = false "+
+							"AND osiris_his_paciente.pid_paciente = osiris_erp_cobros_enca.pid_paciente "+
+							"AND osiris_erp_cobros_enca.alta_paciente = false "+
+							"AND osiris_erp_cobros_enca.cancelado = false "+
 							"AND nombre1_paciente LIKE '"+entry_expresion.Text.ToUpper()+"%' ORDER BY folio_de_servicio;";
 					}
 					if (radiobutton_busca_expediente.Active == true){
-						comando.CommandText = "SELECT hscmty_erp_cobros_enca.folio_de_servicio,hscmty_erp_cobros_enca.pid_paciente, "+
+						comando.CommandText = "SELECT osiris_erp_cobros_enca.folio_de_servicio,osiris_erp_cobros_enca.pid_paciente, "+
 							" nombre1_paciente,nombre2_paciente, apellido_paterno_paciente, "+
 							"apellido_materno_paciente, to_char(fecha_nacimiento_paciente,'yyyy-MM-dd') AS fech_nacimiento,"+
 							"to_char(to_number(to_char(age('"+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"',fecha_nacimiento_paciente),'yyyy') ,'9999'),'9999') AS edad, "+
 							"sexo_paciente,to_char(fechahora_registro_paciente,'dd-MM-yyyy HH:mi:ss') AS fech_creacion "+
-							"FROM hscmty_his_paciente,hscmty_erp_cobros_enca "+
+							"FROM osiris_his_paciente,osiris_erp_cobros_enca "+
 							"WHERE alta_paciente = 'false' "+
 							"AND pagado = 'false' "+
 							"AND cerrado = 'false' "+
 							"AND reservacion = 'false' "+
-							"AND hscmty_his_paciente.pid_paciente = hscmty_erp_cobros_enca.pid_paciente "+
-							"AND hscmty_erp_cobros_enca.alta_paciente = false "+
-							"AND hscmty_erp_cobros_enca.cancelado = false "+
-							"AND hscmty_his_paciente.pid_paciente = '"+entry_expresion.Text+"' ORDER BY folio_de_servicio;";			
+							"AND osiris_his_paciente.pid_paciente = osiris_erp_cobros_enca.pid_paciente "+
+							"AND osiris_erp_cobros_enca.alta_paciente = false "+
+							"AND osiris_erp_cobros_enca.cancelado = false "+
+							"AND osiris_his_paciente.pid_paciente = '"+entry_expresion.Text+"' ORDER BY folio_de_servicio;";			
 					}
 				}
 				NpgsqlDataReader lector = comando.ExecuteReader ();
@@ -1700,8 +1700,8 @@ namespace osiris
 				NpgsqlCommand comando; 
 				comando = conexion.CreateCommand ();
 				
-				comando.CommandText = "SELECT to_char(hscmty_productos.id_producto,'999999999999') AS codProducto,"+
-						"hscmty_productos.descripcion_producto,"+
+				comando.CommandText = "SELECT to_char(osiris_productos.id_producto,'999999999999') AS codProducto,"+
+						"osiris_productos.descripcion_producto,"+
 						"to_char(precio_producto_publico,'999999999.99') AS preciopublico,"+//
 						"aplicar_iva,to_char(porcentage_descuento,'999.99') AS porcentagesdesc,aplica_descuento,"+
 						"descripcion_grupo_producto,descripcion_grupo1_producto,descripcion_grupo2_producto,"+
@@ -1710,13 +1710,13 @@ namespace osiris
 						"to_char(precio_producto_publico,'999999999.99') AS preciopublico_cliente,"+
 						"to_char(cantidad_de_embalaje,'999999.99') AS embalaje,"+
 						"to_char(costo_producto,'999999999.99') AS costoproducto "+
-						"FROM hscmty_productos,hscmty_grupo_producto,hscmty_grupo1_producto,hscmty_grupo2_producto "+
-						"WHERE hscmty_productos.id_grupo_producto = hscmty_grupo_producto.id_grupo_producto "+
-						"AND hscmty_productos.id_grupo1_producto = hscmty_grupo1_producto.id_grupo1_producto "+
-						"AND hscmty_productos.id_grupo2_producto = hscmty_grupo2_producto.id_grupo2_producto "+
-						"AND hscmty_grupo_producto.id_grupo_producto IN('4','5') "+
-						"AND hscmty_productos.cobro_activo = 'true' "+
-						"AND hscmty_productos.descripcion_producto LIKE '%"+entry_expresion.Text.ToUpper().Trim()+"%' ORDER BY descripcion_producto;";
+						"FROM osiris_productos,osiris_grupo_producto,osiris_grupo1_producto,osiris_grupo2_producto "+
+						"WHERE osiris_productos.id_grupo_producto = osiris_grupo_producto.id_grupo_producto "+
+						"AND osiris_productos.id_grupo1_producto = osiris_grupo1_producto.id_grupo1_producto "+
+						"AND osiris_productos.id_grupo2_producto = osiris_grupo2_producto.id_grupo2_producto "+
+						"AND osiris_grupo_producto.id_grupo_producto IN('4','5') "+
+						"AND osiris_productos.cobro_activo = 'true' "+
+						"AND osiris_productos.descripcion_producto LIKE '%"+entry_expresion.Text.ToUpper().Trim()+"%' ORDER BY descripcion_producto;";
 				//Console.WriteLine(comando.CommandText);
 				NpgsqlDataReader lector = comando.ExecuteReader ();
 				

@@ -1,6 +1,6 @@
 // created on 26/07/2007 at 03:48 p
 ///////////////////////////////////////////////////////////
-// Hospital Santa Cecilia
+// Sistema Hospitalario OSIRIS
 // Monterrey - Mexico
 //
 // Autor    	: ing. Juan Antonio Peña Gonzalez (gjuanzz@gmail.com) 
@@ -327,7 +327,7 @@ namespace osiris
 				comando = conexion.CreateCommand ();
 	              	
 				comando.CommandText = "SELECT * "+
-									"FROM hscmty_almacenes  "+
+									"FROM osiris_almacenes  "+
 					            	"WHERE id_almacen = '"+idalmacen.ToString()+"' ;";
 				//Console.WriteLine("query llenado cirugia: "+comando.CommandText.ToString());				
 				NpgsqlDataReader lector = comando.ExecuteReader ();
@@ -362,30 +362,30 @@ namespace osiris
 				comando = conexion.CreateCommand ();
 				
 				comando.CommandText = "SELECT descripcion_producto, "+
-							"id_quien_creo,hscmty_productos.aplicar_iva,hscmty_inventario_almacenes.id_almacen,  "+
+							"id_quien_creo,osiris_productos.aplicar_iva,osiris_inventario_almacenes.id_almacen,  "+
 							"descripcion_grupo_producto,descripcion_grupo1_producto,descripcion_grupo2_producto, "+
-							"to_char(hscmty_inventario_almacenes.id_producto,'999999999999') AS idproducto,"+
-							"to_char(hscmty_inventario_almacenes.stock,'999999.99') AS stock, "+
-							"to_char(hscmty_inventario_almacenes.id_secuencia,'999999999999') AS idsecuencia,"+
+							"to_char(osiris_inventario_almacenes.id_producto,'999999999999') AS idproducto,"+
+							"to_char(osiris_inventario_almacenes.stock,'999999.99') AS stock, "+
+							"to_char(osiris_inventario_almacenes.id_secuencia,'999999999999') AS idsecuencia,"+
 							"eliminado,"+
-							//"to_char(hscmty_catalogo_almacenes."+mesinventario.ToString()+",'99999.99') AS stock, "+
-							"to_char(hscmty_productos.costo_por_unidad,'999999999.99') AS costoproductounitario, "+
-							"to_char(hscmty_productos.costo_producto,'999999999.99') AS costoproducto, "+
-							"to_char(hscmty_productos.precio_producto_publico,'99999999.99') AS preciopublico,"+
-							"to_char(hscmty_productos.cantidad_de_embalaje,'999999999.99') AS embalaje, "+
-							"to_char(hscmty_inventario_almacenes.fechahora_alta,'dd-MM-yyyy HH:mi:ss') AS fechcreacion "+
+							//"to_char(osiris_catalogo_almacenes."+mesinventario.ToString()+",'99999.99') AS stock, "+
+							"to_char(osiris_productos.costo_por_unidad,'999999999.99') AS costoproductounitario, "+
+							"to_char(osiris_productos.costo_producto,'999999999.99') AS costoproducto, "+
+							"to_char(osiris_productos.precio_producto_publico,'99999999.99') AS preciopublico,"+
+							"to_char(osiris_productos.cantidad_de_embalaje,'999999999.99') AS embalaje, "+
+							"to_char(osiris_inventario_almacenes.fechahora_alta,'dd-MM-yyyy HH:mi:ss') AS fechcreacion "+
 							"FROM "+
-							"hscmty_inventario_almacenes,hscmty_productos,hscmty_almacenes,hscmty_grupo_producto,hscmty_grupo1_producto,hscmty_grupo2_producto "+
-							"WHERE hscmty_inventario_almacenes.id_producto = hscmty_productos.id_producto "+ 
-							"AND hscmty_productos.id_grupo_producto = hscmty_grupo_producto.id_grupo_producto "+
-							"AND hscmty_productos.id_grupo1_producto = hscmty_grupo1_producto.id_grupo1_producto "+
-							"AND hscmty_productos.id_grupo2_producto = hscmty_grupo2_producto.id_grupo2_producto "+
-							"AND hscmty_inventario_almacenes.id_almacen = hscmty_almacenes.id_almacen "+
-							"AND hscmty_inventario_almacenes.id_almacen = '"+(string) idalmacen +"' "+
-							"AND hscmty_inventario_almacenes.ano_inventario = '"+(string) entry_ano_inventario.Text +"' "+
-							"AND hscmty_inventario_almacenes.mes_inventario = '"+mesinventario+"' "+
+							"osiris_inventario_almacenes,osiris_productos,osiris_almacenes,osiris_grupo_producto,osiris_grupo1_producto,osiris_grupo2_producto "+
+							"WHERE osiris_inventario_almacenes.id_producto = osiris_productos.id_producto "+ 
+							"AND osiris_productos.id_grupo_producto = osiris_grupo_producto.id_grupo_producto "+
+							"AND osiris_productos.id_grupo1_producto = osiris_grupo1_producto.id_grupo1_producto "+
+							"AND osiris_productos.id_grupo2_producto = osiris_grupo2_producto.id_grupo2_producto "+
+							"AND osiris_inventario_almacenes.id_almacen = osiris_almacenes.id_almacen "+
+							"AND osiris_inventario_almacenes.id_almacen = '"+(string) idalmacen +"' "+
+							"AND osiris_inventario_almacenes.ano_inventario = '"+(string) entry_ano_inventario.Text +"' "+
+							"AND osiris_inventario_almacenes.mes_inventario = '"+mesinventario+"' "+
 							"AND eliminado = 'false' "+
-							"ORDER BY to_char(hscmty_inventario_almacenes.fechahora_alta,'dd-MM-yyyy HH:mi:ss');";
+							"ORDER BY to_char(osiris_inventario_almacenes.fechahora_alta,'dd-MM-yyyy HH:mi:ss');";
 				
 				NpgsqlDataReader lector = comando.ExecuteReader ();
 				//Console.WriteLine("query llenado de materiales: "+comando.CommandText.ToString());
@@ -479,10 +479,10 @@ namespace osiris
 					NpgsqlCommand comando; 
 					comando = conexion.CreateCommand ();
 		           	if ((string) entry_expresion.Text.ToUpper() == "*")	{
-						comando.CommandText ="SELECT * FROM hscmty_almacenes "+
+						comando.CommandText ="SELECT * FROM osiris_almacenes "+
 											" ORDER BY id_almacen;";
 					}else{
-						comando.CommandText ="SELECT * FROM hscmty_almacenes "+
+						comando.CommandText ="SELECT * FROM osiris_almacenes "+
 											"WHERE descripcion_almacen LIKE '%"+entry_expresion.Text.ToUpper()+"%' "+
 											" ORDER BY id_almacen;";
 					}
@@ -581,20 +581,20 @@ namespace osiris
 				NpgsqlCommand comando; 
 				comando = conexion.CreateCommand ();
                	
-				comando.CommandText = "SELECT to_char(hscmty_productos.id_producto,'999999999999') AS codProducto,"+
-							"hscmty_productos.descripcion_producto, "+
+				comando.CommandText = "SELECT to_char(osiris_productos.id_producto,'999999999999') AS codProducto,"+
+							"osiris_productos.descripcion_producto, "+
 							"descripcion_grupo_producto,descripcion_grupo1_producto,descripcion_grupo2_producto, "+
 							"to_char(precio_producto_publico,'99999999.99') AS preciopublico,"+
 							"to_char(costo_por_unidad,'999999999.99') AS costoproductounitario, "+
 							"to_char(costo_producto,'999999999.99') AS costoproducto, "+
 							"to_char(cantidad_de_embalaje,'999999999.99') AS embalaje "+
-							"FROM hscmty_productos,hscmty_grupo_producto,hscmty_grupo1_producto,hscmty_grupo2_producto "+
-							"WHERE hscmty_productos.id_grupo_producto = hscmty_grupo_producto.id_grupo_producto "+
-							"AND hscmty_productos.id_grupo1_producto = hscmty_grupo1_producto.id_grupo1_producto "+
-							"AND hscmty_productos.id_grupo2_producto = hscmty_grupo2_producto.id_grupo2_producto "+
-							"AND hscmty_grupo_producto.agrupacion4 = 'ALM' "+
-							"AND hscmty_productos.cobro_activo = 'true' "+
-							"AND hscmty_productos.descripcion_producto LIKE '%"+entry_expresion.Text.ToUpper().Trim()+"%' ORDER BY descripcion_producto; ";
+							"FROM osiris_productos,osiris_grupo_producto,osiris_grupo1_producto,osiris_grupo2_producto "+
+							"WHERE osiris_productos.id_grupo_producto = osiris_grupo_producto.id_grupo_producto "+
+							"AND osiris_productos.id_grupo1_producto = osiris_grupo1_producto.id_grupo1_producto "+
+							"AND osiris_productos.id_grupo2_producto = osiris_grupo2_producto.id_grupo2_producto "+
+							"AND osiris_grupo_producto.agrupacion4 = 'ALM' "+
+							"AND osiris_productos.cobro_activo = 'true' "+
+							"AND osiris_productos.descripcion_producto LIKE '%"+entry_expresion.Text.ToUpper().Trim()+"%' ORDER BY descripcion_producto; ";
 				
 				NpgsqlDataReader lector = comando.ExecuteReader ();
 				while (lector.Read())
@@ -686,7 +686,7 @@ namespace osiris
 								conexion.Open ();
 								NpgsqlCommand comando; 
 								comando = conexion.CreateCommand ();
-				 				comando.CommandText = "UPDATE hscmty_inventario_almacenes "+
+				 				comando.CommandText = "UPDATE osiris_inventario_almacenes "+
 										"SET eliminado = 'true' , "+
 										"fechahora_eliminado = '"+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"', "+
 										"id_quien_elimino = '"+LoginEmpleado+"' "+								
@@ -760,7 +760,7 @@ namespace osiris
 							NpgsqlCommand comando; 
 							comando = conexion.CreateCommand ();
 							//Console.WriteLine("leeo primer linea"+(string) lista_de_servicios.Model.GetValue(iter,2));
-							comando.CommandText = "INSERT INTO hscmty_inventario_almacenes("+
+							comando.CommandText = "INSERT INTO osiris_inventario_almacenes("+
 														"id_producto,"+
 														"id_almacen,"+
 														"stock,"+
@@ -783,7 +783,7 @@ namespace osiris
 							while (treeViewEngineInventario.IterNext(ref iter)){
 				   				if ((bool)lista_de_inventario.Model.GetValue (iter,12) == false){
 									//Console.WriteLine("leeo primer linea"+(string) lista_de_servicios.Model.GetValue(iter,2));
-									comando.CommandText = "INSERT INTO hscmty_inventario_almacenes("+
+									comando.CommandText = "INSERT INTO osiris_inventario_almacenes("+
 														"id_producto,"+
 														"id_almacen,"+
 														"stock,"+

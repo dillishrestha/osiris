@@ -1,6 +1,6 @@
 // reservacion_de_paquetes.cs created with MonoDevelop
 // User: ipena at 06:19 p 10/06/2008
-// Hospital Santa Cecilia                                                                                     //////
+// Sistema Hospitalario OSIRIS                                                                                     //////
 // Monterrey - Mexico                                                                                         //////
 //                                                                                                            //////
 // Autor    	: Israel Peña Gonzalez - el_rip@hotmail.com (Programacion Mono)                               //////
@@ -180,25 +180,25 @@ namespace osiris
 				conexion.Open ();
 				NpgsqlCommand comando;
 				comando = conexion.CreateCommand ();
-				comando.CommandText = "SELECT to_char(hscmty_erp_cobros_enca.folio_de_servicio,'9999999999') AS foliodeservicio, "+
-						"hscmty_erp_cobros_enca.pagado,"+
-						"hscmty_erp_cobros_enca.cancelado,"+
-						"hscmty_erp_cobros_enca.cerrado,"+
-						"hscmty_erp_cobros_enca.alta_paciente,"+
-						"hscmty_erp_cobros_enca.bloqueo_de_folio,"+
+				comando.CommandText = "SELECT to_char(osiris_erp_cobros_enca.folio_de_servicio,'9999999999') AS foliodeservicio, "+
+						"osiris_erp_cobros_enca.pagado,"+
+						"osiris_erp_cobros_enca.cancelado,"+
+						"osiris_erp_cobros_enca.cerrado,"+
+						"osiris_erp_cobros_enca.alta_paciente,"+
+						"osiris_erp_cobros_enca.bloqueo_de_folio,"+
 						"reservacion,"+
-					    "to_char(hscmty_erp_cobros_enca.pid_paciente,'9999999999') AS pidpaciente,hscmty_his_paciente.nombre1_paciente || ' ' || "+
-						"hscmty_his_paciente.nombre2_paciente || ' ' || hscmty_his_paciente.apellido_paterno_paciente || ' ' || hscmty_his_paciente.apellido_materno_paciente AS nombre_paciente "+
-						"FROM hscmty_erp_cobros_enca,hscmty_his_paciente "+
-						"WHERE hscmty_erp_cobros_enca.pid_paciente = hscmty_his_paciente.pid_paciente "+
+					    "to_char(osiris_erp_cobros_enca.pid_paciente,'9999999999') AS pidpaciente,osiris_his_paciente.nombre1_paciente || ' ' || "+
+						"osiris_his_paciente.nombre2_paciente || ' ' || osiris_his_paciente.apellido_paterno_paciente || ' ' || osiris_his_paciente.apellido_materno_paciente AS nombre_paciente "+
+						"FROM osiris_erp_cobros_enca,osiris_his_paciente "+
+						"WHERE osiris_erp_cobros_enca.pid_paciente = osiris_his_paciente.pid_paciente "+
 						//"AND reservacion = 'false' "+
-						"AND hscmty_erp_cobros_enca.cancelado = 'false' "+
-						"AND hscmty_erp_cobros_enca.pagado  = 'false' "+
-						"AND hscmty_erp_cobros_enca.alta_paciente = 'false' "+
-						"AND hscmty_erp_cobros_enca.cerrado = 'false' "+
-						"AND hscmty_erp_cobros_enca.bloqueo_de_folio = 'false' "+
+						"AND osiris_erp_cobros_enca.cancelado = 'false' "+
+						"AND osiris_erp_cobros_enca.pagado  = 'false' "+
+						"AND osiris_erp_cobros_enca.alta_paciente = 'false' "+
+						"AND osiris_erp_cobros_enca.cerrado = 'false' "+
+						"AND osiris_erp_cobros_enca.bloqueo_de_folio = 'false' "+
 						"AND id_habitacion = 1 "+
-						"AND hscmty_erp_cobros_enca.folio_de_servicio = '"+this.entry_folio_servicio.Text.Trim()+"';";
+						"AND osiris_erp_cobros_enca.folio_de_servicio = '"+this.entry_folio_servicio.Text.Trim()+"';";
                 Console.WriteLine(comando.CommandText.ToString());
                                                                      
 				NpgsqlDataReader lector = comando.ExecuteReader ();
@@ -237,14 +237,14 @@ namespace osiris
 								conexion1.Open ();
 								NpgsqlCommand comando1;
 								comando1 = conexion1.CreateCommand ();
-								comando1.CommandText ="SELECT hscmty_erp_reservaciones.folio_de_servicio,to_char(hscmty_erp_reservaciones.id_tipo_cirugia,'99999999.99') AS idtipocirugia, "+
-									    "to_char(hscmty_erp_reservaciones.valor_paquete,'99999999.99') AS valorpaquete, "+
-										"to_char(hscmty_his_tipo_cirugias.dias_internamiento,'99999999.99') AS diasinternamiento, "+
-										"to_char(hscmty_erp_reservaciones.id_tipo_cirugia,'9999999999') AS idtipocirugia, "+
-										"hscmty_his_tipo_cirugias.descripcion_cirugia  "+
-										"FROM hscmty_erp_reservaciones,hscmty_his_tipo_cirugias "+
-							        	"WHERE hscmty_erp_reservaciones.id_tipo_cirugia = hscmty_his_tipo_cirugias.id_tipo_cirugia "+
-										"AND hscmty_erp_reservaciones.folio_de_servicio = '"+this.entry_folio_servicio.Text.Trim()+"';";
+								comando1.CommandText ="SELECT osiris_erp_reservaciones.folio_de_servicio,to_char(osiris_erp_reservaciones.id_tipo_cirugia,'99999999.99') AS idtipocirugia, "+
+									    "to_char(osiris_erp_reservaciones.valor_paquete,'99999999.99') AS valorpaquete, "+
+										"to_char(osiris_his_tipo_cirugias.dias_internamiento,'99999999.99') AS diasinternamiento, "+
+										"to_char(osiris_erp_reservaciones.id_tipo_cirugia,'9999999999') AS idtipocirugia, "+
+										"osiris_his_tipo_cirugias.descripcion_cirugia  "+
+										"FROM osiris_erp_reservaciones,osiris_his_tipo_cirugias "+
+							        	"WHERE osiris_erp_reservaciones.id_tipo_cirugia = osiris_his_tipo_cirugias.id_tipo_cirugia "+
+										"AND osiris_erp_reservaciones.folio_de_servicio = '"+this.entry_folio_servicio.Text.Trim()+"';";
 								
 								Console.WriteLine(comando1.CommandText.ToString());
 								NpgsqlDataReader lector1 = comando1.ExecuteReader ();
@@ -268,15 +268,15 @@ namespace osiris
 								NpgsqlCommand comando1;
 								//Console.WriteLine("select"+comando.CommandText); 
 								comando1 = conexion1.CreateCommand ();
-								comando1.CommandText ="SELECT hscmty_erp_reservaciones.folio_de_servicio,to_char(hscmty_erp_reservaciones.id_presupuesto,'99999999.99') AS idpresupuesto, "+
-									    "to_char(hscmty_erp_reservaciones.valor_paquete,'99999999.99') AS valorpaquete, "+
-										"to_char(hscmty_his_presupuestos_enca.dias_internamiento,'99999999.99') AS diasinternamiento, "+
-										"to_char(hscmty_erp_reservaciones.id_presupuesto,'9999999999') AS idpresupuesto, "+
-										"hscmty_his_tipo_cirugias.descripcion_cirugia  "+
-										"FROM hscmty_erp_reservaciones,hscmty_his_tipo_cirugias,hscmty_his_presupuestos_enca "+
-										"WHERE hscmty_erp_reservaciones.id_presupuesto = hscmty_his_presupuestos_enca.id_presupuesto "+ 
-										"AND hscmty_his_tipo_cirugias.id_tipo_cirugia = hscmty_his_presupuestos_enca.id_tipo_cirugia "+
-										"AND hscmty_erp_reservaciones.folio_de_servicio = '"+this.entry_folio_servicio.Text.Trim()+"';";
+								comando1.CommandText ="SELECT osiris_erp_reservaciones.folio_de_servicio,to_char(osiris_erp_reservaciones.id_presupuesto,'99999999.99') AS idpresupuesto, "+
+									    "to_char(osiris_erp_reservaciones.valor_paquete,'99999999.99') AS valorpaquete, "+
+										"to_char(osiris_his_presupuestos_enca.dias_internamiento,'99999999.99') AS diasinternamiento, "+
+										"to_char(osiris_erp_reservaciones.id_presupuesto,'9999999999') AS idpresupuesto, "+
+										"osiris_his_tipo_cirugias.descripcion_cirugia  "+
+										"FROM osiris_erp_reservaciones,osiris_his_tipo_cirugias,osiris_his_presupuestos_enca "+
+										"WHERE osiris_erp_reservaciones.id_presupuesto = osiris_his_presupuestos_enca.id_presupuesto "+ 
+										"AND osiris_his_tipo_cirugias.id_tipo_cirugia = osiris_his_presupuestos_enca.id_tipo_cirugia "+
+										"AND osiris_erp_reservaciones.folio_de_servicio = '"+this.entry_folio_servicio.Text.Trim()+"';";
    
 								//Console.WriteLine("presupuestos"+comando1.CommandText); 
 								Console.WriteLine(comando1.CommandText.ToString());
@@ -425,19 +425,19 @@ namespace osiris
 					NpgsqlCommand comando; 
 					comando = conexion.CreateCommand ();
 	              	if ((string) entry_expresion.Text.ToUpper() == "*")	{
-						comando.CommandText ="SELECT hscmty_his_presupuestos_enca.id_presupuesto, "+
-						                     "hscmty_his_tipo_cirugias.id_tipo_cirugia,hscmty_his_tipo_cirugias.descripcion_cirugia, "+
-								             "to_char(hscmty_his_presupuestos_enca.fecha_de_creacion_presupuesto,'dd-MM-yyyy') as fechacreacion "+
-											 "FROM hscmty_his_tipo_cirugias,fecha_de_creacion_presupuesto "+
-											 "WHERE hscmty_his_tipo_cirugias.id_tipo_cirugia = hscmty_his_presupuestos_enca.id_tipo_cirugia "+
+						comando.CommandText ="SELECT osiris_his_presupuestos_enca.id_presupuesto, "+
+						                     "osiris_his_tipo_cirugias.id_tipo_cirugia,osiris_his_tipo_cirugias.descripcion_cirugia, "+
+								             "to_char(osiris_his_presupuestos_enca.fecha_de_creacion_presupuesto,'dd-MM-yyyy') as fechacreacion "+
+											 "FROM osiris_his_tipo_cirugias,fecha_de_creacion_presupuesto "+
+											 "WHERE osiris_his_tipo_cirugias.id_tipo_cirugia = osiris_his_presupuestos_enca.id_tipo_cirugia "+
 											 "ORDER BY id_tipo_cirugia;";
 					}else{
-						comando.CommandText ="SELECT hscmty_his_presupuestos_enca.id_presupuesto, "+
-						                     "hscmty_his_tipo_cirugias.id_tipo_cirugia,hscmty_his_tipo_cirugias.descripcion_cirugia, "+
-								             "to_char(hscmty_his_presupuestos_enca.fecha_de_creacion_presupuesto,'dd-MM-yyyy') as fechacreacion "+
-						                     "FROM hscmty_his_tipo_cirugias,hscmty_his_presupuestos_enca "+
+						comando.CommandText ="SELECT osiris_his_presupuestos_enca.id_presupuesto, "+
+						                     "osiris_his_tipo_cirugias.id_tipo_cirugia,osiris_his_tipo_cirugias.descripcion_cirugia, "+
+								             "to_char(osiris_his_presupuestos_enca.fecha_de_creacion_presupuesto,'dd-MM-yyyy') as fechacreacion "+
+						                     "FROM osiris_his_tipo_cirugias,osiris_his_presupuestos_enca "+
 											 "WHERE descripcion_cirugia LIKE '%"+entry_expresion.Text.ToUpper()+"%' "+
-											 "AND hscmty_his_tipo_cirugias.id_tipo_cirugia = hscmty_his_presupuestos_enca.id_tipo_cirugia "+
+											 "AND osiris_his_tipo_cirugias.id_tipo_cirugia = osiris_his_presupuestos_enca.id_tipo_cirugia "+
 											 "ORDER BY id_tipo_cirugia;";
 					}
 					NpgsqlDataReader lector = comando.ExecuteReader ();
@@ -558,11 +558,11 @@ namespace osiris
 					comando = conexion.CreateCommand ();
 	              	if ((string) entry_expresion.Text.ToUpper() == "*")	{
 						comando.CommandText ="SELECT id_tipo_cirugia,descripcion_cirugia,tiene_paquete,to_char(valor_paquete,'999999999.99') AS valorpaquete "+
-											"FROM hscmty_his_tipo_cirugias "+
+											"FROM osiris_his_tipo_cirugias "+
 								            "WHERE tiene_paquete = 'true' "+ 
 											"ORDER BY id_tipo_cirugia;";
 					}else{
-						comando.CommandText ="SELECT id_tipo_cirugia,descripcion_cirugia,tiene_paquete,to_char(valor_paquete,'999999999.99') AS valorpaquete FROM hscmty_his_tipo_cirugias "+
+						comando.CommandText ="SELECT id_tipo_cirugia,descripcion_cirugia,tiene_paquete,to_char(valor_paquete,'999999999.99') AS valorpaquete FROM osiris_his_tipo_cirugias "+
 											"WHERE descripcion_cirugia LIKE '%"+entry_expresion.Text.ToUpper()+"%' "+
 								            "AND tiene_paquete = 'true' "+
 											"ORDER BY id_tipo_cirugia;";
@@ -603,8 +603,8 @@ namespace osiris
 				comando.CommandText = "SELECT descripcion_cirugia, "+
 					                  "to_char(valor_paquete,'999999999.99') AS valorpaquete, "+
 					                  "to_char(dias_internamiento,'99999999') AS diasinternamiento "+
-						              "FROM hscmty_his_tipo_cirugias "+
-                                      "WHERE hscmty_his_tipo_cirugias.id_tipo_cirugia = '"+(string)  idtipocirugia.ToString()+"' ;";
+						              "FROM osiris_his_tipo_cirugias "+
+                                      "WHERE osiris_his_tipo_cirugias.id_tipo_cirugia = '"+(string)  idtipocirugia.ToString()+"' ;";
 				                    
 				//Console.WriteLine("query llenado cirugia: "+comando.CommandText.ToString());				
 				NpgsqlDataReader lector = comando.ExecuteReader ();
@@ -662,14 +662,14 @@ namespace osiris
 				conexion.Open ();
 				NpgsqlCommand comando; 
 				comando = conexion.CreateCommand ();						 
-				comando.CommandText = "UPDATE hscmty_erp_cobros_enca "+
+				comando.CommandText = "UPDATE osiris_erp_cobros_enca "+
 				                       "SET reservacion = 'true',fecha_reservacion = '"+query_fecha_reservacion+"' "+
 				                       "WHERE folio_de_servicio = '"+this.entry_folio_servicio.Text.Trim()+"'; "; 
 				//Console.WriteLine(comando.CommandText);
 				comando.ExecuteNonQuery();
 				comando.Dispose();
 				
-				comando.CommandText = "INSERT INTO hscmty_erp_reservaciones ( "+
+				comando.CommandText = "INSERT INTO osiris_erp_reservaciones ( "+
 		                      "fechahora_creacion, "+
 		                      "fechahora_reservacion, "+
 		                      "id_quien_reservo, "+ 
@@ -721,7 +721,7 @@ namespace osiris
 				NpgsqlCommand comando;
 				//Console.WriteLine("update"+comando.CommandText);
 				comando = conexion.CreateCommand ();						 
-				comando.CommandText = "UPDATE hscmty_erp_cobros_enca "+
+				comando.CommandText = "UPDATE osiris_erp_cobros_enca "+
 				                       "SET reservacion = 'true',fecha_reservacion = '"+query_fecha_reservacion+"' "+
 				                       "WHERE folio_de_servicio = '"+this.entry_folio_servicio.Text+"'; "; 
 				
@@ -729,7 +729,7 @@ namespace osiris
 				comando.ExecuteNonQuery();
 				comando.Dispose();
 				Console.WriteLine("i"+comando.CommandText); 
-				comando.CommandText = "INSERT INTO hscmty_erp_reservaciones ("+
+				comando.CommandText = "INSERT INTO osiris_erp_reservaciones ("+
 		                      "fechahora_creacion, "+
 		                      "fechahora_reservacion, "+
 		                      "id_quien_reservo, "+ 	
@@ -800,13 +800,13 @@ namespace osiris
 				conexion.Open ();
 				NpgsqlCommand comando; 
 				comando = conexion.CreateCommand ();						 
-				comando.CommandText = "UPDATE  hscmty_erp_cobros_enca "+
+				comando.CommandText = "UPDATE  osiris_erp_cobros_enca "+
 				                      "SET reservacion = 'false' "+
 				                      "WHERE folio_de_servicio = '"+this.entry_folio_servicio.Text.Trim()+"'; ";				                      
 				comando.ExecuteNonQuery();		comando.Dispose();
 						              
 				comando = conexion.CreateCommand ();
-			 	comando.CommandText = "UPDATE hscmty_erp_reservaciones "+		                    
+			 	comando.CommandText = "UPDATE osiris_erp_reservaciones "+		                    
 			             "SET id_quien_libero = '"+LoginEmpleado+"',"+ 
 			             "fecha_hora_liberacion = '"+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"' "+
 						 "WHERE folio_de_servicio = '"+this.entry_folio_servicio.Text.Trim()+"' "+

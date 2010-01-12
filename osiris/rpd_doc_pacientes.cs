@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////
 // project created on 24/10/2006 at 10:20 a
-// Hospital Santa Cecilia
+// Sistema Hospitalario OSIRIS
 // Monterrey - Mexico
 //
 // Autor   Ing. Juan Antonio Peña Gzz.(Programation & Glade's window)
@@ -140,48 +140,47 @@ namespace osiris
 		protected Gtk.Window MyWin;
 		protected Gtk.Window MyWinError;
 		
-		// Declaracion de variables publicas
-		
-		public string paquete = "";
-		public string selcampo = "";
-		public string selmedico = "";
-		public string busqueda = "";
+		// Declaracion de variables publicas		
+		string paquete = "";
+		string selcampo = "";
+		string selmedico = "";
+		string busqueda = "";
 				
-		public int idcirugianumero = 1;
-		public int idmednum = 0;
-	    public int folioservicio = 0;	    // Toma el valor de numero de atencion de paciente
-		public int PidPaciente = 0;		    // Toma la actualizacion del pid del paciente
-		public int id_tipopaciente;         // Toma el valor del tipo de paciente
-		public int idtipointernamiento = 10;// Toma el valor del tipo de internamiento
+		int idcirugianumero = 1;
+		int idmednum = 0;
+	    int folioservicio = 0;	    // Toma el valor de numero de atencion de paciente
+		int PidPaciente = 0;		    // Toma la actualizacion del pid del paciente
+		int id_tipopaciente;         // Toma el valor del tipo de paciente
+		int idtipointernamiento = 10;// Toma el valor del tipo de internamiento
 		
-		public int iddiagnosticocie10 = 1;	// Toma el valor del id de tabla de diagnosticos
-		public int iddiagnosticofinal = 1;	// toma el valor del id del diagnostico final
+		int iddiagnosticocie10 = 1;	// Toma el valor del id de tabla de diagnosticos
+		int iddiagnosticofinal = 1;	// toma el valor del id del diagnostico final
 		
 		//busqueda de diagnostico
 		private TreeStore treeViewEngineBusca2;	// Para la busqueda de Productos
     	private TreeStore treeViewEngineSelec;	// Lista de Productos seleccionados
     	private TreeStore treeViewEngineResumen;	// Lista de Productos seleccionados
 				
-		public int idmedico = 1;
-		public int idmedicotratante = 1;
- 		public string nombmedico;
- 		public string tipobusqueda = "AND hscmty_his_medicos.nombre1_medico LIKE '";
+		int idmedico = 1;
+		int idmedicotratante = 1;
+ 		string nombmedico;
+ 		string tipobusqueda = "AND osiris_his_medicos.nombre1_medico LIKE '";
 		
-		public bool tipomedico = true;
+		bool tipomedico = true;
 		
-		public string nombrebd;
-		public string LoginEmpleado;
-		
+		string LoginEmpleado;
 			
-		public string connectionString = "Server=localhost;" +
-						"Port=5432;" +
-						 "User ID=admin;" +
-						"Password=1qaz2wsx;";
+		string connectionString;
+		string nombrebd;
+		
+		class_conexion conexion_a_DB = new class_conexion();
 		
 		public impr_doc_pacientes(string LoginEmp, string NomEmpleado, string AppEmpleado, string ApmEmpleado, string _nombrebd_,string folioserv_,int control)//,string entry_nombre_medico) 
 		{
 			LoginEmpleado = LoginEmp;
-			nombrebd = _nombrebd_; 
+			connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
+			nombrebd = conexion_a_DB._nombrebd;
+			//nombrebd = _nombrebd_; 
 			//nombmedico = entry_nombre_medico;
 						
 			Glade.XML gxml = new Glade.XML (null, "impr_documentos.glade", "busqueda_folio", null);
@@ -409,7 +408,7 @@ namespace osiris
 						{
 							comando.CommandText = "SELECT id_medico, "+
 										"to_char(id_empresa,'999999') AS idempresa, "+
-										"to_char(hscmty_his_tipo_especialidad.id_especialidad,999999) AS idespecialidad, "+
+										"to_char(osiris_his_tipo_especialidad.id_especialidad,999999) AS idespecialidad, "+
 										"nombre_medico,descripcion_empresa,descripcion_especialidad,centro_medico, "+
 										"nombre1_medico,nombre2_medico,apellido_paterno_medico,apellido_materno_medico, "+
 										"telefono1_medico,cedula_medico,telefono2_medico,celular1_medico,celular2_medico, "+
@@ -422,15 +421,15 @@ namespace osiris
 										"copia_comprobante_domicilio_medico,diploma_seminarios_medico,diploma_cursos_medico, "+
 										"diplomas_extranjeros_medico,constancia_congresos_medico,cedula_especialidad_medico, "+
 										"medico_activo,autorizado "+
-										"FROM hscmty_his_medicos,hscmty_his_tipo_especialidad,hscmty_empresas "+
-										"WHERE hscmty_his_medicos.id_especialidad = hscmty_his_tipo_especialidad.id_especialidad "+
-										"AND hscmty_his_medicos.id_empresa_medico = hscmty_empresas.id_empresa "+
+										"FROM osiris_his_medicos,osiris_his_tipo_especialidad,osiris_empresas "+
+										"WHERE osiris_his_medicos.id_especialidad = osiris_his_tipo_especialidad.id_especialidad "+
+										"AND osiris_his_medicos.id_empresa_medico = osiris_empresas.id_empresa "+
 										"AND medico_activo = 'true' "+
 										"ORDER BY id_medico;";
 						}else{
 							comando.CommandText = "SELECT id_medico, "+
 										"to_char(id_empresa,'999999') AS idempresa, "+
-										"to_char(hscmty_his_tipo_especialidad.id_especialidad,999999) AS idespecialidad, "+
+										"to_char(osiris_his_tipo_especialidad.id_especialidad,999999) AS idespecialidad, "+
 										"nombre_medico,descripcion_empresa,descripcion_especialidad,centro_medico, "+
 										"nombre1_medico,nombre2_medico,apellido_paterno_medico,apellido_materno_medico, "+
 										"telefono1_medico,cedula_medico,telefono2_medico,celular1_medico,celular2_medico, "+
@@ -443,9 +442,9 @@ namespace osiris
 										"copia_comprobante_domicilio_medico,diploma_seminarios_medico,diploma_cursos_medico, "+
 										"diplomas_extranjeros_medico,constancia_congresos_medico,cedula_especialidad_medico, "+
 										"medico_activo,autorizado "+
-										"FROM hscmty_his_medicos,hscmty_his_tipo_especialidad,hscmty_empresas "+
-										"WHERE hscmty_his_medicos.id_especialidad = hscmty_his_tipo_especialidad.id_especialidad "+
-										"AND hscmty_his_medicos.id_empresa_medico = hscmty_empresas.id_empresa "+
+										"FROM osiris_his_medicos,osiris_his_tipo_especialidad,osiris_empresas "+
+										"WHERE osiris_his_medicos.id_especialidad = osiris_his_tipo_especialidad.id_especialidad "+
+										"AND osiris_his_medicos.id_empresa_medico = osiris_empresas.id_empresa "+
 										"AND medico_activo = 'true' "+
 								  		tipobusqueda+(string) entry_expresion.Text.Trim().ToUpper()+"%' "+
 										"ORDER BY id_medico;";
@@ -548,12 +547,12 @@ namespace osiris
 		
 		void tipo_de_busqueda_de_medico(int numbusqueda)
 		{
-			if(numbusqueda == 1)  { tipobusqueda = "AND hscmty_his_medicos.nombre1_medico LIKE '";	}//Console.WriteLine(tipobusqueda); }
-			if(numbusqueda == 2)  { tipobusqueda = "AND hscmty_his_medicos.nombre2_medico LIKE '";	}//Console.WriteLine(tipobusqueda); }
-			if(numbusqueda == 3)  { tipobusqueda = "AND hscmty_his_medicos.apellido_paterno_medico LIKE '";	}//Console.WriteLine(tipobusqueda); }
-			if(numbusqueda == 4)  { tipobusqueda = "AND hscmty_his_medicos.apellido_materno_medico LIKE '";	}//Console.WriteLine(tipobusqueda); }
-			if(numbusqueda == 5)  { tipobusqueda = "AND hscmty_his_medicos.cedula_medico LIKE '";	}//Console.WriteLine(tipobusqueda); }
-			if(numbusqueda == 6)  { tipobusqueda = "AND hscmty_his_tipo_especialidad.descripcion_especialidad LIKE '";	}//Console.WriteLine(tipobusqueda); }
+			if(numbusqueda == 1)  { tipobusqueda = "AND osiris_his_medicos.nombre1_medico LIKE '";	}//Console.WriteLine(tipobusqueda); }
+			if(numbusqueda == 2)  { tipobusqueda = "AND osiris_his_medicos.nombre2_medico LIKE '";	}//Console.WriteLine(tipobusqueda); }
+			if(numbusqueda == 3)  { tipobusqueda = "AND osiris_his_medicos.apellido_paterno_medico LIKE '";	}//Console.WriteLine(tipobusqueda); }
+			if(numbusqueda == 4)  { tipobusqueda = "AND osiris_his_medicos.apellido_materno_medico LIKE '";	}//Console.WriteLine(tipobusqueda); }
+			if(numbusqueda == 5)  { tipobusqueda = "AND osiris_his_medicos.cedula_medico LIKE '";	}//Console.WriteLine(tipobusqueda); }
+			if(numbusqueda == 6)  { tipobusqueda = "AND osiris_his_tipo_especialidad.descripcion_especialidad LIKE '";	}//Console.WriteLine(tipobusqueda); }
 		}
         
         void on_selecciona_medico_clicked (object sender, EventArgs args)
@@ -625,24 +624,24 @@ namespace osiris
 			string query_tipo_busqueda = "";
 			
 			if(radiobutton_nombre.Active == true){
-				query_tipo_busqueda = "AND hscmty_his_tipo_diagnosticos.descripcion_diagnostico LIKE '%"+entry_expresion.Text.ToUpper().Trim()+"%' ORDER BY descripcion_diagnostico; ";
+				query_tipo_busqueda = "AND osiris_his_tipo_diagnosticos.descripcion_diagnostico LIKE '%"+entry_expresion.Text.ToUpper().Trim()+"%' ORDER BY descripcion_diagnostico; ";
 			}
 			
 			if(radiobutton_codigo.Active == true){
-				query_tipo_busqueda = "AND hscmty_his_tipo_diagnosticos.id_diagnostico LIKE '"+entry_expresion.Text.Trim()+"%'  ORDER BY id_diagnostico; ";
+				query_tipo_busqueda = "AND osiris_his_tipo_diagnosticos.id_diagnostico LIKE '"+entry_expresion.Text.Trim()+"%'  ORDER BY id_diagnostico; ";
 			}
 	           
 			try{
 				conexion.Open ();
 				NpgsqlCommand comando; 
 				comando = conexion.CreateCommand ();
-				comando.CommandText = "SELECT to_char(hscmty_his_tipo_diagnosticos.id_diagnostico,'999999999999') AS iddiagnostico,"+
-					                  "hscmty_his_tipo_diagnosticos.descripcion_diagnostico,"+
-                                      "hscmty_his_tipo_diagnosticos.id_cie_10,"+
-                                      "to_char(hscmty_his_tipo_diagnosticos.id_cie_10_grupo,'999999999999') AS idcie10grupo,"+
-                                      "hscmty_his_tipo_diagnosticos.sub_grupo "+
-                                      "FROM hscmty_his_tipo_diagnosticos "+
-                                      "WHERE hscmty_his_tipo_diagnosticos.sub_grupo = 'false' "+
+				comando.CommandText = "SELECT to_char(osiris_his_tipo_diagnosticos.id_diagnostico,'999999999999') AS iddiagnostico,"+
+					                  "osiris_his_tipo_diagnosticos.descripcion_diagnostico,"+
+                                      "osiris_his_tipo_diagnosticos.id_cie_10,"+
+                                      "to_char(osiris_his_tipo_diagnosticos.id_cie_10_grupo,'999999999999') AS idcie10grupo,"+
+                                      "osiris_his_tipo_diagnosticos.sub_grupo "+
+                                      "FROM osiris_his_tipo_diagnosticos "+
+                                      "WHERE osiris_his_tipo_diagnosticos.sub_grupo = 'false' "+
                                        query_tipo_busqueda;
 				//Console.WriteLine(comando.CommandText);
 				NpgsqlDataReader lector = comando.ExecuteReader ();
@@ -822,35 +821,35 @@ namespace osiris
 				//idmedico
 				string strsql = "";
 				if (radiobutton_med.Active == true ){
-					strsql = "UPDATE hscmty_erp_cobros_enca SET id_medico = '" + idmedico+"', "+
+					strsql = "UPDATE osiris_erp_cobros_enca SET id_medico = '" + idmedico+"', "+
 											"nombre_medico_encabezado ='" +this.entry_medic_diag.Text.Trim()+"' "+
 											"WHERE folio_de_servicio =  '"+this.entry_folio_servicio.Text+"';";
 				}
 				if (radiobutton_med_trat.Active == true){
-					strsql = "UPDATE hscmty_erp_cobros_enca SET id_medico_tratante = '" + idmedico+"', "+
+					strsql = "UPDATE osiris_erp_cobros_enca SET id_medico_tratante = '" + idmedico+"', "+
 											"nombre_medico_tratante ='" +this.entry_med_trat.Text.Trim()+"' "+
 											"WHERE folio_de_servicio =  '"+this.entry_folio_servicio.Text+"';";
 				}
 				if (radiobutton_diag.Active == true){
-					strsql = "UPDATE hscmty_erp_movcargos SET "+
+					strsql = "UPDATE osiris_erp_movcargos SET "+
 											"descripcion_diagnostico_movcargos ='" +this.entry_diag.Text.Trim().ToUpper()+"' "+
 											"WHERE folio_de_servicio =  '"+this.entry_folio_servicio.Text+"';";
 					this.entry_diag.Text = this.entry_diag.Text.ToUpper(); 
 				}
 				if (radiobutton_diag_cie10.Active == true){
-					strsql = "UPDATE hscmty_erp_movcargos SET "+
+					strsql = "UPDATE osiris_erp_movcargos SET "+
 								"id_cie_10 = '"+this.iddiagnosticocie10.ToString().Trim()+"', "+
 								"descripcion_diagnostico_cie10 = '"+this.entry_diag_cie10.Text+"' "+
 								"WHERE folio_de_servicio =  '"+this.entry_folio_servicio.Text+"';";
 				}
 		        if (radiobutton_diag_final.Active == true){
-		        	strsql = "UPDATE hscmty_erp_movcargos SET "+
+		        	strsql = "UPDATE osiris_erp_movcargos SET "+
 								"id_diagnostico_final = '"+this.iddiagnosticofinal.ToString().Trim()+"', "+
 								"descripcion_diagnostico_final = '"+this.entry_diag_final.Text+"' "+
 								"WHERE folio_de_servicio =  '"+this.entry_folio_servicio.Text+"';";		        	
 				}
 				if (radiobutton_cirugia.Active == true){
-				            	strsql = "UPDATE hscmty_erp_movcargos SET id_tipo_cirugia = '" + idcirugianumero+"', "+
+				            	strsql = "UPDATE osiris_erp_movcargos SET id_tipo_cirugia = '" + idcirugianumero+"', "+
 											"nombre_de_cirugia ='" +this.entry_docimp_cirugia.Text.Trim()+"' "+
 											"WHERE folio_de_servicio =  '"+this.entry_folio_servicio.Text+"';";
 				}
@@ -910,11 +909,11 @@ namespace osiris
 				
 				if ((string) entry_expresion.Text.Trim() == ""){
 					comando.CommandText = "SELECT id_tipo_cirugia, descripcion_cirugia, tiene_paquete "+
-									 	  "FROM hscmty_his_tipo_cirugias " +
+									 	  "FROM osiris_his_tipo_cirugias " +
 									   		"WHERE (id_tipo_cirugia != '0');";
 				}else{
 				    comando.CommandText = "SELECT id_tipo_cirugia, descripcion_cirugia, tiene_paquete "+
-									 	  "FROM hscmty_his_tipo_cirugias " +
+									 	  "FROM osiris_his_tipo_cirugias " +
 									 	  "WHERE (descripcion_cirugia LIKE '"+entry_expresion.Text.ToUpper()+"%') "+
 									  		"ORDER BY id_tipo_cirugia;";
 				}
@@ -951,7 +950,8 @@ namespace osiris
 				msgBoxError.Run ();
 				msgBoxError.Destroy();}
 			  else{
-				//new protocolo_admision(PidPaciente,int.Parse(entry_folio_servicio.Text),nombrebd,entry_doctor.Text.ToUpper().Trim()); // rpt_prot_admision.cs
+				//rpt_prot_admision.cs
+				new protocolo_admision(PidPaciente,int.Parse(entry_folio_servicio.Text),nombrebd,entry_doctor.Text.ToUpper().Trim()); // rpt_prot_admision.cs
 			}   
 	   	}
 	   	
@@ -966,7 +966,8 @@ namespace osiris
 				msgBoxError.Run ();
 				msgBoxError.Destroy();
 			}else{
-				//new conse_info(PidPaciente,int.Parse(entry_folio_servicio.Text),nombrebd,this.entry_med_trat.Text.ToUpper().Trim(),this.entry_cirugia.Text.ToUpper().Trim());   // rpt_cons_informado.cs
+				//rpt_cons_informado.cs
+				new conse_info(PidPaciente,int.Parse(entry_folio_servicio.Text),nombrebd,this.entry_med_trat.Text.ToUpper().Trim(),this.entry_cirugia.Text.ToUpper().Trim());   // rpt_cons_informado.cs
 			}
 		}
 		
@@ -1002,35 +1003,35 @@ namespace osiris
 				comando = conexion.CreateCommand ();
                	
 				// asigna el numero de folio de ingreso de paciente (FOLIO)
-				comando.CommandText = "SELECT hscmty_erp_cobros_enca.folio_de_servicio AS foliodeatencion,to_char(hscmty_erp_cobros_enca.pid_paciente,'9999999999') AS pidpaciente,"+
+				comando.CommandText = "SELECT osiris_erp_cobros_enca.folio_de_servicio AS foliodeatencion,to_char(osiris_erp_cobros_enca.pid_paciente,'9999999999') AS pidpaciente,"+
             				"nombre1_paciente,nombre2_paciente,apellido_paterno_paciente,apellido_materno_paciente,"+
             				"telefono_particular1_paciente,numero_poliza,folio_de_servicio_dep,"+
             				"nombre_de_cirugia,"+
             				"descripcion_diagnostico_movcargos,id_tipo_cirugia,"+
             				"nombre_medico_encabezado,"+
             				"id_medico_tratante,nombre_medico_tratante,"+
-            				"to_char(hscmty_erp_cobros_enca.fechahora_creacion,'dd-MM-yyyy') AS fecha_registro,"+
-            				"to_char(hscmty_erp_cobros_enca.fechahora_creacion,'HH:mm:ss') AS hora_registro,"+
-            				"to_char(hscmty_erp_cobros_enca.fecha_alta_paciente, 'dd-MM-yyyy') AS fecha_egre, "+ 
-							"to_char(hscmty_erp_cobros_enca.fecha_alta_paciente, 'HH:mm') AS hora_egre,  "+
-            				"hscmty_erp_movcargos.id_tipo_paciente AS idtipopaciente,descripcion_tipo_paciente,"+
-            				"hscmty_erp_movcargos.id_tipo_admisiones AS idtipoadmision,descripcion_admisiones,"+
-            				"hscmty_erp_cobros_enca.id_aseguradora,descripcion_aseguradora, "+
+            				"to_char(osiris_erp_cobros_enca.fechahora_creacion,'dd-MM-yyyy') AS fecha_registro,"+
+            				"to_char(osiris_erp_cobros_enca.fechahora_creacion,'HH:mm:ss') AS hora_registro,"+
+            				"to_char(osiris_erp_cobros_enca.fecha_alta_paciente, 'dd-MM-yyyy') AS fecha_egre, "+ 
+							"to_char(osiris_erp_cobros_enca.fecha_alta_paciente, 'HH:mm') AS hora_egre,  "+
+            				"osiris_erp_movcargos.id_tipo_paciente AS idtipopaciente,descripcion_tipo_paciente,"+
+            				"osiris_erp_movcargos.id_tipo_admisiones AS idtipoadmision,descripcion_admisiones,"+
+            				"osiris_erp_cobros_enca.id_aseguradora,descripcion_aseguradora, "+
             				"descripcion_diagnostico_movcargos,nombre_medico_encabezado, "+
-            				"hscmty_erp_cobros_enca.id_medico,nombre_medico,cancelado, "+
-            				"hscmty_erp_movcargos.descripcion_diagnostico_cie10,hscmty_erp_movcargos.descripcion_diagnostico_final "+            				
-            				//"hscmty_his_tipo_diagnosticos.descripcion_diagnostico "+
-            				"FROM hscmty_erp_cobros_enca,hscmty_his_paciente,hscmty_erp_movcargos,hscmty_his_tipo_admisiones,hscmty_his_tipo_pacientes, "+
-            				"hscmty_aseguradoras, hscmty_his_medicos "+ 
-            				//"hscmty_his_tipo_diagnosticos "+
-            				"WHERE hscmty_erp_cobros_enca.pid_paciente = hscmty_his_paciente.pid_paciente "+
-            				"AND hscmty_erp_movcargos.folio_de_servicio = hscmty_erp_cobros_enca.folio_de_servicio "+
-            				"AND hscmty_erp_cobros_enca.id_medico = hscmty_his_medicos.id_medico "+ 
-            				"AND hscmty_erp_cobros_enca.id_aseguradora = hscmty_aseguradoras.id_aseguradora "+ 
-            				"AND hscmty_erp_movcargos.id_tipo_admisiones = hscmty_his_tipo_admisiones.id_tipo_admisiones "+
-            				"AND hscmty_erp_movcargos.id_tipo_paciente = hscmty_his_tipo_pacientes.id_tipo_paciente "+
-            				//"AND hscmty_erp_movcargos.id_cie_10 = hscmty_his_tipo_diagnosticos.id_cie_10 "+
-            				"AND hscmty_erp_cobros_enca.folio_de_servicio = '"+(string) foliodeservicio+"';";
+            				"osiris_erp_cobros_enca.id_medico,nombre_medico,cancelado, "+
+            				"osiris_erp_movcargos.descripcion_diagnostico_cie10,osiris_erp_movcargos.descripcion_diagnostico_final "+            				
+            				//"osiris_his_tipo_diagnosticos.descripcion_diagnostico "+
+            				"FROM osiris_erp_cobros_enca,osiris_his_paciente,osiris_erp_movcargos,osiris_his_tipo_admisiones,osiris_his_tipo_pacientes, "+
+            				"osiris_aseguradoras, osiris_his_medicos "+ 
+            				//"osiris_his_tipo_diagnosticos "+
+            				"WHERE osiris_erp_cobros_enca.pid_paciente = osiris_his_paciente.pid_paciente "+
+            				"AND osiris_erp_movcargos.folio_de_servicio = osiris_erp_cobros_enca.folio_de_servicio "+
+            				"AND osiris_erp_cobros_enca.id_medico = osiris_his_medicos.id_medico "+ 
+            				"AND osiris_erp_cobros_enca.id_aseguradora = osiris_aseguradoras.id_aseguradora "+ 
+            				"AND osiris_erp_movcargos.id_tipo_admisiones = osiris_his_tipo_admisiones.id_tipo_admisiones "+
+            				"AND osiris_erp_movcargos.id_tipo_paciente = osiris_his_tipo_pacientes.id_tipo_paciente "+
+            				//"AND osiris_erp_movcargos.id_cie_10 = osiris_his_tipo_diagnosticos.id_cie_10 "+
+            				"AND osiris_erp_cobros_enca.folio_de_servicio = '"+(string) foliodeservicio+"';";
 				NpgsqlDataReader lector = comando.ExecuteReader ();
             	
 				while (lector.Read())
@@ -1413,51 +1414,51 @@ namespace osiris
                	               	
 				if (radiobutton_busca_apellido.Active == true)
 				{
-					comando.CommandText = "SELECT hscmty_erp_cobros_enca.folio_de_servicio,hscmty_his_paciente.pid_paciente, nombre1_paciente,nombre2_paciente, apellido_paterno_paciente,"+
+					comando.CommandText = "SELECT osiris_erp_cobros_enca.folio_de_servicio,osiris_his_paciente.pid_paciente, nombre1_paciente,nombre2_paciente, apellido_paterno_paciente,"+
 										"apellido_materno_paciente, to_char(fecha_nacimiento_paciente,'yyyy-MM-dd') AS fech_nacimiento,"+
 										"to_char(to_number(to_char(age('"+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"',fecha_nacimiento_paciente),'yyyy') ,'9999'),'9999') AS edad, sexo_paciente,"+
 										"to_char(fechahora_registro_paciente,'dd-MM-yyyy HH:mi:ss') AS fech_creacion "+
-										"FROM hscmty_his_paciente,hscmty_erp_cobros_enca "+
-										"WHERE hscmty_his_paciente.pid_paciente = hscmty_erp_cobros_enca.pid_paciente "+ 
-										"AND hscmty_erp_cobros_enca.pagado = 'false' "+
-										"AND hscmty_erp_cobros_enca.cancelado = 'false' "+
+										"FROM osiris_his_paciente,osiris_erp_cobros_enca "+
+										"WHERE osiris_his_paciente.pid_paciente = osiris_erp_cobros_enca.pid_paciente "+ 
+										"AND osiris_erp_cobros_enca.pagado = 'false' "+
+										"AND osiris_erp_cobros_enca.cancelado = 'false' "+
 										"AND apellido_paterno_paciente LIKE '"+entry_expresion.Text.ToUpper()+"%' ORDER BY pid_paciente;";
 				}
 				if (radiobutton_busca_nombre.Active == true)
 				{
-					comando.CommandText = "SELECT hscmty_erp_cobros_enca.folio_de_servicio,hscmty_erp_cobros_enca.pid_paciente, nombre1_paciente,nombre2_paciente, apellido_paterno_paciente,"+
+					comando.CommandText = "SELECT osiris_erp_cobros_enca.folio_de_servicio,osiris_erp_cobros_enca.pid_paciente, nombre1_paciente,nombre2_paciente, apellido_paterno_paciente,"+
 										"apellido_materno_paciente, to_char(fecha_nacimiento_paciente,'yyyy-MM-dd') AS fech_nacimiento,"+
 										"to_char(to_number(to_char(age('"+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"',fecha_nacimiento_paciente),'yyyy') ,'9999'),'9999') AS edad, sexo_paciente,"+
 										"to_char(fechahora_registro_paciente,'dd-MM-yyyy HH:mi:ss') AS fech_creacion "+
-										"FROM hscmty_his_paciente,hscmty_erp_cobros_enca "+
-										"WHERE hscmty_his_paciente.pid_paciente = hscmty_erp_cobros_enca.pid_paciente "+ 
-										"AND hscmty_erp_cobros_enca.pagado = 'false' "+ 
-										"AND hscmty_erp_cobros_enca.cancelado = 'false' "+
-										"AND nombre1_paciente LIKE '"+entry_expresion.Text.ToUpper()+"%' ORDER BY hscmty_erp_cobros_enca.pid_paciente;";
+										"FROM osiris_his_paciente,osiris_erp_cobros_enca "+
+										"WHERE osiris_his_paciente.pid_paciente = osiris_erp_cobros_enca.pid_paciente "+ 
+										"AND osiris_erp_cobros_enca.pagado = 'false' "+ 
+										"AND osiris_erp_cobros_enca.cancelado = 'false' "+
+										"AND nombre1_paciente LIKE '"+entry_expresion.Text.ToUpper()+"%' ORDER BY osiris_erp_cobros_enca.pid_paciente;";
 				}
 				if (radiobutton_busca_expediente.Active == true)
 				{
-					comando.CommandText = "SELECT hscmty_erp_cobros_enca.folio_de_servicio,hscmty_erp_cobros_enca.pid_paciente, nombre1_paciente,nombre2_paciente, apellido_paterno_paciente,"+
+					comando.CommandText = "SELECT osiris_erp_cobros_enca.folio_de_servicio,osiris_erp_cobros_enca.pid_paciente, nombre1_paciente,nombre2_paciente, apellido_paterno_paciente,"+
 										"apellido_materno_paciente, to_char(fecha_nacimiento_paciente,'yyyy-MM-dd') AS fech_nacimiento,"+
 										"to_char(to_number(to_char(age('"+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"',fecha_nacimiento_paciente),'yyyy') ,'9999'),'9999') AS edad, sexo_paciente,"+
 										"to_char(fechahora_registro_paciente,'dd-MM-yyyy HH:mi:ss') AS fech_creacion "+
-										"FROM hscmty_his_paciente,hscmty_erp_cobros_enca "+
-										"WHERE hscmty_his_paciente.pid_paciente = hscmty_erp_cobros_enca.pid_paciente "+ 
-										"AND hscmty_erp_cobros_enca.pagado = 'false' "+
-										"AND hscmty_erp_cobros_enca.cancelado = 'false' "+
-										"AND hscmty_erp_cobros_enca.pid_paciente = '"+entry_expresion.Text+"' ORDER BY hscmty_erp_cobros_enca.pid_paciente;";					
+										"FROM osiris_his_paciente,osiris_erp_cobros_enca "+
+										"WHERE osiris_his_paciente.pid_paciente = osiris_erp_cobros_enca.pid_paciente "+ 
+										"AND osiris_erp_cobros_enca.pagado = 'false' "+
+										"AND osiris_erp_cobros_enca.cancelado = 'false' "+
+										"AND osiris_erp_cobros_enca.pid_paciente = '"+entry_expresion.Text+"' ORDER BY osiris_erp_cobros_enca.pid_paciente;";					
 				}
 				if ((string) entry_expresion.Text.ToString() == "*")
 				{
-					comando.CommandText = "SELECT hscmty_erp_cobros_enca.folio_de_servicio,hscmty_erp_cobros_enca.pid_paciente, nombre1_paciente,nombre2_paciente, apellido_paterno_paciente,"+
+					comando.CommandText = "SELECT osiris_erp_cobros_enca.folio_de_servicio,osiris_erp_cobros_enca.pid_paciente, nombre1_paciente,nombre2_paciente, apellido_paterno_paciente,"+
 										"apellido_materno_paciente, to_char(fecha_nacimiento_paciente,'yyyy-MM-dd') AS fech_nacimiento,"+
 										"to_char(to_number(to_char(age('"+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"',fecha_nacimiento_paciente),'yyyy') ,'9999'),'9999') AS edad, sexo_paciente,"+
 										"to_char(fechahora_registro_paciente,'dd-MM-yyyy HH:mi:ss') AS fech_creacion "+
-										"FROM hscmty_his_paciente,hscmty_erp_cobros_enca "+
-										"WHERE hscmty_his_paciente.pid_paciente = hscmty_erp_cobros_enca.pid_paciente "+ 
-										"AND hscmty_erp_cobros_enca.pagado = 'false' "+
-										"AND hscmty_erp_cobros_enca.cancelado = 'false' "+
-										"ORDER BY hscmty_erp_cobros_enca.pid_paciente;";
+										"FROM osiris_his_paciente,osiris_erp_cobros_enca "+
+										"WHERE osiris_his_paciente.pid_paciente = osiris_erp_cobros_enca.pid_paciente "+ 
+										"AND osiris_erp_cobros_enca.pagado = 'false' "+
+										"AND osiris_erp_cobros_enca.cancelado = 'false' "+
+										"ORDER BY osiris_erp_cobros_enca.pid_paciente;";
 				}
 				NpgsqlDataReader lector = comando.ExecuteReader ();
 				while (lector.Read())

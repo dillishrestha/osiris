@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////
 // created on 21/06/2007 at 01:40 p
-// Hospital Santa Cecilia
+// Sistema Hospitalario OSIRIS
 // Monterrey - Mexico
 //
 // Autor    	: Ing. Juan Antonio Peña Gonzalez (Programacion)
@@ -197,7 +197,7 @@ namespace osiris
 		public bool diplomaextranjero = false;
 		public bool diploseminarios = false; 
 		public bool diplomacursos = false;
-		public string tipobusqueda = "AND hscmty_his_medicos.nombre1_medico LIKE '";
+		public string tipobusqueda = "AND osiris_his_medicos.nombre1_medico LIKE '";
 		
 		
 		public string connectionString = "Server=localhost;" +
@@ -365,7 +365,7 @@ namespace osiris
 				NpgsqlCommand comando; 
 				comando = conexion.CreateCommand ();
 				comando.CommandText = "SELECT to_char(id_proveedor,'99999999') AS idproveedor "+ 
-										"FROM hscmty_erp_proveedores "+
+										"FROM osiris_erp_proveedores "+
 										"ORDER BY id_proveedor DESC LIMIT 1;";
 										NpgsqlDataReader lector = comando.ExecuteReader ();
 				if (lector.Read())
@@ -578,9 +578,9 @@ namespace osiris
 								"colonia_proveedor,municipio_proveedor,estado_proveedor,telefono1_proveedor, "+ 
 								"telefono2_proveedor,celular_proveedor,cp_proveedor, proveedor_activo, "+
 								"id_proveedor,contacto1_proveedor,mail_proveedor,pagina_web_proveedor,rfc_proveedor,curp_proveedor,"+
-								"hscmty_erp_proveedores.id_forma_de_pago, descripcion_forma_de_pago AS descripago "+
-								"FROM hscmty_erp_proveedores, hscmty_erp_forma_de_pago "+
-								"WHERE hscmty_erp_proveedores.id_forma_de_pago = hscmty_erp_forma_de_pago.id_forma_de_pago "+
+								"osiris_erp_proveedores.id_forma_de_pago, descripcion_forma_de_pago AS descripago "+
+								"FROM osiris_erp_proveedores, osiris_erp_forma_de_pago "+
+								"WHERE osiris_erp_proveedores.id_forma_de_pago = osiris_erp_forma_de_pago.id_forma_de_pago "+
 								"ORDER BY descripcion_proveedor;";															
 				}
 				else
@@ -589,9 +589,9 @@ namespace osiris
 								"colonia_proveedor,municipio_proveedor,estado_proveedor,telefono1_proveedor, "+ 
 								"telefono2_proveedor,celular_proveedor,cp_proveedor, proveedor_activo, "+
 								"id_proveedor,contacto1_proveedor,mail_proveedor,pagina_web_proveedor,rfc_proveedor,curp_proveedor,"+
-								"hscmty_erp_proveedores.id_forma_de_pago, descripcion_forma_de_pago AS descripago "+
-								"FROM hscmty_erp_proveedores, hscmty_erp_forma_de_pago "+
-								"WHERE hscmty_erp_proveedores.id_forma_de_pago = hscmty_erp_forma_de_pago.id_forma_de_pago "+
+								"osiris_erp_proveedores.id_forma_de_pago, descripcion_forma_de_pago AS descripago "+
+								"FROM osiris_erp_proveedores, osiris_erp_forma_de_pago "+
+								"WHERE osiris_erp_proveedores.id_forma_de_pago = osiris_erp_forma_de_pago.id_forma_de_pago "+
 								"AND descripcion_proveedor LIKE '%"+(string) entry_expresion.Text.ToUpper()+"%' "+
 								"ORDER BY descripcion_proveedor;";
 				}
@@ -685,7 +685,7 @@ namespace osiris
 						conexion.Open ();
 						NpgsqlCommand comando; 
 						comando = conexion.CreateCommand ();
-	 					comando.CommandText = "INSERT INTO hscmty_erp_proveedores("+
+	 					comando.CommandText = "INSERT INTO osiris_erp_proveedores("+
 	 										  "descripcion_proveedor,"+ // ) "+
 	 										  "rfc_proveedor,"+
 	 										  "curp_proveedor,"+
@@ -753,7 +753,7 @@ namespace osiris
 						conexion.Open ();
 						NpgsqlCommand comando; 
 						comando = conexion.CreateCommand ();
-						comando.CommandText = "UPDATE hscmty_erp_proveedores SET "+
+						comando.CommandText = "UPDATE osiris_erp_proveedores SET "+
 						"descripcion_proveedor = '"+(string) entry_proveedor.Text.Trim().ToUpper()+"', "+
 						"rfc_proveedor = '"+(string) entry_rfc_proveedor.Text.Trim().ToUpper()+"', "+
 						"curp_proveedor = '"+(string) entry_curp_proveedor.Text.Trim().ToUpper()+"', "+
@@ -1025,20 +1025,20 @@ namespace osiris
 					comando.CommandText = "SELECT descripcion_cliente,direccion_cliente,rfc_cliente,curp_cliente, "+
 								"colonia_cliente,municipio_cliente,estado_cliente,telefono1_cliente, "+ 
 								"telefono2_cliente,celular_cliente,cp_cliente,"+
-								"hscmty_erp_clientes.id_forma_de_pago,descripcion_forma_de_pago AS descripago,"+ 
+								"osiris_erp_clientes.id_forma_de_pago,descripcion_forma_de_pago AS descripago,"+ 
 								"cliente_activo,id_cliente,envio_factura "+
-								"FROM hscmty_erp_clientes,hscmty_erp_forma_de_pago "+
-								"WHERE hscmty_erp_clientes.id_forma_de_pago = hscmty_erp_forma_de_pago.id_forma_de_pago "+
+								"FROM osiris_erp_clientes,osiris_erp_forma_de_pago "+
+								"WHERE osiris_erp_clientes.id_forma_de_pago = osiris_erp_forma_de_pago.id_forma_de_pago "+
 								clientesactivos+
 								"ORDER BY descripcion_cliente;";
 				}else{
 					comando.CommandText = "SELECT descripcion_cliente,direccion_cliente,rfc_cliente,curp_cliente, "+
 								"colonia_cliente,municipio_cliente,estado_cliente,telefono1_cliente, "+ 
 								"telefono2_cliente,celular_cliente,cp_cliente,"+
-								"hscmty_erp_clientes.id_forma_de_pago,descripcion_forma_de_pago AS descripago,"+ 
+								"osiris_erp_clientes.id_forma_de_pago,descripcion_forma_de_pago AS descripago,"+ 
 								"cliente_activo,id_cliente,envio_factura "+
-								"FROM hscmty_erp_clientes,hscmty_erp_forma_de_pago "+
-								"WHERE hscmty_erp_clientes.id_forma_de_pago = hscmty_erp_forma_de_pago.id_forma_de_pago "+
+								"FROM osiris_erp_clientes,osiris_erp_forma_de_pago "+
+								"WHERE osiris_erp_clientes.id_forma_de_pago = osiris_erp_forma_de_pago.id_forma_de_pago "+
 								clientesactivos+
 								"AND descripcion_cliente LIKE '%"+(string) entry_expresion.Text.ToUpper()+"%' "+
 								"ORDER BY descripcion_cliente;";
@@ -1129,7 +1129,7 @@ namespace osiris
  						conexion.Open ();
 						NpgsqlCommand comando; 
 						comando = conexion.CreateCommand ();
-	 					comando.CommandText = "SELECT * FROM hscmty_erp_clientes WHERE rfc_cliente = '"+(string) entry_rfc_cliente.Text.Trim().ToUpper()+"';";
+	 					comando.CommandText = "SELECT * FROM osiris_erp_clientes WHERE rfc_cliente = '"+(string) entry_rfc_cliente.Text.Trim().ToUpper()+"';";
  						NpgsqlDataReader lector = comando.ExecuteReader ();
  						
 						if (!lector.Read()){
@@ -1141,7 +1141,7 @@ namespace osiris
 								conexion1.Open ();
 								NpgsqlCommand comando1; 
 								comando1 = conexion.CreateCommand ();
-		 						comando1.CommandText = "INSERT INTO hscmty_erp_clientes("+
+		 						comando1.CommandText = "INSERT INTO osiris_erp_clientes("+
 		 											"descripcion_cliente,"+
 		 											"direccion_cliente,"+
 		 											"id_forma_de_pago,"+
@@ -1221,7 +1221,7 @@ namespace osiris
 						NpgsqlCommand comando; 
 						comando = conexion.CreateCommand ();
  						//TreeIter iter;
- 						comando.CommandText = "UPDATE hscmty_erp_clientes SET "+
+ 						comando.CommandText = "UPDATE osiris_erp_clientes SET "+
  								"descripcion_cliente = '"+(string) entry_nombre_cliente.Text.Trim().ToUpper()+"', "+
  								"direccion_cliente = '"+(string) entry_calle_cliente.Text.Trim().ToUpper()+"', "+
  								"id_forma_de_pago = '"+ idformadepago.ToString().ToUpper()+"', "+
@@ -1281,7 +1281,7 @@ namespace osiris
 				NpgsqlCommand comando; 
 				comando = conexion.CreateCommand ();
 				comando.CommandText = "SELECT to_char(id_cliente,'99999999') AS idcliente "+ 
-									"FROM hscmty_erp_clientes "+
+									"FROM osiris_erp_clientes "+
 									"ORDER BY id_cliente DESC LIMIT 1;";
 				NpgsqlDataReader lector = comando.ExecuteReader ();
 				//bool verifica_activacion;
@@ -1422,7 +1422,7 @@ namespace osiris
 				conexion.Open ();
 				NpgsqlCommand comando; 
 				comando = conexion.CreateCommand ();
-               	comando.CommandText = "SELECT * FROM hscmty_erp_forma_de_pago "+
+               	comando.CommandText = "SELECT * FROM osiris_erp_forma_de_pago "+
                						"ORDER BY descripcion_forma_de_pago;";
 				
 				NpgsqlDataReader lector = comando.ExecuteReader ();
@@ -1466,7 +1466,7 @@ namespace osiris
 				conexion.Open ();
 				NpgsqlCommand comando; 
 				comando = conexion.CreateCommand ();
-               	comando.CommandText = "SELECT descripcion_municipio FROM hscmty_municipios WHERE id_estado = '"+idestado.ToString()+"' "+
+               	comando.CommandText = "SELECT descripcion_municipio FROM osiris_municipios WHERE id_estado = '"+idestado.ToString()+"' "+
                						"ORDER BY descripcion_municipio;";
 				
 				NpgsqlDataReader lector = comando.ExecuteReader ();
@@ -1505,7 +1505,7 @@ namespace osiris
 				conexion.Open ();
 				NpgsqlCommand comando; 
 				comando = conexion.CreateCommand ();
-               	comando.CommandText = "SELECT * FROM hscmty_estados ORDER BY descripcion_estado;";
+               	comando.CommandText = "SELECT * FROM osiris_estados ORDER BY descripcion_estado;";
 				
 				NpgsqlDataReader lector = comando.ExecuteReader ();
                	while (lector.Read()){
@@ -1642,7 +1642,7 @@ namespace osiris
 							NpgsqlCommand comando; 
 							comando = conexion.CreateCommand ();
 	 						//TreeIter iter;
-	 						comando.CommandText = "INSERT INTO hscmty_his_medicos("+
+	 						comando.CommandText = "INSERT INTO osiris_his_medicos("+
 	 										"nombre1_medico,"+//1
 											"nombre2_medico,"+//2
 											"apellido_paterno_medico,"+//3
@@ -1745,7 +1745,7 @@ namespace osiris
 							NpgsqlCommand comando; 
 							comando = conexion.CreateCommand ();
 	 						//TreeIter iter;
-	 						comando.CommandText = "UPDATE hscmty_his_medicos SET "+
+	 						comando.CommandText = "UPDATE osiris_his_medicos SET "+
 	 								"nombre1_medico = '"+(string) entry_nombre1_medico.Text.Trim().ToUpper()+"',"+//1
 									"nombre2_medico = '"+(string) entry_nombre2_medico.Text.Trim().ToUpper()+"',"+//2
 									"apellido_paterno_medico = '"+(string) entry_apellido_paterno_medico.Text.Trim().ToUpper()+"',"+//3
@@ -1995,7 +1995,7 @@ namespace osiris
 						{
 							comando.CommandText = "SELECT id_medico, "+
 										"to_char(id_empresa,'999999') AS idempresa, "+
-										"to_char(hscmty_his_tipo_especialidad.id_especialidad,999999) AS idespecialidad, "+
+										"to_char(osiris_his_tipo_especialidad.id_especialidad,999999) AS idespecialidad, "+
 										"nombre_medico,descripcion_empresa,descripcion_especialidad,centro_medico, "+
 										"nombre1_medico,nombre2_medico,apellido_paterno_medico,apellido_materno_medico, "+
 										"telefono1_medico,cedula_medico,telefono2_medico,celular1_medico,celular2_medico, "+
@@ -2008,14 +2008,14 @@ namespace osiris
 										"copia_comprobante_domicilio_medico,diploma_seminarios_medico,diploma_cursos_medico, "+
 										"diplomas_extranjeros_medico,constancia_congresos_medico,cedula_especialidad_medico, "+
 										"medico_activo,autorizado "+
-										"FROM hscmty_his_medicos,hscmty_his_tipo_especialidad,hscmty_empresas "+
-										"WHERE hscmty_his_medicos.id_especialidad = hscmty_his_tipo_especialidad.id_especialidad "+
-										"AND hscmty_his_medicos.id_empresa_medico = hscmty_empresas.id_empresa "+
+										"FROM osiris_his_medicos,osiris_his_tipo_especialidad,osiris_empresas "+
+										"WHERE osiris_his_medicos.id_especialidad = osiris_his_tipo_especialidad.id_especialidad "+
+										"AND osiris_his_medicos.id_empresa_medico = osiris_empresas.id_empresa "+
 										"ORDER BY id_medico;";
 						}else{
 							comando.CommandText = "SELECT id_medico, "+
 										"to_char(id_empresa,'999999') AS idempresa, "+
-										"to_char(hscmty_his_tipo_especialidad.id_especialidad,999999) AS idespecialidad, "+
+										"to_char(osiris_his_tipo_especialidad.id_especialidad,999999) AS idespecialidad, "+
 										"nombre_medico,descripcion_empresa,descripcion_especialidad,centro_medico, "+
 										"nombre1_medico,nombre2_medico,apellido_paterno_medico,apellido_materno_medico, "+
 										"telefono1_medico,cedula_medico,telefono2_medico,celular1_medico,celular2_medico, "+
@@ -2028,9 +2028,9 @@ namespace osiris
 										"copia_comprobante_domicilio_medico,diploma_seminarios_medico,diploma_cursos_medico, "+
 										"diplomas_extranjeros_medico,constancia_congresos_medico,cedula_especialidad_medico, "+
 										"medico_activo,autorizado "+
-										"FROM hscmty_his_medicos,hscmty_his_tipo_especialidad,hscmty_empresas "+
-										"WHERE hscmty_his_medicos.id_especialidad = hscmty_his_tipo_especialidad.id_especialidad "+
-										"AND hscmty_his_medicos.id_empresa_medico = hscmty_empresas.id_empresa "+
+										"FROM osiris_his_medicos,osiris_his_tipo_especialidad,osiris_empresas "+
+										"WHERE osiris_his_medicos.id_especialidad = osiris_his_tipo_especialidad.id_especialidad "+
+										"AND osiris_his_medicos.id_empresa_medico = osiris_empresas.id_empresa "+
 								  		tipobusqueda+(string) entry_expresion.Text.Trim().ToUpper()+"%' "+
 										"ORDER BY id_medico;";
 						}
@@ -2151,13 +2151,13 @@ namespace osiris
 		
 		void tipo_de_busqueda_de_medico(int numbusqueda)
 		{
-			if(numbusqueda == 1)  { tipobusqueda = "AND hscmty_his_medicos.nombre1_medico LIKE '";	}
-			if(numbusqueda == 2)  { tipobusqueda = "AND hscmty_his_medicos.nombre2_medico LIKE '";	}
-			if(numbusqueda == 3)  { tipobusqueda = "AND hscmty_his_medicos.apellido_paterno_medico LIKE '";	}
-			if(numbusqueda == 4)  { tipobusqueda = "AND hscmty_his_medicos.apellido_materno_medico LIKE '";	}
-			if(numbusqueda == 5)  { tipobusqueda = "AND hscmty_his_medicos.cedula_medico LIKE '";	}
-			if(numbusqueda == 6)  { tipobusqueda = "AND hscmty_his_tipo_especialidad.descripcion_especialidad LIKE '";	}
-			if(numbusqueda == 7)  { tipobusqueda = "AND hscmty_his_medicos.id_medico LIKE '";	}
+			if(numbusqueda == 1)  { tipobusqueda = "AND osiris_his_medicos.nombre1_medico LIKE '";	}
+			if(numbusqueda == 2)  { tipobusqueda = "AND osiris_his_medicos.nombre2_medico LIKE '";	}
+			if(numbusqueda == 3)  { tipobusqueda = "AND osiris_his_medicos.apellido_paterno_medico LIKE '";	}
+			if(numbusqueda == 4)  { tipobusqueda = "AND osiris_his_medicos.apellido_materno_medico LIKE '";	}
+			if(numbusqueda == 5)  { tipobusqueda = "AND osiris_his_medicos.cedula_medico LIKE '";	}
+			if(numbusqueda == 6)  { tipobusqueda = "AND osiris_his_tipo_especialidad.descripcion_especialidad LIKE '";	}
+			if(numbusqueda == 7)  { tipobusqueda = "AND osiris_his_medicos.id_medico LIKE '";	}
 		}
 		
 		void on_selecciona_medico(object sender, EventArgs args) 
@@ -2269,11 +2269,11 @@ namespace osiris
 				if ((string) entry_expresion.Text.ToUpper().Trim() == "")
 				{
 					comando.CommandText = "SELECT id_especialidad,descripcion_especialidad "+
-										" FROM hscmty_his_tipo_especialidad "+
+										" FROM osiris_his_tipo_especialidad "+
 										"ORDER BY id_especialidad;";
 				}else{
 					comando.CommandText = "SELECT id_especialidad,descripcion_especialidad "+
-										" FROM hscmty_his_tipo_especialidad "+
+										" FROM osiris_his_tipo_especialidad "+
 										"WHERE descripcion_especialidad LIKE '"+entry_expresion.Text.ToUpper().Trim()+"%' ;"+
 										"ORDER BY id_especialidad;";
 				}						
@@ -2428,7 +2428,7 @@ namespace osiris
 						conexion.Open ();
 						NpgsqlCommand comando; 
 						comando = conexion.CreateCommand ();
- 						comando.CommandText = "INSERT INTO hscmty_estados("+
+ 						comando.CommandText = "INSERT INTO osiris_estados("+
 											  "descripcion_estado ) "+
  											  "VALUES ('"+
  											  (string) entry_estado.Text.Trim().ToUpper()+ "');"; 
@@ -2462,7 +2462,7 @@ namespace osiris
 						conexion.Open ();
 						NpgsqlCommand comando; 
 						comando = conexion.CreateCommand ();
- 						comando.CommandText = "UPDATE hscmty_estados SET "+
+ 						comando.CommandText = "UPDATE osiris_estados SET "+
  											"descripcion_estado  = '"+(string) entry_estado.Text.Trim().ToUpper();
  						comando.ExecuteNonQuery();    	    	       	comando.Dispose();
     	    	       	checkbutton_estado.Active = false;
@@ -2511,7 +2511,7 @@ namespace osiris
 						conexion.Open ();
 						NpgsqlCommand comando; 
 						comando = conexion.CreateCommand ();
- 						comando.CommandText = "INSERT INTO hscmty_municipios("+
+ 						comando.CommandText = "INSERT INTO osiris_municipios("+
 											  "descripcion_municipio ,id_estado )"+
  											  "VALUES ('"+
  										  (string) entry_municipio.Text.Trim().ToUpper()+  "','"+ 
@@ -2551,7 +2551,7 @@ namespace osiris
 						NpgsqlCommand comando; 
 						comando = conexion.CreateCommand ();
  						//TreeIter iter;
- 						comando.CommandText = "UPDATE hscmty_municipios SET "+
+ 						comando.CommandText = "UPDATE osiris_municipios SET "+
  								"descripcion_municipio  = '"+(string) entry_municipio.Text.Trim().ToUpper();
  						comando.ExecuteNonQuery();    	    	       	comando.Dispose();
     	    	       	checkbutton_estado.Active = false;
@@ -2681,11 +2681,11 @@ namespace osiris
 				if ((string) entry_expresion.Text.ToUpper() == "*" || (string) entry_expresion.Text.ToUpper() == "")
 				{
 					comando.CommandText = "SELECT id_estado,descripcion_estado "+
-								"FROM hscmty_estados "+
+								"FROM osiris_estados "+
 								"ORDER BY id_estado;";
 				}else{
 					comando.CommandText = "SELECT id_estado,descripcion_estado "+
-								"FROM hscmty_estados "+
+								"FROM osiris_estados "+
 								"WHERE descripcion_estado LIKE '%"+(string) entry_expresion.Text.ToUpper()+"%' "+
 								"ORDER BY descripcion_estado;";
 				}
@@ -2718,12 +2718,12 @@ namespace osiris
 				comando = conexion.CreateCommand ();
 				if ((string) entry_expresion.Text.ToUpper() == "*" || (string) entry_expresion.Text.ToUpper() == ""){
 					comando.CommandText = "SELECT id_estado,id_municipio,descripcion_municipio "+
-								"FROM hscmty_municipios "+
+								"FROM osiris_municipios "+
 								"WHERE id_estado = '"+entry_valor_estado.Text+"' "+
 								"ORDER BY id_estado;";
 				}else{
 					comando.CommandText = "SELECT id_estado,id_municipio,descripcion_municipio "+
-								"FROM hscmty_municipios "+
+								"FROM osiris_municipios "+
 								"WHERE descripcion_municipio LIKE '%"+(string) entry_expresion.Text.ToUpper()+"%' ,"+
 								"AND id_estado = '"+entry_valor_estado.Text+"' "+
 								"ORDER BY descripcion_municipio;";
@@ -2755,7 +2755,7 @@ namespace osiris
 				NpgsqlCommand comando; 
 				comando = conexion.CreateCommand ();
 				comando.CommandText = "SELECT to_char(id_estado,'99999999') AS idestado "+ 
-										"FROM hscmty_estados "+
+										"FROM osiris_estados "+
 										
 										"ORDER BY id_estado DESC LIMIT 1;";
 										NpgsqlDataReader lector = comando.ExecuteReader ();
@@ -2794,7 +2794,7 @@ namespace osiris
 				comando = conexion.CreateCommand ();
 				comando.CommandText = "SELECT to_char(id_municipio,'99999999') AS idmunicipio "+ 
 										//"to_char(id_estado,'99999999') AS idestado "+
-										"FROM hscmty_municipios "+
+										"FROM osiris_municipios "+
 										"ORDER BY id_municipio DESC LIMIT 1;";
 										NpgsqlDataReader lector = comando.ExecuteReader ();
 										//Console.WriteLine(comando.CommandText);
@@ -2879,11 +2879,11 @@ namespace osiris
 				if ((string) entry_expresion.Text.ToUpper().Trim() == "")
 				{
 					comando.CommandText = "SELECT id_empresa,descripcion_empresa "+
-										" FROM hscmty_empresas "+
+										" FROM osiris_empresas "+
 										"ORDER BY id_empresa;";
 				}else{
 					comando.CommandText = "SELECT id_empresa,descripcion_empresa "+
-										" FROM hscmty_empresas "+
+										" FROM osiris_empresas "+
 										"WHERE descripcion_empresa LIKE '"+entry_expresion.Text.ToUpper().Trim()+"%' ;"+
 										"ORDER BY id_empresa;";
 				}						
@@ -2967,14 +2967,14 @@ namespace osiris
 				NpgsqlCommand comando; 
 				comando = conexion.CreateCommand ();
 				if( primera_verificacion == false) {
-					comando.CommandText = "UPDATE hscmty_his_medicos SET autorizado = 'true', "+
+					comando.CommandText = "UPDATE osiris_his_medicos SET autorizado = 'true', "+
 									"fecha_autorizacion_medico = '"+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"', "+
 									"fecha_revision_medico = '"+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"', "+
 									"historial_de_revision = historial_de_revision || '"+LoginEmpleado+" "+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"\n' "+
 									"WHERE id_medico = '"+entry_id_medico.Text.Trim()+"' ;";
 					comando.ExecuteNonQuery();    	    	       	comando.Dispose();
 				}else{//( primera_verificacion == true) {
-					comando.CommandText = "UPDATE hscmty_his_medicos SET autorizado = 'true', "+
+					comando.CommandText = "UPDATE osiris_his_medicos SET autorizado = 'true', "+
 									"fecha_revision_medico = '"+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"', "+
 									"historial_de_revision = historial_de_revision || '"+LoginEmpleado+" "+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+" REVISION \n' "+
 									"WHERE id_medico = '"+entry_id_medico.Text.Trim()+"' ;";
@@ -3003,7 +3003,7 @@ namespace osiris
 				conexion.Open ();
 				NpgsqlCommand comando; 
 				comando = conexion.CreateCommand ();
-				comando.CommandText = "SELECT autorizado FROM hscmty_his_medicos WHERE id_medico = '"+entry_id_medico.Text+"';";
+				comando.CommandText = "SELECT autorizado FROM osiris_his_medicos WHERE id_medico = '"+entry_id_medico.Text+"';";
 				NpgsqlDataReader lector = comando.ExecuteReader ();
 				if (lector.Read())
 				{

@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////
 // project created on 24/10/2006 at 10:20 a
-// Hospital Santa Cecilia
+// Sistema Hospitalario OSIRIS
 // Monterrey - Mexico
 //
 // Autor    	: Juan Antonio Peña Gonzalez (Programacion) gjuanzz@gmail.com
@@ -40,15 +40,13 @@ namespace osiris
 {
 	public class proc_cobranza
 	{
-		public string connectionString = "Server=localhost;" +
-        	    	                     "Port=5432;" +
-            	    	                 "User ID=admin;" +
-                	    	             "Password=1qaz2wsx;";
+		string connectionString;
+		string nombrebd;
+		
 		private static int pangoScale = 1024;
 		private PrintOperation print;
 		private double fontSize = 8.0;
-		
-        string nombrebd;
+		        
 		int PidPaciente = 0;
 		int folioservicio = 0;
 		string fecha_admision;
@@ -115,14 +113,20 @@ namespace osiris
 		//Declaracion de ventana de error
 		protected Gtk.Window MyWinError;
 		
-		public proc_cobranza ( int PidPaciente_ , int folioservicio_,string _nombrebd_ ,string entry_fecha_admision_,string entry_fechahora_alta_,
+		class_conexion conexion_a_DB = new class_conexion();
+		
+		public proc_cobranza (int PidPaciente_,int folioservicio_,string _nombrebd_ ,string entry_fecha_admision_,string entry_fechahora_alta_,
 						string entry_numero_factura_,string entry_nombre_paciente_,string entry_telefono_paciente_,string entry_doctor_,
 						string entry_tipo_paciente_,string entry_aseguradora_,string edadpac_,string fecha_nacimiento_,string dir_pac_,
 						string cirugia_,string empresapac_,int idtipopaciente_,string query)
 		{
 			PidPaciente = PidPaciente_;//
 			folioservicio = folioservicio_;//
-			nombrebd = _nombrebd_;//
+			
+			connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
+			nombrebd = conexion_a_DB._nombrebd;
+			
+			//nombrebd = _nombrebd_;//
 			fecha_admision = entry_fecha_admision_;//
 			fechahora_alta = entry_fechahora_alta_;//
 			nombre_paciente = entry_nombre_paciente_;//
@@ -143,9 +147,7 @@ namespace osiris
 			print.BeginPrint += new BeginPrintHandler (OnBeginPrint);
 			print.DrawPage += new DrawPageHandler (OnDrawPage);
 			print.EndPrint += new EndPrintHandler (OnEndPrint);
-			
-			print.Run (PrintOperationAction.PrintDialog, null);
-			
+			print.Run (PrintOperationAction.PrintDialog, null);			
 		}
 		
 		private void OnBeginPrint (object obj, Gtk.BeginPrintArgs args)
@@ -196,40 +198,40 @@ namespace osiris
         	// Verifica que la base de datos este conectada
         	//Querys
 			query_todo = "SELECT "+
-					"hscmty_erp_cobros_deta.folio_de_servicio,hscmty_erp_cobros_deta.pid_paciente, "+ 
-					"hscmty_his_tipo_admisiones.descripcion_admisiones,aplicar_iva, "+
-					"hscmty_his_tipo_admisiones.id_tipo_admisiones AS idadmisiones,"+
-					"hscmty_grupo_producto.descripcion_grupo_producto, "+
-					"hscmty_productos.id_grupo_producto,  "+
-					"to_char(hscmty_erp_cobros_deta.porcentage_descuento,'999.99') AS porcdesc, "+
-					"to_char(hscmty_erp_cobros_deta.fechahora_creacion,'dd-mm-yyyy') AS fechcreacion,  "+
-					"to_char(hscmty_erp_cobros_deta.fechahora_creacion,'HH:mm') AS horacreacion,  "+
-					"to_char(hscmty_erp_cobros_deta.id_producto,'999999999999') AS idproducto,descripcion_producto, "+
-					"to_char(hscmty_erp_cobros_deta.cantidad_aplicada,'9999.99') AS cantidadaplicada, "+
-					"to_char(hscmty_erp_cobros_deta.precio_producto,'999999.99') AS preciounitario, "+
-					"ltrim(to_char(hscmty_erp_cobros_deta.precio_producto,'9999999.99')) AS preciounitarioprod, "+
-					"to_char(hscmty_erp_cobros_deta.iva_producto,'999999.99') AS ivaproducto, "+
-					"to_char(hscmty_erp_cobros_deta.cantidad_aplicada * hscmty_erp_cobros_deta.precio_producto,'99999999.99') AS ppcantidad,"+
-					//"to_char(hscmty_erp_cobros_deta.precio_por_cantidad,'999999.99') AS ppcantidad, "+					
-					"to_char(hscmty_productos.precio_producto_publico,'999999999.99999') AS preciopublico, "+
-					"to_char(hscmty_erp_cobros_enca.total_abonos,'999999999.999') AS totalabono, "+ 
-					"to_char(hscmty_erp_cobros_enca.honorario_medico,'999999999.999') AS honorario, "+
-					"to_char(hscmty_erp_cobros_enca.total_pago,'999999999.999') AS totalpago "+
+					"osiris_erp_cobros_deta.folio_de_servicio,osiris_erp_cobros_deta.pid_paciente, "+ 
+					"osiris_his_tipo_admisiones.descripcion_admisiones,aplicar_iva, "+
+					"osiris_his_tipo_admisiones.id_tipo_admisiones AS idadmisiones,"+
+					"osiris_grupo_producto.descripcion_grupo_producto, "+
+					"osiris_productos.id_grupo_producto,  "+
+					"to_char(osiris_erp_cobros_deta.porcentage_descuento,'999.99') AS porcdesc, "+
+					"to_char(osiris_erp_cobros_deta.fechahora_creacion,'dd-mm-yyyy') AS fechcreacion,  "+
+					"to_char(osiris_erp_cobros_deta.fechahora_creacion,'HH:mm') AS horacreacion,  "+
+					"to_char(osiris_erp_cobros_deta.id_producto,'999999999999') AS idproducto,descripcion_producto, "+
+					"to_char(osiris_erp_cobros_deta.cantidad_aplicada,'9999.99') AS cantidadaplicada, "+
+					"to_char(osiris_erp_cobros_deta.precio_producto,'999999.99') AS preciounitario, "+
+					"ltrim(to_char(osiris_erp_cobros_deta.precio_producto,'9999999.99')) AS preciounitarioprod, "+
+					"to_char(osiris_erp_cobros_deta.iva_producto,'999999.99') AS ivaproducto, "+
+					"to_char(osiris_erp_cobros_deta.cantidad_aplicada * osiris_erp_cobros_deta.precio_producto,'99999999.99') AS ppcantidad,"+
+					//"to_char(osiris_erp_cobros_deta.precio_por_cantidad,'999999.99') AS ppcantidad, "+					
+					"to_char(osiris_productos.precio_producto_publico,'999999999.99999') AS preciopublico, "+
+					"to_char(osiris_erp_cobros_enca.total_abonos,'999999999.999') AS totalabono, "+ 
+					"to_char(osiris_erp_cobros_enca.honorario_medico,'999999999.999') AS honorario, "+
+					"to_char(osiris_erp_cobros_enca.total_pago,'999999999.999') AS totalpago "+
 					"FROM "+
-					"hscmty_erp_cobros_deta,hscmty_erp_cobros_enca,hscmty_his_tipo_admisiones,hscmty_productos,hscmty_grupo_producto "+
+					"osiris_erp_cobros_deta,osiris_erp_cobros_enca,osiris_his_tipo_admisiones,osiris_productos,osiris_grupo_producto "+
 					"WHERE "+
-					"hscmty_erp_cobros_deta.id_tipo_admisiones = hscmty_his_tipo_admisiones.id_tipo_admisiones "+
-					"AND hscmty_erp_cobros_deta.id_producto = hscmty_productos.id_producto  "+ 
-					"AND hscmty_productos.id_grupo_producto = hscmty_grupo_producto.id_grupo_producto "+
-					"AND hscmty_erp_cobros_deta.folio_de_servicio = '"+folioservicio.ToString()+"' "+
-					"AND hscmty_erp_cobros_enca.folio_de_servicio = '"+folioservicio.ToString()+"' "+
-		        	"AND hscmty_erp_cobros_deta.eliminado = 'false' ";
+					"osiris_erp_cobros_deta.id_tipo_admisiones = osiris_his_tipo_admisiones.id_tipo_admisiones "+
+					"AND osiris_erp_cobros_deta.id_producto = osiris_productos.id_producto  "+ 
+					"AND osiris_productos.id_grupo_producto = osiris_grupo_producto.id_grupo_producto "+
+					"AND osiris_erp_cobros_deta.folio_de_servicio = '"+folioservicio.ToString()+"' "+
+					"AND osiris_erp_cobros_enca.folio_de_servicio = '"+folioservicio.ToString()+"' "+
+		        	"AND osiris_erp_cobros_deta.eliminado = 'false' ";
 			try{
  				conexion.Open ();
         		NpgsqlCommand comando; 
         		comando = conexion.CreateCommand (); 
-        		comando.CommandText = query_todo + query_rango_fechas + "ORDER BY  to_char(hscmty_erp_cobros_deta.fechahora_creacion,'yyyy-MM-dd') ASC, hscmty_erp_cobros_deta.id_tipo_admisiones ASC, hscmty_productos.id_grupo_producto,hscmty_erp_cobros_deta.id_secuencia; ";
-				Console.WriteLine(query_todo + query_rango_fechas + "ORDER BY  to_char(hscmty_erp_cobros_deta.fechahora_creacion,'yyyy-MM-dd') ASC, hscmty_erp_cobros_deta.id_tipo_admisiones ASC, hscmty_productos.id_grupo_producto,hscmty_erp_cobros_deta.id_secuencia; ");			
+        		comando.CommandText = query_todo + query_rango_fechas + "ORDER BY  to_char(osiris_erp_cobros_deta.fechahora_creacion,'yyyy-MM-dd') ASC, osiris_erp_cobros_deta.id_tipo_admisiones ASC, osiris_productos.id_grupo_producto,osiris_erp_cobros_deta.id_secuencia; ";
+				Console.WriteLine(query_todo + query_rango_fechas + "ORDER BY  to_char(osiris_erp_cobros_deta.fechahora_creacion,'yyyy-MM-dd') ASC, osiris_erp_cobros_deta.id_tipo_admisiones ASC, osiris_productos.id_grupo_producto,osiris_erp_cobros_deta.id_secuencia; ");			
         		NpgsqlDataReader lector = comando.ExecuteReader ();
         		//Console.WriteLine("query proc cobr: "+comando.CommandText.ToString());
 				if (lector.Read()){	
@@ -707,8 +709,8 @@ namespace osiris
 		{
       		// Cambiar la fuente
 			Gnome.Print.Setfont (ContextoImp, fuente6);
-			ContextoImp.MoveTo(19.7, 770);			ContextoImp.Show("Hospital Santa Cecilia");
-			ContextoImp.MoveTo(20, 770);			ContextoImp.Show("Hospital Santa Cecilia");
+			ContextoImp.MoveTo(19.7, 770);			ContextoImp.Show("Sistema Hospitalario OSIRIS");
+			ContextoImp.MoveTo(20, 770);			ContextoImp.Show("Sistema Hospitalario OSIRIS");
 			ContextoImp.MoveTo(19.7, 760);			ContextoImp.Show("Direccion: Isacc Garza #200 Ote. Centro Monterrey, NL.");
 			ContextoImp.MoveTo(20, 760);			ContextoImp.Show("Direccion: Isacc Garza #200 Ote. Centro Monterrey, NL.");
 			ContextoImp.MoveTo(19.7, 750);			ContextoImp.Show("Conmutador:(81) 81-25-56-10");
@@ -881,40 +883,40 @@ namespace osiris
         // Verifica que la base de datos este conectada
         //Querys
 		query_todo = "SELECT "+
-					"hscmty_erp_cobros_deta.folio_de_servicio,hscmty_erp_cobros_deta.pid_paciente, "+ 
-					"hscmty_his_tipo_admisiones.descripcion_admisiones,aplicar_iva, "+
-					"hscmty_his_tipo_admisiones.id_tipo_admisiones AS idadmisiones,"+
-					"hscmty_grupo_producto.descripcion_grupo_producto, "+
-					"hscmty_productos.id_grupo_producto,  "+
-					"to_char(hscmty_erp_cobros_deta.porcentage_descuento,'999.99') AS porcdesc, "+
-					"to_char(hscmty_erp_cobros_deta.fechahora_creacion,'dd-mm-yyyy') AS fechcreacion,  "+
-					"to_char(hscmty_erp_cobros_deta.fechahora_creacion,'HH:mm') AS horacreacion,  "+
-					"to_char(hscmty_erp_cobros_deta.id_producto,'999999999999') AS idproducto,descripcion_producto, "+
-					"to_char(hscmty_erp_cobros_deta.cantidad_aplicada,'9999.99') AS cantidadaplicada, "+
-					"to_char(hscmty_erp_cobros_deta.precio_producto,'999999.99') AS preciounitario, "+
-					"ltrim(to_char(hscmty_erp_cobros_deta.precio_producto,'9999999.99')) AS preciounitarioprod, "+
-					"to_char(hscmty_erp_cobros_deta.iva_producto,'999999.99') AS ivaproducto, "+
-					"to_char(hscmty_erp_cobros_deta.cantidad_aplicada * hscmty_erp_cobros_deta.precio_producto,'99999999.99') AS ppcantidad,"+
-					//"to_char(hscmty_erp_cobros_deta.precio_por_cantidad,'999999.99') AS ppcantidad, "+					
-					"to_char(hscmty_productos.precio_producto_publico,'999999999.99999') AS preciopublico, "+
-					"to_char(hscmty_erp_cobros_enca.total_abonos,'999999999.999') AS totalabono, "+ 
-					"to_char(hscmty_erp_cobros_enca.honorario_medico,'999999999.999') AS honorario, "+
-					"to_char(hscmty_erp_cobros_enca.total_pago,'999999999.999') AS totalpago "+
+					"osiris_erp_cobros_deta.folio_de_servicio,osiris_erp_cobros_deta.pid_paciente, "+ 
+					"osiris_his_tipo_admisiones.descripcion_admisiones,aplicar_iva, "+
+					"osiris_his_tipo_admisiones.id_tipo_admisiones AS idadmisiones,"+
+					"osiris_grupo_producto.descripcion_grupo_producto, "+
+					"osiris_productos.id_grupo_producto,  "+
+					"to_char(osiris_erp_cobros_deta.porcentage_descuento,'999.99') AS porcdesc, "+
+					"to_char(osiris_erp_cobros_deta.fechahora_creacion,'dd-mm-yyyy') AS fechcreacion,  "+
+					"to_char(osiris_erp_cobros_deta.fechahora_creacion,'HH:mm') AS horacreacion,  "+
+					"to_char(osiris_erp_cobros_deta.id_producto,'999999999999') AS idproducto,descripcion_producto, "+
+					"to_char(osiris_erp_cobros_deta.cantidad_aplicada,'9999.99') AS cantidadaplicada, "+
+					"to_char(osiris_erp_cobros_deta.precio_producto,'999999.99') AS preciounitario, "+
+					"ltrim(to_char(osiris_erp_cobros_deta.precio_producto,'9999999.99')) AS preciounitarioprod, "+
+					"to_char(osiris_erp_cobros_deta.iva_producto,'999999.99') AS ivaproducto, "+
+					"to_char(osiris_erp_cobros_deta.cantidad_aplicada * osiris_erp_cobros_deta.precio_producto,'99999999.99') AS ppcantidad,"+
+					//"to_char(osiris_erp_cobros_deta.precio_por_cantidad,'999999.99') AS ppcantidad, "+					
+					"to_char(osiris_productos.precio_producto_publico,'999999999.99999') AS preciopublico, "+
+					"to_char(osiris_erp_cobros_enca.total_abonos,'999999999.999') AS totalabono, "+ 
+					"to_char(osiris_erp_cobros_enca.honorario_medico,'999999999.999') AS honorario, "+
+					"to_char(osiris_erp_cobros_enca.total_pago,'999999999.999') AS totalpago "+
 					"FROM "+
-					"hscmty_erp_cobros_deta,hscmty_erp_cobros_enca,hscmty_his_tipo_admisiones,hscmty_productos,hscmty_grupo_producto "+
+					"osiris_erp_cobros_deta,osiris_erp_cobros_enca,osiris_his_tipo_admisiones,osiris_productos,osiris_grupo_producto "+
 					"WHERE "+
-					"hscmty_erp_cobros_deta.id_tipo_admisiones = hscmty_his_tipo_admisiones.id_tipo_admisiones "+
-					"AND hscmty_erp_cobros_deta.id_producto = hscmty_productos.id_producto  "+ 
-					"AND hscmty_productos.id_grupo_producto = hscmty_grupo_producto.id_grupo_producto "+
-					"AND hscmty_erp_cobros_deta.folio_de_servicio = '"+folioservicio.ToString()+"' "+
-					"AND hscmty_erp_cobros_enca.folio_de_servicio = '"+folioservicio.ToString()+"' "+
-		        	"AND hscmty_erp_cobros_deta.eliminado = 'false' ";
+					"osiris_erp_cobros_deta.id_tipo_admisiones = osiris_his_tipo_admisiones.id_tipo_admisiones "+
+					"AND osiris_erp_cobros_deta.id_producto = osiris_productos.id_producto  "+ 
+					"AND osiris_productos.id_grupo_producto = osiris_grupo_producto.id_grupo_producto "+
+					"AND osiris_erp_cobros_deta.folio_de_servicio = '"+folioservicio.ToString()+"' "+
+					"AND osiris_erp_cobros_enca.folio_de_servicio = '"+folioservicio.ToString()+"' "+
+		        	"AND osiris_erp_cobros_deta.eliminado = 'false' ";
 		try{
  			conexion.Open ();
         	NpgsqlCommand comando; 
         	comando = conexion.CreateCommand (); 
-        	comando.CommandText = query_todo + query_rango_fechas + "ORDER BY  to_char(hscmty_erp_cobros_deta.fechahora_creacion,'yyyy-MM-dd') ASC, hscmty_erp_cobros_deta.id_tipo_admisiones ASC, hscmty_productos.id_grupo_producto,hscmty_erp_cobros_deta.id_secuencia; ";
-			Console.WriteLine(query_todo + query_rango_fechas + "ORDER BY  to_char(hscmty_erp_cobros_deta.fechahora_creacion,'yyyy-MM-dd') ASC, hscmty_erp_cobros_deta.id_tipo_admisiones ASC, hscmty_productos.id_grupo_producto,hscmty_erp_cobros_deta.id_secuencia; ");			
+        	comando.CommandText = query_todo + query_rango_fechas + "ORDER BY  to_char(osiris_erp_cobros_deta.fechahora_creacion,'yyyy-MM-dd') ASC, osiris_erp_cobros_deta.id_tipo_admisiones ASC, osiris_productos.id_grupo_producto,osiris_erp_cobros_deta.id_secuencia; ";
+			Console.WriteLine(query_todo + query_rango_fechas + "ORDER BY  to_char(osiris_erp_cobros_deta.fechahora_creacion,'yyyy-MM-dd') ASC, osiris_erp_cobros_deta.id_tipo_admisiones ASC, osiris_productos.id_grupo_producto,osiris_erp_cobros_deta.id_secuencia; ");			
         	NpgsqlDataReader lector = comando.ExecuteReader ();
         	//Console.WriteLine("query proc cobr: "+comando.CommandText.ToString());
 			ContextoImp.BeginPage("Pagina 1");

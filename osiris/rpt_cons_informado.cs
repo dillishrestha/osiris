@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////
 // project created on 24/10/2006 at 10:20 a
-// Hospital Santa Cecilia
+// Sistema Hospitalario OSIRIS
 // Monterrey - Mexico
 //
 // Autor    	: Ing. Daniel Olivares (Programacion)
@@ -28,40 +28,51 @@
 // Objeto		: .cs
 using System;
 using Gtk;
-using Gnome;
 using Npgsql;
-using System.Data;
 using Glade;
-using System.Collections;
-using GtkSharp;
+using Cairo;
+using Pango;
 
 namespace osiris
 {	
 	public class conse_info
 	{
-		public string connectionString = "Server=localhost;" +
-            	                         "Port=5432;" +
-                	                     "User ID=admin;" +
-                    	                 "Password=1qaz2wsx;";
-        public string nombrebd;   
-    	public int PidPaciente;
-    	public int folioservicio;
-    	public string medico;
-    	public string cirugia;
-    	public string mes = "";
+		string connectionString;
+		string nombrebd;
+		
+		private static int pangoScale = 1024;
+		private PrintOperation print;
+		private double fontSize = 8.0;
+		int escala_en_linux_windows = 1;		// Linux = 1  Windows = 8		
+        
+    	int PidPaciente;
+    	int folioservicio;
+    	string medico;
+    	string cirugia;
+    	string mes = "";
+		
+		class_conexion conexion_a_DB = new class_conexion();
     
 		public conse_info (int PidPaciente_ , int folioservicio_,string _nombrebd_,string doctor_,string cirugia_)
 		{
-			nombrebd = _nombrebd_;
+			connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
+			nombrebd = conexion_a_DB._nombrebd;			
+			//nombrebd = _nombrebd_;
 			PidPaciente = PidPaciente_;
     		folioservicio = folioservicio_;
     		medico = doctor_;
     		cirugia = cirugia_;
+			
+			print = new PrintOperation ();			
+			print.BeginPrint += new BeginPrintHandler (OnBeginPrint);
+			print.DrawPage += new DrawPageHandler (OnDrawPage);
+			print.EndPrint += new EndPrintHandler (OnEndPrint);
+			print.Run (PrintOperationAction.PrintDialog, null);
     		
-			Gnome.PrintJob    trabajo   = new Gnome.PrintJob (PrintConfig.Default ());
-        	Gnome.PrintDialog dialogo   = new Gnome.PrintDialog (trabajo, "CONSENTIMIENTO INFORMADO", 0);
-        	int         respuesta = dialogo.Run ();
-			          
+			//Gnome.PrintJob    trabajo   = new Gnome.PrintJob (PrintConfig.Default ());
+        	//Gnome.PrintDialog dialogo   = new Gnome.PrintDialog (trabajo, "CONSENTIMIENTO INFORMADO", 0);
+        	//int         respuesta = dialogo.Run ();
+			/*          
 			if (respuesta == (int) PrintButtons.Cancel){
 				Console.WriteLine("Impresión cancelada");
 				dialogo.Hide (); 
@@ -82,7 +93,7 @@ namespace osiris
                       	new PrintJobPreview(trabajo, "CONSENTIMIENTO INFORMADO").Show();
                         break;
         	}
-			dialogo.Hide (); dialogo.Dispose ();        
+			dialogo.Hide (); dialogo.Dispose ();*/        
 		}
 		
 		void nom_mes()
@@ -126,8 +137,190 @@ namespace osiris
 			}
 		}
 		
-		void ComponerPagina (Gnome.PrintContext ContextoImp, Gnome.PrintJob trabajoImpresion)
+		void OnBeginPrint (object obj, Gtk.BeginPrintArgs args)
 		{
+			PrintContext context = args.Context;											
+			print.NPages = 1; // crea cantidad de copias del reporte
+		}
+		
+		void OnDrawPage (object obj, Gtk.DrawPageArgs args)
+		{
+			PrintContext context = args.Context;
+			crea_consentimiento(context);
+		}
+		
+		void OnEndPrint (object obj, Gtk.EndPrintArgs args)
+		{	
+				
+		}
+		
+		void crea_consentimiento(PrintContext context)
+		{
+			Cairo.Context cr = context.CairoContext;
+			Pango.Layout layout = context.CreatePangoLayout ();
+			Pango.FontDescription desc = Pango.FontDescription.FromString ("Sans");									
+			// cr.Rotate(90)  Imprimir Orizontalmente rota la hoja cambian las posiciones de las lineas y columna					
+			fontSize = 8.0;			layout = null;			layout = context.CreatePangoLayout ();
+			desc.Size = (int)(fontSize * pangoScale);		layout.FontDescription = desc;
+			
+			NpgsqlConnection conexion; 
+        	conexion = new NpgsqlConnection (connectionString+nombrebd);
+            crea_encbezado(context);
+        	// Verifica que la base de DateTime.Now.ToString("MM")s este conectada
+        	/*try
+        	{
+        		conexion.Open ();
+        		NpgsqlCommand comando; 
+        		comando = conexion.CreateCommand (); 
+        	
+        		comando.CommandText ="SELECT osiris_erp_cobros_enca.folio_de_servicio,osiris_erp_cobros_enca.pid_paciente,osiris_his_paciente.nombre1_paciente,nombre2_paciente,apellido_paterno_paciente,apellido_materno_paciente, "+
+        						"osiris_erp_cobros_enca.responsable_cuenta,osiris_erp_cobros_enca.id_medico,osiris_his_medicos.nombre_medico ,osiris_his_tipo_cirugias.descripcion_cirugia,osiris_his_tipo_diagnosticos.id_diagnostico,"+
+        						"osiris_his_tipo_diagnosticos.descripcion_diagnostico,descripcion_diagnostico_movcargos "+
+        						"FROM osiris_erp_cobros_enca,osiris_his_medicos,osiris_erp_movcargos,osiris_his_paciente,osiris_his_tipo_cirugias,osiris_his_tipo_diagnosticos "+
+        						"WHERE osiris_erp_cobros_enca.id_medico = osiris_his_medicos.id_medico "+
+        						"AND osiris_erp_cobros_enca.folio_de_servicio = osiris_erp_movcargos.folio_de_servicio "+
+        						"AND osiris_erp_cobros_enca.pid_paciente = osiris_erp_movcargos.pid_paciente "+
+        						"AND osiris_erp_movcargos.pid_paciente = osiris_his_paciente.pid_paciente "+
+        						"AND osiris_his_tipo_cirugias.id_tipo_cirugia = osiris_erp_movcargos.id_tipo_cirugia "+
+        						"AND osiris_his_tipo_diagnosticos.id_diagnostico = osiris_erp_movcargos.id_diagnostico "+
+        						"AND osiris_erp_cobros_enca.id_medico = osiris_his_medicos.id_medico "+
+         						"AND osiris_erp_movcargos.folio_de_servicio = '"+folioservicio.ToString()+"' "+
+         						"LIMIT 1";
+         	
+         		//NpgsqlDataReader lector = comando.ExecuteReader ();
+				
+			catch (NpgsqlException ex)
+			{
+				Console.WriteLine ("PostgresSQL error: {0}",ex.Message);
+				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,MessageType.Info,ButtonsType.Close, "PostgresSQL error: {0}",ex.Message);
+				msgBoxError.Run ();	msgBoxError.Destroy();
+				return; 
+			}*/
+				
+				
+				
+		}
+			
+		void crea_encbezado(PrintContext context)
+		{
+			Cairo.Context cr = context.CairoContext;
+			Pango.Layout layout = context.CreatePangoLayout ();
+			Pango.FontDescription desc = Pango.FontDescription.FromString ("Sans");									
+			// cr.Rotate(90)  Imprimir Orizontalmente rota la hoja cambian las posiciones de las lineas y columna					
+			fontSize = 8.0;			layout = null;			layout = context.CreatePangoLayout ();
+			desc.Size = (int)(fontSize * pangoScale);		layout.FontDescription = desc;
+			
+			cr.MoveTo(001,10*escala_en_linux_windows);					layout.SetText("Sistema Hospitalario OSIRIS");		Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(001,20*escala_en_linux_windows);					layout.SetText("Direccion: Monterrey - Mexico");	Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(001,30*escala_en_linux_windows);					layout.SetText("Telefono: (01)(81) 1158-5166");		Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(001,40*escala_en_linux_windows);					layout.SetText("Sistema Hospitalario OSIRIS");		Pango.CairoHelper.ShowLayout (cr, layout);
+			// Cambiando el tamaño de la fuente			
+			fontSize =10.0;												layout = context.CreatePangoLayout ();		
+			desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;
+			cr.MoveTo(230*escala_en_linux_windows, 55*escala_en_linux_windows);										layout.SetText("CONSENTIMIENTO INFORMADO");
+			Pango.CairoHelper.ShowLayout (cr, layout);
+			layout.FontDescription.Weight = Pango.Weight.Normal;		// Letra Normal
+			
+			int filatex=100;
+	    	//parrafo 1
+	    	cr.MoveTo(001, filatex*escala_en_linux_windows);										layout.SetText("La  Norma  Oficial Mexicana NOM-168-SSA1-1998, Del Expediente Clinico,  la  Ley General De  Salud asi como los artículos ");
+			Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(001, (filatex+10)*escala_en_linux_windows);									layout.SetText("80, 81 y 83 del  Reglamento  de la Ley General de  Salud, sustentan  que Usted tiene derecho a ser  informado(a)  por  su ");
+			Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(001, (filatex+20)*escala_en_linux_windows);									layout.SetText("médico  tratante  sobre  su  estado  de  salud  y  los procedimientos  de  diagnóstico que le serán realizados, entre los cuales ");
+			Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(001, (filatex+30)*escala_en_linux_windows);									layout.SetText("se cuentan  estudios de laboratorio, pruebas electrofisiológicas  y  estudios de imagen diagnóstica; así mismo, tiene derecho ");
+			Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(001, (filatex+40)*escala_en_linux_windows);									layout.SetText("a  ser  informado(a)  de   las  características,  los   beneficios    y   riesgos  inherentes  a  los  procedimientos   terapéuticos "); 
+			Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(001, (filatex+50)*escala_en_linux_windows);									layout.SetText("(farmacológicos, anetésicos, quirúrgicos y  de rehabilitación) que le  han sido propuestos  y  que  se realizarán en  éste ");
+			Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(001, (filatex+60)*escala_en_linux_windows);									layout.SetText("hospital. Este documento le permite otorgar su consentimiento informado y autorizar al HOSPITAL SANTA CECILIA DE"); 
+			Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(001, (filatex+70)*escala_en_linux_windows);									layout.SetText("MONTERREY S.A. DE C.V. a  su médico  tratante, DR. (A):_________________________________________________");
+			Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(001, (filatex+80)*escala_en_linux_windows);									layout.SetText(" y  a su equipo de salud y personal del hospital, a realizar:");
+			Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(001, (filatex+90)*escala_en_linux_windows);									layout.SetText("______________________________________________________________________________________________________"); 
+			Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(001, (filatex+110)*escala_en_linux_windows);									layout.SetText("______________________________________________________________________________________________________");
+			Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(001, (filatex+130)*escala_en_linux_windows);									layout.SetText("");
+			//parrafo 2
+			cr.MoveTo(001, (filatex+150)*escala_en_linux_windows);									layout.SetText("  Usted  ha  sido  instruido  por  su  médico  tratante  de  los  riesgos  y  peligros  de  continuar con su  actual estado de salud");
+			Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(001, (filatex+160)*escala_en_linux_windows);									layout.SetText("sin  tratamiento.  El  beneficio  buscado  y  esperado  es  el  restablecimiento  y/o  mejoría de su salud, propósito único de su");
+			Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(001, (filatex+170)*escala_en_linux_windows);									layout.SetText("atención  en  este  hospital.  Entre  los  posible  riesgos  y  complicaciones  de  los  procedimientos  diagnósticos,  tratamientos");
+			Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(001, (filatex+180)*escala_en_linux_windows);									layout.SetText("médicos,  anestésicos, quirúrgicos y  de  rehabilitación  se  cuentan  infecciones,  reacciones  alérgicas  a  medicamentos, ");
+			Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(001, (filatex+190)*escala_en_linux_windows);									layout.SetText("substancias anestésicas, o medios de contraste radiológico. ");
+			Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(001, (filatex+200)*escala_en_linux_windows);									layout.SetText("");
+			//parrafo 3
+			cr.MoveTo(001, (filatex+210)*escala_en_linux_windows);									layout.SetText("  Además puede  existir  riesgo de hemorragias y coágulos  de  sangre  en venas o arterias de diversos órganos. Puede haber");
+			Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(001, (filatex+220)*escala_en_linux_windows);									layout.SetText("otros riesgos y complicaciones que dependerán de las características de cada procedimiento. En casos aislados y extremos");
+			Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(001, (filatex+230)*escala_en_linux_windows);								    layout.SetText("puede haber riesgos de fallecimiento debido a un procedimiento. Es importante que Usted sepa que la prevención y diagnóstico");			
+			Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(001, (filatex+240)*escala_en_linux_windows);								    layout.SetText("inmediato, en caso de que se presenta alguna de éstas complicaciones, constituyen la parte mas importante de la atención");			
+			Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(001, (filatex+250)*escala_en_linux_windows);								    layout.SetText("profesional  a que será Usted sometido(a) durante su estancia en el hospital.");
+			Pango.CairoHelper.ShowLayout (cr, layout);
+			//parrafo 4
+			cr.MoveTo(001, (filatex+280)*escala_en_linux_windows);								    layout.SetText("   Es  posible que al momento de practicar un procedimiento, diagnóstico, tratamiento  médico,  anestésico, quirúrgico o de");			
+			Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(001, (filatex+290)*escala_en_linux_windows);								    layout.SetText("rehabilitación se descubra un problema de salud que requiera de un procedimiento simultáneo adicional. Mediante su firma,");
+		    Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(001, (filatex+300)*escala_en_linux_windows);								    layout.SetText("Usted autoriza al médico tratante, a su equipo de  salud  y  al personal del hospital, a realizar  éste  procedimiento adicional,");
+		 	Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(001, (filatex+310)*escala_en_linux_windows);								    layout.SetText("aunque  no  hubiese  sido  explícitamente  consignado  en  este  documento. ");
+		 	Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(001, (filatex+330)*escala_en_linux_windows);								    layout.SetText("Por lo antes dicho, otorgo mi consentimiento informado mediante mi firma al calce, en compañía de los testigos, siempre ");
+		 	Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(001, (filatex+340)*escala_en_linux_windows);								    layout.SetText("y cuando en todo momento se apliquen  los procedimientos conforme dispongan  la  Normas  Oficiales Mexicanas ");
+		 	Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(001, (filatex+350)*escala_en_linux_windows);								 	layout.SetText("relacionadas con el procedimiento a realizar.");
+		    //Line de fecha
+		    nom_mes();
+		    Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(001, (filatex+370)*escala_en_linux_windows);							    	layout.SetText("Monterrey N.L., siendo las  "+ DateTime.Now.ToString("HH:mm")+ " horas del día  "+ DateTime.Now.ToString("dd")+ " de "+mes+" del año "+DateTime.Now.ToString("yyyy"));
+	    	Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(180*escala_en_linux_windows, (filatex+410)*escala_en_linux_windows);							    layout.SetText("______________________________________________________");
+		    //linea de firmas		
+			cr.MoveTo(270*escala_en_linux_windows, (filatex+420)*escala_en_linux_windows);							    layout.SetText("Nombre y Firma");
+		    Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(180*escala_en_linux_windows, (filatex+430)*escala_en_linux_windows);							    layout.SetText("Paciente, Padre, Madre y/o Tutor o Responsable Legal.");
+		    Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(001, (filatex+460)*escala_en_linux_windows);								    layout.SetText("");
+		    Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(180*escala_en_linux_windows, (filatex+500)*escala_en_linux_windows);							    layout.SetText("______________________________________________________");
+		    Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(270*escala_en_linux_windows, (filatex+510)*escala_en_linux_windows);							    layout.SetText("Nombre y firma");
+		    Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(255*escala_en_linux_windows, (filatex+520)*escala_en_linux_windows);							    layout.SetText("Médico Responsable");
+		    Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(001, (filatex+520)*escala_en_linux_windows);								    layout.SetText("");
+		    Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(001, (filatex+550)*escala_en_linux_windows);								    layout.SetText("____________________________________");
+		    Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(60*escala_en_linux_windows, (filatex+560)*escala_en_linux_windows);								    layout.SetText("Nombre y firma");
+		    Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(75*escala_en_linux_windows, (filatex+570)*escala_en_linux_windows);								    layout.SetText("Testigo");
+		    Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(390*escala_en_linux_windows, (filatex+550)*escala_en_linux_windows);							    layout.SetText("____________________________________");
+		    Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(460*escala_en_linux_windows, (filatex+560)*escala_en_linux_windows);							    layout.SetText("Nombre y firma");
+		    Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(485*escala_en_linux_windows, (filatex+570)*escala_en_linux_windows);							    layout.SetText("Testigo");
+			Pango.CairoHelper.ShowLayout (cr, layout);
+		}
+		
+		
+		//void ComponerPagina (Gnome.PrintContext ContextoImp, Gnome.PrintJob trabajoImpresion)
+		//{
 			/*NpgsqlConnection conexion; 
         	conexion = new NpgsqlConnection (connectionString+nombrebd);
             
@@ -138,26 +331,26 @@ namespace osiris
         		NpgsqlCommand comando; 
         		comando = conexion.CreateCommand (); 
         	
-        		comando.CommandText ="SELECT hscmty_erp_cobros_enca.folio_de_servicio,hscmty_erp_cobros_enca.pid_paciente,hscmty_his_paciente.nombre1_paciente,nombre2_paciente,apellido_paterno_paciente,apellido_materno_paciente, "+
-        						"hscmty_erp_cobros_enca.responsable_cuenta,hscmty_erp_cobros_enca.id_medico,hscmty_his_medicos.nombre_medico ,hscmty_his_tipo_cirugias.descripcion_cirugia,hscmty_his_tipo_diagnosticos.id_diagnostico,"+
-        						"hscmty_his_tipo_diagnosticos.descripcion_diagnostico,descripcion_diagnostico_movcargos "+
-        						"FROM hscmty_erp_cobros_enca,hscmty_his_medicos,hscmty_erp_movcargos,hscmty_his_paciente,hscmty_his_tipo_cirugias,hscmty_his_tipo_diagnosticos "+
-        						"WHERE hscmty_erp_cobros_enca.id_medico = hscmty_his_medicos.id_medico "+
-        						"AND hscmty_erp_cobros_enca.folio_de_servicio = hscmty_erp_movcargos.folio_de_servicio "+
-        						"AND hscmty_erp_cobros_enca.pid_paciente = hscmty_erp_movcargos.pid_paciente "+
-        						"AND hscmty_erp_movcargos.pid_paciente = hscmty_his_paciente.pid_paciente "+
-        						"AND hscmty_his_tipo_cirugias.id_tipo_cirugia = hscmty_erp_movcargos.id_tipo_cirugia "+
-        						"AND hscmty_his_tipo_diagnosticos.id_diagnostico = hscmty_erp_movcargos.id_diagnostico "+
-        						"AND hscmty_erp_cobros_enca.id_medico = hscmty_his_medicos.id_medico "+
-         						"AND hscmty_erp_movcargos.folio_de_servicio = '"+folioservicio.ToString()+"' "+
+        		comando.CommandText ="SELECT osiris_erp_cobros_enca.folio_de_servicio,osiris_erp_cobros_enca.pid_paciente,osiris_his_paciente.nombre1_paciente,nombre2_paciente,apellido_paterno_paciente,apellido_materno_paciente, "+
+        						"osiris_erp_cobros_enca.responsable_cuenta,osiris_erp_cobros_enca.id_medico,osiris_his_medicos.nombre_medico ,osiris_his_tipo_cirugias.descripcion_cirugia,osiris_his_tipo_diagnosticos.id_diagnostico,"+
+        						"osiris_his_tipo_diagnosticos.descripcion_diagnostico,descripcion_diagnostico_movcargos "+
+        						"FROM osiris_erp_cobros_enca,osiris_his_medicos,osiris_erp_movcargos,osiris_his_paciente,osiris_his_tipo_cirugias,osiris_his_tipo_diagnosticos "+
+        						"WHERE osiris_erp_cobros_enca.id_medico = osiris_his_medicos.id_medico "+
+        						"AND osiris_erp_cobros_enca.folio_de_servicio = osiris_erp_movcargos.folio_de_servicio "+
+        						"AND osiris_erp_cobros_enca.pid_paciente = osiris_erp_movcargos.pid_paciente "+
+        						"AND osiris_erp_movcargos.pid_paciente = osiris_his_paciente.pid_paciente "+
+        						"AND osiris_his_tipo_cirugias.id_tipo_cirugia = osiris_erp_movcargos.id_tipo_cirugia "+
+        						"AND osiris_his_tipo_diagnosticos.id_diagnostico = osiris_erp_movcargos.id_diagnostico "+
+        						"AND osiris_erp_cobros_enca.id_medico = osiris_his_medicos.id_medico "+
+         						"AND osiris_erp_movcargos.folio_de_servicio = '"+folioservicio.ToString()+"' "+
          						"LIMIT 1";
          	
          		//NpgsqlDataReader lector = comando.ExecuteReader ();
 		*/		
-				ContextoImp.BeginPage("Concentimiento Informado");
+				//ContextoImp.BeginPage("Concentimiento Informado");
 				//NUEVO
 				// Crear una fuente de tipo Impact
-				Gnome.Font fuente = Gnome.Font.FindClosest
+				/*Gnome.Font fuente = Gnome.Font.FindClosest
 				("Bitstream Vera Sans", 12);
 				Gnome.Font fuente1 = Gnome.Font.FindClosest
 				("Bitstream Vera Sans", 36);
@@ -167,14 +360,14 @@ namespace osiris
 				("Bitstream Vera Sans", 6);
 				Gnome.Font fuente4 = Gnome.Font.FindClosest
 				("Bitstream Vera Sans", 8);
-						
+				*/		
 				//Encabezado de pagina
-				Gnome.Print.Setfont (ContextoImp, fuente3);
+				/*Gnome.Print.Setfont (ContextoImp, fuente3);
 			
 				ContextoImp.MoveTo(19.5, 750);
-			    ContextoImp.Show("Hospital Santa Cecilia de Monterrey");
+			    ContextoImp.Show("Sistema Hospitalario OSIRIS");
 				ContextoImp.MoveTo(20, 750);
-		    	ContextoImp.Show("Hospital Santa Cecilia de Monterrey");
+		    	ContextoImp.Show("Sistema Hospitalario OSIRIS");
 		    
 			    ContextoImp.MoveTo(479.5, 750);
 			    ContextoImp.Show("FO-DMH-03/REV.02/22-SEP-06");
@@ -305,7 +498,7 @@ namespace osiris
 			    ContextoImp.Show("Nombre y firma");
 			    ContextoImp.MoveTo(485, filatex-570);
 			    ContextoImp.Show("Testigo");
-		    
+		    	*/
 			    /*int filas=710;
 			    for (int i1=0; i1 < 160; i1++)
 				{
@@ -314,7 +507,7 @@ namespace osiris
       			ContextoImp.Show("|");
 				}*/
 		    
-		    	//Pie de pagina
+		    	/*Pie de pagina
 		    	ContextoImp.MoveTo(80, filatex-590);
 		    	ContextoImp.Show("Este documento ha sido revisado y aceptado por la Comisión Estatal de Arbitraje Médico.");
 		    	Gnome.Print.Setfont (ContextoImp, fuente3);
@@ -323,10 +516,10 @@ namespace osiris
 		    	Gnome.Print.Setfont (ContextoImp, fuente1);
 		    	ContextoImp.MoveTo(20, filatex-650);
       			ContextoImp.Show("____________________________");
-      		
+      			*/
 	      		//lector start
- 	     	/*	if ((bool) lector.Read())
-      			{*/
+ 	     		/*if ((bool) lector.Read())
+      			{
 					Gnome.Print.Setfont (ContextoImp, fuente2);
 				
 					//lectura de DateTime.Now.ToString("MM")s de paciente, diagnostico y doctor
@@ -340,17 +533,17 @@ namespace osiris
 					ContextoImp.MoveTo(250, filatex-500);
 			    	ContextoImp.Show(medico.ToString());//(string) lector["nombre_medico"]);
 			    	ContextoImp.ShowPage();
-		    	/*}
-			
+		    	}*/
+				/*
 				lector.Close (); 
 				conexion.Close ();
 		
 				ContextoImp.ShowPage();
-			
+				
 			}catch (NpgsqlException ex){
 				Console.WriteLine ("PostgresSQL error: {0}",ex.Message);
 				return; 
 			}*/
-		}
+		//}
 	}
 }

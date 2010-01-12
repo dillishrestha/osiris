@@ -1,7 +1,7 @@
 // created on 08/06/2007 at 10:30 a
 ////////////////////////////////////////////////////////////
 // project created on 24/10/2006 at 10:20 a
-// Hospital Santa Cecilia
+// Sistema Hospitalario OSIRIS
 // Monterrey - Mexico
 //
 // Autor    	: Daniel Olivares - arcangeldoc@gmail.com (Programacion Mono)
@@ -93,7 +93,7 @@ namespace osiris
 		
 		void on_button_reporte_imagenologia_clicked(object sender, EventArgs args)
 		{
-			//new osiris.rep_reg_pac_labo_rx(nombrebd,"AND hscmty_grupo_producto.agrupacion = 'IMG' ","IMAGENOLOGIA");
+			//new osiris.rep_reg_pac_labo_rx(nombrebd,"AND osiris_grupo_producto.agrupacion = 'IMG' ","IMAGENOLOGIA");
 		}
 		
 		void on_cierraventanas_clicked (object sender, EventArgs args)

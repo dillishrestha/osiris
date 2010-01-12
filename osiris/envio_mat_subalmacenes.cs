@@ -1,6 +1,6 @@
 // created on 27/01/2008 at 01:55 p
 ///////////////////////////////////////////////////////////
-// Hospital Santa Cecilia
+// Sistema Hospitalario OSIRIS
 // Monterrey - Mexico
 //
 // Autor    	: Daniel Olivares - arcangeldoc@gmail.com (Programacion Mono)
@@ -155,7 +155,7 @@ namespace osiris
 				conexion.Open ();
 				NpgsqlCommand comando; 
 				comando = conexion.CreateCommand ();
-               	comando.CommandText = "SELECT id_almacen,descripcion_almacen,sub_almacen,almacen_salidas FROM hscmty_almacenes "+
+               	comando.CommandText = "SELECT id_almacen,descripcion_almacen,sub_almacen,almacen_salidas FROM osiris_almacenes "+
                						//"WHERE sub_almacen = 'true'  "+
                						"ORDER BY descripcion_almacen;";
 				
@@ -260,7 +260,7 @@ namespace osiris
 										conexion.Open ();
 										NpgsqlCommand comando; 
 										comando = conexion.CreateCommand();
-										comando.CommandText = "SELECT id_producto,id_almacen,stock FROM hscmty_catalogo_almacenes "+
+										comando.CommandText = "SELECT id_producto,id_almacen,stock FROM osiris_catalogo_almacenes "+
 															"WHERE id_almacen = '"+this.idsubalmacen.ToString()+"' "+
 															"AND eliminado = 'false' "+														
 															"AND id_producto = '"+(string) lista_de_materiales_solicitados.Model.GetValue (iterSelected,5)+"' ;";
@@ -274,7 +274,7 @@ namespace osiris
 												conexion1.Open ();
 												NpgsqlCommand comando1;
 												comando1 = conexion1.CreateCommand();
-												comando1.CommandText = "UPDATE hscmty_catalogo_almacenes SET stock  = stock + '"+(string) lista_de_materiales_solicitados.Model.GetValue (iterSelected,2)+"',"+
+												comando1.CommandText = "UPDATE osiris_catalogo_almacenes SET stock  = stock + '"+(string) lista_de_materiales_solicitados.Model.GetValue (iterSelected,2)+"',"+
 																		//"historial_surtido_material = historial_surtido_material || '"+LoginEmpleado+" "+(string) lista_de_materiales_solicitados.Model.GetValue (iterSelected,2)+" "+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"\n',"+
 																		"fechahora_ultimo_surtimiento = '"+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"' "+
 																		"WHERE id_almacen = '"+this.idsubalmacen.ToString()+"' "+
@@ -300,7 +300,7 @@ namespace osiris
 	                                                conexion2.Open ();
 	                                                NpgsqlCommand comando2;
 	                                                comando2 = conexion2.CreateCommand();
-	                                                comando2.CommandText = "UPDATE hscmty_catalogo_almacenes SET stock  = stock - '"+(string) lista_de_materiales_solicitados.Model.GetValue (iterSelected,2)+"' "+
+	                                                comando2.CommandText = "UPDATE osiris_catalogo_almacenes SET stock  = stock - '"+(string) lista_de_materiales_solicitados.Model.GetValue (iterSelected,2)+"' "+
 	                                                                        //"historial_surtido_material = historial_surtido_material || '"+LoginEmpleado+" "+(string) lista_de_materiales_solicitados.Model.GetValue (iterSelected,2)+" "+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"\n',"+
 	                                                                        //"fechahora_ultimo_surtimiento = '"+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"' "+
 	                                                                        "WHERE id_almacen = '"+idalmacenorigen+"' "+
@@ -329,7 +329,7 @@ namespace osiris
 												conexion1.Open ();
 												NpgsqlCommand comando1; 
 												comando1 = conexion1.CreateCommand();
-												comando1.CommandText = "INSERT INTO hscmty_catalogo_almacenes("+
+												comando1.CommandText = "INSERT INTO osiris_catalogo_almacenes("+
 																		"id_almacen,"+
 																		"id_producto,"+
 																		"stock,"+
@@ -355,7 +355,7 @@ namespace osiris
 	                                                conexion2.Open ();
 	                                                NpgsqlCommand comando2;
 	                                                comando2 = conexion2.CreateCommand();
-	                                                comando2.CommandText = "UPDATE hscmty_catalogo_almacenes SET stock  = stock - '"+(string) lista_de_materiales_solicitados.Model.GetValue (iterSelected,2)+"' "+
+	                                                comando2.CommandText = "UPDATE osiris_catalogo_almacenes SET stock  = stock - '"+(string) lista_de_materiales_solicitados.Model.GetValue (iterSelected,2)+"' "+
 	                                                                        //"historial_surtido_material = historial_surtido_material || '"+LoginEmpleado+" "+(string) lista_de_materiales_solicitados.Model.GetValue (iterSelected,2)+" "+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"\n',"+
 	                                                                        //"fechahora_ultimo_surtimiento = '"+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"' "+
 	                                                                        "WHERE id_almacen = '"+idalmacenorigen+"' "+
@@ -394,7 +394,7 @@ namespace osiris
 										}
 										
 										if (this.checkbutton_envio_directo.Active == false){
-											comando.CommandText = "UPDATE hscmty_his_solicitudes_deta SET cantidad_autorizada = '"+(string) lista_de_materiales_solicitados.Model.GetValue (iterSelected,2)+"',"+
+											comando.CommandText = "UPDATE osiris_his_solicitudes_deta SET cantidad_autorizada = '"+(string) lista_de_materiales_solicitados.Model.GetValue (iterSelected,2)+"',"+
 															"fechahora_autorizado = '"+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"',"+
 															"id_quien_autorizo = '"+this.LoginEmpleado+"',"+
 															//"stock_cuando_solicito = '"++"',"+
@@ -415,7 +415,7 @@ namespace osiris
 												conexion4.Open ();
 												NpgsqlCommand comando4; 
 												comando4 = conexion4.CreateCommand ();
-												comando4.CommandText = "INSERT INTO hscmty_his_solicitudes_deta("+
+												comando4.CommandText = "INSERT INTO osiris_his_solicitudes_deta("+
 																								"folio_de_solicitud,"+
 																								"id_producto,"+
 																								"precio_producto_publico,"+
@@ -475,7 +475,7 @@ namespace osiris
 											conexion2.Open ();
 											NpgsqlCommand comando2; 
 											comando2 = conexion2.CreateCommand();
-											comando2.CommandText = "SELECT id_producto,id_almacen FROM hscmty_catalogo_almacenes "+
+											comando2.CommandText = "SELECT id_producto,id_almacen FROM osiris_catalogo_almacenes "+
 																	"WHERE id_almacen = '"+this.idsubalmacen.ToString()+"' "+
 																	"AND eliminado = 'false' "+	
 																	"AND id_producto = '"+(string) lista_de_materiales_solicitados.Model.GetValue (iterSelected,5)+"' ;";
@@ -488,7 +488,7 @@ namespace osiris
 													conexion3.Open ();
 													NpgsqlCommand comando3; 
 													comando3 = conexion3.CreateCommand();
-													comando3.CommandText = "UPDATE hscmty_catalogo_almacenes SET stock  = stock + '"+(string) lista_de_materiales_solicitados.Model.GetValue (iterSelected,2)+"',"+
+													comando3.CommandText = "UPDATE osiris_catalogo_almacenes SET stock  = stock + '"+(string) lista_de_materiales_solicitados.Model.GetValue (iterSelected,2)+"',"+
 																			//"historial_surtido_material = historial_surtido_material || '"+LoginEmpleado+" "+(string) lista_de_materiales_solicitados.Model.GetValue (iterSelected,2)+" "+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"\n',"+
 																			"fechahora_ultimo_surtimiento = '"+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"' "+
 																			"WHERE id_almacen = '"+this.idsubalmacen.ToString()+"' "+
@@ -514,7 +514,7 @@ namespace osiris
 		                                                conexion.Open ();
 		                                                NpgsqlCommand comando;
 		                                                comando = conexion.CreateCommand();
-		                                                comando.CommandText = "UPDATE hscmty_catalogo_almacenes SET stock  = stock - '"+(string) lista_de_materiales_solicitados.Model.GetValue (iterSelected,2)+"' "+
+		                                                comando.CommandText = "UPDATE osiris_catalogo_almacenes SET stock  = stock - '"+(string) lista_de_materiales_solicitados.Model.GetValue (iterSelected,2)+"' "+
 		                                                                        //"historial_surtido_material = historial_surtido_material || '"+LoginEmpleado+" "+(string) lista_de_materiales_solicitados.Model.GetValue (iterSelected,2)+" "+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"\n',"+
 		                                                                        //"fechahora_ultimo_surtimiento = '"+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"' "+
 		                                                                        "WHERE id_almacen = '"+idalmacenorigen+"' "+
@@ -542,7 +542,7 @@ namespace osiris
 													conexion3.Open ();
 													NpgsqlCommand comando3; 
 													comando3 = conexion3.CreateCommand();
-													comando3.CommandText = "INSERT INTO hscmty_catalogo_almacenes("+
+													comando3.CommandText = "INSERT INTO osiris_catalogo_almacenes("+
 																				"id_almacen,"+
 																				"id_producto,"+
 																				"stock,"+
@@ -568,7 +568,7 @@ namespace osiris
 	                                                conexion5.Open ();
 	                                                NpgsqlCommand comando5;
 	                                                comando5 = conexion5.CreateCommand();
-	                                                comando5.CommandText = "UPDATE hscmty_catalogo_almacenes SET stock  = stock - '"+(string) lista_de_materiales_solicitados.Model.GetValue (iterSelected,2)+"' "+
+	                                                comando5.CommandText = "UPDATE osiris_catalogo_almacenes SET stock  = stock - '"+(string) lista_de_materiales_solicitados.Model.GetValue (iterSelected,2)+"' "+
 	                                                                        //"historial_surtido_material = historial_surtido_material || '"+LoginEmpleado+" "+(string) lista_de_materiales_solicitados.Model.GetValue (iterSelected,2)+" "+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"\n',"+
 	                                                                        //"fechahora_ultimo_surtimiento = '"+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"' "+
 	                                                                        "WHERE id_almacen = '"+idalmacenorigen+"' "+
@@ -600,7 +600,7 @@ namespace osiris
 											}
 											
 											if (this.checkbutton_envio_directo.Active == false){
-												comando2.CommandText = "UPDATE hscmty_his_solicitudes_deta SET cantidad_autorizada = '"+(string) lista_de_materiales_solicitados.Model.GetValue (iterSelected,2)+"',"+
+												comando2.CommandText = "UPDATE osiris_his_solicitudes_deta SET cantidad_autorizada = '"+(string) lista_de_materiales_solicitados.Model.GetValue (iterSelected,2)+"',"+
 														"fechahora_autorizado = '"+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"',"+
 														"id_quien_autorizo = '"+this.LoginEmpleado+"',"+
 														//"stock_cuando_solicito = '"++"',"+
@@ -619,7 +619,7 @@ namespace osiris
 													conexion4.Open ();
 													NpgsqlCommand comando4; 
 													comando4 = conexion4.CreateCommand ();
-													comando4.CommandText = "INSERT INTO hscmty_his_solicitudes_deta("+
+													comando4.CommandText = "INSERT INTO osiris_his_solicitudes_deta("+
 																								"folio_de_solicitud,"+
 																								"id_producto,"+
 																								"precio_producto_publico,"+
@@ -712,7 +712,7 @@ namespace osiris
 						conexion.Open ();
 						NpgsqlCommand comando; 
 						comando = conexion.CreateCommand ();
-						comando.CommandText = "UPDATE hscmty_his_solicitudes_deta SET id_quien_autorizo ='"+LoginEmpleado+"',"+ 
+						comando.CommandText = "UPDATE osiris_his_solicitudes_deta SET id_quien_autorizo ='"+LoginEmpleado+"',"+ 
 											"fechahora_autorizado = '"+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"',"+
 											"sin_stock = 'true' "+
 											"WHERE id_secuencia =  '"+(string) lista_de_materiales_solicitados.Model.GetValue (iterSelected,7)+"';";
@@ -768,7 +768,7 @@ namespace osiris
 						conexion.Open ();
 						NpgsqlCommand comando; 
 						comando = conexion.CreateCommand ();
-						comando.CommandText = "UPDATE hscmty_his_solicitudes_deta SET id_quien_autorizo ='"+LoginEmpleado+"',"+ 
+						comando.CommandText = "UPDATE osiris_his_solicitudes_deta SET id_quien_autorizo ='"+LoginEmpleado+"',"+ 
 											"fechahora_autorizado = '"+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"', "+
 											"solicitado_erroneo = 'true' "+
 											"WHERE id_secuencia =  '"+(string) lista_de_materiales_solicitados.Model.GetValue (iterSelected,7)+"';";
@@ -829,33 +829,33 @@ namespace osiris
 				conexion.Open ();
 				NpgsqlCommand comando; 
 				comando = conexion.CreateCommand ();
-               	comando.CommandText = "SELECT hscmty_his_solicitudes_deta.folio_de_solicitud,to_char(hscmty_his_solicitudes_deta.id_producto,'999999999999') AS idproductos,"+
+               	comando.CommandText = "SELECT osiris_his_solicitudes_deta.folio_de_solicitud,to_char(osiris_his_solicitudes_deta.id_producto,'999999999999') AS idproductos,"+
                						"to_char(cantidad_solicitada,'99999999.999') AS cantidadsolicitada,"+
-               						"to_char(hscmty_his_solicitudes_deta.precio_producto_publico,'999999999.99') AS precioproductopublico,"+
-               						"to_char(hscmty_his_solicitudes_deta.costo_por_unidad,'999999999.99') AS costoporunidad,"+
+               						"to_char(osiris_his_solicitudes_deta.precio_producto_publico,'999999999.99') AS precioproductopublico,"+
+               						"to_char(osiris_his_solicitudes_deta.costo_por_unidad,'999999999.99') AS costoporunidad,"+
                						"to_char(cantidad_autorizada,'999999.999') AS cantidadautorizada,id_quien_autorizo, "+
                						"to_char(fechahora_solicitud,'dd-MM-yyyy') AS fechahorasolicitud,"+
                						"to_char(fechahora_autorizado,'dd-MM-yyyy') AS fechahoraautorizado,"+
-               						"status,surtido,hscmty_productos.descripcion_producto,"+
+               						"status,surtido,osiris_productos.descripcion_producto,"+
                						"to_char(id_secuencia,'9999999999') AS idsecuencia,"+
                						"to_char(folio_de_solicitud,'9999999999') AS foliodesolicitud,"+
-               						"hscmty_his_solicitudes_deta.eliminado,"+
+               						"osiris_his_solicitudes_deta.eliminado,"+
 									"descripcion_grupo_producto,descripcion_grupo1_producto "+
 									//",descripcion_grupo2_producto "+
-               						"FROM hscmty_his_solicitudes_deta,hscmty_productos,hscmty_grupo_producto,hscmty_grupo1_producto "+
-               						//",hscmty_grupo2_producto "+
+               						"FROM osiris_his_solicitudes_deta,osiris_productos,osiris_grupo_producto,osiris_grupo1_producto "+
+               						//",osiris_grupo2_producto "+
                						"WHERE id_almacen = '"+idsubalmacen.ToString().Trim()+"' "+
-               						"AND hscmty_his_solicitudes_deta.id_producto = hscmty_productos.id_producto "+
-               						"AND hscmty_productos.id_grupo_producto = hscmty_grupo_producto.id_grupo_producto "+
-									"AND hscmty_productos.id_grupo1_producto = hscmty_grupo1_producto.id_grupo1_producto "+
-									//"AND hscmty_productos.id_grupo2_producto = hscmty_grupo2_producto.id_grupo2_producto "+
+               						"AND osiris_his_solicitudes_deta.id_producto = osiris_productos.id_producto "+
+               						"AND osiris_productos.id_grupo_producto = osiris_grupo_producto.id_grupo_producto "+
+									"AND osiris_productos.id_grupo1_producto = osiris_grupo1_producto.id_grupo1_producto "+
+									//"AND osiris_productos.id_grupo2_producto = osiris_grupo2_producto.id_grupo2_producto "+
 									"AND surtido = 'false' "+
 									"AND status = 'true' "+
 									"AND sin_stock = 'false' "+
 									"AND solicitado_erroneo = 'false' "+
 									"AND envio_directo = 'false' "+
-									"AND hscmty_his_solicitudes_deta.eliminado = 'false' "+
-									"ORDER BY hscmty_his_solicitudes_deta.id_secuencia;";
+									"AND osiris_his_solicitudes_deta.eliminado = 'false' "+
+									"ORDER BY osiris_his_solicitudes_deta.id_secuencia;";
 				Console.WriteLine(comando.CommandText);
 				NpgsqlDataReader lector = comando.ExecuteReader ();
 				while(lector.Read()){			
@@ -1003,18 +1003,18 @@ namespace osiris
 				NpgsqlCommand comando; 
 				comando = conexion.CreateCommand ();
                	
-				comando.CommandText = "SELECT to_char(hscmty_productos.id_producto,'999999999999') AS codProducto,"+
-						"hscmty_productos.descripcion_producto,to_char(precio_producto_publico,'99999999.99') AS preciopublico,"+
+				comando.CommandText = "SELECT to_char(osiris_productos.id_producto,'999999999999') AS codProducto,"+
+						"osiris_productos.descripcion_producto,to_char(precio_producto_publico,'99999999.99') AS preciopublico,"+
 						"aplicar_iva,to_char(porcentage_descuento,'999.99') AS porcentagesdesc,aplica_descuento,"+
 						"descripcion_grupo_producto,descripcion_grupo1_producto,descripcion_grupo2_producto,to_char(costo_por_unidad,'999999999.99') AS costoproductounitario, "+
 						"to_char(porcentage_ganancia,'99999.99') AS porcentageutilidad,to_char(costo_producto,'999999999.99') AS costoproducto "+
-						"FROM hscmty_productos,hscmty_grupo_producto,hscmty_grupo1_producto,hscmty_grupo2_producto "+
-						"WHERE hscmty_productos.id_grupo_producto = hscmty_grupo_producto.id_grupo_producto "+
-						"AND hscmty_productos.id_grupo1_producto = hscmty_grupo1_producto.id_grupo1_producto "+
-						"AND hscmty_productos.id_grupo2_producto = hscmty_grupo2_producto.id_grupo2_producto "+
-						"AND hscmty_productos.cobro_activo = true "+
-						"AND hscmty_productos.id_grupo_producto IN( '4','5','6','7','19') "+
-						"AND hscmty_productos.descripcion_producto LIKE '%"+entry_expresion.Text.ToUpper()+"%' ORDER BY descripcion_producto; ";
+						"FROM osiris_productos,osiris_grupo_producto,osiris_grupo1_producto,osiris_grupo2_producto "+
+						"WHERE osiris_productos.id_grupo_producto = osiris_grupo_producto.id_grupo_producto "+
+						"AND osiris_productos.id_grupo1_producto = osiris_grupo1_producto.id_grupo1_producto "+
+						"AND osiris_productos.id_grupo2_producto = osiris_grupo2_producto.id_grupo2_producto "+
+						"AND osiris_productos.cobro_activo = true "+
+						"AND osiris_productos.id_grupo_producto IN( '4','5','6','7','19') "+
+						"AND osiris_productos.descripcion_producto LIKE '%"+entry_expresion.Text.ToUpper()+"%' ORDER BY descripcion_producto; ";
 				
 				NpgsqlDataReader lector = comando.ExecuteReader ();
 				float tomaprecio;

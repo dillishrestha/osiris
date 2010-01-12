@@ -57,7 +57,7 @@ namespace osiris
 		public string fecha_de_envio;
 		public int iddelcliente;
 		public string query_clientes = ";";
-		public string query_fechas ="AND hscmty_erp_factura_enca.enviado = 'false' ";
+		public string query_fechas ="AND osiris_erp_factura_enca.enviado = 'false' ";
 		public string query_facturas = "" ;	//rpt_evnvio_de_factuiras
 				
 					
@@ -204,7 +204,7 @@ namespace osiris
 				conexion.Open ();
 				NpgsqlCommand comando; 
 				comando = conexion.CreateCommand ();
-				comando.CommandText = "UPDATE hscmty_erp_factura_enca SET "+ 
+				comando.CommandText = "UPDATE osiris_erp_factura_enca SET "+ 
 				                      "enviado = 'true',"+
 				                      "fecha_de_envio = '"+fecha_envio+"'"+ 
 								      "WHERE numero_factura =  '"+numerofactura+"';";
@@ -226,12 +226,12 @@ namespace osiris
 		{
 			
 			if (this.check_todas_fechas.Active == true){
-				query_fechas = "AND hscmty_erp_factura_enca.enviado = 'true' ";				               
+				query_fechas = "AND osiris_erp_factura_enca.enviado = 'true' ";				               
 				               llena_lista_factura();
 			}else{	
-				query_fechas = "AND hscmty_erp_factura_enca.enviado = 'true' "+				               
-				               "AND to_char(hscmty_erp_factura_enca.fecha_de_envio,'yyyy-MM-dd') >= '"+this.entry_del_anno.Text+"-"+this.entry_del_mes.Text+"-"+this.entry_del_dia.Text+"' "+
-						       "AND to_char(hscmty_erp_factura_enca.fecha_de_envio,'yyyy-MM-dd') <= '"+this.entry_al_anno.Text+"-"+this.entry_al_mes.Text+"-"+this.entry_al_dia.Text+"' " ;
+				query_fechas = "AND osiris_erp_factura_enca.enviado = 'true' "+				               
+				               "AND to_char(osiris_erp_factura_enca.fecha_de_envio,'yyyy-MM-dd') >= '"+this.entry_del_anno.Text+"-"+this.entry_del_mes.Text+"-"+this.entry_del_dia.Text+"' "+
+						       "AND to_char(osiris_erp_factura_enca.fecha_de_envio,'yyyy-MM-dd') <= '"+this.entry_al_anno.Text+"-"+this.entry_al_mes.Text+"-"+this.entry_al_dia.Text+"' " ;
 				llena_lista_factura();
 			}
 		}
@@ -427,26 +427,26 @@ namespace osiris
 					comando.CommandText = "SELECT descripcion_cliente,direccion_cliente,rfc_cliente,curp_cliente, "+
 								"colonia_cliente,municipio_cliente,estado_cliente,telefono1_cliente, "+ 
 								"telefono2_cliente,celular_cliente,cp_cliente,"+
-								"hscmty_erp_clientes.id_forma_de_pago,descripcion_forma_de_pago AS descripago,"+ 
+								"osiris_erp_clientes.id_forma_de_pago,descripcion_forma_de_pago AS descripago,"+ 
 								"cliente_activo,id_cliente "+
-								"FROM hscmty_erp_clientes,hscmty_erp_forma_de_pago "+
-								"WHERE hscmty_erp_clientes.id_forma_de_pago = hscmty_erp_forma_de_pago.id_forma_de_pago "+
-							    "AND hscmty_erp_clientes.id_cliente !='1' "+
-							    "AND hscmty_erp_clientes.envio_factura = 'true' "+
-							    "AND hscmty_erp_clientes.cliente_activo = 'true' "+
+								"FROM osiris_erp_clientes,osiris_erp_forma_de_pago "+
+								"WHERE osiris_erp_clientes.id_forma_de_pago = osiris_erp_forma_de_pago.id_forma_de_pago "+
+							    "AND osiris_erp_clientes.id_cliente !='1' "+
+							    "AND osiris_erp_clientes.envio_factura = 'true' "+
+							    "AND osiris_erp_clientes.cliente_activo = 'true' "+
 								"ORDER BY descripcion_cliente;";
 				}else{
 					comando.CommandText = "SELECT descripcion_cliente,direccion_cliente,rfc_cliente,curp_cliente, "+
 								"colonia_cliente,municipio_cliente,estado_cliente,telefono1_cliente, "+ 
 								"telefono2_cliente,celular_cliente,cp_cliente,"+
-								"hscmty_erp_clientes.id_forma_de_pago,descripcion_forma_de_pago AS descripago,"+ 
+								"osiris_erp_clientes.id_forma_de_pago,descripcion_forma_de_pago AS descripago,"+ 
 								"cliente_activo,id_cliente "+
-								"FROM hscmty_erp_clientes,hscmty_erp_forma_de_pago "+
-								"WHERE hscmty_erp_clientes.id_forma_de_pago = hscmty_erp_forma_de_pago.id_forma_de_pago "+
+								"FROM osiris_erp_clientes,osiris_erp_forma_de_pago "+
+								"WHERE osiris_erp_clientes.id_forma_de_pago = osiris_erp_forma_de_pago.id_forma_de_pago "+
 								"AND descripcion_cliente LIKE '%"+(string) entry_expresion.Text.ToUpper()+"%' "+
-								"AND hscmty_erp_clientes.id_cliente != '1' "+
-								"AND hscmty_erp_clientes.envio_factura = 'true' "+
-								"AND hscmty_erp_clientes.cliente_activo = 'true' "+
+								"AND osiris_erp_clientes.id_cliente != '1' "+
+								"AND osiris_erp_clientes.envio_factura = 'true' "+
+								"AND osiris_erp_clientes.cliente_activo = 'true' "+
 							    "ORDER BY descripcion_cliente;";
 				}
 				//Console.WriteLine(comando.CommandText);
@@ -493,7 +493,7 @@ namespace osiris
 				Widget win = (Widget) sender;
 				win.Toplevel.Destroy();
 				
-				query_clientes = "AND  hscmty_erp_cobros_enca.id_cliente = '"+iddelcliente+"';";
+				query_clientes = "AND  osiris_erp_cobros_enca.id_cliente = '"+iddelcliente+"';";
 				if (this.check_enviadas.Active == false)
 				{llena_lista_factura();}
 			}
@@ -632,18 +632,18 @@ namespace osiris
 				NpgsqlCommand comando; 
 				comando = conexion.CreateCommand ();
 				//comando.CommandText = 
-				query_facturas  =   "SELECT hscmty_erp_cobros_enca.id_cliente,hscmty_erp_cobros_enca.numero_factura,hscmty_his_paciente.nombre1_paciente,hscmty_his_paciente.nombre2_paciente,hscmty_erp_clientes.envio_factura,"+
-							            "hscmty_his_paciente.apellido_paterno_paciente,hscmty_his_paciente.apellido_materno_paciente,hscmty_erp_clientes.descripcion_cliente,hscmty_erp_cobros_enca.folio_de_servicio, "+
-						                "to_char(hscmty_erp_factura_enca.fecha_factura,'dd-MM-yyyy') as fechadefectura, "+
-						                "to_char(hscmty_erp_factura_enca.fecha_de_envio,'dd-MM-yyyy') as fechadeenvio, "+
-						                "to_char((hscmty_erp_factura_enca.sub_total_15+sub_total_0+iva_al_15+hscmty_erp_factura_enca.honorario_medico)-(hscmty_erp_factura_enca.deducible+hscmty_erp_factura_enca.coaseguro),'999999.99') AS totalfactura, "+ 
-						                "hscmty_erp_cobros_enca.pagado "+
-	  								    "FROM hscmty_erp_cobros_enca,hscmty_erp_factura_enca,hscmty_erp_clientes,hscmty_his_paciente " +
-									    "WHERE (hscmty_erp_cobros_enca.id_cliente = hscmty_erp_clientes.id_cliente) "+
-						                "AND (hscmty_erp_cobros_enca.numero_factura = hscmty_erp_factura_enca.numero_factura) "+
-						                "AND (hscmty_erp_cobros_enca.pid_paciente = hscmty_his_paciente.pid_paciente) "+
-						                "AND hscmty_erp_clientes.id_cliente != '1' "+
-						                "AND hscmty_erp_clientes.envio_factura = 'true' "+
+				query_facturas  =   "SELECT osiris_erp_cobros_enca.id_cliente,osiris_erp_cobros_enca.numero_factura,osiris_his_paciente.nombre1_paciente,osiris_his_paciente.nombre2_paciente,osiris_erp_clientes.envio_factura,"+
+							            "osiris_his_paciente.apellido_paterno_paciente,osiris_his_paciente.apellido_materno_paciente,osiris_erp_clientes.descripcion_cliente,osiris_erp_cobros_enca.folio_de_servicio, "+
+						                "to_char(osiris_erp_factura_enca.fecha_factura,'dd-MM-yyyy') as fechadefectura, "+
+						                "to_char(osiris_erp_factura_enca.fecha_de_envio,'dd-MM-yyyy') as fechadeenvio, "+
+						                "to_char((osiris_erp_factura_enca.sub_total_15+sub_total_0+iva_al_15+osiris_erp_factura_enca.honorario_medico)-(osiris_erp_factura_enca.deducible+osiris_erp_factura_enca.coaseguro),'999999.99') AS totalfactura, "+ 
+						                "osiris_erp_cobros_enca.pagado "+
+	  								    "FROM osiris_erp_cobros_enca,osiris_erp_factura_enca,osiris_erp_clientes,osiris_his_paciente " +
+									    "WHERE (osiris_erp_cobros_enca.id_cliente = osiris_erp_clientes.id_cliente) "+
+						                "AND (osiris_erp_cobros_enca.numero_factura = osiris_erp_factura_enca.numero_factura) "+
+						                "AND (osiris_erp_cobros_enca.pid_paciente = osiris_his_paciente.pid_paciente) "+
+						                "AND osiris_erp_clientes.id_cliente != '1' "+
+						                "AND osiris_erp_clientes.envio_factura = 'true' "+
 						                 //query de fechas contiene (enviados true  o false) dependiendo del check
 						                 query_fechas +
 						                 // query de clienets a traer depende del boton buqueda y del check de todos los clienes
@@ -704,7 +704,7 @@ namespace osiris
 				this.entry_del_anno.Sensitive = false; 
 				this.button_facturas_enviadas.Sensitive =false;
 	            this.check_todas_fechas.Sensitive = false;			
-				query_fechas = "AND hscmty_erp_factura_enca.enviado = 'false' ";
+				query_fechas = "AND osiris_erp_factura_enca.enviado = 'false' ";
 					       
 				//llena_lista_factura();
 				//parametro varable query enviado false

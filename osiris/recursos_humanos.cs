@@ -1,6 +1,6 @@
  /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // created on 19/10/2007 at 04:10 p                                                                           ////
-// Hospital Santa Cecilia                                                                                            ////
+// Sistema Hospitalario OSIRIS                                                                                            ////
 // Monterrey - Mexico                                                                                                ////
 //                                                                                                                            ////
 // Autor    	: Ing. Armando Leon (Programacion)                                                           ////
@@ -53,16 +53,15 @@ namespace osiris
 		//Widget] Gtk.ComboBox combo_tipocontrato;
 		//[Widget] Gtk.Button button_nuevos_productos;
 		
-		public string connectionString = "Server=localhost;" +
+		string connectionString = "Server=localhost;" +
 						"Port=5432;" +
 						 "User ID=admin;" +
 						"Password=1qaz2wsx;";
-		public string nombrebd;
-		//public string nombrebd = "Database=hscmty;"; //hscmty-preprod
-		public string LoginEmpleado;
-    	public string NomEmpleado;
-    	public string AppEmpleado;
-    	public string ApmEmpleado;
+		string nombrebd;
+		string LoginEmpleado;
+    	string NomEmpleado;
+    	string AppEmpleado;
+    	string ApmEmpleado;
     	
     	//Declaracion de ventana de error
 		protected Gtk.Window MyWinError;
@@ -492,7 +491,7 @@ namespace osiris
 				NpgsqlCommand comando; 
 				comando = conexion.CreateCommand ();
 				strsql = "SELECT SUBSTR(id_empleado,2,6) AS ultimonumero "+
-						"from hscmty_empleado "+
+						"from osiris_empleado "+
 						"where SUBSTR(id_empleado,1,1) = '"+letra.ToUpper()+"' "+
 						"ORDER BY  id_empleado DESC LIMIT 1;";
 				//Console.WriteLine(strsql);
@@ -554,7 +553,7 @@ namespace osiris
 						conexion.Open ();
 						NpgsqlCommand comando; 
 						comando = conexion.CreateCommand ();						 
-						strsql = "INSERT INTO hscmty_empleado ("+
+						strsql = "INSERT INTO osiris_empleado ("+
 								"id_empleado,"+
 		             			"login_empleado,"+
 		                		"nombre1_empleado,"+
@@ -595,7 +594,7 @@ namespace osiris
 							conexion2.Open ();
 							NpgsqlCommand comando2; 
 							comando2 = conexion2.CreateCommand ();
-							strsql = "INSERT INTO hscmty_empleado_detalle ("+
+							strsql = "INSERT INTO osiris_empleado_detalle ("+
 									"id_empleado,"+
 			                		"lugar_nacimiento, " +
 			                		"nacionalidad, "+
@@ -818,7 +817,7 @@ namespace osiris
 					NpgsqlCommand comando; 
 					comando = conexion.CreateCommand ();
 			 		string strsql = "";
-					strsql = "UPDATE hscmty_empleado "+
+					strsql = "UPDATE osiris_empleado "+
 											"SET " +
 											"nombre1_empleado = '" + entry_nombre1_empleado.Text.ToUpper()+"', "+
 											"nombre2_empleado = '" + entry_nombre2_empleado.Text.ToUpper()+"', "+
@@ -847,7 +846,7 @@ namespace osiris
 					//almacena el detalle			        
 					comando = conexion.CreateCommand ();
 			 		strsql = "";
-					strsql = "UPDATE hscmty_empleado_detalle "+
+					strsql = "UPDATE osiris_empleado_detalle "+
 							"SET " +
 					        "lugar_nacimiento = '" + entry_lugar_nac.Text.ToUpper()+"', "+
 							"nacionalidad = '"+ entry_nacionalidad.Text.ToUpper()+"', "+
@@ -1133,11 +1132,11 @@ namespace osiris
 									  "to_char(d.sueldo_max,'99999999.99') as sueldomax, d.causa_baja, d.notas_baja, d.notas_empleado, "+
 									  "d.dias_vac_goce, d.dias_vac_gozados, to_char(d.dias_vac_por_disfrutar,'99999') as diasvacpordisfrutar, "+
 									  "d.tipo_casa, d.tipo_empleado "+
-									  "FROM hscmty_empleado m, hscmty_empleado_detalle d " +
+									  "FROM osiris_empleado m, osiris_empleado_detalle d " +
 									  "WHERE ((m.id_empleado = d.id_empleado) and m.id_empleado = '"+micadena+"' );";
 									  
-									  //"FROM hscmty_empleado m, hscmty_empleado_detalle d " +
-									  //"WHERE ((hscmty_empleado.id_empleado = hscmty_empleado_detalle.id_empleado) and hscmty_empleado.id_empleado = '"+micadena+"' );";
+									  //"FROM osiris_empleado m, osiris_empleado_detalle d " +
+									  //"WHERE ((osiris_empleado.id_empleado = osiris_empleado_detalle.id_empleado) and osiris_empleado.id_empleado = '"+micadena+"' );";
 									  //"WHERE ((m.id_empleado = d.id_empleado) and m.id_empleado = '"+entry_id_empleado.Text.Trim()+"' );";
 				Console.WriteLine(comando.CommandText.ToString());					  
 				NpgsqlDataReader lector = comando.ExecuteReader ();
@@ -2057,7 +2056,7 @@ namespace osiris
 					conexion.Open ();
 					NpgsqlCommand comando; 
 					comando = conexion.CreateCommand ();
-	               	comando.CommandText = "SELECT * FROM hscmty_his_tipo_admisiones WHERE grupo in ('ADM', 'MED') ORDER BY grupo, descripcion_admisiones";
+	               	comando.CommandText = "SELECT * FROM osiris_his_tipo_admisiones WHERE grupo in ('ADM', 'MED') ORDER BY grupo, descripcion_admisiones";
 	               	//"WHERE id_estado = '"+idestado.ToString()+"' "+
 	     	
 					NpgsqlDataReader lector = comando.ExecuteReader ();
@@ -2115,7 +2114,7 @@ namespace osiris
 					conexion.Open ();
 					NpgsqlCommand comando; 
 					comando = conexion.CreateCommand ();
-	               	comando.CommandText = "SELECT * FROM hscmty_erp_puestos WHERE activo = TRUE ORDER BY puesto";
+	               	comando.CommandText = "SELECT * FROM osiris_erp_puestos WHERE activo = TRUE ORDER BY puesto";
 	               	//"WHERE id_estado = '"+idestado.ToString()+"' "+
 	               					
 					NpgsqlDataReader lector = comando.ExecuteReader ();
@@ -2378,7 +2377,7 @@ namespace osiris
 			 		//almacena el detalle			        
 					
 			 		
-					strsql = "UPDATE hscmty_empleado "+
+					strsql = "UPDATE osiris_empleado "+
 						"SET "+ 
 						"baja_empleado = 'true'";
 						strsql = strsql +"WHERE (id_empleado LIKE '"+entry_id_empleado_etiqueta.Text+"') ";
@@ -2389,7 +2388,7 @@ namespace osiris
 							        
 					comando = conexion.CreateCommand ();
 			 		strsql = "";
-					strsql = "UPDATE hscmty_empleado_detalle "+
+					strsql = "UPDATE osiris_empleado_detalle "+
 											"SET "+ 
 											"notas_baja = '" + entry_notas_baja.Text.ToUpper()+"',"+
 											         //if (var_baja_emp == "") 
@@ -2472,7 +2471,7 @@ namespace osiris
 					comando.CommandText = "SELECT id_empleado,nombre1_empleado,nombre2_empleado, "+
 									  "apellido_paterno_empleado, "+
 									  "apellido_materno_empleado, estado_del_empleado "+
-									  "FROM hscmty_empleado " +
+									  "FROM osiris_empleado " +
 									  "WHERE (baja_empleado = 'false');";
 									  				
 				}else{
@@ -2480,7 +2479,7 @@ namespace osiris
 						comando.CommandText = "SELECT m.id_empleado, m.nombre1_empleado, m.nombre2_empleado, "+
 									  "m.apellido_paterno_empleado, "+
 									  "m.apellido_materno_empleado, m.estado_del_empleado "+
-									  "FROM hscmty_empleado m " +
+									  "FROM osiris_empleado m " +
 									  "WHERE (apellido_paterno_empleado LIKE '"+entry_expresion.Text.ToUpper()+"%' OR apellido_materno_empleado LIKE '"+entry_expresion.Text.ToUpper()+"%') "+
 									  "ORDER BY id_empleado;";
 					}
@@ -2488,7 +2487,7 @@ namespace osiris
 						comando.CommandText = "SELECT m.id_empleado, m.nombre1_empleado, m.nombre2_empleado, "+
 									  "m.apellido_paterno_empleado, "+
 									  "m.apellido_materno_empleado, m.estado_del_empleado "+
-									  "FROM hscmty_empleado m " +
+									  "FROM osiris_empleado m " +
 									  "WHERE (nombre1_empleado LIKE '"+entry_expresion.Text.ToUpper()+"%' OR nombre2_empleado LIKE '"+entry_expresion.Text.ToUpper()+"%') "+
 									  "ORDER BY id_empleado;";
 					}
@@ -2497,7 +2496,7 @@ namespace osiris
 						comando.CommandText = "SELECT m.id_empleado, m.nombre1_empleado, m.nombre2_empleado, "+
 									  "m.apellido_paterno_empleado, "+
 									  "m.apellido_materno_empleado, m.estado_del_empleado "+
-									  "FROM hscmty_empleado m " +
+									  "FROM osiris_empleado m " +
 									  "WHERE (id_empleado LIKE '"+entry_expresion.Text.ToUpper()+"%') "+
 									  "ORDER BY id_empleado;";				
 					}
@@ -2921,8 +2920,8 @@ namespace osiris
 				conexion.Open ();
 				NpgsqlCommand comando; 
 				comando = conexion.CreateCommand ();
-               	//comando.CommandText = "SELECT descripcion_municipio FROM hscmty_municipios WHERE id_estado = '"+idestado.ToString()+"' "+
-               	comando.CommandText = "SELECT descripcion_municipio FROM hscmty_municipios WHERE id_estado = '"+idmunicipioactivo+"' "+
+               	//comando.CommandText = "SELECT descripcion_municipio FROM osiris_municipios WHERE id_estado = '"+idestado.ToString()+"' "+
+               	comando.CommandText = "SELECT descripcion_municipio FROM osiris_municipios WHERE id_estado = '"+idmunicipioactivo+"' "+
                						"ORDER BY descripcion_municipio;";
 				
 				NpgsqlDataReader lector = comando.ExecuteReader ();
@@ -2970,7 +2969,7 @@ namespace osiris
 				conexion.Open ();
 				NpgsqlCommand comando; 
 				comando = conexion.CreateCommand ();
-               	comando.CommandText = "SELECT * FROM hscmty_estados ORDER BY descripcion_estado;";
+               	comando.CommandText = "SELECT * FROM osiris_estados ORDER BY descripcion_estado;";
 				
 				NpgsqlDataReader lector = comando.ExecuteReader ();
 				if (estadoactivo == ""){

@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////
 // created on 07/06/2007 at 11:02 a
-// Hospital Santa Cecilia
+// Sistema Hospitalario OSIRIS
 // Monterrey - Mexico
 //
 // Autor    	: Daniel Olivares - arcangeldoc@gmail.com (Programacion Mono)
@@ -120,7 +120,7 @@ namespace osiris
 		////
 		public string facturas_="";
 		
-		public string tipobusqueda = "AND hscmty_his_medicos.nombre1_medico LIKE '";
+		public string tipobusqueda = "AND osiris_his_medicos.nombre1_medico LIKE '";
 		
 		private TreeStore treeViewEngineMedicos;
 		private TreeStore treeViewEngineClientes;
@@ -188,7 +188,7 @@ namespace osiris
 
 		void button_rpt_facturas_pendientes_clicked(object sender, EventArgs args)
 		{
-			this.facturas_ = "AND hscmty_erp_factura_enca.pagada = 'false' " ;
+			this.facturas_ = "AND osiris_erp_factura_enca.pagada = 'false' " ;
 			Console.WriteLine(facturas_);
 			pagados = false;
 			on_button_button_rpt_facturas();
@@ -196,7 +196,7 @@ namespace osiris
 		
 		void on_button_button_rpt_facturas_pagadas_clicked(object sender, EventArgs args)
 		{
-			this.facturas_ = "AND hscmty_erp_factura_enca.pagada = 'true' ";
+			this.facturas_ = "AND osiris_erp_factura_enca.pagada = 'true' ";
 			pagados = true;
 			on_button_button_rpt_facturas();
 		}
@@ -381,16 +381,16 @@ namespace osiris
 			}
 				
 			if(checkbutton_todos_los_clientes.Active == false){
-				query_medico = " AND hscmty_erp_honorarios_medicos.id_medico = '"+idmedico.ToString()+"' ";
+				query_medico = " AND osiris_erp_honorarios_medicos.id_medico = '"+idmedico.ToString()+"' ";
 			}
 			if (checkbutton_impr_todo_proce.Active == true) { 
 				query_fechas = " ";
 			}else{
-				query_fechas = "AND to_char(hscmty_erp_factura_enca.fecha_factura,'yyyy-MM-dd') >= '"+entry_ano1.Text+"-"+entry_mes1.Text+"-"+entry_dia1.Text+"' "+
-								"AND to_char(hscmty_erp_factura_enca.fecha_factura,'yyyy-MM-dd') <= '"+entry_ano2.Text+"-"+entry_mes2.Text+"-"+entry_dia2.Text+"' ";
+				query_fechas = "AND to_char(osiris_erp_factura_enca.fecha_factura,'yyyy-MM-dd') >= '"+entry_ano1.Text+"-"+entry_mes1.Text+"-"+entry_dia1.Text+"' "+
+								"AND to_char(osiris_erp_factura_enca.fecha_factura,'yyyy-MM-dd') <= '"+entry_ano2.Text+"-"+entry_mes2.Text+"-"+entry_dia2.Text+"' ";
 			}
 			if(radiobutton_fecha.Active == true){ 
-				orden = "ORDER BY to_char(hscmty_erp_factura_enca.fecha_factura,'yyyy-MM-dd')";
+				orden = "ORDER BY to_char(osiris_erp_factura_enca.fecha_factura,'yyyy-MM-dd')";
 			}
 			if(radiobutton_cliente.Active ==true) {	
 				orden = "ORDER BY nombre_medico";
@@ -578,7 +578,7 @@ namespace osiris
 						{
 							comando.CommandText = "SELECT id_medico, "+
 										"to_char(id_empresa,'999999') AS idempresa, "+
-										"to_char(hscmty_his_tipo_especialidad.id_especialidad,999999) AS idespecialidad, "+
+										"to_char(osiris_his_tipo_especialidad.id_especialidad,999999) AS idespecialidad, "+
 										"nombre_medico,descripcion_empresa,descripcion_especialidad,centro_medico, "+
 										"nombre1_medico,nombre2_medico,apellido_paterno_medico,apellido_materno_medico, "+
 										"telefono1_medico,cedula_medico,telefono2_medico,celular1_medico,celular2_medico, "+
@@ -591,15 +591,15 @@ namespace osiris
 										"copia_comprobante_domicilio_medico,diploma_seminarios_medico,diploma_cursos_medico, "+
 										"diplomas_extranjeros_medico,constancia_congresos_medico,cedula_especialidad_medico, "+
 										"medico_activo,autorizado "+
-										"FROM hscmty_his_medicos,hscmty_his_tipo_especialidad,hscmty_empresas "+
-										"WHERE hscmty_his_medicos.id_especialidad = hscmty_his_tipo_especialidad.id_especialidad "+
-										"AND hscmty_his_medicos.id_empresa_medico = hscmty_empresas.id_empresa "+
+										"FROM osiris_his_medicos,osiris_his_tipo_especialidad,osiris_empresas "+
+										"WHERE osiris_his_medicos.id_especialidad = osiris_his_tipo_especialidad.id_especialidad "+
+										"AND osiris_his_medicos.id_empresa_medico = osiris_empresas.id_empresa "+
 										"AND medico_activo = 'true' "+
 										"ORDER BY id_medico;";
 						}else{
 							comando.CommandText = "SELECT id_medico, "+
 										"to_char(id_empresa,'999999') AS idempresa, "+
-										"to_char(hscmty_his_tipo_especialidad.id_especialidad,999999) AS idespecialidad, "+
+										"to_char(osiris_his_tipo_especialidad.id_especialidad,999999) AS idespecialidad, "+
 										"nombre_medico,descripcion_empresa,descripcion_especialidad,centro_medico, "+
 										"nombre1_medico,nombre2_medico,apellido_paterno_medico,apellido_materno_medico, "+
 										"telefono1_medico,cedula_medico,telefono2_medico,celular1_medico,celular2_medico, "+
@@ -612,9 +612,9 @@ namespace osiris
 										"copia_comprobante_domicilio_medico,diploma_seminarios_medico,diploma_cursos_medico, "+
 										"diplomas_extranjeros_medico,constancia_congresos_medico,cedula_especialidad_medico, "+
 										"medico_activo,autorizado "+
-										"FROM hscmty_his_medicos,hscmty_his_tipo_especialidad,hscmty_empresas "+
-										"WHERE hscmty_his_medicos.id_especialidad = hscmty_his_tipo_especialidad.id_especialidad "+
-										"AND hscmty_his_medicos.id_empresa_medico = hscmty_empresas.id_empresa "+
+										"FROM osiris_his_medicos,osiris_his_tipo_especialidad,osiris_empresas "+
+										"WHERE osiris_his_medicos.id_especialidad = osiris_his_tipo_especialidad.id_especialidad "+
+										"AND osiris_his_medicos.id_empresa_medico = osiris_empresas.id_empresa "+
 										"AND medico_activo = 'true' "+
 								  		tipobusqueda+(string) entry_expresion.Text.Trim().ToUpper()+"%' "+
 										"ORDER BY id_medico;";
@@ -717,12 +717,12 @@ namespace osiris
 		
 		void tipo_de_busqueda_de_medico(int numbusqueda)
 		{
-			if(numbusqueda == 1)  { tipobusqueda = "AND hscmty_his_medicos.nombre1_medico LIKE '";	}//Console.WriteLine(tipobusqueda); }
-			if(numbusqueda == 2)  { tipobusqueda = "AND hscmty_his_medicos.nombre2_medico LIKE '";	}//Console.WriteLine(tipobusqueda); }
-			if(numbusqueda == 3)  { tipobusqueda = "AND hscmty_his_medicos.apellido_paterno_medico LIKE '";	}//Console.WriteLine(tipobusqueda); }
-			if(numbusqueda == 4)  { tipobusqueda = "AND hscmty_his_medicos.apellido_materno_medico LIKE '";	}//Console.WriteLine(tipobusqueda); }
-			if(numbusqueda == 5)  { tipobusqueda = "AND hscmty_his_medicos.cedula_medico LIKE '";	}//Console.WriteLine(tipobusqueda); }
-			if(numbusqueda == 6)  { tipobusqueda = "AND hscmty_his_tipo_especialidad.descripcion_especialidad LIKE '";	}//Console.WriteLine(tipobusqueda); }
+			if(numbusqueda == 1)  { tipobusqueda = "AND osiris_his_medicos.nombre1_medico LIKE '";	}//Console.WriteLine(tipobusqueda); }
+			if(numbusqueda == 2)  { tipobusqueda = "AND osiris_his_medicos.nombre2_medico LIKE '";	}//Console.WriteLine(tipobusqueda); }
+			if(numbusqueda == 3)  { tipobusqueda = "AND osiris_his_medicos.apellido_paterno_medico LIKE '";	}//Console.WriteLine(tipobusqueda); }
+			if(numbusqueda == 4)  { tipobusqueda = "AND osiris_his_medicos.apellido_materno_medico LIKE '";	}//Console.WriteLine(tipobusqueda); }
+			if(numbusqueda == 5)  { tipobusqueda = "AND osiris_his_medicos.cedula_medico LIKE '";	}//Console.WriteLine(tipobusqueda); }
+			if(numbusqueda == 6)  { tipobusqueda = "AND osiris_his_tipo_especialidad.descripcion_especialidad LIKE '";	}//Console.WriteLine(tipobusqueda); }
 		}
         
         void on_selecciona_medico_clicked (object sender, EventArgs args)
@@ -817,12 +817,12 @@ namespace osiris
 				if ((string) entry_expresion.Text.Trim() == "")
 				{
 					comando.CommandText = "SELECT descripcion_cliente, cliente_activo,id_cliente "+
-								"FROM hscmty_erp_clientes "+
+								"FROM osiris_erp_clientes "+
 								"WHERE cliente_activo = 'true' "+
 								"ORDER BY descripcion_cliente;";
 				}else{
 					comando.CommandText = "SELECT descripcion_cliente, cliente_activo,id_cliente "+
-								"FROM hscmty_erp_clientes "+
+								"FROM osiris_erp_clientes "+
 								"WHERE descripcion_cliente LIKE '%"+(string) entry_expresion.Text.ToUpper()+"%' "+
 								"AND cliente_activo = 'true' "+
 								"ORDER BY descripcion_cliente;";
@@ -885,7 +885,7 @@ namespace osiris
 			string rango2 = "";
 			if(checkbutton_todos_los_clientes.Active == true){query_cliente = " "; }
 			if(checkbutton_todos_los_clientes.Active == false){
-				query_cliente = " AND hscmty_erp_factura_enca.id_cliente = '"+idcliente.ToString()+"' ";
+				query_cliente = " AND osiris_erp_factura_enca.id_cliente = '"+idcliente.ToString()+"' ";
 			}
 			if (checkbutton_impr_todo_proce.Active == true) { 
 				query_fechas = " ";	 
@@ -895,16 +895,16 @@ namespace osiris
 				rango1 = entry_dia1.Text+"-"+entry_mes1.Text+"-"+entry_ano1.Text;
 				rango2 = entry_dia2.Text+"-"+entry_mes2.Text+"-"+entry_ano2.Text;
 				if(facturados == "NO FACTURADOS"){
-					query_fechas = "AND to_char(hscmty_erp_cobros_enca.fechahora_creacion,'yyyy-MM-dd') >= '"+entry_ano1.Text+"-"+entry_mes1.Text+"-"+entry_dia1.Text+"' "+
-									"AND to_char(hscmty_erp_cobros_enca.fechahora_creacion,'yyyy-MM-dd') <= '"+entry_ano2.Text+"-"+entry_mes2.Text+"-"+entry_dia2.Text+"' ";
+					query_fechas = "AND to_char(osiris_erp_cobros_enca.fechahora_creacion,'yyyy-MM-dd') >= '"+entry_ano1.Text+"-"+entry_mes1.Text+"-"+entry_dia1.Text+"' "+
+									"AND to_char(osiris_erp_cobros_enca.fechahora_creacion,'yyyy-MM-dd') <= '"+entry_ano2.Text+"-"+entry_mes2.Text+"-"+entry_dia2.Text+"' ";
 				}
 				if(facturados == "FACTURADOS"){
-					query_fechas = "AND to_char(hscmty_erp_factura_enca.fecha_factura,'yyyy-MM-dd') >= '"+entry_ano1.Text+"-"+entry_mes1.Text+"-"+entry_dia1.Text+"' "+
-									"AND to_char(hscmty_erp_factura_enca.fecha_factura,'yyyy-MM-dd') <= '"+entry_ano2.Text+"-"+entry_mes2.Text+"-"+entry_dia2.Text+"' ";
+					query_fechas = "AND to_char(osiris_erp_factura_enca.fecha_factura,'yyyy-MM-dd') >= '"+entry_ano1.Text+"-"+entry_mes1.Text+"-"+entry_dia1.Text+"' "+
+									"AND to_char(osiris_erp_factura_enca.fecha_factura,'yyyy-MM-dd') <= '"+entry_ano2.Text+"-"+entry_mes2.Text+"-"+entry_dia2.Text+"' ";
 				}
 				if (facturados == "CERRADOS"){
-					query_fechas = "AND to_char(hscmty_erp_cobros_enca.fechahora_cerrado,'yyyy-MM-dd') >= '"+entry_ano1.Text+"-"+entry_mes1.Text+"-"+entry_dia1.Text+"' "+
-									"AND to_char(hscmty_erp_cobros_enca.fechahora_cerrado,'yyyy-MM-dd') <= '"+entry_ano2.Text+"-"+entry_mes2.Text+"-"+entry_dia2.Text+"' ";
+					query_fechas = "AND to_char(osiris_erp_cobros_enca.fechahora_cerrado,'yyyy-MM-dd') >= '"+entry_ano1.Text+"-"+entry_mes1.Text+"-"+entry_dia1.Text+"' "+
+									"AND to_char(osiris_erp_cobros_enca.fechahora_cerrado,'yyyy-MM-dd') <= '"+entry_ano2.Text+"-"+entry_mes2.Text+"-"+entry_dia2.Text+"' ";
 				}
 				
 				
@@ -923,8 +923,8 @@ namespace osiris
 					bool pagados = true;
 					//new osiris.reporte_porcedimientos_facturados(pagados,rango1,rango2,query_fechas,nombrebd,LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,facturados,orden,query_cliente);
 				}else{
-					query_fechas =	"AND to_char(hscmty_erp_factura_enca.fechahora_pago_factura,'yyyy-MM-dd') >= '"+entry_ano1.Text+"-"+entry_mes1.Text+"-"+entry_dia1.Text+"' "+
-									"AND to_char(hscmty_erp_factura_enca.fechahora_pago_factura,'yyyy-MM-dd') <= '"+entry_ano2.Text+"-"+entry_mes2.Text+"-"+entry_dia2.Text+"' ";
+					query_fechas =	"AND to_char(osiris_erp_factura_enca.fechahora_pago_factura,'yyyy-MM-dd') >= '"+entry_ano1.Text+"-"+entry_mes1.Text+"-"+entry_dia1.Text+"' "+
+									"AND to_char(osiris_erp_factura_enca.fechahora_pago_factura,'yyyy-MM-dd') <= '"+entry_ano2.Text+"-"+entry_mes2.Text+"-"+entry_dia2.Text+"' ";
 										
 					//new osiris.reporte_facturas_pagadas(rango1,rango2,query_fechas,nombrebd,LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,facturados,orden,query_cliente,facturas_);
 				}

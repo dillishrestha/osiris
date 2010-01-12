@@ -1,7 +1,7 @@
 // created on 24/01/2008 at 12:13 p
 ////////////////////////////////////////////////////////////
 // project created on 24/10/2006 at 10:20 a
-// Hospital Santa Cecilia
+// Sistema Hospitalario OSIRIS
 // Monterrey - Mexico
 //
 // Autor    	: 	Homero Montoya (Programacion y diseño glade)
@@ -312,14 +312,14 @@ namespace osiris
 									"estado_civil_paciente,sexo_paciente,titulo_paciente,curp_paciente,rfc_paciente,"+
 									"colonia_paciente,estado_paciente,fecha_muerte_paciente,causa_muerte_paciente,"+
 									"to_char(to_number(to_char(age('"+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"',fecha_nacimiento_paciente),'yyyy') ,'9999'),'9999') AS edad, "+
-									"to_char(hscmty_his_paciente.fecha_nacimiento_paciente,'yyyy-MM-dd') AS fech_nacimiento, "+
-									"to_char(hscmty_his_paciente.fechahora_registro_paciente,'dd-MM-yyyy HH:mi:ss') AS fech_creacion, "+
+									"to_char(osiris_his_paciente.fecha_nacimiento_paciente,'yyyy-MM-dd') AS fech_nacimiento, "+
+									"to_char(osiris_his_paciente.fechahora_registro_paciente,'dd-MM-yyyy HH:mi:ss') AS fech_creacion, "+
 									"fecha_cambio_info_paciente,historia_movimientos_paciente,id_quien_modifico_paciente,"+
 									"id_quienlocreo_paciente,pid_paciente,id_linea,"+
 									"ocupacion_paciente,id_empresa,municipio_paciente,activo,observaciones "+
-									"FROM hscmty_his_paciente "+
-									"WHERE hscmty_his_paciente.activo = true "+
-									"ORDER BY hscmty_his_paciente.id_linea;";
+									"FROM osiris_his_paciente "+
+									"WHERE osiris_his_paciente.activo = true "+
+									"ORDER BY osiris_his_paciente.id_linea;";
 					//Console.WriteLine(comando.CommandText);
 				}else{              	
 					if (radiobutton_busca_apellido.Active == true){
@@ -331,15 +331,15 @@ namespace osiris
 									"estado_civil_paciente,sexo_paciente,titulo_paciente,curp_paciente,rfc_paciente,"+
 									"colonia_paciente,estado_paciente,fecha_muerte_paciente,causa_muerte_paciente,"+
 									"to_char(to_number(to_char(age('"+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"',fecha_nacimiento_paciente),'yyyy') ,'9999'),'9999') AS edad, "+
-									"to_char(hscmty_his_paciente.fecha_nacimiento_paciente,'yyyy-MM-dd') AS fech_nacimiento, "+
-									"to_char(hscmty_his_paciente.fechahora_registro_paciente,'dd-MM-yyyy HH:mi:ss') AS fech_creacion, "+
+									"to_char(osiris_his_paciente.fecha_nacimiento_paciente,'yyyy-MM-dd') AS fech_nacimiento, "+
+									"to_char(osiris_his_paciente.fechahora_registro_paciente,'dd-MM-yyyy HH:mi:ss') AS fech_creacion, "+
 									"fecha_cambio_info_paciente,historia_movimientos_paciente,id_quien_modifico_paciente,"+
 									"id_quienlocreo_paciente,pid_paciente,id_linea,"+
 									"ocupacion_paciente,id_empresa,municipio_paciente,activo,observaciones "+
-									"FROM hscmty_his_paciente "+
-									"WHERE hscmty_his_paciente.activo = true "+
+									"FROM osiris_his_paciente "+
+									"WHERE osiris_his_paciente.activo = true "+
 									"AND apellido_paterno_paciente LIKE '"+entry_expresion.Text.ToUpper()+"%' "+
-									"ORDER BY hscmty_his_paciente.id_linea;";
+									"ORDER BY osiris_his_paciente.id_linea;";
 					}
 					if (radiobutton_busca_nombre.Active == true){
 						comando.CommandText =  "SELECT nombre1_paciente,nombre2_paciente,apellido_paterno_paciente,"+
@@ -350,15 +350,15 @@ namespace osiris
 									"estado_civil_paciente,sexo_paciente,titulo_paciente,curp_paciente,rfc_paciente,"+
 									"colonia_paciente,estado_paciente,fecha_muerte_paciente,causa_muerte_paciente,"+
 									"to_char(to_number(to_char(age('"+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"',fecha_nacimiento_paciente),'yyyy') ,'9999'),'9999') AS edad, "+
-									"to_char(hscmty_his_paciente.fecha_nacimiento_paciente,'yyyy-MM-dd') AS fech_nacimiento, "+
-									"to_char(hscmty_his_paciente.fechahora_registro_paciente,'dd-MM-yyyy HH:mi:ss') AS fech_creacion, "+
+									"to_char(osiris_his_paciente.fecha_nacimiento_paciente,'yyyy-MM-dd') AS fech_nacimiento, "+
+									"to_char(osiris_his_paciente.fechahora_registro_paciente,'dd-MM-yyyy HH:mi:ss') AS fech_creacion, "+
 									"fecha_cambio_info_paciente,historia_movimientos_paciente,id_quien_modifico_paciente,"+
 									"id_quienlocreo_paciente,pid_paciente,id_linea,"+
 									"ocupacion_paciente,id_empresa,municipio_paciente,activo,observaciones "+
-									"FROM hscmty_his_paciente "+
-									"WHERE hscmty_his_paciente.activo = true "+
+									"FROM osiris_his_paciente "+
+									"WHERE osiris_his_paciente.activo = true "+
 									"AND nombre1_paciente LIKE '"+entry_expresion.Text.ToUpper()+"%' "+
-									"ORDER BY hscmty_his_paciente.id_linea;";
+									"ORDER BY osiris_his_paciente.id_linea;";
 					}
 					if (radiobutton_busca_expediente.Active == true){
 						comando.CommandText = "SELECT nombre1_paciente,nombre2_paciente,apellido_paterno_paciente,"+
@@ -369,13 +369,13 @@ namespace osiris
 									"estado_civil_paciente,sexo_paciente,titulo_paciente,curp_paciente,rfc_paciente,"+
 									"colonia_paciente,estado_paciente,fecha_muerte_paciente,causa_muerte_paciente,"+
 									"to_char(to_number(to_char(age('"+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"',fecha_nacimiento_paciente),'yyyy') ,'9999'),'9999') AS edad, "+
-									"to_char(hscmty_his_paciente.fecha_nacimiento_paciente,'yyyy-MM-dd') AS fech_nacimiento, "+
-									"to_char(hscmty_his_paciente.fechahora_registro_paciente,'dd-MM-yyyy HH:mi:ss') AS fech_creacion, "+
+									"to_char(osiris_his_paciente.fecha_nacimiento_paciente,'yyyy-MM-dd') AS fech_nacimiento, "+
+									"to_char(osiris_his_paciente.fechahora_registro_paciente,'dd-MM-yyyy HH:mi:ss') AS fech_creacion, "+
 									"fecha_cambio_info_paciente,historia_movimientos_paciente,id_quien_modifico_paciente,"+
 									"id_quienlocreo_paciente,pid_paciente,id_linea,"+
 									"ocupacion_paciente,id_empresa,municipio_paciente,activo,observaciones "+
-									"FROM hscmty_his_paciente "+
-									"WHERE hscmty_his_paciente.activo = true "+
+									"FROM osiris_his_paciente "+
+									"WHERE osiris_his_paciente.activo = true "+
 									"AND pid_paciente LIKE '"+entry_expresion.Text.ToUpper()+"%' "+
 									"ORDER BY id_linea;";
 					}
@@ -450,11 +450,11 @@ namespace osiris
 									"rfc_paciente,"+
 									"colonia_paciente,"+
 									"estado_paciente,"+
-									"to_char(hscmty_his_paciente.fecha_muerte_paciente,'yyyy-MM-dd HH:mi:ss') AS fech_muerte,"+
+									"to_char(osiris_his_paciente.fecha_muerte_paciente,'yyyy-MM-dd HH:mi:ss') AS fech_muerte,"+
 									"causa_muerte_paciente,"+
 									"to_char(to_number(to_char(age('"+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"',fecha_nacimiento_paciente),'yyyy') ,'9999'),'9999') AS edad, "+
-									"to_char(hscmty_his_paciente.fecha_nacimiento_paciente,'yyyy-MM-dd') AS fech_nacimiento, "+
-									"to_char(hscmty_his_paciente.fechahora_registro_paciente,'yyyy-MM-dd HH:mi:ss') AS fech_creacion, "+
+									"to_char(osiris_his_paciente.fecha_nacimiento_paciente,'yyyy-MM-dd') AS fech_nacimiento, "+
+									"to_char(osiris_his_paciente.fechahora_registro_paciente,'yyyy-MM-dd HH:mi:ss') AS fech_creacion, "+
 									"fecha_cambio_info_paciente,"+
 									"historia_movimientos_paciente,"+
 									"id_quien_modifico_paciente,"+
@@ -465,8 +465,8 @@ namespace osiris
 									"municipio_paciente,"+
 									"activo,"+
 									"observaciones "+
-									"FROM hscmty_his_paciente "+
-									"WHERE hscmty_his_paciente.activo = true "+
+									"FROM osiris_his_paciente "+
+									"WHERE osiris_his_paciente.activo = true "+
 									"AND pid_paciente = '"+PidPaciente.ToString()+"' ;";
 				NpgsqlDataReader lector = comando.ExecuteReader ();
 				if ((bool) lector.Read()){
@@ -601,7 +601,7 @@ namespace osiris
 				conexion.Open ();
 				NpgsqlCommand comando; 
 				comando = conexion.CreateCommand ();
-				comando.CommandText = "UPDATE hscmty_his_paciente "+
+				comando.CommandText = "UPDATE osiris_his_paciente "+
 									"SET activo = 'true', "+
 									"nombre1_paciente = '"+this.entry_nombre1.Text.Trim()+"',"+
 									"nombre2_paciente = '"+this.entry_nombre2.Text.Trim()+"',"+
@@ -684,7 +684,7 @@ namespace osiris
 				conexion.Open ();
 				NpgsqlCommand comando; 
 				comando = conexion.CreateCommand ();
-               	comando.CommandText = "SELECT descripcion_municipio FROM hscmty_municipios WHERE id_estado = '"+idestado.ToString()+"' "+
+               	comando.CommandText = "SELECT descripcion_municipio FROM osiris_municipios WHERE id_estado = '"+idestado.ToString()+"' "+
                						"ORDER BY descripcion_municipio;";
 				
 				NpgsqlDataReader lector = comando.ExecuteReader ();
@@ -723,7 +723,7 @@ namespace osiris
 				conexion.Open ();
 				NpgsqlCommand comando; 
 				comando = conexion.CreateCommand ();
-               	comando.CommandText = "SELECT * FROM hscmty_estados ORDER BY descripcion_estado;";
+               	comando.CommandText = "SELECT * FROM osiris_estados ORDER BY descripcion_estado;";
 				
 				NpgsqlDataReader lector = comando.ExecuteReader ();
                	while (lector.Read()){

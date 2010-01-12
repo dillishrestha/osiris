@@ -1,6 +1,6 @@
 // created on 26/07/2007 at 03:51 p
 ////////////////////////////////////////////////////////////
-// Hospital Santa Cecilia
+// Sistema Hospitalario OSIRIS
 // Monterrey - Mexico
 //
 // Autor    	: Daniel Olivares - arcangeldoc@gmail.com (Programacion Mono)

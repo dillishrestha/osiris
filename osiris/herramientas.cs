@@ -1,4 +1,4 @@
-// created on 24/05/2007 at 06:08 p// Hospital Santa Cecilia
+// created on 24/05/2007 at 06:08 p// Sistema Hospitalario OSIRIS
 // Monterrey - Mexico
 //
 // Autor    	: Daniel Olivares - arcangeldoc@gmail.com (Programacion Mono)
@@ -31,10 +31,6 @@ using System;
 using Npgsql;
 using Gtk;
 using Glade;
-using Gnome;
-using System.Collections;
-using GtkSharp;
-using System.Security.Cryptography;
 
 using System.Data;
 using System.Data.Odbc;
@@ -129,7 +125,7 @@ namespace osiris
 			dbcon = null;*/
 			
 			/*NpgsqlConnection conexion; 
-			conexion = new NpgsqlConnection (connectionString+"Database=hscmty;");
+			conexion = new NpgsqlConnection (connectionString+"Database=osiris;");
         	// Verifica que la base de datos este conectada
 			try{
 				conexion.Open ();
@@ -146,13 +142,13 @@ namespace osiris
 					//Console.WriteLine(numerofactura.ToString());
 					
 					NpgsqlConnection conexion1; 
-					conexion1 = new NpgsqlConnection (connectionString+"Database=hscmty;");
+					conexion1 = new NpgsqlConnection (connectionString+"Database=osiris;");
 		        	// Verifica que la base de datos este conectada
 					try{
 						conexion1.Open ();
 						NpgsqlCommand comando1; 
 						comando1 = conexion1.CreateCommand ();
-		               	comando1.CommandText = "UPDATE hscmty_catalogo_almacenes SET stock = '"+(string)this.lista_almacenes.Model.GetValue(iterSelected2,1)+"',"+
+		               	comando1.CommandText = "UPDATE osiris_catalogo_almacenes SET stock = '"+(string)this.lista_almacenes.Model.GetValue(iterSelected2,1)+"',"+
 												"historial_ajustes = historial_ajustes || 'DOLIVARES";"+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss").Trim()+";"+
 												Convert.ToString((string) this.lista_almacenes.Model.GetValue (iterSelected2,2)).Trim()+";"+
 												Convert.ToString((string) this.lista_almacenes.Model.GetValue (iterSelected2,1)).Trim()+"\n' "+
@@ -189,7 +185,7 @@ namespace osiris
 			if(LoginEmpleado == "DOLIVARES" ){
 				
 				NpgsqlConnection conexion; 
-				conexion = new NpgsqlConnection (connectionString+"Database=hscmty;");
+				conexion = new NpgsqlConnection (connectionString+"Database=osiris;");
 	        	// Verifica que la base de datos este conectada
 				try{
 					conexion.Open ();
@@ -213,12 +209,12 @@ namespace osiris
 						
 						Console.WriteLine("folioservicio_ = "+folioservicio_ +" id_producto_ = "+id_producto_);
 						NpgsqlConnection conexion2; 
-						conexion2 = new NpgsqlConnection (connectionString+"Database=hscmty;");
+						conexion2 = new NpgsqlConnection (connectionString+"Database=osiris;");
 			            try{
 							conexion2.Open ();
 							NpgsqlCommand comando2; 
 							comando2 = conexion2.CreateCommand ();
-							comando2.CommandText ="UPDATE hscmty_erp_cobros_deta SET precio_producto = '"+preciopruducto_+"',"+
+							comando2.CommandText ="UPDATE osiris_erp_cobros_deta SET precio_producto = '"+preciopruducto_+"',"+
 												"precio_por_cantidad = '"+preciopruducto_+"' * cantidad_aplicada "+
 												" WHERE folio_de_servicio = '"+folioservicio_+"' AND id_producto = '"+id_producto_+"'; ";		           
 							
@@ -240,7 +236,7 @@ namespace osiris
 					}
 											
 					NpgsqlConnection conexion3; 
-					conexion3 = new NpgsqlConnection (connectionString+"Database=hscmty;");
+					conexion3 = new NpgsqlConnection (connectionString+"Database=osiris;");
 					try{
 						conexion3.Open ();
 						NpgsqlCommand comando3; 
@@ -273,7 +269,7 @@ namespace osiris
 		public string verifica_acceso()
 		{
 			string varpaso = "NO";
-			if(LoginEmpleado == "DOLIVARES" || LoginEmpleado == "JPENA" || LoginEmpleado == "HVARGAS" || LoginEmpleado == "JBUENTELLO" || LoginEmpleado == "HMONTOYA"){
+			if(LoginEmpleado == "DOLIVARES" || LoginEmpleado == "JPENA" ){
 				varpaso = "SISTEMAS"; return varpaso;
 			}
 			if(LoginEmpleado == "N000194" || LoginEmpleado == "N000100" || LoginEmpleado == "N000134" || LoginEmpleado == "N000103" || LoginEmpleado =="N000315" 

@@ -1,7 +1,7 @@
 // created on 4/27/2007 at 12:22 PM
 ////////////////////////////////////////////////////////////
 // project created on 24/10/2006 at 10:20 a
-// Hospital Santa Cecilia
+// Sistema Hospitalario OSIRIS
 // Monterrey - Mexico
 //
 // Autor    	: Daniel Olivares - arcangeldoc@gmail.com (Programacion Mono)
@@ -237,7 +237,7 @@ namespace osiris
 				NpgsqlCommand comando;
 				comando = conexion.CreateCommand();
 				comando.CommandText = "SELECT id_producto "+
-									"FROM hscmty_erp_cobros_deta "+
+									"FROM osiris_erp_cobros_deta "+
 									"WHERE folio_de_servicio = '"+entry_folio.Text.Trim()+"' ;";
 				NpgsqlDataReader lector = comando.ExecuteReader ();
 				
@@ -259,7 +259,7 @@ namespace osiris
 								//Npgsql.NpgsqlCommand comando;
 								comando = conexion.CreateCommand();
 								
-								comando.CommandText = "UPDATE hscmty_erp_cobros_enca SET "+
+								comando.CommandText = "UPDATE osiris_erp_cobros_enca SET "+
 													"cancelado = 'true' , "+
 													"fechahora_cancelacion = '"+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"',"+
 													"motivo_cancelacion = '"+entry_motivo.Text.Trim()+"',"+
@@ -292,7 +292,7 @@ namespace osiris
 						//Npgsql.NpgsqlCommand comando;
 						comando = conexion.CreateCommand();
 						
-						comando.CommandText = "UPDATE hscmty_erp_cobros_enca SET "+
+						comando.CommandText = "UPDATE osiris_erp_cobros_enca SET "+
 											"cancelado = 'true' , "+
 											"fechahora_cancelacion = '"+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"',"+
 											"motivo_cancelacion = '"+entry_motivo.Text.Trim()+"',"+

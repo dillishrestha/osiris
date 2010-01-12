@@ -1,7 +1,7 @@
 // created on 05/02/2008 at 10:06 a
 //////////////////////////////////////////////////////////////////////
 // created on 21/01/2008 at 08:28 p
-// Hospital Santa Cecilia
+// Sistema Hospitalario OSIRIS
 // Monterrey - Mexico
 //
 // Autor    	: Ing. Daniel Olivares C. (Programacion y Ajustes)
@@ -161,24 +161,24 @@ namespace osiris
 			
 			if (radiobutton_presupuesto.Active == true){
 				num_presu_paquete_folio = "id_presupuesto = '"+this.entry_presupuesto.Text+"' ";
-				nombre_tabla = "hscmty_his_presupuestos_deta";
+				nombre_tabla = "osiris_his_presupuestos_deta";
 				folio_a_comparar = "id_presupuesto";
-				precio_del_producto = ", to_char(hscmty_his_presupuestos_deta.precio_producto,'99999999,99') AS precioproducto ";
-				grupo_producto = "hscmty_his_presupuestos_deta.precio_producto";
+				precio_del_producto = ", to_char(osiris_his_presupuestos_deta.precio_producto,'99999999,99') AS precioproducto ";
+				grupo_producto = "osiris_his_presupuestos_deta.precio_producto";
 			}
 			if (radiobutton_paquete.Active == true){
 				num_presu_paquete_folio = "id_tipo_cirugia = '"+this.idtipocirugia.ToString().Trim()+"' ";
-				nombre_tabla = "hscmty_his_cirugias_deta";
+				nombre_tabla = "osiris_his_cirugias_deta";
 				folio_a_comparar = "id_tipo_cirugia";
-				precio_del_producto = ", to_char(hscmty_productos.precio_producto_publico,'99999999,99') AS precioproducto ";
-				grupo_producto = "hscmty_productos.precio_producto_publico";
+				precio_del_producto = ", to_char(osiris_productos.precio_producto_publico,'99999999,99') AS precioproducto ";
+				grupo_producto = "osiris_productos.precio_producto_publico";
 			}
 			if (radiobutton_folio.Active == true){
 				num_presu_paquete_folio = "folio_de_servicio = '"+this.entry_folio.Text+"' ";
-				nombre_tabla = "hscmty_erp_cobros_deta";
+				nombre_tabla = "osiris_erp_cobros_deta";
 				folio_a_comparar = "folio_de_servicio";
-				precio_del_producto = ", to_char(hscmty_erp_cobros_deta.precio_producto,'99999999,99') AS precioproducto ";
-				grupo_producto = "hscmty_erp_cobros_deta.precio_producto";
+				precio_del_producto = ", to_char(osiris_erp_cobros_deta.precio_producto,'99999999,99') AS precioproducto ";
+				grupo_producto = "osiris_erp_cobros_deta.precio_producto";
 			}
 			
 			// Total de todo el procedimiento para la compracion de cargos extras			
@@ -188,17 +188,17 @@ namespace osiris
 				conexion.Open ();
 				NpgsqlCommand comando; 
 				comando = conexion.CreateCommand ();
-				comando.CommandText = comando.CommandText = "SELECT folio_de_servicio,to_char(hscmty_erp_cobros_deta.id_producto,'999999999999') AS idproducto,hscmty_productos.descripcion_producto,"+
+				comando.CommandText = comando.CommandText = "SELECT folio_de_servicio,to_char(osiris_erp_cobros_deta.id_producto,'999999999999') AS idproducto,osiris_productos.descripcion_producto,"+
 									"to_char(SUM(cantidad_aplicada),'999999999,99') AS cantidadaplicada,SUM(cantidad_aplicada*precio_producto) AS totalprecioporcantidad,"+
 									"SUM(porcentage_utilidad*cantidad_aplicada) AS porcentageutilidad,"+
 									"(porcentage_utilidad*cantidad_aplicada)/cantidad_aplicada AS porcentageutilidad_promedio,"+
                                     "precio_costo_unitario "+
-									"FROM hscmty_erp_cobros_deta,hscmty_productos "+
+									"FROM osiris_erp_cobros_deta,osiris_productos "+
 									"WHERE folio_de_servicio = '"+this.folioservicio.Trim()+"' "+
-									"AND hscmty_erp_cobros_deta.id_producto = hscmty_productos.id_producto "+
-									"AND hscmty_erp_cobros_deta.eliminado = 'false' "+ 
-									"GROUP BY hscmty_erp_cobros_deta.id_producto,hscmty_productos.descripcion_producto,folio_de_servicio,porcentageutilidad_promedio,precio_costo_unitario "+
-									"ORDER BY hscmty_erp_cobros_deta.id_producto;";
+									"AND osiris_erp_cobros_deta.id_producto = osiris_productos.id_producto "+
+									"AND osiris_erp_cobros_deta.eliminado = 'false' "+ 
+									"GROUP BY osiris_erp_cobros_deta.id_producto,osiris_productos.descripcion_producto,folio_de_servicio,porcentageutilidad_promedio,precio_costo_unitario "+
+									"ORDER BY osiris_erp_cobros_deta.id_producto;";
 				//Console.WriteLine(comando.CommandText);
 				NpgsqlDataReader lector = comando.ExecuteReader ();
 				while(lector.Read()){
@@ -213,16 +213,16 @@ namespace osiris
 						conexion1.Open ();
 						NpgsqlCommand comando1; 
 						comando1 = conexion1.CreateCommand ();
-						comando1.CommandText = "SELECT "+folio_a_comparar+",to_char("+nombre_tabla+".id_producto,'999999999999') AS idproducto,hscmty_productos.descripcion_producto,"+
+						comando1.CommandText = "SELECT "+folio_a_comparar+",to_char("+nombre_tabla+".id_producto,'999999999999') AS idproducto,osiris_productos.descripcion_producto,"+
 											"to_char(SUM(cantidad_aplicada),'999999999,99') AS cantidadaplicada,"+
 								            "aplicar_iva "+
 								             precio_del_producto+" "+
-											"FROM hscmty_productos,"+nombre_tabla+" "+
+											"FROM osiris_productos,"+nombre_tabla+" "+
 											"WHERE "+num_presu_paquete_folio+" "+
-											"AND "+nombre_tabla+".id_producto = hscmty_productos.id_producto "+
+											"AND "+nombre_tabla+".id_producto = osiris_productos.id_producto "+
 											"AND "+nombre_tabla+".eliminado = 'false' "+
 											"AND "+nombre_tabla+".id_producto = '"+idproducto_tabla+"' "+
-											"GROUP BY "+nombre_tabla+".id_producto,"+grupo_producto+",aplicar_iva,hscmty_productos.descripcion_producto,"+folio_a_comparar+";";
+											"GROUP BY "+nombre_tabla+".id_producto,"+grupo_producto+",aplicar_iva,osiris_productos.descripcion_producto,"+folio_a_comparar+";";
 						//Console.WriteLine(comando1.CommandText);
 						NpgsqlDataReader lector1 = comando1.ExecuteReader ();
 						//Console.WriteLine(nombre_tabla);
@@ -287,15 +287,15 @@ namespace osiris
 				conexion2.Open ();
 				NpgsqlCommand comando2; 
 				comando2 = conexion2.CreateCommand ();
-				comando2.CommandText = "SELECT "+folio_a_comparar+",to_char("+nombre_tabla+".id_producto,'999999999999') AS idproducto,hscmty_productos.descripcion_producto,"+
+				comando2.CommandText = "SELECT "+folio_a_comparar+",to_char("+nombre_tabla+".id_producto,'999999999999') AS idproducto,osiris_productos.descripcion_producto,"+
 											"to_char(SUM(cantidad_aplicada),'999999999,99') AS cantidadaplicada,"+
 						                    "aplicar_iva "+
 											precio_del_producto+" "+
-											"FROM hscmty_productos,"+nombre_tabla+" "+
+											"FROM osiris_productos,"+nombre_tabla+" "+
 											"WHERE "+num_presu_paquete_folio+" "+
-											"AND "+nombre_tabla+".id_producto = hscmty_productos.id_producto "+
+											"AND "+nombre_tabla+".id_producto = osiris_productos.id_producto "+
 											"AND "+nombre_tabla+".eliminado = 'false' "+
-											"GROUP BY "+nombre_tabla+".id_producto,aplicar_iva,"+grupo_producto+",hscmty_productos.descripcion_producto,"+folio_a_comparar+";";
+											"GROUP BY "+nombre_tabla+".id_producto,aplicar_iva,"+grupo_producto+",osiris_productos.descripcion_producto,"+folio_a_comparar+";";
 				//Console.WriteLine(comando2.CommandText);
 				NpgsqlDataReader lector2 = comando2.ExecuteReader ();
 				while(lector2.Read()){
@@ -327,17 +327,17 @@ namespace osiris
 						conexion3.Open ();
 						NpgsqlCommand comando3; 
 						comando3 = conexion3.CreateCommand ();
-						comando3.CommandText = "SELECT folio_de_servicio,to_char(hscmty_erp_cobros_deta.id_producto,'999999999999') AS idproducto,hscmty_productos.descripcion_producto,"+
+						comando3.CommandText = "SELECT folio_de_servicio,to_char(osiris_erp_cobros_deta.id_producto,'999999999999') AS idproducto,osiris_productos.descripcion_producto,"+
 									"to_char(SUM(cantidad_aplicada),'999999999,99') AS cantidadaplicada,SUM(cantidad_aplicada*precio_producto) AS totalprecioporcantidad,"+
 									"SUM(porcentage_utilidad*cantidad_aplicada) AS porcentageutilidad,"+
 									"(porcentage_utilidad*cantidad_aplicada)/cantidad_aplicada AS porcentageutilidad_promedio "+
-									"FROM hscmty_erp_cobros_deta,hscmty_productos "+
+									"FROM osiris_erp_cobros_deta,osiris_productos "+
 									"WHERE folio_de_servicio = '"+this.folioservicio.Trim()+"' "+
-									"AND hscmty_erp_cobros_deta.id_producto = hscmty_productos.id_producto "+
-									"AND hscmty_erp_cobros_deta.eliminado = 'false' "+
-									"AND hscmty_erp_cobros_deta.id_producto = '"+idproducto_tabla+"' "+ 
-									"GROUP BY hscmty_erp_cobros_deta.id_producto,hscmty_productos.descripcion_producto,folio_de_servicio,porcentageutilidad_promedio "+
-									"ORDER BY hscmty_erp_cobros_deta.id_producto;";
+									"AND osiris_erp_cobros_deta.id_producto = osiris_productos.id_producto "+
+									"AND osiris_erp_cobros_deta.eliminado = 'false' "+
+									"AND osiris_erp_cobros_deta.id_producto = '"+idproducto_tabla+"' "+ 
+									"GROUP BY osiris_erp_cobros_deta.id_producto,osiris_productos.descripcion_producto,folio_de_servicio,porcentageutilidad_promedio "+
+									"ORDER BY osiris_erp_cobros_deta.id_producto;";
 						//Console.WriteLine(comando3.CommandText);
 						NpgsqlDataReader lector3 = comando3.ExecuteReader ();
 
@@ -512,7 +512,7 @@ namespace osiris
 		void tipo_de_busqueda_de_paquete(int numbusqueda)
 		{
 			if(numbusqueda == 0)  { tipobusqueda = "";}
-			if(numbusqueda == 1)  { tipobusqueda = "AND hscmty_his_presupuestos_enca.id_presupuesto LIKE '";	}
+			if(numbusqueda == 1)  { tipobusqueda = "AND osiris_his_presupuestos_enca.id_presupuesto LIKE '";	}
 		}		
 		
 		void on_selecciona_medico_clicked (object sender, EventArgs args)
@@ -549,16 +549,16 @@ namespace osiris
 						comando = conexion.CreateCommand ();
 						if ((string) entry_expresion.Text.ToUpper() == "")	{
 						comando.CommandText = comando.CommandText = "SELECT id_presupuesto,telefono_medico,medico_provisional, "+
-														"to_char(hscmty_his_presupuestos_enca.deposito_minimo,'999999999.99') AS deposito_min, "+
-														"to_char(hscmty_his_presupuestos_enca.precio_convenido,'999999999.99') AS prec_convenido "+
-														"FROM hscmty_his_presupuestos_enca "+
+														"to_char(osiris_his_presupuestos_enca.deposito_minimo,'999999999.99') AS deposito_min, "+
+														"to_char(osiris_his_presupuestos_enca.precio_convenido,'999999999.99') AS prec_convenido "+
+														"FROM osiris_his_presupuestos_enca "+
 														"WHERE id_presupuesto > 0 "+
 														"ORDER BY id_presupuesto;";
 						}else{
 						comando.CommandText = comando.CommandText = "SELECT id_presupuesto,telefono_medico,medico_provisional, "+
-														"to_char(hscmty_his_presupuestos_enca.deposito_minimo,'999999999.99') AS deposito_min, "+
-														"to_char(hscmty_his_presupuestos_enca.precio_convenido,'999999999.99') AS prec_convenido "+
-														"FROM hscmty_his_presupuestos_enca "+
+														"to_char(osiris_his_presupuestos_enca.deposito_minimo,'999999999.99') AS deposito_min, "+
+														"to_char(osiris_his_presupuestos_enca.precio_convenido,'999999999.99') AS prec_convenido "+
+														"FROM osiris_his_presupuestos_enca "+
 														"WHERE id_presupuesto > 0 "+
 														"AND id_presupuesto LIKE '%"+entry_expresion.Text.ToUpper()+"%' "+
 														"ORDER BY id_presupuesto;";
@@ -749,7 +749,7 @@ namespace osiris
 						comando = conexion.CreateCommand ();
 		              	if ((string) entry_expresion.Text.ToUpper() == "")	
 		              	{
-							comando.CommandText ="SELECT * FROM hscmty_his_tipo_cirugias "+
+							comando.CommandText ="SELECT * FROM osiris_his_tipo_cirugias "+
 												"WHERE tiene_paquete = 'true' "+
 												" ORDER BY id_tipo_cirugia;";
 						}
@@ -947,8 +947,8 @@ namespace osiris
 		{
 
       		Gnome.Print.Setfont (ContextoImp, fuente6);
-			ContextoImp.MoveTo(19.7, 780);			ContextoImp.Show("Hospital Santa Cecilia");
-			ContextoImp.MoveTo(20, 780);			ContextoImp.Show("Hospital Santa Cecilia");
+			ContextoImp.MoveTo(19.7, 780);			ContextoImp.Show("Sistema Hospitalario OSIRIS");
+			ContextoImp.MoveTo(20, 780);			ContextoImp.Show("Sistema Hospitalario OSIRIS");
 			ContextoImp.MoveTo(19.7, 770);			ContextoImp.Show("Direccion: Isacc Garza #200 Ote. Centro Monterrey, NL.");
 			ContextoImp.MoveTo(20, 770);			ContextoImp.Show("Direccion: Isacc Garza #200 Ote. Centro Monterrey, NL.");
 			ContextoImp.MoveTo(19.7, 760);			ContextoImp.Show("Conmutador:(81) 81-25-56-10");

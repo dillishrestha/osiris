@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////
 // created on 28/03/2008 at 02:41 p
-// Hospital Santa Cecilia
+// Sistema Hospitalario OSIRIS
 // Monterrey - Mexico
 //
 // Autor    	: Ing. Daniel Olivares C. (Modificaciones y Ajustes)
@@ -310,9 +310,9 @@ namespace osiris
 								"colonia_proveedor,municipio_proveedor,estado_proveedor,telefono1_proveedor, "+ 
 								"telefono2_proveedor,celular_proveedor,cp_proveedor, proveedor_activo, "+
 								"id_proveedor,contacto1_proveedor,mail_proveedor,pagina_web_proveedor,"+
-								"hscmty_erp_proveedores.id_forma_de_pago, descripcion_forma_de_pago AS descripago "+
-								"FROM hscmty_erp_proveedores, hscmty_erp_forma_de_pago "+
-								"WHERE hscmty_erp_proveedores.id_forma_de_pago = hscmty_erp_forma_de_pago.id_forma_de_pago "+
+								"osiris_erp_proveedores.id_forma_de_pago, descripcion_forma_de_pago AS descripago "+
+								"FROM osiris_erp_proveedores, osiris_erp_forma_de_pago "+
+								"WHERE osiris_erp_proveedores.id_forma_de_pago = osiris_erp_forma_de_pago.id_forma_de_pago "+
 								"ORDER BY descripcion_proveedor;";															
 				}
 				else
@@ -321,9 +321,9 @@ namespace osiris
 								"colonia_proveedor,municipio_proveedor,estado_proveedor,telefono1_proveedor, "+ 
 								"telefono2_proveedor,celular_proveedor,cp_proveedor, proveedor_activo, "+
 								"id_proveedor,contacto1_proveedor,mail_proveedor,pagina_web_proveedor, "+
-								"hscmty_erp_proveedores.id_forma_de_pago, descripcion_forma_de_pago AS descripago "+
-								"FROM hscmty_erp_proveedores, hscmty_erp_forma_de_pago "+
-								"WHERE hscmty_erp_proveedores.id_forma_de_pago = hscmty_erp_forma_de_pago.id_forma_de_pago "+
+								"osiris_erp_proveedores.id_forma_de_pago, descripcion_forma_de_pago AS descripago "+
+								"FROM osiris_erp_proveedores, osiris_erp_forma_de_pago "+
+								"WHERE osiris_erp_proveedores.id_forma_de_pago = osiris_erp_forma_de_pago.id_forma_de_pago "+
 								"AND descripcion_proveedor LIKE '%"+(string) entry_expresion.Text.ToUpper()+"%' "+
 								"ORDER BY descripcion_proveedor;";
 				}
@@ -557,28 +557,28 @@ namespace osiris
 			conexion = new NpgsqlConnection (connectionString+nombrebd);
             // Verifica que la base de datos este conectada
 			string query_tipo_busqueda = "";
-			if(radiobutton_nombre.Active == true) {query_tipo_busqueda = "AND hscmty_productos.descripcion_producto LIKE '%"+entry_expresion.Text.ToUpper().Trim()+"%' ORDER BY descripcion_producto; "; }
-			if(radiobutton_codigo.Active == true) {query_tipo_busqueda = "AND hscmty_productos.id_producto LIKE '"+entry_expresion.Text.Trim()+"%'  ORDER BY id_producto; "; }
+			if(radiobutton_nombre.Active == true) {query_tipo_busqueda = "AND osiris_productos.descripcion_producto LIKE '%"+entry_expresion.Text.ToUpper().Trim()+"%' ORDER BY descripcion_producto; "; }
+			if(radiobutton_codigo.Active == true) {query_tipo_busqueda = "AND osiris_productos.id_producto LIKE '"+entry_expresion.Text.Trim()+"%'  ORDER BY id_producto; "; }
 			try{
 				conexion.Open ();
 				NpgsqlCommand comando; 
 				comando = conexion.CreateCommand ();
-               	comando.CommandText = "SELECT to_char(hscmty_productos.id_producto,'999999999999') AS codProducto,"+
-							"hscmty_productos.descripcion_producto,hscmty_productos.nombre_articulo,hscmty_productos.nombre_generico_articulo, "+
+               	comando.CommandText = "SELECT to_char(osiris_productos.id_producto,'999999999999') AS codProducto,"+
+							"osiris_productos.descripcion_producto,osiris_productos.nombre_articulo,osiris_productos.nombre_generico_articulo, "+
 							"to_char(precio_producto_publico,'99999999.99') AS preciopublico,"+
 							"to_char(precio_producto_publico1,'99999999.99') AS preciopublico1,"+
 							"to_char(cantidad_de_embalaje,'99999999.99') AS cantidadembalaje,"+
 							"aplicar_iva,to_char(porcentage_descuento,'999.99') AS porcentagesdesc,aplica_descuento,cobro_activo,costo_unico,"+
 							"descripcion_grupo_producto,descripcion_grupo1_producto,descripcion_grupo2_producto,to_char(costo_por_unidad,'999999999.99') AS costoproductounitario, "+
-							"to_char(hscmty_productos.id_grupo_producto,'99999') AS idgrupoproducto,hscmty_productos.id_grupo_producto, "+
-							"to_char(hscmty_productos.id_grupo1_producto,'99999') AS idgrupo1producto,hscmty_productos.id_grupo1_producto, "+
-							"to_char(hscmty_productos.id_grupo2_producto,'99999') AS idgrupo2producto,hscmty_productos.id_grupo2_producto, "+
+							"to_char(osiris_productos.id_grupo_producto,'99999') AS idgrupoproducto,osiris_productos.id_grupo_producto, "+
+							"to_char(osiris_productos.id_grupo1_producto,'99999') AS idgrupo1producto,osiris_productos.id_grupo1_producto, "+
+							"to_char(osiris_productos.id_grupo2_producto,'99999') AS idgrupo2producto,osiris_productos.id_grupo2_producto, "+
 							"to_char(porcentage_ganancia,'99999.999') AS porcentageutilidad,to_char(costo_producto,'999999999.99') AS costoproducto "+
-							"FROM hscmty_productos,hscmty_grupo_producto,hscmty_grupo1_producto,hscmty_grupo2_producto "+
-							"WHERE hscmty_productos.id_grupo_producto = hscmty_grupo_producto.id_grupo_producto "+
-							"AND hscmty_productos.id_grupo1_producto = hscmty_grupo1_producto.id_grupo1_producto "+
-							"AND hscmty_productos.id_grupo2_producto = hscmty_grupo2_producto.id_grupo2_producto "+
-							"AND hscmty_productos.cobro_activo = 'true' "+
+							"FROM osiris_productos,osiris_grupo_producto,osiris_grupo1_producto,osiris_grupo2_producto "+
+							"WHERE osiris_productos.id_grupo_producto = osiris_grupo_producto.id_grupo_producto "+
+							"AND osiris_productos.id_grupo1_producto = osiris_grupo1_producto.id_grupo1_producto "+
+							"AND osiris_productos.id_grupo2_producto = osiris_grupo2_producto.id_grupo2_producto "+
+							"AND osiris_productos.cobro_activo = 'true' "+
 							query_tipo_busqueda;
 				//Console.WriteLine(comando.CommandText);
 				NpgsqlDataReader lector = comando.ExecuteReader ();

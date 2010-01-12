@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////
 // created on 27/12/2007 at 05:14 p
-// Hospital Santa Cecilia
+// Sistema Hospitalario OSIRIS
 // Monterrey - Mexico
 //
 // Autor    	: Ing. Juan Antonio Peña (Programacion)
@@ -468,7 +468,7 @@ namespace osiris
 						conexion.Open ();
 						NpgsqlCommand comando; 
 						comando = conexion.CreateCommand ();
-	 					comando.CommandText = "INSERT INTO hscmty_productos("+
+	 					comando.CommandText = "INSERT INTO osiris_productos("+
 													"id_producto,"+
 									 				"descripcion_producto,"+
 									 				"id_grupo_producto,"+
@@ -542,7 +542,7 @@ namespace osiris
 						conexion.Open ();
 						NpgsqlCommand comando; 
 						comando = conexion.CreateCommand ();
-						comando.CommandText = "UPDATE hscmty_productos SET "+
+						comando.CommandText = "UPDATE osiris_productos SET "+
 							"descripcion_producto = '"+(string) entry_descripcion.Text.Trim().ToUpper()+"',"+
 							"id_grupo_producto = '"+idtipogrupo.ToString()+"',"+
 							"id_grupo1_producto = '"+idtipogrupo1.ToString()+"',"+
@@ -989,32 +989,32 @@ namespace osiris
             // Verifica que la base de datos este conectada
 			string query_tipo_busqueda = "";
 			if(radiobutton_nombre.Active == true) {
-				query_tipo_busqueda = "AND hscmty_productos.descripcion_producto LIKE '%"+entry_expresion.Text.ToUpper().Trim()+"%' ORDER BY descripcion_producto; "; }
+				query_tipo_busqueda = "AND osiris_productos.descripcion_producto LIKE '%"+entry_expresion.Text.ToUpper().Trim()+"%' ORDER BY descripcion_producto; "; }
 			if(radiobutton_codigo.Active == true) {
-				query_tipo_busqueda = "AND to_char(hscmty_productos.id_producto,'999999999999') LIKE '%"+entry_expresion.Text.Trim()+"%'  ORDER BY id_producto; ";
+				query_tipo_busqueda = "AND to_char(osiris_productos.id_producto,'999999999999') LIKE '%"+entry_expresion.Text.Trim()+"%'  ORDER BY id_producto; ";
 			}
 			
 			try{
 				conexion.Open ();
 				NpgsqlCommand comando; 
 				comando = conexion.CreateCommand ();
-               	comando.CommandText = "SELECT to_char(hscmty_productos.id_producto,'999999999999') AS codProducto, "+
-							"hscmty_productos.descripcion_producto,hscmty_productos.nombre_articulo,hscmty_productos.nombre_generico_articulo, "+
+               	comando.CommandText = "SELECT to_char(osiris_productos.id_producto,'999999999999') AS codProducto, "+
+							"osiris_productos.descripcion_producto,osiris_productos.nombre_articulo,osiris_productos.nombre_generico_articulo, "+
 							"to_char(precio_producto_publico,'99999999.99') AS preciopublico,"+
 							"to_char(precio_producto_publico1,'99999999.99') AS preciopublico1,"+
 							"to_char(cantidad_de_embalaje,'99999999.99') AS cantidadembalaje,"+
 							"aplicar_iva,to_char(porcentage_descuento,'999.99') AS porcentagesdesc,aplica_descuento,cobro_activo,"+
 							"descripcion_grupo_producto,descripcion_grupo1_producto,descripcion_grupo2_producto,to_char(costo_por_unidad,'999999999.99') AS costoproductounitario, "+
-							"to_char(hscmty_productos.id_grupo_producto,'9999999') AS idgrupoproducto,hscmty_productos.id_grupo_producto, "+
-							"to_char(hscmty_grupo_producto.porcentage_utilidad_grupo,'99999.999') AS porcentageutilidadgrupo,"+
-							"to_char(hscmty_productos.id_grupo1_producto,'9999999') AS idgrupo1producto,hscmty_productos.id_grupo1_producto,"+
-							"to_char(hscmty_productos.id_grupo2_producto,'9999999') AS idgrupo2producto,hscmty_productos.id_grupo2_producto,"+
+							"to_char(osiris_productos.id_grupo_producto,'9999999') AS idgrupoproducto,osiris_productos.id_grupo_producto, "+
+							"to_char(osiris_grupo_producto.porcentage_utilidad_grupo,'99999.999') AS porcentageutilidadgrupo,"+
+							"to_char(osiris_productos.id_grupo1_producto,'9999999') AS idgrupo1producto,osiris_productos.id_grupo1_producto,"+
+							"to_char(osiris_productos.id_grupo2_producto,'9999999') AS idgrupo2producto,osiris_productos.id_grupo2_producto,"+
 							"to_char(porcentage_ganancia,'99999.999') AS porcentageutilidad,to_char(costo_producto,'999999999.99') AS costoproducto,"+
 						    "tiene_kit "+
-							"FROM hscmty_productos,hscmty_grupo_producto,hscmty_grupo1_producto,hscmty_grupo2_producto "+
-							"WHERE hscmty_productos.id_grupo_producto = hscmty_grupo_producto.id_grupo_producto "+
-							"AND hscmty_productos.id_grupo1_producto = hscmty_grupo1_producto.id_grupo1_producto "+
-							"AND hscmty_productos.id_grupo2_producto = hscmty_grupo2_producto.id_grupo2_producto "+
+							"FROM osiris_productos,osiris_grupo_producto,osiris_grupo1_producto,osiris_grupo2_producto "+
+							"WHERE osiris_productos.id_grupo_producto = osiris_grupo_producto.id_grupo_producto "+
+							"AND osiris_productos.id_grupo1_producto = osiris_grupo1_producto.id_grupo1_producto "+
+							"AND osiris_productos.id_grupo2_producto = osiris_grupo2_producto.id_grupo2_producto "+
 							query_tipo_busqueda;
 				//Console.WriteLine(comando.CommandText);
 				NpgsqlDataReader lector = comando.ExecuteReader ();
@@ -1120,7 +1120,7 @@ namespace osiris
 						conexion.Open ();
 						NpgsqlCommand comando; 
 						comando = conexion.CreateCommand ();
-               			comando.CommandText = "SELECT * FROM hscmty_his_tipo_pacientes WHERE lista_de_precio = true ORDER BY id_tipo_paciente;";
+               			comando.CommandText = "SELECT * FROM osiris_his_tipo_pacientes WHERE lista_de_precio = true ORDER BY id_tipo_paciente;";
 						
 						//Console.WriteLine(comando.CommandText);
 						NpgsqlDataReader lector = comando.ExecuteReader ();
@@ -1138,12 +1138,12 @@ namespace osiris
 									conexion1.Open ();
 									NpgsqlCommand comando1; 
 									comando1 = conexion1.CreateCommand ();
-	               					comando1.CommandText = "SELECT id_empresa,descripcion_empresa,hscmty_empresas.lista_de_precio,hscmty_empresas.id_tipo_paciente "+
-	               								"FROM hscmty_empresas,hscmty_his_tipo_pacientes "+
-	               								"WHERE hscmty_empresas.id_tipo_paciente = hscmty_his_tipo_pacientes.id_tipo_paciente "+
-	               								"AND hscmty_empresas.lista_de_precio = true "+
-	               								"AND hscmty_empresas.id_tipo_paciente = '"+id_tipopaciente.ToString()+"' "+
-	               								"ORDER BY hscmty_empresas.id_tipo_paciente;";
+	               					comando1.CommandText = "SELECT id_empresa,descripcion_empresa,osiris_empresas.lista_de_precio,osiris_empresas.id_tipo_paciente "+
+	               								"FROM osiris_empresas,osiris_his_tipo_pacientes "+
+	               								"WHERE osiris_empresas.id_tipo_paciente = osiris_his_tipo_pacientes.id_tipo_paciente "+
+	               								"AND osiris_empresas.lista_de_precio = true "+
+	               								"AND osiris_empresas.id_tipo_paciente = '"+id_tipopaciente.ToString()+"' "+
+	               								"ORDER BY osiris_empresas.id_tipo_paciente;";
 	               					//Console.WriteLine(comando1.CommandText);
 									NpgsqlDataReader lector1 = comando1.ExecuteReader ();
 									int idtipopaciente_empresa = 0;
@@ -1157,13 +1157,13 @@ namespace osiris
 										//conexion.Open ();
 										NpgsqlCommand comando3; 
 										comando3 = conexion.CreateCommand ();
-						               	comando3.CommandText = "SELECT to_char(hscmty_productos.id_producto,'999999999999') AS codProducto, "+
+						               	comando3.CommandText = "SELECT to_char(osiris_productos.id_producto,'999999999999') AS codProducto, "+
 													"to_char("+"precio_producto_"+idtipopaciente_empresa.ToString().Trim()+idempresa_empresa.ToString().Trim()+",'99999999.99') AS "+"precio_producto_cliente "+
-													"FROM hscmty_productos,hscmty_grupo_producto,hscmty_grupo1_producto,hscmty_grupo2_producto "+
-													"WHERE hscmty_productos.id_grupo_producto = hscmty_grupo_producto.id_grupo_producto "+
-													"AND hscmty_productos.id_grupo1_producto = hscmty_grupo1_producto.id_grupo1_producto "+
-													"AND hscmty_productos.id_grupo2_producto = hscmty_grupo2_producto.id_grupo2_producto "+
-													"AND hscmty_productos.id_producto = '"+(string) model.GetValue(iterSelected, 0)+"'; ";
+													"FROM osiris_productos,osiris_grupo_producto,osiris_grupo1_producto,osiris_grupo2_producto "+
+													"WHERE osiris_productos.id_grupo_producto = osiris_grupo_producto.id_grupo_producto "+
+													"AND osiris_productos.id_grupo1_producto = osiris_grupo1_producto.id_grupo1_producto "+
+													"AND osiris_productos.id_grupo2_producto = osiris_grupo2_producto.id_grupo2_producto "+
+													"AND osiris_productos.id_producto = '"+(string) model.GetValue(iterSelected, 0)+"'; ";
 										//Console.WriteLine(comando3.CommandText);			
 										NpgsqlDataReader lector3 = comando3.ExecuteReader ();
 										if (lector3.Read()){
@@ -1371,7 +1371,7 @@ namespace osiris
 				conexion.Open ();
 				NpgsqlCommand comando; 
 				comando = conexion.CreateCommand ();
-               	comando.CommandText = "SELECT * FROM hscmty_grupo_producto ORDER BY descripcion_grupo_producto ;";				
+               	comando.CommandText = "SELECT * FROM osiris_grupo_producto ORDER BY descripcion_grupo_producto ;";				
 				NpgsqlDataReader lector = comando.ExecuteReader ();
                	while (lector.Read())
 				{
@@ -1412,7 +1412,7 @@ namespace osiris
 				conexion.Open ();
 				NpgsqlCommand comando; 
 				comando = conexion.CreateCommand ();
-               	comando.CommandText = "SELECT * FROM hscmty_grupo1_producto ORDER BY descripcion_grupo1_producto ;";				
+               	comando.CommandText = "SELECT * FROM osiris_grupo1_producto ORDER BY descripcion_grupo1_producto ;";				
 				NpgsqlDataReader lector = comando.ExecuteReader ();
                	while (lector.Read())
 				{
@@ -1454,7 +1454,7 @@ namespace osiris
 				conexion.Open ();
 				NpgsqlCommand comando; 
 				comando = conexion.CreateCommand ();
-               	comando.CommandText = "SELECT * FROM hscmty_grupo2_producto ORDER BY descripcion_grupo2_producto ;";
+               	comando.CommandText = "SELECT * FROM osiris_grupo2_producto ORDER BY descripcion_grupo2_producto ;";
 				
 				NpgsqlDataReader lector = comando.ExecuteReader ();
                	while (lector.Read())
@@ -1552,7 +1552,7 @@ namespace osiris
 
 				// asigna el numero de folio de ingreso de paciente (FOLIO)
 				comando.CommandText = "SELECT to_char(id_producto,'999999999999') AS idproducto "+ 
-									"FROM hscmty_productos "+
+									"FROM osiris_productos "+
 									"WHERE id_producto > '"+idproduct.ToString()+"'"+
 									"AND id_producto < '"+lastproduct.ToString()+"'"+
 									"ORDER BY id_producto DESC LIMIT 1;";
@@ -1601,7 +1601,7 @@ namespace osiris
 
 				// asigna el numero de folio de ingreso de paciente (FOLIO)
 				comando.CommandText = "SELECT precio_costo_inicial,precio_costo_final,porcentage_de_ganancia "+ 
-									"FROM hscmty_erp_tabla_ganancia "+
+									"FROM osiris_erp_tabla_ganancia "+
 									"WHERE precio_costo_final >= '"+precio_uni.ToString()+"'"+
 									"AND precio_costo_inicial <= '"+precio_uni.ToString()+"' "+
 									"LIMIT 1;";

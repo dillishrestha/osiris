@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////
 // created on 21/03/2008 at 09:00 am
-// Hospital Santa Cecilia
+// Sistema Hospitalario OSIRIS
 // Monterrey - Mexico
 //
 // Autor    	: Israel Peña Gonzalez (Programacion)
@@ -90,7 +90,7 @@ namespace osiris
     	public string AppEmpleado;
     	public string ApmEmpleado;
     	    	
-    	public string query_departamento = "AND hscmty_his_tipo_admisiones.descripcion_admisiones = '0' ";
+    	public string query_departamento = "AND osiris_his_tipo_admisiones.descripcion_admisiones = '0' ";
     	public int id_tipo_admisiones = 0; 
 		public string query1 = "" ;
 		public string titulopagina= "MOVIMIENTOS DE PRODUCOS";
@@ -167,7 +167,7 @@ namespace osiris
 				conexion.Open ();   
 				NpgsqlCommand comando; 
 				comando = conexion.CreateCommand ();
-		        comando.CommandText = "SELECT * FROM hscmty_his_tipo_admisiones "+
+		        comando.CommandText = "SELECT * FROM osiris_his_tipo_admisiones "+
 		               						"WHERE cuenta_mayor = 4000 "+
 		               						"ORDER BY descripcion_admisiones;";
 						
@@ -193,7 +193,7 @@ namespace osiris
 	  		TreeIter iter;
 	  		if (combobox_departamentos.GetActiveIter (out iter)){
 		    	id_tipo_admisiones = (int) combobox_departamentos.Model.GetValue(iter,1);
-		    	query_departamento = " AND hscmty_erp_cobros_deta.id_tipo_admisiones = '"+Convert.ToString((int) combobox_departamentos.Model.GetValue(iter,1)).ToString()+"' ";		    			    	
+		    	query_departamento = " AND osiris_erp_cobros_deta.id_tipo_admisiones = '"+Convert.ToString((int) combobox_departamentos.Model.GetValue(iter,1)).ToString()+"' ";		    			    	
 		    	if (this.checkbutton_todos_departamentos .Active == true){
 					query_departamento = " ";
 				}
@@ -229,28 +229,28 @@ namespace osiris
 			string query_tipo_busqueda = "";
 			
 			if(radiobutton_nombre.Active == true) {
-				query_tipo_busqueda = "AND hscmty_productos.descripcion_producto LIKE '%"+entry_expresion.Text.ToUpper().Trim()+"%' ORDER BY descripcion_producto; ";
+				query_tipo_busqueda = "AND osiris_productos.descripcion_producto LIKE '%"+entry_expresion.Text.ToUpper().Trim()+"%' ORDER BY descripcion_producto; ";
 			}
 			
 			if(radiobutton_codigo.Active == true){
-				query_tipo_busqueda = "AND hscmty_productos.id_producto LIKE '"+entry_expresion.Text.Trim()+"%'  ORDER BY id_producto; ";
+				query_tipo_busqueda = "AND osiris_productos.id_producto LIKE '"+entry_expresion.Text.Trim()+"%'  ORDER BY id_producto; ";
 			}
 	           
 			try{
 				conexion.Open ();
 				NpgsqlCommand comando; 
 				comando = conexion.CreateCommand ();
-				comando.CommandText = "SELECT to_char(hscmty_productos.id_producto,'999999999999') AS codProducto,"+
-									"hscmty_productos.descripcion_producto,to_char(precio_producto_publico,'99999999.99') AS preciopublico,"+
+				comando.CommandText = "SELECT to_char(osiris_productos.id_producto,'999999999999') AS codProducto,"+
+									"osiris_productos.descripcion_producto,to_char(precio_producto_publico,'99999999.99') AS preciopublico,"+
 									"to_char(precio_producto_publico1,'99999999.99') AS preciopublico1,"+
 									"aplicar_iva,to_char(porcentage_descuento,'999.99') AS porcentagesdesc,aplica_descuento,"+
 									"descripcion_grupo_producto,descripcion_grupo1_producto,descripcion_grupo2_producto,to_char(costo_por_unidad,'999999999.99') AS costoproductounitario, "+
 									"to_char(porcentage_ganancia,'99999.99') AS porcentageutilidad,to_char(costo_producto,'999999999.99') AS costoproducto, "+
-									"hscmty_grupo_producto.agrupacion "+
-									"FROM hscmty_productos,hscmty_grupo_producto,hscmty_grupo1_producto,hscmty_grupo2_producto "+
-									"WHERE hscmty_productos.id_grupo_producto = hscmty_grupo_producto.id_grupo_producto "+
-									"AND hscmty_productos.id_grupo1_producto = hscmty_grupo1_producto.id_grupo1_producto "+
-									"AND hscmty_productos.id_grupo2_producto = hscmty_grupo2_producto.id_grupo2_producto "+
+									"osiris_grupo_producto.agrupacion "+
+									"FROM osiris_productos,osiris_grupo_producto,osiris_grupo1_producto,osiris_grupo2_producto "+
+									"WHERE osiris_productos.id_grupo_producto = osiris_grupo_producto.id_grupo_producto "+
+									"AND osiris_productos.id_grupo1_producto = osiris_grupo1_producto.id_grupo1_producto "+
+									"AND osiris_productos.id_grupo2_producto = osiris_grupo2_producto.id_grupo2_producto "+
 									"AND cobro_activo = 'true' "+
 						            query_tipo_busqueda;
 				NpgsqlDataReader lector = comando.ExecuteReader ();
@@ -335,7 +335,7 @@ namespace osiris
 		    	query_departamento = "  "; //
 		    }else{
 				combobox_departamentos.Sensitive = true;
-				query_departamento = "AND hscmty_erp_cobros_deta.id_tipo_admisiones = '"+id_tipo_admisiones.ToString()+"' ";	
+				query_departamento = "AND osiris_erp_cobros_deta.id_tipo_admisiones = '"+id_tipo_admisiones.ToString()+"' ";	
 			}
 		}
 		
@@ -416,8 +416,8 @@ namespace osiris
 		/////////////////////////BUTTON CONSULTAR//////////////////////////////
 		void on_button_consultar_costos_clicked (object sender, EventArgs args)         
 		{
-			string query_fechas = "AND to_char(hscmty_erp_cobros_deta.fechahora_creacion,'yyyy-MM-dd') >= '"+entry_ano1.Text.Trim()+"-"+entry_mes1.Text+"-"+entry_dia1.Text+"' "+
-									            "AND to_char(hscmty_erp_cobros_deta.fechahora_creacion,'yyyy-MM-dd') <= '"+entry_ano2.Text.Trim()+"-"+entry_mes2.Text+"-"+entry_dia2.Text+"' ";
+			string query_fechas = "AND to_char(osiris_erp_cobros_deta.fechahora_creacion,'yyyy-MM-dd') >= '"+entry_ano1.Text.Trim()+"-"+entry_mes1.Text+"-"+entry_dia1.Text+"' "+
+									            "AND to_char(osiris_erp_cobros_deta.fechahora_creacion,'yyyy-MM-dd') <= '"+entry_ano2.Text.Trim()+"-"+entry_mes2.Text+"-"+entry_dia2.Text+"' ";
 			string productos_seleccionado = "";
 			string var_paso = "";
 			// Validadndo que tenga algun producto seleccionado en la lista
@@ -434,7 +434,7 @@ namespace osiris
 		 					var_paso = (string) lista_producto_seleccionados.Model.GetValue (iter,0);
 		 					productos_seleccionado += "','"+var_paso.Trim();
 		 				}
-		 				llena_treeview_aplicados("AND hscmty_erp_cobros_deta.id_producto IN('"+productos_seleccionado+"') ",query_fechas);					
+		 				llena_treeview_aplicados("AND osiris_erp_cobros_deta.id_producto IN('"+productos_seleccionado+"') ",query_fechas);					
 					}else{
 						MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
 								MessageType.Error, 
@@ -470,24 +470,24 @@ namespace osiris
 				conexion.Open ();
 				NpgsqlCommand comando; 
 				comando = conexion.CreateCommand ();
-		        query1 = "SELECT to_char(SUM(cantidad_aplicada),'999999999.99') AS cantidadaplicada,to_char(hscmty_erp_cobros_deta.id_producto,'999999999999') AS idproducto,descripcion_producto,"+
-	        			      "to_char(hscmty_erp_cobros_deta.folio_de_servicio,'9999999999') AS foliodeservicio,to_char(hscmty_erp_cobros_deta.fechahora_creacion,'dd-MM-yyyy HH24:mi') AS fechahoracreacion,"+
-	        			      "to_char(hscmty_erp_cobros_deta.pid_paciente,'9999999999') AS pidpaciente,hscmty_his_paciente.nombre1_paciente || ' ' || "+  
-						      "hscmty_his_paciente.nombre2_paciente || ' ' || hscmty_his_paciente.apellido_paterno_paciente || ' ' || hscmty_his_paciente.apellido_materno_paciente AS nombre_paciente,"+
-						      "to_char(hscmty_erp_cobros_deta.id_tipo_admisiones,'9999999999') AS idtipoadmisiones,descripcion_admisiones "+
-						      "FROM hscmty_erp_cobros_deta,hscmty_productos,hscmty_his_paciente,hscmty_his_tipo_admisiones "+
-						      "WHERE hscmty_erp_cobros_deta.id_producto = hscmty_productos.id_producto AND "+ 
-						      "hscmty_erp_cobros_deta.pid_paciente = hscmty_his_paciente.pid_paciente AND "+ 
-						      "hscmty_erp_cobros_deta.id_tipo_admisiones = hscmty_his_tipo_admisiones.id_tipo_admisiones AND "+
-						      "hscmty_erp_cobros_deta.cantidad_aplicada > '0' AND "+
-						      "hscmty_erp_cobros_deta.eliminado = false "+ 
+		        query1 = "SELECT to_char(SUM(cantidad_aplicada),'999999999.99') AS cantidadaplicada,to_char(osiris_erp_cobros_deta.id_producto,'999999999999') AS idproducto,descripcion_producto,"+
+	        			      "to_char(osiris_erp_cobros_deta.folio_de_servicio,'9999999999') AS foliodeservicio,to_char(osiris_erp_cobros_deta.fechahora_creacion,'dd-MM-yyyy HH24:mi') AS fechahoracreacion,"+
+	        			      "to_char(osiris_erp_cobros_deta.pid_paciente,'9999999999') AS pidpaciente,osiris_his_paciente.nombre1_paciente || ' ' || "+  
+						      "osiris_his_paciente.nombre2_paciente || ' ' || osiris_his_paciente.apellido_paterno_paciente || ' ' || osiris_his_paciente.apellido_materno_paciente AS nombre_paciente,"+
+						      "to_char(osiris_erp_cobros_deta.id_tipo_admisiones,'9999999999') AS idtipoadmisiones,descripcion_admisiones "+
+						      "FROM osiris_erp_cobros_deta,osiris_productos,osiris_his_paciente,osiris_his_tipo_admisiones "+
+						      "WHERE osiris_erp_cobros_deta.id_producto = osiris_productos.id_producto AND "+ 
+						      "osiris_erp_cobros_deta.pid_paciente = osiris_his_paciente.pid_paciente AND "+ 
+						      "osiris_erp_cobros_deta.id_tipo_admisiones = osiris_his_tipo_admisiones.id_tipo_admisiones AND "+
+						      "osiris_erp_cobros_deta.cantidad_aplicada > '0' AND "+
+						      "osiris_erp_cobros_deta.eliminado = false "+ 
 						      productos_seleccionado_+
 						      query_fechas_+
 						      query_departamento+
-						      "GROUP BY hscmty_erp_cobros_deta.id_producto,descripcion_producto,folio_de_servicio,hscmty_erp_cobros_deta.fechahora_creacion,hscmty_erp_cobros_deta.pid_paciente,hscmty_his_paciente.nombre1_paciente || ' ' || "+  
-						      "hscmty_his_paciente.nombre2_paciente || ' ' || hscmty_his_paciente.apellido_paterno_paciente || ' ' || hscmty_his_paciente.apellido_materno_paciente,hscmty_erp_cobros_deta.id_tipo_admisiones,descripcion_admisiones "+
-						      "ORDER BY hscmty_erp_cobros_deta.id_tipo_admisiones,hscmty_erp_cobros_deta.id_producto,"+
-						      "hscmty_his_paciente.nombre1_paciente || ' ' || hscmty_his_paciente.nombre2_paciente || ' ' || hscmty_his_paciente.apellido_paterno_paciente || ' ' || hscmty_his_paciente.apellido_materno_paciente;";
+						      "GROUP BY osiris_erp_cobros_deta.id_producto,descripcion_producto,folio_de_servicio,osiris_erp_cobros_deta.fechahora_creacion,osiris_erp_cobros_deta.pid_paciente,osiris_his_paciente.nombre1_paciente || ' ' || "+  
+						      "osiris_his_paciente.nombre2_paciente || ' ' || osiris_his_paciente.apellido_paterno_paciente || ' ' || osiris_his_paciente.apellido_materno_paciente,osiris_erp_cobros_deta.id_tipo_admisiones,descripcion_admisiones "+
+						      "ORDER BY osiris_erp_cobros_deta.id_tipo_admisiones,osiris_erp_cobros_deta.id_producto,"+
+						      "osiris_his_paciente.nombre1_paciente || ' ' || osiris_his_paciente.nombre2_paciente || ' ' || osiris_his_paciente.apellido_paterno_paciente || ' ' || osiris_his_paciente.apellido_materno_paciente;";
 	        	comando.CommandText = query1;
 				Console.WriteLine(query1);
 				NpgsqlDataReader lector = comando.ExecuteReader ();

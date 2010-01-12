@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////
 // created on 24/10/2007 at 05:20 p
-// Hospital Santa Cecilia
+// Sistema Hospitalario OSIRIS
 // Monterrey - Mexico
 //
 // Autor    	: Ing. Daniel Olivares (Programacion)

@@ -1,6 +1,6 @@
 // alta_productos.cs created with MonoDevelop
 // User: jbuentello at 12:42 a 18/07/2008
-// Hospital Santa Cecilia
+// Sistema Hospitalario OSIRIS
 // Monterrey - Mexico
 //
 // Autor    	 Ing.Jesus Buentello Garza (programacion Mono)		
@@ -203,9 +203,9 @@ namespace osiris
 								"colonia_proveedor,municipio_proveedor,estado_proveedor,telefono1_proveedor, "+ 
 								"telefono2_proveedor,celular_proveedor,cp_proveedor, proveedor_activo, "+
 								"id_proveedor,contacto1_proveedor,mail_proveedor,pagina_web_proveedor, "+
-								"hscmty_erp_proveedores.id_forma_de_pago, descripcion_forma_de_pago AS descripago "+
-								"FROM hscmty_erp_proveedores, hscmty_erp_forma_de_pago "+
-								"WHERE hscmty_erp_proveedores.id_forma_de_pago = hscmty_erp_forma_de_pago.id_forma_de_pago "+
+								"osiris_erp_proveedores.id_forma_de_pago, descripcion_forma_de_pago AS descripago "+
+								"FROM osiris_erp_proveedores, osiris_erp_forma_de_pago "+
+								"WHERE osiris_erp_proveedores.id_forma_de_pago = osiris_erp_forma_de_pago.id_forma_de_pago "+
 							    "AND id_proveedor = '"+(string) this.entry_id_provedor.Text+"' "+
 								"ORDER BY descripcion_proveedor;";
 				
@@ -304,7 +304,7 @@ namespace osiris
 						if (this.treeViewEngineaprobados.GetIterFirst(out iter)){
 							if (this.lista_precios_proveedor.Selection.GetSelected (out model, out iter)) {
 								//if ((bool)lista_precios_proveedor.Model.GetValue (iter,0) == true){	
-								comando2.CommandText = "SELECT id_proveedor,codigo_producto_proveedor,codigo_de_barra FROM hscmty_catalogo_productos_proveedores "+
+								comando2.CommandText = "SELECT id_proveedor,codigo_producto_proveedor,codigo_de_barra FROM osiris_catalogo_productos_proveedores "+
 							     	                   "WHERE codigo_producto_proveedor = '"+(string) this.lista_precios_proveedor.Model.GetValue (iter,3)+"' "+
 								    	               "AND id_proveedor = '"+this.entry_id_provedor.Text+"' ;";
 
@@ -319,7 +319,7 @@ namespace osiris
 										conexion3.Open ();
 										NpgsqlCommand comando3; 
 										comando3 = conexion3.CreateCommand();
-										comando3.CommandText =  "UPDATE hscmty_catalogo_productos_proveedores SET eliminado = 'true',"+
+										comando3.CommandText =  "UPDATE osiris_catalogo_productos_proveedores SET eliminado = 'true',"+
 						     			                        "fecha_eliminado = '"+DateTime.Now.ToString("yyyy-MM-dd")+"', "+
 										                        "id_quien_elimino = ' "+LoginEmpleado+" ' "+
 									                            "WHERE codigo_producto_proveedor = '"+(string) lista_precios_proveedor.Model.GetValue (iter,3)+"' "+
@@ -912,9 +912,9 @@ namespace osiris
 								"colonia_proveedor,municipio_proveedor,estado_proveedor,telefono1_proveedor, "+ 
 								"telefono2_proveedor,celular_proveedor,cp_proveedor, proveedor_activo, "+
 								"id_proveedor,contacto1_proveedor,mail_proveedor,pagina_web_proveedor, "+
-								"hscmty_erp_proveedores.id_forma_de_pago, descripcion_forma_de_pago AS descripago "+
-								"FROM hscmty_erp_proveedores, hscmty_erp_forma_de_pago "+
-								"WHERE hscmty_erp_proveedores.id_forma_de_pago = hscmty_erp_forma_de_pago.id_forma_de_pago "+
+								"osiris_erp_proveedores.id_forma_de_pago, descripcion_forma_de_pago AS descripago "+
+								"FROM osiris_erp_proveedores, osiris_erp_forma_de_pago "+
+								"WHERE osiris_erp_proveedores.id_forma_de_pago = osiris_erp_forma_de_pago.id_forma_de_pago "+
 							    "AND id_proveedor = '"+(string) this.entry_id_provedor.Text+"' "+
 								"ORDER BY descripcion_proveedor;";
 				
@@ -946,18 +946,18 @@ namespace osiris
 				conexion.Open ();
 				NpgsqlCommand comando; 
 				comando = conexion.CreateCommand ();
-               	comando.CommandText = "SELECT hscmty_catalogo_productos_proveedores.descripcion_producto,"+
-					                "to_char(hscmty_catalogo_productos_proveedores.precio_costo, '999999999.99') AS preciocosto,"+
-					                "to_char(hscmty_catalogo_productos_proveedores.precio_costo_unitario, '999999999.99') AS preciocostouni,"+
-						            "to_char(hscmty_catalogo_productos_proveedores.id_producto, '999999999999999') AS idproducto,"+
-               						"hscmty_catalogo_productos_proveedores.codigo_producto_proveedor,hscmty_catalogo_productos_proveedores.descripcion_producto_hsc,"+
-               						"to_char(hscmty_catalogo_productos_proveedores.id_secuencia,'9999999999') AS idsecuencia "+
-               						//"to_char(hscmty_productos.costo_por_unidad,'999999999.99') AS costoproductounitario,"+
-               						//"to_char(hscmty_productos.costo_producto,'999999999.99') AS costoproducto "+
-               						"FROM hscmty_catalogo_productos_proveedores "+
-               						"WHERE hscmty_catalogo_productos_proveedores.id_proveedor = '"+this.id_provedor.ToString().Trim()+"' " + 
-               						"AND hscmty_catalogo_productos_proveedores.id_producto = 0 " + 
-						            "AND hscmty_catalogo_productos_proveedores.eliminado = 'false';";   
+               	comando.CommandText = "SELECT osiris_catalogo_productos_proveedores.descripcion_producto,"+
+					                "to_char(osiris_catalogo_productos_proveedores.precio_costo, '999999999.99') AS preciocosto,"+
+					                "to_char(osiris_catalogo_productos_proveedores.precio_costo_unitario, '999999999.99') AS preciocostouni,"+
+						            "to_char(osiris_catalogo_productos_proveedores.id_producto, '999999999999999') AS idproducto,"+
+               						"osiris_catalogo_productos_proveedores.codigo_producto_proveedor,osiris_catalogo_productos_proveedores.descripcion_producto_hsc,"+
+               						"to_char(osiris_catalogo_productos_proveedores.id_secuencia,'9999999999') AS idsecuencia "+
+               						//"to_char(osiris_productos.costo_por_unidad,'999999999.99') AS costoproductounitario,"+
+               						//"to_char(osiris_productos.costo_producto,'999999999.99') AS costoproducto "+
+               						"FROM osiris_catalogo_productos_proveedores "+
+               						"WHERE osiris_catalogo_productos_proveedores.id_proveedor = '"+this.id_provedor.ToString().Trim()+"' " + 
+               						"AND osiris_catalogo_productos_proveedores.id_producto = 0 " + 
+						            "AND osiris_catalogo_productos_proveedores.eliminado = 'false';";   
 				//Console.WriteLine(comando.CommandText);				
 				NpgsqlDataReader lector = comando.ExecuteReader ();
 				while(lector.Read()){					
@@ -987,18 +987,18 @@ namespace osiris
 				conexion1.Open ();
 				NpgsqlCommand comando1; 
 				comando1 = conexion1.CreateCommand ();
-               	comando1.CommandText = "SELECT hscmty_catalogo_productos_proveedores.descripcion_producto,"+
-					                "to_char(hscmty_catalogo_productos_proveedores.precio_costo, '999999999.99') AS preciocosto,"+
-					                "to_char(hscmty_catalogo_productos_proveedores.precio_costo_unitario, '999999999.99') AS preciocostouni,"+
-						            "to_char(hscmty_catalogo_productos_proveedores.id_producto, '999999999999999') AS idproducto,"+
-               						"hscmty_catalogo_productos_proveedores.codigo_producto_proveedor,hscmty_catalogo_productos_proveedores.descripcion_producto_hsc,"+
-               						"to_char(hscmty_productos.costo_por_unidad,'999999999.99') AS costoproductounitario,"+
-               						"to_char(hscmty_productos.costo_producto,'999999999.99') AS costoproducto,"+
-               						"to_char(hscmty_catalogo_productos_proveedores.id_secuencia,'9999999999') AS idsecuencia "+
-               						"FROM hscmty_catalogo_productos_proveedores, hscmty_productos "+
-               						"WHERE hscmty_catalogo_productos_proveedores.id_proveedor = '"+this.id_provedor.ToString().Trim()+"' " + 
-               						"AND hscmty_catalogo_productos_proveedores.id_producto = hscmty_productos.id_producto " + 
-						            "AND hscmty_catalogo_productos_proveedores.eliminado = 'false';";   
+               	comando1.CommandText = "SELECT osiris_catalogo_productos_proveedores.descripcion_producto,"+
+					                "to_char(osiris_catalogo_productos_proveedores.precio_costo, '999999999.99') AS preciocosto,"+
+					                "to_char(osiris_catalogo_productos_proveedores.precio_costo_unitario, '999999999.99') AS preciocostouni,"+
+						            "to_char(osiris_catalogo_productos_proveedores.id_producto, '999999999999999') AS idproducto,"+
+               						"osiris_catalogo_productos_proveedores.codigo_producto_proveedor,osiris_catalogo_productos_proveedores.descripcion_producto_hsc,"+
+               						"to_char(osiris_productos.costo_por_unidad,'999999999.99') AS costoproductounitario,"+
+               						"to_char(osiris_productos.costo_producto,'999999999.99') AS costoproducto,"+
+               						"to_char(osiris_catalogo_productos_proveedores.id_secuencia,'9999999999') AS idsecuencia "+
+               						"FROM osiris_catalogo_productos_proveedores, osiris_productos "+
+               						"WHERE osiris_catalogo_productos_proveedores.id_proveedor = '"+this.id_provedor.ToString().Trim()+"' " + 
+               						"AND osiris_catalogo_productos_proveedores.id_producto = osiris_productos.id_producto " + 
+						            "AND osiris_catalogo_productos_proveedores.eliminado = 'false';";   
 				//Console.WriteLine(comando1.CommandText);				
 				NpgsqlDataReader lector1 = comando1.ExecuteReader ();
 				while(lector1.Read()){
@@ -1061,18 +1061,18 @@ namespace osiris
 								"colonia_proveedor,municipio_proveedor,estado_proveedor,telefono1_proveedor, "+ 
 								"telefono2_proveedor,celular_proveedor,cp_proveedor, proveedor_activo, "+
 								"id_proveedor,contacto1_proveedor,mail_proveedor,pagina_web_proveedor,"+
-								"hscmty_erp_proveedores.id_forma_de_pago, descripcion_forma_de_pago AS descripago "+
-								"FROM hscmty_erp_proveedores, hscmty_erp_forma_de_pago "+
-								"WHERE hscmty_erp_proveedores.id_forma_de_pago = hscmty_erp_forma_de_pago.id_forma_de_pago "+
+								"osiris_erp_proveedores.id_forma_de_pago, descripcion_forma_de_pago AS descripago "+
+								"FROM osiris_erp_proveedores, osiris_erp_forma_de_pago "+
+								"WHERE osiris_erp_proveedores.id_forma_de_pago = osiris_erp_forma_de_pago.id_forma_de_pago "+
 								"ORDER BY descripcion_proveedor;";															
 				}else{
 					comando.CommandText = "SELECT descripcion_proveedor,direccion_proveedor,rfc_proveedor,curp_proveedor, "+
 								"colonia_proveedor,municipio_proveedor,estado_proveedor,telefono1_proveedor, "+ 
 								"telefono2_proveedor,celular_proveedor,cp_proveedor, proveedor_activo, "+
 								"id_proveedor,contacto1_proveedor,mail_proveedor,pagina_web_proveedor, "+
-								"hscmty_erp_proveedores.id_forma_de_pago, descripcion_forma_de_pago AS descripago "+
-								"FROM hscmty_erp_proveedores, hscmty_erp_forma_de_pago "+
-								"WHERE hscmty_erp_proveedores.id_forma_de_pago = hscmty_erp_forma_de_pago.id_forma_de_pago "+
+								"osiris_erp_proveedores.id_forma_de_pago, descripcion_forma_de_pago AS descripago "+
+								"FROM osiris_erp_proveedores, osiris_erp_forma_de_pago "+
+								"WHERE osiris_erp_proveedores.id_forma_de_pago = osiris_erp_forma_de_pago.id_forma_de_pago "+
 								"AND descripcion_proveedor LIKE '%"+(string) entry_expresion.Text.ToUpper()+"%' "+
 								"ORDER BY descripcion_proveedor;";
 				}
@@ -1160,7 +1160,7 @@ namespace osiris
 						conexion3.Open ();
 						NpgsqlCommand comando3; 
 						comando3 = conexion3.CreateCommand();
-						comando3.CommandText =  "UPDATE hscmty_catalogo_productos_proveedores SET clave = '"+this.entry_clave.Text+"', "+
+						comando3.CommandText =  "UPDATE osiris_catalogo_productos_proveedores SET clave = '"+this.entry_clave.Text+"', "+
 											    "descripcion_producto = '"+this.entry_producto.Text+"', "+
 											    "precio_costo = '"+this.entry_precio.Text+"', "+
 											    "cantidad_de_embalaje = '"+this.entry_embalaje.Text+"', "+
@@ -1212,7 +1212,7 @@ namespace osiris
 						if (this.treeViewEngineaprobados.GetIterFirst(out iterSelected)){
 							if ((bool)lista_precios_proveedor.Model.GetValue (iterSelected,0) == true){		
 								
-								comando2.CommandText = "SELECT id_proveedor,codigo_producto_proveedor,codigo_de_barra FROM hscmty_catalogo_productos_proveedores "+
+								comando2.CommandText = "SELECT id_proveedor,codigo_producto_proveedor,codigo_de_barra FROM osiris_catalogo_productos_proveedores "+
 												"WHERE codigo_producto_proveedor = '"+(string) this.lista_precios_proveedor.Model.GetValue (iterSelected,3)+"' "+
 												"AND id_proveedor = '"+this.entry_id_provedor.Text+"' ;";
 								//Console.WriteLine("GUARDA     "+comando2.CommandText.ToString());
@@ -1225,7 +1225,7 @@ namespace osiris
 										conexion3.Open ();
 										NpgsqlCommand comando3; 
 										comando3 = conexion3.CreateCommand();
-										comando3.CommandText =  "UPDATE hscmty_catalogo_productos_proveedores SET id_producto  = '"+(string) this.lista_precios_proveedor.Model.GetValue (iterSelected,4)+"', "+
+										comando3.CommandText =  "UPDATE osiris_catalogo_productos_proveedores SET id_producto  = '"+(string) this.lista_precios_proveedor.Model.GetValue (iterSelected,4)+"', "+
 											                    "descripcion_producto_hsc = '"+(string) this.lista_precios_proveedor.Model.GetValue (iterSelected,5)+"', "+											                   
 											                    "fecha_asigno_hscmty = '"+DateTime.Now.ToString("yyyy-MM-dd")+"', "+
 												                "id_quien_asigno_hscmty = ' "+LoginEmpleado+" ' "+
@@ -1250,7 +1250,7 @@ namespace osiris
 						while (treeViewEngineaprobados.IterNext(ref iterSelected))
 						{							
 							if ((bool)lista_precios_proveedor.Model.GetValue (iterSelected,0) == true){
-								comando2.CommandText = "SELECT id_proveedor,codigo_producto_proveedor,codigo_de_barra FROM hscmty_catalogo_productos_proveedores "+
+								comando2.CommandText = "SELECT id_proveedor,codigo_producto_proveedor,codigo_de_barra FROM osiris_catalogo_productos_proveedores "+
 								                       "WHERE codigo_producto_proveedor = '"+(string) this.lista_precios_proveedor.Model.GetValue (iterSelected,3)+"' "+
 										               "AND id_proveedor = '"+this.entry_id_provedor.Text+"' ;";
 								//Console.WriteLine(comando2.CommandText.ToString());
@@ -1264,7 +1264,7 @@ namespace osiris
 										conexion3.Open ();
 										NpgsqlCommand comando3; 
 										comando3 = conexion3.CreateCommand();
-										comando3.CommandText =  "UPDATE hscmty_catalogo_productos_proveedores SET id_producto  = '"+(string) this.lista_precios_proveedor.Model.GetValue (iterSelected,4)+"', "+
+										comando3.CommandText =  "UPDATE osiris_catalogo_productos_proveedores SET id_producto  = '"+(string) this.lista_precios_proveedor.Model.GetValue (iterSelected,4)+"', "+
 											                    "descripcion_producto_hsc = '"+(string) this.lista_precios_proveedor.Model.GetValue (iterSelected,5)+"', "+											                   
 											                    "fecha_asigno_hscmty = '"+DateTime.Now.ToString("yyyy-MM-dd")+"', "+
 												                "id_quien_asigno_hscmty = ' "+LoginEmpleado+" ' "+
@@ -1311,7 +1311,7 @@ namespace osiris
 						NpgsqlCommand comando; 
 						comando = conexion.CreateCommand();
 						if (this.treeViewEngineproductos.GetIterFirst (out iterSelected)){ 
-							comando.CommandText = "INSERT INTO hscmty_catalogo_productos_proveedores("+
+							comando.CommandText = "INSERT INTO osiris_catalogo_productos_proveedores("+
 								            "fechahora_creacion,"+
 									        "id_quien_creo,"+
 								            "id_proveedor,"+
@@ -1340,7 +1340,7 @@ namespace osiris
 							comando.Dispose();	
 						
 							while (treeViewEngineproductos.IterNext(ref iterSelected)){
-								comando.CommandText = "INSERT INTO hscmty_catalogo_productos_proveedores("+
+								comando.CommandText = "INSERT INTO osiris_catalogo_productos_proveedores("+
 									            "fechahora_creacion,"+
 									            "id_quien_creo,"+
 											    "id_proveedor,"+
@@ -1440,17 +1440,17 @@ namespace osiris
 				conexion.Open ();
 				NpgsqlCommand comando; 
 				comando = conexion.CreateCommand ();
-               	comando.CommandText = "SELECT hscmty_catalogo_productos_proveedores.id_proveedor,"+
-					                "hscmty_catalogo_productos_proveedores.descripcion_producto,"+
-						            "to_char(hscmty_catalogo_productos_proveedores.precio_costo, '999999.999') AS preciocosto,"+
-							        "to_char(hscmty_catalogo_productos_proveedores.id_secuencia, '999999') AS secuencia,"+
-						            "to_char(hscmty_catalogo_productos_proveedores.cantidad_de_embalaje, '99999') AS cantidadembalaje,"+
-						            "hscmty_catalogo_productos_proveedores.clave,"+
-						            "hscmty_catalogo_productos_proveedores.codigo_producto_proveedor,"+
-						            "hscmty_catalogo_productos_proveedores.codigo_de_barra,"+
+               	comando.CommandText = "SELECT osiris_catalogo_productos_proveedores.id_proveedor,"+
+					                "osiris_catalogo_productos_proveedores.descripcion_producto,"+
+						            "to_char(osiris_catalogo_productos_proveedores.precio_costo, '999999.999') AS preciocosto,"+
+							        "to_char(osiris_catalogo_productos_proveedores.id_secuencia, '999999') AS secuencia,"+
+						            "to_char(osiris_catalogo_productos_proveedores.cantidad_de_embalaje, '99999') AS cantidadembalaje,"+
+						            "osiris_catalogo_productos_proveedores.clave,"+
+						            "osiris_catalogo_productos_proveedores.codigo_producto_proveedor,"+
+						            "osiris_catalogo_productos_proveedores.codigo_de_barra,"+
 						
-               						"hscmty_catalogo_productos_proveedores.tipo_unidad_producto "+
-               						"FROM hscmty_catalogo_productos_proveedores "+
+               						"osiris_catalogo_productos_proveedores.tipo_unidad_producto "+
+               						"FROM osiris_catalogo_productos_proveedores "+
                						"WHERE codigo_producto_proveedor = '"+codigo+"' "+
                						"AND id_proveedor  = '"+this.entry_id_provedor.Text+"' ;"; 
                						
@@ -1684,29 +1684,29 @@ namespace osiris
 			conexion = new NpgsqlConnection (connectionString+nombrebd);
             // Verifica que la base de datos este conectada
 			string query_tipo_busqueda = "";
-			if(radiobutton_nombre.Active == true) {query_tipo_busqueda = "AND hscmty_productos.descripcion_producto LIKE '%"+entry_expresion.Text.ToUpper().Trim()+"%' ORDER BY descripcion_producto; "; }
-			if(radiobutton_codigo.Active == true) {query_tipo_busqueda = "AND hscmty_productos.id_producto LIKE '"+entry_expresion.Text.Trim()+"%'  ORDER BY id_producto; "; }
+			if(radiobutton_nombre.Active == true) {query_tipo_busqueda = "AND osiris_productos.descripcion_producto LIKE '%"+entry_expresion.Text.ToUpper().Trim()+"%' ORDER BY descripcion_producto; "; }
+			if(radiobutton_codigo.Active == true) {query_tipo_busqueda = "AND osiris_productos.id_producto LIKE '"+entry_expresion.Text.Trim()+"%'  ORDER BY id_producto; "; }
 			try{
 				conexion.Open ();
 				NpgsqlCommand comando; 
 				comando = conexion.CreateCommand ();
-               	comando.CommandText = "SELECT to_char(hscmty_productos.id_producto,'999999999999') AS codProducto,"+
-							"hscmty_productos.descripcion_producto,hscmty_productos.nombre_articulo,hscmty_productos.nombre_generico_articulo, "+
+               	comando.CommandText = "SELECT to_char(osiris_productos.id_producto,'999999999999') AS codProducto,"+
+							"osiris_productos.descripcion_producto,osiris_productos.nombre_articulo,osiris_productos.nombre_generico_articulo, "+
 							"to_char(precio_producto_publico,'99999999.99') AS preciopublico,"+
 							"to_char(precio_producto_publico1,'99999999.99') AS preciopublico1,"+
 							"to_char(cantidad_de_embalaje,'99999999.99') AS cantidadembalaje,"+
 							"tipo_unidad_producto,"+
 							"aplicar_iva,to_char(porcentage_descuento,'999.99') AS porcentagesdesc,aplica_descuento,cobro_activo,costo_unico,"+
 							"descripcion_grupo_producto,descripcion_grupo1_producto,descripcion_grupo2_producto,to_char(costo_por_unidad,'999999999.99') AS costoproductounitario, "+
-							"to_char(hscmty_productos.id_grupo_producto,'99999') AS idgrupoproducto,hscmty_productos.id_grupo_producto, "+
-							"to_char(hscmty_productos.id_grupo1_producto,'99999') AS idgrupo1producto,hscmty_productos.id_grupo1_producto, "+
-							"to_char(hscmty_productos.id_grupo2_producto,'99999') AS idgrupo2producto,hscmty_productos.id_grupo2_producto, "+
+							"to_char(osiris_productos.id_grupo_producto,'99999') AS idgrupoproducto,osiris_productos.id_grupo_producto, "+
+							"to_char(osiris_productos.id_grupo1_producto,'99999') AS idgrupo1producto,osiris_productos.id_grupo1_producto, "+
+							"to_char(osiris_productos.id_grupo2_producto,'99999') AS idgrupo2producto,osiris_productos.id_grupo2_producto, "+
 							"to_char(porcentage_ganancia,'99999.999') AS porcentageutilidad,to_char(costo_producto,'999999999.99') AS costoproducto "+
-							"FROM hscmty_productos,hscmty_grupo_producto,hscmty_grupo1_producto,hscmty_grupo2_producto "+
-							"WHERE hscmty_productos.id_grupo_producto = hscmty_grupo_producto.id_grupo_producto "+							
-							"AND hscmty_productos.id_grupo1_producto = hscmty_grupo1_producto.id_grupo1_producto "+
-							"AND hscmty_productos.id_grupo2_producto = hscmty_grupo2_producto.id_grupo2_producto "+
-							"AND hscmty_productos.cobro_activo = 'true' "+
+							"FROM osiris_productos,osiris_grupo_producto,osiris_grupo1_producto,osiris_grupo2_producto "+
+							"WHERE osiris_productos.id_grupo_producto = osiris_grupo_producto.id_grupo_producto "+							
+							"AND osiris_productos.id_grupo1_producto = osiris_grupo1_producto.id_grupo1_producto "+
+							"AND osiris_productos.id_grupo2_producto = osiris_grupo2_producto.id_grupo2_producto "+
+							"AND osiris_productos.cobro_activo = 'true' "+
 							query_tipo_busqueda;
 				//Console.WriteLine(comando.CommandText);
 				NpgsqlDataReader lector = comando.ExecuteReader ();

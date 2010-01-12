@@ -1,13 +1,12 @@
 //////////////////////////////////////////////////////////
 // project created on 24/10/2006 at 10:20 a   
-// Hospital Santa Cecilia
 // Monterrey - Mexico
 // 
 // Autor    	: Daniel Olivares - arcangeldoc@gmail.com (Programacion Mono)
 //				  Daniel Olivares - arcangeldoc@gmail.com (Diseño de Pantallas Glade)
 // 				  
 // Licencia		: GLP
-// S.O. 		: GNU/Linux Ubuntu 6.06 LTS (Dapper Drake)
+// S.O. 		: GNU/LINUX
 //////////////////////////////////////////////////////////
 //
 // proyect osiris is free software; you can redistribute it and/or modify
@@ -28,26 +27,25 @@
 // Programa		: hscmty.cs
 // Proposito	: Menu Principal
 //////////////////////////////////////////////////////////	
-using System;
-//using System.Windows.Forms;
-using Npgsql;
-using System.Data;
+
 using Gtk;
+using Gdk;
+using System;
 using Glade;
-using System.Collections;
-using System.Security.Cryptography;
+using Npgsql;
+using System.IO;
 
 namespace osiris
 {
 	public class principal
 	{
-		// Lectura del interfaz con Glade
-		//Glade.XML gxml;
-	
-		//Aqui declaro los widget para enlasarlos a mi scrip
-		// Menu Principal
+		//ventana de acceso al sistema
+		[Widget] Gtk.Window login_osiris = null;
+		[Widget] Gtk.Button button_cancelar = null;
+		[Widget] Gtk.Button button_aceptar = null;
+		[Widget] Gtk.Entry entry_login = null;
+		[Widget] Gtk.Entry entry_password = null;
 		
-		// HIS
 		[Widget] Gtk.Window menuprincipal = null;
 		[Widget] Gtk.Button button_cargos_hospital = null;
 		[Widget] Gtk.Button button_cargos_urgencia = null;
@@ -83,25 +81,8 @@ namespace osiris
 		
 		// Salir
 		[Widget] Gtk.Button button_salir  = null;
-		
 		[Widget] Gtk.Image hscmtylogo = null;
-				
-		/*// Pregunta de Admision
-		[Widget] Gtk.Window nuevo_paciente_si_no;
-		[Widget] Gtk.Button button_respuesta_no;
-		[Widget] Gtk.Button button_respuesta_si;
-		[Widget] Gtk.Button button_salir_pregunta;*/
-		
-		//ventana de acceso al sistema
-		[Widget] Gtk.Window acceso_sistema = null;
-		[Widget] Gtk.Button button_cancelar = null;
-		//[Widget] Gtk.Button button_aceptar = null;
-		[Widget] Gtk.Entry entry_login = null;
-		[Widget] Gtk.Entry entry_password = null;
-		
-		//Ventana agradecimientos
-		//[Widget] Gtk.Window agradece;
-		[Widget] Gtk.Button button_aceptar  = null;
+		[Widget] Gtk.Statusbar statusbar_menu = null;
 		
 		//cambio de contraseña
 		[Widget] Gtk.Window password  = null;
@@ -109,112 +90,113 @@ namespace osiris
 		[Widget] Gtk.Entry entry_nueva_contraseña1 = null;
 		[Widget] Gtk.Entry entry_nueva_contraseña2 = null;
 		
+		// Pregunta de Admision
+		//[Widget] Gtk.Window nuevo_paciente_si_no;
+		//[Widget] Gtk.Button button_respuesta_no;
+		//[Widget] Gtk.Button button_respuesta_si;
+		//[Widget] Gtk.Button button_salir_pregunta;
+		
 		//ventana de medicos
-		//[Widget] Gtk.Button button_selecciona;
-		//[Widget] Gtk.Button button_llena_medicos;
-		//[Widget] Gtk.TreeView lista_medicos;
 		[Widget] Gtk.Entry entry_expresion  = null;
 		[Widget] Gtk.Button button_buscar_busqueda  = null;
 		[Widget] Gtk.Button button_selecciona = null;
 		[Widget] Gtk.ComboBox combobox_tipo_busqueda = null;
 		[Widget] Gtk.TreeView lista_de_medicos = null;
-				
-		// Barra de status
-		[Widget] Gtk.Statusbar statusbar_menu = null;
-				
-		// Variable publicas, 
-		public string LoginEmpleado;
-    	public string NomEmpleado;
-    	public string AppEmpleado;
-    	public string ApmEmpleado;
-    	public string enter_en;
-    	
-    	public string accesoHIS = "";
-		public string accesoERP =  "";
-		public string accesoGENERAL = "";
 		
-		public bool autorizaHIS = false;
-		public bool autorizaERP =  false;
-		public bool autorizaGENERAL = false;
-    	
-    	public string tipobusqueda = "AND hscmty_his_medicos.nombre1_medico LIKE '";
-    	
-    	public string connectionString = "Server=localhost;" +
-            	                          "Port=5432;" +
-            	                          "User ID=admin;" +
-            	                          "Password=1qaz2wsx;";
-		public string nombrebd = "Database=hscmty;";  //hscmty-preprod
+		private TreeStore treeViewEngineMedicos;
 		
-    	protected Gtk.Window MyWinError;
+		// Declarando Variables
+		string connectionString = "";
+		string nombrebd = "";
+		string LoginEmpleado = "";
+    	string NomEmpleado = "";
+    	string AppEmpleado = "";
+    	string ApmEmpleado = "";
+    	string enter_en = "";
     	
-    	//private TreeStore treeViewEngineBusca;
-    	private TreeStore treeViewEngineMedicos;
-     	
+    	string accesoHIS = "";
+		string accesoERP =  "";
+		string accesoGENERAL = "";
+		
+		bool autorizaHIS = false;
+		bool autorizaERP =  false;
+		bool autorizaGENERAL = false;
+		
+		string tipobusqueda = "AND osiris_his_medicos.nombre1_medico LIKE '";
+		
+		// Asignando Clases
+		class_conexion conexion_a_DB = new class_conexion();
+		class_public classpublic = new class_public();
+		
+		protected Gtk.Window MyWinError;
+		
 		public static void Main (string[] args)
 		{
-			new principal (args);
+			Application.Init();
+			new principal ();
+			Application.Run ();
 		}
 
-		public principal (string[] args) 
+		public principal () 
 		{	
-			Application.Init ();
-			pantalla_login();
-			Application.Run ();
-			//verifica_usuariopasswd();
-			
+			pantalla_login();			
+			//verifica_usuariopasswd();			
 		}
 		
 		void pantalla_login()
 		{
-			Glade.XML gxml = new Glade.XML (null, "osiris.glade", "acceso_sistema", null);
+			Glade.XML gxml = new Glade.XML (null, "osiris.glade", "login_osiris", null);
 			gxml.Autoconnect (this);
 			
-			acceso_sistema.Show();
+			login_osiris.Show();
 												
 			button_cancelar.Clicked += new EventHandler(on_button_salir_clicked);
-			button_aceptar.Clicked += new EventHandler(on_AceptarActivated_clicked);
+			button_aceptar.Clicked += new EventHandler(on_aceptar_clicked);
 			// activacion de la tecla Enter en los entry
 			//entry_login.KeyPressEvent += onKeyPressEvent_enter;
 			//entry_password.KeyPressEvent += onKeyPressEvent_enter;
 		}
 		
-		private void on_AceptarActivated_clicked(object o, EventArgs args)
+		private void on_aceptar_clicked(object o, EventArgs args)
     	{
 			verifica_usuariopasswd();
 			//pantalla_principal();
 		}
-			
+		
 		void verifica_usuariopasswd()
 		{
-			bool respuesta = true; 
-        
-			string usuario_entrada = entry_login.Text.Trim(); //"dolivares"
-        	string clave_entrada  = "1aq2sw3derf4"; //this.entry_password.Text.Trim(); // 
-        	
-        	
-        	if (respuesta == true){                      
-            	NpgsqlConnection conexion; 
-            	conexion = new NpgsqlConnection(connectionString+nombrebd);
-            	// Verifica que la base de datos este conectada
-            	try	{
-					conexion.Open();
-					NpgsqlCommand comando;
-					comando = conexion.CreateCommand();             
-					comando.CommandText = "SELECT hscmty_empleado.id_empleado,login_empleado,nombre1_empleado,nombre2_empleado, "+
+			class_conexion conexion_a_DB = new class_conexion();
+			connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
+			nombrebd = conexion_a_DB._nombrebd;
+			
+			NpgsqlConnection conexion;
+            conexion = new NpgsqlConnection(connectionString+nombrebd);
+            // Verifica que la base de datos este conectada
+            try{
+				conexion.Open();
+				NpgsqlCommand comando;
+				comando = conexion.CreateCommand();             
+				comando.CommandText = "SELECT osiris_empleado.id_empleado,login_empleado,nombre1_empleado,nombre2_empleado, "+
                						 "apellido_paterno_empleado,apellido_materno_empleado,departamento,puesto,"+
                						 "password_empleado AS passwordempleado,acceso_his,acceso_erp,acceso_general,autoriza_his,autoriza_erp,autoriza_general,"+
                						 "acceso_osiris "+	
-                                     "FROM hscmty_empleado,hscmty_empleado_detalle "+ 
-                                     "WHERE hscmty_empleado.id_empleado = hscmty_empleado_detalle.id_empleado "+
+                                     "FROM osiris_empleado,osiris_empleado_detalle "+ 
+                                     "WHERE osiris_empleado.id_empleado = osiris_empleado_detalle.id_empleado "+
                                      "AND baja_empleado = 'false' "+
                                      "AND acceso_osiris = 'true' "+
-                                     "AND login_empleado = '"+usuario_entrada.ToUpper()+"';";
-            		//Console.WriteLine(comando.CommandText.ToString());
-            		NpgsqlDataReader lector = comando.ExecuteReader ();
-            		            		
-            		if ((bool)lector.Read ()){
-						acceso_sistema.Destroy();
-               			// Asignacion de Variables
+                                     "AND login_empleado = '"+entry_login.Text.Trim().ToUpper()+"';";
+                                  
+            	Console.WriteLine(comando.CommandText.ToString());
+				NpgsqlDataReader lector = comando.ExecuteReader ();         		
+				
+            	if ((bool)lector.Read()){
+					string entrypassword ="";
+					osiris.class_public newpasswd = new osiris.class_public();
+					entrypassword = newpasswd.CreatePasswordMD5(this.entry_password.Text.Trim());
+					Console.WriteLine(entrypassword);
+					
+					if (entrypassword == (string) lector["passwordempleado"]){
+												
 						LoginEmpleado = (string) lector["login_empleado"];
 						NomEmpleado = (string) lector["nombre1_empleado"]+" "+(string) lector["nombre2_empleado"];
 						AppEmpleado = (string) lector["apellido_paterno_empleado"];
@@ -228,115 +210,92 @@ namespace osiris
 						autorizaERP =  (bool) lector["autoriza_erp"];
 						autorizaGENERAL = (bool) lector["autoriza_general"];
 												
-						string PassEmpleado = (string) lector["passwordempleado"];
+						//nombre_empresa = conexion_a_DB.nombre_empresa;
+						//direccion_empresa = conexion_a_DB.direccion_empresa;
+						//telefonofax_empresa = conexion_a_DB.telefonofax_empresa;
+						//version_sistema = conexion_a_DB.version_sistema;					
 						
-						lector.Close (); 
-						conexion.Close ();
+						login_osiris.Destroy();
 						
-						Console.WriteLine((string) CreatePasswordMD5(clave_entrada.Trim()));
-               
-						// Verificando Usuario y Contraseña en la Tabla
-					
-						if (usuario_entrada.ToUpper() == LoginEmpleado) {
-							if ( (string) CreatePasswordMD5(clave_entrada.Trim()) == PassEmpleado){
-						 	//if ( (string) clave_entrada.Trim() == PassEmpleado){
-								//dialogoPwd.Destroy(); 
-								
-								//MessageBox.Show("Hola Bill, no me gusta tu sistema");								
-								
-								Glade.XML gxml = new Glade.XML (null, "osiris.glade", "menuprincipal", null);
-								gxml.Autoconnect (this);
-								menuprincipal.Show();
-					 			
-								hscmtylogo.Pixbuf = new Gdk.Pixbuf("soghis_osiris.png");
-					 					 											
-								verificapermisos(accesoHIS,accesoERP,accesoGENERAL,autorizaHIS,autorizaERP,autorizaGENERAL);
-												 
-								// llamando a los eventos
-								
-					 			button_registro_admision.Clicked += new EventHandler( on_button_registro_admision_clicked );
-								button_compras.Clicked += new EventHandler(on_button_compras_clicked);
-								button_almacen.Clicked += new EventHandler(on_button_almacen_clicked);
-								button_recursos_humanos.Clicked += new EventHandler(on_button_recursos_humanos_clicked);
-								button_caja.Clicked += new EventHandler(on_button_caja_clicked );
-								button_costos.Clicked += new EventHandler(on_button_costos_clicked);
-								button_cargos_urgencia.Clicked += new EventHandler( on_button_cargos_urgencia_clicked );
-								button_agredecimientos.Clicked += new EventHandler(on_button_agredecimientos_clicked);
-								button_ocupacion_hscmty.Clicked += new EventHandler(on_button_ocupacion_hscmty_clicked);
-								button_cargos_hospital.Clicked += new EventHandler( on_button_cargos_hospital_clicked );
-								button_cargos_quirofano.Clicked += new EventHandler( on_button_cargos_quirofano_clicked);
-								
-													 			
-					 			button_endoscopia.Clicked += new EventHandler(on_button_endoscopia_clicked);
-					 			button_laboratorio.Clicked += new EventHandler( on_button_laboratorio_clicked );
-					 			button_imagenologia.Clicked += new EventHandler( on_button_imagenologia_clicked );
-					 			button_terapia_adulto.Clicked += new EventHandler( on_button_terapia_adulto_clicked );
-					 			button_terapia_nino.Clicked += new EventHandler( on_button_terapia_pediatrica_clicked );
-					 			button_terapia_neonatal.Clicked += new EventHandler(on_button_terapia_neonatal_clicked);
-					 			button_ginecologia.Clicked += new EventHandler(on_button_ginecologia_clicked);
-					 			/*
-					 			button_medicos.Clicked += new EventHandler(on_button_medicos_clicked);					 			
-					 							 			
-					 			button_herramientas.Clicked += new EventHandler(on_button_herramientas_clicked);
-					 			button_cambio_contraseña.Clicked += new EventHandler(on_button_cambio_contraseña_clicked);
-					 			
-					 			button_farmacia.Clicked += new EventHandler(on_button_farmacia_clicked);
-					 			
-					 			button_nutricion.Clicked += new EventHandler(on_button_nutricion_clicked);
-					 			button_hemodialisis.Clicked += new EventHandler(on_button_hemodialisis_clicked);
-					 			*/
-					 			//button_imagenologia_b.Clicked += new EventHandler( on_button_imagenologia_b_clicked );
-								
-					 			button_salir.Clicked += new EventHandler(on_button_salir_clicked);
-					 			// Actulizando statusbar
-					 			statusbar_menu.Pop(0);
-					 			statusbar_menu.Push(1, "login:"+(string)LoginEmpleado+"|Usuario:"+(string)NomEmpleado+" "+(string)AppEmpleado+" "+(string)ApmEmpleado);
-					 			statusbar_menu.HasResizeGrip = false;				 			
-					 		}else{
-					 			MessageDialog msgBox = new MessageDialog (MyWinError,DialogFlags.Modal,
-										MessageType.Error,ButtonsType.Close,"Su contraseña es INCORRECTA \n"+
-										"vuelve a intentarlo");
-								msgBox.Run ();				msgBox.Destroy(); //Application.Run ();
-					 		}
-					 	}
-			       }else{
+						// Guarda los logs de Accesos de los usuarios
+						//comando.CommandText = "INSERT INTO historylogin( "+
+			 			//						"id_usuario, "+
+			 			//						"fechahora_login "+
+			 			//						") VALUES ('"+
+						//						idUsuario.ToString()+"','"+
+ 						//						DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+ "');";
+ 						//Console.WriteLine(comando.CommandText.ToString());						
+		 				//comando.ExecuteNonQuery();
+						pantalla_principal();
+					}else{
 						MessageDialog msgBox = new MessageDialog (MyWinError,DialogFlags.Modal,
-									MessageType.Error,ButtonsType.Ok,"Login INCORRECTO \n"+
-									"vuelve a intentarlo");
-						msgBox.Run ();				msgBox.Destroy(); //Application.Run ();
+									MessageType.Error,ButtonsType.Close,"Usuario o Contraseña INCORRECTA \n"+
+									"vuelva a intentarlo");
+						msgBox.Run ();				msgBox.Destroy();
 					}
-        	    } 
-            	catch (NpgsqlException ex){ 
-					Console.WriteLine ("PostgresSQL error: {0}",ex.Message);
-					MessageDialog msgBox = new MessageDialog (MyWinError,DialogFlags.Modal,MessageType.Error,
+				}else{
+					MessageDialog msgBox = new MessageDialog (MyWinError,DialogFlags.Modal,
+									MessageType.Error,ButtonsType.Close,"Usuario o Contraseña INCORRECTA \n"+
+										"vuelva a intentarlo");
+					msgBox.Run ();				msgBox.Destroy();
+				}
+			}catch (NpgsqlException ex){ 
+				Console.WriteLine ("PostgresSQL error: {0}",ex.Message);
+				MessageDialog msgBox = new MessageDialog (MyWinError,DialogFlags.Modal,MessageType.Error,
 									ButtonsType.Ok,"PostgresSQL error: {0}",ex.Message);
-					msgBox.Run();				msgBox.Destroy();
-					return; 
-            	}
-			}
-		}
+				msgBox.Run();				msgBox.Destroy();
+				return; 
+            }        	
+    	}
 		
-		// Funcion de Encriptacion en MD5 para las contraseñas de usuarios
-		public static string CreatePasswordMD5(string password)
+		void pantalla_principal()
 		{
-			MD5CryptoServiceProvider md5 = new MD5CryptoServiceProvider();
-			byte[] bs = System.Text.Encoding.UTF8.GetBytes(password);
-			bs = md5.ComputeHash(bs);
-			System.Text.StringBuilder s = new System.Text.StringBuilder();
-			foreach (byte b in bs){
-				s.Append(b.ToString("x2").ToLower());
-			}
-			return s.ToString();
-			
+			Glade.XML gxml = new Glade.XML (null, "osiris.glade", "menuprincipal", null);
+			gxml.Autoconnect (this);
+			menuprincipal.Show();
+					 			
+			hscmtylogo.Pixbuf = new Gdk.Pixbuf("soghis_osiris.png");
+					 					 											
+			verificapermisos(accesoHIS,accesoERP,accesoGENERAL,autorizaHIS,autorizaERP,autorizaGENERAL);
+												 
+			// llamando a los eventos
+			button_registro_admision.Clicked += new EventHandler( on_button_registro_admision_clicked );
+			button_compras.Clicked += new EventHandler(on_button_compras_clicked);
+			button_almacen.Clicked += new EventHandler(on_button_almacen_clicked);
+			button_recursos_humanos.Clicked += new EventHandler(on_button_recursos_humanos_clicked);
+			button_caja.Clicked += new EventHandler(on_button_caja_clicked );
+			button_costos.Clicked += new EventHandler(on_button_costos_clicked);
+			button_cargos_urgencia.Clicked += new EventHandler( on_button_cargos_urgencia_clicked );
+			button_agredecimientos.Clicked += new EventHandler(on_button_agredecimientos_clicked);
+			button_ocupacion_hscmty.Clicked += new EventHandler(on_button_ocupacion_osiris_clicked);
+			button_cargos_hospital.Clicked += new EventHandler( on_button_cargos_hospital_clicked );
+			button_cargos_quirofano.Clicked += new EventHandler( on_button_cargos_quirofano_clicked);					
+													 			
+			button_endoscopia.Clicked += new EventHandler(on_button_endoscopia_clicked);
+			button_laboratorio.Clicked += new EventHandler( on_button_laboratorio_clicked );
+			button_imagenologia.Clicked += new EventHandler( on_button_imagenologia_clicked );
+			button_terapia_adulto.Clicked += new EventHandler( on_button_terapia_adulto_clicked );
+			button_terapia_nino.Clicked += new EventHandler( on_button_terapia_pediatrica_clicked );
+			button_terapia_neonatal.Clicked += new EventHandler(on_button_terapia_neonatal_clicked);
+			button_ginecologia.Clicked += new EventHandler(on_button_ginecologia_clicked);
+					 			
+			button_medicos.Clicked += new EventHandler(on_button_medicos_clicked);					 			
+			button_cambio_contraseña.Clicked += new EventHandler(on_button_cambio_contraseña_clicked);					 							 			
+			button_herramientas.Clicked += new EventHandler(on_button_herramientas_clicked);		
+						
+			button_farmacia.Clicked += new EventHandler(on_button_farmacia_clicked);
+			 			
+			//button_nutricion.Clicked += new EventHandler(on_button_nutricion_clicked);
+			//button_hemodialisis.Clicked += new EventHandler(on_button_hemodialisis_clicked);
+					 			
+			//button_imagenologia_b.Clicked += new EventHandler( on_button_imagenologia_b_clicked );
+								
+			button_salir.Clicked += new EventHandler(on_button_salir_clicked);
+			// Actulizando statusbar
+			statusbar_menu.Pop(0);
+			statusbar_menu.Push(1, "login:"+(string)LoginEmpleado+"|Usuario:"+(string)NomEmpleado+" "+(string)AppEmpleado+" "+(string)ApmEmpleado);
+			statusbar_menu.HasResizeGrip = false;
 		}
-
-		// Connect the Signals defined in Glade
-		public void OnWindowDeleteEvent (object sender, DeleteEventArgs a) 
-		{
-			Application.Quit ();
-			a.RetVal = true;
-		}
-		//impresion de protocolo directamente
 		
 		// Registro y Admision de Pacientes, realiza la pregunta
 		public void on_button_registro_admision_clicked (object sender, EventArgs a)
@@ -345,7 +304,7 @@ namespace osiris
 		}
 		
 		// Ocupacion Hospitalaria
-		public void on_button_ocupacion_hscmty_clicked (object sender, EventArgs a)
+		public void on_button_ocupacion_osiris_clicked (object sender, EventArgs a)
 		{
 			new osiris.reporte_pacientes_sin_alta(this.nombrebd);
 		}
@@ -429,7 +388,7 @@ namespace osiris
 		void on_button_herramientas_clicked (object sender, EventArgs args)
 		{
 			//if( LoginEmpleado == "DOLIVARES" || LoginEmpleado == "JPENA" || LoginEmpleado == "HVARGAS" ){ 
-			//new osiris.herramientas_del_sistemas(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);//}
+			new osiris.herramientas_del_sistemas(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);//}
 		}
 		
 		void on_button_recursos_humanos_clicked(object sender, EventArgs args)
@@ -444,12 +403,20 @@ namespace osiris
 		
 		void on_button_farmacia_clicked(object sender, EventArgs args)
 		{
-			//new osiris.orden_compra_urgencias(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,0,"",26,"COMERCIALIZADORA MEDIX S. A. DE C. V.");
+			new osiris.orden_compra_urgencias(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,0,"",26,"COMERCIALIZADORA MEDIX S. A. DE C. V.");
 		}
 		
 		void on_button_nutricion_clicked(object sender, EventArgs args)
 		{
 			//new osiris.nutricion(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
+		}
+		
+		public void on_button_agredecimientos_clicked (object sender, EventArgs args)
+		{
+			Glade.XML gxml = new Glade.XML (null, "osiris.glade", "agradece", null);
+			gxml.Autoconnect (this);
+			
+			button_aceptar.Clicked += new EventHandler(on_cierraventanas_clicked);
 		}
 		
 		void on_button_cambio_contraseña_clicked (object sender, EventArgs args)
@@ -462,6 +429,138 @@ namespace osiris
 			this.button_graba_password.Clicked += new EventHandler (on_button_graba_password_clicked);
 			this.button_salir.Clicked += new EventHandler (on_cierraventanas_clicked);
 		}
+		
+		void on_button_salir_clicked (object sender, EventArgs a)
+		{
+			Application.Quit ();
+		}
+		
+		// cierra ventanas emergentes
+		void on_cierraventanas_clicked (object sender, EventArgs a)
+		{
+			Widget win = (Widget) sender;
+			win.Toplevel.Destroy();
+						 
+		}
+		
+		// Connect the Signals defined in Glade
+		void OnWindowDeleteEvent (object sender, DeleteEventArgs a) 
+		{
+			Application.Quit ();
+			a.RetVal = true;
+		}
+		
+		public void verificapermisos (string accesoHIS,string accesoERP,string accesoGENERAL,bool autorizaHIS,bool autorizaERP,bool autorizaGENERAL)
+        {        	
+			// HIS
+			button_cargos_hospital.Sensitive = false;
+			button_cargos_urgencia.Sensitive = false;
+			button_cargos_quirofano.Sensitive = false;
+			button_endoscopia.Sensitive = false;
+			button_terapia_adulto.Sensitive = false;
+			button_terapia_nino.Sensitive = false;
+			button_terapia_neonatal.Sensitive = false;
+			button_ginecologia.Sensitive = false;
+			button_laboratorio.Sensitive = false;
+			button_imagenologia.Sensitive = false;
+			button_inhaloterapia.Sensitive = false;
+			
+			// ERP
+			button_registro_admision.Sensitive = false;
+			button_caja.Sensitive = false;
+			button_compras.Sensitive = false;
+			button_almacen.Sensitive = false;
+			button_costos.Sensitive = false;
+			button_farmacia.Sensitive = false;
+			button_recursos_humanos.Sensitive = false;
+			button_nutricion.Sensitive = false;
+			button_herramientas.Sensitive = false;
+			
+			// opciones generales
+			button_medicos.Sensitive = false;
+			button_ocupacion_hscmty.Sensitive = false;
+			button_cambio_contraseña.Sensitive = false;
+			button_agredecimientos.Sensitive = false;
+			
+			if((bool) autorizaHIS == true){
+				if ((string) accesoHIS.Substring(0,1) == "1"){
+       				button_cargos_hospital.Sensitive = true;
+        		}        		
+        		if ((string) accesoHIS.Substring(1,1) == "1"){
+        			button_cargos_urgencia.Sensitive = true;
+        		}
+        		if ((string) accesoHIS.Substring(2,1) == "1"){
+					button_cargos_quirofano.Sensitive = true;
+				}
+				if ((string) accesoHIS.Substring(3,1) == "1"){
+					button_endoscopia.Sensitive = true;
+				}
+				if ((string) accesoHIS.Substring(4,1) == "1"){
+					button_terapia_adulto.Sensitive = true;
+				}
+				if ((string) accesoHIS.Substring(5,1) == "1"){
+					button_terapia_nino.Sensitive = true;
+				}
+				if ((string) accesoHIS.Substring(6,1) == "1"){
+					button_terapia_neonatal.Sensitive = true;
+				}
+				if ((string) accesoHIS.Substring(7,1) == "1"){
+					button_ginecologia.Sensitive = true;
+				}
+				if ((string) accesoHIS.Substring(8,1) == "1"){
+					button_laboratorio.Sensitive = true;
+				}
+				if ((string) accesoHIS.Substring(9,1) == "1"){
+					button_imagenologia.Sensitive = true;
+				}				
+				if ((string) accesoHIS.Substring(10,1) == "1"){
+					button_inhaloterapia.Sensitive = true;
+				}
+			}
+			if((bool) autorizaERP == true){
+				if ((string) accesoERP.Substring(0,1) == "1"){
+					button_registro_admision.Sensitive = true;
+				}
+				if ((string) accesoERP.Substring(1,1) == "1"){
+					button_caja.Sensitive = true;
+				}
+				if ((string) accesoERP.Substring(2,1) == "1"){
+					button_compras.Sensitive = true;
+				}
+				if ((string) accesoERP.Substring(3,1) == "1"){
+					button_almacen.Sensitive = true;
+				}
+				if ((string) accesoERP.Substring(4,1) == "1"){
+					button_costos.Sensitive = true;
+				}
+				if ((string) accesoERP.Substring(5,1) == "1"){
+					button_farmacia.Sensitive = true;
+				}
+				if ((string) accesoERP.Substring(6,1) == "1"){
+					button_recursos_humanos.Sensitive = true;
+				}
+				if ((string) accesoERP.Substring(7,1) == "1"){
+					button_nutricion.Sensitive = true;
+				}
+				if ((string) accesoERP.Substring(8,1) == "1"){
+					button_herramientas.Sensitive = true;
+				}				
+			}
+			if((bool) autorizaGENERAL == true){
+				if ((string) accesoGENERAL.Substring(0,1) == "1"){
+					button_medicos.Sensitive = true;
+				}
+				if ((string) accesoGENERAL.Substring(1,1) == "1"){	
+					button_ocupacion_hscmty.Sensitive = true;
+				}
+				if ((string) accesoGENERAL.Substring(2,1) == "1"){
+					button_cambio_contraseña.Sensitive = true;
+				}
+				if ((string) accesoGENERAL.Substring(3,1) == "1"){
+					button_agredecimientos.Sensitive = true;
+				}
+			}			
+        }
 		
 		// Valida entradas que solo sean numericas, se utiliza eb ventana de
 		// carga de producto
@@ -487,7 +586,8 @@ namespace osiris
 			if(entry_nueva_contraseña1.Text == entry_nueva_contraseña2.Text){
 				
 				// encriptando contraseñas a MD5 funcion de mono
-				nuevopassword = CreatePasswordMD5(entry_nueva_contraseña2.Text.Trim());
+				osiris.class_public newpasswd = new osiris.class_public();
+				nuevopassword = newpasswd.CreatePasswordMD5(entry_nueva_contraseña2.Text.Trim());
 				
 				//Console.WriteLine(nuevopassword);
 				NpgsqlConnection conexion; 
@@ -498,7 +598,7 @@ namespace osiris
 					NpgsqlCommand comando; 
 					comando = conexion.CreateCommand (); 
              		//Console.WriteLine("se cambio la contraseña");
-					comando.CommandText = "UPDATE hscmty_empleado "+
+					comando.CommandText = "UPDATE osiris_empleado "+
                						 "SET password_empleado = '"+nuevopassword+"' "+
                                      "WHERE login_empleado = '"+LoginEmpleado.ToUpper()+"';";
                     comando.ExecuteNonQuery();                   comando.Dispose();
@@ -519,14 +619,6 @@ namespace osiris
 				msgBox.Run ();				msgBox.Destroy();
 				this.entry_nueva_contraseña1.Text = ""; this.entry_nueva_contraseña2.Text = "";
 			}
-		}
-		
-		public void on_button_agredecimientos_clicked (object sender, EventArgs args)
-		{
-			Glade.XML gxml = new Glade.XML (null, "osiris.glade", "agradece", null);
-			gxml.Autoconnect (this);
-			
-			button_aceptar.Clicked += new EventHandler(on_cierraventanas_clicked);
 		}
 		
 		void on_button_medicos_clicked (object sender, EventArgs args)
@@ -703,7 +795,7 @@ namespace osiris
 						{
 							comando.CommandText = "SELECT id_medico, "+
 										"to_char(id_empresa,'999999') AS idempresa, "+
-										"to_char(hscmty_his_tipo_especialidad.id_especialidad,999999) AS idespecialidad, "+
+										"to_char(osiris_his_tipo_especialidad.id_especialidad,'999999') AS idespecialidad, "+
 										"nombre_medico,descripcion_empresa,descripcion_especialidad,centro_medico, "+
 										"nombre1_medico,nombre2_medico,apellido_paterno_medico,apellido_materno_medico, "+
 										"telefono1_medico,cedula_medico,telefono2_medico,celular1_medico,celular2_medico, "+
@@ -716,15 +808,15 @@ namespace osiris
 										"copia_comprobante_domicilio_medico,diploma_seminarios_medico,diploma_cursos_medico, "+
 										"diplomas_extranjeros_medico,constancia_congresos_medico,cedula_especialidad_medico, "+
 										"medico_activo,autorizado "+
-										"FROM hscmty_his_medicos,hscmty_his_tipo_especialidad,hscmty_empresas "+
-										"WHERE hscmty_his_medicos.id_especialidad = hscmty_his_tipo_especialidad.id_especialidad "+
-										"AND hscmty_his_medicos.id_empresa_medico = hscmty_empresas.id_empresa "+
+										"FROM osiris_his_medicos,osiris_his_tipo_especialidad,osiris_empresas "+
+										"WHERE osiris_his_medicos.id_especialidad = osiris_his_tipo_especialidad.id_especialidad "+
+										"AND osiris_his_medicos.id_empresa_medico = osiris_empresas.id_empresa "+
 										"AND medico_activo = 'true' "+
 										"ORDER BY id_medico;";
 						}else{
 							comando.CommandText = "SELECT id_medico, "+
 										"to_char(id_empresa,'999999') AS idempresa, "+
-										"to_char(hscmty_his_tipo_especialidad.id_especialidad,999999) AS idespecialidad, "+
+										"to_char(osiris_his_tipo_especialidad.id_especialidad,'999999') AS idespecialidad, "+
 										"nombre_medico,descripcion_empresa,descripcion_especialidad,centro_medico, "+
 										"nombre1_medico,nombre2_medico,apellido_paterno_medico,apellido_materno_medico, "+
 										"telefono1_medico,cedula_medico,telefono2_medico,celular1_medico,celular2_medico, "+
@@ -737,9 +829,9 @@ namespace osiris
 										"copia_comprobante_domicilio_medico,diploma_seminarios_medico,diploma_cursos_medico, "+
 										"diplomas_extranjeros_medico,constancia_congresos_medico,cedula_especialidad_medico, "+
 										"medico_activo,autorizado "+
-										"FROM hscmty_his_medicos,hscmty_his_tipo_especialidad,hscmty_empresas "+
-										"WHERE hscmty_his_medicos.id_especialidad = hscmty_his_tipo_especialidad.id_especialidad "+
-										"AND hscmty_his_medicos.id_empresa_medico = hscmty_empresas.id_empresa "+
+										"FROM osiris_his_medicos,osiris_his_tipo_especialidad,osiris_empresas "+
+										"WHERE osiris_his_medicos.id_especialidad = osiris_his_tipo_especialidad.id_especialidad "+
+										"AND osiris_his_medicos.id_empresa_medico = osiris_empresas.id_empresa "+
 										"AND medico_activo = 'true' "+
 								  		tipobusqueda+(string) entry_expresion.Text.Trim().ToUpper()+"%' "+
 										"ORDER BY id_medico;";
@@ -842,145 +934,12 @@ namespace osiris
 		
 		void tipo_de_busqueda_de_medico(int numbusqueda)
 		{
-			if(numbusqueda == 1)  { tipobusqueda = "AND hscmty_his_medicos.nombre1_medico LIKE '";	}//Console.WriteLine(tipobusqueda); }
-			if(numbusqueda == 2)  { tipobusqueda = "AND hscmty_his_medicos.nombre2_medico LIKE '";	}//Console.WriteLine(tipobusqueda); }
-			if(numbusqueda == 3)  { tipobusqueda = "AND hscmty_his_medicos.apellido_paterno_medico LIKE '";	}//Console.WriteLine(tipobusqueda); }
-			if(numbusqueda == 4)  { tipobusqueda = "AND hscmty_his_medicos.apellido_materno_medico LIKE '";	}//Console.WriteLine(tipobusqueda); }
-			if(numbusqueda == 5)  { tipobusqueda = "AND hscmty_his_medicos.cedula_medico LIKE '";	}//Console.WriteLine(tipobusqueda); }
-			if(numbusqueda == 6)  { tipobusqueda = "AND hscmty_his_tipo_especialidad.descripcion_especialidad LIKE '";	}//Console.WriteLine(tipobusqueda); }
+			if(numbusqueda == 1)  { tipobusqueda = "AND osiris_his_medicos.nombre1_medico LIKE '";	}//Console.WriteLine(tipobusqueda); }
+			if(numbusqueda == 2)  { tipobusqueda = "AND osiris_his_medicos.nombre2_medico LIKE '";	}//Console.WriteLine(tipobusqueda); }
+			if(numbusqueda == 3)  { tipobusqueda = "AND osiris_his_medicos.apellido_paterno_medico LIKE '";	}//Console.WriteLine(tipobusqueda); }
+			if(numbusqueda == 4)  { tipobusqueda = "AND osiris_his_medicos.apellido_materno_medico LIKE '";	}//Console.WriteLine(tipobusqueda); }
+			if(numbusqueda == 5)  { tipobusqueda = "AND osiris_his_medicos.cedula_medico LIKE '";	}//Console.WriteLine(tipobusqueda); }
+			if(numbusqueda == 6)  { tipobusqueda = "AND osiris_his_tipo_especialidad.descripcion_especialidad LIKE '";	}//Console.WriteLine(tipobusqueda); }
 		}
-		
-        public void verificapermisos (string accesoHIS,string accesoERP,string accesoGENERAL,bool autorizaHIS,bool autorizaERP,bool autorizaGENERAL)
-        {
-        	
-			// HIS
-			button_cargos_hospital.Sensitive = false;
-			button_cargos_urgencia.Sensitive = false;
-			button_cargos_quirofano.Sensitive = false;
-			button_endoscopia.Sensitive = false;
-			button_terapia_adulto.Sensitive = false;
-			button_terapia_nino.Sensitive = false;
-			button_terapia_neonatal.Sensitive = false;
-			button_ginecologia.Sensitive = false;
-			button_laboratorio.Sensitive = false;
-			button_imagenologia.Sensitive = false;
-			button_inhaloterapia.Sensitive = false;
-			
-			// ERP
-			button_registro_admision.Sensitive = false;
-			button_caja.Sensitive = false;
-			button_compras.Sensitive = false;
-			button_almacen.Sensitive = false;
-			button_costos.Sensitive = false;
-			button_farmacia.Sensitive = false;
-			button_recursos_humanos.Sensitive = false;
-			button_nutricion.Sensitive = false;
-			button_herramientas.Sensitive = false;
-			
-			// opciones generales
-			button_medicos.Sensitive = false;
-			button_ocupacion_hscmty.Sensitive = false;
-			button_cambio_contraseña.Sensitive = false;
-			button_agredecimientos.Sensitive = false;
-			
-			if((bool) autorizaHIS == true){
-				if ((string) accesoHIS.Substring(0,1) == "1"){
-       				button_cargos_hospital.Sensitive = true;
-        		}        		
-        		if ((string) accesoHIS.Substring(1,1) == "1"){
-        			button_cargos_urgencia.Sensitive = true;
-        		}
-        		if ((string) accesoHIS.Substring(2,1) == "1"){
-					button_cargos_quirofano.Sensitive = true;
-				}
-				if ((string) accesoHIS.Substring(3,1) == "1"){
-					button_endoscopia.Sensitive = true;
-				}
-				if ((string) accesoHIS.Substring(4,1) == "1"){
-					button_terapia_adulto.Sensitive = true;
-				}
-				if ((string) accesoHIS.Substring(5,1) == "1"){
-					button_terapia_nino.Sensitive = true;
-				}
-				if ((string) accesoHIS.Substring(6,1) == "1"){
-					button_terapia_neonatal.Sensitive = true;
-				}
-				if ((string) accesoHIS.Substring(7,1) == "1"){
-					button_ginecologia.Sensitive = true;
-				}
-				if ((string) accesoHIS.Substring(8,1) == "1"){
-					button_laboratorio.Sensitive = true;
-				}
-				if ((string) accesoHIS.Substring(9,1) == "1"){
-					button_imagenologia.Sensitive = true;
-				}				
-				if ((string) accesoHIS.Substring(10,1) == "1"){
-					button_inhaloterapia.Sensitive = true;
-				}
-			}
-			if((bool) autorizaERP == true){
-				if ((string) accesoERP.Substring(0,1) == "1"){
-					button_registro_admision.Sensitive = true;
-				}
-				if ((string) accesoERP.Substring(1,1) == "1"){
-					button_caja.Sensitive = true;
-				}
-				if ((string) accesoERP.Substring(2,1) == "1"){
-					button_compras.Sensitive = true;
-				}
-				if ((string) accesoERP.Substring(3,1) == "1"){
-					button_almacen.Sensitive = true;
-				}
-				if ((string) accesoERP.Substring(4,1) == "1"){
-					button_costos.Sensitive = true;
-				}
-				if ((string) accesoERP.Substring(5,1) == "1"){
-					button_farmacia.Sensitive = true;
-				}
-				if ((string) accesoERP.Substring(6,1) == "1"){
-					button_recursos_humanos.Sensitive = true;
-				}
-				if ((string) accesoERP.Substring(7,1) == "1"){
-					button_nutricion.Sensitive = true;
-				}
-				if ((string) accesoERP.Substring(8,1) == "1"){
-					button_herramientas.Sensitive = true;
-				}				
-			}
-			if((bool) autorizaGENERAL == true){
-				if ((string) accesoGENERAL.Substring(0,1) == "1"){
-					button_medicos.Sensitive = true;
-				}
-				if ((string) accesoGENERAL.Substring(1,1) == "1"){	
-					button_ocupacion_hscmty.Sensitive = true;
-				}
-				if ((string) accesoGENERAL.Substring(2,1) == "1"){
-					button_cambio_contraseña.Sensitive = true;
-				}
-				if ((string) accesoGENERAL.Substring(3,1) == "1"){
-					button_agredecimientos.Sensitive = true;
-				}
-			}			
-        }
-        
-		public void on_button_salir_clicked (object sender, EventArgs a)
-		{
-			Application.Quit ();
-		}
-	
-		// Sirve para ventana de login
-		private void OnResponse(object sender, ResponseArgs args) 
-		{ 
-				
-		}
-	
-		// cierra ventanas emergentes
-		public void on_cierraventanas_clicked (object sender, EventArgs a)
-		{
-			Widget win = (Widget) sender;
-			win.Toplevel.Destroy();
-						 
-		}
-		
-	}
+	}	
 }

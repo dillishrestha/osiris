@@ -165,7 +165,7 @@ namespace osiris
 			if(this.tipo_admicion_clase != 0){
 				this.checkbutton_todas.Sensitive = false;
 				this.combobox_area.Sensitive = false;			
-				query_areas = "AND hscmty_his_habitaciones.id_tipo_admisiones = '"+tipo_admicion_clase.ToString().Trim()+"' ORDER BY hscmty_his_habitaciones.id_tipo_admisiones,hscmty_his_habitaciones.numero_cuarto;";
+				query_areas = "AND osiris_his_habitaciones.id_tipo_admisiones = '"+tipo_admicion_clase.ToString().Trim()+"' ORDER BY osiris_his_habitaciones.id_tipo_admisiones,osiris_his_habitaciones.numero_cuarto;";
 				llena_lista_habitaciones();
 			}
 			
@@ -226,7 +226,7 @@ namespace osiris
 					NpgsqlCommand comando; 
 					comando = conexion.CreateCommand ();
 				
-					comando.CommandText = "UPDATE hscmty_his_habitaciones SET disponible ='True', folio_de_servicio = '0', pid_paciente = '0' "+ 
+					comando.CommandText = "UPDATE osiris_his_habitaciones SET disponible ='True', folio_de_servicio = '0', pid_paciente = '0' "+ 
 															      "WHERE id_habitacion =  '"+this.id_habitacion_proveniente+"';";
 				
  
@@ -235,7 +235,7 @@ namespace osiris
 					comando.Dispose();
 						
                     comando = conexion.CreateCommand ();
-					comando.CommandText = "UPDATE hscmty_erp_cobros_enca SET id_habitacion ='1' "+ 
+					comando.CommandText = "UPDATE osiris_erp_cobros_enca SET id_habitacion ='1' "+ 
 											  "WHERE folio_de_servicio =  '"+this.entry_folio.Text+"';";
 						
 					comando.ExecuteNonQuery();
@@ -259,7 +259,7 @@ namespace osiris
 						conexion.Open ();
 						NpgsqlCommand comando; 
 						comando = conexion.CreateCommand ();						 
-						comando.CommandText = "INSERT INTO hscmty_his_historial_habitaciones ("+
+						comando.CommandText = "INSERT INTO osiris_his_historial_habitaciones ("+
 								"id_quien_asigna,"+
 		             			"folio_de_servicio,"+
 		                		"pid_paciente,"+
@@ -325,7 +325,7 @@ namespace osiris
 											conexion.Open ();
 											NpgsqlCommand comando; 
 											comando = conexion.CreateCommand ();
-											comando.CommandText = "UPDATE hscmty_his_habitaciones SET disponible ='True', folio_de_servicio = '0', pid_paciente = '0' "+ 
+											comando.CommandText = "UPDATE osiris_his_habitaciones SET disponible ='True', folio_de_servicio = '0', pid_paciente = '0' "+ 
 															      "WHERE id_habitacion =  '"+this.id_habitacion_proveniente+"';";
 											
 											comando.ExecuteNonQuery();
@@ -381,7 +381,7 @@ namespace osiris
 						conexion.Open ();
 						NpgsqlCommand comando; 
 						comando = conexion.CreateCommand ();
-						comando.CommandText = "UPDATE hscmty_his_habitaciones SET disponible ='False',"+ 
+						comando.CommandText = "UPDATE osiris_his_habitaciones SET disponible ='False',"+ 
 											"fecha_de_ocupacion = '"+query_fecha_de_ocupacion+"', "+
 											"pid_paciente = '"+this.pid+"', "+
 											"folio_de_servicio = '"+this.entry_folio.Text+"' "+
@@ -392,7 +392,7 @@ namespace osiris
 					    Console.WriteLine(comando.CommandText+"------------");
 						
                         comando = conexion.CreateCommand ();
-						comando.CommandText = "UPDATE hscmty_erp_cobros_enca SET id_habitacion ='"+this.entry_id_habitacion.Text+"' "+ 
+						comando.CommandText = "UPDATE osiris_erp_cobros_enca SET id_habitacion ='"+this.entry_id_habitacion.Text+"' "+ 
 											  "WHERE folio_de_servicio =  '"+this.entry_folio.Text+"';";
 						
 						comando.ExecuteNonQuery();
@@ -420,7 +420,7 @@ namespace osiris
 						conexion.Open ();
 						NpgsqlCommand comando; 
 						comando = conexion.CreateCommand ();						 
-						comando.CommandText = "INSERT INTO hscmty_his_historial_habitaciones ("+
+						comando.CommandText = "INSERT INTO osiris_his_historial_habitaciones ("+
 								"id_quien_asigna,"+
 		             			"folio_de_servicio,"+
 		                		"pid_paciente,"+
@@ -475,7 +475,7 @@ namespace osiris
 		{ 
 			if (this.checkbutton_todas.Active == true){
 				this.combobox_area.Sensitive = false;
-				query_areas = "AND 	hscmty_his_tipo_admisiones.id_tipo_admisiones != '0' ORDER BY hscmty_his_tipo_admisiones.id_tipo_admisiones,hscmty_his_habitaciones.numero_cuarto;";
+				query_areas = "AND 	osiris_his_tipo_admisiones.id_tipo_admisiones != '0' ORDER BY osiris_his_tipo_admisiones.id_tipo_admisiones,osiris_his_habitaciones.numero_cuarto;";
 				llena_lista_habitaciones();
 				Combonombrearea = "";
 		    }else{
@@ -509,9 +509,9 @@ namespace osiris
 				conexion.Open ();
 				NpgsqlCommand comando; 
 				comando = conexion.CreateCommand ();
-				//hscmty_empleado.id_empleado
+				//osiris_empleado.id_empleado
                 comando.CommandText = "SELECT descripcion_admisiones,id_tipo_admisiones "+
-									  "FROM hscmty_his_tipo_admisiones " +
+									  "FROM osiris_his_tipo_admisiones " +
 									  "WHERE habitaciones = 'true' AND grupo = 'MED';";
                			             
 				NpgsqlDataReader lector = comando.ExecuteReader ();
@@ -547,7 +547,7 @@ namespace osiris
 			TreeIter iter;
 			if (combobox_area.GetActiveIter (out iter)) {
 				Combonombrearea = (string) this.combobox_area.Model.GetValue(iter,0);
-				query_areas = "AND hscmty_his_tipo_admisiones.id_tipo_admisiones = '"+(int) this.combobox_area.Model.GetValue(iter,1)+"' ORDER BY hscmty_his_tipo_admisiones.id_tipo_admisiones,hscmty_his_habitaciones.numero_cuarto;";
+				query_areas = "AND osiris_his_tipo_admisiones.id_tipo_admisiones = '"+(int) this.combobox_area.Model.GetValue(iter,1)+"' ORDER BY osiris_his_tipo_admisiones.id_tipo_admisiones,osiris_his_habitaciones.numero_cuarto;";
 				llena_lista_habitaciones();
 			}
 		}
@@ -563,24 +563,24 @@ namespace osiris
 				conexion.Open ();
 				NpgsqlCommand comando; 
 				comando = conexion.CreateCommand ();
-				//hscmty_empleado.id_empleado
-	             comando.CommandText = "SELECT hscmty_erp_cobros_enca.folio_de_servicio,hscmty_erp_cobros_enca.pid_paciente,descripcion_admisiones,numero_cuarto, "+
+				//osiris_empleado.id_empleado
+	             comando.CommandText = "SELECT osiris_erp_cobros_enca.folio_de_servicio,osiris_erp_cobros_enca.pid_paciente,descripcion_admisiones,numero_cuarto, "+
 								" nombre1_paciente,nombre2_paciente, apellido_paterno_paciente, "+
 								"apellido_materno_paciente, to_char(fecha_de_ocupacion,'dd-MM-yyyy HH24:mi') AS fech_ocupacion,"+
 								"to_char(to_number(to_char(age('"+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"',fecha_nacimiento_paciente),'yyyy') ,'9999'),'9999') AS edad, "+
 								"sexo_paciente,to_char(fechahora_registro_paciente,'dd-MM-yyyy HH24:mi') AS fech_creacion "+
-								"FROM hscmty_his_paciente,hscmty_erp_cobros_enca,hscmty_his_habitaciones,hscmty_his_tipo_admisiones "+
+								"FROM osiris_his_paciente,osiris_erp_cobros_enca,osiris_his_habitaciones,osiris_his_tipo_admisiones "+
 								"WHERE alta_paciente = 'false' "+
-						        "AND hscmty_his_habitaciones.id_habitacion = hscmty_erp_cobros_enca.id_habitacion "+
-						        "AND hscmty_his_habitaciones.id_tipo_admisiones = hscmty_his_tipo_admisiones.id_tipo_admisiones " +
+						        "AND osiris_his_habitaciones.id_habitacion = osiris_erp_cobros_enca.id_habitacion "+
+						        "AND osiris_his_habitaciones.id_tipo_admisiones = osiris_his_tipo_admisiones.id_tipo_admisiones " +
 								"AND pagado = 'false' "+
 								"AND cerrado = 'false' "+
 								"AND reservacion = 'false' "+
 						        "AND cancelado = 'false' "+
-								"AND hscmty_his_paciente.pid_paciente = hscmty_erp_cobros_enca.pid_paciente "+
-								"AND hscmty_erp_cobros_enca.alta_paciente = false "+
-								"AND hscmty_erp_cobros_enca.cancelado = false "+
-								"AND hscmty_erp_cobros_enca.id_habitacion != 1 "+
+								"AND osiris_his_paciente.pid_paciente = osiris_erp_cobros_enca.pid_paciente "+
+								"AND osiris_erp_cobros_enca.alta_paciente = false "+
+								"AND osiris_erp_cobros_enca.cancelado = false "+
+								"AND osiris_erp_cobros_enca.id_habitacion != 1 "+
 								"ORDER BY folio_de_servicio;";					  
 				NpgsqlDataReader lector = comando.ExecuteReader ();
 				while (lector.Read()){
@@ -619,9 +619,9 @@ namespace osiris
 				NpgsqlCommand comando; 
 				comando = conexion.CreateCommand ();
 				
-               comando.CommandText = "SELECT 	hscmty_his_habitaciones.id_tipo_admisiones,disponible,descripcion_cuarto,id_habitacion,numero_cuarto,pid_paciente,descripcion_admisiones "+
-									"FROM hscmty_his_habitaciones,hscmty_his_tipo_admisiones " +
-									"WHERE (hscmty_his_tipo_admisiones.id_tipo_admisiones = hscmty_his_habitaciones.id_tipo_admisiones) AND disponible = 'true'AND habitaciones = 'true' AND grupo = 'MED' "+
+               comando.CommandText = "SELECT 	osiris_his_habitaciones.id_tipo_admisiones,disponible,descripcion_cuarto,id_habitacion,numero_cuarto,pid_paciente,descripcion_admisiones "+
+									"FROM osiris_his_habitaciones,osiris_his_tipo_admisiones " +
+									"WHERE (osiris_his_tipo_admisiones.id_tipo_admisiones = osiris_his_habitaciones.id_tipo_admisiones) AND disponible = 'true'AND habitaciones = 'true' AND grupo = 'MED' "+
                                     query_areas;
 						             
 														 									  
@@ -1063,13 +1063,13 @@ namespace osiris
 							NpgsqlCommand comando; 
 							comando = conexion.CreateCommand ();
 											
-							comando.CommandText = "SELECT hscmty_erp_cobros_enca.pid_paciente,hscmty_his_habitaciones.id_habitacion, "+
+							comando.CommandText = "SELECT osiris_erp_cobros_enca.pid_paciente,osiris_his_habitaciones.id_habitacion, "+
 														          "numero_cuarto,descripcion_cuarto,id_tipo_admisiones, "+
 															      "to_char(fecha_de_ocupacion,'dd-MM-yyyy') as fechadeocupacion "+
-														          "FROM hscmty_erp_cobros_enca,hscmty_his_habitaciones "+
-															      "WHERE (hscmty_erp_cobros_enca.folio_de_servicio = hscmty_his_habitaciones.folio_de_servicio)"+
-														          "AND hscmty_erp_cobros_enca.folio_de_servicio ='"+(int) lista_de_Pacientes_asignados.Model.GetValue(iter,1)+"'; ";
-													           // "AND (hscmty_erp_cobros_enca.pid_paciente = hscmty_his_habitaciones.pid_paciente);";
+														          "FROM osiris_erp_cobros_enca,osiris_his_habitaciones "+
+															      "WHERE (osiris_erp_cobros_enca.folio_de_servicio = osiris_his_habitaciones.folio_de_servicio)"+
+														          "AND osiris_erp_cobros_enca.folio_de_servicio ='"+(int) lista_de_Pacientes_asignados.Model.GetValue(iter,1)+"'; ";
+													           // "AND (osiris_erp_cobros_enca.pid_paciente = osiris_his_habitaciones.pid_paciente);";
 											        
 							NpgsqlDataReader lector = comando.ExecuteReader ();
 												
@@ -1133,76 +1133,76 @@ namespace osiris
 				comando = conexion.CreateCommand ();
                	               	
 				if ((string) entry_expresion.Text.ToString() == ""){
-					comando.CommandText = "SELECT hscmty_erp_cobros_enca.folio_de_servicio,hscmty_erp_cobros_enca.pid_paciente, "+
+					comando.CommandText = "SELECT osiris_erp_cobros_enca.folio_de_servicio,osiris_erp_cobros_enca.pid_paciente, "+
 							" nombre1_paciente,nombre2_paciente, apellido_paterno_paciente, "+
 							"apellido_materno_paciente, to_char(fecha_nacimiento_paciente,'yyyy-MM-dd') AS fech_nacimiento,"+
 							"to_char(to_number(to_char(age('"+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"',fecha_nacimiento_paciente),'yyyy') ,'9999'),'9999') AS edad, "+
-							"sexo_paciente,to_char(hscmty_erp_cobros_enca.fechahora_creacion,'dd-MM-yyyy HH:mi:ss') AS fech_creacion "+
-							"FROM hscmty_his_paciente,hscmty_erp_cobros_enca "+
+							"sexo_paciente,to_char(osiris_erp_cobros_enca.fechahora_creacion,'dd-MM-yyyy HH:mi:ss') AS fech_creacion "+
+							"FROM osiris_his_paciente,osiris_erp_cobros_enca "+
 							"WHERE alta_paciente = 'false' "+
 							"AND pagado = 'false' "+
 							"AND cerrado = 'false' "+
 							"AND reservacion = 'false' "+
 							"AND cancelado = 'false' "+
-							"AND hscmty_his_paciente.pid_paciente = hscmty_erp_cobros_enca.pid_paciente "+
-							"AND hscmty_erp_cobros_enca.alta_paciente = false "+
-							"AND hscmty_erp_cobros_enca.cancelado = false "+
-							"AND hscmty_erp_cobros_enca.id_habitacion = 1 "+
+							"AND osiris_his_paciente.pid_paciente = osiris_erp_cobros_enca.pid_paciente "+
+							"AND osiris_erp_cobros_enca.alta_paciente = false "+
+							"AND osiris_erp_cobros_enca.cancelado = false "+
+							"AND osiris_erp_cobros_enca.id_habitacion = 1 "+
 							"ORDER BY folio_de_servicio;";
 				}else{              	
 					if (radiobutton_busca_apellido.Active == true){
-						comando.CommandText = "SELECT hscmty_erp_cobros_enca.folio_de_servicio,hscmty_erp_cobros_enca.pid_paciente, "+
+						comando.CommandText = "SELECT osiris_erp_cobros_enca.folio_de_servicio,osiris_erp_cobros_enca.pid_paciente, "+
 							" nombre1_paciente,nombre2_paciente, apellido_paterno_paciente,id_habitacion, "+
 							"apellido_materno_paciente, to_char(fecha_nacimiento_paciente,'yyyy-MM-dd') AS fech_nacimiento,"+
 							"to_char(to_number(to_char(age('"+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"',fecha_nacimiento_paciente),'yyyy') ,'9999'),'9999') AS edad, "+
-							"sexo_paciente,to_char(hscmty_erp_cobros_enca.fechahora_creacion,'dd-MM-yyyy HH:mi:ss') AS fech_creacion "+
-							"FROM hscmty_his_paciente,hscmty_erp_cobros_enca "+
+							"sexo_paciente,to_char(osiris_erp_cobros_enca.fechahora_creacion,'dd-MM-yyyy HH:mi:ss') AS fech_creacion "+
+							"FROM osiris_his_paciente,osiris_erp_cobros_enca "+
 							"WHERE alta_paciente = 'false' "+
 							"AND pagado = 'false' "+
 							"AND cerrado = 'false' "+
 							"AND reservacion = 'false' "+
 							"AND cancelado = 'false' "+
-							"AND hscmty_his_paciente.pid_paciente = hscmty_erp_cobros_enca.pid_paciente "+
-							"AND hscmty_erp_cobros_enca.alta_paciente = false "+
-							"AND hscmty_erp_cobros_enca.cancelado = false "+
-							"AND hscmty_erp_cobros_enca.id_habitacion = 1 "+	
+							"AND osiris_his_paciente.pid_paciente = osiris_erp_cobros_enca.pid_paciente "+
+							"AND osiris_erp_cobros_enca.alta_paciente = false "+
+							"AND osiris_erp_cobros_enca.cancelado = false "+
+							"AND osiris_erp_cobros_enca.id_habitacion = 1 "+	
 							"AND apellido_paterno_paciente LIKE '"+entry_expresion.Text.ToUpper()+"%' ORDER BY folio_de_servicio;";
 					}
 					if (radiobutton_busca_nombre.Active == true){
-						comando.CommandText =  "SELECT hscmty_erp_cobros_enca.folio_de_servicio,hscmty_erp_cobros_enca.pid_paciente, "+
+						comando.CommandText =  "SELECT osiris_erp_cobros_enca.folio_de_servicio,osiris_erp_cobros_enca.pid_paciente, "+
 							" nombre1_paciente,nombre2_paciente, apellido_paterno_paciente,id_habitacion, "+
 							"apellido_materno_paciente, to_char(fecha_nacimiento_paciente,'yyyy-MM-dd') AS fech_nacimiento,"+
 							"to_char(to_number(to_char(age('"+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"',fecha_nacimiento_paciente),'yyyy') ,'9999'),'9999') AS edad, "+
-							"sexo_paciente,to_char(hscmty_erp_cobros_enca.fechahora_creacion,'dd-MM-yyyy HH:mi:ss') AS fech_creacion "+
-							"FROM hscmty_his_paciente,hscmty_erp_cobros_enca "+
+							"sexo_paciente,to_char(osiris_erp_cobros_enca.fechahora_creacion,'dd-MM-yyyy HH:mi:ss') AS fech_creacion "+
+							"FROM osiris_his_paciente,osiris_erp_cobros_enca "+
 							"WHERE alta_paciente = 'false' "+
 							"AND pagado = 'false' "+
 							"AND cerrado = 'false' "+
 							"AND reservacion = 'false' "+
 							"AND cancelado = 'false' "+
-							"AND hscmty_his_paciente.pid_paciente = hscmty_erp_cobros_enca.pid_paciente "+
-							"AND hscmty_erp_cobros_enca.alta_paciente = false "+
-							"AND hscmty_erp_cobros_enca.cancelado = false "+
-							"AND hscmty_erp_cobros_enca.id_habitacion = 1 "+
+							"AND osiris_his_paciente.pid_paciente = osiris_erp_cobros_enca.pid_paciente "+
+							"AND osiris_erp_cobros_enca.alta_paciente = false "+
+							"AND osiris_erp_cobros_enca.cancelado = false "+
+							"AND osiris_erp_cobros_enca.id_habitacion = 1 "+
 							"AND nombre1_paciente LIKE '"+entry_expresion.Text.ToUpper()+"%' ORDER BY folio_de_servicio;";
 					}
 					if (radiobutton_busca_expediente.Active == true){
-						comando.CommandText = "SELECT hscmty_erp_cobros_enca.folio_de_servicio,hscmty_erp_cobros_enca.pid_paciente, "+
+						comando.CommandText = "SELECT osiris_erp_cobros_enca.folio_de_servicio,osiris_erp_cobros_enca.pid_paciente, "+
 							" nombre1_paciente,nombre2_paciente, apellido_paterno_paciente,id_habitacion, "+
 							"apellido_materno_paciente, to_char(fecha_nacimiento_paciente,'yyyy-MM-dd') AS fech_nacimiento,"+
 							"to_char(to_number(to_char(age('"+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"',fecha_nacimiento_paciente),'yyyy') ,'9999'),'9999') AS edad, "+
-							"sexo_paciente,to_char(hscmty_erp_cobros_enca.fechahora_creacion,'dd-MM-yyyy HH:mi:ss') AS fech_creacion "+
-							"FROM hscmty_his_paciente,hscmty_erp_cobros_enca "+
+							"sexo_paciente,to_char(osiris_erp_cobros_enca.fechahora_creacion,'dd-MM-yyyy HH:mi:ss') AS fech_creacion "+
+							"FROM osiris_his_paciente,osiris_erp_cobros_enca "+
 							"WHERE alta_paciente = 'false' "+
 							"AND pagado = 'false' "+
 							"AND cerrado = 'false' "+
 							"AND reservacion = 'false' "+
 							"AND cancelado = 'false' "+
-							"AND hscmty_his_paciente.pid_paciente = hscmty_erp_cobros_enca.pid_paciente "+
-							"AND hscmty_erp_cobros_enca.alta_paciente = false "+
-							"AND hscmty_erp_cobros_enca.cancelado = false "+
-							"AND hscmty_erp_cobros_enca.id_habitacion = 1 "+
-							"AND hscmty_his_paciente.pid_paciente = '"+entry_expresion.Text+"' ORDER BY folio_de_servicio;";			
+							"AND osiris_his_paciente.pid_paciente = osiris_erp_cobros_enca.pid_paciente "+
+							"AND osiris_erp_cobros_enca.alta_paciente = false "+
+							"AND osiris_erp_cobros_enca.cancelado = false "+
+							"AND osiris_erp_cobros_enca.id_habitacion = 1 "+
+							"AND osiris_his_paciente.pid_paciente = '"+entry_expresion.Text+"' ORDER BY folio_de_servicio;";			
 					}
 				}
 				NpgsqlDataReader lector = comando.ExecuteReader ();

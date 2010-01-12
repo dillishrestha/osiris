@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////
 // created on 17/10/2007 at 03:53 p
-// Hospital Santa Cecilia
+// Sistema Hospitalario OSIRIS
 // Monterrey - Mexico
 //
 // Autor    	: Ing. Daniel Olivares (Programacion)
@@ -325,12 +325,12 @@ namespace osiris
 				if ((string) entry_expresion.Text.ToUpper() == "*" || (string) entry_expresion.Text.ToUpper() == "")
 				{
 					comando.CommandText = "SELECT id_aseguradora,descripcion_aseguradora "+
-								"FROM hscmty_aseguradoras "+
+								"FROM osiris_aseguradoras "+
 								"WHERE lista_de_precio = true "+
 								"ORDER BY id_aseguradora;";
 				}else{
 					comando.CommandText = "SELECT id_aseguradora,descripcion_aseguradora "+
-								"FROM hscmty_aseguradoras "+
+								"FROM osiris_aseguradoras "+
 								"WHERE descripcion_aseguradora LIKE '%"+(string) entry_expresion.Text.ToUpper()+"%' "+
 								"lista_de_precio = true "+
 								"ORDER BY descripcion_aseguradora;";
@@ -365,12 +365,12 @@ namespace osiris
 				if ((string) entry_expresion.Text.ToUpper() == "*" || (string) entry_expresion.Text.ToUpper() == "")
 				{
 					comando.CommandText = "SELECT id_empresa,descripcion_empresa "+
-								"FROM hscmty_empresas "+
+								"FROM osiris_empresas "+
 								"WHERE lista_de_precio = true "+								
 								"ORDER BY id_empresa;";
 				}else{
 					comando.CommandText = "SELECT  id_empresa,descripcion_empresa "+
-								"FROM hscmty_empresas "+
+								"FROM osiris_empresas "+
 								"WHERE descripcion_empresa LIKE '%"+(string) entry_expresion.Text.ToUpper()+"%' "+
 								"lista_de_precio = true "+
 								"ORDER BY descripcion_empresa;";
@@ -467,7 +467,7 @@ namespace osiris
 				comando = conexion.CreateCommand ();
 				comando.CommandText = "SELECT to_char(id_grupo_producto,'999999999') AS idgrupoproducto,descripcion_grupo_producto, "+
 								"agrupacion,agrupacion2,agrupacion3,agrupacion4 "+
-								"FROM hscmty_grupo_producto "+
+								"FROM osiris_grupo_producto "+
 								"WHERE id_grupo_producto > 0 "+
 								"ORDER BY id_grupo_producto;";
 				
@@ -535,7 +535,7 @@ namespace osiris
 				comando = conexion.CreateCommand ();
 
 				comando.CommandText = "SELECT to_char(id_grupo1_producto,'999999999') AS idgrupo1producto,descripcion_grupo1_producto "+
-								"FROM hscmty_grupo1_producto "+
+								"FROM osiris_grupo1_producto "+
 								"WHERE id_grupo1_producto > 0 "+
 								"ORDER BY id_grupo1_producto;";
 				
@@ -629,7 +629,7 @@ namespace osiris
 				comando = conexion.CreateCommand ();
 
 				comando.CommandText = "SELECT to_char(id_grupo2_producto,'999999999') AS idgrupo2producto,descripcion_grupo2_producto "+
-									"FROM hscmty_grupo2_producto "+
+									"FROM osiris_grupo2_producto "+
 									"WHERE id_grupo2_producto > 0 "+
 									"ORDER BY id_grupo2_producto;";
 				
@@ -733,7 +733,7 @@ namespace osiris
 				conexion.Open ();
 				NpgsqlCommand comando; 
 				comando = conexion.CreateCommand ();
-               	comando.CommandText = "SELECT descripcion_tipo_paciente, id_tipo_paciente FROM hscmty_his_tipo_pacientes "+
+               	comando.CommandText = "SELECT descripcion_tipo_paciente, id_tipo_paciente FROM osiris_his_tipo_pacientes "+
                						"WHERE lista_de_precio = true "+
                						"ORDER BY descripcion_tipo_paciente;";
 				
@@ -1049,27 +1049,27 @@ namespace osiris
 							NpgsqlCommand comando; 
 							comando = conexion.CreateCommand ();
 			               	
-							comando.CommandText = "SELECT to_char(hscmty_erp_cobros_deta.fechahora_creacion,'yyyy-MM') AS mes_actual,"+
-											//"to_char(hscmty_erp_cobros_deta.precio_costo_unitario,'9999999999.99') AS preciocostounitario,"+
-											"to_char(sum(hscmty_erp_cobros_deta.cantidad_aplicada),'9999999999.99') AS totaldeproductos,"+
-											"to_char(sum(hscmty_erp_cobros_deta.precio_producto * hscmty_erp_cobros_deta.cantidad_aplicada),'9999999999.99') AS totalpreciopublico,"+
-											"to_char(sum(hscmty_erp_cobros_deta.precio_costo_unitario * hscmty_erp_cobros_deta.cantidad_aplicada),'9999999999.99') AS totalpreciocosto,"+
-											"to_char(hscmty_productos.id_producto,'999999999999') AS codProducto,"+
-											"hscmty_productos.descripcion_producto,descripcion_grupo_producto,descripcion_grupo1_producto,descripcion_grupo2_producto,hscmty_grupo_producto.agrupacion "+
-											"FROM hscmty_productos,hscmty_grupo_producto,hscmty_grupo1_producto,hscmty_grupo2_producto,hscmty_erp_cobros_deta,hscmty_erp_cobros_enca "+  
-											"WHERE hscmty_productos.id_producto IN('"+productos_seleccionado+"')"+
-											"AND to_char(hscmty_erp_cobros_deta.fechahora_creacion,'yyyy-MM') IN("+meses_selccionados+") "+
-											"AND hscmty_productos.id_grupo_producto = hscmty_grupo_producto.id_grupo_producto "+
-											"AND hscmty_productos.id_grupo1_producto = hscmty_grupo1_producto.id_grupo1_producto "+ 
-											"AND hscmty_productos.id_grupo2_producto = hscmty_grupo2_producto.id_grupo2_producto "+ 
-											"AND hscmty_erp_cobros_deta.id_producto =  hscmty_productos.id_producto "+
-											"AND hscmty_erp_cobros_deta.folio_de_servicio =  hscmty_erp_cobros_enca.folio_de_servicio "+
-											"AND hscmty_erp_cobros_deta.eliminado = false "+ 
-											"AND hscmty_erp_cobros_deta.cantidad_aplicada > '0' "+
-											"GROUP BY mes_actual,hscmty_productos.id_producto,hscmty_productos.descripcion_producto,"+
-											//"hscmty_erp_cobros_deta.precio_costo_unitario,"+
-											"descripcion_grupo_producto,descripcion_grupo1_producto,descripcion_grupo2_producto,hscmty_grupo_producto.agrupacion "+
-											"ORDER BY hscmty_productos.id_producto,to_char(hscmty_erp_cobros_deta.fechahora_creacion,'yyyy-MM') DESC;";
+							comando.CommandText = "SELECT to_char(osiris_erp_cobros_deta.fechahora_creacion,'yyyy-MM') AS mes_actual,"+
+											//"to_char(osiris_erp_cobros_deta.precio_costo_unitario,'9999999999.99') AS preciocostounitario,"+
+											"to_char(sum(osiris_erp_cobros_deta.cantidad_aplicada),'9999999999.99') AS totaldeproductos,"+
+											"to_char(sum(osiris_erp_cobros_deta.precio_producto * osiris_erp_cobros_deta.cantidad_aplicada),'9999999999.99') AS totalpreciopublico,"+
+											"to_char(sum(osiris_erp_cobros_deta.precio_costo_unitario * osiris_erp_cobros_deta.cantidad_aplicada),'9999999999.99') AS totalpreciocosto,"+
+											"to_char(osiris_productos.id_producto,'999999999999') AS codProducto,"+
+											"osiris_productos.descripcion_producto,descripcion_grupo_producto,descripcion_grupo1_producto,descripcion_grupo2_producto,osiris_grupo_producto.agrupacion "+
+											"FROM osiris_productos,osiris_grupo_producto,osiris_grupo1_producto,osiris_grupo2_producto,osiris_erp_cobros_deta,osiris_erp_cobros_enca "+  
+											"WHERE osiris_productos.id_producto IN('"+productos_seleccionado+"')"+
+											"AND to_char(osiris_erp_cobros_deta.fechahora_creacion,'yyyy-MM') IN("+meses_selccionados+") "+
+											"AND osiris_productos.id_grupo_producto = osiris_grupo_producto.id_grupo_producto "+
+											"AND osiris_productos.id_grupo1_producto = osiris_grupo1_producto.id_grupo1_producto "+ 
+											"AND osiris_productos.id_grupo2_producto = osiris_grupo2_producto.id_grupo2_producto "+ 
+											"AND osiris_erp_cobros_deta.id_producto =  osiris_productos.id_producto "+
+											"AND osiris_erp_cobros_deta.folio_de_servicio =  osiris_erp_cobros_enca.folio_de_servicio "+
+											"AND osiris_erp_cobros_deta.eliminado = false "+ 
+											"AND osiris_erp_cobros_deta.cantidad_aplicada > '0' "+
+											"GROUP BY mes_actual,osiris_productos.id_producto,osiris_productos.descripcion_producto,"+
+											//"osiris_erp_cobros_deta.precio_costo_unitario,"+
+											"descripcion_grupo_producto,descripcion_grupo1_producto,descripcion_grupo2_producto,osiris_grupo_producto.agrupacion "+
+											"ORDER BY osiris_productos.id_producto,to_char(osiris_erp_cobros_deta.fechahora_creacion,'yyyy-MM') DESC;";
 							NpgsqlDataReader lector = comando.ExecuteReader ();
 							//Console.WriteLine(comando.CommandText.ToString());
 							float var_01_ene = 0; float var_02_ene = 0;	string var_03_ene = "0";							
@@ -1411,19 +1411,19 @@ namespace osiris
 				NpgsqlCommand comando; 
 				comando = conexion.CreateCommand ();
                	
-				comando.CommandText = "SELECT to_char(hscmty_productos.id_producto,'999999999999') AS codProducto,"+
-							"hscmty_productos.descripcion_producto,to_char(precio_producto_publico,'99999999.99') AS preciopublico,"+
+				comando.CommandText = "SELECT to_char(osiris_productos.id_producto,'999999999999') AS codProducto,"+
+							"osiris_productos.descripcion_producto,to_char(precio_producto_publico,'99999999.99') AS preciopublico,"+
 							"to_char(precio_producto_publico1,'99999999.99') AS preciopublico1,"+
 							"aplicar_iva,to_char(porcentage_descuento,'999.99') AS porcentagesdesc,aplica_descuento,"+
 							"descripcion_grupo_producto,descripcion_grupo1_producto,descripcion_grupo2_producto,to_char(costo_por_unidad,'999999999.99') AS costoproductounitario, "+
 							"to_char(porcentage_ganancia,'99999.99') AS porcentageutilidad,to_char(costo_producto,'999999999.99') AS costoproducto, "+
-							"hscmty_grupo_producto.agrupacion "+
-							"FROM hscmty_productos,hscmty_grupo_producto,hscmty_grupo1_producto,hscmty_grupo2_producto "+
-							"WHERE hscmty_productos.id_grupo_producto = hscmty_grupo_producto.id_grupo_producto "+
-							"AND hscmty_productos.id_grupo1_producto = hscmty_grupo1_producto.id_grupo1_producto "+
-							"AND hscmty_productos.id_grupo2_producto = hscmty_grupo2_producto.id_grupo2_producto "+
+							"osiris_grupo_producto.agrupacion "+
+							"FROM osiris_productos,osiris_grupo_producto,osiris_grupo1_producto,osiris_grupo2_producto "+
+							"WHERE osiris_productos.id_grupo_producto = osiris_grupo_producto.id_grupo_producto "+
+							"AND osiris_productos.id_grupo1_producto = osiris_grupo1_producto.id_grupo1_producto "+
+							"AND osiris_productos.id_grupo2_producto = osiris_grupo2_producto.id_grupo2_producto "+
 							"AND cobro_activo = 'true' "+
-							"AND hscmty_productos.descripcion_producto LIKE '%"+entry_expresion.Text.ToUpper().Trim()+"%' ORDER BY descripcion_producto; ";
+							"AND osiris_productos.descripcion_producto LIKE '%"+entry_expresion.Text.ToUpper().Trim()+"%' ORDER BY descripcion_producto; ";
 				
 				NpgsqlDataReader lector = comando.ExecuteReader ();
 				Console.WriteLine(comando.CommandText.ToString());

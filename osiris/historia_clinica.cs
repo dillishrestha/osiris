@@ -331,9 +331,9 @@ namespace osiris
 				NpgsqlCommand comando1;
 				comando1 = conexion1.CreateCommand ();
 				comando1.CommandText ="SELECT * "+
-					                  "FROM hscmty_his_historia_clinica,hscmty_his_paciente "+
-						              "WHERE hscmty_his_paciente.historia_clinica = 'true' "+
-						              "AND hscmty_his_historia_clinica.pid_paciente = '"+this.entry_pid_paciente.Text+"';";
+					                  "FROM osiris_his_historia_clinica,osiris_his_paciente "+
+						              "WHERE osiris_his_paciente.historia_clinica = 'true' "+
+						              "AND osiris_his_historia_clinica.pid_paciente = '"+this.entry_pid_paciente.Text+"';";
 				
 			    Console.WriteLine(comando1.CommandText.ToString());
 				
@@ -927,7 +927,7 @@ namespace osiris
 					conexion.Open ();
 					NpgsqlCommand comando; 
 					comando = conexion.CreateCommand ();						 
-					comando.CommandText = "UPDATE hscmty_his_historia_clinica "+
+					comando.CommandText = "UPDATE osiris_his_historia_clinica "+
 						    "SET " +
 							"id_quien_actualizo = '" +LoginEmpleado+"', "+
 							"fechahora_actualizacion = '" +DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"', "+
@@ -1046,13 +1046,13 @@ namespace osiris
 					conexion.Open ();
 					NpgsqlCommand comando; 
 					comando = conexion.CreateCommand ();						 
-					comando.CommandText = "UPDATE hscmty_his_paciente "+
+					comando.CommandText = "UPDATE osiris_his_paciente "+
 						                  "SET historia_clinica = 'true' "+ 
 							              "WHERE pid_paciente = '"+this.entry_pid_paciente.Text+"'; ";
 					Console.WriteLine(comando.CommandText);
 					comando.ExecuteNonQuery();
 					comando.Dispose();
-					comando.CommandText = "INSERT INTO hscmty_his_historia_clinica ( "+
+					comando.CommandText = "INSERT INTO osiris_his_historia_clinica ( "+
 					                	     "id_quien_creo, "+                                 //1                               
 									         "fechahora_creacion, "+                            //2
 											 "pid_paciente, "+                                  //3

@@ -1,7 +1,7 @@
 // created on 15/02/2008 at 10:47 a
 //////////////////////////////////////////////////////////////////////
 // created on 21/01/2008 at 08:28 p
-// Hospital Santa Cecilia
+// Sistema Hospitalario OSIRIS
 // Monterrey - Mexico
 //
 // Autor    	: Ing. Daniel Olivares C. (Modificaciones y Ajustes)
@@ -274,7 +274,7 @@ namespace osiris
 				NpgsqlCommand comando; 
 				comando = conexion.CreateCommand ();
 					comando.CommandText = "SELECT id_abono, "+ 
-								"to_char(hscmty_erp_abonos.id_abono,'9999999999') AS idabono, "+
+								"to_char(osiris_erp_abonos.id_abono,'9999999999') AS idabono, "+
 								"folio_de_servicio, "+
 								"monto_de_abono_procedimiento, "+
 								"monto_de_abono_factura, "+
@@ -283,23 +283,23 @@ namespace osiris
 								"numero_factura, "+								
 								"id_quien_creo, "+
 								"monto_de_abono_procedimiento, "+
-								"to_char(hscmty_erp_abonos.monto_de_abono_procedimiento,'9999999999.99') AS abono, "+
+								"to_char(osiris_erp_abonos.monto_de_abono_procedimiento,'9999999999.99') AS abono, "+
 								"concepto_del_abono, "+
 								"fechahora_registro, "+
-								"to_char(hscmty_erp_abonos.fechahora_registro,'yyyy-MM-dd HH:mi:ss') AS fecha_registro, "+
+								"to_char(osiris_erp_abonos.fechahora_registro,'yyyy-MM-dd HH:mi:ss') AS fecha_registro, "+
 								"fecha_abono, "+
-								"to_char(hscmty_erp_abonos.fecha_abono,'dd-MM-yyyy') AS fechaabono, "+
+								"to_char(osiris_erp_abonos.fecha_abono,'dd-MM-yyyy') AS fechaabono, "+
 								"id_presupuesto, "+
 								"to_char(id_presupuesto,'9999999999') AS presupuesto, "+
 								"id_paquete, "+
-								"hscmty_erp_abonos.id_forma_de_pago, "+ 
+								"osiris_erp_abonos.id_forma_de_pago, "+ 
 								"to_char(id_paquete,'9999999999') AS paquete, "+
-								"hscmty_erp_forma_de_pago.id_forma_de_pago,descripcion_forma_de_pago AS descripago "+
-								"FROM hscmty_erp_abonos,hscmty_erp_forma_de_pago "+
-								"WHERE hscmty_erp_abonos.folio_de_servicio = '"+this.folioservicio.ToString()+"' "+
-								"AND hscmty_erp_abonos.id_forma_de_pago = hscmty_erp_forma_de_pago.id_forma_de_pago "+
-								"AND hscmty_erp_abonos.eliminado = 'false' "+
-								"ORDER BY hscmty_erp_abonos.folio_de_servicio;";															
+								"osiris_erp_forma_de_pago.id_forma_de_pago,descripcion_forma_de_pago AS descripago "+
+								"FROM osiris_erp_abonos,osiris_erp_forma_de_pago "+
+								"WHERE osiris_erp_abonos.folio_de_servicio = '"+this.folioservicio.ToString()+"' "+
+								"AND osiris_erp_abonos.id_forma_de_pago = osiris_erp_forma_de_pago.id_forma_de_pago "+
+								"AND osiris_erp_abonos.eliminado = 'false' "+
+								"ORDER BY osiris_erp_abonos.folio_de_servicio;";															
 				NpgsqlDataReader lector = comando.ExecuteReader ();
 				while (lector.Read())
 				{	
@@ -371,7 +371,7 @@ namespace osiris
 						NpgsqlCommand comando4; 
 						comando4 = conexion4.CreateCommand ();
 		 				comando4.CommandText = "SELECT numero_recibo_caja,folio_de_servicio "+
-										"FROM hscmty_erp_abonos "+
+										"FROM osiris_erp_abonos "+
 										"WHERE numero_recibo_caja = '"+this.entry_recibo_caja.Text+"' "+
 										"LIMIT 1 ;";
 		 					
@@ -389,7 +389,7 @@ namespace osiris
 								conexion.Open ();
 								NpgsqlCommand comando; 
 								comando = conexion.CreateCommand ();
-					 			comando.CommandText = "INSERT INTO hscmty_erp_abonos("+
+					 			comando.CommandText = "INSERT INTO osiris_erp_abonos("+
 												  	"monto_de_abono_procedimiento, "+//2
 													"numero_recibo_caja, "+//3
 													"id_quien_creo, "+//4
@@ -422,7 +422,7 @@ namespace osiris
 					    	       	conexion2.Open ();
 									NpgsqlCommand comando2; 
 									comando2 = conexion2.CreateCommand ();
-						 			comando2.CommandText = "UPDATE hscmty_erp_cobros_enca SET tiene_abono = 'true',"+
+						 			comando2.CommandText = "UPDATE osiris_erp_cobros_enca SET tiene_abono = 'true',"+
 						 										"total_abonos = total_abonos + '"+entry_monto_abono.Text+"' "+
 																"WHERE folio_de_servicio = '"+this.folioservicio.ToString()+"' ;";
 						 					
@@ -496,7 +496,7 @@ namespace osiris
 				conexion.Open ();
 				NpgsqlCommand comando; 
 				comando = conexion.CreateCommand ();
-               	comando.CommandText = "SELECT * FROM hscmty_erp_forma_de_pago "+
+               	comando.CommandText = "SELECT * FROM osiris_erp_forma_de_pago "+
                						"WHERE proveedor = false "+	
                						"ORDER BY descripcion_forma_de_pago;";
 				
@@ -821,8 +821,8 @@ namespace osiris
 		{
       		// Cambiar la fuente
 			Gnome.Print.Setfont (ContextoImp, fuente6);
-			ContextoImp.MoveTo(19.7, 770);			ContextoImp.Show("Hospital Santa Cecilia");
-			ContextoImp.MoveTo(20, 770);			ContextoImp.Show("Hospital Santa Cecilia");
+			ContextoImp.MoveTo(19.7, 770);			ContextoImp.Show("Sistema Hospitalario OSIRIS");
+			ContextoImp.MoveTo(20, 770);			ContextoImp.Show("Sistema Hospitalario OSIRIS");
 			ContextoImp.MoveTo(19.7, 760);			ContextoImp.Show("Direccion: Isacc Garza #200 Ote. Centro Monterrey, NL.");
 			ContextoImp.MoveTo(20, 760);			ContextoImp.Show("Direccion: Isacc Garza #200 Ote. Centro Monterrey, NL.");
 			ContextoImp.MoveTo(19.7, 750);			ContextoImp.Show("Conmutador:(81) 81-25-56-10");

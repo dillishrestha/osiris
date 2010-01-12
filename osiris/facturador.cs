@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////
 // created on 21/06/2007 at 01:40 p
-// Hospital Santa Cecilia
+// Sistema Hospitalario OSIRIS
 // Monterrey - Mexico
 //
 // Autor    	: Ing. Daniel Olivares (Programacion)
@@ -359,7 +359,7 @@ namespace osiris
 						comando = conexion.CreateCommand ();
 				
 						// asigna el numero de paciente (PID)
-						comando.CommandText = "SELECT numero_factura FROM hscmty_erp_factura_enca ORDER BY numero_factura DESC LIMIT 1;";
+						comando.CommandText = "SELECT numero_factura FROM osiris_erp_factura_enca ORDER BY numero_factura DESC LIMIT 1;";
                         NpgsqlDataReader lector = comando.ExecuteReader ();
 						
 						if ((bool) lector.Read()){
@@ -448,19 +448,19 @@ namespace osiris
 				conexion.Open ();
 				NpgsqlCommand comando; 
 				comando = conexion.CreateCommand ();
-				comando.CommandText = "SELECT hscmty_erp_factura_enca.id_cliente,hscmty_erp_factura_enca.descripcion_cliente,hscmty_erp_factura_enca.direccion_cliente,hscmty_erp_factura_enca.colonia_cliente,hscmty_erp_factura_enca.municipio_cliente,"+
-									"hscmty_erp_factura_enca.estado_cliente,hscmty_erp_factura_enca.rfc_cliente,hscmty_erp_factura_enca.curp_cliente,hscmty_erp_factura_enca.telefono1_cliente,hscmty_erp_factura_enca.telefono2_cliente,"+
-									"hscmty_erp_factura_enca.fax_cliente,hscmty_erp_factura_enca.mail_cliente,hscmty_erp_factura_enca.cp_cliente,"+
-									"hscmty_erp_factura_enca.contacto_cliente,hscmty_erp_factura_enca.telefono_contacto_cliente,to_char(deducible,'99999999.99') AS deducible_,to_char(coaseguro,'99999999.99') AS coaseguro_,"+
+				comando.CommandText = "SELECT osiris_erp_factura_enca.id_cliente,osiris_erp_factura_enca.descripcion_cliente,osiris_erp_factura_enca.direccion_cliente,osiris_erp_factura_enca.colonia_cliente,osiris_erp_factura_enca.municipio_cliente,"+
+									"osiris_erp_factura_enca.estado_cliente,osiris_erp_factura_enca.rfc_cliente,osiris_erp_factura_enca.curp_cliente,osiris_erp_factura_enca.telefono1_cliente,osiris_erp_factura_enca.telefono2_cliente,"+
+									"osiris_erp_factura_enca.fax_cliente,osiris_erp_factura_enca.mail_cliente,osiris_erp_factura_enca.cp_cliente,"+
+									"osiris_erp_factura_enca.contacto_cliente,osiris_erp_factura_enca.telefono_contacto_cliente,to_char(deducible,'99999999.99') AS deducible_,to_char(coaseguro,'99999999.99') AS coaseguro_,"+
 									"to_char(honorario_medico,'99999999.99') AS honorariomedico,to_char(sub_total_15,'99999999.99') AS subtotal_15,to_char(sub_total_0,'99999999.99') AS subtotal_0,"+
 									"to_char(iva_al_15,'99999999.99') AS ivaal_15,to_char(valor_coaseguro,'99999999.99') AS valorcoaseguro,numero_factura, "+
 									"cancelado,to_char(fechahora_cancelacion,'dd-MM-yyyy') AS fechahoracancelacion,to_char(fecha_factura,'dd-MM-yyyy') AS fechafactura,"+
 									"motivo_cancelacion,pagada,to_char(fechahora_pago_factura,'dd-MM-yyyy') AS fechahorapagofactura,"+
-									"hscmty_erp_factura_enca.id_quien_creo,hscmty_erp_clientes.envio_factura,numero_ntacred,"+
-									"hscmty_erp_factura_enca.enviado "+
-									"FROM hscmty_erp_factura_enca,hscmty_erp_clientes "+
+									"osiris_erp_factura_enca.id_quien_creo,osiris_erp_clientes.envio_factura,numero_ntacred,"+
+									"osiris_erp_factura_enca.enviado "+
+									"FROM osiris_erp_factura_enca,osiris_erp_clientes "+
 									"WHERE numero_factura = '"+entry_numero_factura.Text.Trim()+"' "+
-									"AND hscmty_erp_factura_enca.id_cliente = hscmty_erp_clientes.id_cliente ;";
+									"AND osiris_erp_factura_enca.id_cliente = osiris_erp_clientes.id_cliente ;";
 				//Console.WriteLine(comando.CommandText);
 				NpgsqlDataReader lector = comando.ExecuteReader ();
 						
@@ -567,7 +567,7 @@ namespace osiris
 						comando1 = conexion1.CreateCommand ();
 						comando1.CommandText = "SELECT numero_factura,to_char(cantidad_detalle,'99999999.99') AS cantidaddetalle,descripcion_detalle,"+
 												"to_char(precio_unitario,'99999999.99') AS preciounitario,to_char(importe_detalle,'99999999.99') AS importedetalle,tipo_detalle "+
-												"FROM hscmty_erp_factura_deta WHERE numero_factura = '"+numerodefactura+"' "+
+												"FROM osiris_erp_factura_deta WHERE numero_factura = '"+numerodefactura+"' "+
 												"ORDER BY id_secuencia;";
 						NpgsqlDataReader lector1 = comando1.ExecuteReader ();
 						
@@ -926,7 +926,7 @@ namespace osiris
 				NpgsqlCommand comando; 
 				comando = conexion.CreateCommand ();
 			 				
-				comando.CommandText = "UPDATE hscmty_erp_factura_enca "+
+				comando.CommandText = "UPDATE osiris_erp_factura_enca "+
 										"SET pagada = 'true', "+
 										"fechahora_pago_factura = '"+this.entry_ano.Text+"-"+this.entry_mes.Text+"-"+this.entry_dia.Text+"',"+
 										//"fecha_factura = '"+this.entry_ano.Text+"-"+this.entry_mes.Text+"-"+this.entry_dia.Text+"',"+
@@ -936,14 +936,14 @@ namespace osiris
 		        comando.Dispose();
 		        
 		        if (enviofactura_cliente == true){
-		        	comando.CommandText = "UPDATE hscmty_erp_cobros_enca "+
+		        	comando.CommandText = "UPDATE osiris_erp_cobros_enca "+
 										"SET pagado = 'true', "+
 										"total_pago = total_pago +'"+Convert.ToString(totaldefactura - totalhonorariomedico)+"' "+
 										"WHERE numero_factura =  '"+numerodefactura+"';";
 					comando.ExecuteNonQuery();
 		        	comando.Dispose();
 		        	
-		        	comando.CommandText = "INSERT INTO hscmty_erp_abonos("+
+		        	comando.CommandText = "INSERT INTO osiris_erp_abonos("+
 				 							"monto_de_abono_factura,"+
 				 							"numero_factura,"+
 				 							"concepto_del_abono,"+
@@ -993,7 +993,7 @@ namespace osiris
 					NpgsqlCommand comando; 
 					comando = conexion.CreateCommand ();
 					
-					comando.CommandText = "INSERT INTO hscmty_erp_factura_enca ("+
+					comando.CommandText = "INSERT INTO osiris_erp_factura_enca ("+
 										"id_cliente,"+//1
 	             						"descripcion_cliente,"+
 	                					"direccion_cliente,"+
@@ -1087,7 +1087,7 @@ namespace osiris
 							}else{
 								variable_paso_03 = decimal.Parse((string)treeview_detalle_de_factura.Model.GetValue (iter2,3)); 
 							}
- 							comando1.CommandText = "INSERT INTO hscmty_erp_factura_deta( "+
+ 							comando1.CommandText = "INSERT INTO osiris_erp_factura_deta( "+
  													"numero_factura,"+
 													"cantidad_detalle,"+		
 													"descripcion_detalle,"+
@@ -1126,7 +1126,7 @@ namespace osiris
 									variable_paso_03 = decimal.Parse((string)treeview_detalle_de_factura.Model.GetValue (iter2,3)); 
 								}
 								
-	 							comando1.CommandText = "INSERT INTO hscmty_erp_factura_deta( "+
+	 							comando1.CommandText = "INSERT INTO osiris_erp_factura_deta( "+
 	 													"numero_factura,"+
 														"cantidad_detalle,"+		
 														"descripcion_detalle,"+
@@ -1172,12 +1172,12 @@ namespace osiris
 									conexion2.Open ();
 									NpgsqlCommand comando2; 
 									comando2 = conexion2.CreateCommand ();
-									comando2.CommandText = "UPDATE hscmty_erp_cobros_enca SET numero_factura = '"+entry_numero_factura.Text.Trim()+"',"+
+									comando2.CommandText = "UPDATE osiris_erp_cobros_enca SET numero_factura = '"+entry_numero_factura.Text.Trim()+"',"+
 															"facturacion = 'true' , fecha_facturacion = '"+DateTime.Now.ToString("yyyy-MM-dd")+"' ,"+
 															"id_empleado_factura = '"+LoginEmpleado+"',"+
 															"id_cliente = '"+this.idcliente.ToString()+"',"+
 															"historial_facturados = historial_facturados || '"+entry_numero_factura.Text.Trim()+";"+LoginEmpleado+";"+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"\n' "+
-															"WHERE hscmty_erp_cobros_enca.folio_de_servicio IN ('"+numeros_folios_seleccionado.Trim()+"') ;";
+															"WHERE osiris_erp_cobros_enca.folio_de_servicio IN ('"+numeros_folios_seleccionado.Trim()+"') ;";
 															
 			 						//Console.WriteLine(comando2.CommandText.ToString());
 			 						comando2.ExecuteNonQuery(); 						comando2.Dispose();
@@ -1191,8 +1191,8 @@ namespace osiris
 										conexion3.Open ();
 										NpgsqlCommand comando3; 
 										comando3 = conexion3.CreateCommand ();
-										comando3.CommandText = "UPDATE hscmty_erp_honorarios_medicos SET numero_factura = '"+entry_numero_factura.Text.Trim()+"' "+
-																"WHERE hscmty_erp_honorarios_medicos.folio_de_servicio IN ('"+numeros_folios_seleccionado.Trim()+"') ;";
+										comando3.CommandText = "UPDATE osiris_erp_honorarios_medicos SET numero_factura = '"+entry_numero_factura.Text.Trim()+"' "+
+																"WHERE osiris_erp_honorarios_medicos.folio_de_servicio IN ('"+numeros_folios_seleccionado.Trim()+"') ;";
 				 							
 				 						comando3.ExecuteNonQuery(); 						comando3.Dispose();
 				 						conexion3.Close();
@@ -1207,8 +1207,8 @@ namespace osiris
 											comando4 = conexion4.CreateCommand ();
 								
 											strsql4 =											 
-											"UPDATE hscmty_erp_cobros_deta SET numero_factura = '"+entry_numero_factura.Text.Trim()+"' "+
-											"WHERE hscmty_erp_cobros_deta.folio_de_servicio IN ('"+numeros_folios_seleccionado.Trim()+"') ;";				 							
+											"UPDATE osiris_erp_cobros_deta SET numero_factura = '"+entry_numero_factura.Text.Trim()+"' "+
+											"WHERE osiris_erp_cobros_deta.folio_de_servicio IN ('"+numeros_folios_seleccionado.Trim()+"') ;";				 							
 				 							
 											comando4.CommandText = strsql4;
 											
@@ -1292,7 +1292,7 @@ namespace osiris
 					NpgsqlCommand comando; 
 					comando = conexion.CreateCommand ();
 					
-					comando.CommandText = "UPDATE hscmty_erp_factura_enca SET cancelado = 'true' , fechahora_cancelacion = '"+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"',"+
+					comando.CommandText = "UPDATE osiris_erp_factura_enca SET cancelado = 'true' , fechahora_cancelacion = '"+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"',"+
 											"id_quien_cancelo = '"+LoginEmpleado+"' "+
 											"WHERE numero_factura = '"+numerodefactura+"' ;";
 					comando.ExecuteNonQuery();
@@ -1308,7 +1308,7 @@ namespace osiris
 						conexion2.Open ();
 						NpgsqlCommand comando2; 
 						comando2 = conexion2.CreateCommand ();
-						comando2.CommandText = "UPDATE hscmty_erp_cobros_enca SET facturacion = 'false' , numero_factura = 0 "+
+						comando2.CommandText = "UPDATE osiris_erp_cobros_enca SET facturacion = 'false' , numero_factura = 0 "+
 											"WHERE numero_factura = '"+numerodefactura+"' ;";
 						comando2.ExecuteNonQuery();
 						
@@ -1323,7 +1323,7 @@ namespace osiris
 							conexion3.Open ();
 							NpgsqlCommand comando3; 
 							comando3 = conexion3.CreateCommand ();
-							comando3.CommandText = "UPDATE hscmty_erp_honorarios_medicos SET numero_factura = 0"+
+							comando3.CommandText = "UPDATE osiris_erp_honorarios_medicos SET numero_factura = 0"+
 													"WHERE numero_factura = '"+numerodefactura+"'; ";
 	 							
 	 						comando3.ExecuteNonQuery();
@@ -1345,7 +1345,7 @@ namespace osiris
 								comando4 = conexion4.CreateCommand ();
 							
 							
-							comando4.CommandText = "UPDATE hscmty_erp_cobros_deta SET numero_factura = 0"+
+							comando4.CommandText = "UPDATE osiris_erp_cobros_deta SET numero_factura = 0"+
 													"WHERE numero_factura = '"+numerodefactura+"'; ";
 										
 							comando4.ExecuteNonQuery();					
@@ -1643,7 +1643,7 @@ namespace osiris
 											"estado_cliente,rfc_cliente,curp_cliente,telefono1_cliente,telefono2_cliente,fax_cliente,"+
 											"mail_cliente,contacto_cliente,telefono_contacto_cliente,dias_credito_cliente,fechahora_creacion_cliente,"+
 											"cliente_activo,id_quien_creo,cp_cliente "+
-											"FROM hscmty_erp_clientes "+
+											"FROM osiris_erp_clientes "+
 											"WHERE descripcion_cliente LIKE '%"+entry_expresion.Text.ToUpper().Trim()+"%' AND cliente_activo = 'true';";
 				}
 				if (radiobutton_rfc_client.Active == true){
@@ -1651,7 +1651,7 @@ namespace osiris
 											"estado_cliente,rfc_cliente,curp_cliente,telefono1_cliente,telefono2_cliente,fax_cliente,"+
 											"mail_cliente,contacto_cliente,telefono_contacto_cliente,dias_credito_cliente,fechahora_creacion_cliente,"+
 											"cliente_activo,id_quien_creo,cp_cliente "+
-											"FROM hscmty_erp_clientes "+
+											"FROM osiris_erp_clientes "+
 											"WHERE descripcion_cliente LIKE '%"+entry_expresion.Text.ToUpper().Trim()+"%' AND cliente_activo = 'true';";
 					
 				}
@@ -1660,14 +1660,14 @@ namespace osiris
 											"estado_cliente,rfc_cliente,curp_cliente,telefono1_cliente,telefono2_cliente,fax_cliente,"+
 											"mail_cliente,contacto_cliente,telefono_contacto_cliente,dias_credito_cliente,fechahora_creacion_cliente,"+
 											"cliente_activo,id_quien_creo,cp_cliente "+
-											"FROM hscmty_erp_clientes "+
+											"FROM osiris_erp_clientes "+
 											"WHERE id_cliente =  '"+entry_expresion.Text.ToUpper().Trim()+"' AND cliente_activo = 'true';";
 				}
 				if ((string) entry_expresion.Text.ToString() == "*" || (string) entry_expresion.Text.ToString() == ""){
 					comando.CommandText = "SELECT id_cliente,descripcion_cliente,direccion_cliente,colonia_cliente,municipio_cliente,"+
 											"estado_cliente,rfc_cliente,curp_cliente,telefono1_cliente,telefono2_cliente,fax_cliente,"+
 											"mail_cliente,contacto_cliente,telefono_contacto_cliente,dias_credito_cliente,fechahora_creacion_cliente,"+
-											"cliente_activo,id_quien_creo,cp_cliente FROM hscmty_erp_clientes WHERE cliente_activo = 'true';";
+											"cliente_activo,id_quien_creo,cp_cliente FROM osiris_erp_clientes WHERE cliente_activo = 'true';";
 				}
 				NpgsqlDataReader lector = comando.ExecuteReader ();
 				while (lector.Read()){
@@ -1853,45 +1853,45 @@ namespace osiris
                	
 				// asigna el numero de folio de ingreso de paciente (FOLIO)
 				 
-				comando.CommandText = "SELECT DISTINCT(hscmty_erp_movcargos.folio_de_servicio),to_char(hscmty_erp_movcargos.folio_de_servicio,'9999999999') AS foliodeatencion, "+
-								//"SELECT hscmty_erp_movcargos.folio_de_servicio,to_char(hscmty_erp_movcargos.folio_de_servicio,'9999999999') AS foliodeatencion, "+ 
-								"hscmty_erp_cobros_enca.cancelado,"+
-								"hscmty_erp_cobros_enca.cerrado,"+
-								"to_char(hscmty_erp_cobros_enca.pid_paciente,'9999999999') AS pidpaciente,"+
+				comando.CommandText = "SELECT DISTINCT(osiris_erp_movcargos.folio_de_servicio),to_char(osiris_erp_movcargos.folio_de_servicio,'9999999999') AS foliodeatencion, "+
+								//"SELECT osiris_erp_movcargos.folio_de_servicio,to_char(osiris_erp_movcargos.folio_de_servicio,'9999999999') AS foliodeatencion, "+ 
+								"osiris_erp_cobros_enca.cancelado,"+
+								"osiris_erp_cobros_enca.cerrado,"+
+								"to_char(osiris_erp_cobros_enca.pid_paciente,'9999999999') AS pidpaciente,"+
 				            	"nombre1_paciente || ' ' || nombre2_paciente || ' ' || apellido_paterno_paciente || ' ' || apellido_materno_paciente AS nombre_completo,"+
-				            	"telefono_particular1_paciente,numero_poliza,folio_de_servicio_dep,hscmty_empresas.descripcion_empresa,"+
-				            	"to_char(hscmty_erp_cobros_enca.fechahora_creacion,'dd-MM-yyyy HH24:mm') AS fecha_ingreso,"+
-				            	"to_char(hscmty_erp_cobros_enca.fecha_alta_paciente,'dd-MM-yyyy HH24:mm') AS fecha_egreso,"+
-				            	"hscmty_erp_movcargos.id_tipo_paciente AS idtipopaciente, "+
-				            	"hscmty_erp_movcargos.id_tipo_admisiones AS idtipoadmision, "+
-            					"descripcion_tipo_paciente,hscmty_his_tipo_cirugias.descripcion_cirugia,hscmty_his_paciente.id_empresa,"+
-            					"descripcion_admisiones,hscmty_his_tipo_especialidad.descripcion_especialidad,"+
-				            	"hscmty_erp_cobros_enca.id_aseguradora,descripcion_aseguradora, hscmty_erp_cobros_enca.id_medico,nombre_medico, "+
-				            	"hscmty_erp_movcargos.descripcion_diagnostico_movcargos,hscmty_his_tipo_cirugias.id_tipo_cirugia,nombre_medico_encabezado,"+
-				            	"hscmty_erp_cobros_enca.facturacion,hscmty_erp_cobros_enca.id_empleado_alta_paciente,"+
-				            	"to_char(hscmty_erp_cobros_enca.honorario_medico,'999999999.99') AS honorariomedico,"+
-				            	"to_char(hscmty_erp_cobros_enca.total_abonos,'999999999.99') AS totalabonos,"+
+				            	"telefono_particular1_paciente,numero_poliza,folio_de_servicio_dep,osiris_empresas.descripcion_empresa,"+
+				            	"to_char(osiris_erp_cobros_enca.fechahora_creacion,'dd-MM-yyyy HH24:mm') AS fecha_ingreso,"+
+				            	"to_char(osiris_erp_cobros_enca.fecha_alta_paciente,'dd-MM-yyyy HH24:mm') AS fecha_egreso,"+
+				            	"osiris_erp_movcargos.id_tipo_paciente AS idtipopaciente, "+
+				            	"osiris_erp_movcargos.id_tipo_admisiones AS idtipoadmision, "+
+            					"descripcion_tipo_paciente,osiris_his_tipo_cirugias.descripcion_cirugia,osiris_his_paciente.id_empresa,"+
+            					"descripcion_admisiones,osiris_his_tipo_especialidad.descripcion_especialidad,"+
+				            	"osiris_erp_cobros_enca.id_aseguradora,descripcion_aseguradora, osiris_erp_cobros_enca.id_medico,nombre_medico, "+
+				            	"osiris_erp_movcargos.descripcion_diagnostico_movcargos,osiris_his_tipo_cirugias.id_tipo_cirugia,nombre_medico_encabezado,"+
+				            	"osiris_erp_cobros_enca.facturacion,osiris_erp_cobros_enca.id_empleado_alta_paciente,"+
+				            	"to_char(osiris_erp_cobros_enca.honorario_medico,'999999999.99') AS honorariomedico,"+
+				            	"to_char(osiris_erp_cobros_enca.total_abonos,'999999999.99') AS totalabonos,"+
 				            	"numero_poliza,numero_certificado "+
 				            	"FROM "+ 
-				            	"hscmty_erp_cobros_enca,hscmty_his_paciente,hscmty_erp_movcargos,hscmty_his_tipo_admisiones,hscmty_his_tipo_pacientes, "+
-				            	"hscmty_aseguradoras,hscmty_his_medicos,hscmty_his_tipo_cirugias,hscmty_his_tipo_especialidad,hscmty_empresas "+
+				            	"osiris_erp_cobros_enca,osiris_his_paciente,osiris_erp_movcargos,osiris_his_tipo_admisiones,osiris_his_tipo_pacientes, "+
+				            	"osiris_aseguradoras,osiris_his_medicos,osiris_his_tipo_cirugias,osiris_his_tipo_especialidad,osiris_empresas "+
 				            	"WHERE "+
-				            	"hscmty_erp_cobros_enca.pid_paciente = hscmty_his_paciente.pid_paciente "+
-				            	"AND hscmty_erp_movcargos.folio_de_servicio = hscmty_erp_cobros_enca.folio_de_servicio "+
-				            	"AND hscmty_erp_cobros_enca.id_medico = hscmty_his_medicos.id_medico "+ 
-								"AND hscmty_erp_cobros_enca.id_aseguradora = hscmty_aseguradoras.id_aseguradora "+ 
-								"AND hscmty_erp_movcargos.id_tipo_admisiones = hscmty_his_tipo_admisiones.id_tipo_admisiones "+
-								"AND hscmty_erp_movcargos.id_tipo_paciente = hscmty_his_tipo_pacientes.id_tipo_paciente "+
-								"AND hscmty_erp_movcargos.id_tipo_cirugia = hscmty_his_tipo_cirugias.id_tipo_cirugia "+
-								"AND hscmty_his_medicos.id_especialidad = hscmty_his_tipo_especialidad.id_especialidad  "+
-								"AND hscmty_erp_cobros_enca.id_aseguradora != '17' "+
-								"AND hscmty_his_paciente.id_empresa = hscmty_empresas.id_empresa "+
-								"AND hscmty_erp_cobros_enca.alta_paciente = 'true' "+ 
-								"AND hscmty_erp_cobros_enca.cerrado = 'true' "+
-								"AND hscmty_erp_cobros_enca.cancelado = 'false' "+
-								"AND hscmty_erp_cobros_enca.facturacion = 'false' "+								
-								"AND hscmty_erp_movcargos.id_tipo_admisiones != '10' "+
-								"ORDER BY hscmty_erp_movcargos.folio_de_servicio;";
+				            	"osiris_erp_cobros_enca.pid_paciente = osiris_his_paciente.pid_paciente "+
+				            	"AND osiris_erp_movcargos.folio_de_servicio = osiris_erp_cobros_enca.folio_de_servicio "+
+				            	"AND osiris_erp_cobros_enca.id_medico = osiris_his_medicos.id_medico "+ 
+								"AND osiris_erp_cobros_enca.id_aseguradora = osiris_aseguradoras.id_aseguradora "+ 
+								"AND osiris_erp_movcargos.id_tipo_admisiones = osiris_his_tipo_admisiones.id_tipo_admisiones "+
+								"AND osiris_erp_movcargos.id_tipo_paciente = osiris_his_tipo_pacientes.id_tipo_paciente "+
+								"AND osiris_erp_movcargos.id_tipo_cirugia = osiris_his_tipo_cirugias.id_tipo_cirugia "+
+								"AND osiris_his_medicos.id_especialidad = osiris_his_tipo_especialidad.id_especialidad  "+
+								"AND osiris_erp_cobros_enca.id_aseguradora != '17' "+
+								"AND osiris_his_paciente.id_empresa = osiris_empresas.id_empresa "+
+								"AND osiris_erp_cobros_enca.alta_paciente = 'true' "+ 
+								"AND osiris_erp_cobros_enca.cerrado = 'true' "+
+								"AND osiris_erp_cobros_enca.cancelado = 'false' "+
+								"AND osiris_erp_cobros_enca.facturacion = 'false' "+								
+								"AND osiris_erp_movcargos.id_tipo_admisiones != '10' "+
+								"ORDER BY osiris_erp_movcargos.folio_de_servicio;";
 				
 				// Excluye a todo los que es del centro medico
 				Console.WriteLine("33   "+comando.CommandText.ToString());
@@ -2006,31 +2006,31 @@ namespace osiris
 				NpgsqlCommand comando1; 
 				comando1 = conexion1.CreateCommand ();
 				// asigna el numero de folio de ingreso de paciente (FOLIO)
-				comando1.CommandText = "SELECT hscmty_erp_cobros_deta.folio_de_servicio,hscmty_erp_cobros_deta.pid_paciente, hscmty_his_tipo_admisiones.descripcion_admisiones,"+
-									"aplicar_iva, hscmty_his_tipo_admisiones.id_tipo_admisiones AS idadmisiones,hscmty_grupo_producto.descripcion_grupo_producto,"+
-									"hscmty_productos.id_grupo_producto,  to_char(hscmty_erp_cobros_deta.porcentage_descuento,999.99) AS porcdesc,"+
-									"to_char(hscmty_erp_cobros_deta.fechahora_creacion,'dd-mm-yyyy') AS fechcreacion,  to_char(hscmty_erp_cobros_deta.fechahora_creacion,'HH:mm') AS horacreacion,"+
-									"to_char(hscmty_erp_cobros_deta.id_producto,'999999999999') AS idproducto,descripcion_producto,"+
-									"to_char(hscmty_erp_cobros_deta.cantidad_aplicada,'9999.99') AS cantidadaplicada, to_char(hscmty_erp_cobros_deta.precio_producto,'999999.99') AS preciounitario," +
-									"ltrim(to_char(hscmty_erp_cobros_deta.precio_producto,'9999999.99')) AS preciounitarioprod, to_char(hscmty_erp_cobros_deta.iva_producto,'999999.99') AS ivaproducto,"+
-									//"to_char(hscmty_erp_cobros_deta.precio_por_cantidad,'999999.99') AS ppcantidad, "+
-									"to_char(hscmty_erp_cobros_deta.cantidad_aplicada * hscmty_erp_cobros_deta.precio_producto,'99999999.99') AS ppcantidad,"+
-									"to_char(hscmty_productos.precio_producto_publico,'999999999.99999') AS preciopublico,"+
+				comando1.CommandText = "SELECT osiris_erp_cobros_deta.folio_de_servicio,osiris_erp_cobros_deta.pid_paciente, osiris_his_tipo_admisiones.descripcion_admisiones,"+
+									"aplicar_iva, osiris_his_tipo_admisiones.id_tipo_admisiones AS idadmisiones,osiris_grupo_producto.descripcion_grupo_producto,"+
+									"osiris_productos.id_grupo_producto,  to_char(osiris_erp_cobros_deta.porcentage_descuento,999.99) AS porcdesc,"+
+									"to_char(osiris_erp_cobros_deta.fechahora_creacion,'dd-mm-yyyy') AS fechcreacion,  to_char(osiris_erp_cobros_deta.fechahora_creacion,'HH:mm') AS horacreacion,"+
+									"to_char(osiris_erp_cobros_deta.id_producto,'999999999999') AS idproducto,descripcion_producto,"+
+									"to_char(osiris_erp_cobros_deta.cantidad_aplicada,'9999.99') AS cantidadaplicada, to_char(osiris_erp_cobros_deta.precio_producto,'999999.99') AS preciounitario," +
+									"ltrim(to_char(osiris_erp_cobros_deta.precio_producto,'9999999.99')) AS preciounitarioprod, to_char(osiris_erp_cobros_deta.iva_producto,'999999.99') AS ivaproducto,"+
+									//"to_char(osiris_erp_cobros_deta.precio_por_cantidad,'999999.99') AS ppcantidad, "+
+									"to_char(osiris_erp_cobros_deta.cantidad_aplicada * osiris_erp_cobros_deta.precio_producto,'99999999.99') AS ppcantidad,"+
+									"to_char(osiris_productos.precio_producto_publico,'999999999.99999') AS preciopublico,"+
 									"nombre1_paciente || ' ' || nombre2_paciente || ' ' || apellido_paterno_paciente || ' ' || apellido_materno_paciente AS nombre_completo, "+
-									"to_char(hscmty_erp_cobros_enca.fechahora_creacion,'dd-MM-yyyy') AS fecha_ingreso,"+
-					            	"to_char(hscmty_erp_cobros_enca.fecha_alta_paciente,'dd-MM-yyyy') AS fecha_egreso,"+
-					            	"hscmty_erp_cobros_enca.numero_poliza,hscmty_erp_cobros_enca.numero_certificado "+
-									"FROM hscmty_erp_cobros_deta,hscmty_his_tipo_admisiones,hscmty_productos,hscmty_grupo_producto,"+
-									"hscmty_erp_cobros_enca, hscmty_his_paciente "+
-									"WHERE hscmty_erp_cobros_deta.folio_de_servicio IN ('"+numeros_folios_seleccionado+"') "+
-									"AND hscmty_erp_cobros_deta.id_tipo_admisiones IN ('200','500','600','700','710','810','820','830','920') "+ 
-									"AND hscmty_erp_cobros_deta.folio_de_servicio = hscmty_erp_cobros_enca.folio_de_servicio "+ 
-									"AND hscmty_erp_cobros_deta.pid_paciente = hscmty_his_paciente.pid_paciente "+
-									"AND hscmty_erp_cobros_deta.id_tipo_admisiones = hscmty_his_tipo_admisiones.id_tipo_admisiones "+ 
-									"AND hscmty_erp_cobros_deta.id_producto = hscmty_productos.id_producto "+  
-									"AND hscmty_productos.id_grupo_producto = hscmty_grupo_producto.id_grupo_producto "+
-									"AND hscmty_erp_cobros_deta.eliminado = 'false' "+
-									"ORDER BY hscmty_erp_cobros_deta.id_tipo_admisiones ASC, hscmty_productos.id_grupo_producto;";
+									"to_char(osiris_erp_cobros_enca.fechahora_creacion,'dd-MM-yyyy') AS fecha_ingreso,"+
+					            	"to_char(osiris_erp_cobros_enca.fecha_alta_paciente,'dd-MM-yyyy') AS fecha_egreso,"+
+					            	"osiris_erp_cobros_enca.numero_poliza,osiris_erp_cobros_enca.numero_certificado "+
+									"FROM osiris_erp_cobros_deta,osiris_his_tipo_admisiones,osiris_productos,osiris_grupo_producto,"+
+									"osiris_erp_cobros_enca, osiris_his_paciente "+
+									"WHERE osiris_erp_cobros_deta.folio_de_servicio IN ('"+numeros_folios_seleccionado+"') "+
+									"AND osiris_erp_cobros_deta.id_tipo_admisiones IN ('200','500','600','700','710','810','820','830','920') "+ 
+									"AND osiris_erp_cobros_deta.folio_de_servicio = osiris_erp_cobros_enca.folio_de_servicio "+ 
+									"AND osiris_erp_cobros_deta.pid_paciente = osiris_his_paciente.pid_paciente "+
+									"AND osiris_erp_cobros_deta.id_tipo_admisiones = osiris_his_tipo_admisiones.id_tipo_admisiones "+ 
+									"AND osiris_erp_cobros_deta.id_producto = osiris_productos.id_producto "+  
+									"AND osiris_productos.id_grupo_producto = osiris_grupo_producto.id_grupo_producto "+
+									"AND osiris_erp_cobros_deta.eliminado = 'false' "+
+									"ORDER BY osiris_erp_cobros_deta.id_tipo_admisiones ASC, osiris_productos.id_grupo_producto;";
 				
 				//Console.WriteLine(comando1.CommandText.ToString());					
 				NpgsqlDataReader lector1 = comando1.ExecuteReader ();
@@ -2142,30 +2142,30 @@ namespace osiris
 						comando = conexion.CreateCommand ();
 		               	
 						// asigna el numero de folio de ingreso de paciente (FOLIO)
-						comando.CommandText = "SELECT hscmty_erp_cobros_deta.folio_de_servicio,hscmty_erp_cobros_deta.pid_paciente, hscmty_his_tipo_admisiones.descripcion_admisiones,"+
-										"hscmty_productos.aplicar_iva, hscmty_his_tipo_admisiones.id_tipo_admisiones AS idadmisiones,hscmty_grupo_producto.descripcion_grupo_producto,"+
-										"hscmty_productos.id_grupo_producto,  to_char(hscmty_erp_cobros_deta.porcentage_descuento,999.99) AS porcdesc,"+
-										"to_char(hscmty_erp_cobros_deta.fechahora_creacion,'dd-mm-yyyy') AS fechcreacion,  to_char(hscmty_erp_cobros_deta.fechahora_creacion,'HH:mm') AS horacreacion,"+
-										"to_char(hscmty_erp_cobros_deta.id_producto,'999999999999') AS idproducto,descripcion_producto,"+
-										"to_char(hscmty_erp_cobros_deta.cantidad_aplicada,'9999.99') AS cantidadaplicada, to_char(hscmty_erp_cobros_deta.precio_producto,'999999.99') AS preciounitario," +
-										"ltrim(to_char(hscmty_erp_cobros_deta.precio_producto,'9999999.99')) AS preciounitarioprod, to_char(hscmty_erp_cobros_deta.iva_producto,'999999.99') AS ivaproducto,"+
-										//"to_char(hscmty_erp_cobros_deta.precio_por_cantidad,'999999.99') AS ppcantidad,"+
-										"to_char(hscmty_erp_cobros_deta.cantidad_aplicada * hscmty_erp_cobros_deta.precio_producto,'99999999.99') AS ppcantidad,"+
-										"to_char(hscmty_productos.precio_producto_publico,'999999999.99999') AS preciopublico,"+
+						comando.CommandText = "SELECT osiris_erp_cobros_deta.folio_de_servicio,osiris_erp_cobros_deta.pid_paciente, osiris_his_tipo_admisiones.descripcion_admisiones,"+
+										"osiris_productos.aplicar_iva, osiris_his_tipo_admisiones.id_tipo_admisiones AS idadmisiones,osiris_grupo_producto.descripcion_grupo_producto,"+
+										"osiris_productos.id_grupo_producto,  to_char(osiris_erp_cobros_deta.porcentage_descuento,999.99) AS porcdesc,"+
+										"to_char(osiris_erp_cobros_deta.fechahora_creacion,'dd-mm-yyyy') AS fechcreacion,  to_char(osiris_erp_cobros_deta.fechahora_creacion,'HH:mm') AS horacreacion,"+
+										"to_char(osiris_erp_cobros_deta.id_producto,'999999999999') AS idproducto,descripcion_producto,"+
+										"to_char(osiris_erp_cobros_deta.cantidad_aplicada,'9999.99') AS cantidadaplicada, to_char(osiris_erp_cobros_deta.precio_producto,'999999.99') AS preciounitario," +
+										"ltrim(to_char(osiris_erp_cobros_deta.precio_producto,'9999999.99')) AS preciounitarioprod, to_char(osiris_erp_cobros_deta.iva_producto,'999999.99') AS ivaproducto,"+
+										//"to_char(osiris_erp_cobros_deta.precio_por_cantidad,'999999.99') AS ppcantidad,"+
+										"to_char(osiris_erp_cobros_deta.cantidad_aplicada * osiris_erp_cobros_deta.precio_producto,'99999999.99') AS ppcantidad,"+
+										"to_char(osiris_productos.precio_producto_publico,'999999999.99999') AS preciopublico,"+
 										"nombre1_paciente || ' ' || nombre2_paciente || ' ' || apellido_paterno_paciente || ' ' || apellido_materno_paciente AS nombre_completo, "+
-										"to_char(hscmty_erp_cobros_enca.fechahora_creacion,'dd-MM-yyyy') AS fecha_ingreso,"+
-						            	"to_char(hscmty_erp_cobros_enca.fecha_alta_paciente,'dd-MM-yyyy') AS fecha_egreso,"+
-						            	"hscmty_erp_cobros_enca.numero_poliza,hscmty_erp_cobros_enca.numero_certificado "+
-										"FROM hscmty_erp_cobros_deta,hscmty_his_tipo_admisiones,hscmty_productos,hscmty_grupo_producto,"+
-										"hscmty_erp_cobros_enca, hscmty_his_paciente "+
-										"WHERE hscmty_erp_cobros_deta.folio_de_servicio IN ('"+numeros_folios_seleccionado+"') "+
-										"AND hscmty_erp_cobros_deta.folio_de_servicio = hscmty_erp_cobros_enca.folio_de_servicio "+ 
-										"AND hscmty_erp_cobros_deta.pid_paciente = hscmty_his_paciente.pid_paciente "+
-										"AND hscmty_erp_cobros_deta.id_tipo_admisiones = hscmty_his_tipo_admisiones.id_tipo_admisiones "+ 
-										"AND hscmty_erp_cobros_deta.id_producto = hscmty_productos.id_producto "+  
-										"AND hscmty_productos.id_grupo_producto = hscmty_grupo_producto.id_grupo_producto "+
-										"AND hscmty_erp_cobros_deta.eliminado = 'false' "+
-										"ORDER BY hscmty_erp_cobros_deta.id_tipo_admisiones ASC, hscmty_productos.id_grupo_producto;";
+										"to_char(osiris_erp_cobros_enca.fechahora_creacion,'dd-MM-yyyy') AS fecha_ingreso,"+
+						            	"to_char(osiris_erp_cobros_enca.fecha_alta_paciente,'dd-MM-yyyy') AS fecha_egreso,"+
+						            	"osiris_erp_cobros_enca.numero_poliza,osiris_erp_cobros_enca.numero_certificado "+
+										"FROM osiris_erp_cobros_deta,osiris_his_tipo_admisiones,osiris_productos,osiris_grupo_producto,"+
+										"osiris_erp_cobros_enca, osiris_his_paciente "+
+										"WHERE osiris_erp_cobros_deta.folio_de_servicio IN ('"+numeros_folios_seleccionado+"') "+
+										"AND osiris_erp_cobros_deta.folio_de_servicio = osiris_erp_cobros_enca.folio_de_servicio "+ 
+										"AND osiris_erp_cobros_deta.pid_paciente = osiris_his_paciente.pid_paciente "+
+										"AND osiris_erp_cobros_deta.id_tipo_admisiones = osiris_his_tipo_admisiones.id_tipo_admisiones "+ 
+										"AND osiris_erp_cobros_deta.id_producto = osiris_productos.id_producto "+  
+										"AND osiris_productos.id_grupo_producto = osiris_grupo_producto.id_grupo_producto "+
+										"AND osiris_erp_cobros_deta.eliminado = 'false' "+
+										"ORDER BY osiris_erp_cobros_deta.id_tipo_admisiones ASC, osiris_productos.id_grupo_producto;";
 						NpgsqlDataReader lector = comando.ExecuteReader ();
 						//Console.WriteLine(comando.CommandText.ToString());
 						bool verifica_el_iva = false;
@@ -2940,17 +2940,17 @@ namespace osiris
 					comando = conexion.CreateCommand ();
 			
 					// asigna el numero de paciente (PID)
-					comando.CommandText = "SELECT to_char(hscmty_erp_notacredito_enca.numero_ntacred,'999999999') AS numeronota,"+
-						"to_char(hscmty_erp_notacredito_enca.numero_factura,'999999999') AS numfact,"+
-				        "to_char(hscmty_erp_notacredito_enca.sub_total_15,'999999999.99') AS sub15,"+
-                        "to_char(hscmty_erp_notacredito_enca.sub_total_0,'999999999.99') AS sub0,"+
-                        "to_char(hscmty_erp_notacredito_enca.iva_al_15,'999999999.99') AS iva15,"+
-						"to_char(hscmty_erp_notacredito_enca.total,'999999999.99') AS total_,"+
+					comando.CommandText = "SELECT to_char(osiris_erp_notacredito_enca.numero_ntacred,'999999999') AS numeronota,"+
+						"to_char(osiris_erp_notacredito_enca.numero_factura,'999999999') AS numfact,"+
+				        "to_char(osiris_erp_notacredito_enca.sub_total_15,'999999999.99') AS sub15,"+
+                        "to_char(osiris_erp_notacredito_enca.sub_total_0,'999999999.99') AS sub0,"+
+                        "to_char(osiris_erp_notacredito_enca.iva_al_15,'999999999.99') AS iva15,"+
+						"to_char(osiris_erp_notacredito_enca.total,'999999999.99') AS total_,"+
 					    "descripcion1, descripcion2,"+
-					    "to_char(hscmty_erp_notacredito_enca.sub_total_15 + hscmty_erp_notacredito_enca.sub_total_0 + hscmty_erp_notacredito_enca.iva_al_15,'99999999.99') AS subtotal "+
-						"FROM hscmty_erp_notacredito_enca "+
-	                    "WHERE hscmty_erp_notacredito_enca.numero_factura = '"+numerodefactura+"' "+
-                        "AND hscmty_erp_notacredito_enca.cancelado = false ";
+					    "to_char(osiris_erp_notacredito_enca.sub_total_15 + osiris_erp_notacredito_enca.sub_total_0 + osiris_erp_notacredito_enca.iva_al_15,'99999999.99') AS subtotal "+
+						"FROM osiris_erp_notacredito_enca "+
+	                    "WHERE osiris_erp_notacredito_enca.numero_factura = '"+numerodefactura+"' "+
+                        "AND osiris_erp_notacredito_enca.cancelado = false ";
 
 					Console.WriteLine(comando.CommandText.ToString());
 	                NpgsqlDataReader lector = comando.ExecuteReader ();
@@ -3009,7 +3009,7 @@ namespace osiris
 			
 					// asigna el numero de paciente (PID)
 					comando.CommandText = "SELECT numero_ntacred "+				
-						"FROM hscmty_erp_notacredito_enca "+
+						"FROM osiris_erp_notacredito_enca "+
 	                    "ORDER BY numero_ntacred DESC LIMIT 1;";
 
 	                NpgsqlDataReader lector = comando.ExecuteReader ();
@@ -3044,10 +3044,10 @@ namespace osiris
 				
 				// asigna el numero de paciente (PID)
 				comando1.CommandText = "SELECT "+
-					"hscmty_erp_clientes.id_cliente,"+
-					"hscmty_erp_clientes.descripcion_cliente "+
-                    "FROM hscmty_erp_clientes "+
-                    "WHERE hscmty_erp_clientes.id_cliente = '"+id_cliente+"' ";
+					"osiris_erp_clientes.id_cliente,"+
+					"osiris_erp_clientes.descripcion_cliente "+
+                    "FROM osiris_erp_clientes "+
+                    "WHERE osiris_erp_clientes.id_cliente = '"+id_cliente+"' ";
                     
 				//Console.WriteLine("query"+comando1.CommandText);
 				NpgsqlDataReader lector = comando1.ExecuteReader ();
@@ -3116,26 +3116,26 @@ namespace osiris
 				NpgsqlCommand comando; 
 	        	comando = conexion.CreateCommand ();
 	        	        	  
-	           	comando.CommandText ="SELECT to_char(hscmty_erp_notacredito_enca.numero_factura,'99999999') AS numfact,"+
-							"to_char(hscmty_erp_notacredito_enca.numero_ntacred,'99999999') AS numnota,"+
-							"to_char(hscmty_erp_notacredito_enca.sub_total_15,'99999999.99') AS subtotal15,"+
-						    "to_char(hscmty_erp_notacredito_enca.sub_total_0,'99999999.99') AS subtotal0,"+
-							"to_char(hscmty_erp_notacredito_enca.iva_al_15,'99999999.99') AS iva15,"+
-						    "to_char(hscmty_erp_notacredito_enca.total,'99999999.99') AS total_,"+
-						    "to_char(hscmty_erp_notacredito_enca.fecha_creacion_nota_credito,'dd-MM-yyyy') AS fechcreacion,"+ 	
-					        "to_char(hscmty_erp_notacredito_enca.sub_total_15 + hscmty_erp_notacredito_enca.sub_total_0 + hscmty_erp_notacredito_enca.iva_al_15,'99999999.99') AS subtotal,"+
-						    "hscmty_erp_factura_enca.descripcion_cliente,"+
-						    "to_char(hscmty_his_paciente.pid_paciente,'99999') AS pid,"+
-						    "hscmty_erp_notacredito_enca.id_quien_creo,"+
+	           	comando.CommandText ="SELECT to_char(osiris_erp_notacredito_enca.numero_factura,'99999999') AS numfact,"+
+							"to_char(osiris_erp_notacredito_enca.numero_ntacred,'99999999') AS numnota,"+
+							"to_char(osiris_erp_notacredito_enca.sub_total_15,'99999999.99') AS subtotal15,"+
+						    "to_char(osiris_erp_notacredito_enca.sub_total_0,'99999999.99') AS subtotal0,"+
+							"to_char(osiris_erp_notacredito_enca.iva_al_15,'99999999.99') AS iva15,"+
+						    "to_char(osiris_erp_notacredito_enca.total,'99999999.99') AS total_,"+
+						    "to_char(osiris_erp_notacredito_enca.fecha_creacion_nota_credito,'dd-MM-yyyy') AS fechcreacion,"+ 	
+					        "to_char(osiris_erp_notacredito_enca.sub_total_15 + osiris_erp_notacredito_enca.sub_total_0 + osiris_erp_notacredito_enca.iva_al_15,'99999999.99') AS subtotal,"+
+						    "osiris_erp_factura_enca.descripcion_cliente,"+
+						    "to_char(osiris_his_paciente.pid_paciente,'99999') AS pid,"+
+						    "osiris_erp_notacredito_enca.id_quien_creo,"+
 						    "descripcion2,descripcion1,"+
 						    "nombre1_paciente || ' ' || nombre2_paciente || ' ' || apellido_paterno_paciente || ' ' || apellido_materno_paciente AS nombre_completo, "+
-						    "hscmty_erp_factura_enca.municipio_cliente "+
-							"FROM hscmty_erp_notacredito_enca,hscmty_erp_factura_enca,hscmty_his_paciente,hscmty_erp_cobros_enca "+
-							"WHERE hscmty_erp_factura_enca.numero_factura = '"+(string) this.entry_factura.Text+"' "+
-                            "AND hscmty_erp_notacredito_enca.numero_ntacred = '"+(string) this.entry_nota_credito.Text+"' "+
-							"AND hscmty_erp_cobros_enca.pid_paciente = hscmty_his_paciente.pid_paciente "+
-						    "AND hscmty_erp_cobros_enca.numero_factura = hscmty_erp_factura_enca.numero_factura "+
-                            "AND hscmty_erp_notacredito_enca.numero_factura = '"+(string) this.entry_factura.Text+"' ;";
+						    "osiris_erp_factura_enca.municipio_cliente "+
+							"FROM osiris_erp_notacredito_enca,osiris_erp_factura_enca,osiris_his_paciente,osiris_erp_cobros_enca "+
+							"WHERE osiris_erp_factura_enca.numero_factura = '"+(string) this.entry_factura.Text+"' "+
+                            "AND osiris_erp_notacredito_enca.numero_ntacred = '"+(string) this.entry_nota_credito.Text+"' "+
+							"AND osiris_erp_cobros_enca.pid_paciente = osiris_his_paciente.pid_paciente "+
+						    "AND osiris_erp_cobros_enca.numero_factura = osiris_erp_factura_enca.numero_factura "+
+                            "AND osiris_erp_notacredito_enca.numero_factura = '"+(string) this.entry_factura.Text+"' ;";
 						Console.WriteLine("esteeeeee......"+comando.CommandText);
 	        	NpgsqlDataReader lector = comando.ExecuteReader ();
 				ContextoImp.BeginPage("Pagina 1");
@@ -3239,7 +3239,7 @@ namespace osiris
 	        	        	  
 					comando.CommandText ="SELECT id_cliente,"+
 							"to_char(porcentage_descuento, '999.99') AS porcentagedescuento "+
-							"FROM hscmty_erp_clientes "+
+							"FROM osiris_erp_clientes "+
 							"WHERE id_cliente = '"+this.id_cliente+"' ;";
 					Console.WriteLine("es   "+comando.CommandText);
 					NpgsqlDataReader lector = comando.ExecuteReader ();
@@ -3350,7 +3350,7 @@ namespace osiris
 				NpgsqlCommand comando; 
 				comando = conexion.CreateCommand ();
 					
-				comando.CommandText = "INSERT INTO hscmty_erp_notacredito_enca ("+
+				comando.CommandText = "INSERT INTO osiris_erp_notacredito_enca ("+
 										"numero_factura,"+//1
 	             						"numero_ntacred,"+
 	                					"fecha_creacion_nota_credito,"+
@@ -3385,7 +3385,7 @@ namespace osiris
 					NpgsqlCommand comando2; 
 					comando2 = conexion2.CreateCommand ();
 					
-					comando2.CommandText =  "UPDATE hscmty_erp_factura_enca SET id_quien_creo = ' "+LoginEmpleado+"',"+
+					comando2.CommandText =  "UPDATE osiris_erp_factura_enca SET id_quien_creo = ' "+LoginEmpleado+"',"+
 											                    "numero_ntacred = '"+entry_nota_credito.Text.Trim()+"',"+
 							                                    "id_quien_creo_ntacred = '"+LoginEmpleado+"',"+
 											                    "total_ntacred = '"+entry_total.Text.Trim()+"', "+
@@ -3406,7 +3406,7 @@ namespace osiris
 						NpgsqlCommand comando3; 
 						comando3 = conexion3.CreateCommand ();
 						
-						comando3.CommandText =  "UPDATE hscmty_erp_cobros_enca SET numero_ntacred = ' "+entry_nota_credito.Text.Trim()+"',"+
+						comando3.CommandText =  "UPDATE osiris_erp_cobros_enca SET numero_ntacred = ' "+entry_nota_credito.Text.Trim()+"',"+
 											                    "valor_total_notacredito = '"+entry_total.Text.Trim()+" ' "+
 											                    "WHERE numero_factura = '"+this.entry_factura.Text.Trim()+"' ;";
 		 						Console.WriteLine(comando3.CommandText);	
@@ -3424,7 +3424,7 @@ namespace osiris
 							NpgsqlCommand comando1; 
 							comando1 = conexion1.CreateCommand ();
 					
-							comando1.CommandText = "INSERT INTO hscmty_erp_notacredito_deta ("+
+							comando1.CommandText = "INSERT INTO osiris_erp_notacredito_deta ("+
 								                   "numero_ntacred,"+//1
 	                					           "total) "+
 	                					           "VALUES ('"+
@@ -3499,7 +3499,7 @@ namespace osiris
 				comando = conexion.CreateCommand ();
 		
 			
-				comando.CommandText = "UPDATE hscmty_erp_notacredito_enca SET cancelado = 'true',"+
+				comando.CommandText = "UPDATE osiris_erp_notacredito_enca SET cancelado = 'true',"+
 											    "id_quien_cancelo = ' "+LoginEmpleado+" ' "+
 											    "fechahora_de_cancelacion '"+DateTime.Now.ToString("yyyy-MM-dd")+" ' "+
 							                    "WHERE numero_ntacred = '"+this.entry_nota_credito.Text+"' ;"; 

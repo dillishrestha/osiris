@@ -260,22 +260,23 @@ namespace osiris
 		string connectionString;
 		string nombrebd;        
 		
-		class_conexion conexion_a_DB = new class_conexion();		
 		protected Gtk.Window MyWin;
 		protected Gtk.Window MyWinError;
 		
 		private TreeStore treeViewEngine;
 		private ListStore store_aseguradora;
-		public registro_paciente_busca(string _tipo, string LoginEmp, string NomEmpleado_, string AppEmpleado_, string ApmEmpleado_, string _nombrebd_) 
+		
+		class_conexion conexion_a_DB = new class_conexion();
+		
+		public registro_paciente_busca(string _tipo, string LoginEmp, string NomEmpleado_, string AppEmpleado_, string ApmEmpleado_, string nombrebd_) 
 		{
-			//nombrebd = _nombrebd_; 			
-			connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
-			nombrebd = conexion_a_DB._nombrebd;
 			LoginEmpleado = LoginEmp;
 			NomEmp_ = NomEmpleado+" "+AppEmpleado+" "+ApmEmpleado;
 			NomEmpleado = NomEmpleado_;
 			AppEmpleado = AppEmpleado_;
 			ApmEmpleado = ApmEmpleado_;
+			connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
+			nombrebd = conexion_a_DB._nombrebd;
 			_tipo_ = _tipo;
 			ventana_principal = true;
 			busca_pacientes();

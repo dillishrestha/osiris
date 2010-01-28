@@ -102,6 +102,7 @@
     <File name="rpt_cons_informado.cs" subtype="Code" buildaction="Compile" />
     <File name="rpt_prot_admision.cs" subtype="Code" buildaction="Compile" />
     <File name="nutricion.cs" subtype="Code" buildaction="Compile" />
+    <File name="rpt_compras_farmacia.cs" subtype="Code" buildaction="Compile" />
   </Contents>
   <References>
     <ProjectReference type="Gac" localcopy="True" refto="Mono.Cairo, Version=2.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756" />

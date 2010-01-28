@@ -56,11 +56,10 @@ namespace osiris
 		
 		class_conexion conexion_a_DB = new class_conexion();
 	
-		public protocolo_admision ( int PidPaciente_ , int folioservicio_,string _nombrebd_,string medico_tratante_)
+		public protocolo_admision ( int PidPaciente_ , int folioservicio_,string nombrebd_,string medico_tratante_)
 		{
 			PidPaciente = PidPaciente_;
 			folioservicio = folioservicio_;
-			//nombrebd = _nombrebd_;
 			connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
 			nombrebd = conexion_a_DB._nombrebd;
 			//medico_tratante = medico_tratante_;

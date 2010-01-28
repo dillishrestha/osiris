@@ -7,7 +7,7 @@
 //                                                                                                            //////				  
 //                                                                                                            //////				  
 // Licencia		: GLP                                                                                         //////	      
-// S.O. 		: GNU/Linux Ubuntu 6.06 LTS (Dapper Drake)                                                    //////	
+// S.O. 		: 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////		
 // To change standard headers go to Edit->Preferences->Coding->Standard Headers                               //////	
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -54,51 +54,49 @@ namespace osiris
 		[Widget] Gtk.TreeView lista_cirugia;
 		[Widget] Gtk.Button button_llena_cirugias;
 		
-		private TreeStore treeViewEngineBusca;
+		TreeStore treeViewEngineBusca;
 		
-		public int idtipocirugia = 1;	        			
-		public string cirugia;
-		public string tipobusqueda = "";
-		public int idtipoesp = 1;
-		public int folioservicio = 0;	        		// Toma el valor de numero de atencion de paciente
-		public string fecharegadmision;
+		int idtipocirugia = 1;	        			
+		string cirugia;
+		string tipobusqueda = "";
+		int idtipoesp = 1;
+		int folioservicio = 0;	        		// Toma el valor de numero de atencion de paciente
+		string fecharegadmision;
 		
-		public int idpresupuesto =1; 
-		public string desccirugia = "";
+		int idpresupuesto =1; 
+		string desccirugia = "";
 		
-		public int valorpaquete = 0;
+		int valorpaquete = 0;
+		string query_fecha_reservacion;
 		
-		public string query_fecha_reservacion;
+		string LoginEmpleado;
+		string NomEmp_;
+		string NomEmpleado = "";
+		string AppEmpleado = "";
+		string ApmEmpleado = "";
 		
-		public string LoginEmpleado;
-		public string NomEmp_;
-		public string NomEmpleado = "";
-		public string AppEmpleado = "";
-		public string ApmEmpleado = "";
+		string entry_nombre_1;
+		string entry_nombre_2;
+		string entry_apellido_paterno;
+		string entry_apellido_materno;
 		
-		public string entry_nombre_1;
-		public string entry_nombre_2;
-		public string entry_apellido_paterno;
-		public string entry_apellido_materno;
-		
-		public string connectionString = "Server=localhost;" +
-						"Port=5432;" +
-						 "User ID=admin;" +
-						"Password=1qaz2wsx;";
-		public string nombrebd;
+		string connectionString;
+		string nombrebd;
         
 		protected Gtk.Window MyWin;
 		protected Gtk.Window MyWinError;
 		
-		public reservacion_de_paquetes(string LoginEmp_, string NomEmpleado_, string AppEmpleado_, string ApmEmpleado_, string _nombrebd_,int folioservicio_,bool buscafolio) 
+		class_conexion conexion_a_DB = new class_conexion();
+		
+		public reservacion_de_paquetes(string LoginEmp_, string NomEmpleado_, string AppEmpleado_, string ApmEmpleado_, string nombrebd_,int folioservicio_,bool buscafolio) 
 		{
 		    LoginEmpleado = LoginEmp_;
     		NomEmpleado = NomEmpleado_;
     		AppEmpleado = AppEmpleado_;
     		ApmEmpleado = ApmEmpleado_;
-    		nombrebd = _nombrebd_;
     		folioservicio = folioservicio_;
-    		
+			connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
+			nombrebd = conexion_a_DB._nombrebd;    		
 		
 			Glade.XML gxml = new Glade.XML (null, "registro_admision.glade", "reserva_paquete",null );
 			gxml.Autoconnect (this);

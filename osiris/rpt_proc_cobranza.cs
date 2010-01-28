@@ -115,7 +115,7 @@ namespace osiris
 		
 		class_conexion conexion_a_DB = new class_conexion();
 		
-		public proc_cobranza (int PidPaciente_,int folioservicio_,string _nombrebd_ ,string entry_fecha_admision_,string entry_fechahora_alta_,
+		public proc_cobranza (int PidPaciente_,int folioservicio_,string nombrebd_ ,string entry_fecha_admision_,string entry_fechahora_alta_,
 						string entry_numero_factura_,string entry_nombre_paciente_,string entry_telefono_paciente_,string entry_doctor_,
 						string entry_tipo_paciente_,string entry_aseguradora_,string edadpac_,string fecha_nacimiento_,string dir_pac_,
 						string cirugia_,string empresapac_,int idtipopaciente_,string query)

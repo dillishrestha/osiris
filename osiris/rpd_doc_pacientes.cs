@@ -175,14 +175,12 @@ namespace osiris
 		
 		class_conexion conexion_a_DB = new class_conexion();
 		
-		public impr_doc_pacientes(string LoginEmp, string NomEmpleado, string AppEmpleado, string ApmEmpleado, string _nombrebd_,string folioserv_,int control)//,string entry_nombre_medico) 
+		public impr_doc_pacientes(string LoginEmp, string NomEmpleado, string AppEmpleado, string ApmEmpleado, string nombrebd_,string folioserv_,int control)//,string entry_nombre_medico) 
 		{
 			LoginEmpleado = LoginEmp;
 			connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
 			nombrebd = conexion_a_DB._nombrebd;
-			//nombrebd = _nombrebd_; 
-			//nombmedico = entry_nombre_medico;
-						
+									
 			Glade.XML gxml = new Glade.XML (null, "impr_documentos.glade", "busqueda_folio", null);
 			gxml.Autoconnect (this);
 	        

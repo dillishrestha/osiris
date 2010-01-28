@@ -58,8 +58,8 @@ namespace osiris
 		[Widget] Gtk.Statusbar statusbar_abonos = null;
 		[Widget] Gtk.ComboBox combobox_formapago = null;
 		
-		int PidPaciente = 0;
-		int folioservicio = 0;
+		int PidPaciente;
+		int folioservicio;
 		string fecha_admision;
 		string fechahora_alta;
 		string nombre_paciente;
@@ -89,22 +89,22 @@ namespace osiris
 		string nombrebd;		
 		string connectionString;		
 		
-		class_conexion conexion_a_DB = new class_conexion();
-		
 		//Declaracion de ventana de error
 		protected Gtk.Window MyWinError;
 		protected Gtk.Window MyWin;
 		
-		private TreeStore treeViewEngineabonos;
+		TreeStore treeViewEngineabonos;
 		
 		//Declarando las celdas
 		CellRendererText cellr0;		CellRendererText cellrt1;
 		CellRendererText cellrt2;		CellRendererText cellrt3;
 		CellRendererText cellrt4;		CellRendererText cellrt5;
 		CellRendererText cellrt6;		CellRendererText cellrt7;
-		CellRendererText cellrt8;			
+		CellRendererText cellrt8;
+		
+		class_conexion conexion_a_DB = new class_conexion();
 				
-		public abonos (	int PidPaciente_ ,int folioservicio_,string _nombrebd_ ,string entry_fecha_admision_,
+		public abonos (	int PidPaciente_ ,int folioservicio_,string nombrebd_ ,string entry_fecha_admision_,
 						string entry_fechahora_alta_,string entry_numero_factura_,string entry_nombre_paciente_,
 						string entry_telefono_paciente_,string entry_doctor_,string entry_tipo_paciente_,
 						string entry_aseguradora_,string edadpac_,string fecha_nacimiento_,string dir_pac_,

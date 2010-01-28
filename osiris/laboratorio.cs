@@ -60,7 +60,7 @@ namespace osiris
 		
 		class_conexion conexion_a_DB = new class_conexion();
 		
-		public laboratorio (string LoginEmp_, string NomEmpleado_, string AppEmpleado_, string ApmEmpleado_, string _nombrebd_) 
+		public laboratorio (string LoginEmp_, string NomEmpleado_, string AppEmpleado_, string ApmEmpleado_, string nombrebd_) 
 		{
 			LoginEmpleado = LoginEmp_;
 			NomEmpleado = NomEmpleado_;

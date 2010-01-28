@@ -53,10 +53,7 @@ namespace osiris
 		//Widget] Gtk.ComboBox combo_tipocontrato;
 		//[Widget] Gtk.Button button_nuevos_productos;
 		
-		string connectionString = "Server=localhost;" +
-						"Port=5432;" +
-						 "User ID=admin;" +
-						"Password=1qaz2wsx;";
+		string connectionString;
 		string nombrebd;
 		string LoginEmpleado;
     	string NomEmpleado;
@@ -67,13 +64,16 @@ namespace osiris
 		protected Gtk.Window MyWinError;
 		protected Gtk.Window MyWin;
 		
-		public recursoshumanos(string LoginEmp_, string NomEmpleado_, string AppEmpleado_, string ApmEmpleado_, string _nombrebd_ )
+		class_conexion conexion_a_DB = new class_conexion();
+		
+		public recursoshumanos(string LoginEmp_, string NomEmpleado_, string AppEmpleado_, string ApmEmpleado_, string nombrebd_ )
 		{
 			LoginEmpleado = LoginEmp_;
     		NomEmpleado = NomEmpleado_;
     		AppEmpleado = AppEmpleado_;
     		ApmEmpleado = ApmEmpleado_;
-    		nombrebd = _nombrebd_; 
+    		connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
+			nombrebd = conexion_a_DB._nombrebd;
     		
 			Glade.XML gxml = new Glade.XML (null, "recursos_humanos.glade", "menu_recursos_humanos", null);
 			gxml.Autoconnect (this);

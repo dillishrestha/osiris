@@ -53,15 +53,14 @@ namespace osiris
 		
 		class_conexion conexion_a_DB = new class_conexion();
     
-		public conse_info (int PidPaciente_ , int folioservicio_,string _nombrebd_,string doctor_,string cirugia_)
+		public conse_info (int PidPaciente_ , int folioservicio_,string nombrebd_,string doctor_,string cirugia_)
 		{
-			connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
-			nombrebd = conexion_a_DB._nombrebd;			
-			//nombrebd = _nombrebd_;
 			PidPaciente = PidPaciente_;
     		folioservicio = folioservicio_;
     		medico = doctor_;
-    		cirugia = cirugia_;
+    		cirugia = cirugia_;			
+			connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
+			nombrebd = conexion_a_DB._nombrebd;
 			
 			print = new PrintOperation ();			
 			print.BeginPrint += new BeginPrintHandler (OnBeginPrint);

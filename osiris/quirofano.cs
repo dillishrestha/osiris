@@ -55,19 +55,21 @@ namespace osiris
 		[Widget] Gtk.Button button_programacion_cirugias;
 		[Widget] Gtk.Button button_requisicion_materiales;
 		
-		public string LoginEmpleado;
-		public string NomEmpleado;
-		public string AppEmpleado;
-		public string ApmEmpleado;
-		public string nombrebd;
+		string LoginEmpleado;
+		string NomEmpleado;
+		string AppEmpleado;
+		string ApmEmpleado;
+		string nombrebd;
 		
-		public quirofano (string LoginEmp_, string NomEmpleado_, string AppEmpleado_, string ApmEmpleado_, string _nombrebd_) 
+		class_conexion conexion_a_DB = new class_conexion();
+		
+		public quirofano (string LoginEmp_, string NomEmpleado_, string AppEmpleado_, string ApmEmpleado_, string nombrebd_) 
 		{
 			LoginEmpleado = LoginEmp_;
 			NomEmpleado = NomEmpleado_;
 			AppEmpleado = AppEmpleado_;
 			ApmEmpleado = ApmEmpleado_;
-			nombrebd = _nombrebd_;
+			nombrebd = conexion_a_DB._nombrebd;
 			
 			Glade.XML gxml = new Glade.XML (null, "quirofano.glade", "menu_quirofano", null);
 			gxml.Autoconnect (this);        

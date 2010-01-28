@@ -100,12 +100,9 @@ namespace osiris
 		string AppEmpleado;
 		string ApmEmpleado;
 		string nombrebd;
-		string connectionString = "Server=localhost;" +
-						"Port=5432;" +
-						 "User ID=admin;" +
-						"Password=1qaz2wsx;";
+		string connectionString;
 		
-		float valoriva = 15;
+		float valoriva;
 		int idalmacen;    // Esta variable almacena el codigo del almacen de esta clase, se recibe como parametro de la clase
 		
 		int ultimasolicitud;		// Toma el ultimo numero de solictud
@@ -120,14 +117,19 @@ namespace osiris
 		protected Gtk.Window MyWinError;
 		protected Gtk.Window MyWin;
 		
-		public solicitud_material(string LoginEmp_, string NomEmpleado_, string AppEmpleado_, string ApmEmpleado_, string _nombrebd_,int idalmacen_) 
+		class_conexion conexion_a_DB = new class_conexion();
+		class_public classpublic = new class_public();
+		
+		public solicitud_material(string LoginEmp_, string NomEmpleado_, string AppEmpleado_, string ApmEmpleado_, string nombrebd_,int idalmacen_) 
 		{
 			LoginEmpleado = LoginEmp_;
 			NomEmpleado = NomEmpleado_;
 			AppEmpleado = AppEmpleado_;
 			ApmEmpleado = ApmEmpleado_;
-			nombrebd = _nombrebd_;
 			idalmacen = idalmacen_;
+			connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
+			nombrebd = conexion_a_DB._nombrebd;
+			valoriva = float.Parse(classpublic.ivaparaaplicar);
 			
 			Glade.XML gxml = new Glade.XML (null, "hospitalizacion.glade", "solicitud_materiales", null);
 			gxml.Autoconnect (this);        

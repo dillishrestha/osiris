@@ -164,7 +164,7 @@ namespace osiris
 		
 		void on_button_button_farmacia_clicked(object sender, EventArgs args)
 		{
-			//new osiris.rpt_compras_farmacia(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
+			new osiris.rpt_compras_farmacia(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
 		}
 		
 		void on_button_costeo_procedimiento_clicked(object sender, EventArgs args)

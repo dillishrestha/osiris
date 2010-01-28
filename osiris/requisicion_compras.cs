@@ -95,84 +95,83 @@ namespace osiris
 		// Para la busqueda de proveedores
 		[Widget] Gtk.TreeView lista_de_busqueda;
 				
-		public string connectionString = "Server=localhost;" +
-						"Port=5432;" +
-						 "User ID=admin;" +
-						"Password=1qaz2wsx;";
-
-		public string nombrebd;
-		public string LoginEmpleado;
-    	public string NomEmpleado;
-    	public string AppEmpleado;
-    	public string ApmEmpleado;
+		string connectionString;
+		string nombrebd;
+		string LoginEmpleado;
+    	string NomEmpleado;
+    	string AppEmpleado;
+    	string ApmEmpleado;
     	
-    	public string querylist = "";
+    	string querylist = "";
     	
     	// Declarando las variables de publicas para uso dentro de classe
-    	public int idtipointernamiento;
-    	public int idcentrocosto;
-		public string descripinternamiento = "";	// Descripcion de Centro de Costos - Solicitado por
+    	int idtipointernamiento;
+    	int idcentrocosto;
+		string descripinternamiento = "";	// Descripcion de Centro de Costos - Solicitado por
 		
-		public int idtipointernamiento2 = 0; 		// Centro de Costos - con Cargo a
-		public string descripinternamiento2 = "";	// Descripcion de Centro de Costos - con Cargo a
+		int idtipointernamiento2 = 0; 		// Centro de Costos - con Cargo a
+		string descripinternamiento2 = "";	// Descripcion de Centro de Costos - con Cargo a
 		
-		public string descripcion_tipo_requi = "";	// descripcion del tipo de requisicion
-		public bool requi_ordinaria = false;
-		public bool requi_urgente = false;
-		public bool enviadacompras = false;			// Verifica que la requisicion este enviada a compras
+		string descripcion_tipo_requi = "";	// descripcion del tipo de requisicion
+		bool requi_ordinaria = false;
+		bool requi_urgente = false;
+		bool enviadacompras = false;			// Verifica que la requisicion este enviada a compras
 				
-		public string centrocosto = "";
-    	public string campoacceso = "";
+		string centrocosto = "";
+    	string campoacceso = "";
     	
-    	public int idrequisicion = 0;
-    	public int accesomodulo = 0;
+    	int idrequisicion = 0;
+    	int accesomodulo = 0;
     	
-    	public int [] array_idtipoadmisiones;
+    	int [] array_idtipoadmisiones;
     	
-    	public int tipobusquedaprove = 1; 
+    	int tipobusquedaprove = 1; 
     	
-    	public bool editar = true;
+    	bool editar = true;
     	
-    	public int contador_items_requisados = 0;	// cuenta los items que son requisados
-    	public int contador_items_autorizadoscompra = 0;	// cuenta los items autorizados para comprar
+    	int contador_items_requisados = 0;	// cuenta los items que son requisados
+    	int contador_items_autorizadoscompra = 0;	// cuenta los items autorizados para comprar
 		    	
-    	private TreeStore treeViewEngineBusca2;				// Para la busqueda de Productos
-    	private TreeStore treeViewEngineRequisicion; 		// Lista de proctos en una requisicion
-    	private TreeStore treeViewEngineproveedores;		// Lista de proveedores en el treeview
+    	TreeStore treeViewEngineBusca2;				// Para la busqueda de Productos
+    	TreeStore treeViewEngineRequisicion; 		// Lista de proctos en una requisicion
+    	TreeStore treeViewEngineproveedores;		// Lista de proveedores en el treeview
     	
     	//Declaracion de ventana de error
 		protected Gtk.Window MyWinError;
 		protected Gtk.Window MyWin;
 		
 		//declaracion de columnas y celdas de treeview de busqueda de productos
-		public TreeViewColumn col_idproducto;		public CellRendererText cellr0;
-		public TreeViewColumn col_desc_producto;	public CellRendererText cellr1;
-		public TreeViewColumn col_precioprod;		public CellRendererText cellrt2;
-		public TreeViewColumn col_ivaprod;			public CellRendererText cellrt3;
-		public TreeViewColumn col_totalprod;		public CellRendererText cellrt4;
-		public TreeViewColumn col_descuentoprod;	public CellRendererText cellrt5;
-		public TreeViewColumn col_preciocondesc;	public CellRendererText cellrt6;
-		public TreeViewColumn col_stock_actual;		public CellRendererText cellrt7;
-		public TreeViewColumn col_grupoprod;		public CellRendererText cellrt8;
-		public TreeViewColumn col_grupo1prod;		public CellRendererText cellrt9;
-		public TreeViewColumn col_grupo2prod;		public CellRendererText cellrt10;
-		public TreeViewColumn col_aplica_iva;		public CellRendererText cellrt20;
-		public TreeViewColumn col_cobro_activo;		public CellRendererText cellrt21;
+		TreeViewColumn col_idproducto;		CellRendererText cellr0;
+		TreeViewColumn col_desc_producto;	CellRendererText cellr1;
+		TreeViewColumn col_precioprod;		CellRendererText cellrt2;
+		TreeViewColumn col_ivaprod;			CellRendererText cellrt3;
+		TreeViewColumn col_totalprod;		CellRendererText cellrt4;
+		TreeViewColumn col_descuentoprod;	CellRendererText cellrt5;
+		TreeViewColumn col_preciocondesc;	CellRendererText cellrt6;
+		TreeViewColumn col_stock_actual;	CellRendererText cellrt7;
+		TreeViewColumn col_grupoprod;		CellRendererText cellrt8;
+		TreeViewColumn col_grupo1prod;		CellRendererText cellrt9;
+		TreeViewColumn col_grupo2prod;		CellRendererText cellrt10;
+		TreeViewColumn col_aplica_iva;		CellRendererText cellrt20;
+		TreeViewColumn col_cobro_activo;	CellRendererText cellrt21;
 		
-		public requisicion_materiales_compras(string LoginEmp_, string NomEmpleado_, string AppEmpleado_, string ApmEmpleado_, string _nombrebd_,
+		class_conexion conexion_a_DB = new class_conexion();
+		
+		public requisicion_materiales_compras(string LoginEmp_, string NomEmpleado_, string AppEmpleado_, string ApmEmpleado_, string nombrebd_,
 											  string centrocosto_,int idcentrocosto_, string campoacceso_,int[] array_idtipoadmisiones_, int accesomodulo_)
 		{
 			LoginEmpleado = LoginEmp_;
     		NomEmpleado = NomEmpleado_;
     		AppEmpleado = AppEmpleado_;
     		ApmEmpleado = ApmEmpleado_;
-    		nombrebd = _nombrebd_;    		
     		centrocosto = centrocosto_;							// esta variable almacen el nombre del centro de costo
     		idcentrocosto = idcentrocosto_;   					// esta variable toma el cento de costo del departamento
     		idtipointernamiento = idcentrocosto;
     		campoacceso = campoacceso_;   						// este campo determina el tipo de busqueda cuando busca productos
     		array_idtipoadmisiones = array_idtipoadmisiones_;  // arreglo para seleccionar los centros de costos
     		accesomodulo = accesomodulo_;
+			connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
+			nombrebd = conexion_a_DB._nombrebd;
     		
 			Glade.XML gxml = new Glade.XML (null, "almacen_costos_compras.glade", "requisicion_materiales", null);
 			gxml.Autoconnect (this);

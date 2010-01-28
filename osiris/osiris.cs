@@ -252,7 +252,7 @@ namespace osiris
 		{
 			Glade.XML gxml = new Glade.XML (null, "osiris.glade", "menuprincipal", null);
 			gxml.Autoconnect (this);				 			
-			hscmtylogo.Pixbuf = new Gdk.Pixbuf("soghis_osiris.png");
+			hscmtylogo.Pixbuf = new Gdk.Pixbuf("OSIRISLogo.png");
 			menuprincipal.Show();
 					 					 											
 			verificapermisos(accesoHIS,accesoERP,accesoGENERAL,autorizaHIS,autorizaERP,autorizaGENERAL);

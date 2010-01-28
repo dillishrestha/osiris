@@ -128,13 +128,13 @@ namespace osiris
 		// id habitacion
 		[Widget] Gtk.Entry entry_id_habitacion; /*id habitacion*/
 								
-		private TreeStore treeViewEngineBusca;
-		private TreeStore treeViewEngineBusca2;
-		private TreeStore treeViewEngineServicio;
-		private ListStore treeViewEngineExtras;
+		TreeStore treeViewEngineBusca;
+		TreeStore treeViewEngineBusca2;
+		TreeStore treeViewEngineServicio;
+		ListStore treeViewEngineExtras;
 		
 		//private ArrayList arraycargosrealizados;
-		private ArrayList arraycargosextras;
+		ArrayList arraycargosextras;
 		
 		// Declaracion de variables publicas
 		int folioservicio = 0;						// Toma el valor de numero de atencion de paciente
@@ -156,7 +156,7 @@ namespace osiris
 		bool cuenta_bloqueada;
 		bool cuenta_cerrada;
 		
-		float valoriva = 15;
+		float valoriva;
 		bool aplicar_descuento = true;
 		bool aplicar_siempre = false;
 
@@ -204,10 +204,7 @@ namespace osiris
 		string ApmEmpleado;
 		string NomEmpleados;
 					
-		string connectionString = "Server=localhost;" +
-					"Port=5432;" +
-					 "User ID=admin;" +
-					"Password=1qaz2wsx;";
+		string connectionString;
 		string nombrebd;
 				
 		//declaracion de columnas y celdas de treeview de busqueda
@@ -222,15 +219,19 @@ namespace osiris
 		protected Gtk.Window MyWinError;
 		protected Gtk.Window MyWin;
 		
+		class_conexion conexion_a_DB = new class_conexion();
+		class_public classpublic = new class_public();
 		
-		public cargos_quirofano(string LoginEmp, string NomEmpleado_, string AppEmpleado_, string ApmEmpleado_, string _nombrebd_ ) 
+		public cargos_quirofano(string LoginEmp, string NomEmpleado_, string AppEmpleado_, string ApmEmpleado_, string nombrebd_ ) 
 		{
 			LoginEmpleado = LoginEmp;
-			nombrebd = _nombrebd_;
 			NomEmpleado = NomEmpleado_;
 			AppEmpleado = AppEmpleado_;
 			ApmEmpleado = ApmEmpleado_;
 			NomEmpleados = NomEmpleado+" "+AppEmpleado+" "+ApmEmpleado;
+			connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
+			nombrebd = conexion_a_DB._nombrebd;			
+			valoriva = float.Parse(classpublic.ivaparaaplicar);			
 			
 			Glade.XML gxml = new Glade.XML (null, "hospitalizacion.glade", "cargos_hospital", null);
 			gxml.Autoconnect (this);

@@ -8,7 +8,7 @@
 //				  Juan Antonio Peña Gzz. - gjuanzz@gmail.com (Programacion Mono)
 // 				  
 // Licencia		: GLP
-// S.O. 		: GNU/Linux Ubuntu 6.06 LTS (Dapper Drake)
+// S.O. 		: Linux
 //////////////////////////////////////////////////////////
 //
 // proyect osiris is free software; you can redistribute it and/or modify

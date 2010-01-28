@@ -51,15 +51,17 @@ namespace osiris
 		string NomEmpleado;
 		string AppEmpleado;
 		string ApmEmpleado;
-		string nombrebd;		
+		string nombrebd;
 		
-		public nutricion(string LoginEmp_, string NomEmpleado_, string AppEmpleado_, string ApmEmpleado_, string _nombrebd_) 
+		class_conexion conexion_a_DB = new class_conexion();
+		
+		public nutricion(string LoginEmp_, string NomEmpleado_, string AppEmpleado_, string ApmEmpleado_, string nombrebd_) 
 		{
 			LoginEmpleado = LoginEmp_;
 			NomEmpleado = NomEmpleado_;
 			AppEmpleado = AppEmpleado_;
 			ApmEmpleado = ApmEmpleado_;
-			nombrebd = _nombrebd_;			
+			nombrebd = conexion_a_DB._nombrebd;
 			
 			Glade.XML gxml = new Glade.XML (null, "nutricion.glade", "menu_nutricion", null);
 			gxml.Autoconnect (this);

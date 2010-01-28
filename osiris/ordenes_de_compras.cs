@@ -80,8 +80,8 @@ namespace osiris
     	int idtipointernamiento;
     	string descripinternamiento = "";	// Descripcion de Centro de Costos - Solicitado por
 		
-		private TreeStore treeViewEngineProductosaComprar;	// Lista de proctos que se van a comprar
-		private TreeStore treeViewEngineproveedores;		// Lista de proveedores en el treeview
+		TreeStore treeViewEngineProductosaComprar;	// Lista de proctos que se van a comprar
+		TreeStore treeViewEngineproveedores;		// Lista de proveedores en el treeview
 		
 		//Declaracion de ventana de error
 		protected Gtk.Window MyWinError;
@@ -98,14 +98,13 @@ namespace osiris
 		class_conexion conexion_a_DB = new class_conexion();
 		class_public classpublic = new class_public();
 		
-		public crea_ordenes_de_compra(string LoginEmp_, string NomEmpleado_, string AppEmpleado_, string ApmEmpleado_, string _nombrebd_ )
+		public crea_ordenes_de_compra(string LoginEmp_, string NomEmpleado_, string AppEmpleado_, string ApmEmpleado_, string nombrebd_ )
 		{
 			LoginEmpleado = LoginEmp_;
     		NomEmpleado = NomEmpleado_;
     		AppEmpleado = AppEmpleado_;
     		ApmEmpleado = ApmEmpleado_;
-    		//nombrebd = _nombrebd_; 
-			connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
+    		connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
 			nombrebd = conexion_a_DB._nombrebd;
     		
 			Glade.XML gxml = new Glade.XML (null, "almacen_costos_compras.glade", "crea_ordenes_compras", null);

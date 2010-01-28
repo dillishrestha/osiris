@@ -102,9 +102,6 @@ namespace osiris
 						
 		string connectionString;
 		string nombrebd;
-		
-		class_conexion conexion_a_DB = new class_conexion();
-		
 		string facturados = "FACTURADOS";
 		string busqueda = "";
 		bool pagados = false;
@@ -129,7 +126,9 @@ namespace osiris
 		//public string fecha_rango_1;
 		//public string fecha_rango_2;
 		
-		public tesoreria(string LoginEmp_, string NomEmpleado_, string AppEmpleado_, string ApmEmpleado_, string _nombrebd_) 
+		class_conexion conexion_a_DB = new class_conexion();
+		
+		public tesoreria(string LoginEmp_, string NomEmpleado_, string AppEmpleado_, string ApmEmpleado_, string nombrebd_) 
 		{
 			LoginEmpleado = LoginEmp_;
 			NomEmpleado = NomEmpleado_;

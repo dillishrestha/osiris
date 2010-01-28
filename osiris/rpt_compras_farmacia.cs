@@ -33,10 +33,6 @@ using Npgsql;
 using System.Data;
 using Gtk;
 using Glade;
-using Gnome;
-using System.Collections;
-using GtkSharp;
-
 
 namespace osiris
 {
@@ -58,46 +54,34 @@ namespace osiris
 		[Widget] Gtk.Entry entry_mes2;
 		[Widget] Gtk.Entry entry_ano2;
 		
-		public string query_fechas = " ";
-		public int fila = -70;
-		public int contador = 1;
-		public int numpage = 1;		
+		string query_fechas = " ";
+		int fila = -70;
+		int contador = 1;
+		int numpage = 1;		
 		
-		public string LoginEmpleado;
-		public string NomEmpleado;
-		public string AppEmpleado;
-		public string ApmEmpleado;
-		public string nombrebd;
-		public string connectionString = "Server=localhost;" +
-						"Port=5432;" +
-						 "User ID=admin;" +
-						"Password=1qaz2wsx;";
+		string LoginEmpleado;
+		string NomEmpleado;
+		string AppEmpleado;
+		string ApmEmpleado;
+		string nombrebd;
+		string connectionString;
 		
 		private TreeStore treeViewEngineFarmacia;
 	
-		// Declarando variable de fuente para la impresion
-		// Declaracion de fuentes tipo Bitstream Vera sans
-		public Gnome.Font fuente5 = Gnome.Font.FindClosest("Luxi Sans", 5);
-		public Gnome.Font fuente6 = Gnome.Font.FindClosest("Luxi Sans", 6);
-		public Gnome.Font fuente7 = Gnome.Font.FindClosest("Luxi Sans", 7);
-		public Gnome.Font fuente8 = Gnome.Font.FindClosest("Luxi Sans", 8);//Bitstream Vera Sans
-		public Gnome.Font fuente9 = Gnome.Font.FindClosest("Luxi Sans", 9);
-		public Gnome.Font fuente10 = Gnome.Font.FindClosest("Luxi Sans", 10);
-		public Gnome.Font fuente11 = Gnome.Font.FindClosest("Luxi Sans", 11);
-		public Gnome.Font fuente12 = Gnome.Font.FindClosest("Luxi Sans", 12);
-		public Gnome.Font fuente36 = Gnome.Font.FindClosest("Luxi Sans", 36);		
-		
 		//Declaracion de ventana de error y pregunta
 		protected Gtk.Window MyWinError;
 		protected Gtk.Window MyWin;
 		
-		public rpt_compras_farmacia(string LoginEmp_, string NomEmpleado_, string AppEmpleado_, string ApmEmpleado_, string _nombrebd_) 
+		class_conexion conexion_a_DB = new class_conexion();
+		
+		public rpt_compras_farmacia(string LoginEmp_, string NomEmpleado_, string AppEmpleado_, string ApmEmpleado_, string nombrebd_) 
 		{
 			LoginEmpleado = LoginEmp_;
 			NomEmpleado = NomEmpleado_;
 			AppEmpleado = AppEmpleado_;
 			ApmEmpleado = ApmEmpleado_;
-			nombrebd = _nombrebd_;
+			connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
+			nombrebd = conexion_a_DB._nombrebd;
 			
 			Glade.XML gxml = new Glade.XML (null, "costos.glade", "reporte_farmacia", null);
 			gxml.Autoconnect (this);        
@@ -116,7 +100,8 @@ namespace osiris
 			entry_dia2.Text =DateTime.Now.ToString("dd");
 			entry_mes2.Text =DateTime.Now.ToString("MM");
 			entry_ano2.Text =DateTime.Now.ToString("yyyy");
-			this.button_imprimir.Clicked += new EventHandler(on_imprime_reporte_clicked);
+			
+			//this.button_imprimir.Clicked += new EventHandler(on_imprime_reporte_clicked);
 			
 			crea_treview_compra_farmacia();
 			this.button_selecciona.Clicked += new EventHandler(on_llena_lista_compra_farmacia_clicked );
@@ -287,8 +272,8 @@ namespace osiris
  		{
  			this.treeViewEngineFarmacia.Clear();
 			
-			query_fechas = "AND to_char(hscmty_erp_compra_farmacia.fechahora_autorizacion,'yyyy-MM-dd') >= '"+entry_ano1.Text+"-"+entry_mes1.Text+"-"+entry_dia1.Text+"' "+
-				           "AND to_char(hscmty_erp_compra_farmacia.fechahora_autorizacion,'yyyy-MM-dd') <= '"+entry_ano2.Text+"-"+entry_mes2.Text+"-"+entry_dia2.Text+"' ";			
+			query_fechas = "AND to_char(osiris_erp_compra_farmacia.fechahora_autorizacion,'yyyy-MM-dd') >= '"+entry_ano1.Text+"-"+entry_mes1.Text+"-"+entry_dia1.Text+"' "+
+				           "AND to_char(osiris_erp_compra_farmacia.fechahora_autorizacion,'yyyy-MM-dd') <= '"+entry_ano2.Text+"-"+entry_mes2.Text+"-"+entry_dia2.Text+"' ";			
 			
 			NpgsqlConnection conexion; 
 			conexion = new NpgsqlConnection (connectionString+nombrebd);
@@ -298,30 +283,30 @@ namespace osiris
 				NpgsqlCommand comando; 
 				comando = conexion.CreateCommand ();
 				
-				comando.CommandText = "SELECT to_char(hscmty_erp_compra_farmacia.folio_de_servicio,'999999') AS folioatencion,"+
-									"to_char(hscmty_erp_compra_farmacia.orden_compra,'99999999') AS ordencompra,"+
-									"to_char(hscmty_erp_compra_farmacia.id_producto,'999999999999') AS codproducto,"+
-					                "hscmty_productos.descripcion_producto,"+
-									"to_char(hscmty_erp_compra_farmacia.costo_por_unidad,'9999999999.99') AS costoporunidad,"+
-									"to_char(hscmty_erp_compra_farmacia.precio_producto_publico,'9999999999.99') AS preciopublico,"+
-									"to_char(hscmty_erp_compra_farmacia.total_surtir,'999999.99') AS surtir,"+
-									"to_char(hscmty_erp_compra_farmacia.cantidad_embalaje,'999999.99') AS embalaje,"+
-									"to_char(hscmty_erp_compra_farmacia.cantidad_autorizo,'9999.99') AS autorizo,"+
-									"to_char(hscmty_erp_compra_farmacia.porcentage_ganancia,'999.99') AS porcentageganancia,"+
-									"to_char(hscmty_erp_compra_farmacia.fechahora_autorizacion,'dd-MM-yyyy') AS fechahrautorizacion,"+ 
-									"hscmty_erp_compra_farmacia.id_subalmacen,"+
-									"hscmty_erp_compra_farmacia.id_quien_compro,"+
-									"hscmty_erp_compra_farmacia.id_proveedor,"+
-									"hscmty_erp_compra_farmacia.id_medico,"+
-						            "hscmty_his_medicos.nombre_medico,"+
-						            "to_char(hscmty_erp_compra_farmacia.costo_producto,'9999999.999') AS costo_prod,"+
-						            "hscmty_almacenes.descripcion_almacen "+ 	
-                                    "FROM hscmty_erp_compra_farmacia,hscmty_productos,hscmty_his_medicos,hscmty_almacenes "+ 
-									"WHERE hscmty_erp_compra_farmacia.id_producto = hscmty_productos.id_producto "+ 
+				comando.CommandText = "SELECT to_char(osiris_erp_compra_farmacia.folio_de_servicio,'999999') AS folioatencion,"+
+									"to_char(osiris_erp_compra_farmacia.orden_compra,'99999999') AS ordencompra,"+
+									"to_char(osiris_erp_compra_farmacia.id_producto,'999999999999') AS codproducto,"+
+					                "osiris_productos.descripcion_producto,"+
+									"to_char(osiris_erp_compra_farmacia.costo_por_unidad,'9999999999.99') AS costoporunidad,"+
+									"to_char(osiris_erp_compra_farmacia.precio_producto_publico,'9999999999.99') AS preciopublico,"+
+									"to_char(osiris_erp_compra_farmacia.total_surtir,'999999.99') AS surtir,"+
+									"to_char(osiris_erp_compra_farmacia.cantidad_embalaje,'999999.99') AS embalaje,"+
+									"to_char(osiris_erp_compra_farmacia.cantidad_autorizo,'9999.99') AS autorizo,"+
+									"to_char(osiris_erp_compra_farmacia.porcentage_ganancia,'999.99') AS porcentageganancia,"+
+									"to_char(osiris_erp_compra_farmacia.fechahora_autorizacion,'dd-MM-yyyy') AS fechahrautorizacion,"+ 
+									"osiris_erp_compra_farmacia.id_subalmacen,"+
+									"osiris_erp_compra_farmacia.id_quien_compro,"+
+									"osiris_erp_compra_farmacia.id_proveedor,"+
+									"osiris_erp_compra_farmacia.id_medico,"+
+						            "osiris_his_medicos.nombre_medico,"+
+						            "to_char(osiris_erp_compra_farmacia.costo_producto,'9999999.999') AS costo_prod,"+
+						            "osiris_almacenes.descripcion_almacen "+ 	
+                                    "FROM osiris_erp_compra_farmacia,osiris_productos,osiris_his_medicos,osiris_almacenes "+ 
+									"WHERE osiris_erp_compra_farmacia.id_producto = osiris_productos.id_producto "+ 
 						            " "+query_fechas+" "+
-									"AND hscmty_erp_compra_farmacia.id_producto = hscmty_productos.id_producto "+
-						            "AND hscmty_erp_compra_farmacia.id_medico = hscmty_his_medicos.id_medico "+
-						            "AND hscmty_erp_compra_farmacia.id_subalmacen = hscmty_almacenes.id_almacen "+
+									"AND osiris_erp_compra_farmacia.id_producto = osiris_productos.id_producto "+
+						            "AND osiris_erp_compra_farmacia.id_medico = osiris_his_medicos.id_medico "+
+						            "AND osiris_erp_compra_farmacia.id_subalmacen = osiris_almacenes.id_almacen "+
 									"ORDER BY orden_compra;";
 				Console.WriteLine(comando.CommandText);
 				NpgsqlDataReader lector = comando.ExecuteReader ();
@@ -366,6 +351,7 @@ namespace osiris
 			}
 		}
 		
+		/*
 		void on_imprime_reporte_clicked (object sender, EventArgs args)
 		{
 			Gnome.PrintJob    trabajo   = new Gnome.PrintJob (PrintConfig.Default());
@@ -537,6 +523,7 @@ namespace osiris
 			ContextoImp.MoveTo(643, -80);			ContextoImp.Show("Compro");
 			ContextoImp.MoveTo(698, -80);			ContextoImp.Show("Medico");
       	}
+		*/
 		
 		void on_cierraventanas_clicked (object sender, EventArgs args)	
 		{

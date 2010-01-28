@@ -77,39 +77,38 @@ namespace osiris
 		//entry:
 		[Widget]Gtk.Entry entry_total_aplicado; 
 
-		public string busqueda = "";
+		string busqueda = "";
 	    
-		public string connectionString = "Server=localhost;" +
-						"Port=5432;" +
-						 "User ID=admin;" +
-						"Password=1qaz2wsx;";
-						
-		public string nombrebd;
-		public string LoginEmpleado;
-    	public string NomEmpleado;
-    	public string AppEmpleado;
-    	public string ApmEmpleado;
+		string connectionString;						
+		string nombrebd;
+		string LoginEmpleado;
+    	string NomEmpleado;
+    	string AppEmpleado;
+    	string ApmEmpleado;
     	    	
-    	public string query_departamento = "AND osiris_his_tipo_admisiones.descripcion_admisiones = '0' ";
-    	public int id_tipo_admisiones = 0; 
-		public string query1 = "" ;
-		public string titulopagina= "MOVIMIENTOS DE PRODUCOS";
+    	string query_departamento = "AND osiris_his_tipo_admisiones.descripcion_admisiones = '0' ";
+    	int id_tipo_admisiones = 0; 
+		string query1 = "" ;
+		string titulopagina= "MOVIMIENTOS DE PRODUCOS";
 		
-        private TreeStore treeViewEngineBusca2;	// Para la busqueda de Productos
-    	private TreeStore treeViewEngineSelec;	// Lista de Productos seleccionados
-    	private TreeStore treeViewEngineResumen;	// Lista de Productos seleccionados
+        TreeStore treeViewEngineBusca2;	// Para la busqueda de Productos
+    	TreeStore treeViewEngineSelec;	// Lista de Productos seleccionados
+    	TreeStore treeViewEngineResumen;	// Lista de Productos seleccionados
     	
     	//Declaracion de ventana de error:
 		protected Gtk.Window MyWinError;
 		protected Gtk.Window MyWin;
+		
+		class_conexion conexion_a_DB = new class_conexion();
 	    
-		public movimientos_productos_paciente(string LoginEmp_, string NomEmpleado_, string AppEmpleado_, string ApmEmpleado_, string _nombrebd_,int centrocosto)
+		public movimientos_productos_paciente(string LoginEmp_, string NomEmpleado_, string AppEmpleado_, string ApmEmpleado_, string nombrebd_,int centrocosto)
 		{
 	    	LoginEmpleado = LoginEmp_;
     		NomEmpleado = NomEmpleado_;
     		AppEmpleado = AppEmpleado_;
     		ApmEmpleado = ApmEmpleado_;
-    		nombrebd = _nombrebd_; 
+    		connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
+			nombrebd = conexion_a_DB._nombrebd;	
     		
 			Glade.XML gxml = new Glade.XML (null, "costos.glade", "mov_productos", null);
 			gxml.Autoconnect (this);

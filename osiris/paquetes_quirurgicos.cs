@@ -105,70 +105,70 @@ namespace osiris
 		[Widget] Gtk.TreeView lista_cirugia;
 		[Widget] Gtk.Button button_llena_cirugias;
 		
-		private TreeStore treeViewEngineBusca;
-		private TreeStore treeViewEngineBusca2;
-		private TreeStore treeViewEngineServicio;
+		TreeStore treeViewEngineBusca;
+		TreeStore treeViewEngineBusca2;
+		TreeStore treeViewEngineServicio;
 		
 		//private ArrayList arraycargosrealizados;
 		
 		// Declaracion de variables publicas
-		public int idtipocirugia = 1;	        			// Toma el valor de numero de atencion de paciente
-		public string cirugia;
-		public int idtipoesp = 1;
-		public string especialidad;
-		public string nommedico;
+		int idtipocirugia = 1;	        			// Toma el valor de numero de atencion de paciente
+		string cirugia;
+		int idtipoesp = 1;
+		string especialidad;
+		string nommedico;
 		
-		public float valoriva = 15;
+		float valoriva;
 		
-		public string id_produ = "";
-		public string desc_produ = "";
-		public string precio_produ ="";
-		public string iva_produ ="";
-		public string total_produ ="";
-		public string costo_unitario_producto;
-		public string porcentage_utilidad_producto;
-		public string costo_total_producto;
-		public string ppcant ="";
-		public string constante = "";
-		public string agrupacion = "";
-		public float ppcantidad = 0;
-		public float valor_descuento = 0;
+		string id_produ = "";
+		string desc_produ = "";
+		string precio_produ ="";
+		string iva_produ ="";
+		string total_produ ="";
+		string costo_unitario_producto;
+		string porcentage_utilidad_producto;
+		string costo_total_producto;
+		string ppcant ="";
+		string constante = "";
+		string agrupacion = "";
+		float ppcantidad = 0;
+		float valor_descuento = 0;
 		//Variables de admision
-		public int idtipointernamiento = 0;
-		public string descripinternamiento = "";
-		public bool nuevacirugia = false;
-		public bool copiaproductos = false;
-		public string tipobusqueda = "";
-		public bool tienepaquete = false;
+		int idtipointernamiento = 0;
+		string descripinternamiento = "";
+		bool nuevacirugia = false;
+		bool copiaproductos = false;
+		string tipobusqueda = "";
+		bool tienepaquete = false;
 		
 		// Sumas Totales para los calculos
-		public float subtotal_al_15;
-		public float subtotal_al_0;
-		public float total_iva;
-		public float sub_total;
-		public float totaldescuento;
+		float subtotal_al_15;
+		float subtotal_al_0;
+		float total_iva;
+		float sub_total;
+		float totaldescuento;
 		
-		public bool aplico_cargos = false;
-		
-		public string LoginEmpleado;
+		bool aplico_cargos = false;
+		string LoginEmpleado;
 			
-		public string connectionString = "Server=localhost;" +
-						"Port=5432;" +
-						 "User ID=admin;" +
-						"Password=1qaz2wsx;";
-		public string nombrebd;
+		string connectionString;
+		string nombrebd;
 				
-		public CellRendererText cel_descripcion;
+		CellRendererText cel_descripcion;
 		
 		//Declaracion de ventana de error
 		protected Gtk.Window MyWinError;
 		protected Gtk.Window MyWin;
 		
+		class_conexion conexion_a_DB = new class_conexion();
+		class_public classpublic = new class_public();
 		
-		public paquetes_cirugias(string LoginEmp, string NomEmpleado, string AppEmpleado, string ApmEmpleado, string _nombrebd_ ) 
+		public paquetes_cirugias(string LoginEmp, string NomEmpleado, string AppEmpleado, string ApmEmpleado, string nombrebd_ ) 
 		{
 			LoginEmpleado = LoginEmp;
-			nombrebd = _nombrebd_; 
+			connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
+			nombrebd = conexion_a_DB._nombrebd;			
+			valoriva = float.Parse(classpublic.ivaparaaplicar);
 			
 			Glade.XML gxml = new Glade.XML (null, "registro_admision.glade", "paquetes", null);
 			gxml.Autoconnect (this);

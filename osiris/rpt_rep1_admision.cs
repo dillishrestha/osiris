@@ -76,10 +76,7 @@ namespace osiris
 		
 		protected Gtk.Window MyWinError;
 		
-		string connectionString = "Server=192.168.1.148;" +
-            	                         "Port=5432;" +
-                	                     "User ID=admin;" +
-                    	                 "Password=1qaz2wsx;";
+		string connectionString;
         string nombrebd;
 	    string tipointernamiento = "CENTRO MEDICO";
    		int idtipointernamiento = 10;
@@ -122,11 +119,14 @@ namespace osiris
 		private string[] lines;
 		private int numLines;
 		private int numPages;
+		
+		class_conexion conexion_a_DB = new class_conexion();
                                
 		//////PARTE PRINCIPAL (MAIN) DEL PROGRAMA/////////                       	          
-		public rptAdmision (string _nombrebd_)
+		public rptAdmision (string nombrebd_)
 		{
-			nombrebd = _nombrebd_;
+			connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
+			nombrebd = conexion_a_DB._nombrebd;
 			//crea la ventana de glade
 			Glade.XML gxml = new Glade.XML (null, "reportes.glade", "rango_rep_adm", null);
 			gxml.Autoconnect (this);

@@ -52,10 +52,7 @@ namespace osiris
 		[Widget] Gtk.Entry entry_totalabonos;
 		[Widget] Gtk.Entry entry_total_de_pacientes;
 		
-		string connectionString = "Server=localhost;" +
-        	    	                     "Port=5432;" +
-            	    	                 "User ID=admin;" +
-                	    	             "Password=1qaz2wsx;";
+		string connectionString;
         string nombrebd;
 		
 		string tiporeporte = "SINALTA";
@@ -76,11 +73,11 @@ namespace osiris
 		private TreeStore treeViewEngineocupacion;
 		
 		//Declarando las celdas
-		public CellRendererText cellrt0;			public CellRendererText cellrt1;
-		public CellRendererText cellrt2;			public CellRendererText cellrt3;
-		public CellRendererText cellrt4;			public CellRendererText cellrt5;
-		public CellRendererText cellrt6;			public CellRendererText cellrt7;
-		public CellRendererText cellrt8;			public CellRendererText cellrt9;			
+		CellRendererText cellrt0;			CellRendererText cellrt1;
+		CellRendererText cellrt2;			CellRendererText cellrt3;
+		CellRendererText cellrt4;			CellRendererText cellrt5;
+		CellRendererText cellrt6;			CellRendererText cellrt7;
+		CellRendererText cellrt8;			CellRendererText cellrt9;			
 								
 		// Declarando variable de fuente para la impresion
 		// Declaracion de fuentes tipo Bitstream Vera sans
@@ -97,9 +94,12 @@ namespace osiris
 		protected Gtk.Window MyWinError;
 		protected Gtk.Window MyWin;
 		
+		class_conexion conexion_a_DB = new class_conexion();
+		
 		public reporte_pacientes_sin_alta(string _nombrebd_)
 		{
-			nombrebd = _nombrebd_;
+			connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
+			nombrebd = conexion_a_DB._nombrebd;
 			
 			Glade.XML  gxml = new Glade.XML  (null, "registro_admision.glade", "rpt_ocupacion", null);
 			gxml.Autoconnect  (this);	

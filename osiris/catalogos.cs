@@ -162,48 +162,44 @@ namespace osiris
 		//[Widget] Gtk.Button button_edita_municipio;
 	
 		//variables principales
-		public string LoginEmpleado;
-		public string NomEmpleado;
-		public string AppEmpleado;
-		public string ApmEmpleado;
-		public string nombrebd;
-		public string nomcatalogo;
-		public bool actualizacion = false;
-		public string busqueda = "";
-		public int idestado = 1;
-		public int idformadepago = 1;
+		string LoginEmpleado;
+		string NomEmpleado;
+		string AppEmpleado;
+		string ApmEmpleado;
+		string nomcatalogo;
+		bool actualizacion = false;
+		string busqueda = "";
+		int idestado = 1;
+		int idformadepago = 1;
 		
 		//variables de datos de clientes
-		public string municipios = "";
-		public string estado = "";
-		public bool activo = true;
-		public bool nuevo_cliente = false;
+		string municipios = "";
+		string estado = "";
+		bool activo = true;
+		bool nuevo_cliente = false;
 		
 		//varibles de datos de medicos
-		public int id_esp_medico = 1;
-		public int id_emp_medico = 1;
-		public bool medico_activo = false;
-		public bool medico_provisional = false;
-		public bool tituloprof_medico = false;
-		public bool cedula_prof_medico = false;
-		public bool diploespecial_medico = false;
-		public bool cursoadistramiento_medico = false;
-		public bool diplomasubespecial = false;
-		public bool copiaidentificacionoficial = false;
-		public bool copiacedularfc = false;
-		public bool certificadoconsejo_esp = false;
-		public bool constancia_congresos = false;
-		public bool copia_comprobante_domicilio = false;
-		public bool diplomaextranjero = false;
-		public bool diploseminarios = false; 
-		public bool diplomacursos = false;
-		public string tipobusqueda = "AND osiris_his_medicos.nombre1_medico LIKE '";
+		int id_esp_medico = 1;
+		int id_emp_medico = 1;
+		bool medico_activo = false;
+		bool medico_provisional = false;
+		bool tituloprof_medico = false;
+		bool cedula_prof_medico = false;
+		bool diploespecial_medico = false;
+		bool cursoadistramiento_medico = false;
+		bool diplomasubespecial = false;
+		bool copiaidentificacionoficial = false;
+		bool copiacedularfc = false;
+		bool certificadoconsejo_esp = false;
+		bool constancia_congresos = false;
+		bool copia_comprobante_domicilio = false;
+		bool diplomaextranjero = false;
+		bool diploseminarios = false; 
+		bool diplomacursos = false;
+		string tipobusqueda = "AND osiris_his_medicos.nombre1_medico LIKE '";		
 		
-		
-		public string connectionString = "Server=localhost;" +
-									"Port=5432;" +
-									 "User ID=admin;" +
-									"Password=1qaz2wsx;";		
+		string connectionString;
+		string nombrebd;
 		//Declaracion de ventana de error
 		protected Gtk.Window MyWinError;
 		protected Gtk.Window MyWin;
@@ -217,33 +213,36 @@ namespace osiris
 		private TreeStore treeViewEngineestado;
 		
 		///Declaracion de columnas de busqueda de Medicos
-		public TreeViewColumn col_idmedico;			public TreeViewColumn col_nomb1medico;		
-		public TreeViewColumn col_nomb2medico;		public TreeViewColumn col_appmedico;		
-		public TreeViewColumn col_apmmedico;		public TreeViewColumn col_espemedico;		
-		public TreeViewColumn col_telmedico;		public TreeViewColumn col_cedulamedico;		
-		public TreeViewColumn col_telOfmedico;		public TreeViewColumn col_celmedico;		
-		public TreeViewColumn col_celmedico2;		public TreeViewColumn col_nextelmedico;		
-		public TreeViewColumn col_beepermedico;		public TreeViewColumn col_empresamedico;		
-		public TreeViewColumn col_estadomedico;		
+		TreeViewColumn col_idmedico;			TreeViewColumn col_nomb1medico;		
+		TreeViewColumn col_nomb2medico;		TreeViewColumn col_appmedico;		
+		TreeViewColumn col_apmmedico;		TreeViewColumn col_espemedico;		
+		TreeViewColumn col_telmedico;		TreeViewColumn col_cedulamedico;		
+		TreeViewColumn col_telOfmedico;		TreeViewColumn col_celmedico;		
+		TreeViewColumn col_celmedico2;		TreeViewColumn col_nextelmedico;		
+		TreeViewColumn col_beepermedico;		TreeViewColumn col_empresamedico;		
+		TreeViewColumn col_estadomedico;		
 		
 		//Declarando las celdas
-		public CellRendererText cellr0;				public CellRendererText cellrt1;
-		public CellRendererText cellrt2;			public CellRendererText cellrt3;
-		public CellRendererText cellrt4;			public CellRendererText cellrt5;
-		public CellRendererText cellrt6;			public CellRendererText cellrt7;
-		public CellRendererText cellrt8;			public CellRendererText cellrt9;
-		public CellRendererText cellrt10;			public CellRendererText cellrt11;
-		public CellRendererText cellrt12;			public CellRendererText cellrt13;
-		public CellRendererText cellrt37;
-				
-		public catalogos_generales(string nomcatalogo_,string LoginEmp_, string NomEmpleado_, string AppEmpleado_, string ApmEmpleado_, string _nombrebd_)
+		CellRendererText cellr0;				CellRendererText cellrt1;
+		CellRendererText cellrt2;			CellRendererText cellrt3;
+		CellRendererText cellrt4;			CellRendererText cellrt5;
+		CellRendererText cellrt6;			CellRendererText cellrt7;
+		CellRendererText cellrt8;			CellRendererText cellrt9;
+		CellRendererText cellrt10;			CellRendererText cellrt11;
+		CellRendererText cellrt12;			CellRendererText cellrt13;
+		CellRendererText cellrt37;
+		
+		class_conexion conexion_a_DB = new class_conexion();
+		
+		public catalogos_generales(string nomcatalogo_,string LoginEmp_, string NomEmpleado_, string AppEmpleado_, string ApmEmpleado_, string nombrebd_)
 		{					
 			LoginEmpleado = LoginEmp_;
 			NomEmpleado = NomEmpleado_;
 			AppEmpleado = AppEmpleado_;
 			ApmEmpleado = ApmEmpleado_;
-			nombrebd = _nombrebd_;
 			nomcatalogo = nomcatalogo_;
+			connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
+			nombrebd = conexion_a_DB._nombrebd;
 			
 			if (nomcatalogo=="menu") 			{	menu_de_catalogos();				}
 			if (nomcatalogo=="cliente") 		{	catalogo_clientes();				}
@@ -354,7 +353,7 @@ namespace osiris
 		}
      	
 		
-		public string lee_numero_proveedor()
+		string lee_numero_proveedor()
 		{
 		    NpgsqlConnection conexion; 
 			conexion = new NpgsqlConnection (connectionString+nombrebd);
@@ -1269,7 +1268,7 @@ namespace osiris
 			}
 		}
 		
-		public string lee_numero_cliente()
+		string lee_numero_cliente()
 		{
 			NpgsqlConnection conexion; 
 			conexion = new NpgsqlConnection (connectionString+nombrebd);
@@ -1803,7 +1802,7 @@ namespace osiris
 			}
 		}
 		
-		public bool validando_campos()
+		bool validando_campos()
 		{
 			if(entry_nombre1_medico.Text.Trim() == "" || entry_apellido_paterno_medico.Text.Trim() == "" ||
 			   entry_apellido_materno_medico.Text.Trim() == "" )
@@ -2744,7 +2743,7 @@ namespace osiris
 			conexion.Close ();
 		}
 		
-		public string lee_numero_estado()
+		string lee_numero_estado()
 		{
 			NpgsqlConnection conexion; 
 			conexion = new NpgsqlConnection (connectionString+nombrebd);
@@ -2782,7 +2781,7 @@ namespace osiris
 			}
 		}
 		
-		public string lee_numero_municipio()
+		string lee_numero_municipio()
 		{
 			NpgsqlConnection conexion; 
 			conexion = new NpgsqlConnection (connectionString+nombrebd);
@@ -2993,7 +2992,7 @@ namespace osiris
 			conexion.Close ();
 		}
 		
-		public bool chequeo_de_verificacion()
+		bool chequeo_de_verificacion()
 		{
 			NpgsqlConnection conexion; 
 			conexion = new NpgsqlConnection (connectionString+nombrebd);

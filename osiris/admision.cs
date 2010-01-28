@@ -73,26 +73,25 @@ namespace osiris
 		//[Widget] Gtk.Button button_respuesta_si;
 		//[Widget] Gtk.Button button_salir_pregunta;
 		
-		public string LoginEmpleado;
-		public string NomEmpleado;
-		public string AppEmpleado;
-		public string ApmEmpleado;
-		public string nombrebd;
+		string LoginEmpleado;
+		string NomEmpleado;
+		string AppEmpleado;
+		string ApmEmpleado;
+		string nombrebd;		
+		string connectionString;
 		
-		public string connectionString = "Server=localhost;" +
-        	    	                     "Port=5432;" +
-            	    	                 "User ID=admin;" +
-                	    	             "Password=1qaz2wsx;";
+		class_conexion conexion_a_DB = new class_conexion();
 		
 		protected Gtk.Window MyWin;
 		
-		public admision (string LoginEmp_, string NomEmpleado_, string AppEmpleado_, string ApmEmpleado_, string _nombrebd_) 
+		public admision (string LoginEmp_, string NomEmpleado_, string AppEmpleado_, string ApmEmpleado_, string nombrebd_) 
 		{
 			LoginEmpleado = LoginEmp_;
 			NomEmpleado = NomEmpleado_;
 			AppEmpleado = AppEmpleado_;
-			ApmEmpleado = ApmEmpleado_;
-			nombrebd = _nombrebd_;
+			ApmEmpleado = ApmEmpleado_;					
+			connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
+			nombrebd = conexion_a_DB._nombrebd;
 			
 			Glade.XML gxml = new Glade.XML (null, "registro_admision.glade", "menu_admision", null);
 			gxml.Autoconnect (this);        

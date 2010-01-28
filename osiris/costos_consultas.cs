@@ -73,28 +73,23 @@ namespace osiris
 		[Widget] Gtk.RadioButton radiobutton_sin_iva;
 		
 		// declaracion de treeview
-
 		[Widget] Gtk.TreeView lista_empresas;
 		[Widget] Gtk.TreeView lista_grupo;
 		[Widget] Gtk.TreeView lista_grupo1;
-		[Widget] Gtk.TreeView lista_grupo2;
+		[Widget] Gtk.TreeView lista_grupo2;		
 		
-		
-		public string connectionString = "Server=localhost;" +
-						"Port=5432;" +
-						 "User ID=admin;" +
-						"Password=1qaz2wsx;";
-		public string nombrebd;
-		public string LoginEmpleado;
-    	public string NomEmpleado;
-    	public string AppEmpleado;
-    	public string ApmEmpleado;
+		string connectionString;
+		string nombrebd;
+		string LoginEmpleado;
+		string NomEmpleado;
+		string AppEmpleado;
+  		string ApmEmpleado;
     	
-    	public string tipo_paciente = "";
-    	public int id_tipopaciente = 0;  // toma el valor del tipo de paciente
-    	public int id_empresa = 0;
-    	public int id_aseguradora = 0;
-    	public string idgrupoproducto;   
+		string tipo_paciente = "";
+		int id_tipopaciente = 0;  // toma el valor del tipo de paciente
+		int id_empresa = 0;
+		int id_aseguradora = 0;
+		string idgrupoproducto;   
     	    
     	//Declaracion de ventana de error
 		protected Gtk.Window MyWinError;
@@ -110,13 +105,16 @@ namespace osiris
 		//private ArrayList grupos;
 		//private ArrayList arraycargosextras;
 		
-		public costos_consultas(string LoginEmp_, string NomEmpleado_, string AppEmpleado_, string ApmEmpleado_, string _nombrebd_ )
+		class_conexion conexion_a_DB = new class_conexion();
+		
+		public costos_consultas(string LoginEmp_, string NomEmpleado_, string AppEmpleado_, string ApmEmpleado_, string nombrebd_ )
 		{
 			LoginEmpleado = LoginEmp_;
     		NomEmpleado = NomEmpleado_;
     		AppEmpleado = AppEmpleado_;
     		ApmEmpleado = ApmEmpleado_;
-    		nombrebd = _nombrebd_; 
+    		connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
+			nombrebd = conexion_a_DB._nombrebd;
     		
 			Glade.XML gxml = new Glade.XML (null, "costos.glade", "menu_costos", null);
 			gxml.Autoconnect (this);

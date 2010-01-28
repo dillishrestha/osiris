@@ -118,51 +118,50 @@ namespace osiris
 		public ListStore store2;		
 		
 		//public bool checkbutton_nuevo;
-		public int idmedico = 1;
-		public string nombmedico = "";
- 		public string especialidadmed = "";
- 		public string telmedico = "";
- 		public string cedmedico = "";
- 		public string diagnostico="";
- 		public float cant_embalaje = 0;
-		public string aplicada ="";
-		public float total_surtido = 0;
-		public int provedor = 0;
-		public int idmedicos = 0;
-		public string tipobusqueda = "AND osiris_his_medicos.nombre1_medico LIKE '";
-		public string nombres = "";
-		public int folioservicio = 0;
-		public int idproveedor = 0;
+		int idmedico = 1;
+		string nombmedico = "";
+ 		string especialidadmed = "";
+ 		string telmedico = "";
+ 		string cedmedico = "";
+ 		string diagnostico="";
+ 		float cant_embalaje = 0;
+		string aplicada ="";
+		float total_surtido = 0;
+		int provedor = 0;
+		int idmedicos = 0;
+		string tipobusqueda = "AND osiris_his_medicos.nombre1_medico LIKE '";
+		string nombres = "";
+		int folioservicio = 0;
+		int idproveedor = 0;
 		
-		public string LoginEmpleado;
-		public string NomEmpleado;
-		public string AppEmpleado;
-		public string ApmEmpleado;
-		public string nombrebd;
-		public string connectionString = "Server=localhost;" +
-						"Port=5432;" +
-						 "User ID=admin;" +
-						"Password=1qaz2wsx;";
+		string LoginEmpleado;
+		string NomEmpleado;
+		string AppEmpleado;
+		string ApmEmpleado;
+		string nombrebd;
+		string connectionString;
+		class_conexion conexion_a_DB = new class_conexion();
 		
-		public int idsubalmacen;
-		public string descripcion_subalmacen;
-		public float valoriva = 15;
-		public string tipo_busqueda;
+		int idsubalmacen;
+		string descripcion_subalmacen;
+		float valoriva = 15;
+		string tipo_busqueda;
 		
 		//Declaracion de ventana de error y pregunta
 		protected Gtk.Window MyWinError;
 		protected Gtk.Window MyWin;
 		
-		public orden_compra_urgencias(string LoginEmp_, string NomEmpleado_, string AppEmpleado_, string ApmEmpleado_, string _nombrebd_,int idalmacen_,string descripcion_almacen_,int idproveedor_, string descripcion_proveedor_) 
+		public orden_compra_urgencias(string LoginEmp_, string NomEmpleado_, string AppEmpleado_, string ApmEmpleado_, string nombrebd_,int idalmacen_,string descripcion_almacen_,int idproveedor_, string descripcion_proveedor_) 
 		{
 			LoginEmpleado = LoginEmp_;
 			NomEmpleado = NomEmpleado_;
 			AppEmpleado = AppEmpleado_;
 			ApmEmpleado = ApmEmpleado_;
-			nombrebd = _nombrebd_;
 			idsubalmacen = idalmacen_;
 			descripcion_subalmacen = descripcion_almacen_;
 			idproveedor = idproveedor_;
+			connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
+			nombrebd = conexion_a_DB._nombrebd;
 						
 			Glade.XML gxml = new Glade.XML (null, "hospitalizacion.glade", "autoriza_compra_medicamentos", null);
 			gxml.Autoconnect (this);        

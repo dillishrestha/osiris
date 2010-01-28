@@ -153,56 +153,56 @@ namespace osiris
 		[Widget] Gtk.Entry entry_plan_diag;
 		[Widget] Gtk.Entry entry_nombre_plan_diag;
 		
-		public string fecha_admision;
-		public string fecha_nacimiento;
+		string fecha_admision;
+		string fecha_nacimiento;
 		
-		public string vivomuertopadre = ""; 
-		public string vivomuertomadre = ""; 
-		public string pntabaquismo = "";
-		public string pnalcoholismo = "";
-		public string pndrogas = "";
-		public string pncronicodegenerativos = "";
-		public string pnhospitalizaciones = "";
-		public string pnquirurgicos = "";
-		public string pnalergicos = "";
-		public string pntraumaticos = "";
-		public string pnneurologicos = "";
+		string vivomuertopadre = ""; 
+		string vivomuertomadre = ""; 
+		string pntabaquismo = "";
+		string pnalcoholismo = "";
+		string pndrogas = "";
+		string pncronicodegenerativos = "";
+		string pnhospitalizaciones = "";
+		string pnquirurgicos = "";
+		string pnalergicos = "";
+		string pntraumaticos = "";
+		string pnneurologicos = "";
 		
 		//public int tipodellenado;
-		public bool editando = false;
+		bool editando = false;
 		
-		public string nombre_paciente;
-		public string pid_paciente;
-		public string edad;
+		string nombre_paciente;
+		string pid_paciente;
+		string edad;
 		
-		public string LoginEmpleado;
-		public string NomEmpleado;
-		public string AppEmpleado;
-		public string ApmEmpleado;
-		public string NomEmpleados;
+		string LoginEmpleado;
+		string NomEmpleado;
+		string AppEmpleado;
+		string ApmEmpleado;
+		string NomEmpleados;
 					
-		public string connectionString = "Server=localhost;" +
-						"Port=5432;" +
-						 "User ID=admin;" +
-						"Password=1qaz2wsx;";
-		public string nombrebd;
+		string connectionString;
+		string nombrebd;
 		
 		//Declaracion de ventana de error
 		protected Gtk.Window MyWinError;
-		protected Gtk.Window MyWin;
+		protected Gtk.Window MyWin;	
+		class_conexion conexion_a_DB = new class_conexion();
 		
-		public historia_clinica(string nombre_paciente_,string pid_paciente_,string edad_,string LoginEmp, string NomEmpleado_, string AppEmpleado_, string ApmEmpleado_, string _nombrebd_,string fecha_admision_,string fecha_nacimiento_ ) 
+		public historia_clinica(string nombre_paciente_,string pid_paciente_,string edad_,string LoginEmp, string NomEmpleado_, string AppEmpleado_, string ApmEmpleado_, string nombrebd_,string fecha_admision_,string fecha_nacimiento_ ) 
 		{
 			nombre_paciente = nombre_paciente_;
 			pid_paciente = pid_paciente_;
 			edad = edad_;
 			LoginEmpleado = LoginEmp;
-			nombrebd = _nombrebd_;
 			NomEmpleado = NomEmpleado_;
 			AppEmpleado = AppEmpleado_;
 			ApmEmpleado = ApmEmpleado_;
 			fecha_admision = fecha_admision_;
 			fecha_nacimiento = fecha_nacimiento_;
+			connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
+			nombrebd = conexion_a_DB._nombrebd; 
+			
 			
             Glade.XML gxml = new Glade.XML (null, "urgencia.glade", "historia_clinica_del_paciente", null);
 			gxml.Autoconnect (this);

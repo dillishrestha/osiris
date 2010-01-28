@@ -53,26 +53,24 @@ namespace osiris
 		protected Gtk.Window MyWinError;
 		protected Gtk.Window MyWin;
 		
-		public string LoginEmpleado;
-		public string NomEmpleado;
-		public string AppEmpleado;
-		public string ApmEmpleado;
-		public string nombrebd;
-		////////////////////////////////////////////////////////7
-		public string connectionString = "Server=localhost;" +
-        	    	                     "Port=5432;" +
-            	    	                 "User ID=admin;" +
-                	    	             "Password=1qaz2wsx;";
-		public int secuencia = 0;
-		public int admision = 0;
-		//////////////////////////////////////////////////////////////7
-		public herramientas_del_sistemas(string LoginEmp_, string NomEmpleado_, string AppEmpleado_, string ApmEmpleado_, string _nombrebd_) 
+		string LoginEmpleado;
+		string NomEmpleado;
+		string AppEmpleado;
+		string ApmEmpleado;
+		string connectionString;
+		string nombrebd;
+		int secuencia = 0;
+		int admision = 0;
+		class_conexion conexion_a_DB = new class_conexion();
+		
+		public herramientas_del_sistemas(string LoginEmp_, string NomEmpleado_, string AppEmpleado_, string ApmEmpleado_, string nombrebd_) 
 		{
 			LoginEmpleado = LoginEmp_;
 			NomEmpleado = NomEmpleado_;
 			AppEmpleado = AppEmpleado_;
 			ApmEmpleado = ApmEmpleado_;
-			nombrebd = _nombrebd_;
+			connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
+			nombrebd = conexion_a_DB._nombrebd; 
 			
 			Glade.XML gxml = new Glade.XML (null, "herramientas.glade", "menu_herramientas", null);
 			gxml.Autoconnect (this);        

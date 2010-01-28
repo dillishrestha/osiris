@@ -164,7 +164,6 @@ namespace osiris
 		string NomEmpleado;
 		string AppEmpleado;
 		string ApmEmpleado;
-		string nombrebd;
 		string nomcatalogo;
 		string busqueda = "";
 		string nombmedico = "";
@@ -181,10 +180,9 @@ namespace osiris
 		int folio_servicio = 1;
 		string tipobusqueda = "AND osiris_his_medicos.nombre1_medico LIKE '";
 		
-		string connectionString = "Server=localhost;" +
-									"Port=5432;" +
-									 "User ID=admin;" +
-									"Password=1qaz2wsx;";		
+		string connectionString;
+		string nombrebd;
+		class_conexion conexion_a_DB = new class_conexion();
 		
 		//Declaracion de ventana de error
 		protected Gtk.Window MyWinError;
@@ -217,13 +215,14 @@ namespace osiris
 		CellRendererText cellrt12;			CellRendererText cellrt13;
 		CellRendererText cellrt37;
 		
-		public calendario_quirofano(string LoginEmp_, string NomEmpleado_, string AppEmpleado_, string ApmEmpleado_, string _nombrebd_) 
+		public calendario_quirofano(string LoginEmp_, string NomEmpleado_, string AppEmpleado_, string ApmEmpleado_, string nombrebd_) 
 		{
 			LoginEmpleado = LoginEmp_;
 			NomEmpleado = NomEmpleado_;
 			AppEmpleado = AppEmpleado_;
 			ApmEmpleado = ApmEmpleado_;
-			nombrebd = _nombrebd_;
+			connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
+			nombrebd = conexion_a_DB._nombrebd;
 						
 			Glade.XML gxml = new Glade.XML (null, "quirofano.glade", "programacion_cirugias", null);
 			gxml.Autoconnect (this);        

@@ -196,84 +196,81 @@ namespace osiris
 		[Widget] Gtk.ComboBox combobox_parent_responsable = null;
 		
 		// Declaracion de variables publicas
-		public int PidPaciente = 0;		 // Toma la actualizacion del pid del paciente
-		public string nomnaciente;		 // Toma el valor del nombre completo del paciente
-		public string fechanacpaciente;  // Toma la fecha de nacimiento
-		public string edadpaciente;		 // Toma la edad del paciente
-		public string fecharegadmision;  // Toma el valor de la fecha de admision
-		public string horaregadmision;   // Toma el valor de la hora de admision
-		public string tipopaciente = ""; // toma el valor del texto de tipo de paciente
-		public int id_tipopaciente = 0;  // toma el valor del tipo de paciente Privado = 200
-		public int folioservicio = 0;	 // Toma el valor de numero de atencion de paciente
+		int PidPaciente = 0;		 // Toma la actualizacion del pid del paciente
+		string nomnaciente;		 // Toma el valor del nombre completo del paciente
+		string fechanacpaciente;  // Toma la fecha de nacimiento
+		string edadpaciente;		 // Toma la edad del paciente
+		string fecharegadmision;  // Toma el valor de la fecha de admision
+		string horaregadmision;   // Toma el valor de la hora de admision
+		string tipopaciente = ""; // toma el valor del texto de tipo de paciente
+		int id_tipopaciente = 0;  // toma el valor del tipo de paciente Privado = 200
+		int folioservicio = 0;	 // Toma el valor de numero de atencion de paciente
 		
-		public string tipointernamiento = "URGENCIAS";//"Urgencias";  // Toma el valor del tipo de internamiento
-		public int idtipointernamiento = 0;       // Toma el valor del id de internamiento
-		public bool grabainternamiento = false; // me indica que debe grabar el internamiento del paciente
-		public bool grabarespocuenta = false;  // me indica si grabo los datos del responsable de la cuenta
-		public bool almacen_encabezado = true; // banadera de almacenamiento de cobro
+		string tipointernamiento = "URGENCIAS";//"Urgencias";  // Toma el valor del tipo de internamiento
+		int idtipointernamiento = 0;       // Toma el valor del id de internamiento
+		bool grabainternamiento = false; // me indica que debe grabar el internamiento del paciente
+		bool grabarespocuenta = false;  // me indica si grabo los datos del responsable de la cuenta
+		bool almacen_encabezado = true; // banadera de almacenamiento de cobro
 		
-		public string estadocivil = "Casado";   // toma el valor del texto del estahdo civil
-		public string sexopaciente = "H"; 		// toma el valor del sexo del paciente
-		public string municipios = " ";	// toma el valor del municipio del paciente (direccion de su casa)
-		public string estado = " ";	// Toma el valor del estadoo de donde vive el paciente
-		public int idestado = 1;
-		public string nombre_aseguradora ="";
-		public int idaseguradora = 1;
-		public int idempresa_paciente = 1;
-		public string descripcion_empresa_paciente ="";
-		public bool boolaseguradora = false;
-		public int idcirugia = 1;   // Toma el valor id de la cirugia
-		public string decirugia = ""; // toma la descripcion de la
-		public bool editar = false;
-		public string busqueda = "";
-		public string tipobusqueda = "AND osiris_his_medicos.nombre1_medico LIKE '";
-		public bool ventana_principal = true;
+		string estadocivil = "Casado";   // toma el valor del texto del estahdo civil
+		string sexopaciente = "H"; 		// toma el valor del sexo del paciente
+		string municipios = " ";	// toma el valor del municipio del paciente (direccion de su casa)
+		string estado = " ";	// Toma el valor del estadoo de donde vive el paciente
+		int idestado = 1;
+		string nombre_aseguradora ="";
+		int idaseguradora = 1;
+		int idempresa_paciente = 1;
+		string descripcion_empresa_paciente ="";
+		bool boolaseguradora = false;
+		int idcirugia = 1;   // Toma el valor id de la cirugia
+		string decirugia = ""; // toma la descripcion de la
+		bool editar = false;
+		string busqueda = "";
+		string tipobusqueda = "AND osiris_his_medicos.nombre1_medico LIKE '";
+		bool ventana_principal = true;
 		
 		// Variables publicas medico quien interna
-		public int idmedico = 1;
- 		public string nombmedico = "";
- 		public string especialidadmed = "";
- 		public string telmedico = "";
- 		public string cedmedico = "";
- 		public string diagnostico="";
+		int idmedico = 1;
+ 		string nombmedico = "";
+ 		string especialidadmed = "";
+ 		string telmedico = "";
+ 		string cedmedico = "";
+ 		string diagnostico="";
  			
 		// Variables publicas del responsable de cuenta
-		public string nombr_respo = "";
-		public string telef_respo = "";
-		public string direc_respo = "";
-		public string empre_respo = "";
-		public string ocupa_respo = "";
-		public string asegu_respo = "";
-		public string poliz_respo = "";
-		public string certif_respo = "";
-		public string direc_empre_respo = "";
-		public string telef_empre_respo = "";
-		public string parentezcoresponsable = "Sin Parentezco";
+		string nombr_respo = "";
+		string telef_respo = "";
+		string direc_respo = "";
+		string empre_respo = "";
+		string ocupa_respo = "";
+		string asegu_respo = "";
+		string poliz_respo = "";
+		string certif_respo = "";
+		string direc_empre_respo = "";
+		string telef_empre_respo = "";
+		string parentezcoresponsable = "Sin Parentezco";
 		
 		// Variables publicas para grabar el encargado de la cuenta
-		public string _tipo_="";   // que tipo de entrada es nuevo o esta buscando
-		public string LoginEmpleado;
-		public string NomEmp_;
-		public string NomEmpleado = "";
-		public string AppEmpleado = "";
-		public string ApmEmpleado = "";
+		string _tipo_="";   // que tipo de entrada es nuevo o esta buscando
+		string LoginEmpleado;
+		string NomEmp_;
+		string NomEmpleado = "";
+		string AppEmpleado = "";
+		string ApmEmpleado = "";		
+		string connectionString;
+		string nombrebd;        
 		
-		public string connectionString = "Server=localhost;" +
-						"Port=5432;" +
-						 "User ID=admin;" +
-						"Password=1qaz2wsx;";
-        public string nombrebd;
-        
+		class_conexion conexion_a_DB = new class_conexion();		
 		protected Gtk.Window MyWin;
 		protected Gtk.Window MyWinError;
 		
 		private TreeStore treeViewEngine;
 		private ListStore store_aseguradora;
-		        
-		
 		public registro_paciente_busca(string _tipo, string LoginEmp, string NomEmpleado_, string AppEmpleado_, string ApmEmpleado_, string _nombrebd_) 
 		{
-			nombrebd =_nombrebd_; 
+			//nombrebd = _nombrebd_; 			
+			connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
+			nombrebd = conexion_a_DB._nombrebd;
 			LoginEmpleado = LoginEmp;
 			NomEmp_ = NomEmpleado+" "+AppEmpleado+" "+ApmEmpleado;
 			NomEmpleado = NomEmpleado_;

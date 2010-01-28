@@ -102,92 +102,92 @@ namespace osiris
 		[Widget] Gtk.TreeView lista_de_producto_anidado;
 		
 		// Declaracion de variables publicas
-		public long idproduct = 0;
-		public long lastproduct = 0;
-		public long newidproduct = 0;
-		public long newidsecuencia = 0;
-		public int idtipogrupo = 0;
-		public int idtipogrupo1 = 0;
-		public int idtipogrupo2 = 0;
-		public string descripgrupo = "";
-		public string descripgrupo1 =  "";
-		public string descripgrupo2 = "";
-		public string apldesc;
-		public bool aplicariva_producto;
-	 	public bool cobroactivo_producto;
-	 	public string costounico;
-	 	public string tiposeleccion = "";
-	 	public decimal descuento = 0;
-	 	public decimal precio_uni = 0;
-	 	public bool aplica_descuento;
-	 	public string tipounidadproducto = "";
+		long idproduct = 0;
+		long lastproduct = 0;
+		long newidproduct = 0;
+		long newidsecuencia = 0;
+		int idtipogrupo = 0;
+		int idtipogrupo1 = 0;
+		int idtipogrupo2 = 0;
+		string descripgrupo = "";
+		string descripgrupo1 =  "";
+		string descripgrupo2 = "";
+		string apldesc;
+		bool aplicariva_producto;
+	 	bool cobroactivo_producto;
+	 	string costounico;
+	 	string tiposeleccion = "";
+	 	decimal descuento = 0;
+	 	decimal precio_uni = 0;
+	 	bool aplica_descuento;
+	 	string tipounidadproducto = "";
 		
 		// Almacena los valores anterios para guardar los cuando actualiza algun precio, o descripcion
-	 	public decimal precio_unitario_anterior = 0;
-	 	public decimal precio_costo_anterior = 0;
-		public decimal utilidad_anterior = 0;
-		public string valor_anterior_descuento;
+	 	decimal precio_unitario_anterior = 0;
+	 	decimal precio_costo_anterior = 0;
+		decimal utilidad_anterior = 0;
+		string valor_anterior_descuento;
 		
 		//VARIABLES PARA CARGAR DATOS
-	 	public string codprod ="";
-	 	public string preciopub ="";
-	 	public string precio ="";
-	 	public string preciouni ="";
-	 	public string porcientoutilidad ="";
-	 	public string descripcionprod ="";
-	 	public string nombreart ="";
-	 	public string nombregen ="";
-	 	public string embalajeprod ="";
-	 	public string porcentagedesc ="";
+	 	string codprod ="";
+	 	string preciopub ="";
+	 	string precio ="";
+	 	string preciouni ="";
+	 	string porcientoutilidad ="";
+	 	string descripcionprod ="";
+	 	string nombreart ="";
+	 	string nombregen ="";
+	 	string embalajeprod ="";
+	 	string porcentagedesc ="";
 		
 		//Variables Principales
-		public string connectionString = "Server=localhost;" +
-										 "Port=5432;" +
-										 "User ID=admin;" +
-										 "Password=1qaz2wsx;";		
-		public string nombrebd;
-		public string LoginEmpleado;
-		public string NomEmpleado;
-		public string AppEmpleado;
-		public string ApmEmpleado;
-		public string id_producto;
-		public string lee_id_producto;
-		public TreeStore treeViewEngineBusca2;
-		public TreeStore treeViewEngineBusca3;
-		public TreeStore treeViewEngineBusca4;
+		string connectionString;		
+		string nombrebd;
+		string LoginEmpleado;
+		string NomEmpleado;
+		string AppEmpleado;
+		string ApmEmpleado;
+		string id_producto;
+		string lee_id_producto;
+		TreeStore treeViewEngineBusca2;
+		TreeStore treeViewEngineBusca3;
+		TreeStore treeViewEngineBusca4;
 		
 		//declaracion de columnas y celdas de treeview de los precios de Clientes 
-		public TreeViewColumn col_seleccion; 		public CellRendererToggle cellrt_seleccion;
-		public TreeViewColumn col_clie_aseg;		public CellRendererText cellr30;
-		public TreeViewColumn col_utilidad;			public CellRendererText cellr31;
-		public TreeViewColumn col_precio_sin_iva;	public CellRendererText cellrt32;
-		public TreeViewColumn col_porc_utilidad;	public CellRendererText cellrt33;
-		public TreeViewColumn col_iva;				public CellRendererText cellrt34;
-		public TreeViewColumn col_precio_final;		public CellRendererText cellrt35;
+		TreeViewColumn col_seleccion; 		CellRendererToggle cellrt_seleccion;
+		TreeViewColumn col_clie_aseg;		CellRendererText cellr30;
+		TreeViewColumn col_utilidad;			CellRendererText cellr31;
+		TreeViewColumn col_precio_sin_iva;	CellRendererText cellrt32;
+		TreeViewColumn col_porc_utilidad;	CellRendererText cellrt33;
+		TreeViewColumn col_iva;				CellRendererText cellrt34;
+		TreeViewColumn col_precio_final;		CellRendererText cellrt35;
 		
 		//declaracion de columnas y celdas de treeview de busqueda
-		public TreeViewColumn col_idproducto;		public CellRendererText cellr0;
-		public TreeViewColumn col_desc_producto;	public CellRendererText cellr1;
-		public TreeViewColumn col_precioprod;		public CellRendererText cellrt2;
-		public TreeViewColumn col_ivaprod;			public CellRendererText cellrt3;
-		public TreeViewColumn col_totalprod;		public CellRendererText cellrt4;
-		public TreeViewColumn col_descuentoprod;	public CellRendererText cellrt5;
-		public TreeViewColumn col_preciocondesc;	public CellRendererText cellrt6;
-		public TreeViewColumn col_grupoprod;		public CellRendererText cellrt7;
-		public TreeViewColumn col_grupo1prod;		public CellRendererText cellrt8;
-		public TreeViewColumn col_grupo2prod;		public CellRendererText cellrt9;
-		public TreeViewColumn col_costoprod_uni;	public CellRendererText cellrt12;
-		public TreeViewColumn col_aplica_iva;		public CellRendererText cellrt19;
-		public TreeViewColumn col_cobro_activo;		public CellRendererText cellrt20;
+		TreeViewColumn col_idproducto;		CellRendererText cellr0;
+		TreeViewColumn col_desc_producto;	CellRendererText cellr1;
+		TreeViewColumn col_precioprod;		CellRendererText cellrt2;
+		TreeViewColumn col_ivaprod;			CellRendererText cellrt3;
+		TreeViewColumn col_totalprod;		CellRendererText cellrt4;
+		TreeViewColumn col_descuentoprod;	CellRendererText cellrt5;
+		TreeViewColumn col_preciocondesc;	CellRendererText cellrt6;
+		TreeViewColumn col_grupoprod;		CellRendererText cellrt7;
+		TreeViewColumn col_grupo1prod;		CellRendererText cellrt8;
+		TreeViewColumn col_grupo2prod;		CellRendererText cellrt9;
+		TreeViewColumn col_costoprod_uni;	CellRendererText cellrt12;
+		TreeViewColumn col_aplica_iva;		CellRendererText cellrt19;
+		TreeViewColumn col_cobro_activo;		CellRendererText cellrt20;
 		
 		//Declaracion de ventana de error
 		protected Gtk.Window MyWinError;
 		protected Gtk.Window MyWin;
+		
+		class_conexion conexion_a_DB = new class_conexion();
 						
-		public catalogo_productos_nuevos (string LoginEmp, string NomEmpleado, string AppEmpleado, string ApmEmpleado, string _nombrebd_ )
+		public catalogo_productos_nuevos (string LoginEmp, string NomEmpleado, string AppEmpleado, string ApmEmpleado, string nombrebd_ )
 		{
 			LoginEmpleado = LoginEmp;
-			nombrebd = _nombrebd_; 
+			connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
+			nombrebd = conexion_a_DB._nombrebd;
 			//Direcciona al glade
 			Glade.XML gxml = new Glade.XML (null, "almacen_costos_compras.glade", "productos_homero_prueba", null);
 			gxml.Autoconnect (this);
@@ -1261,27 +1261,27 @@ namespace osiris
 				set { col0_col_seleccion = value; }
 			}
  			
- 			public string col_clie_aseg{
+ 			string col_clie_aseg{
 				get { return col1_precios_productos; }
 				set { col1_precios_productos = value; }
 			}
-			public string col_precio_sin_iva{
+			string col_precio_sin_iva{
 				get { return col2_precios_productos; }
 				set { col2_precios_productos = value; }
 			}
-			public string col_iva{
+			string col_iva{
 				get { return col3_precios_productos; }
 				set { col3_precios_productos = value; }
 			}
-			public string col_precio_final{
+			string col_precio_final{
 				get { return col4_precios_productos; }
 				set { col4_precios_productos = value; }
 			}
-			public string col_porc_utilidad{
+			string col_porc_utilidad{
 				get { return col5_precios_productos; }
 				set { col5_precios_productos = value; }
 			}
-			public string col_utilidad{
+			string col_utilidad{
 				get { return col6_precios_productos; }
 				set { col6_precios_productos = value; }
 			}

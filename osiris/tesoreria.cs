@@ -93,34 +93,32 @@ namespace osiris
 		
 		//treeview
 		private TreeStore treeViewEngineBusca;
-		public string LoginEmpleado;
-		public string NomEmpleado;
-		public string AppEmpleado;
-		public string ApmEmpleado;
-		public string nombrebd;
-		
-		public int idcliente = 1;
+		string LoginEmpleado;
+		string NomEmpleado;
+		string AppEmpleado;
+		string ApmEmpleado;
+				
+		int idcliente = 1;
 						
-		public string connectionString = "Server=localhost;" +
-									"Port=5432;" +
-									 "User ID=admin;" +
-									"Password=1qaz2wsx;";	
+		string connectionString;
+		string nombrebd;
 		
+		class_conexion conexion_a_DB = new class_conexion();
 		
-		public string facturados = "FACTURADOS";
-		public string busqueda = "";
-		public bool pagados = false;
+		string facturados = "FACTURADOS";
+		string busqueda = "";
+		bool pagados = false;
 					
-		public int idmedico = 0;
- 		public string nombmedico = "";
- 		public string especialidadmed ="";
- 		public string telmedico = "";
- 		public string cedmedico = "";
- 		public string diagnostico="";
+		int idmedico = 0;
+ 		string nombmedico = "";
+ 		string especialidadmed ="";
+ 		string telmedico = "";
+ 		string cedmedico = "";
+ 		string diagnostico="";
 		////
-		public string facturas_="";
+		string facturas_="";
 		
-		public string tipobusqueda = "AND osiris_his_medicos.nombre1_medico LIKE '";
+		string tipobusqueda = "AND osiris_his_medicos.nombre1_medico LIKE '";
 		
 		private TreeStore treeViewEngineMedicos;
 		private TreeStore treeViewEngineClientes;
@@ -137,9 +135,9 @@ namespace osiris
 			NomEmpleado = NomEmpleado_;
 			AppEmpleado = AppEmpleado_;
 			ApmEmpleado = ApmEmpleado_;
-			nombrebd = _nombrebd_;
-			
-			
+			connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
+			nombrebd = conexion_a_DB._nombrebd;
+						
 			Glade.XML gxml = new Glade.XML (null, "caja.glade", "menu_tesoreria", null);
 			gxml.Autoconnect (this);        
 			////// Muestra ventana de Glade

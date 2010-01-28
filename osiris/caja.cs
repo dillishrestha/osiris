@@ -302,8 +302,7 @@ namespace osiris
 		string ApmEmpleado = "";
 			
 		string connectionString;
-		string nombrebd;
-		
+		string nombrebd;		
 		class_conexion conexion_a_DB = new class_conexion();
 					
 		CellRendererText cel_descripcion;
@@ -312,17 +311,14 @@ namespace osiris
 		protected Gtk.Window MyWinError;
 		protected Gtk.Window MyWin;
 		
-		public caja_cobro(string LoginEmp, string NomEmpleado_, string AppEmpleado_, string ApmEmpleado_, string _nombrebd_ ) 
+		public caja_cobro(string LoginEmp, string NomEmpleado_, string AppEmpleado_, string ApmEmpleado_, string nombrebd_ ) 
 		{
 			LoginEmpleado = LoginEmp;
-			//nombrebd = _nombrebd_; 
-			
-			connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
-			nombrebd = conexion_a_DB._nombrebd;
-						
 			NomEmpleado = NomEmpleado_;
 			AppEmpleado = AppEmpleado_;
 			ApmEmpleado = ApmEmpleado_;
+			connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
+			nombrebd = conexion_a_DB._nombrebd;
 			
 			Glade.XML gxml = new Glade.XML (null, "caja.glade", "caja", null);
 			gxml.Autoconnect (this);

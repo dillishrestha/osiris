@@ -160,87 +160,82 @@ namespace osiris
 		
 		
 		// Declaracion de variables de la clase
-		public int idcliente = 1;					// Toma el id del cliente que se va facturar
-		public int idadmision_ = 0;					//tipo de admision en donde se realizaron los cargos...
-		public int idgrupoproducto = 0;
-		public int id_tipopaciente = 0;
-		public bool aplicar_descuento = true;
-		public bool aplicar_siempre = false;
-		public bool factura_cancelada = true;
-		public bool error_no_existe = false;
-		public bool enviofactura_cliente = false;
-		public bool enviofactura_factutu = false;	
+		int idcliente = 1;					// Toma el id del cliente que se va facturar
+		int idadmision_ = 0;					//tipo de admision en donde se realizaron los cargos...
+		int idgrupoproducto = 0;
+		int id_tipopaciente = 0;
+		bool aplicar_descuento = true;
+		bool aplicar_siempre = false;
+		bool factura_cancelada = true;
+		bool error_no_existe = false;
+		bool enviofactura_cliente = false;
+		bool enviofactura_factutu = false;	
 		
-		public decimal precio_por_cantidad = 0;		//esta variable se utiliza para ir guwerdandop el precio de un producto dependiendo de cuanto se aplico de este
-		public decimal iva_del_grupo = 0;					//es un valor en donde se van a ir sumando cada iva que se le aplica al producto
-		public decimal porcentagedesc = 0;			//es el el descuento en porciento si es que existe un descuento
-		public decimal descuento_neto = 0;			// valor desc sin iva
-		public decimal descurento_del_grupo = 0;		//el descuento que se aplica en cada grupo de productos
-		public decimal iva_de_descuento = 0;			// valor iva del descuento 
-		public decimal descuento_del_grupo = 0;		// suma del iva del desc y del desc neto
-		public decimal subtotal_del_grupo = 0;		//subtotal del grupo de productos
-		public decimal subtotal_al_15_grupo = 0;		//es el subtotal de los productos que contienen iva en un grupo de productos
-		public decimal subtotal_al_0_grupo = 0;		//es el subtotal de los productos que no contienen iva en un grupo de productos
-		public decimal subtotal_al_15 = 0;			//es el subtotal de los productos que contienen iva en todo el movimiento
-		public decimal subtotal_al_0 = 0;			//es el subtotal de los productos que no contienen iva en todo el movimiento
-		public decimal total_del_grupo = 0;			//precio total del grupo de productos
-		public decimal total_de_iva = 0;				//suma de todos los ivas de todos los lugares y grupos de productos
-		public decimal total_de_descuento_neto =0;	//es el descuento neto de facturacion
-		public decimal total_de_iva_descuento =0;	//es el iva del descuento neto de facturacion
-		public decimal total_descuento=0;			//es la la suma del descuento neto y el iva del descuento neto de facturacion
-		public decimal deducible_factura = 0;
-		public decimal coaseguro_factura = 0;
-		public decimal valor_coaseguro = 0;
-		public decimal total_honorario_medico = 0;
-		public float totaldefactura = 0;
-		public float totalhonorariomedico = 0; 
+		decimal precio_por_cantidad = 0;		//esta variable se utiliza para ir guwerdandop el precio de un producto dependiendo de cuanto se aplico de este
+		decimal iva_del_grupo = 0;					//es un valor en donde se van a ir sumando cada iva que se le aplica al producto
+		decimal porcentagedesc = 0;			//es el el descuento en porciento si es que existe un descuento
+		decimal descuento_neto = 0;			// valor desc sin iva
+		decimal descurento_del_grupo = 0;		//el descuento que se aplica en cada grupo de productos
+		decimal iva_de_descuento = 0;			// valor iva del descuento 
+		decimal descuento_del_grupo = 0;		// suma del iva del desc y del desc neto
+		decimal subtotal_del_grupo = 0;		//subtotal del grupo de productos
+		decimal subtotal_al_15_grupo = 0;		//es el subtotal de los productos que contienen iva en un grupo de productos
+		decimal subtotal_al_0_grupo = 0;		//es el subtotal de los productos que no contienen iva en un grupo de productos
+		decimal subtotal_al_15 = 0;			//es el subtotal de los productos que contienen iva en todo el movimiento
+		decimal subtotal_al_0 = 0;			//es el subtotal de los productos que no contienen iva en todo el movimiento
+		decimal total_del_grupo = 0;			//precio total del grupo de productos
+		decimal total_de_iva = 0;				//suma de todos los ivas de todos los lugares y grupos de productos
+		decimal total_de_descuento_neto =0;	//es el descuento neto de facturacion
+		decimal total_de_iva_descuento =0;	//es el iva del descuento neto de facturacion
+		decimal total_descuento=0;			//es la la suma del descuento neto y el iva del descuento neto de facturacion
+		decimal deducible_factura = 0;
+		decimal coaseguro_factura = 0;
+		decimal valor_coaseguro = 0;
+		decimal total_honorario_medico = 0;
+		float totaldefactura = 0;
+		float totalhonorariomedico = 0; 
 				
-		public string folioservicio_factura = "";
-		public string diagnostico_factura = "";
-		public string numeros_folios_seleccionado = "";
-		public string numeros_seleccionado = "";
-		public string cantidad_en_letras = "";
-		public int num_nota = 0;					// igualando la nota de credito
+		string folioservicio_factura = "";
+		string diagnostico_factura = "";
+		string numeros_folios_seleccionado = "";
+		string numeros_seleccionado = "";
+		string cantidad_en_letras = "";
+		int num_nota = 0;					// igualando la nota de credito
 		
-		public int idaseguradora = 0;
+		int idaseguradora = 0;
 		
-		public int marca_un_folio = 0;
-		public int ultimafactura = 0;
-		public string numerodefactura = "";
-		public string municipios = "";
-		public string estado = "";		
+		int marca_un_folio = 0;
+		int ultimafactura = 0;
+		string numerodefactura = "";
+		string municipios = "";
+		string estado = "";		
 		
 		//Variables Detalle Vacio
-		public decimal suma_sin_iva = 0;
-		public double iva = 0;
+		decimal suma_sin_iva = 0;
+		double iva = 0;
 		//public decimal sumasiniva = 0;
 		//public decimal sumaconiva = 0;
-		public decimal suma_ = 0;
+		decimal suma_ = 0;
 		//public decimal suma_del_iva = 0;
-		public decimal subtotales = 0;
-		public double valor_iva = .15;
-		public decimal honorarios = 0;
+		decimal subtotales = 0;
+		double valoriva = 0;
+		decimal honorarios = 0;
 			
-		public string LoginEmpleado;
-		public string NomEmpleado;
-		public string AppEmpleado;
-		public string ApmEmpleado;
-		
-		
+		string LoginEmpleado;
+		string NomEmpleado;
+		string AppEmpleado;
+		string ApmEmpleado;
 		
 		// traductor de numeros a letras
-		public string[] sUnidades = {"", "un", "dos", "tres", "cuatro", "cinco", "seis", "siete", "ocho", "nueve", "diez", 
+		string[] sUnidades = {"", "un", "dos", "tres", "cuatro", "cinco", "seis", "siete", "ocho", "nueve", "diez", 
 									"once", "doce", "trece", "catorce", "quince", "dieciseis", "diecisiete", "dieciocho", "diecinueve", "veinte", 
 									"veintiún", "veintidos", "veintitres", "veinticuatro", "veinticinco", "veintiseis", "veintisiete", "veintiocho", "veintinueve"};
- 		public string[] sDecenas = {"", "diez", "veinte", "treinta", "cuarenta", "cincuenta", "sesenta", "setenta", "ochenta", "noventa"};
- 		public string[] sCentenas = {"", "ciento", "doscientos", "trescientos", "cuatrocientos", "quinientos", "seiscientos", "setecientos", "ochocientos", "novecientos"};
-  		public string sResultado = "";
+ 		string[] sDecenas = {"", "diez", "veinte", "treinta", "cuarenta", "cincuenta", "sesenta", "setenta", "ochenta", "noventa"};
+ 		string[] sCentenas = {"", "ciento", "doscientos", "trescientos", "cuatrocientos", "quinientos", "seiscientos", "setecientos", "ochocientos", "novecientos"};
+  		string sResultado = "";
   					
-		public string connectionString = "Server=localhost;" +
-						"Port=5432;" +
-						 "User ID=admin;" +
-						"Password=1qaz2wsx;";
-		public string nombrebd;
+		string connectionString;
+		string nombrebd;
 				
 		//Declaracion de ventana de error
 		protected Gtk.Window MyWinError;
@@ -250,13 +245,18 @@ namespace osiris
 		private TreeStore treeViewEngineSelProce;  	// Seleccion de procedimientos para facturar
 		private TreeStore treeViewEngineDetaFact; 	// Detalle de la Factura 
 		
-		public facturador_tesoreria(string LoginEmp, string NomEmpleado_, string AppEmpleado_, string ApmEmpleado_, string _nombrebd_ ) 
+		class_conexion conexion_a_DB = new class_conexion();
+		class_public classpublic = new class_public();
+		
+		public facturador_tesoreria(string LoginEmp, string NomEmpleado_, string AppEmpleado_, string ApmEmpleado_, string nombrebd_ ) 
 		{
 			LoginEmpleado = LoginEmp;
 			NomEmpleado = NomEmpleado_;
 			AppEmpleado = AppEmpleado_;
 			ApmEmpleado = ApmEmpleado_;
-			nombrebd = _nombrebd_; 
+			connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
+			nombrebd = conexion_a_DB._nombrebd; 
+			valoriva = double.Parse(classpublic.ivaparaaplicar)/100;
 			
 			Glade.XML gxml = new Glade.XML (null, "caja.glade", "facturador", null);
 			gxml.Autoconnect (this);
@@ -289,11 +289,11 @@ namespace osiris
 			// Pagar Factura de Cliente
 			button_pagar_factura.Clicked +=  new EventHandler(on_button_pagar_factura_clicked);
 			// Check Detalle Vacio
-			this.checkbutton_detalle_vacio.Clicked += new EventHandler(on_checkbutton_detalle_vacio);
+			checkbutton_detalle_vacio.Clicked += new EventHandler(on_checkbutton_detalle_vacio);
 			// Button Detalle Vacio
-			this.button_detalle_vacio.Clicked += new EventHandler(on_button_detalle_vacio);
+			button_detalle_vacio.Clicked += new EventHandler(on_button_detalle_vacio);
 			// Quitar aplicados
-			this.button_quitar.Clicked += new EventHandler(on_button_quitar_aplicados_clicked);
+			button_quitar.Clicked += new EventHandler(on_button_quitar_aplicados_clicked);
 			// Nota de Credito
 			button_nota_credito.Clicked += new EventHandler(on_button_nota_credito_clicked);
 			
@@ -304,9 +304,9 @@ namespace osiris
 			button_deducible.Sensitive = false;
 			button_coaseguro.Sensitive = false;
 			button_imprime_factura.Sensitive = false;
-			this.button_detalle_vacio.Sensitive = false;
+			button_detalle_vacio.Sensitive = false;
 			checkbutton_detalle_vacio.Sensitive = false;
-			this.checkbutton_detalle_vacio.Sensitive = false;
+			checkbutton_detalle_vacio.Sensitive = false;
 						
 			// Sale de la ventana
 			button_salir.Clicked += new EventHandler(on_cierraventanas_clicked);
@@ -828,7 +828,7 @@ namespace osiris
 				descripcion_producto = this.entry_descripcion.Text;
 				
 				suma_ = precio * cantidad;
-				iva = (Convert.ToDouble((precio * cantidad)) * valor_iva);// + Convert.ToDouble(suma_);
+				iva = (Convert.ToDouble((precio * cantidad)) * valoriva);// + Convert.ToDouble(suma_);
 				treeViewEngineDetaFact.AppendValues("+ IVA",descripcion_producto,"",Convert.ToString(suma_));
 				total_de_iva += Convert.ToDecimal(iva);
 				subtotal_al_15 += suma_;
@@ -897,7 +897,7 @@ namespace osiris
 					treeViewEngineDetaFact.Remove (ref iter); 					
 					if (toma_valor1 == "+ IVA"){
 						subtotal_al_15 = subtotal_al_15 - Convert.ToDecimal (toma_valor4);
-						total_de_iva = total_de_iva - (Convert.ToDecimal(toma_valor4) * Convert.ToDecimal(valor_iva));
+						total_de_iva = total_de_iva - (Convert.ToDecimal(toma_valor4) * Convert.ToDecimal(valoriva));
 						
 					}else{
 						subtotal_al_0 = subtotal_al_0 - decimal.Parse(toma_valor4);
@@ -2008,7 +2008,7 @@ namespace osiris
 				// asigna el numero de folio de ingreso de paciente (FOLIO)
 				comando1.CommandText = "SELECT osiris_erp_cobros_deta.folio_de_servicio,osiris_erp_cobros_deta.pid_paciente, osiris_his_tipo_admisiones.descripcion_admisiones,"+
 									"aplicar_iva, osiris_his_tipo_admisiones.id_tipo_admisiones AS idadmisiones,osiris_grupo_producto.descripcion_grupo_producto,"+
-									"osiris_productos.id_grupo_producto,  to_char(osiris_erp_cobros_deta.porcentage_descuento,999.99) AS porcdesc,"+
+									"osiris_productos.id_grupo_producto,  to_char(osiris_erp_cobros_deta.porcentage_descuento,'999.99') AS porcdesc,"+
 									"to_char(osiris_erp_cobros_deta.fechahora_creacion,'dd-mm-yyyy') AS fechcreacion,  to_char(osiris_erp_cobros_deta.fechahora_creacion,'HH:mm') AS horacreacion,"+
 									"to_char(osiris_erp_cobros_deta.id_producto,'999999999999') AS idproducto,descripcion_producto,"+
 									"to_char(osiris_erp_cobros_deta.cantidad_aplicada,'9999.99') AS cantidadaplicada, to_char(osiris_erp_cobros_deta.precio_producto,'999999.99') AS preciounitario," +
@@ -2144,7 +2144,7 @@ namespace osiris
 						// asigna el numero de folio de ingreso de paciente (FOLIO)
 						comando.CommandText = "SELECT osiris_erp_cobros_deta.folio_de_servicio,osiris_erp_cobros_deta.pid_paciente, osiris_his_tipo_admisiones.descripcion_admisiones,"+
 										"osiris_productos.aplicar_iva, osiris_his_tipo_admisiones.id_tipo_admisiones AS idadmisiones,osiris_grupo_producto.descripcion_grupo_producto,"+
-										"osiris_productos.id_grupo_producto,  to_char(osiris_erp_cobros_deta.porcentage_descuento,999.99) AS porcdesc,"+
+										"osiris_productos.id_grupo_producto,  to_char(osiris_erp_cobros_deta.porcentage_descuento,'999.99') AS porcdesc,"+
 										"to_char(osiris_erp_cobros_deta.fechahora_creacion,'dd-mm-yyyy') AS fechcreacion,  to_char(osiris_erp_cobros_deta.fechahora_creacion,'HH:mm') AS horacreacion,"+
 										"to_char(osiris_erp_cobros_deta.id_producto,'999999999999') AS idproducto,descripcion_producto,"+
 										"to_char(osiris_erp_cobros_deta.cantidad_aplicada,'9999.99') AS cantidadaplicada, to_char(osiris_erp_cobros_deta.precio_producto,'999999.99') AS preciounitario," +

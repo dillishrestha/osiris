@@ -58,41 +58,38 @@ namespace osiris
 		[Widget] Gtk.Statusbar statusbar_abonos = null;
 		[Widget] Gtk.ComboBox combobox_formapago = null;
 		
-		public string nombrebd;
-		public int PidPaciente = 0;
-		public int folioservicio = 0;
-		public string fecha_admision;
-		public string fechahora_alta;
-		public string nombre_paciente;
-		public string telefono_paciente;
-		public string doctor;
-		public string cirugia;
-		public string fecha_nacimiento;
-		public string edadpac;
-		public string tipo_paciente;
-		public int id_tipopaciente;
-		public string aseguradora;
-		public string dir_pac;
-		public string empresapac;
-		public bool apl_desc_siempre = true;
-		public bool apl_desc;
-		public string nombrecajero;		
-		public string LoginEmpleado;
-		public int idformadepago = 1;
-		public string monto;
-		public string fecha;
-		public string concepto;
-		public string idcreo;
-		public string recibo;
-		public string presupuesto;
-		public string paquete;
-		public string descripcion;
-				
-		public string connectionString = "Server=localhost;" +
-									"Port=5432;" +
-									 "User ID=admin;" +
-									"Password=1qaz2wsx;";		
+		int PidPaciente = 0;
+		int folioservicio = 0;
+		string fecha_admision;
+		string fechahora_alta;
+		string nombre_paciente;
+		string telefono_paciente;
+		string doctor;
+		string cirugia;
+		string fecha_nacimiento;
+		string edadpac;
+		string tipo_paciente;
+		int id_tipopaciente;
+		string aseguradora;
+		string dir_pac;
+		string empresapac;
+		bool apl_desc_siempre = true;
+		bool apl_desc;
+		string nombrecajero;		
+		string LoginEmpleado;
+		int idformadepago = 1;
+		string monto;
+		string fecha;
+		string concepto;
+		string idcreo;
+		string recibo;
+		string presupuesto;
+		string paquete;
+		string descripcion;
+		string nombrebd;		
+		string connectionString;		
 		
+		class_conexion conexion_a_DB = new class_conexion();
 		
 		//Declaracion de ventana de error
 		protected Gtk.Window MyWinError;
@@ -101,11 +98,11 @@ namespace osiris
 		private TreeStore treeViewEngineabonos;
 		
 		//Declarando las celdas
-		public CellRendererText cellr0;				public CellRendererText cellrt1;
-		public CellRendererText cellrt2;			public CellRendererText cellrt3;
-		public CellRendererText cellrt4;			public CellRendererText cellrt5;
-		public CellRendererText cellrt6;			public CellRendererText cellrt7;
-		public CellRendererText cellrt8;			
+		CellRendererText cellr0;		CellRendererText cellrt1;
+		CellRendererText cellrt2;		CellRendererText cellrt3;
+		CellRendererText cellrt4;		CellRendererText cellrt5;
+		CellRendererText cellrt6;		CellRendererText cellrt7;
+		CellRendererText cellrt8;			
 				
 		public abonos (	int PidPaciente_ ,int folioservicio_,string _nombrebd_ ,string entry_fecha_admision_,
 						string entry_fechahora_alta_,string entry_numero_factura_,string entry_nombre_paciente_,
@@ -113,24 +110,26 @@ namespace osiris
 						string entry_aseguradora_,string edadpac_,string fecha_nacimiento_,string dir_pac_,
 						string cirugia_,string empresapac_,int idtipopaciente_,string nombrecajero_,string LoginEmpleado_,bool agregarmasabonos)
 		{
-			PidPaciente = PidPaciente_;//
-			folioservicio = folioservicio_;//
-			nombrebd = _nombrebd_;//
-			fecha_admision = entry_fecha_admision_;//
-			fechahora_alta = entry_fechahora_alta_;//
-			nombre_paciente = entry_nombre_paciente_;//
-			telefono_paciente = entry_telefono_paciente_;//
-			doctor = entry_doctor_;//
-			cirugia = cirugia_;//
-			tipo_paciente = entry_tipo_paciente_;//
+			//nombrebd = _nombrebd_; 			
+			PidPaciente = PidPaciente_;
+			folioservicio = folioservicio_;			
+			fecha_admision = entry_fecha_admision_;
+			fechahora_alta = entry_fechahora_alta_;
+			nombre_paciente = entry_nombre_paciente_;
+			telefono_paciente = entry_telefono_paciente_;
+			doctor = entry_doctor_;
+			cirugia = cirugia_;
+			tipo_paciente = entry_tipo_paciente_;
 			id_tipopaciente = idtipopaciente_;
-			aseguradora = entry_aseguradora_;//
-			edadpac = edadpac_;//
-			fecha_nacimiento = fecha_nacimiento_;//
-			dir_pac = dir_pac_;//
-			empresapac = empresapac_;//
+			aseguradora = entry_aseguradora_;
+			edadpac = edadpac_;
+			fecha_nacimiento = fecha_nacimiento_;
+			dir_pac = dir_pac_;
+			empresapac = empresapac_;
 			nombrecajero = nombrecajero_;
 			LoginEmpleado = LoginEmpleado_;
+			connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
+			nombrebd = conexion_a_DB._nombrebd;
 			
 			Glade.XML gxml = new Glade.XML (null, "caja.glade", "abonar_procedimientos", null);
 			gxml.Autoconnect                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 (this);

@@ -80,22 +80,22 @@ namespace osiris
 		string ApmEmpleado;
 		string nombrebd;
 		string cirugia;
-		string connectionString = "Server=localhost;" +
-						"Port=5432;" +
-						 "User ID=admin;" +
-						"Password=1qaz2wsx;";
+		string connectionString;
 		
 		//Declaracion de ventana de error y pregunta
 		protected Gtk.Window MyWinError;
 		protected Gtk.Window MyWin;
 		
-		public costeo_productos(string LoginEmp_, string NomEmpleado_, string AppEmpleado_, string ApmEmpleado_, string _nombrebd_) 
+		class_conexion conexion_a_DB = new class_conexion();
+		
+		public costeo_productos(string LoginEmp_, string NomEmpleado_, string AppEmpleado_, string ApmEmpleado_, string nombrebd_) 
 		{
 			LoginEmpleado = LoginEmp_;
 			NomEmpleado = NomEmpleado_;
 			AppEmpleado = AppEmpleado_;
 			ApmEmpleado = ApmEmpleado_;
-			nombrebd = _nombrebd_;
+			connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
+			nombrebd = conexion_a_DB._nombrebd;
 			
 			Glade.XML gxml = new Glade.XML (null, "costos.glade", "costeo", null);
 			gxml.Autoconnect (this);        

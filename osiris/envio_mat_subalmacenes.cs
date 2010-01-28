@@ -64,25 +64,21 @@ namespace osiris
 		[Widget] Gtk.Button button_quitar_productos;
 		[Widget] Gtk.Button button_rpt_surtido;
 		
-		[Widget] Gtk.CheckButton checkbutton_envio_directo;
+		[Widget] Gtk.CheckButton checkbutton_envio_directo;		
 		
+		string connectionString;
+		string nombrebd;				
+		string LoginEmpleado;
+		string NomEmpleado;
+		string AppEmpleado;
+		string ApmEmpleado;
 		
-		public string connectionString = "Server=localhost;" +
-						"Port=5432;" +
-						 "User ID=admin;" +
-						"Password=1qaz2wsx;";
-						
-		public string LoginEmpleado;
-		public string NomEmpleado;
-		public string AppEmpleado;
-		public string ApmEmpleado;
-		public string nombrebd;
 		
 		// Variables publica
-		public float valoriva = 15;
-		public int idsubalmacen = 1;
-		public string descsubalmacen = "";
-		public int idalmacenorigen = 0;
+		float valoriva = 15;
+		int idsubalmacen = 1;
+		string descsubalmacen = "";
+		int idalmacenorigen = 0;
 		
 		/////// Ventana Busqueda de productos\\\\\\\\
 		[Widget] Gtk.TreeView lista_de_producto;
@@ -98,14 +94,20 @@ namespace osiris
 		protected Gtk.Window MyWinError;
 		protected Gtk.Window MyWin;
 		
-		public envio_de_materiales_subalmacenes(string LoginEmp_, string NomEmpleado_, string AppEmpleado_, string ApmEmpleado_, string _nombrebd_) 
+		class_conexion conexion_a_DB = new class_conexion();
+		class_public classpublic = new class_public();
+		
+		public envio_de_materiales_subalmacenes(string LoginEmp_, string NomEmpleado_, string AppEmpleado_, string ApmEmpleado_, string nombrebd_) 
 		{
 			LoginEmpleado = LoginEmp_;
 			NomEmpleado = NomEmpleado_;
 			AppEmpleado = AppEmpleado_;
 			ApmEmpleado = ApmEmpleado_;
-			nombrebd = _nombrebd_;
-						
+			connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
+			nombrebd = conexion_a_DB._nombrebd;
+			
+			valoriva = float.Parse(classpublic.ivaparaaplicar);
+									
 			Glade.XML gxml = new Glade.XML (null, "almacen_costos_compras.glade", "envia_materiales_subalmacen", null);
 			gxml.Autoconnect (this);
 			////// Muestra ventana de Glade

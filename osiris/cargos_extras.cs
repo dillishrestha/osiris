@@ -76,43 +76,42 @@ namespace osiris
 		[Widget] Gtk.ComboBox combobox_tipo_busqueda;
 		[Widget] Gtk.TreeView lista_de_paquete;
 		
-		public string connectionString = "Server=localhost;" +
-        	    	                     "Port=5432;" +
-            	    	                 "User ID=admin;" +
-                	    	             "Password=1qaz2wsx;";
-        public string nombrebd;
-        public string folioservicio;
-        public int idtipocirugia = 1;
-		public int idpaquete = 0;
-		public string tipobusqueda = "";
-       	public string busqueda;
+		string folioservicio;
+		int idtipocirugia = 1;
+		int idpaquete = 0;
+		string tipobusqueda = "";
+		string busqueda;
+		string connectionString;
+		string nombrebd;
+		class_conexion conexion_a_DB = new class_conexion();
        	
-		private TreeStore treeViewEngineCargos;
-		private TreeStore treeViewEngineBusca;
-		private TreeStore treeViewEngineMedicos;
+		TreeStore treeViewEngineCargos;
+		TreeStore treeViewEngineBusca;
+		TreeStore treeViewEngineMedicos;
 		
-		public CellRendererText cel_descripcion;
+		CellRendererText cel_descripcion;
 		
-		public CellRendererText cellr0;
-		public CellRendererText cellr1;
-		public CellRendererText cellr2;
-		public CellRendererText cellr3;
-		public CellRendererText cellr4;
-		public CellRendererText cellr5;
-		public CellRendererText cellr6;
-		public CellRendererText cellr7;
-		public CellRendererText cellr8;
-		public CellRendererText cellr9;
-		public CellRendererText cellr10;
-		public CellRendererText cellr11;
-		public CellRendererText cellr12;
+		CellRendererText cellr0;
+		CellRendererText cellr1;
+		CellRendererText cellr2;
+		CellRendererText cellr3;
+		CellRendererText cellr4;
+		CellRendererText cellr5;
+		CellRendererText cellr6;
+		CellRendererText cellr7;
+		CellRendererText cellr8;
+		CellRendererText cellr9;
+		CellRendererText cellr10;
+		CellRendererText cellr11;
+		CellRendererText cellr12;
 		
 		//Declaracion de ventana de error
 		protected Gtk.Window MyWinError;
 		
-		public validacion_cargos_extras(string folio_,string _nombrebd_)
+		public validacion_cargos_extras(string folio_,string nombrebd_)
 		{
-			nombrebd = _nombrebd_;
+			connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
+			nombrebd = conexion_a_DB._nombrebd;
 			folioservicio = folio_;
 			
 			Glade.XML  gxml = new Glade.XML  (null, "caja.glade", "cargos_extras", null);

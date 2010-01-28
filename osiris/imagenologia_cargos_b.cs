@@ -117,83 +117,84 @@ namespace osiris
 		private ArrayList arraycargosextras;
 		
 		// Declaracion de variables publicas
-		public int folioservicio = 0;							// Toma el valor de numero de atencion de paciente
-		public int PidPaciente = 0;								// Toma la actualizacion del pid del paciente
-		public int id_tipopaciente;								// Toma el valor del tipo de paciente
-		public int idtipointernamiento = 300;					// Toma el valor del tipo de internamiento
-		public int idempresa_paciente = 0;						// Toma el valor de la empresa que el hospital tiene convenio
-		public string descripinternamiento = "IMAGENOLOGIA";  	// Toma la descripcion del internamiento
-		public int idlugarprocedencia = 0;						// Toma el valor del lugar de donde se pidio el estudio
-		public string descriplugarprocedencia = "  ";			// Toma la descripcion del lugar de donde se pidio el estudio
-		public int idhabitacion = 0;						// Toma el id de la habitacion asignada
+		int folioservicio = 0;							// Toma el valor de numero de atencion de paciente
+		int PidPaciente = 0;								// Toma la actualizacion del pid del paciente
+		int id_tipopaciente;								// Toma el valor del tipo de paciente
+		int idtipointernamiento = 300;					// Toma el valor del tipo de internamiento
+		int idempresa_paciente = 0;						// Toma el valor de la empresa que el hospital tiene convenio
+		string descripinternamiento = "IMAGENOLOGIA";  	// Toma la descripcion del internamiento
+		int idlugarprocedencia = 0;						// Toma el valor del lugar de donde se pidio el estudio
+		string descriplugarprocedencia = "  ";			// Toma la descripcion del lugar de donde se pidio el estudio
+		int idhabitacion = 0;						// Toma el id de la habitacion asignada
 		
-		public string edadpac;
-		public string fecha_nacimiento;
-		public string dir_pac;
-		public string cirugia;
-		public string empresapac;
-		public string sexopaciente;
+		string edadpac;
+		string fecha_nacimiento;
+		string dir_pac;
+		string cirugia;
+		string empresapac;
+		string sexopaciente;
 		
-		public bool cuenta_bloqueada;
-		public bool cuenta_cerrada;
+		bool cuenta_bloqueada;
+		bool cuenta_cerrada;
 		
-		public float valoriva = 15;
-		public bool aplicar_descuento = true;
-		public bool aplicar_siempre = false;
+		float valoriva;
+		bool aplicar_descuento = true;
+		bool aplicar_siempre = false;
 		
-		public string id_produ = "";
-		public string desc_produ = "";
-		public string precio_produ ="";
-		public string iva_produ ="";
-		public string total_produ ="";
-		public string descuent_produ ="";
-		public string pre_con_desc_produ ="";
-		public float valor_descuento = 0;
-		public string costo_unitario_producto;
-		public string porcentage_utilidad_producto;
-		public string costo_total_producto;
-		public float ppcantidad = 0;
-		public string ppcant ="";
+		string id_produ = "";
+		string desc_produ = "";
+		string precio_produ ="";
+		string iva_produ ="";
+		string total_produ ="";
+		string descuent_produ ="";
+		string pre_con_desc_produ ="";
+		float valor_descuento = 0;
+		string costo_unitario_producto;
+		string porcentage_utilidad_producto;
+		string costo_total_producto;
+		float ppcantidad = 0;
+		string ppcant ="";
 		
 			//********    //nuevo lista de precios multiples//   *****************/
-		public int idaseguradora_paciente = 0;			// Toma el valor de la aseguradora que ingreso el paciente
-		public bool aplica_precios_aseguradoras = false;// Toma el valor de si se tiene creado la lista de precio en la tabla de Productos
-		public bool aplica_precios_empresas = false;	// Toma el valor de si se tiene creado la lista de precio en la tabla de Productos
+		int idaseguradora_paciente = 0;			// Toma el valor de la aseguradora que ingreso el paciente
+		bool aplica_precios_aseguradoras = false;// Toma el valor de si se tiene creado la lista de precio en la tabla de Productos
+		bool aplica_precios_empresas = false;	// Toma el valor de si se tiene creado la lista de precio en la tabla de Productos
 		//**************/
 		// Sumas Totales para los calculos
-		public float subtotal_al_15;
-		public float subtotal_al_0;
-		public float total_iva;
-		public float sub_total;
-		public float totaldescuento;
+		float subtotal_al_15;
+		float subtotal_al_0;
+		float total_iva;
+		float sub_total;
+		float totaldescuento;
 		
-		public bool aplico_cargos = false;
+		bool aplico_cargos = false;
 		
-		public string LoginEmpleado;
-		public string NomEmpleados;
+		string LoginEmpleado;
+		string NomEmpleados;
 			
-		public string connectionString = "Server=localhost;" +
-						"Port=5432;" +
-						 "User ID=admin;" +
-						"Password=1qaz2wsx;";
-		public string nombrebd;
+		string connectionString;
+		string nombrebd;
 				
-		public CellRendererText cel_descripcion;
+		CellRendererText cel_descripcion;
 		
 		//Declarando las celdas
-		public CellRendererText cellr0;				public CellRendererText cellr1;
-		public CellRendererText cellr2;		
+		CellRendererText cellr0;				CellRendererText cellr1;
+		CellRendererText cellr2;		
 		
 		//Declaracion de ventana de error
 		protected Gtk.Window MyWinError;
 		protected Gtk.Window MyWin;
 		
+		class_conexion conexion_a_DB = new class_conexion();
+		class_public classpublic = new class_public();
 		
-		public cargos_imagenologia_b (string LoginEmp, string NomEmpleado, string AppEmpleado, string ApmEmpleado, string _nombrebd_ ) 
+		public cargos_imagenologia_b (string LoginEmp, string NomEmpleado, string AppEmpleado, string ApmEmpleado, string nombrebd_ ) 
 		{
 			LoginEmpleado = LoginEmp;
-			nombrebd = _nombrebd_;
 			NomEmpleados = NomEmpleado+" "+AppEmpleado+" "+ApmEmpleado;
+			connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
+			nombrebd = conexion_a_DB._nombrebd;			
+			valoriva = float.Parse(classpublic.ivaparaaplicar);
 			
 			Glade.XML gxml = new Glade.XML (null, "imagenologia.glade", "cargos_de_laboratorio", null);
 			gxml.Autoconnect (this);

@@ -103,37 +103,33 @@ namespace osiris
 		
 		//Declaracion de variables
 		//variables principales
-		public string LoginEmpleado;
-		public string NomEmpleado;
-		public string AppEmpleado;
-		public string ApmEmpleado;
-		public string nombrebd;
-		public string nomcatalogo;
-		public string busqueda = "";
-		public string connectionString = "Server=localhost;" +
-									"Port=5432;" +
-									 "User ID=admin;" +
-									"Password=1qaz2wsx;";		
-		
-		
+		string LoginEmpleado;
+		string NomEmpleado;
+		string AppEmpleado;
+		string ApmEmpleado;		
+		string nomcatalogo;
+		string busqueda = "";
+		string connectionString;		
+		string nombrebd;
+		class_conexion conexion_a_DB = new class_conexion();
 		//Declaracion de ventana de error
 		protected Gtk.Window MyWinError;
 		protected Gtk.Window MyWin;
 		
-		public int PidPaciente = 0;							// Toma la actualizacion del pid del paciente
+		int PidPaciente = 0;							// Toma la actualizacion del pid del paciente
 				
-		public CellRendererText cel_descripcion;
+		CellRendererText cel_descripcion;
 		
 		//Declarando las celdas
-		public CellRendererText cellr0;				public CellRendererText cellrt1;
-		public CellRendererText cellrt2;			public CellRendererText cellrt3;
-		public CellRendererText cellrt4;			public CellRendererText cellrt5;
-		public CellRendererText cellrt6;			public CellRendererText cellrt7;
-		public CellRendererText cellrt8;			
+		CellRendererText cellr0;			CellRendererText cellrt1;
+		CellRendererText cellrt2;		CellRendererText cellrt3;
+		CellRendererText cellrt4;		CellRendererText cellrt5;
+		CellRendererText cellrt6;		CellRendererText cellrt7;
+		CellRendererText cellrt8;			
 				
-		public string municipios = "";
-		public string estado = "";
-		public int idestado = 1;
+		string municipios = "";
+		string estado = "";
+		int idestado = 1;
 		
 		
 		public cambia_paciente (string LoginEmpleado_,string NomEmpleado_,string AppEmpleado_,string ApmEmpleado_,string nombrebd_)
@@ -142,7 +138,8 @@ namespace osiris
 			NomEmpleado = NomEmpleado_;
 			AppEmpleado = AppEmpleado_;
 			ApmEmpleado = ApmEmpleado_;
-			nombrebd = nombrebd_;
+			connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
+			nombrebd = conexion_a_DB._nombrebd;
 			Glade.XML gxml = new Glade.XML (null, "registro_admision.glade", "cambio_datos_paciente", null);
 			gxml.Autoconnect                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 (this);
 	        //Muestra ventana de Glade

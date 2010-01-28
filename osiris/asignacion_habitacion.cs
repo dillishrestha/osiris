@@ -70,36 +70,33 @@ namespace osiris
 		[Widget] Gtk.Button button_selecciona = null;
 		[Widget] Gtk.Button button_buscar_busqueda = null;		
 				
-		public string LoginEmpleado;
-		public string NomEmpleado;
-		public string AppEmpleado;
-		public string ApmEmpleado;
-		public string NomEmpleados;
-		public int tipo_admicion_clase;			
+		string LoginEmpleado;
+		string NomEmpleado;
+		string AppEmpleado;
+		string ApmEmpleado;
+		string NomEmpleados;
+		int tipo_admicion_clase;			
 					
-		public string connectionString = "Server=localhost;" +
-						"Port=5432;" +
-						 "User ID=admin;" +
-						"Password=1qaz2wsx;";
-		public string nombrebd;
+		string connectionString;
+		string nombrebd;
+		class_conexion conexion_a_DB = new class_conexion();
 		
-		public string query_areas;
-		public string query_fecha_de_ocupacion;
-		public string Combonombrearea;
-        public int pid;
-		public int folio_atencion;
-		public string descripcion_area;
-		public int id_habitacion_proveniente;
+		string query_areas;
+		string query_fecha_de_ocupacion;
+		string Combonombrearea;
+        int pid;
+		int folio_atencion;
+		string descripcion_area;
+		int id_habitacion_proveniente;
        
-        public int pid_pasingado;
-		public int folio_atencion_pasignado;		
+        int pid_pasingado;
+		int folio_atencion_pasignado;		
 		
-		public int conteocheckpaciente = 0;
-        public bool activo = false;
-		public bool activoPac = false;
-		
-		public bool cambio = false;
-        public int idpacientehistorial = 0;		
+		int conteocheckpaciente = 0;
+        bool activo = false;
+		bool activoPac = false;
+		bool cambio = false;
+        int idpacientehistorial = 0;
 		
 		private TreeStore treeViewEngineBuscahabitacion;
 		private TreeStore treeViewEngineBusca;    	
@@ -111,12 +108,13 @@ namespace osiris
 		public asignacion_de_habitacion(string LoginEmp, string NomEmpleado_, string AppEmpleado_, string ApmEmpleado_, string _nombrebd_ , int tipo_admicion) 
 		{
 			LoginEmpleado = LoginEmp;
-			nombrebd = _nombrebd_;
 			NomEmpleado = NomEmpleado_;
 			AppEmpleado = AppEmpleado_;
 			ApmEmpleado = ApmEmpleado_;
 			NomEmpleados = NomEmpleado+" "+AppEmpleado+" "+ApmEmpleado;
 			tipo_admicion_clase = tipo_admicion;
+			connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
+			nombrebd = conexion_a_DB._nombrebd;
 			
 			Glade.XML gxml = new Glade.XML (null, "hospitalizacion.glade", "asignacion_habitacion", null);
 			gxml.Autoconnect (this);

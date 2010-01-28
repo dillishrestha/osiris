@@ -90,53 +90,48 @@ namespace osiris
 		//private ArrayList arraycargosrealizados;
 		
 		// Declaracion de variables publicas
-		public int idtipoalmacen = 0;	        			// Toma el valor de numero de atencion de paciente
-		public string almacen;
-		public string mesinventario= "";
+		int idtipoalmacen = 0;	        			// Toma el valor de numero de atencion de paciente
+		string almacen;
+		string mesinventario= "";
 		
-		public float valoriva = 15;
-		
-		public string id_produ = "";
-		public string desc_produ = "";
-		public string costo_unitario_producto;
-		public string costo_producto;
-		public string embalaje;
-		public string precio_produ;
-		public string grupo_prod;
-		public string grupo1_prod;
-		public string grupo2_prod;
-		public string constante;
+		string id_produ = "";
+		string desc_produ = "";
+		string costo_unitario_producto;
+		string costo_producto;
+		string embalaje;
+		string precio_produ;
+		string grupo_prod;
+		string grupo1_prod;
+		string grupo2_prod;
+		string constante;
 		
 		//public float valor_descuento = 0;
 		//Variables de admision
-		public bool copiaproductos = false;
-		public string tipobusqueda = "";
+		bool copiaproductos = false;
+		string tipobusqueda = "";
 		
-		public string LoginEmpleado;
-		public string NomEmpleado; 
-		public string AppEmpleado; 
-		public string ApmEmpleado;
+		string LoginEmpleado;
+		string NomEmpleado; 
+		string AppEmpleado; 
+		string ApmEmpleado;
 			
-		public string connectionString = "Server=localhost;" +
-						"Port=5432;" +
-						 "User ID=admin;" +
-						"Password=1qaz2wsx;";
-		public string nombrebd;
-				
-		public CellRendererText cel_descripcion;
+		string connectionString;
+		string nombrebd;
+		class_conexion conexion_a_DB = new class_conexion();
+		CellRendererText cel_descripcion;
 		
 		//Declaracion de ventana de error
 		protected Gtk.Window MyWinError;
 		protected Gtk.Window MyWin;
-		
-		
-		public inventario_almacen(string LoginEmp, string NomEmpleado_, string AppEmpleado_, string ApmEmpleado_, string _nombrebd_ ) 
+				
+		public inventario_almacen(string LoginEmp, string NomEmpleado_, string AppEmpleado_, string ApmEmpleado_, string nombrebd_ ) 
 		{
 			LoginEmpleado = LoginEmp;
-			nombrebd = _nombrebd_; 
 			NomEmpleado = NomEmpleado_; 
 			AppEmpleado = AppEmpleado_; 
 			ApmEmpleado = ApmEmpleado_;
+			connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
+			nombrebd = conexion_a_DB._nombrebd;
 			
 			//Console.WriteLine("antes de abrir venmtana");
 			Glade.XML gxml = new Glade.XML (null,"almacen_costos_compras.glade","inventario",null);

@@ -74,17 +74,14 @@ namespace osiris
 		[Widget] Gtk.RadioButton radiobutton_codigo;
 		[Widget] Gtk.TreeView lista_de_producto;
 		
-		public string connectionString = "Server=localhost;" +
-									"Port=5432;" +
-									 "User ID=admin;" +
-									"Password=1qaz2wsx;";		
-		
-		public string LoginEmpleado;
-		public string NomEmpleado;
-		public string AppEmpleado;
-		public string ApmEmpleado;
-		public string nombrebd;
-		public string nombreempleado;
+		string LoginEmpleado;
+		string NomEmpleado;
+		string AppEmpleado;
+		string ApmEmpleado;
+		string nombreempleado;
+		string connectionString;
+		string nombrebd;	
+		class_conexion conexion_a_DB = new class_conexion();
 		
 		//Declaracion de ventana de error
 		protected Gtk.Window MyWinError;
@@ -94,28 +91,29 @@ namespace osiris
 		private TreeStore treeViewEngineBusca2;
 		
 		//declaracion de columnas y celdas de treeview de busqueda
-		public TreeViewColumn col_idproducto;		public CellRendererText cellr0;
-		public TreeViewColumn col_desc_producto;	public CellRendererText cellr1;
-		public TreeViewColumn col_precioprod;		public CellRendererText cellrt2;
-		public TreeViewColumn col_ivaprod;			public CellRendererText cellrt3;
-		public TreeViewColumn col_totalprod;		public CellRendererText cellrt4;
-		public TreeViewColumn col_descuentoprod;	public CellRendererText cellrt5;
-		public TreeViewColumn col_preciocondesc;	public CellRendererText cellrt6;
-		public TreeViewColumn col_grupoprod;		public CellRendererText cellrt7;
-		public TreeViewColumn col_grupo1prod;		public CellRendererText cellrt8;
-		public TreeViewColumn col_grupo2prod;		public CellRendererText cellrt9;
-		public TreeViewColumn col_costoprod_uni;	public CellRendererText cellrt12;
-		public TreeViewColumn col_aplica_iva;		public CellRendererText cellrt19;
-		public TreeViewColumn col_cobro_activo;		public CellRendererText cellrt20;
+		TreeViewColumn col_idproducto;			CellRendererText cellr0;
+		TreeViewColumn col_desc_producto;	CellRendererText cellr1;
+		TreeViewColumn col_precioprod;			CellRendererText cellrt2;
+		TreeViewColumn col_ivaprod;				CellRendererText cellrt3;
+		TreeViewColumn col_totalprod;			CellRendererText cellrt4;
+		TreeViewColumn col_descuentoprod;	CellRendererText cellrt5;
+		TreeViewColumn col_preciocondesc;	CellRendererText cellrt6;
+		TreeViewColumn col_grupoprod;			CellRendererText cellrt7;
+		TreeViewColumn col_grupo1prod;		CellRendererText cellrt8;
+		TreeViewColumn col_grupo2prod;		CellRendererText cellrt9;
+		TreeViewColumn col_costoprod_uni;	CellRendererText cellrt12;
+		TreeViewColumn col_aplica_iva;			CellRendererText cellrt19;
+		TreeViewColumn col_cobro_activo;		CellRendererText cellrt20;
 	
-		public factura_orden_compra(string LoginEmp_,string nombreempleado_,string _nombrebd_)
+		public factura_orden_compra(string LoginEmp_,string nombreempleado_,string nombrebd_)
 		{
 			LoginEmpleado = LoginEmp_;
 			nombreempleado = nombreempleado_;
 			//NomEmpleado = NomEmpleado_;
 			//AppEmpleado = AppEmpleado_;
 			//ApmEmpleado = ApmEmpleado_;
-			nombrebd = _nombrebd_;
+			connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
+			nombrebd = conexion_a_DB._nombrebd;
 			
 			Glade.XML gxml = new Glade.XML (null, "almacen_costos_compras.glade", "captura_facturas_orden_compra", null);
 			gxml.Autoconnect                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 (this);

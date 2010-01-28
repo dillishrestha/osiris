@@ -62,44 +62,40 @@ namespace osiris
 		[Widget] Gtk.Entry entry_numero_de_traspaso;
 		[Widget] Gtk.Statusbar statusbar_inv_sub_hosp;
 		
-		public string connectionString = "Server=localhost;" +
-									"Port=5432;" +
-									 "User ID=admin;" +
-									"Password=1qaz2wsx;";
+		string connectionString;
+		string nombrebd;
+		string LoginEmpleado;
+		string NomEmpleado;
+		string AppEmpleado;
+		string ApmEmpleado;		
 		
-		public string LoginEmpleado;
-		public string NomEmpleado;
-		public string AppEmpleado;
-		public string ApmEmpleado;
-		public string nombrebd;
+		int idsubalmacen;
+		int idalmacendestino;
+		string descsubalmacen;
+		int tipoalmacen;
 		
-		public int idsubalmacen;
-		public int idalmacendestino;
-		public string descsubalmacen;
-		public int tipoalmacen;
+		int columna = 0;
+		int fila = -90;
+		int filas = 690;
+		int contador = 1;
+		int numpage = 1;
 		
-		public int columna = 0;
-		public int fila = -90;
-		public int filas = 690;
-		public int contador = 1;
-		public int numpage = 1;
+		int idtipogrupo = 0;
+		int idtipogrupo1 = 0;
+		int idtipogrupo2 = 0;
+		int idalmacen = 0;
+		string descripgrupo = "";
+		string descripgrupo1 =  "";
+		string descripgrupo2 = "";
+		string tiposeleccion = "";
+		string descripcionalmacen = "";
 		
-		public int idtipogrupo = 0;
-		public int idtipogrupo1 = 0;
-		public int idtipogrupo2 = 0;
-		public int idalmacen = 0;
-		public string descripgrupo = "";
-		public string descripgrupo1 =  "";
-		public string descripgrupo2 = "";
-		public string tiposeleccion = "";
-		public string descripcionalmacen = "";
-		
-		public string query_grupo = " ";
-		public string query_grupo1 = " ";
-		public string query_grupo2 = " ";
-		public string query_stock = " ";
-		public string tiporeporte = "STOCK";
-		public string titulo = "REPORTE DE STOCK HOSPITALIZACION";
+		string query_grupo = " ";
+		string query_grupo1 = " ";
+		string query_grupo2 = " ";
+		string query_stock = " ";
+		string tiporeporte = "STOCK";
+		string titulo = "REPORTE DE STOCK HOSPITALIZACION";
 		
 		//Declaracion de ventana de error
 		protected Gtk.Window MyWinError;
@@ -122,19 +118,22 @@ namespace osiris
 		TreeViewColumn col_descripcion;  CellRendererText cellrt8;
 		TreeViewColumn col_costo;
 		TreeViewColumn col_cantidad;
-		TreeViewColumn col_precio;	
+		TreeViewColumn col_precio;
+		
+		class_conexion conexion_a_DB = new class_conexion();
 	
 		public inventario_sub_almacen(string LoginEmp_, string NomEmpleado_, string AppEmpleado_, 
-									string ApmEmpleado_, string _nombrebd_, int _idsubalmacen_, string _descsubalmacen_, int tipoalmacen_)
+									string ApmEmpleado_, string nombrebd_, int _idsubalmacen_, string _descsubalmacen_, int tipoalmacen_)
 		{
 			LoginEmpleado = LoginEmp_;
 			NomEmpleado = NomEmpleado_;
 			AppEmpleado = AppEmpleado_;
 			ApmEmpleado = ApmEmpleado_;
-			nombrebd = _nombrebd_;
 			idsubalmacen = _idsubalmacen_;
 			descsubalmacen =_descsubalmacen_;
 			tipoalmacen = tipoalmacen_;   // 1 = inventario sub-almacenes   2 = Traspasos de Sub-Almacenes   3 = AMBOS para almacen general
+			connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
+			nombrebd = conexion_a_DB._nombrebd;			
 			
 			Glade.XML gxml = new Glade.XML (null, "hospitalizacion.glade", "inventario_sub_almacenes", null);
 			gxml.Autoconnect (this);

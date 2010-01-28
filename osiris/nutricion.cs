@@ -1,13 +1,13 @@
 // created on 08/07/2008 at 05:22 p
 ////////////////////////////////////////////////////////////
-// Hospital Santa Cecilia
+// Sistema Hospitalario Osiris
 // Monterrey - Mexico
 //
 // Autor    	: Daniel Olivares - arcangeldoc@gmail.com (Programacion Mono)
 //				  Daniel Olivares - arcangeldoc@gmail.com (Diseño de Pantallas Glade)
 // 				  
 // Licencia		: GLP
-// S.O. 		: GNU/Linux Ubuntu 6.06 LTS (Dapper Drake)
+// S.O. 		: GNU/Linux
 //////////////////////////////////////////////////////////
 //
 // proyect osiris is free software; you can redistribute it and/or modify
@@ -25,18 +25,15 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 // 
 //////////////////////////////////////////////////////////
-// Programa		: hscmty.cs
-// Proposito	: Pagos en Caja 
-// Objeto		: cargos_hospitalizacion.cs
+// Programa		:
+// Proposito	: 
+// Objeto		:
 //////////////////////////////////////////////////////////	
 using System;
 using Npgsql;
 using System.Data;
 using Gtk;
 using Glade;
-using Gnome;
-using System.Collections;
-using GtkSharp;
 
 namespace osiris
 {
@@ -50,11 +47,11 @@ namespace osiris
 		[Widget] Gtk.Window menu_nutricion;
 		[Widget] Gtk.Button button_requisicion_materiales;
 				
-		public string LoginEmpleado;
-		public string NomEmpleado;
-		public string AppEmpleado;
-		public string ApmEmpleado;
-		public string nombrebd;		
+		string LoginEmpleado;
+		string NomEmpleado;
+		string AppEmpleado;
+		string ApmEmpleado;
+		string nombrebd;		
 		
 		public nutricion(string LoginEmp_, string NomEmpleado_, string AppEmpleado_, string ApmEmpleado_, string _nombrebd_) 
 		{

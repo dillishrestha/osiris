@@ -1,14 +1,14 @@
 <Project name="osiris" fileversion="2.0" language="C#" clr-version="Net_2_0" targetFramework="2.0" ctype="DotNetProject">
   <Configurations active="Debug">
     <Configuration name="Debug" ctype="DotNetProjectConfiguration">
-      <Output directory="../bin/Debug" assembly="osiris" />
+      <Output directory="..\bin\Debug" assembly="osiris" />
       <Build debugmode="True" target="Exe" />
       <Execution runwithwarnings="True" consolepause="True" runtime="MsNet" clr-version="Net_2_0" />
       <EnvironmentVariables />
       <CodeGeneration compiler="Mcs" warninglevel="4" optimize="True" unsafecodeallowed="False" generateoverflowchecks="True" generatexmldocumentation="False" ctype="CSharpCompilerParameters" />
     </Configuration>
     <Configuration name="Release" ctype="DotNetProjectConfiguration">
-      <Output directory="../bin/Release" assembly="osiris" />
+      <Output directory="..\bin\Release" assembly="osiris" />
       <Build debugmode="False" target="Exe" />
       <Execution runwithwarnings="True" consolepause="True" runtime="MsNet" clr-version="Net_2_0" />
       <CodeGeneration compiler="Mcs" warninglevel="4" optimize="True" unsafecodeallowed="False" generateoverflowchecks="True" generatexmldocumentation="False" ctype="CSharpCompilerParameters" />
@@ -101,6 +101,7 @@
     <File name="herramientas.cs" subtype="Code" buildaction="Compile" />
     <File name="rpt_cons_informado.cs" subtype="Code" buildaction="Compile" />
     <File name="rpt_prot_admision.cs" subtype="Code" buildaction="Compile" />
+    <File name="nutricion.cs" subtype="Code" buildaction="Compile" />
   </Contents>
   <References>
     <ProjectReference type="Gac" localcopy="True" refto="Mono.Cairo, Version=2.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756" />

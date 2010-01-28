@@ -53,21 +53,20 @@ namespace osiris
 		[Widget] Gtk.Button button_asignacion_habitacion;
 		[Widget] Gtk.Button button_traspaso_subalmacenes;
 		
-		public string LoginEmpleado;
-		public string NomEmpleado;
-		public string AppEmpleado;
-		public string ApmEmpleado;
-		public string nombrebd;		
+		string LoginEmpleado;
+		string NomEmpleado;
+		string AppEmpleado;
+		string ApmEmpleado;
+		string nombrebd;
+		class_conexion conexion_a_DB = new class_conexion();
 		
-		public hospitalizacion (string LoginEmp_, string NomEmpleado_, string AppEmpleado_, string ApmEmpleado_, string _nombrebd_) 
+		public hospitalizacion (string LoginEmp_, string NomEmpleado_, string AppEmpleado_, string ApmEmpleado_, string nombrebd_) 
 		{
 			LoginEmpleado = LoginEmp_;
 			NomEmpleado = NomEmpleado_;
 			AppEmpleado = AppEmpleado_;
 			ApmEmpleado = ApmEmpleado_;
-			nombrebd = _nombrebd_;
-			
-			
+			nombrebd = conexion_a_DB._nombrebd;			
 			Glade.XML gxml = new Glade.XML (null, "hospitalizacion.glade", "menu_hospitalizacion", null);
 			gxml.Autoconnect (this);
 			////// Muestra ventana de Glade

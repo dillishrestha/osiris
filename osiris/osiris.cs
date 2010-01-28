@@ -186,14 +186,14 @@ namespace osiris
                                      "AND acceso_osiris = 'true' "+
                                      "AND login_empleado = '"+entry_login.Text.Trim().ToUpper()+"';";
                                   
-            	Console.WriteLine(comando.CommandText.ToString());
+            	//Console.WriteLine(comando.CommandText.ToString());
 				NpgsqlDataReader lector = comando.ExecuteReader ();         		
 				
             	if ((bool)lector.Read()){
 					string entrypassword ="";
 					osiris.class_public newpasswd = new osiris.class_public();
 					entrypassword = newpasswd.CreatePasswordMD5(this.entry_password.Text.Trim());
-					Console.WriteLine(entrypassword);
+					//Console.WriteLine(entrypassword);
 					
 					if (entrypassword == (string) lector["passwordempleado"]){
 												
@@ -251,10 +251,9 @@ namespace osiris
 		void pantalla_principal()
 		{
 			Glade.XML gxml = new Glade.XML (null, "osiris.glade", "menuprincipal", null);
-			gxml.Autoconnect (this);
-			menuprincipal.Show();
-					 			
+			gxml.Autoconnect (this);				 			
 			hscmtylogo.Pixbuf = new Gdk.Pixbuf("soghis_osiris.png");
+			menuprincipal.Show();
 					 					 											
 			verificapermisos(accesoHIS,accesoERP,accesoGENERAL,autorizaHIS,autorizaERP,autorizaGENERAL);
 												 
@@ -403,12 +402,13 @@ namespace osiris
 		
 		void on_button_farmacia_clicked(object sender, EventArgs args)
 		{
+			// autorizacion_doctores_compra.cs
 			new osiris.orden_compra_urgencias(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,0,"",26,"COMERCIALIZADORA MEDIX S. A. DE C. V.");
 		}
 		
 		void on_button_nutricion_clicked(object sender, EventArgs args)
 		{
-			//new osiris.nutricion(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
+			new osiris.nutricion(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
 		}
 		
 		public void on_button_agredecimientos_clicked (object sender, EventArgs args)

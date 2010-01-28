@@ -42,30 +42,25 @@ namespace osiris
 		[Widget] Gtk.TreeView lista_de_busqueda;
 		[Widget] Gtk.ComboBox combobox_tipo_busqueda;
 			
+		string LoginEmpleado;
+		string NomEmpleado;
+		string AppEmpleado;
+		string ApmEmpleado;
+		string NomEmpleados;
 		
-		public string LoginEmpleado;
-		public string NomEmpleado;
-		public string AppEmpleado;
-		public string ApmEmpleado;
-		public string NomEmpleados;
+		decimal  total_monto_facturas;
 		
-		public decimal  total_monto_facturas;
-		
-		public string fecha_envio;
-		public int contar_facturas;
-		public int numerofactura;
-		public string fecha_de_envio;
-		public int iddelcliente;
-		public string query_clientes = ";";
-		public string query_fechas ="AND osiris_erp_factura_enca.enviado = 'false' ";
-		public string query_facturas = "" ;	//rpt_evnvio_de_factuiras
-				
-					
-		public string connectionString = "Server=localhost;" +
-			                     		 "Port=5432;" +
-						                 "User ID=admin;" +
-						                 "Password=1qaz2wsx;";
-		public string nombrebd;
+		string fecha_envio;
+		int contar_facturas;
+		int numerofactura;
+		string fecha_de_envio;
+		int iddelcliente;
+		string query_clientes = ";";
+		string query_fechas ="AND osiris_erp_factura_enca.enviado = 'false' ";
+		string query_facturas = "" ;	//rpt_evnvio_de_factuiras
+							
+		string connectionString;
+		string nombrebd;
 		
 		private TreeStore treeViewEngineBuscafacturas;
 		private TreeStore treeViewEngineClientes;
@@ -73,15 +68,17 @@ namespace osiris
     	protected Gtk.Window MyWinError;
 		protected Gtk.Window MyWin;
 		
-		public envio_de_facturas(string LoginEmp, string NomEmpleado_, string AppEmpleado_, string ApmEmpleado_, string _nombrebd_)
-		{
-			
+		class_conexion conexion_a_DB = new class_conexion();
+		
+		public envio_de_facturas(string LoginEmp, string NomEmpleado_, string AppEmpleado_, string ApmEmpleado_, string nombrebd_)
+		{			
 			LoginEmpleado = LoginEmp;
-			nombrebd = _nombrebd_;
 			NomEmpleado = NomEmpleado_;
 			AppEmpleado = AppEmpleado_;
 			ApmEmpleado = ApmEmpleado_;
 			NomEmpleados = NomEmpleado+" "+AppEmpleado+" "+ApmEmpleado;
+			connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
+			nombrebd = conexion_a_DB._nombrebd;
 					
 			Glade.XML gxml = new Glade.XML (null, "caja.glade", "envio_facturas", null);
 			gxml.Autoconnect (this);

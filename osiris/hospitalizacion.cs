@@ -85,7 +85,8 @@ namespace osiris
 		
 		void on_button_cargos_pacientes_clicked(object sender, EventArgs args)
 		{
-			new osiris.cargos_hospitalizacion(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
+			//new osiris.cargos_hospitalizacion(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
+			new osiris.cargos_modulos_medicos(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,500,"HOSPITALIZACION",3,"");
 		}
 		
 		void on_button_soli_material_clicked(object sender, EventArgs args)

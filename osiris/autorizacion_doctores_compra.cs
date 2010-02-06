@@ -287,7 +287,7 @@ namespace osiris
 	    
 	    void llena_seleccion_compra()
 	    {
-			if (LoginEmpleado =="DOLIVARES" || LoginEmpleado =="HVARGAS" || LoginEmpleado =="JBUENTELLO" || LoginEmpleado =="N000008" || LoginEmpleado =="N000142"){
+			if (LoginEmpleado =="DOLIVARES"){
 			     button_quitar_aplicados.Sensitive = true;		 		
 			}
 			    
@@ -404,11 +404,7 @@ namespace osiris
 	    
 	    void on_check_nueva_clicked(object sender, EventArgs args)
 	   	{	
-	   		if (LoginEmpleado =="DOLIVARES" || LoginEmpleado =="HVARGAS" || LoginEmpleado =="JBUENTELLO" || 
-	   			LoginEmpleado =="N000072" || LoginEmpleado =="N000041" || LoginEmpleado =="N000065" || LoginEmpleado =="N000071" ||
-	   			LoginEmpleado =="N000338" || LoginEmpleado =="N000100" || LoginEmpleado =="N000008" || LoginEmpleado =="N000142" ||
-	   			LoginEmpleado =="N000277" || LoginEmpleado =="N000313" || LoginEmpleado =="N000414" ||
-	   			LoginEmpleado =="GMORENO" || LoginEmpleado =="OSILVA" || LoginEmpleado =="CRAMIREZ" || LoginEmpleado =="AMORENO" || LoginEmpleado =="AQUISTIAN"){
+	   		if (LoginEmpleado =="DOLIVARES"){
 	    		if(this.checkbutton_nuevo.Active == true){
 			    	entry_fecha_autorizacion.Text = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
 					this.button_busca_medico.Sensitive = true;
@@ -459,7 +455,7 @@ namespace osiris
  					treeViewEngineAutorizados.Remove (ref iter);
 				}
 			}else{
-				if (LoginEmpleado =="DOLIVARES" || LoginEmpleado =="HVARGAS" || LoginEmpleado =="JBUENTELLO" || LoginEmpleado =="N000008" || LoginEmpleado =="N000142"){
+				if (LoginEmpleado =="DOLIVARES"){
 					MessageDialog msgBox = new MessageDialog (MyWin,DialogFlags.Modal,
 					                                          MessageType.Question,ButtonsType.YesNo,"¿ Desea CANCELAR esta Orden de Compra ?");
 					ResponseType miResultado = (ResponseType)msgBox.Run ();
@@ -1119,7 +1115,7 @@ namespace osiris
 		void on_button_busca_medico_clicked(object sender, EventArgs args)
 		{
 			tipo_busqueda = "medicos";
-			Glade.XML gxml = new Glade.XML (null, "registro_admision.glade", "buscador_medicos", null);
+			Glade.XML gxml = new Glade.XML (null, "catalogos.glade", "buscador_medicos", null);
 			gxml.Autoconnect                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          (this);
 	        llenado_cmbox_tipo_busqueda();
 			button_buscar_busqueda.Clicked += new EventHandler(on_button_llena_medicos_clicked);

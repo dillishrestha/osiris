@@ -201,6 +201,7 @@ namespace osiris
 						NomEmpleado = (string) lector["nombre1_empleado"]+" "+(string) lector["nombre2_empleado"];
 						AppEmpleado = (string) lector["apellido_paterno_empleado"];
 						ApmEmpleado = (string) lector["apellido_materno_empleado"];
+						string idempleado = (string) lector["id_empleado"];
 						
 						accesoHIS = (string) lector["acceso_his"];
 						accesoERP = (string) lector["acceso_erp"];
@@ -218,14 +219,16 @@ namespace osiris
 						login_osiris.Destroy();
 						
 						// Guarda los logs de Accesos de los usuarios
-						//comando.CommandText = "INSERT INTO historylogin( "+
-			 			//						"id_usuario, "+
-			 			//						"fechahora_login "+
-			 			//						") VALUES ('"+
-						//						idUsuario.ToString()+"','"+
- 						//						DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+ "');";
- 						//Console.WriteLine(comando.CommandText.ToString());						
-		 				//comando.ExecuteNonQuery();
+						comando.CommandText = "INSERT INTO osiris_empleados_accesos( "+
+			 									"login_empleado, "+
+												"id_empleado,"+
+			 									"fechahora_login "+
+			 									") VALUES ('"+
+												LoginEmpleado+"','"+
+												idempleado+"','"+
+ 												DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+ "');";
+ 						Console.WriteLine(comando.CommandText.ToString());						
+		 				comando.ExecuteNonQuery();
 						pantalla_principal();
 					}else{
 						MessageDialog msgBox = new MessageDialog (MyWinError,DialogFlags.Modal,
@@ -252,7 +255,8 @@ namespace osiris
 		{
 			Glade.XML gxml = new Glade.XML (null, "osiris.glade", "menuprincipal", null);
 			gxml.Autoconnect (this);				 			
-			hscmtylogo.Pixbuf = new Gdk.Pixbuf("OSIRISLogo.png");
+			hscmtylogo.Pixbuf = new Gdk.Pixbuf(System.IO.Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory,"OSIRISLogo.jpg"));   //en windows
+			//hscmtylogo.Pixbuf = new Gdk.Pixbuf("OSIRISLogo.jpg");   // en Linux
 			menuprincipal.Show();
 					 					 											
 			verificapermisos(accesoHIS,accesoERP,accesoGENERAL,autorizaHIS,autorizaERP,autorizaGENERAL);
@@ -624,7 +628,7 @@ namespace osiris
 		void on_button_medicos_clicked (object sender, EventArgs args)
 		{
 			enter_en = "medicos";
-			Glade.XML gxml = new Glade.XML (null, "registro_admision.glade", "buscador_medicos", null);
+			Glade.XML gxml = new Glade.XML (null, "catalogos.glade", "buscador_medicos", null);
 			gxml.Autoconnect                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 (this);
 	        llenado_cmbox_tipo_busqueda();
 	        entry_expresion.KeyPressEvent += onKeyPressEvent_enter_pass;

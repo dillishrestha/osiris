@@ -88,7 +88,8 @@ namespace osiris
 		
 		void on_button_cargos_pacientes_clicked(object sender, EventArgs args)
 		{
-			new osiris.cargos_endoscopia(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
+			//new osiris.cargos_endoscopia(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
+			new osiris.cargos_modulos_medicos(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,710,"ENDOSCOPIA",10,"");
 		}
 		
 		void on_button_soli_material_clicked(object sender, EventArgs args)

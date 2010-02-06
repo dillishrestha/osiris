@@ -59,13 +59,6 @@ namespace osiris
 		[Widget] Gtk.Entry entry_mes;
 		[Widget] Gtk.Entry entry_ano;
 		[Widget] Gtk.Statusbar statusbar;
-		
-		
-		//Declarando ventanas de busqueda
-		[Widget] Gtk.Entry entry_expresion;
-		[Widget] Gtk.Button button_buscar_busqueda;
-		[Widget] Gtk.Button button_selecciona;
-		[Widget] Gtk.TreeView lista_de_busqueda;
 				
 		string connectionString;
 		string nombrebd;
@@ -97,6 +90,7 @@ namespace osiris
 		
 		class_conexion conexion_a_DB = new class_conexion();
 		class_public classpublic = new class_public();
+		class_buscador classfind_data = new class_buscador();
 		
 		public crea_ordenes_de_compra(string LoginEmp_, string NomEmpleado_, string AppEmpleado_, string ApmEmpleado_, string nombrebd_ )
 		{
@@ -668,226 +662,28 @@ namespace osiris
 		
 		void on_button_busca_proveedores_clicked(object sender, EventArgs args)
 		{
-			//busqueda = "proveedores";
-			Glade.XML gxml = new Glade.XML (null, "catalogos.glade", "buscador", null);
-			gxml.Autoconnect                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 (this);
-			button_buscar_busqueda.Clicked += new EventHandler(on_llena_lista_proveedores_clicked);
-			entry_expresion.KeyPressEvent += onKeyPressEvent_enter;
-			button_selecciona.Clicked += new EventHandler(on_selecciona_proveedor_clicked);
-			//checkbutton_proveedor_nuevo.Active = false;
-			crea_treeview_proveedores();
-			button_salir.Clicked +=  new EventHandler(on_cierraventanas_clicked);
-		}
-		
-		void crea_treeview_proveedores()
-		{
-			treeViewEngineproveedores = new TreeStore(typeof(int),//0
-													typeof(string),//1
-													typeof(string),//2
-													typeof(string),//3
-													typeof(string),//4
-													typeof(string),//5
-													typeof(string),//6
-													typeof(string),//7
-													typeof(string),//8
-													typeof(string),//9
-													typeof(int), // 10
-													typeof(bool),//11
-													typeof(string));//12										
-			lista_de_busqueda.Model = treeViewEngineproveedores;
-			
-			lista_de_busqueda.RulesHint = true;
-				
-			lista_de_busqueda.RowActivated += on_selecciona_proveedor_clicked;  // Doble click 
-			
-			
-			TreeViewColumn col_idproveedor = new TreeViewColumn();
-			CellRendererText cellr0 = new CellRendererText();
-			col_idproveedor.Title = "ID Proveedores"; // titulo de la cabecera de la columna, si está visible
-			col_idproveedor.PackStart(cellr0, true);
-			col_idproveedor.AddAttribute (cellr0, "text", 0);    // la siguiente columna será 1
-			col_idproveedor.SetCellDataFunc(cellr0, new Gtk.TreeCellDataFunc(cambia_colores_proveedor));
-			col_idproveedor.SortColumnId = (int) Col_proveedores.col_idproveedor;
-			
-			TreeViewColumn col_proveedor = new TreeViewColumn();
-			CellRendererText cellrt1 = new CellRendererText();
-			col_proveedor.Title = "Proveedores";
-			col_proveedor.PackStart(cellrt1, true);
-			col_proveedor.AddAttribute (cellrt1, "text", 1); // la siguiente columna será 2
-			col_proveedor.SetCellDataFunc(cellrt1, new Gtk.TreeCellDataFunc(cambia_colores_proveedor));
-			col_proveedor.SortColumnId = (int) Col_proveedores.col_proveedor;
-			
-			TreeViewColumn col_calle = new TreeViewColumn();
-			CellRendererText cellrt2 = new CellRendererText();
-			col_calle.Title = "Calle";
-			col_calle.PackStart(cellrt2, true);
-			col_calle.AddAttribute (cellrt2, "text", 2); // la siguiente columna será 3
-			col_calle.SetCellDataFunc(cellrt2, new Gtk.TreeCellDataFunc(cambia_colores_proveedor));
-			col_calle.SortColumnId = (int) Col_proveedores.col_calle;
-			
-			TreeViewColumn col_colonia = new TreeViewColumn();
-			CellRendererText cellrt3 = new CellRendererText();
-			col_colonia.Title = "Colonia";
-			col_colonia.PackStart(cellrt3, true);
-			col_colonia.AddAttribute (cellrt3, "text", 3); // la siguiente columna será 4
-			col_colonia.SetCellDataFunc(cellrt3, new Gtk.TreeCellDataFunc(cambia_colores_proveedor));
-			col_colonia.SortColumnId = (int) Col_proveedores.col_colonia;
-			
-            TreeViewColumn col_municipio = new TreeViewColumn();
-            CellRendererText cellrt4 = new CellRendererText();
-            col_municipio.Title = "Municipio";
-            col_municipio.PackStart(cellrt4, true);
-			col_municipio.AddAttribute(cellrt4,"text", 4); // la siguiente columna será 5
-			col_municipio.SetCellDataFunc(cellrt4, new Gtk.TreeCellDataFunc(cambia_colores_proveedor));
-			col_municipio.SortColumnId = (int) Col_proveedores.col_municipio;
-			
-            TreeViewColumn col_estado = new TreeViewColumn();
-            CellRendererText cellrt5 = new CellRendererText();
-            col_estado.Title = "Estado";
-            col_estado.PackStart(cellrt5, true);
-            col_estado.AddAttribute(cellrt5,"text", 5); // la siguiente columna será 6
-            col_estado.SetCellDataFunc(cellrt5, new Gtk.TreeCellDataFunc(cambia_colores_proveedor));
-			col_estado.SortColumnId = (int) Col_proveedores.col_estado;
-			
-            TreeViewColumn col_telefono = new TreeViewColumn();
-            CellRendererText cellrt6 = new CellRendererText();
-            col_telefono.Title = "Telefono";
-            col_telefono.PackStart(cellrt6, true);
-            col_telefono.AddAttribute(cellrt6,"text", 6); // la siguiente columna será 7
-            col_telefono.SetCellDataFunc(cellrt6, new Gtk.TreeCellDataFunc(cambia_colores_proveedor));
-            col_telefono.SortColumnId = (int) Col_proveedores.col_telefono;
-            
-            TreeViewColumn col_contacto = new TreeViewColumn();
-            CellRendererText cellrt7 = new CellRendererText();
-            col_contacto.Title = "Contacto";
-            col_contacto.PackStart(cellrt7, true);
-            col_contacto.AddAttribute(cellrt7,"text", 7);// la siguiente columna será 8
-            col_contacto.SetCellDataFunc(cellrt7, new Gtk.TreeCellDataFunc(cambia_colores_proveedor));
-			col_contacto.SortColumnId = (int) Col_proveedores.col_contacto;
-			
-            TreeViewColumn col_cp = new TreeViewColumn();
-            CellRendererText cellrt8 = new CellRendererText();
-            col_cp.Title = "Codigo Postal";
-            col_cp.PackStart(cellrt8, true);
-            col_cp.AddAttribute(cellrt8,"text", 8);// la siguiente columna será 9
-            col_cp.SetCellDataFunc(cellrt8, new Gtk.TreeCellDataFunc(cambia_colores_proveedor));
-            col_cp.SortColumnId = (int) Col_proveedores.col_cp;
-			
-            TreeViewColumn col_web = new TreeViewColumn();
-            CellRendererText cellrt9 = new CellRendererText();
-            col_web.Title = "Pag. Web";
-            col_web.PackStart(cellrt9, true);
-            col_web.AddAttribute(cellrt9,"text", 9);// la siguiente columna será 10
-            col_web.SetCellDataFunc(cellrt9, new Gtk.TreeCellDataFunc(cambia_colores_proveedor));
-            col_web.SortColumnId = (int) Col_proveedores.col_web;
-            		           
-			lista_de_busqueda.AppendColumn(col_idproveedor);
-			lista_de_busqueda.AppendColumn(col_proveedor);
-			lista_de_busqueda.AppendColumn(col_calle);
-			lista_de_busqueda.AppendColumn(col_colonia);
-			lista_de_busqueda.AppendColumn(col_municipio);
-			lista_de_busqueda.AppendColumn(col_estado);
-			lista_de_busqueda.AppendColumn(col_telefono);
-			lista_de_busqueda.AppendColumn(col_contacto);
-			lista_de_busqueda.AppendColumn(col_cp);
-			lista_de_busqueda.AppendColumn(col_web);
-						
-		}
-		
-		enum Col_proveedores
-		{
-			col_idproveedor,
-			col_proveedor,
-			col_calle,
-			col_colonia,
-			col_municipio,
-			col_estado,
-			col_telefono,
-			col_contacto,
-			col_cp,
-			col_web
-		}
-		
-		void on_llena_lista_proveedores_clicked(object sender, EventArgs args)
-		{
-			llenando_lista_de_proveedores();
-		}
-		
-		void llenando_lista_de_proveedores()
-		{
-			treeViewEngineproveedores.Clear(); // Limpia el treeview cuando realiza una nueva busqueda
-			
-			NpgsqlConnection conexion; 
-			conexion = new NpgsqlConnection (connectionString+nombrebd);
-			// Verifica que la base de datos este conectada
-			try{
-				conexion.Open ();
-				NpgsqlCommand comando; 
-				comando = conexion.CreateCommand ();
-				if ((string) entry_expresion.Text.ToUpper() == "*"){
-					comando.CommandText = "SELECT descripcion_proveedor,direccion_proveedor,rfc_proveedor,curp_proveedor, "+
+			// Los parametros de del SQL siempre es primero cuando busca todo y la otra por expresion
+			// la clase recibe tambien el orden del query
+			// es importante definir que tipo de busqueda es para que los objetos caigan ahi mismo
+			object[] parametros_objetos = {entry_id_proveedor,entry_nombre_proveedor};
+			string[] parametros_sql = {"SELECT descripcion_proveedor,direccion_proveedor,rfc_proveedor,curp_proveedor, "+
 								"colonia_proveedor,municipio_proveedor,estado_proveedor,telefono1_proveedor, "+ 
 								"telefono2_proveedor,celular_proveedor,rfc_proveedor, proveedor_activo, "+
 								"id_proveedor,contacto1_proveedor,mail_proveedor,pagina_web_proveedor,"+
 								"osiris_erp_proveedores.id_forma_de_pago, fax_proveedor "+
 								"FROM osiris_erp_proveedores, osiris_erp_forma_de_pago "+
-								"WHERE osiris_erp_proveedores.id_forma_de_pago = osiris_erp_forma_de_pago.id_forma_de_pago "+
-								"ORDER BY descripcion_proveedor;";															
-				}else{
-					comando.CommandText = "SELECT descripcion_proveedor,direccion_proveedor,rfc_proveedor,curp_proveedor, "+
+								"WHERE osiris_erp_proveedores.id_forma_de_pago = osiris_erp_forma_de_pago.id_forma_de_pago ",				
+								"SELECT descripcion_proveedor,direccion_proveedor,rfc_proveedor,curp_proveedor, "+
 								"colonia_proveedor,municipio_proveedor,estado_proveedor,telefono1_proveedor, "+ 
 								"telefono2_proveedor,celular_proveedor,rfc_proveedor, proveedor_activo, "+
 								"id_proveedor,contacto1_proveedor,mail_proveedor,pagina_web_proveedor, "+
 								"osiris_erp_proveedores.id_forma_de_pago, fax_proveedor "+
 								"FROM osiris_erp_proveedores, osiris_erp_forma_de_pago "+
 								"WHERE osiris_erp_proveedores.id_forma_de_pago = osiris_erp_forma_de_pago.id_forma_de_pago "+
-								"AND descripcion_proveedor LIKE '%"+(string) entry_expresion.Text.ToUpper()+"%' "+
-								"ORDER BY descripcion_proveedor;";
-				}
-				
-				NpgsqlDataReader lector = comando.ExecuteReader ();
-				while (lector.Read()){	
-					treeViewEngineproveedores.AppendValues ((int) lector["id_proveedor"],//0
-													(string) lector["descripcion_proveedor"],//1
-													(string) lector["direccion_proveedor"],//2
-													(string) lector["colonia_proveedor"],//3
-													(string) lector["municipio_proveedor"],//4
-													(string) lector["estado_proveedor"],//5
-													(string) lector["telefono1_proveedor"],//6
-													(string) lector["contacto1_proveedor"],//7
-													(string) lector["rfc_proveedor"],//8
-													(string) lector["pagina_web_proveedor"],//9
-													(int) lector["id_forma_de_pago"],//10
-													(bool) lector["proveedor_activo"], // 11
-													(string) lector["fax_proveedor"]);//12
-					
-				}
-			}catch (NpgsqlException ex){
-	   			MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
-									MessageType.Error,ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
-				msgBoxError.Run ();			msgBoxError.Destroy();
-			}
-			conexion.Close ();
+								"AND descripcion_proveedor LIKE '%"};			
+			classfind_data.buscandor(parametros_objetos,parametros_sql,"find_proveedores"," ORDER BY descripcion_proveedor;","%' ");
 		}
-		
-		void on_selecciona_proveedor_clicked(object sender, EventArgs args)
-		{
-			TreeModel model;
-			TreeIter iterSelected;
-			if (lista_de_busqueda.Selection.GetSelected(out model, out iterSelected)){
- 				this.entry_id_proveedor.Text = Convert.ToString((int) model.GetValue(iterSelected, 0));
- 				this.entry_nombre_proveedor.Text = (string) model.GetValue(iterSelected, 1);
-				Widget win = (Widget) sender;
-				win.Toplevel.Destroy();
-			}
-		}
-		
-		void cambia_colores_proveedor(Gtk.TreeViewColumn column, Gtk.CellRenderer cell, Gtk.TreeModel model, Gtk.TreeIter iter)
-		{
-			//if ((bool) lista_de_busqueda.Model.GetValue(iter,10) == false)
-			//{(cell as Gtk.CellRendererText).Foreground = "darkgreen";		}
-		}
-		
+			
 		// Cuando seleccion campos para la autorizacion de compras  
 		void selecciona_fila(object sender, ToggledArgs args)
 		{
@@ -903,8 +699,7 @@ namespace osiris
 		public void onKeyPressEvent_enter(object o, Gtk.KeyPressEventArgs args)
 		{
 			if (args.Event.Key == Gdk.Key.Return || args.Event.Key == Gdk.Key.KP_Enter){
-				args.RetVal = true;		
-				llenando_lista_de_proveedores();			
+				args.RetVal = true;				
 			}
 		}
 		

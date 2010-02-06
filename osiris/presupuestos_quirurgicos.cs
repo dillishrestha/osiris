@@ -1052,7 +1052,7 @@ namespace osiris
 		void on_button_busca_medico_clicked(object sender, EventArgs args)
 		{
 			busqueda = "medicos";
-			Glade.XML gxml = new Glade.XML (null, "registro_admision.glade", "buscador_medicos", null);
+			Glade.XML gxml = new Glade.XML (null, "catalogos.glade", "buscador_medicos", null);
 			gxml.Autoconnect                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          (this);
 	        llenado_cmbox_tipo_busqueda();
 	        //entry_expresion.KeyPressEvent += onKeyPressEvent_enter;
@@ -1228,7 +1228,7 @@ namespace osiris
 						if ((string) entry_expresion.Text.ToUpper().Trim() == "")
 						{
 							comando.CommandText = "SELECT id_medico, "+
-										"to_char(osiris_his_tipo_especialidad.id_especialidad,999999) AS idespecialidad, "+
+										"to_char(osiris_his_tipo_especialidad.id_especialidad,'999999') AS idespecialidad, "+
 										"nombre1_medico,nombre2_medico,apellido_paterno_medico,apellido_materno_medico, "+
 										"telefono1_medico,telefono2_medico,celular1_medico,celular2_medico,nextel_medico,beeper_medico,"+
 										"descripcion_especialidad,medico_activo,autorizado "+
@@ -1238,7 +1238,7 @@ namespace osiris
 										"ORDER BY id_medico;";
 						}else{
 							comando.CommandText = "SELECT id_medico, "+
-										"to_char(osiris_his_tipo_especialidad.id_especialidad,999999) AS idespecialidad, "+
+										"to_char(osiris_his_tipo_especialidad.id_especialidad,'999999') AS idespecialidad, "+
 										"nombre1_medico,nombre2_medico,apellido_paterno_medico,apellido_materno_medico, "+
 										"telefono1_medico,telefono2_medico,celular1_medico,celular2_medico,nextel_medico,beeper_medico,"+
 										"descripcion_especialidad,medico_activo,autorizado "+

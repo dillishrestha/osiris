@@ -3,7 +3,8 @@
 // Sistema Hospitalario OSIRIS
 // Monterrey - Mexico
 //
-// Autor    	 Ing.Jesus Buentello Garza (programacion Mono)		
+// Autor    	: Ing.Jesus Buentello Garza (programacion Mono)
+//				  Ing. Daniel Olivares (Programacion) Modificaciones y mejoras
 //	 				  
 // Licencia		: GLP
 // S.O. 		: GNU/Linux RH4 ES
@@ -48,7 +49,7 @@ namespace osiris
 		[Widget] Gtk.Button button_guarda = null;
 		[Widget] Gtk.Button button_editar = null;		
 		[Widget] Gtk.Button button_salir = null;
-		[Widget] Gtk.Entry entry_provedor = null;
+		[Widget] Gtk.Entry entry_nombre_proveedor = null;
 		[Widget] Gtk.Entry entry_producto = null;
 		[Widget] Gtk.Entry entry_precio = null;
 		[Widget] Gtk.TreeView lista_productos_agregados = null;
@@ -58,7 +59,7 @@ namespace osiris
 		[Widget] Gtk.Entry entry_clave = null;
 		[Widget] Gtk.TreeView lista_precios_proveedor = null;
 		[Widget] Gtk.CheckButton checkbutton_aprobar = null;
-		[Widget] Gtk.Entry entry_id_provedor = null;
+		[Widget] Gtk.Entry entry_id_proveedor = null;
 		[Widget] Gtk.Label label_titulo_cantidad = null;
 		[Widget] Gtk.ComboBox combobox_tipo_unidad = null;
 		[Widget] Gtk.Statusbar statusbar_alta_producto = null;
@@ -71,7 +72,7 @@ namespace osiris
 		//[Widget] Gtk.Button button_agrega_extra;
 		[Widget] Gtk.Entry entry_cantidad_aplicada = null;
 		
-		//provedores
+		// Busqueda de productos
 		[Widget] Gtk.Window catalogo_proveedore  = null;
 		[Widget] Gtk.Button button_buscar_busqueda = null;
 		[Widget] Gtk.Entry entry_expresion = null;
@@ -95,6 +96,8 @@ namespace osiris
 		string connectionString;
 		string nombrebd;
 		class_conexion conexion_a_DB = new class_conexion();
+		class_buscador classfind_data = new class_buscador();
+		
 		//Declaracion de ventana de error y pregunta
 		protected Gtk.Window MyWinError;
 		protected Gtk.Window MyWin;
@@ -141,7 +144,7 @@ namespace osiris
 			this.button_quita.Clicked += new EventHandler(on_button_quitar_aplicados_clicked);
 			button_salir.Clicked += new EventHandler(on_cierraventanas_clicked);
 			this.button_aprobar.Clicked += new EventHandler(on_button_aprobar_clicked);
-			this.entry_id_provedor.KeyPressEvent += onKeyPressEvent_enter_provedor;
+			this.entry_id_proveedor.KeyPressEvent += onKeyPressEvent_enter_provedor;
 			this.button_editar.Clicked += new EventHandler(on_editar_producto_clicked);
 			this.entry_embalaje.KeyPressEvent += onKeyPressEvent_enter_valida;
 			this.entry_precio.KeyPressEvent += onKeyPressEvent_enter_valida;
@@ -161,8 +164,8 @@ namespace osiris
 			this.button_selecciona.Sensitive = false;
 			this.lista_productos_agregados.Sensitive = false;
 			this.lista_precios_proveedor.Sensitive = false;
-			this.entry_provedor.Sensitive = false;
-			this.entry_id_provedor. Sensitive = false;
+			this.entry_nombre_proveedor.Sensitive = false;
+			this.entry_id_proveedor. Sensitive = false;
 			this.button_busca_provedor.Sensitive = false;
 			this.button_guarda.Sensitive = false;
 			this.checkbutton_aprobar.Active = true;
@@ -178,8 +181,8 @@ namespace osiris
 			if (args.Event.Key == Gdk.Key.Return || args.Event.Key == Gdk.Key.KP_Enter){
 				
 				if(this.checkbutton_nuevo_producto.Active == true){
-					this.entry_id_provedor.Sensitive = false;
-					this.entry_provedor.Sensitive = false;
+					this.entry_id_proveedor.Sensitive = false;
+					this.entry_nombre_proveedor.Sensitive = false;
 					llenando_lista_de_aprobados();
 
 				}
@@ -204,13 +207,13 @@ namespace osiris
 								"osiris_erp_proveedores.id_forma_de_pago, descripcion_forma_de_pago AS descripago "+
 								"FROM osiris_erp_proveedores, osiris_erp_forma_de_pago "+
 								"WHERE osiris_erp_proveedores.id_forma_de_pago = osiris_erp_forma_de_pago.id_forma_de_pago "+
-							    "AND id_proveedor = '"+(string) this.entry_id_provedor.Text+"' "+
+							    "AND id_proveedor = '"+(string) this.entry_id_proveedor.Text+"' "+
 								"ORDER BY descripcion_proveedor;";
 				
 					NpgsqlDataReader lector = comando.ExecuteReader ();
 					if (lector.Read())
 					{	
-						this.entry_provedor.Text = (string) lector["descripcion_proveedor"];//12
+						this.entry_nombre_proveedor.Text = (string) lector["descripcion_proveedor"];//12
 					}
 				}catch (NpgsqlException ex){
 					MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
@@ -304,7 +307,7 @@ namespace osiris
 								//if ((bool)lista_precios_proveedor.Model.GetValue (iter,0) == true){	
 								comando2.CommandText = "SELECT id_proveedor,codigo_producto_proveedor,codigo_de_barra FROM osiris_catalogo_productos_proveedores "+
 							     	                   "WHERE codigo_producto_proveedor = '"+(string) this.lista_precios_proveedor.Model.GetValue (iter,3)+"' "+
-								    	               "AND id_proveedor = '"+this.entry_id_provedor.Text+"' ;";
+								    	               "AND id_proveedor = '"+this.entry_id_proveedor.Text+"' ;";
 
 								//Console.WriteLine(comando2.CommandText.ToString());
 								NpgsqlDataReader lector2 = comando2.ExecuteReader ();
@@ -321,7 +324,7 @@ namespace osiris
 						     			                        "fecha_eliminado = '"+DateTime.Now.ToString("yyyy-MM-dd")+"', "+
 										                        "id_quien_elimino = ' "+LoginEmpleado+" ' "+
 									                            "WHERE codigo_producto_proveedor = '"+(string) lista_precios_proveedor.Model.GetValue (iter,3)+"' "+
-					             					            "AND id_proveedor = '"+this.entry_id_provedor.Text+"' ;";
+					             					            "AND id_proveedor = '"+this.entry_id_proveedor.Text+"' ;";
 										comando3.ExecuteNonQuery(); 
 										comando3.Dispose();
 										conexion3.Close();
@@ -355,8 +358,8 @@ namespace osiris
 		
 			this.button_guarda.Sensitive = true;
 			if(entry_embalaje.Text == "" || entry_embalaje.Text == "0" || entry_codigo.Text == "" ||
-			   entry_clave.Text == "" || entry_producto.Text == "" || entry_id_provedor.Text == "" ||
-			   entry_provedor.Text == "" || this.entry_precio.Text == ""){
+			   entry_clave.Text == "" || entry_producto.Text == "" || entry_id_proveedor.Text == "" ||
+			   entry_nombre_proveedor.Text == "" || this.entry_precio.Text == ""){
 				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
 				                                               MessageType.Info,ButtonsType.Close, "Favor de llenar toda la informacion");
 				msgBoxError.Run ();			msgBoxError.Destroy();
@@ -400,16 +403,16 @@ namespace osiris
 			entry_codigo.Text = "";
 			entry_cod_barras.Text = "";
 			this.entry_clave.Text = "";
-			this.entry_id_provedor.Text = "";
-			this.entry_provedor.Text = "";
+			this.entry_id_proveedor.Text = "";
+			this.entry_nombre_proveedor.Text = "";
 			this.treeViewEngineaprobados.Clear();
 			this.treeViewEngineproductos.Clear();
 			
 			if(this.checkbutton_nuevo_producto.Active == true)
 			{
 				
-				this.entry_id_provedor.Sensitive = true;
-				this.entry_id_provedor.Sensitive = true;
+				this.entry_id_proveedor.Sensitive = true;
+				this.entry_id_proveedor.Sensitive = true;
 				this.button_busca_provedor.Sensitive = true;
 				this.button_guarda.Sensitive = false;
 				entry_precio.Sensitive = true;
@@ -423,8 +426,8 @@ namespace osiris
 				this.checkbutton_aprobar.Sensitive = false;
 				this.button_agrega.Sensitive = true;
 				this.button_quita.Sensitive = true;
-				this.entry_id_provedor.Sensitive = true;
-				this.entry_provedor.Sensitive = true;
+				this.entry_id_proveedor.Sensitive = true;
+				this.entry_nombre_proveedor.Sensitive = true;
 				this.button_selecciona.Sensitive = true;
 				this.button_editar.Sensitive = false;
 				this.entry_embalaje.Text = "1";
@@ -442,10 +445,10 @@ namespace osiris
 				this.entry_producto.Sensitive = false;
 				this.checkbutton_aprobar.Sensitive = true;
 				this.button_agrega.Sensitive = false;
-				this.entry_id_provedor.Sensitive = true;
-				this.entry_provedor.Sensitive = true;
-				this.entry_id_provedor.Sensitive = false;
-				this.entry_provedor.Sensitive = false;
+				this.entry_id_proveedor.Sensitive = true;
+				this.entry_nombre_proveedor.Sensitive = true;
+				this.entry_id_proveedor.Sensitive = false;
+				this.entry_nombre_proveedor.Sensitive = false;
 				this.button_busca_provedor.Sensitive = false;	
 				this.button_selecciona.Sensitive = false;
 				this.button_editar.Sensitive = true;
@@ -457,8 +460,8 @@ namespace osiris
 		}
 		void on_checkbutton_aprobar(object sender, EventArgs args)	
 		{
-			entry_id_provedor.Text = "";
-			entry_provedor.Text = "";
+			entry_id_proveedor.Text = "";
+			entry_nombre_proveedor.Text = "";
 			entry_producto.Text = "";
 			entry_precio.Text = "";
 			entry_embalaje.Text = "";
@@ -477,8 +480,8 @@ namespace osiris
 				this.button_guarda.Sensitive = true;
 				this.button_aprobar.Sensitive = true;
 				this.checkbutton_nuevo_producto.Sensitive = false;
-				this.entry_id_provedor.Sensitive = true;
-				this.entry_provedor.Sensitive = true;
+				this.entry_id_proveedor.Sensitive = true;
+				this.entry_nombre_proveedor.Sensitive = true;
 				this.button_busca_provedor.Sensitive = true;
 				this.button_editar.Sensitive = true;
 				
@@ -489,24 +492,36 @@ namespace osiris
 				this.button_guarda.Sensitive = false;
 				this.button_aprobar.Sensitive = false;
 				this.checkbutton_nuevo_producto.Sensitive = true;
-				this.entry_id_provedor.Sensitive = false;
-				this.entry_provedor.Sensitive = false;
+				this.entry_id_proveedor.Sensitive = false;
+				this.entry_nombre_proveedor.Sensitive = false;
 				this.button_busca_provedor.Sensitive = false;
 				this.button_editar.Sensitive = false;
 				
 			}
 		}
-			
+				
 		void on_busca_provedor_clicked (object sender, EventArgs args)
 		{
-			Glade.XML gxml = new Glade.XML (null, "catalogos.glade", "buscador", null);
-			gxml.Autoconnect                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 (this);
-			button_buscar_busqueda.Clicked += new EventHandler(on_llena_lista_proveedores);
-			entry_expresion.KeyPressEvent += onKeyPressEvent_enter;
-			button_selecciona.Clicked += new EventHandler(on_selecciona_proveedor);
-			//checkbutton_proveedor_nuevo.Active = false;
-			crea_treeview_proveedores();
-			button_salir.Clicked +=  new EventHandler(on_cierraventanas_clicked);
+			// Los parametros de del SQL siempre es primero cuando busca todo y la otra por expresion
+			// la clase recibe tambien el orden del query
+			// es importante definir que tipo de busqueda es para que los objetos caigan ahi mismo
+			object[] parametros_objetos = {entry_id_proveedor,entry_nombre_proveedor};
+			string[] parametros_sql = {"SELECT descripcion_proveedor,direccion_proveedor,rfc_proveedor,curp_proveedor, "+
+								"colonia_proveedor,municipio_proveedor,estado_proveedor,telefono1_proveedor, "+ 
+								"telefono2_proveedor,celular_proveedor,rfc_proveedor, proveedor_activo, "+
+								"id_proveedor,contacto1_proveedor,mail_proveedor,pagina_web_proveedor,"+
+								"osiris_erp_proveedores.id_forma_de_pago, fax_proveedor "+
+								"FROM osiris_erp_proveedores, osiris_erp_forma_de_pago "+
+								"WHERE osiris_erp_proveedores.id_forma_de_pago = osiris_erp_forma_de_pago.id_forma_de_pago ",				
+								"SELECT descripcion_proveedor,direccion_proveedor,rfc_proveedor,curp_proveedor, "+
+								"colonia_proveedor,municipio_proveedor,estado_proveedor,telefono1_proveedor, "+ 
+								"telefono2_proveedor,celular_proveedor,rfc_proveedor, proveedor_activo, "+
+								"id_proveedor,contacto1_proveedor,mail_proveedor,pagina_web_proveedor, "+
+								"osiris_erp_proveedores.id_forma_de_pago, fax_proveedor "+
+								"FROM osiris_erp_proveedores, osiris_erp_forma_de_pago "+
+								"WHERE osiris_erp_proveedores.id_forma_de_pago = osiris_erp_forma_de_pago.id_forma_de_pago "+
+								"AND descripcion_proveedor LIKE '%"};			
+			classfind_data.buscandor(parametros_objetos,parametros_sql,"find_proveedores"," ORDER BY descripcion_proveedor;","%' ");
 		}
 
 		void selecciona_fila(object sender, ToggledArgs args)
@@ -636,138 +651,6 @@ namespace osiris
 			col_codigo_provedor
 		}		
 		
-		
-		void crea_treeview_proveedores()
-		{
-			treeViewEngineproveedores = new TreeStore(typeof(int),//0
-			                                          typeof(string),//1
-			                                          typeof(string),//2
-			                                          typeof(string),//3
-			                                          typeof(string),//4
-			                                          typeof(string),//5
-			                                          typeof(string),//6
-			                                          typeof(string),//7
-			                                          typeof(string),//8
-			                                          typeof(string),//9
-			                                          typeof(int), // 10
-			                                          typeof(bool),//11
-			                                          typeof(string));//12
-												
-			lista_de_busqueda.Model = treeViewEngineproveedores;
-			
-			lista_de_busqueda.RulesHint = true;
-			
-			lista_de_busqueda.RowActivated += on_selecciona_proveedor;  // Doble click selecciono paciente*/
-			
-			
-			TreeViewColumn col_idproveedor = new TreeViewColumn();
-			CellRendererText cellr0 = new CellRendererText();
-			col_idproveedor.Title = "ID Proveedores"; // titulo de la cabecera de la columna, si está visible
-			col_idproveedor.PackStart(cellr0, true);
-			col_idproveedor.AddAttribute (cellr0, "text", 0);    // la siguiente columna será 1
-			col_idproveedor.SetCellDataFunc(cellr0, new Gtk.TreeCellDataFunc(cambia_colores_proveedor));
-			col_idproveedor.SortColumnId = (int) Col_proveedores.col_idproveedor;
-			
-			TreeViewColumn col_proveedor = new TreeViewColumn();
-			CellRendererText cellrt1 = new CellRendererText();
-			col_proveedor.Title = "Proveedores";
-			col_proveedor.PackStart(cellrt1, true);
-			col_proveedor.AddAttribute (cellrt1, "text", 1); // la siguiente columna será 2
-			col_proveedor.SetCellDataFunc(cellrt1, new Gtk.TreeCellDataFunc(cambia_colores_proveedor));
-			col_proveedor.SortColumnId = (int) Col_proveedores.col_proveedor;
-			
-			TreeViewColumn col_calle = new TreeViewColumn();
-			CellRendererText cellrt2 = new CellRendererText();
-			col_calle.Title = "Calle";
-			col_calle.PackStart(cellrt2, true);
-			col_calle.AddAttribute (cellrt2, "text", 2); // la siguiente columna será 3
-			col_calle.SetCellDataFunc(cellrt2, new Gtk.TreeCellDataFunc(cambia_colores_proveedor));
-			col_calle.SortColumnId = (int) Col_proveedores.col_calle;
-			
-			TreeViewColumn col_colonia = new TreeViewColumn();
-			CellRendererText cellrt3 = new CellRendererText();
-			col_colonia.Title = "Colonia";
-			col_colonia.PackStart(cellrt3, true);
-			col_colonia.AddAttribute (cellrt3, "text", 3); // la siguiente columna será 4
-			col_colonia.SetCellDataFunc(cellrt3, new Gtk.TreeCellDataFunc(cambia_colores_proveedor));
-			col_colonia.SortColumnId = (int) Col_proveedores.col_colonia;
-			
-            TreeViewColumn col_municipio = new TreeViewColumn();
-            CellRendererText cellrt4 = new CellRendererText();
-            col_municipio.Title = "Municipio";
-            col_municipio.PackStart(cellrt4, true);
-			col_municipio.AddAttribute(cellrt4,"text", 4); // la siguiente columna será 5
-			col_municipio.SetCellDataFunc(cellrt4, new Gtk.TreeCellDataFunc(cambia_colores_proveedor));
-			col_municipio.SortColumnId = (int) Col_proveedores.col_municipio;
-			
-            TreeViewColumn col_estado = new TreeViewColumn();
-            CellRendererText cellrt5 = new CellRendererText();
-            col_estado.Title = "Estado";
-            col_estado.PackStart(cellrt5, true);
-            col_estado.AddAttribute(cellrt5,"text", 5); // la siguiente columna será 6
-            col_estado.SetCellDataFunc(cellrt5, new Gtk.TreeCellDataFunc(cambia_colores_proveedor));
-			col_estado.SortColumnId = (int) Col_proveedores.col_estado;
-			
-            TreeViewColumn col_telefono = new TreeViewColumn();
-            CellRendererText cellrt6 = new CellRendererText();
-            col_telefono.Title = "Telefono";
-            col_telefono.PackStart(cellrt6, true);
-            col_telefono.AddAttribute(cellrt6,"text", 6); // la siguiente columna será 7
-            col_telefono.SetCellDataFunc(cellrt6, new Gtk.TreeCellDataFunc(cambia_colores_proveedor));
-            col_telefono.SortColumnId = (int) Col_proveedores.col_telefono;
-            
-            TreeViewColumn col_contacto = new TreeViewColumn();
-            CellRendererText cellrt7 = new CellRendererText();
-            col_contacto.Title = "Contacto";
-            col_contacto.PackStart(cellrt7, true);
-            col_contacto.AddAttribute(cellrt7,"text", 7);// la siguiente columna será 8
-            col_contacto.SetCellDataFunc(cellrt7, new Gtk.TreeCellDataFunc(cambia_colores_proveedor));
-			col_contacto.SortColumnId = (int) Col_proveedores.col_contacto;
-			
-            TreeViewColumn col_cp = new TreeViewColumn();
-            CellRendererText cellrt8 = new CellRendererText();
-            col_cp.Title = "Codigo Postal";
-            col_cp.PackStart(cellrt8, true);
-            col_cp.AddAttribute(cellrt8,"text", 8);// la siguiente columna será 9
-            col_cp.SetCellDataFunc(cellrt8, new Gtk.TreeCellDataFunc(cambia_colores_proveedor));
-            col_cp.SortColumnId = (int) Col_proveedores.col_cp;
-			
-            TreeViewColumn col_web = new TreeViewColumn();
-            CellRendererText cellrt9 = new CellRendererText();
-            col_web.Title = "Pag. Web";
-            col_web.PackStart(cellrt9, true);
-            col_web.AddAttribute(cellrt9,"text", 9);// la siguiente columna será 10
-            col_web.SetCellDataFunc(cellrt9, new Gtk.TreeCellDataFunc(cambia_colores_proveedor));
-            col_web.SortColumnId = (int) Col_proveedores.col_web;
-            		           
-			lista_de_busqueda.AppendColumn(col_idproveedor);
-			lista_de_busqueda.AppendColumn(col_proveedor);
-			lista_de_busqueda.AppendColumn(col_calle);
-			lista_de_busqueda.AppendColumn(col_colonia);
-			lista_de_busqueda.AppendColumn(col_municipio);
-			lista_de_busqueda.AppendColumn(col_estado);
-			lista_de_busqueda.AppendColumn(col_telefono);
-			lista_de_busqueda.AppendColumn(col_contacto);
-			lista_de_busqueda.AppendColumn(col_cp);
-			lista_de_busqueda.AppendColumn(col_web);
-						
-		}
-		
-		enum Col_proveedores
-		{
-			col_idproveedor,
-			col_proveedor,
-			col_calle,
-			col_colonia,
-			col_municipio,
-			col_estado,
-			col_telefono,
-			col_contacto,
-			col_cp,
-			col_web
-		}
-	
-		
 		void crea_treeview_autoriza()
 		{
 			this.treeViewEngineaprobados = new TreeStore(typeof(bool),
@@ -886,14 +769,14 @@ namespace osiris
 		
 		void on_button_selecciona_clicked(object sender, EventArgs args)
 		{
-			if ((string) this.entry_id_provedor.Text == ""){
+			if ((string) this.entry_id_proveedor.Text == ""){
 				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
 						                                   MessageType.Info,ButtonsType.Close, "Debe seleccionar un Proveedor... verifique...");
 				msgBoxError.Run ();			msgBoxError.Destroy();			
 			}else{			
 				if(this.checkbutton_nuevo_producto.Active == true){
-					//this.entry_id_provedor.Sensitive = false;
-					this.entry_provedor.Sensitive = false;
+					//this.entry_id_proveedor.Sensitive = false;
+					this.entry_nombre_proveedor.Sensitive = false;
 				}
 				
 				llenando_lista_de_aprobados();
@@ -913,12 +796,12 @@ namespace osiris
 								"osiris_erp_proveedores.id_forma_de_pago, descripcion_forma_de_pago AS descripago "+
 								"FROM osiris_erp_proveedores, osiris_erp_forma_de_pago "+
 								"WHERE osiris_erp_proveedores.id_forma_de_pago = osiris_erp_forma_de_pago.id_forma_de_pago "+
-							    "AND id_proveedor = '"+(string) this.entry_id_provedor.Text+"' "+
+							    "AND id_proveedor = '"+(string) this.entry_id_proveedor.Text+"' "+
 								"ORDER BY descripcion_proveedor;";
 				
 					NpgsqlDataReader lector = comando.ExecuteReader ();
 					if (lector.Read()){	
-						this.entry_provedor.Text = (string) lector["descripcion_proveedor"];//12
+						this.entry_nombre_proveedor.Text = (string) lector["descripcion_proveedor"];//12
 					}
 				}catch (NpgsqlException ex){
 					MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
@@ -933,7 +816,7 @@ namespace osiris
 		{
 			this.treeViewEngineaprobados.Clear();
 			
-			id_provedor = Convert.ToInt16(this.entry_id_provedor.Text);
+			id_provedor = Convert.ToInt16(this.entry_id_proveedor.Text);
 			
 		
 			NpgsqlConnection conexion; 
@@ -1036,107 +919,7 @@ namespace osiris
 				(cell as Gtk.CellRendererText).Foreground = "black";		
 			}
 		}
-		
-		void on_llena_lista_proveedores(object sender, EventArgs args)
-		{
-			llenando_lista_de_proveedores();
-		}
-		
-		void llenando_lista_de_proveedores()
-		{
-			treeViewEngineproveedores.Clear(); // Limpia el treeview cuando realiza una nueva busqueda
-			
-			NpgsqlConnection conexion; 
-			conexion = new NpgsqlConnection (connectionString+nombrebd);
-			// Verifica que la base de datos este conectada
-			try
-			{
-				conexion.Open ();
-				NpgsqlCommand comando; 
-				comando = conexion.CreateCommand ();
-				if ((string) entry_expresion.Text.ToUpper() == "*"){
-					comando.CommandText = "SELECT descripcion_proveedor,direccion_proveedor,rfc_proveedor,curp_proveedor, "+
-								"colonia_proveedor,municipio_proveedor,estado_proveedor,telefono1_proveedor, "+ 
-								"telefono2_proveedor,celular_proveedor,cp_proveedor, proveedor_activo, "+
-								"id_proveedor,contacto1_proveedor,mail_proveedor,pagina_web_proveedor,"+
-								"osiris_erp_proveedores.id_forma_de_pago, descripcion_forma_de_pago AS descripago "+
-								"FROM osiris_erp_proveedores, osiris_erp_forma_de_pago "+
-								"WHERE osiris_erp_proveedores.id_forma_de_pago = osiris_erp_forma_de_pago.id_forma_de_pago "+
-								"ORDER BY descripcion_proveedor;";															
-				}else{
-					comando.CommandText = "SELECT descripcion_proveedor,direccion_proveedor,rfc_proveedor,curp_proveedor, "+
-								"colonia_proveedor,municipio_proveedor,estado_proveedor,telefono1_proveedor, "+ 
-								"telefono2_proveedor,celular_proveedor,cp_proveedor, proveedor_activo, "+
-								"id_proveedor,contacto1_proveedor,mail_proveedor,pagina_web_proveedor, "+
-								"osiris_erp_proveedores.id_forma_de_pago, descripcion_forma_de_pago AS descripago "+
-								"FROM osiris_erp_proveedores, osiris_erp_forma_de_pago "+
-								"WHERE osiris_erp_proveedores.id_forma_de_pago = osiris_erp_forma_de_pago.id_forma_de_pago "+
-								"AND descripcion_proveedor LIKE '%"+(string) entry_expresion.Text.ToUpper()+"%' "+
-								"ORDER BY descripcion_proveedor;";
-				}
-				NpgsqlDataReader lector = comando.ExecuteReader ();
-				while (lector.Read()){	
-					treeViewEngineproveedores.AppendValues ((int) lector["id_proveedor"],//0
-													(string) lector["descripcion_proveedor"],//1
-													(string) lector["direccion_proveedor"],//2
-													(string) lector["colonia_proveedor"],//3
-													(string) lector["municipio_proveedor"],//4
-													(string) lector["estado_proveedor"],//5
-													(string) lector["telefono1_proveedor"],//6
-													(string) lector["contacto1_proveedor"],//7
-													(string) lector["cp_proveedor"],//8
-													(string) lector["pagina_web_proveedor"],//9
-													(int) lector["id_forma_de_pago"],//10
-													(bool) lector["proveedor_activo"], // 11
-													(string) lector["descripago"]);//12
-					
-				}
-			}catch (NpgsqlException ex){
-				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
-				                                               MessageType.Error,ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
-				msgBoxError.Run ();			msgBoxError.Destroy();
-			}
-			conexion.Close ();
-		}
-		
-		void on_selecciona_proveedor(object sender, EventArgs args)
-		{
-			if(this.checkbutton_nuevo_producto.Active == true){
-				this.entry_id_provedor.Sensitive = false;
-				this.entry_provedor.Sensitive = false;
-			}
-			TreeModel model;
-			TreeIter iterSelected;
-			if (lista_de_busqueda.Selection.GetSelected(out model, out iterSelected)){				
-				this.entry_provedor.Text = (string) model.GetValue(iterSelected, 1); 
-				id_provedor = (int) model.GetValue(iterSelected, 0); 
-				this.entry_id_provedor.Text = Convert.ToString(id_provedor);
-				Widget win = (Widget) sender;
-				win.Toplevel.Destroy();
-				
-				if(this.checkbutton_aprobar.Active == true && checkbutton_nuevo_producto.Active == false){
-					llenando_lista_de_aprobados();
-				}
-				
-				if(this.checkbutton_nuevo_producto.Active == true && this.checkbutton_aprobar.Active == false){
-					this.entry_provedor.Text = (string) model.GetValue(iterSelected, 1); 
-					id_provedor = (int) model.GetValue(iterSelected, 0); 
-					this.entry_id_provedor.Text = Convert.ToString(id_provedor);
-					llenando_lista_de_aprobados();
-				}								
-			}
-		}
-
-		///////////////////////////////////////BOTON general de busqueda por enter///////////////////////////////////////////////		
-		[GLib.ConnectBefore ()]   	  // Esto es indispensable para que funcione    
-		public void onKeyPressEvent_enter(object o, Gtk.KeyPressEventArgs args)
-		{                                                                                     
-			if (args.Event.Key == Gdk.Key.Return || args.Event.Key == Gdk.Key.KP_Enter){
-				args.RetVal = true;	
-				llenando_lista_de_proveedores();
-			}
-		}
-		
+						
 		///////////////////////////////////////BOTON general de busqueda por enter///////////////////////////////////////////////		
 		[GLib.ConnectBefore ()]   	  // Esto es indispensable para que funcione  
 		public void onKeyPressEvent_enter_entry_expresion(object o, Gtk.KeyPressEventArgs args)
@@ -1147,7 +930,7 @@ namespace osiris
 			}
 		}
 		
-	void on_button_guarda_clicked (object sender, EventArgs args)
+		void on_button_guarda_clicked (object sender, EventArgs args)
 		{
 			
 			if(edita == true){
@@ -1212,7 +995,7 @@ namespace osiris
 								
 								comando2.CommandText = "SELECT id_proveedor,codigo_producto_proveedor,codigo_de_barra FROM osiris_catalogo_productos_proveedores "+
 												"WHERE codigo_producto_proveedor = '"+(string) this.lista_precios_proveedor.Model.GetValue (iterSelected,3)+"' "+
-												"AND id_proveedor = '"+this.entry_id_provedor.Text+"' ;";
+												"AND id_proveedor = '"+this.entry_id_proveedor.Text+"' ;";
 								//Console.WriteLine("GUARDA     "+comando2.CommandText.ToString());
 								NpgsqlDataReader lector2 = comando2.ExecuteReader ();
 								
@@ -1228,7 +1011,7 @@ namespace osiris
 											                    "fecha_asigno_hscmty = '"+DateTime.Now.ToString("yyyy-MM-dd")+"', "+
 												                "id_quien_asigno_hscmty = ' "+LoginEmpleado+" ' "+
 											                    "WHERE codigo_producto_proveedor = '"+(string) lista_precios_proveedor.Model.GetValue (iterSelected,3)+"' "+
-							             					    "AND id_proveedor = '"+this.entry_id_provedor.Text+"' ;";
+							             					    "AND id_proveedor = '"+this.entry_id_proveedor.Text+"' ;";
 										comando3.ExecuteNonQuery();
 										comando3.Dispose();
 										conexion3.Close();
@@ -1250,7 +1033,7 @@ namespace osiris
 							if ((bool)lista_precios_proveedor.Model.GetValue (iterSelected,0) == true){
 								comando2.CommandText = "SELECT id_proveedor,codigo_producto_proveedor,codigo_de_barra FROM osiris_catalogo_productos_proveedores "+
 								                       "WHERE codigo_producto_proveedor = '"+(string) this.lista_precios_proveedor.Model.GetValue (iterSelected,3)+"' "+
-										               "AND id_proveedor = '"+this.entry_id_provedor.Text+"' ;";
+										               "AND id_proveedor = '"+this.entry_id_proveedor.Text+"' ;";
 								//Console.WriteLine(comando2.CommandText.ToString());
 								NpgsqlDataReader lector2 = comando2.ExecuteReader ();
 								
@@ -1267,7 +1050,7 @@ namespace osiris
 											                    "fecha_asigno_hscmty = '"+DateTime.Now.ToString("yyyy-MM-dd")+"', "+
 												                "id_quien_asigno_hscmty = ' "+LoginEmpleado+" ' "+
 											                    "WHERE codigo_producto_proveedor = '"+(string) lista_precios_proveedor.Model.GetValue (iterSelected,3)+"' "+
-							             					    "AND id_proveedor = '"+this.entry_id_provedor.Text+"' ;";
+							             					    "AND id_proveedor = '"+this.entry_id_proveedor.Text+"' ;";
 										comando3.ExecuteNonQuery();
 										comando3.Dispose();
 										conexion3.Close();
@@ -1324,7 +1107,7 @@ namespace osiris
 											"VALUES ('"+
 									        DateTime.Now.ToString("yyyy-MM-dd")+"','"+
 									        LoginEmpleado+"','"+
-											this.entry_id_provedor.Text+"','"+//(int)this.lista_productos_agregados.Model.GetValue (iterSelected,1)+"','"+
+											this.entry_id_proveedor.Text+"','"+//(int)this.lista_productos_agregados.Model.GetValue (iterSelected,1)+"','"+
 											(string)this.lista_productos_agregados.Model.GetValue (iterSelected,8)+"','"+
 											(string)this.lista_productos_agregados.Model.GetValue (iterSelected,9)+"','"+
 									        (string)this.lista_productos_agregados.Model.GetValue (iterSelected,6)+"','"+
@@ -1353,7 +1136,7 @@ namespace osiris
 											    "VALUES ('"+
 										        DateTime.Now.ToString("yyyy-MM-dd")+"','"+
 									            LoginEmpleado+"','"+
-										        this.entry_id_provedor.Text+"','"+//(int)this.lista_productos_agregados.Model.GetValue (iterSelected,1)+"','"+
+										        this.entry_id_proveedor.Text+"','"+//(int)this.lista_productos_agregados.Model.GetValue (iterSelected,1)+"','"+
 											    (string)this.lista_productos_agregados.Model.GetValue (iterSelected,8)+"','"+
 									            (string)this.lista_productos_agregados.Model.GetValue (iterSelected,9)+"','"+
 											    (string)this.lista_productos_agregados.Model.GetValue (iterSelected,6)+"','"+
@@ -1394,8 +1177,8 @@ namespace osiris
 				entry_cod_barras.Text = "";
 				entry_clave.Text = "";
 			}else{
-				entry_id_provedor.Text = "";
-				entry_provedor.Text = "";
+				entry_id_proveedor.Text = "";
+				entry_nombre_proveedor.Text = "";
 				entry_producto.Text = "";
 				entry_precio.Text = "";
 				entry_embalaje.Text = "";
@@ -1419,8 +1202,8 @@ namespace osiris
 			entry_codigo.Sensitive = false;
 			entry_cod_barras.Sensitive = true;
 			this.entry_clave.Sensitive = true;
-			this.entry_id_provedor.Sensitive = false;
-			this.entry_provedor.Sensitive = false;
+			this.entry_id_proveedor.Sensitive = false;
+			this.entry_nombre_proveedor.Sensitive = false;
 			
 			TreeModel model;
 			TreeIter iter;
@@ -1450,7 +1233,7 @@ namespace osiris
                						"osiris_catalogo_productos_proveedores.tipo_unidad_producto "+
                						"FROM osiris_catalogo_productos_proveedores "+
                						"WHERE codigo_producto_proveedor = '"+codigo+"' "+
-               						"AND id_proveedor  = '"+this.entry_id_provedor.Text+"' ;"; 
+               						"AND id_proveedor  = '"+this.entry_id_proveedor.Text+"' ;"; 
                						
 				//Console.WriteLine(comando.CommandText);
 				

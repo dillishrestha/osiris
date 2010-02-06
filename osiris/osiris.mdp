@@ -69,21 +69,17 @@
     <File name="rpd_doc_pacientes.cs" subtype="Code" buildaction="Compile" />
     <File name="rpt_proc_cobranza.cs" subtype="Code" buildaction="Compile" />
     <File name="urgencia.cs" subtype="Code" buildaction="Compile" />
-    <File name="urgencia_cargos.cs" subtype="Code" buildaction="Compile" />
     <File name="historia_clinica.cs" subtype="Code" buildaction="Compile" />
     <File name="laboratorio_cargos.cs" subtype="Code" buildaction="Compile" />
     <File name="facturador.cs" subtype="Code" buildaction="Compile" />
     <File name="rpt_paciente_sin_alta.cs" subtype="Code" buildaction="Compile" />
-    <File name="hospitalizacion_cargos.cs" subtype="Code" buildaction="Compile" />
     <File name="hospitalizacion.cs" subtype="Code" buildaction="Compile" />
     <File name="solicitud_materiales_medicos.cs" subtype="Code" buildaction="Compile" />
     <File name="costeo.cs" subtype="Code" buildaction="Compile" />
     <File name="quirofano.cs" subtype="Code" buildaction="Compile" />
     <File name="calendario_quirofano.cs" subtype="Code" buildaction="Compile" />
-    <File name="quirofano_cargos.cs" subtype="Code" buildaction="Compile" />
     <File name="envio_de_facturas.cs" subtype="Code" buildaction="Compile" />
     <File name="endoscopia.cs" subtype="Code" buildaction="Compile" />
-    <File name="endoscopia_cargos.cs" subtype="Code" buildaction="Compile" />
     <File name="laboratorio.cs" subtype="Code" buildaction="Compile" />
     <File name="imagenologia.cs" subtype="Code" buildaction="Compile" />
     <File name="imagenologia_cargos.cs" subtype="Code" buildaction="Compile" />
@@ -103,6 +99,9 @@
     <File name="rpt_prot_admision.cs" subtype="Code" buildaction="Compile" />
     <File name="nutricion.cs" subtype="Code" buildaction="Compile" />
     <File name="rpt_compras_farmacia.cs" subtype="Code" buildaction="Compile" />
+    <File name="cagos_modulos_medicos.cs" subtype="Code" buildaction="Compile" />
+    <File name="class_buscador.cs" subtype="Code" buildaction="Compile" />
+    <File name="OSIRISLogo.jpg" subtype="Code" buildaction="Nothing" />
   </Contents>
   <References>
     <ProjectReference type="Gac" localcopy="True" refto="Mono.Cairo, Version=2.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756" />

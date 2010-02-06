@@ -142,7 +142,8 @@ namespace osiris
 		int id_tipopaciente;							// Toma el valor del tipo de paciente
 		int idempresa_paciente = 0;					// Toma el valor de la empresa que el hospital tiene convenio = 0;					// Toma el valor de la empresa que el hospital tiene convenio
 		int idtipointernamiento = 700;				// Toma el valor del tipo de internamiento
-		string descripinternamiento = "QUIROFANO";  	// Toma la descripcion del internamiento
+		string descripinternamiento = "QUIROFANO"; 	// Toma la descripcion del internamiento
+		int idsubalmacen = 5;   					// Sub-Almacen de Hospitalizacion
 		
 		string edadpac;
 		string fecha_nacimiento;
@@ -192,11 +193,7 @@ namespace osiris
 		float totaldescuento;
 		
 		bool aplico_cargos = false;
-		
-		int idsubalmacen = 5;   // Sub-Almacen de Hospitalizacion
-		
 		int idhabitacion = 0;						// Toma el id de la habitacion asignada  /*id habitacion*/
-		
 		
 		string LoginEmpleado;
 		string NomEmpleado;

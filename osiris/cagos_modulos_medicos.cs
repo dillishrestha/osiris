@@ -4,7 +4,7 @@
 // Monterrey - Mexico
 //
 // Autor    	: Ing. Juan Antonio Peña Gonzalez (Programacion)
-//				  Ing. Daniel Olivares (Preprogramacion)
+//				  Ing. Daniel Olivares (Preprogramacion y Ajustes de la nueva clase)
 // 				  
 // Licencia		: GLP
 //////////////////////////////////////////////////////////
@@ -24,9 +24,9 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 // 
 //////////////////////////////////////////////////////////
-// Programa		: cargos_hospitalizacion.cs
-// Proposito	: Pagos en Caja 
-// Objeto		: cargos_hospitalizacion.cs
+// Programa		: 
+// Proposito	: 
+// Objeto		: 
 //////////////////////////////////////////////////////////	
 using System;
 using Npgsql;
@@ -37,7 +37,7 @@ using System.Collections;
 
 namespace osiris
 {
-	public class cargos_urgencia
+	public class cargos_modulos_medicos
 	{
 		// Boton general para salir de las ventanas
 		// Todas la ventanas en glade este boton debe estra declarado identico
@@ -45,88 +45,87 @@ namespace osiris
 		
 		// Para todas las busquedas este es el nombre asignado
 		// se declara una vez
-		[Widget] Gtk.Entry entry_expresion;
-		[Widget] Gtk.Button button_selecciona;
-		[Widget] Gtk.Button button_buscar_busqueda;
+		[Widget] Gtk.Entry entry_expresion = null;
+		[Widget] Gtk.Button button_selecciona = null;
+		[Widget] Gtk.Button button_buscar_busqueda = null;
 		
 		// Declarando ventana principal de pago
-		[Widget] Gtk.Window cargos_hospital;
-		[Widget] Gtk.Entry entry_folio_servicio;
-		[Widget] Gtk.Entry entry_fecha_admision;
-		[Widget] Gtk.Entry entry_hora_registro;
-		[Widget] Gtk.Entry entry_fechahora_alta;
-		[Widget] Gtk.Entry entry_pid_paciente;
-		[Widget] Gtk.Entry entry_nombre_paciente;
-		[Widget] Gtk.Entry entry_telefono_paciente;
-		[Widget] Gtk.Entry entry_cirugia;
-		[Widget] Gtk.Entry entry_doctor;
-		[Widget] Gtk.Entry entry_especialidad;
-		[Widget] Gtk.Entry entry_tipo_paciente;
-		[Widget] Gtk.Entry entry_aseguradora;
-		[Widget] Gtk.Entry entry_poliza;
-		[Widget] Gtk.Entry entry_fecha_nacimiento;
-		[Widget] Gtk.Entry entry_edad;
-		[Widget] Gtk.Entry entry_descrip_cirugia;
-		[Widget] Gtk.Entry entry_id_habitacion;
+		[Widget] Gtk.Window cargos_hospital = null;
+		[Widget] Gtk.Entry entry_folio_servicio = null;
+		[Widget] Gtk.Entry entry_fecha_admision = null;
+		[Widget] Gtk.Entry entry_hora_registro = null;
+		[Widget] Gtk.Entry entry_fechahora_alta = null;
+		[Widget] Gtk.Entry entry_pid_paciente = null;
+		[Widget] Gtk.Entry entry_nombre_paciente = null;
+		[Widget] Gtk.Entry entry_telefono_paciente = null;
+		[Widget] Gtk.Entry entry_cirugia = null;
+		[Widget] Gtk.Entry entry_doctor = null;
+		[Widget] Gtk.Entry entry_especialidad = null;
+		[Widget] Gtk.Entry entry_tipo_paciente = null;
+		[Widget] Gtk.Entry entry_aseguradora = null;
+		[Widget] Gtk.Entry entry_poliza = null;
+		[Widget] Gtk.Entry entry_fecha_nacimiento = null;
+		[Widget] Gtk.Entry entry_edad = null;
+		[Widget] Gtk.Entry entry_descrip_cirugia = null;
+		[Widget] Gtk.Entry entry_id_habitacion = null;
 						
-		[Widget] Gtk.TreeView lista_de_servicios;
-		[Widget] Gtk.TreeView lista_cargos_extras;
+		[Widget] Gtk.TreeView lista_de_servicios = null;
+		[Widget] Gtk.TreeView lista_cargos_extras = null;
 		//[Widget] Gtk.ProgressBar progressbar_status_llenado;
-		[Widget] Gtk.Button button_quitar_aplicados;
-		[Widget] Gtk.Button button_actualizar;
-		[Widget] Gtk.Button button_buscar_paciente;
-		[Widget] Gtk.Button button_selec_folio;
-		[Widget] Gtk.Button button_graba_pago;
-		[Widget] Gtk.Entry entry_desc_producto;
-		[Widget] Gtk.Button button_busca_producto;
-		[Widget] Gtk.Button button_removerItem;
-		[Widget] Gtk.Button button_aplica_cargos;
-		[Widget] Gtk.Button button_alta_paciente;
-		[Widget] Gtk.Button button_hoja_cargos;
-		[Widget] Gtk.Button button_notas_de_cargos;
-		[Widget] Gtk.Button button_resultados_lab;
-		[Widget] Gtk.Button button_asignacion_habitacion;
-		[Widget] Gtk.Button button_historiaclinica;	
+		[Widget] Gtk.Button button_quitar_aplicados = null;
+		[Widget] Gtk.Button button_actualizar = null;
+		[Widget] Gtk.Button button_buscar_paciente = null;
+		[Widget] Gtk.Button button_selec_folio = null;
+		[Widget] Gtk.Button button_graba_pago = null;
+		[Widget] Gtk.Entry entry_desc_producto = null;
+		[Widget] Gtk.Button button_busca_producto = null;
+		[Widget] Gtk.Button button_removerItem = null;
+		[Widget] Gtk.Button button_aplica_cargos = null;
+		[Widget] Gtk.Button button_alta_paciente = null;
+		[Widget] Gtk.Button button_hoja_cargos = null;
+		[Widget] Gtk.Button button_notas_de_cargos = null;
+		[Widget] Gtk.Button button_resultados_lab = null;
+		[Widget] Gtk.Button button_asignacion_habitacion = null;
+		[Widget] Gtk.Button button_historiaclinica = null;
 		
 		//Declarando la barra de estado
-		[Widget] Gtk.Statusbar statusbar_caja;
+		[Widget] Gtk.Statusbar statusbar_caja = null;
 		
 		/////// Ventana Busqueda de paciente\\\\\\\\
-		[Widget] Gtk.TreeView lista_de_Pacientes;
-		[Widget] Gtk.Button button_nuevo_paciente;
-		[Widget] Gtk.RadioButton radiobutton_busca_apellido;
-		[Widget] Gtk.RadioButton radiobutton_busca_nombre;
-		[Widget] Gtk.RadioButton radiobutton_busca_expediente;
+		[Widget] Gtk.TreeView lista_de_Pacientes = null;
+		[Widget] Gtk.Button button_nuevo_paciente = null;
+		[Widget] Gtk.RadioButton radiobutton_busca_apellido = null;
+		[Widget] Gtk.RadioButton radiobutton_busca_nombre = null;
+		[Widget] Gtk.RadioButton radiobutton_busca_expediente = null;
 		
 		/////// Ventana Busqueda de productos\\\\\\\\
-		[Widget] Gtk.TreeView lista_de_producto;
+		[Widget] Gtk.TreeView lista_de_producto = null;
 		//[Widget] Gtk.Button button_agrega_extra;
-		[Widget] Gtk.Entry entry_cantidad_aplicada;
+		[Widget] Gtk.Entry entry_cantidad_aplicada = null;
 		
 		/////// Ventana Busqueda de productos\\\\\\\\
-		[Widget] Gtk.Window causa_egreso;
-		[Widget] Gtk.RadioButton radiobutton_mejoria;
-		[Widget] Gtk.RadioButton radiobutton_evolucion;
-		[Widget] Gtk.RadioButton radiobutton_traslado;
-		[Widget] Gtk.RadioButton radiobutton_voluntaria;
-		[Widget] Gtk.RadioButton radiobutton_no_mejoria;
-		[Widget] Gtk.RadioButton radiobutton_defuncion;
-		[Widget] Gtk.Button button_acepta_alta;
-		[Widget] Gtk.Entry entry_observacion_egreso;
+		[Widget] Gtk.Window causa_egreso = null;
+		[Widget] Gtk.RadioButton radiobutton_mejoria = null;
+		[Widget] Gtk.RadioButton radiobutton_evolucion = null;
+		[Widget] Gtk.RadioButton radiobutton_traslado = null;
+		[Widget] Gtk.RadioButton radiobutton_voluntaria = null;
+		[Widget] Gtk.RadioButton radiobutton_no_mejoria = null;
+		[Widget] Gtk.RadioButton radiobutton_defuncion = null;
+		[Widget] Gtk.Button button_acepta_alta = null;
+		[Widget] Gtk.Entry entry_observacion_egreso = null;
 		
 		//// Ventana de Rango de Fecha
-		[Widget] Gtk.Window rango_de_fecha;
-		[Widget] Gtk.Entry entry_dia1;
-		[Widget] Gtk.Entry entry_dia2;
-		[Widget] Gtk.Entry entry_mes1;
-		[Widget] Gtk.Entry entry_mes2;
-		[Widget] Gtk.Entry entry_ano1;
-		[Widget] Gtk.Entry entry_ano2;
-		[Widget] Gtk.Entry entry_referencia_inicial;
-		[Widget] Gtk.Button button_imprime_rangofecha;
-		[Widget] Gtk.CheckButton checkbutton_impr_todo_proce;
-		
-								
+		[Widget] Gtk.Window rango_de_fecha = null;
+		[Widget] Gtk.Entry entry_dia1 = null;
+		[Widget] Gtk.Entry entry_dia2 = null;
+		[Widget] Gtk.Entry entry_mes1 = null;
+		[Widget] Gtk.Entry entry_mes2 = null;
+		[Widget] Gtk.Entry entry_ano1 = null;
+		[Widget] Gtk.Entry entry_ano2 = null;
+		[Widget] Gtk.Entry entry_referencia_inicial = null;
+		[Widget] Gtk.Button button_imprime_rangofecha = null;
+		[Widget] Gtk.CheckButton checkbutton_impr_todo_proce = null;
+										
 		TreeStore treeViewEngineBusca;
 		TreeStore treeViewEngineBusca2;
 		TreeStore treeViewEngineServicio;
@@ -140,8 +139,11 @@ namespace osiris
 		int PidPaciente = 0;							// Toma la actualizacion del pid del paciente
 		int id_tipopaciente;							// Toma el valor del tipo de paciente
 		int idempresa_paciente = 0;					// Toma el valor de la empresa que el hospital tiene convenio = 0;					// Toma el valor de la empresa que el hospital tiene convenio
-		int idtipointernamiento = 100;				// Toma el valor del tipo de internamiento
-		string descripinternamiento = "URGENCIAS";  	// Toma la descripcion del internamiento
+		
+		int idtipointernamiento;				// Toma el valor del tipo de internamiento
+		string descripinternamiento;			// Toma la descripcion del internamiento
+		int idsubalmacen;   					// Toma el valor del Sub-Almacen
+		
 		string edadpac;
 		string fecha_nacimiento;
 		string dir_pac;
@@ -184,15 +186,13 @@ namespace osiris
 		string fecha_rango_2;
 		
 		// Sumas Totales para los calculos
-		float subtotal_al_15;
+		float subtotal_al_IVA;
 		float subtotal_al_0;
 		float total_iva;
 		float sub_total;
 		float totaldescuento;
 		
 		bool aplico_cargos = false;
-		
-		int idsubalmacen = 4;   // Sub-Almacen de URGENCIAS
 		
 		string LoginEmpleado;
 		string NomEmpleado;
@@ -217,14 +217,35 @@ namespace osiris
 		
 		class_conexion conexion_a_DB = new class_conexion();
 		class_public classpublic = new class_public();
+		
+		//int idtipointernamiento = 100;
+		//string descripinternamiento = "URGENCIAS";
+		//int idsubalmacen = 4;
+		
+		//int idtipointernamiento = 500;
+		//string descripinternamiento = "HOSPITALIZACION";
+		//int idsubalmacen = 3;
+		
+		//int idtipointernamiento = 700;
+		//string descripinternamiento = "QUIROFANO";
+		//int idsubalmacen = 5;
+		
+		//int idtipointernamiento = 710;
+		//string descripinternamiento = "ENDOSCOPIA";
+		//int idsubalmacen = 10;
 				
-		public cargos_urgencia(string LoginEmp, string NomEmpleado_, string AppEmpleado_, string ApmEmpleado_, string nombrebd_ ) 
+		public cargos_modulos_medicos(string LoginEmp, string NomEmpleado_, string AppEmpleado_, string ApmEmpleado_,
+		                       int idtipointernamiento_,string descripinternamiento_,int idsubalmacen_,string validacion_sql) 
 		{
 			LoginEmpleado = LoginEmp;
 			NomEmpleado = NomEmpleado_;
 			AppEmpleado = AppEmpleado_;
 			ApmEmpleado = ApmEmpleado_;
 			NomEmpleados = NomEmpleado+" "+AppEmpleado+" "+ApmEmpleado;
+			idtipointernamiento = idtipointernamiento_;
+			descripinternamiento = descripinternamiento_;
+			idsubalmacen = idsubalmacen_;
+			
 			connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
 			nombrebd = conexion_a_DB._nombrebd;
 			valoriva = float.Parse(classpublic.ivaparaaplicar);
@@ -1088,7 +1109,7 @@ namespace osiris
  						toma_valor3 = (string) lista_cargos_extras.Model.GetValue (iter,12);  // toma el descuento
  						 					
  						if ((float) float.Parse(toma_valor2) > 0){
- 							subtotal_al_15 = subtotal_al_15 + float.Parse(toma_valor1);
+ 							subtotal_al_IVA = subtotal_al_IVA + float.Parse(toma_valor1);
  						}else{
  					 		subtotal_al_0 = subtotal_al_0 + float.Parse(toma_valor1);
  						}
@@ -1143,7 +1164,7 @@ namespace osiris
  							
  							if ((float) float.Parse(toma_valor2) > 0)
  							{
- 								subtotal_al_15 = subtotal_al_15 + float.Parse(toma_valor1);
+ 								subtotal_al_IVA = subtotal_al_IVA + float.Parse(toma_valor1);
  							}else{
  					 			subtotal_al_0 = subtotal_al_0 + float.Parse(toma_valor1);
  							}
@@ -1189,7 +1210,7 @@ namespace osiris
 				}
 							
 				// Realizando las restas
-				sub_total = subtotal_al_15 + subtotal_al_0+total_iva;
+				sub_total = subtotal_al_IVA + subtotal_al_0+total_iva;
 				//toma_a_pagar = sub_total - totaldescuento;
 			}
  		}
@@ -1216,13 +1237,13 @@ namespace osiris
  					treeViewEngineServicio.Remove (ref iter);
  				 					
  					if ((float) float.Parse(toma_valor2) > 0){
- 						subtotal_al_15 = subtotal_al_15 - float.Parse(toma_valor1);
+ 						subtotal_al_IVA = subtotal_al_IVA - float.Parse(toma_valor1);
  					}else{
  						subtotal_al_0 = subtotal_al_0 - float.Parse(toma_valor1);
  					}
  					total_iva = total_iva - float.Parse(toma_valor2);
 				
-					sub_total = subtotal_al_15 + subtotal_al_0 + total_iva;
+					sub_total = subtotal_al_IVA + subtotal_al_0 + total_iva;
 					totaldescuento -= (float.Parse(toma_valor3) + ((float.Parse(toma_valor3) * valoriva)/100));
 					//toma_a_pagar = sub_total - totaldescuento;
 					
@@ -1346,7 +1367,7 @@ namespace osiris
 		// Aqui lleno el detalle de los servicios que se va aplicar para su cobro
 		void llenado_de_productos_aplicados(string foliodeserv)
 		{
-			subtotal_al_15 = 0;
+			subtotal_al_IVA = 0;
 			subtotal_al_0 = 0;
 			total_iva = 0;
 			totaldescuento = 0;
@@ -1586,7 +1607,7 @@ namespace osiris
 		void llenado_de_material_aplicado(string foliodeserv)
 		{	
 			// Limpiando Varibles a valor 0
-			subtotal_al_15 = 0;
+			subtotal_al_IVA = 0;
 			subtotal_al_0 = 0;
 			total_iva = 0;
 			sub_total = 0;
@@ -1656,7 +1677,7 @@ namespace osiris
 						}
 					
 						if (float.Parse((string) lector["ivaproducto"]) > 0){
- 							subtotal_al_15 = subtotal_al_15 + float.Parse((string) lector["ppcantidad_"]);
+ 							subtotal_al_IVA = subtotal_al_IVA + float.Parse((string) lector["ppcantidad_"]);
  						}else{
  					 		subtotal_al_0 = subtotal_al_0 + float.Parse((string) lector["ppcantidad_"]);
  						}
@@ -1716,7 +1737,7 @@ namespace osiris
 					totaldescuento = 0;
 				}
 				// Realizando las restas 
-				sub_total = subtotal_al_15 + subtotal_al_0+total_iva;
+				sub_total = subtotal_al_IVA + subtotal_al_0+total_iva;
 				//toma_a_pagar = sub_total - totaldescuento;
 									
 			}catch (NpgsqlException ex){

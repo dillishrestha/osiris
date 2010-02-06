@@ -2283,10 +2283,7 @@ namespace osiris
 		
 		public string LoginEmpleado;
 		public string NomEmpleados;
-		public string connectionString = "Server=localhost;" +
-						"Port=5432;" +
-						 "User ID=admin;" +
-						"Password=1qaz2wsx;";
+		public string connectionString;
 		public string nombrebd;
 		
 		public int folioservicio = 0;							// Toma el valor de numero de atencion de paciente
@@ -2322,6 +2319,8 @@ namespace osiris
 		//Declaracion de ventana de error
 		protected Gtk.Window MyWinError;
 		protected Gtk.Window MyWin;
+		
+		class_conexion conexion_a_DB = new class_conexion();
 			
 		public resultados_lab(bool _resultados_editables_,string _LoginEmpleado_,string _NomEmpleados_,string _id_produ_,
 							string _idsecuencia_,string _nombrebd_,string _dir_pac_,string _edadpac_,string _empresapac_,
@@ -2336,7 +2335,6 @@ namespace osiris
 			NomEmpleados = _NomEmpleados_;
 			id_produ = _id_produ_;
 			idsecuencia = _idsecuencia_;
-			nombrebd = _nombrebd_;
 			dir_pac = _dir_pac_; 
 			edadpac = _edadpac_;
 			empresapac = _empresapac_;
@@ -2351,6 +2349,8 @@ namespace osiris
 			procedencia = _procedencia_;
 			medicotratante = _medicotratante_;
 			nombre_estudio = _nombre_estudio_;
+			connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
+			nombrebd = conexion_a_DB._nombrebd;
 			///////////////////ventana de resultados de examenes/////////////////
 			
 			//valores y subprogramas de la ventana

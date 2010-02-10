@@ -227,7 +227,7 @@ namespace osiris
 												LoginEmpleado+"','"+
 												idempleado+"','"+
  												DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+ "');";
- 						Console.WriteLine(comando.CommandText.ToString());						
+ 						//Console.WriteLine(comando.CommandText.ToString());						
 		 				comando.ExecuteNonQuery();
 						pantalla_principal();
 					}else{
@@ -255,8 +255,8 @@ namespace osiris
 		{
 			Glade.XML gxml = new Glade.XML (null, "osiris.glade", "menuprincipal", null);
 			gxml.Autoconnect (this);				 			
-			hscmtylogo.Pixbuf = new Gdk.Pixbuf(System.IO.Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory,"OSIRISLogo.jpg"));   //en windows
-			//hscmtylogo.Pixbuf = new Gdk.Pixbuf("OSIRISLogo.jpg");   // en Linux
+			//hscmtylogo.Pixbuf = new Gdk.Pixbuf(System.IO.Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory,"OSIRISLogo.jpg"));   //en windows
+			hscmtylogo.Pixbuf = new Gdk.Pixbuf("OSIRISLogo.jpg");   // en Linux
 			menuprincipal.Show();
 					 					 											
 			verificapermisos(accesoHIS,accesoERP,accesoGENERAL,autorizaHIS,autorizaERP,autorizaGENERAL);

@@ -201,8 +201,7 @@ namespace osiris
 			fecha_admision = fecha_admision_;
 			fecha_nacimiento = fecha_nacimiento_;
 			connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
-			nombrebd = conexion_a_DB._nombrebd; 
-			
+			nombrebd = conexion_a_DB._nombrebd; 			
 			
             Glade.XML gxml = new Glade.XML (null, "urgencia.glade", "historia_clinica_del_paciente", null);
 			gxml.Autoconnect (this);

@@ -541,7 +541,7 @@ namespace osiris
 										ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
 						msgBoxError.Run ();						msgBoxError.Destroy();
 					}
-			 		conexion.Close();
+			 		conexion.Close();					
 			 	}else{
 			 		MessageDialog msgBox1 = new MessageDialog (MyWin,DialogFlags.Modal,
 									MessageType.Error,ButtonsType.Ok,"NO esta autorizado para esta opcion...");
@@ -581,10 +581,10 @@ namespace osiris
 					this.button_envio_compras.Sensitive = false;
 					this.button_enviopara_autorizar.Sensitive = false;
 					
-					if((string) LoginEmpleado == "DOLIVARES" || (string) LoginEmpleado == "HVARGAS" || (string) LoginEmpleado == "JBUENTELLO" ||
-									(string) LoginEmpleado == "N000008" || (string) LoginEmpleado == "N000277" ){
+					if((string) LoginEmpleado == "DOLIVARES"){
 						this.button_autorizar_compra.Sensitive = true;
 					}							
+					llenado_de_requisicion();					
 				}catch (NpgsqlException ex){
 					MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
 									MessageType.Error, 
@@ -707,23 +707,24 @@ namespace osiris
 								
 							this.entry_status_requisicion.Text = "ENVIADA A COMPRAS "+(string) lector["fechahoraenviocompras"];
 																					
-							enviadacompras = true;							
-							MessageDialog msgBox1 = new MessageDialog (MyWin,DialogFlags.Modal,
-									MessageType.Info,ButtonsType.Ok,"La requisicion se envio a Compras con fecha "+(string) lector["fechahoraenviocompras"]);
-							msgBox1.Run ();		msgBox1.Destroy();
-							
+							enviadacompras = true;														
 							if ((bool) lector["autorizacion_para_comprar"] == false){
+								MessageDialog msgBox1 = new MessageDialog (MyWin,DialogFlags.Modal,
+								MessageType.Info,ButtonsType.Ok,"Envie su Autorizacion para Generar ORDEN DE COMPRA "+(string) lector["fechahoraenviocompras"]);
+								msgBox1.Run ();		msgBox1.Destroy();
 								//Console.WriteLine("envio para autorizar");
-								if((string) LoginEmpleado == "DOLIVARES" || (string) LoginEmpleado == "HVARGAS" || (string) LoginEmpleado == "JBUENTELLO" ||
-									(string) LoginEmpleado == "N000008" || (string) LoginEmpleado == "N000277" ){
+								if((string) LoginEmpleado == "DOLIVARES"){
 									
 									this.button_autorizar_compra.Sensitive = false;
 									this.button_enviopara_autorizar.Sensitive = true;									
 								}							
 							}else{
-								if((string) LoginEmpleado == "DOLIVARES" || (string) LoginEmpleado == "HVARGAS" || (string) LoginEmpleado == "JBUENTELLO" ||
-										(string) LoginEmpleado == "N000008" || (string) LoginEmpleado == "N000277" ){
-									this.button_autorizar_compra.Sensitive = true;
+								MessageDialog msgBox1 = new MessageDialog (MyWin,DialogFlags.Modal,
+								MessageType.Info,ButtonsType.Ok,"Requisicion Autorizada para Generar la ORDEN DE COMPRA");
+								msgBox1.Run ();		msgBox1.Destroy();
+								this.entry_status_requisicion.Text = "AUTORIZADA PARA GENERAR ORDEN ED COMPRA";
+								if((string) LoginEmpleado == "DOLIVARES"){
+									this.button_autorizar_compra.Sensitive = false;
 									//Console.WriteLine("autoriza la compra");
 								}
 							}							
@@ -860,13 +861,11 @@ namespace osiris
 								msgBox1.Run ();		msgBox1.Destroy();
 								
 								if ((bool) lector["autorizacion_para_comprar"] == false){
-									if((string) LoginEmpleado == "DOLIVARES" || (string) LoginEmpleado == "HVARGAS" || (string) LoginEmpleado == "JBUENTELLO" ||
-										(string) LoginEmpleado == "N000008" || (string) LoginEmpleado == "N000277" ){
+									if((string) LoginEmpleado == "DOLIVARES"){
 										this.button_enviopara_autorizar.Sensitive = true;									
 									}
 								}else{
-									if((string) LoginEmpleado == "DOLIVARES" || (string) LoginEmpleado == "HVARGAS" || (string) LoginEmpleado == "JBUENTELLO" ||
-										(string) LoginEmpleado == "N000008" || (string) LoginEmpleado == "N000277" ){
+									if((string) LoginEmpleado == "DOLIVARES"){
 										this.button_autorizar_compra.Sensitive = true;		
 									}
 								}

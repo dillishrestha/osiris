@@ -1,19 +1,20 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workbench ActiveDocument="osiris/osiris.cs" ctype="Workbench">
+  <MonoDevelop.Ide.Workbench ActiveDocument="osiris\osiris.cs" ctype="Workbench">
     <Files>
-      <File FileName="osiris/rpt_proc_cobranza.cs" Line="851" Column="112" />
-      <File FileName="osiris/osiris.cs" Line="282" Column="10" />
+      <File FileName="osiris\historia_clinica.cs" Line="204" Column="40" />
+      <File FileName="osiris\osiris.cs" Line="174" Column="60" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
         <State expanded="True">
           <Node name="osiris" expanded="True">
+            <Node name="References" expanded="True" />
             <Node name="osiris.cs" selected="True" />
           </Node>
         </State>
       </Pad>
       <Pad Id="ClassPad">
-        <State expanded="True" selected="True" />
+        <State selected="True" />
       </Pad>
     </Pads>
   </MonoDevelop.Ide.Workbench>

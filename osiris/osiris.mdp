@@ -64,7 +64,6 @@
     <File name="cargos_extras.cs" subtype="Code" buildaction="Compile" />
     <File name="abonos.cs" subtype="Code" buildaction="Compile" />
     <File name="costos_consultas.cs" subtype="Code" buildaction="Compile" />
-    <File name="nuevos_productos.cs" subtype="Code" buildaction="Compile" />
     <File name="catalogo_productos.cs" subtype="Code" buildaction="Compile" />
     <File name="rpd_doc_pacientes.cs" subtype="Code" buildaction="Compile" />
     <File name="rpt_proc_cobranza.cs" subtype="Code" buildaction="Compile" />

@@ -54,7 +54,7 @@ namespace osiris
 		[Widget] Gtk.Button button_orden_compra;
 		[Widget] Gtk.Entry entry_id_proveedor;
 		[Widget] Gtk.Entry entry_nombre_proveedor;
-		[Widget] Gtk.Entry entry_pago;	
+		[Widget] Gtk.Entry entry_formapago;	
 		[Widget] Gtk.Entry entry_dia;
 		[Widget] Gtk.Entry entry_mes;
 		[Widget] Gtk.Entry entry_ano;
@@ -105,7 +105,7 @@ namespace osiris
 			gxml.Autoconnect (this);
 			////// Muestra ventana de Glade
 			crea_ordenes_compras.Show();
-			this.entry_pago.Text = "30 DIAS";
+			//this.entry_formapago.Text = "30 DIAS";
 			this.entry_dia.Text = DateTime.Now.ToString("dd");
 			this.entry_mes.Text = DateTime.Now.ToString("MM");
 			this.entry_ano.Text = DateTime.Now.ToString("yyyy");
@@ -138,10 +138,6 @@ namespace osiris
 			TreeIter iter;
 									
 			if (this.treeViewEngineProductosaComprar.GetIterFirst(out iterSelected)){
-				
-			}
-			
-			while (this.treeViewEngineProductosaComprar.IterNext(ref iterSelected)){							
 				if ((bool)this.lista_productos_a_comprar.Model.GetValue (iterSelected,0) == true){
 					if (variable_paso_01 == true){
 						NpgsqlConnection conexion1;
@@ -178,7 +174,7 @@ namespace osiris
 			 										LoginEmpleado+"','"+//id_empleado
 			 										"HOSPITAL"+"','"+
 			 										"SU CONDUCTO"+"','"+
-			 										this.entry_pago.Text+"','"+
+			 										this.entry_formapago.Text+"','"+
 	 												(string)lista_productos_a_comprar.Model.GetValue(iterSelected,12)+"','"+
 	 												(string)lista_productos_a_comprar.Model.GetValue(iterSelected,2)+"','"+
 	 												(string)lista_productos_a_comprar.Model.GetValue(iterSelected,16)+"','"+
@@ -191,8 +187,7 @@ namespace osiris
 	 												this.ultimaorden.ToString()+
 
 	 												"');";
-							Console.WriteLine(comando.CommandText);
-							
+							//Console.WriteLine(comando.CommandText);							
 							comando.ExecuteNonQuery(); 	    comando.Dispose();
 							variable_paso_01 = false;
 							
@@ -236,6 +231,104 @@ namespace osiris
 						}
 						conexion3.Close();
 					}					
+				}	
+			}
+			
+			while (this.treeViewEngineProductosaComprar.IterNext(ref iterSelected)){							
+				if ((bool)this.lista_productos_a_comprar.Model.GetValue (iterSelected,0) == true){
+					if (variable_paso_01 == true){
+						NpgsqlConnection conexion1;
+						conexion1 = new NpgsqlConnection (connectionString+nombrebd );
+						// Verifica que la base de datos este conectada
+						try{
+							conexion1.Open ();
+							NpgsqlCommand comando; 
+							comando = conexion1.CreateCommand ();
+							
+							comando.CommandText = "INSERT INTO osiris_erp_ordenes_compras_enca ("+
+													"id_proveedor,"+
+	 												"fechahora_creacion,"+
+	 												"fecha_solicitud,"+
+	 												"fecha_de_entrega,"+
+	 												"id_quien_creo,"+
+	 												"lugar_de_entrega,"+
+	 												"embarque,"+
+	 												"condiciones_de_pago,"+
+	 												"descripcion_proveedor,"+
+	 												"numero_requisiciones,"+
+	 												"direccion_proveedor,"+
+	 												"telefonos_proveedor,"+
+	 												"contacto_proveedor,"+
+	 												"correo_electronico,"+
+	 												"rfc_proveedor,"+
+	 												"faxnextel_proveedor,"+
+	 												"numero_orden_compra) "+
+	 												"VALUES ('"+
+	 												int.Parse((string) this.lista_productos_a_comprar.Model.GetValue(iterSelected,15))+"','"+//id_prod
+			 										DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"','"+//fechahora_creacion
+			 										DateTime.Now.ToString("yyyy-MM-dd")+"','"+//fechahora_solicitud
+			 										this.entry_ano.Text+"-"+this.entry_mes.Text+"-"+this.entry_dia.Text+"','"+
+			 										LoginEmpleado+"','"+//id_empleado
+			 										"HOSPITAL"+"','"+
+			 										"SU CONDUCTO"+"','"+
+			 										this.entry_formapago.Text+"','"+
+	 												(string)lista_productos_a_comprar.Model.GetValue(iterSelected,12)+"','"+
+	 												(string)lista_productos_a_comprar.Model.GetValue(iterSelected,2)+"','"+
+	 												(string)lista_productos_a_comprar.Model.GetValue(iterSelected,16)+"','"+
+	 												(string)lista_productos_a_comprar.Model.GetValue(iterSelected,17)+"','"+
+	 												(string)lista_productos_a_comprar.Model.GetValue(iterSelected,18)+"','"+
+	 												(string)lista_productos_a_comprar.Model.GetValue(iterSelected,19)+"','"+
+	 												(string)lista_productos_a_comprar.Model.GetValue(iterSelected,20)+"','"+
+	 												(string)lista_productos_a_comprar.Model.GetValue(iterSelected,21)+"','"+
+	 													 												
+	 												this.ultimaorden.ToString()+
+
+	 												"');";
+							//Console.WriteLine(comando.CommandText);							
+							comando.ExecuteNonQuery(); 	    comando.Dispose();
+							variable_paso_01 = false;
+							
+						}catch (NpgsqlException ex){
+							MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+																MessageType.Error, 
+																ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
+							msgBoxError.Run ();
+						}
+					}	
+					
+					if(variable_paso_01 == false){
+						// Validando que seleccione un proveedor
+						if (this.entry_id_proveedor.Text.Trim() == ""){
+								variable_paso_02 = (string) this.lista_productos_a_comprar.Model.GetValue (iterSelected,15);
+						}else{
+								variable_paso_02 = this.entry_id_proveedor.Text;
+						}
+						
+						NpgsqlConnection conexion3; 
+						conexion3 = new NpgsqlConnection (connectionString+nombrebd);
+						try{
+							conexion3.Open ();
+							NpgsqlCommand comando3; 
+							comando3 = conexion3.CreateCommand();
+							comando3.CommandText =  "UPDATE osiris_erp_requisicion_deta SET id_quien_compro = ' "+LoginEmpleado+"', "+
+											    "fechahora_compra = '"+DateTime.Now.ToString("dd-MM-yyyy")+"', "+
+											    "comprado = 'true', "+
+											    "id_proveedor = '"+variable_paso_02+"', "+
+											    "numero_orden_compra = '"+this.ultimaorden.ToString()+"' "+
+												//"cantidad_comprada = '"+
+							                    "WHERE id_requisicion ='"+(string) this.lista_productos_a_comprar.Model.GetValue (iterSelected,2)+"' "+
+							                    "AND id_producto ='"+(string) this.lista_productos_a_comprar.Model.GetValue (iterSelected,6)+"' ;"; 
+							    
+							comando3.ExecuteNonQuery();
+							comando3.Dispose();																	
+						}catch (NpgsqlException ex){
+							MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+						                                               MessageType.Error, 
+						                                               ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
+							msgBoxError.Run ();
+						}
+						conexion3.Close();
+					}					
 				}
 			}
 			
@@ -265,7 +358,6 @@ namespace osiris
 		
 		void on_button_asignar_proveedor_clicked (object sender, EventArgs args)
 		{
-
 			TreeIter iter;
 			if (this.treeViewEngineProductosaComprar.GetIterFirst (out iter)){
 				// buscar el producto en el catalogo del proveedor
@@ -291,7 +383,7 @@ namespace osiris
                								"WHERE osiris_catalogo_productos_proveedores.id_producto = '"+(string) this.lista_productos_a_comprar.Model.GetValue (iter,6)+"' "+
                								"AND osiris_catalogo_productos_proveedores.id_proveedor = '"+(string) this.entry_id_proveedor.Text+"' "+
                								"AND osiris_catalogo_productos_proveedores.id_proveedor = osiris_erp_proveedores.id_proveedor;";
-               			Console.WriteLine(comando.CommandText);
+               			//Console.WriteLine(comando.CommandText);
 						NpgsqlDataReader lector = comando.ExecuteReader ();
 						
                			if (lector.Read()){
@@ -332,7 +424,7 @@ namespace osiris
                								"WHERE osiris_catalogo_productos_proveedores.id_producto = '"+(string) this.lista_productos_a_comprar.Model.GetValue (iter,6)+"' "+
                								"AND osiris_catalogo_productos_proveedores.id_proveedor = '"+(string) this.entry_id_proveedor.Text+"' "+
                								"AND osiris_catalogo_productos_proveedores.id_proveedor = osiris_erp_proveedores.id_proveedor;";
-							Console.WriteLine(comando.CommandText);
+							//Console.WriteLine(comando.CommandText);
 							NpgsqlDataReader lector = comando.ExecuteReader ();						
                				if (lector.Read()){					
 								this.lista_productos_a_comprar.Model.SetValue(iter,0,true);
@@ -665,19 +757,19 @@ namespace osiris
 			// Los parametros de del SQL siempre es primero cuando busca todo y la otra por expresion
 			// la clase recibe tambien el orden del query
 			// es importante definir que tipo de busqueda es para que los objetos caigan ahi mismo
-			object[] parametros_objetos = {entry_id_proveedor,entry_nombre_proveedor};
+			object[] parametros_objetos = {entry_id_proveedor,entry_nombre_proveedor,entry_formapago};
 			string[] parametros_sql = {"SELECT descripcion_proveedor,direccion_proveedor,rfc_proveedor,curp_proveedor, "+
 								"colonia_proveedor,municipio_proveedor,estado_proveedor,telefono1_proveedor, "+ 
 								"telefono2_proveedor,celular_proveedor,rfc_proveedor, proveedor_activo, "+
 								"id_proveedor,contacto1_proveedor,mail_proveedor,pagina_web_proveedor,"+
-								"osiris_erp_proveedores.id_forma_de_pago, fax_proveedor "+
+								"osiris_erp_proveedores.id_forma_de_pago,descripcion_forma_de_pago,fax_proveedor "+
 								"FROM osiris_erp_proveedores, osiris_erp_forma_de_pago "+
 								"WHERE osiris_erp_proveedores.id_forma_de_pago = osiris_erp_forma_de_pago.id_forma_de_pago ",				
 								"SELECT descripcion_proveedor,direccion_proveedor,rfc_proveedor,curp_proveedor, "+
 								"colonia_proveedor,municipio_proveedor,estado_proveedor,telefono1_proveedor, "+ 
 								"telefono2_proveedor,celular_proveedor,rfc_proveedor, proveedor_activo, "+
 								"id_proveedor,contacto1_proveedor,mail_proveedor,pagina_web_proveedor, "+
-								"osiris_erp_proveedores.id_forma_de_pago, fax_proveedor "+
+								"osiris_erp_proveedores.id_forma_de_pago,descripcion_forma_de_pago,fax_proveedor "+
 								"FROM osiris_erp_proveedores, osiris_erp_forma_de_pago "+
 								"WHERE osiris_erp_proveedores.id_forma_de_pago = osiris_erp_forma_de_pago.id_forma_de_pago "+
 								"AND descripcion_proveedor LIKE '%"};			

@@ -43,11 +43,12 @@ namespace osiris
 		[Widget] Gtk.Button button_salir;
 		
 		// Declarando ventana del menu de costos
-		[Widget] Gtk.Window menu_compras;
-		[Widget] Gtk.Button button_requisicion_materiales;
-		[Widget] Gtk.Button button_catalogo_proveedores;
-		[Widget] Gtk.Button button_alta_productos_de_proveedores;
-		[Widget] Gtk.Button button_ordenes_compra;		
+		[Widget] Gtk.Window menu_compras = null;
+		[Widget] Gtk.Button button_requisicion_materiales = null;
+		[Widget] Gtk.Button button_catalogo_proveedores = null;
+		[Widget] Gtk.Button button_alta_productos_de_proveedores = null;
+		[Widget] Gtk.Button button_ordenes_compra = null;
+		[Widget] Gtk.Button button_ver_ordencompra = null;
 				
 		string LoginEmpleado;
     	string NomEmpleado;
@@ -85,14 +86,21 @@ namespace osiris
 			button_catalogo_proveedores.Clicked += new EventHandler(on_button_catalogo_proveedores_clicked);
 			//Catalogo de Productos de Proveedores
 			button_alta_productos_de_proveedores.Clicked += new EventHandler(on_button_alta_productos_de_proveedores_clicked);
+			// Ver ordenes de Compras Realizadas
+			button_ver_ordencompra.Clicked += new EventHandler(on_button_ver_ordencompra_clicked);
 			// Sale de la ventana
-			button_salir.Clicked += new EventHandler(on_cierraventanas_clicked);			
+			button_salir.Clicked += new EventHandler(on_cierraventanas_clicked);
 		}
 		
 		void on_button_ordenes_compra_clicked(object sender, EventArgs args)
 		{
 			// ordenes_de_compras.cs
 			new osiris.crea_ordenes_de_compra(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
+		}
+		
+		void on_button_ver_ordencompra_clicked(object sender, EventArgs args)
+		{
+			//new osiris.crea_ordenes_de_compra(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd); 
 		}
 		
 		void on_button_catalogo_proveedores_clicked(object sender, EventArgs args)

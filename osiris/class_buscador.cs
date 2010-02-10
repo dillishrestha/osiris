@@ -105,6 +105,7 @@ namespace osiris
 		// Busqueda de Proveedores
 		Gtk.Entry entry_id_proveedor = null;
 		Gtk.Entry entry_nombre_proveedor = null;
+		Gtk.Entry entry_formapago = null;
 		
 		class_conexion conexion_a_DB = new class_conexion();
 		
@@ -196,6 +197,7 @@ namespace osiris
 				case "find_proveedores":
 					entry_id_proveedor = (object) args[0] as Gtk.Entry;
 					entry_nombre_proveedor = (object) args[1] as Gtk.Entry;
+					entry_formapago = (object) args[2] as Gtk.Entry;
 				break;
 			}			
 			consulta_sql1 = (string) args_sql[0];
@@ -372,16 +374,16 @@ namespace osiris
 							case "find_proveedores":
 								treeViewEngineBuscador.AppendValues ((int) lector["id_proveedor"],//0
 													(string) lector["descripcion_proveedor"],//1
-							                        (bool) lector["proveedor_activo"]); //, // 2
-													//(string) lector["direccion_proveedor"],//3
-													//(string) lector["colonia_proveedor"],//4
-													//(string) lector["municipio_proveedor"],//5
-													//(string) lector["estado_proveedor"],//6
-													//(string) lector["telefono1_proveedor"],//7
-													//(string) lector["contacto1_proveedor"],//8
-													//(string) lector["rfc_proveedor"],//9
-													//(string) lector["pagina_web_proveedor"],//10
-													//"",//11
+							                        (bool) lector["proveedor_activo"], //, // 2
+													(string) lector["direccion_proveedor"],//3
+													(string) lector["colonia_proveedor"],//4
+													(string) lector["municipio_proveedor"],//5
+													(string) lector["estado_proveedor"],//6
+													(string) lector["telefono1_proveedor"],//7
+													(string) lector["contacto1_proveedor"],//8
+													(string) lector["rfc_proveedor"],//9
+													(string) lector["pagina_web_proveedor"],//10
+													(string) lector["descripcion_forma_de_pago"]);//11
 													//(string) lector["fax_proveedor"], //12
 							                        //(int) lector["id_forma_de_pago"]);//13
 							break;
@@ -481,6 +483,7 @@ namespace osiris
 					case "find_proveedores":
 						entry_id_proveedor.Text = tomaid.ToString();
 						entry_nombre_proveedor.Text = (string) model.GetValue(iterSelected, 1);
+						entry_formapago.Text = (string) model.GetValue(iterSelected, 11);
 					break;					
 				}				
 			}

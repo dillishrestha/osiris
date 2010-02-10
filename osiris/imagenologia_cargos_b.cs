@@ -2276,10 +2276,7 @@ namespace osiris
 		
 		public string LoginEmpleado;
 		public string NomEmpleados;
-		public string connectionString = "Server=localhost;" +
-						"Port=5432;" +
-						 "User ID=admin;" +
-						"Password=1qaz2wsx;";
+		public string connectionString;
 		public string nombrebd;
 		
 		public int folioservicio = 0;							// Toma el valor de numero de atencion de paciente

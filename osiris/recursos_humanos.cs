@@ -292,10 +292,7 @@ namespace osiris
 	   
 	 private TreeStore treeViewEngineBusca;
 		
-		public string connectionString = "Server=localhost;" +
-						"Port=5432;" +
-						 "User ID=admin;" +
-						"Password=1qaz2wsx;";
+		public string connectionString;
 		public string nombrebd;
 		public string LoginEmpleado;
     	public string NomEmpleado;
@@ -362,13 +359,16 @@ namespace osiris
 		private TreeStore treeViewEngine;
 		//private ListStore store_aseguradora;
 		
-		public alta_de_personal(string LoginEmp_, string NomEmpleado_, string AppEmpleado_, string ApmEmpleado_, string _nombrebd_ )
+		class_conexion conexion_a_DB = new class_conexion();
+		
+		public alta_de_personal(string LoginEmp_, string NomEmpleado_, string AppEmpleado_, string ApmEmpleado_, string nombrebd_ )
 		{
 			LoginEmpleado = LoginEmp_;
     		NomEmpleado = NomEmpleado_;
     		AppEmpleado = AppEmpleado_;
     		ApmEmpleado = ApmEmpleado_;
-    		nombrebd = _nombrebd_; 
+    		connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
+			nombrebd = conexion_a_DB._nombrebd; 
     		
 			Glade.XML gxml = new Glade.XML (null, "recursos_humanos.glade", "catalogo_empleado", null);
 			gxml.Autoconnect (this);
@@ -1691,8 +1691,7 @@ namespace osiris
    
 			ListStore store14 = new ListStore( typeof (string));
 			combobox_tiempo_comida_empleado.Model = store14;
-			if (activo != "")
-			{
+			if (activo != ""){
 				store14.AppendValues (activo);
 			}
 			
@@ -1700,9 +1699,6 @@ namespace osiris
 	        store14.AppendValues ((string) "1 hora");
 	        store14.AppendValues ((string) "2 horas");
 	        store14.AppendValues ((string) "Sin hora");
-	        
-	        
-	        
 	        
 			TreeIter iter14;
 			if (store14.GetIterFirst(out iter14)){
@@ -3283,10 +3279,7 @@ namespace osiris
 		// Declarando ventana del menu de costos
 		[Widget] Gtk.Window vacaciones_empleado;
 		
-		public string connectionString = "Server=localhost;" +
-						"Port=5432;" +
-						 "User ID=admin;" +
-						"Password=1qaz2wsx;";
+		public string connectionString;
 		public string nombrebd;
 		public string LoginEmpleado;
     	public string NomEmpleado;
@@ -3296,14 +3289,17 @@ namespace osiris
     	//Declaracion de ventana de error
 		protected Gtk.Window MyWinError;
 		protected Gtk.Window MyWin;
-				
-		public vacacionespersonal(string LoginEmp_, string NomEmpleado_, string AppEmpleado_, string ApmEmpleado_, string _nombrebd_ )
+		
+		class_conexion conexion_a_DB = new class_conexion();
+		
+		public vacacionespersonal(string LoginEmp_, string NomEmpleado_, string AppEmpleado_, string ApmEmpleado_, string nombrebd_ )
 		{
 			LoginEmpleado = LoginEmp_;
     		NomEmpleado = NomEmpleado_;
     		AppEmpleado = AppEmpleado_;
     		ApmEmpleado = ApmEmpleado_;
-    		nombrebd = _nombrebd_; 
+    		connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
+			nombrebd = conexion_a_DB._nombrebd;
     		
 			Glade.XML gxml = new Glade.XML (null, "recursos_humanos.glade", "vacaciones_empleado", null);
 			gxml.Autoconnect (this);

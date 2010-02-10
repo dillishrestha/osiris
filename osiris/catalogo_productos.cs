@@ -42,7 +42,7 @@ namespace osiris
 	public class catalogo_productos_nuevos
 	{
 		// //Declarando ventana de Productos Homero Prueba "Ventana Principal"
-		[Widget] Gtk.Window productos_homero_prueba;
+		[Widget] Gtk.Window catalogo_productos;
 		[Widget] Gtk.CheckButton checkbutton_nuevo_producto;
 		[Widget] Gtk.Entry entry_codigo_producto;
 		[Widget] Gtk.CheckButton checkbutton_producto_anidado;
@@ -73,7 +73,7 @@ namespace osiris
 		[Widget] Gtk.Entry entry_producto;
 		
 		//Declarando la barra de estado
-		[Widget] Gtk.Statusbar statusbar_productos_homero_prueba;
+		[Widget] Gtk.Statusbar statusbar_catalogo_productos;
 		
 		//Declarando botones
 		[Widget] Gtk.Button button_guardar;
@@ -189,10 +189,10 @@ namespace osiris
 			connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
 			nombrebd = conexion_a_DB._nombrebd;
 			//Direcciona al glade
-			Glade.XML gxml = new Glade.XML (null, "almacen_costos_compras.glade", "productos_homero_prueba", null);
+			Glade.XML gxml = new Glade.XML (null, "almacen_costos_compras.glade", "catalogo_productos", null);
 			gxml.Autoconnect (this);
 			// Muestra ventana de Glade
-			productos_homero_prueba.Show();
+			catalogo_productos.Show();
         	
 			// Sale de la ventana
 			button_salir.Clicked += new EventHandler(on_cierraventanas_clicked);

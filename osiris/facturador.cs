@@ -532,7 +532,7 @@ namespace osiris
 					
 		 			//Console.WriteLine(((float.Parse((string)lector["honorariomedico"])+float.Parse((string) lector["subtotal_15"])+float.Parse((string) lector["subtotal_0"])+float.Parse((string) lector["ivaal_15"]))-(float.Parse((string) lector["deducible_"])+float.Parse((string) lector["valorcoaseguro"]))).ToString("C").Trim());
 		 									     
-		 			cantidad_en_letras = traduce_numeros(((float.Parse((string)lector["honorariomedico"])+float.Parse((string) lector["subtotal_15"])+float.Parse((string) lector["subtotal_0"])+float.Parse((string) lector["ivaal_15"]))-(float.Parse((string) lector["deducible_"])+float.Parse((string) lector["valorcoaseguro"]))).ToString().Trim());
+		 			cantidad_en_letras = classpublic.ConvertirCadena(((float.Parse((string)lector["honorariomedico"])+float.Parse((string) lector["subtotal_15"])+float.Parse((string) lector["subtotal_0"])+float.Parse((string) lector["ivaal_15"]))-(float.Parse((string) lector["deducible_"])+float.Parse((string) lector["valorcoaseguro"]))).ToString().Trim(),"Peso");
 		 			
 		 			entry_status_factura.Text = "";
 		 			
@@ -701,7 +701,7 @@ namespace osiris
 								
 				entry_total_factura.Text = total_de_la_factura.ToString("C").PadLeft(10);
 				
-				cantidad_en_letras = traduce_numeros(total_de_la_factura.ToString("F").Trim());
+				cantidad_en_letras = classpublic.ConvertirCadena(total_de_la_factura.ToString("F").Trim(),"Peso");
 				
 				deducible_coaseguro.Destroy();
 		}
@@ -718,7 +718,7 @@ namespace osiris
 								
 			entry_total_factura.Text = total_de_la_factura.ToString("C").PadLeft(10);
 				
-			cantidad_en_letras = traduce_numeros(total_de_la_factura.ToString("F").Trim());
+			cantidad_en_letras = classpublic.ConvertirCadena(total_de_la_factura.ToString("F").Trim(),"Peso");
 			
 			deducible_coaseguro.Destroy();
 		}
@@ -863,7 +863,7 @@ namespace osiris
 			this.entry_subtotal.Text = subtotales.ToString("C");
 			this.entry_total_factura.Text = subtotales.ToString("C");
 				
-			cantidad_en_letras = traduce_numeros(subtotales.ToString("F").Trim());
+			cantidad_en_letras = classpublic.ConvertirCadena(subtotales.ToString("F").Trim(),"Peso");
 			
 			checkbutton_iva.Active = false;
 			checkbutton_detalle.Active = false;
@@ -911,7 +911,7 @@ namespace osiris
 					this.entry_subtotal.Text = subtotales.ToString("C");
 					this.entry_total_factura.Text = subtotales.ToString("C");				
 					
-					cantidad_en_letras = traduce_numeros(subtotales.ToString("F").Trim());				
+					cantidad_en_letras = classpublic.ConvertirCadena(subtotales.ToString("F").Trim(),"Peso");
 				}
 			}
 		}
@@ -2081,7 +2081,7 @@ namespace osiris
 												
 					entry_total_factura.Text = total_de_la_factura.ToString("C").PadLeft(10);
 					
-					cantidad_en_letras = traduce_numeros(total_de_la_factura.ToString("F").Trim());
+					cantidad_en_letras = classpublic.ConvertirCadena(total_de_la_factura.ToString("F").Trim(),"Peso");
 					//Console.WriteLine(cantidad_en_letras);
 					
 					treeViewEngineDetaFact.AppendValues("","","","");
@@ -2470,7 +2470,7 @@ namespace osiris
 								
 								entry_total_factura.Text = total_de_la_factura.ToString("C").PadLeft(10);
 								
-								cantidad_en_letras = traduce_numeros(total_de_la_factura.ToString("F").Trim());
+								cantidad_en_letras = classpublic.ConvertirCadena(total_de_la_factura.ToString("F").Trim(),"Peso");
 								//Console.WriteLine(cantidad_en_letras);
 					        
 					        }else{
@@ -2493,7 +2493,7 @@ namespace osiris
 								
 								entry_total_factura.Text = total_de_la_factura.ToString("C").PadLeft(10);
 								
-								cantidad_en_letras = traduce_numeros(total_de_la_factura.ToString("F").Trim());
+								cantidad_en_letras = classpublic.ConvertirCadena(total_de_la_factura.ToString("F").Trim(),"Peso");
 								//Console.WriteLine(cantidad_en_letras);
 							}
 							conexion.Close ();
@@ -2603,162 +2603,6 @@ namespace osiris
 		{
 			Widget win = (Widget) sender;
 			win.Toplevel.Destroy();
-		}
-		
-		public string traduce_numeros (string sNumero) {
-			double dNumero;
-			double dNumAux = 0;
-			char x;
-			string sAux;
-			
-			sResultado = " ";
-			try {
-				dNumero = Convert.ToDouble (sNumero);
-			}
-			catch {				
-				return "";
-			}
- 
-			if (dNumero > 999999999999)
-				return "";
- 
-			if (dNumero > 999999999) {
-				dNumAux = dNumero % 1000000000000;
-				sResultado += Numeros (dNumAux, 1000000000) + " mil ";
-			}
- 
-			if (dNumero > 999999) {
-				dNumAux = dNumero % 1000000000;
-				sResultado += Numeros (dNumAux, 1000000) + " millones ";
-			}
- 
-			if (dNumero > 999) {
-				dNumAux = dNumero % 1000000;
-				sResultado += Numeros (dNumAux, 1000) + " mil ";
-			}
- 
-			dNumAux = dNumero % 1000;	
-			sResultado += Numeros (dNumAux, 1);
-  
-			//Enseguida verificamos si contiene punto, si es así, los convertimos a texto.
-			sAux = dNumero.ToString();
- 
-			if (sAux.IndexOf(".") >= 0){			
-				sResultado += ObtenerDecimales (sNumero);
-			}else{
-				sResultado += "pesos 00/100 M.N.";
-			}
-			//Las siguientes líneas convierten el primer caracter a mayúscula.
-			sAux = sResultado;
-			x = char.ToUpper (sResultado[1]);
-			sResultado = x.ToString ();
- 
-			for (int i = 2; i<sAux.Length; i++)
-				sResultado += sAux[i].ToString();
- 
-			return sResultado;
-		}
-		 
-		public string ConvertirCadena (double dNumero) {
-			double dNumAux = 0;
-			char x;
-			string sAux;
-			 
-			sResultado = " ";
- 
-			if (dNumero > 999999999999)
-				return "";
- 
-			if (dNumero > 999999999) {
-				dNumAux = dNumero % 1000000000000;
-				sResultado += Numeros (dNumAux, 1000000000) + " mil ";
-			}
- 
-			if (dNumero > 999999) {
-				dNumAux = dNumero % 1000000000;
-				sResultado += Numeros (dNumAux, 1000000) + " millones ";
-			}
- 
-			if (dNumero > 999) {
-				dNumAux = dNumero % 1000000;
-				sResultado += Numeros (dNumAux, 1000) + " mil ";
-			}
- 
-			dNumAux = dNumero % 1000;	
-			sResultado += Numeros (dNumAux, 1);
- 
- 
-			//Enseguida verificamos si contiene punto, si es así, los convertimos a texto.
-			sAux = dNumero.ToString();
- 
-			if (sAux.IndexOf(".") >= 0){
-				sResultado += ObtenerDecimales (sAux);
-			}else{
-				sResultado += "pesos 00/100 M.N.";
-			}
- 
-			//Las siguientes líneas convierten el primer caracter a mayúscula.
-			sAux = sResultado;
-			x = char.ToUpper (sResultado[1]);
-			sResultado = x.ToString ();
- 
-			for (int i = 2; i<sAux.Length; i++)
-				sResultado += sAux[i].ToString();
- 
-			return sResultado;
-		}
- 
-		private string Numeros (double dNumAux, double dFactor) {
-			double dCociente = dNumAux / dFactor;
-			double dNumero = 0;
-			int iNumero = 0;
-			string sNumero = "";
-			string sTexto = "";
- 
-			if (dCociente >= 100){
-				dNumero = dCociente / 100;
-				sNumero = dNumero.ToString();
-				iNumero = int.Parse (sNumero[0].ToString());
-				sTexto  +=  this.sCentenas [iNumero] + " ";
-			}
- 
-			dCociente = dCociente % 100;
-			if (dCociente >= 30){
-				dNumero = dCociente / 10;			
-				sNumero = dNumero.ToString();
-				iNumero = int.Parse (sNumero[0].ToString());
-				if (iNumero > 0)
-					sTexto  += this.sDecenas [iNumero] + " ";
- 
-				dNumero = dCociente % 10;
-				sNumero = dNumero.ToString();
-				iNumero = int.Parse (sNumero[0].ToString());
-				if (iNumero > 0)
-					sTexto  += "y " + this.sUnidades [iNumero] + " ";
-			}else{
-				dNumero = dCociente;	
-				sNumero = dNumero.ToString();
-				if (sNumero.Length > 1)
-					if (sNumero[1] != '.')
-						iNumero = int.Parse (sNumero[0].ToString() + sNumero[1].ToString());
-					else
-						iNumero = int.Parse (sNumero[0].ToString());
-				else
-					iNumero = int.Parse (sNumero[0].ToString());
-				sTexto  += this.sUnidades[iNumero] + " ";
-			}
-			return sTexto;
-		}		
-
-		private string ObtenerDecimales (string sNumero) {
-			string[] sNumPuntos;
-			string sTexto = "";
-			double dNumero = 0;
-			sNumPuntos = sNumero.Split('.');
-    		dNumero = Convert.ToDouble(sNumPuntos[1]);
-			sTexto = " pesos "+dNumero.ToString().Trim()+"/100 M.N."; 
-			//sTexto = "peso con " + Numeros(dNumero,1);
-			return sTexto;
 		}	        
 	}
 	
@@ -2806,38 +2650,37 @@ namespace osiris
 		
 		//[Widget] Gtk.TextView TextView_1;
 		
-			public string[] sUnidades = {"", "un", "dos", "tres", "cuatro", "cinco", "seis", "siete", "ocho", "nueve", "diez", 
+		string[] sUnidades = {"", "un", "dos", "tres", "cuatro", "cinco", "seis", "siete", "ocho", "nueve", "diez", 
 									"once", "doce", "trece", "catorce", "quince", "dieciseis", "diecisiete", "dieciocho", "diecinueve", "veinte", 
 									"veintiún", "veintidos", "veintitres", "veinticuatro", "veinticinco", "veintiseis", "veintisiete", "veintiocho", "veintinueve"};
- 		public string[] sDecenas = {"", "diez", "veinte", "treinta", "cuarenta", "cincuenta", "sesenta", "setenta", "ochenta", "noventa"};
- 		public string[] sCentenas = {"", "ciento", "doscientos", "trescientos", "cuatrocientos", "quinientos", "seiscientos", "setecientos", "ochocientos", "novecientos"};
-  		public string sResultado = "";
+ 		string[] sDecenas = {"", "diez", "veinte", "treinta", "cuarenta", "cincuenta", "sesenta", "setenta", "ochenta", "noventa"};
+ 		string[] sCentenas = {"", "ciento", "doscientos", "trescientos", "cuatrocientos", "quinientos", "seiscientos", "setecientos", "ochocientos", "novecientos"};
+  		string sResultado = "";
 		
-		public string toma_descrip_municipio = "";
-		public int num_nota = 0;
-		public int id_cliente = 0;
-		public int ultimafactura = 0;
-		public string numerodefactura;
-		public decimal calculo = 0;
-		public string descuento_cliente = "";
+		string toma_descrip_municipio = "";
+		int num_nota = 0;
+		int id_cliente = 0;
+		int ultimafactura = 0;
+		string numerodefactura;
+		decimal calculo = 0;
+		string descuento_cliente = "";
 		
 		//Variables Para utilizar la suma de total en nota de credito
-		public decimal sub_15 = 0;
-		public decimal sub_0 = 0;
-		public decimal tot_iva = 0;
-		public double iva = 1.15;
+		decimal sub_15 = 0;
+		decimal sub_0 = 0;
+		decimal tot_iva = 0;
+		double valoriva;
+					
+		decimal subtotal_15;
+		decimal subtotal;
+		decimal subtotal_0;
+		decimal total_de_iva;
 		
-		public decimal subtotal_15;
-		public decimal subtotal;
-		public decimal subtotal_0;
-		public decimal total_de_iva;
-		
-		public string LoginEmpleado;
-		public string NomEmpleado;
-		public string AppEmpleado;
-		public string ApmEmpleado;
-		public string nombrebd;
-		
+		string LoginEmpleado;
+		string NomEmpleado;
+		string AppEmpleado;
+		string ApmEmpleado;
+			
 		// Declarando variable de fuente para la impresion
 		// Declaracion de fuentes tipo Bitstream Vera sans
 		//public Gnome.Font fuente5 = Gnome.Font.FindClosest("Luxi Sans", 5);
@@ -2849,20 +2692,17 @@ namespace osiris
 		//public Gnome.Font fuente11 = Gnome.Font.FindClosest("Luxi Sans", 11);
 		//public Gnome.Font fuente12 = Gnome.Font.FindClosest("Luxi Sans", 12);
 		
-		public string connectionString = "Server=localhost;" +
-			                             "Port=5432;" +
-						                 "User ID=admin;" +
-						                 "Password=1qaz2wsx;";
+		string connectionString;		
+		string nombrebd;
 		
 		//Declaracion de ventana de error y pregunta
 		protected Gtk.Window MyWinError;
 		protected Gtk.Window MyWin;
 
-				
-				
-	
-	
-	public nota_de_credito(string LoginEmp_, string NomEmpleado_, string AppEmpleado_, string ApmEmpleado_, string _nombrebd_, 
+		class_conexion conexion_a_DB = new class_conexion();
+		class_public classpublic = new class_public();
+		
+		public nota_de_credito(string LoginEmp_, string NomEmpleado_, string AppEmpleado_, string ApmEmpleado_, string nombrebd_, 
 		                       string numerodefactura_, int id_cliente_, decimal subtotal_al_0_, decimal subtotal_al_15_, decimal total_de_iva_,
 		                       decimal subtotales_, int num_nota_)
 		{
@@ -2870,9 +2710,11 @@ namespace osiris
 			NomEmpleado = NomEmpleado_;
 			AppEmpleado = AppEmpleado_;
 			ApmEmpleado = ApmEmpleado_;
-			nombrebd = _nombrebd_;
 			numerodefactura = numerodefactura_;
 			id_cliente = id_cliente_;
+			connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
+			nombrebd = conexion_a_DB._nombrebd;
+			valoriva = double.Parse(classpublic.ivaparaaplicar)/10;
 			
 			subtotal_15 = subtotal_al_15_;
 			subtotal = subtotales_;
@@ -3295,7 +3137,7 @@ namespace osiris
 						this.entry_total.Text = (sub_15 + sub_0 + tot_iva).ToString("F");
 					}else{	
 						calculo = Convert.ToDecimal(this.entry_pesos.Text);
-						sub_15 = Convert.ToDecimal(Convert.ToDouble(this.calculo)/iva);
+						sub_15 = Convert.ToDecimal(Convert.ToDouble(this.calculo)/valoriva);
 						tot_iva = (calculo - sub_15);
 						
 						this.entry_iva_15.Text = tot_iva.ToString("F");
@@ -3384,20 +3226,14 @@ namespace osiris
 					conexion2.Open ();
 					NpgsqlCommand comando2; 
 					comando2 = conexion2.CreateCommand ();
-					
 					comando2.CommandText =  "UPDATE osiris_erp_factura_enca SET id_quien_creo = ' "+LoginEmpleado+"',"+
 											                    "numero_ntacred = '"+entry_nota_credito.Text.Trim()+"',"+
 							                                    "id_quien_creo_ntacred = '"+LoginEmpleado+"',"+
 											                    "total_ntacred = '"+entry_total.Text.Trim()+"', "+
 												                "fechahora_creacion_ntacred = ' "+this.entry_fecha.Text.Trim()+" ' "+
 											                    "WHERE numero_factura = '"+this.entry_factura.Text.Trim()+"' ;";
-		 							
 					comando2.ExecuteNonQuery();							
-					comando2.Dispose();
-					
-					
-	
-					
+					comando2.Dispose();				
 					NpgsqlConnection conexion3;
 					conexion3 = new NpgsqlConnection (connectionString+nombrebd );
 					// Verifica que la base de datos este conectada
@@ -3525,162 +3361,6 @@ namespace osiris
 		{
 			Widget win = (Widget) sender;
 			win.Toplevel.Destroy();
-		}
-		
-			public string traduce_numeros (string sNumero) {
-			double dNumero;
-			double dNumAux = 0;
-			char x;
-			string sAux;
-			
-			sResultado = " ";
-			try {
-				dNumero = Convert.ToDouble (sNumero);
-			}
-			catch {				
-				return "";
-			}
- 
-			if (dNumero > 999999999999)
-				return "";
- 
-			if (dNumero > 999999999) {
-				dNumAux = dNumero % 1000000000000;
-				sResultado += Numeros (dNumAux, 1000000000) + " mil ";
-			}
- 
-			if (dNumero > 999999) {
-				dNumAux = dNumero % 1000000000;
-				sResultado += Numeros (dNumAux, 1000000) + " millones ";
-			}
- 
-			if (dNumero > 999) {
-				dNumAux = dNumero % 1000000;
-				sResultado += Numeros (dNumAux, 1000) + " mil ";
-			}
- 
-			dNumAux = dNumero % 1000;	
-			sResultado += Numeros (dNumAux, 1);
-  
-			//Enseguida verificamos si contiene punto, si es así, los convertimos a texto.
-			sAux = dNumero.ToString();
- 
-			if (sAux.IndexOf(".") >= 0){			
-				sResultado += ObtenerDecimales (sNumero);
-			}else{
-				sResultado += "pesos 00/100 M.N.";
-			}
-			//Las siguientes líneas convierten el primer caracter a mayúscula.
-			sAux = sResultado;
-			x = char.ToUpper (sResultado[1]);
-			sResultado = x.ToString ();
- 
-			for (int i = 2; i<sAux.Length; i++)
-				sResultado += sAux[i].ToString();
- 
-			return sResultado;
-		}
-		 
-		public string ConvertirCadena (double dNumero) {
-			double dNumAux = 0;
-			char x;
-			string sAux;
-			 
-			sResultado = " ";
- 
-			if (dNumero > 999999999999)
-				return "";
- 
-			if (dNumero > 999999999){
-				dNumAux = dNumero % 1000000000000;
-				sResultado += Numeros (dNumAux, 1000000000) + " mil ";
-			}
- 
-			if (dNumero > 999999){
-				dNumAux = dNumero % 1000000000;
-				sResultado += Numeros (dNumAux, 1000000) + " millones ";
-			}
- 
-			if (dNumero > 999){
-				dNumAux = dNumero % 1000000;
-				sResultado += Numeros (dNumAux, 1000) + " mil ";
-			}
- 
-			dNumAux = dNumero % 1000;	
-			sResultado += Numeros (dNumAux, 1);
- 
- 
-			//Enseguida verificamos si contiene punto, si es así, los convertimos a texto.
-			sAux = dNumero.ToString();
- 
-			if (sAux.IndexOf(".") >= 0){
-				sResultado += ObtenerDecimales (sAux);
-			}else{
-				sResultado += "pesos 00/100 M.N.";
-			}
- 
-			//Las siguientes líneas convierten el primer caracter a mayúscula.
-			sAux = sResultado;
-			x = char.ToUpper (sResultado[1]);
-			sResultado = x.ToString ();
- 
-			for (int i = 2; i<sAux.Length; i++)
-				sResultado += sAux[i].ToString();
- 
-			return sResultado;
-		}
- 
-		private string Numeros (double dNumAux, double dFactor){
-			double dCociente = dNumAux / dFactor;
-			double dNumero = 0;
-			int iNumero = 0;
-			string sNumero = "";
-			string sTexto = "";
- 
-			if (dCociente >= 100){
-				dNumero = dCociente / 100;
-				sNumero = dNumero.ToString();
-				iNumero = int.Parse (sNumero[0].ToString());
-				sTexto  +=  this.sCentenas [iNumero] + " ";
-			}
- 
-			dCociente = dCociente % 100;
-			if (dCociente >= 30){
-				dNumero = dCociente / 10;			
-				sNumero = dNumero.ToString();
-				iNumero = int.Parse (sNumero[0].ToString());
-				if (iNumero > 0)
-					sTexto  += this.sDecenas [iNumero] + " ";
- 
-				dNumero = dCociente % 10;
-				sNumero = dNumero.ToString();
-				iNumero = int.Parse (sNumero[0].ToString());
-				if (iNumero > 0)
-					sTexto  += "y " + this.sUnidades [iNumero] + " ";
-			}else{
-				dNumero = dCociente;	
-				sNumero = dNumero.ToString();
-				if (sNumero.Length > 1)
-					if (sNumero[1] != '.')
-						iNumero = int.Parse (sNumero[0].ToString() + sNumero[1].ToString());
-					else
-						iNumero = int.Parse (sNumero[0].ToString());
-				else
-					iNumero = int.Parse (sNumero[0].ToString());
-				sTexto  += this.sUnidades[iNumero] + " ";
-			}
-			return sTexto;
-		}		
-
-		private string ObtenerDecimales (string sNumero) {
-			string[] sNumPuntos;
-			string sTexto = "";
-			double dNumero = 0;
-			sNumPuntos = sNumero.Split('.');
-    		dNumero = Convert.ToDouble(sNumPuntos[1]);
-			sTexto = " pesos "+dNumero.ToString().Trim()+"/100 M.N."; 
-			//sTexto = "peso con " + Numeros(dNumero,1);
-			return sTexto;
 		}
 		
 		// Valida entradas que solo sean numericas, se utiliza eb ventana de

@@ -808,10 +808,7 @@ namespace osiris
 	}
 	
 		/*
-		public string connectionString = "Server=localhost;" +
-	        	    	                     "Port=5432;" +
-	            	    	                 "User ID=admin;" +
-	                	    	             "Password=1qaz2wsx;";
+		public string connectionString;
 		public string nombrebd;
 	   	public string folio;
 	   	public string tiporeporte = "DIFERENCIAS";

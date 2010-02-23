@@ -72,6 +72,8 @@ namespace osiris
 		[Widget] Gtk.Button button_farmacia = null;
 		[Widget] Gtk.Button button_recursos_humanos = null;
 		[Widget] Gtk.Button button_herramientas = null;
+		[Widget] Gtk.Button button_afiliados = null;
+		[Widget] Gtk.Button button_proveedores = null;
 		
 		// opciones generales
 		[Widget] Gtk.Button button_medicos = null;
@@ -168,6 +170,8 @@ namespace osiris
 			class_conexion conexion_a_DB = new class_conexion();
 			connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
 			nombrebd = conexion_a_DB._nombrebd;
+			
+			Console.WriteLine(connectionString);
 			
 			NpgsqlConnection conexion;
             conexion = new NpgsqlConnection(connectionString+nombrebd);
@@ -287,6 +291,7 @@ namespace osiris
 			button_herramientas.Clicked += new EventHandler(on_button_herramientas_clicked);		
 						
 			button_farmacia.Clicked += new EventHandler(on_button_farmacia_clicked);
+			
 			 			
 			//button_nutricion.Clicked += new EventHandler(on_button_nutricion_clicked);
 			//button_hemodialisis.Clicked += new EventHandler(on_button_hemodialisis_clicked);
@@ -294,6 +299,16 @@ namespace osiris
 			//button_imagenologia_b.Clicked += new EventHandler( on_button_imagenologia_b_clicked );
 								
 			button_salir.Clicked += new EventHandler(on_button_salir_clicked);
+			
+			//button_almacen.Hide();
+			//button_compras.Hide();
+			//button_farmacia.Hide();
+			button_nutricion.Hide();
+			button_afiliados.Hide();
+			button_proveedores.Hide();
+			button_inhaloterapia.Hide();
+			button_hemodialisis.Hide();
+				
 			// Actulizando statusbar
 			statusbar_menu.Pop(0);
 			statusbar_menu.Push(1, "login:"+(string)LoginEmpleado+"|Usuario:"+(string)NomEmpleado+" "+(string)AppEmpleado+" "+(string)ApmEmpleado);

@@ -226,14 +226,6 @@ namespace osiris
 		string AppEmpleado;
 		string ApmEmpleado;
 		
-		// traductor de numeros a letras
-		string[] sUnidades = {"", "un", "dos", "tres", "cuatro", "cinco", "seis", "siete", "ocho", "nueve", "diez", 
-									"once", "doce", "trece", "catorce", "quince", "dieciseis", "diecisiete", "dieciocho", "diecinueve", "veinte", 
-									"veintiún", "veintidos", "veintitres", "veinticuatro", "veinticinco", "veintiseis", "veintisiete", "veintiocho", "veintinueve"};
- 		string[] sDecenas = {"", "diez", "veinte", "treinta", "cuarenta", "cincuenta", "sesenta", "setenta", "ochenta", "noventa"};
- 		string[] sCentenas = {"", "ciento", "doscientos", "trescientos", "cuatrocientos", "quinientos", "seiscientos", "setecientos", "ochocientos", "novecientos"};
-  		string sResultado = "";
-  					
 		string connectionString;
 		string nombrebd;
 				
@@ -347,42 +339,20 @@ namespace osiris
 					subtotal_al_0 = 0; 
 					subtotal_al_15 = 0;
 					total_de_iva = 0;
-					subtotales = 0;					
-		 		
-		 			// Buscando el ultimo numero de factura
-		 			NpgsqlConnection conexion;
-					conexion = new NpgsqlConnection (connectionString+nombrebd );
-					// Verifica que la base de datos este conectada
-					try{
-						conexion.Open ();
-						NpgsqlCommand comando; 
-						comando = conexion.CreateCommand ();
-				
-						// asigna el numero de paciente (PID)
-						comando.CommandText = "SELECT numero_factura FROM osiris_erp_factura_enca ORDER BY numero_factura DESC LIMIT 1;";
-                        NpgsqlDataReader lector = comando.ExecuteReader ();
-						
-						if ((bool) lector.Read()){
-							ultimafactura = (int) lector["numero_factura"] + 1;
-						}else{
-							ultimafactura = 1;
-						}
-						treeViewEngineDetaFact.Clear();   // limpia treeview de factura
-						entry_numero_factura.Text = ultimafactura.ToString();
-						numerodefactura = ultimafactura.ToString();
-						entry_fecha_factura.Text = DateTime.Now.ToString("yyyy-MM-dd");//("dd-MM-yyyy");
-						button_busca_cliente.Sensitive = true;
-						button_deducible.Sensitive = true;
-						button_coaseguro.Sensitive = true;
-						limpia_datos_de_entry();
-												
-						lector.Close ();
-					}catch (NpgsqlException ex){
-						MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
-							MessageType.Error, 
-							ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
-						msgBoxError.Run ();						msgBoxError.Destroy();
-					}
+					subtotales = 0;
+					
+					// Buscando el ultimo numero de factura
+		 			entry_numero_factura.Text = classpublic.lee_ultimonumero_registrado("osiris_erp_factura_enca","numero_factura","");
+					numerodefactura = entry_numero_factura.Text;
+					
+					treeViewEngineDetaFact.Clear();   // limpia treeview de factura
+					entry_numero_factura.Text = ultimafactura.ToString();
+					numerodefactura = ultimafactura.ToString();
+					entry_fecha_factura.Text = DateTime.Now.ToString("yyyy-MM-dd");//("dd-MM-yyyy");
+					button_busca_cliente.Sensitive = true;
+					button_deducible.Sensitive = true;
+					button_coaseguro.Sensitive = true;
+					limpia_datos_de_entry();																	
 				}else{
 		 			checkbutton_nueva_factura.Active = false;
 		 			button_guardar_factura.Sensitive = false;
@@ -853,8 +823,7 @@ namespace osiris
 
 				
 				treeViewEngineDetaFact.AppendValues("     ",descripcion_producto,"",this.entry_honorarios_medico.Text);
-				}
-			
+			}			
 				
 			this.entry_subtotal_0.Text = subtotal_al_0.ToString("C");
 			this.entry_subtotal_15.Text = (subtotal_al_15).ToString("C");
@@ -872,7 +841,6 @@ namespace osiris
 			entry_descripcion.Text = "";
 			this.entry_honorarios_medico.Text = "";
 		}
-		
 		
 		void on_button_quitar_aplicados_clicked (object sender, EventArgs args)
 		{
@@ -2650,13 +2618,6 @@ namespace osiris
 		
 		//[Widget] Gtk.TextView TextView_1;
 		
-		string[] sUnidades = {"", "un", "dos", "tres", "cuatro", "cinco", "seis", "siete", "ocho", "nueve", "diez", 
-									"once", "doce", "trece", "catorce", "quince", "dieciseis", "diecisiete", "dieciocho", "diecinueve", "veinte", 
-									"veintiún", "veintidos", "veintitres", "veinticuatro", "veinticinco", "veintiseis", "veintisiete", "veintiocho", "veintinueve"};
- 		string[] sDecenas = {"", "diez", "veinte", "treinta", "cuarenta", "cincuenta", "sesenta", "setenta", "ochenta", "noventa"};
- 		string[] sCentenas = {"", "ciento", "doscientos", "trescientos", "cuatrocientos", "quinientos", "seiscientos", "setecientos", "ochocientos", "novecientos"};
-  		string sResultado = "";
-		
 		string toma_descrip_municipio = "";
 		int num_nota = 0;
 		int id_cliente = 0;
@@ -2756,9 +2717,7 @@ namespace osiris
 		
 			statusbar_nota_credito.Pop(0);
 			statusbar_nota_credito.Push(1, "login: "+LoginEmpleado+"  |Usuario: "+NomEmpleado+" "+AppEmpleado+" "+ApmEmpleado);
-			statusbar_nota_credito.HasResizeGrip = false;
-
-			
+			statusbar_nota_credito.HasResizeGrip = false;		
 			
 			if(this.num_nota > 0)
 			{

@@ -479,13 +479,13 @@ namespace osiris
 				conexion.Open ();
 				NpgsqlCommand comando; 
 				comando = conexion.CreateCommand ();
-               	comando.CommandText = "SELECT to_char(id_secuencia,'9999999999') AS idsecuencia,id_requisicion,to_char(osiris_erp_requisicion_deta.id_producto,'999999999999') AS idproducto,"+
+               	comando.CommandText = "SELECT to_char(osiris_erp_requisicion_deta.id_secuencia,'9999999999') AS idsecuencia,id_requisicion,to_char(osiris_erp_requisicion_deta.id_producto,'999999999999') AS idproducto,"+
 							"to_char(cantidad_solicitada,'999999.99') AS cantidadsolicitada,comprado,"+
 							"to_char(id_requisicion,'9999999999') AS idrequisicion,"+
 							"osiris_productos.descripcion_producto,to_char(osiris_productos.cantidad_de_embalaje,'9999.99') AS cantidadembalaje,"+
 							"osiris_productos.tipo_unidad_producto,to_char(numero_orden_compra,'9999999999') AS numeroordencompra,"+
 							"autorizada,to_char(fechahora_autorizado,'yyyy-MM-dd') AS fechahoraautorizado,"+
-							"to_char(fechahora_compra,'yyyy-MM-dd') AS fechahoracompra,to_char(id_secuencia,'9999999999') AS idsecuencia,"+
+							"to_char(fechahora_compra,'yyyy-MM-dd') AS fechahoracompra,"+
 							"to_char(osiris_productos.costo_por_unidad,'99999999.99') AS costoporunidad,"+
 							"to_char(osiris_productos.costo_producto,'99999999.99') AS costoproducto,"+
 							"to_char(osiris_productos.cantidad_de_embalaje,'9999999.99') AS cantidaddeembalaje,"+

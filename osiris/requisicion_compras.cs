@@ -156,6 +156,7 @@ namespace osiris
 		TreeViewColumn col_cobro_activo;	CellRendererText cellrt21;
 		
 		class_conexion conexion_a_DB = new class_conexion();
+		class_public classpublic = new class_public();
 		
 		public requisicion_materiales_compras(string LoginEmp_, string NomEmpleado_, string AppEmpleado_, string ApmEmpleado_, string nombrebd_,
 											  string centrocosto_,int idcentrocosto_, string campoacceso_,int[] array_idtipoadmisiones_, int accesomodulo_)
@@ -299,7 +300,6 @@ namespace osiris
 					this.entry_observaciones.Text = "";
 					this.entry_status_requisicion.Text = "";					
 					editar = false;										
-					//this.entry_requisicion.Text = ultimarequisicion().ToString().Trim();					
 					creacion_del_combobox(1,"","",false,false,"");
 					this.requi_ordinaria = false;
 					this.requi_urgente = false;
@@ -492,8 +492,7 @@ namespace osiris
 			ResponseType miResultado = (ResponseType)msgBox.Run ();
 			msgBox.Destroy();
 		 	if (miResultado == ResponseType.Yes){
-		 		if((string) LoginEmpleado == "DOLIVARES" || (string) LoginEmpleado == "HVARGAS" || (string) LoginEmpleado == "JBUENTELLO" ||
-									(string) LoginEmpleado == "N000008" || (string) LoginEmpleado == "N000277" ){
+		 		if((string) LoginEmpleado == "DOLIVARES" || (string) LoginEmpleado == "ADMIN"){
 		 		
 			 		NpgsqlConnection conexion;
 					conexion = new NpgsqlConnection (connectionString+nombrebd);
@@ -581,7 +580,7 @@ namespace osiris
 					this.button_envio_compras.Sensitive = false;
 					this.button_enviopara_autorizar.Sensitive = false;
 					
-					if((string) LoginEmpleado == "DOLIVARES"){
+					if((string) LoginEmpleado == "DOLIVARES" || (string) LoginEmpleado == "ADMIN"){
 						this.button_autorizar_compra.Sensitive = true;
 					}							
 					llenado_de_requisicion();					
@@ -627,10 +626,9 @@ namespace osiris
 					this.button_guardar_requisicion.Sensitive = false;
 					this.button_envio_compras.Sensitive = false;
 					
-					if((string) LoginEmpleado == "DOLIVARES" || (string) LoginEmpleado == "HVARGAS" || (string) LoginEmpleado == "JBUENTELLO" ||
-									(string) LoginEmpleado == "N000008" || (string) LoginEmpleado == "N000277" ){
+					if((string) LoginEmpleado == "DOLIVARES" || (string) LoginEmpleado == "ADMIN"){
 						this.button_enviopara_autorizar.Sensitive = true;			
-					}								
+					}					
 				}catch (NpgsqlException ex){
 					MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
 									MessageType.Error, 
@@ -713,7 +711,7 @@ namespace osiris
 								MessageType.Info,ButtonsType.Ok,"Envie su Autorizacion para Generar ORDEN DE COMPRA "+(string) lector["fechahoraenviocompras"]);
 								msgBox1.Run ();		msgBox1.Destroy();
 								//Console.WriteLine("envio para autorizar");
-								if((string) LoginEmpleado == "DOLIVARES"){
+								if((string) LoginEmpleado == "DOLIVARES" || (string) LoginEmpleado == "ADMIN"){
 									
 									this.button_autorizar_compra.Sensitive = false;
 									this.button_enviopara_autorizar.Sensitive = true;									
@@ -723,9 +721,8 @@ namespace osiris
 								MessageType.Info,ButtonsType.Ok,"Requisicion Autorizada para Generar la ORDEN DE COMPRA");
 								msgBox1.Run ();		msgBox1.Destroy();
 								this.entry_status_requisicion.Text = "AUTORIZADA PARA GENERAR ORDEN ED COMPRA";
-								if((string) LoginEmpleado == "DOLIVARES"){
-									this.button_autorizar_compra.Sensitive = false;
-									//Console.WriteLine("autoriza la compra");
+								if((string) LoginEmpleado == "DOLIVARES"  || (string) LoginEmpleado == "ADMIN"){
+									this.button_autorizar_compra.Sensitive = true;
 								}
 							}							
 						}else{
@@ -767,7 +764,7 @@ namespace osiris
 										"osiris_productos.tipo_unidad_producto,to_char(numero_orden_compra,'9999999999') AS numeroordencompra,"+
 										"autorizada,to_char(fechahora_autorizado,'yyyy-MM-dd') AS fechahoraautorizado,"+
 										"to_char(osiris_erp_requisicion_deta.costo_por_unidad,'999999999.99') AS costoporunidad,to_char(osiris_erp_requisicion_deta.costo_producto,'999999999.99') AS costoproducto,"+
-										"to_char(fechahora_compra,'yyyy-MM-dd') AS fechahoracompra,to_char(id_secuencia,'9999999999') AS idsecuencia,"+
+										"to_char(fechahora_compra,'yyyy-MM-dd') AS fechahoracompra,to_char(osiris_erp_requisicion_deta.id_secuencia,'9999999999') AS idsecuencia,"+
 										"to_char(id_proveedor1,'9999999999') AS idproveedor1,osiris_erp_proveedores.descripcion_proveedor,"+
 										"to_char(id_proveedor2,'9999999999') AS idproveedor2,descripcion_proveedor2,"+
 										"to_char(id_proveedor3,'9999999999') AS idproveedor3,descripcion_proveedor3,"+
@@ -859,13 +856,12 @@ namespace osiris
 								MessageDialog msgBox1 = new MessageDialog (MyWin,DialogFlags.Modal,
 										MessageType.Info,ButtonsType.Ok,"La requisicion se envio a Compras con fecha "+(string) lector["fechahoraenviocompras"]);
 								msgBox1.Run ();		msgBox1.Destroy();
-								
-								if ((bool) lector["autorizacion_para_comprar"] == false){
-									if((string) LoginEmpleado == "DOLIVARES"){
+								if ((bool) lector["autorizacion_para_comprar"] == false){									
+									if((string) LoginEmpleado == "DOLIVARES" || (string) LoginEmpleado == "ADMIN"){
 										this.button_enviopara_autorizar.Sensitive = true;									
 									}
 								}else{
-									if((string) LoginEmpleado == "DOLIVARES"){
+									if((string) LoginEmpleado == "DOLIVARES" || (string) LoginEmpleado == "ADMIN"){
 										this.button_autorizar_compra.Sensitive = true;		
 									}
 								}
@@ -1059,39 +1055,7 @@ namespace osiris
 			combobox_tipo_admision2.Changed += new EventHandler (onComboBoxChanged_tipo_admision2);
 			combobox_tipo_requisicion.Changed += new EventHandler (onComboBoxChanged_combobox_tipo_requisicion);
 		}
- 		
- 		// Buscando el ultimo numero de requisicion
- 		int ultimarequisicion()
- 		{
- 			idrequisicion = 0;
- 			NpgsqlConnection conexion;
-			conexion = new NpgsqlConnection (connectionString+nombrebd );
-			// Verifica que la base de datos este conectada
-			try{
-				conexion.Open ();
-				NpgsqlCommand comando; 
-				comando = conexion.CreateCommand ();
-		
-				// asigna el numero de paciente (PID)
-				comando.CommandText = "SELECT id_requisicion FROM osiris_erp_requisicion_enca ORDER BY id_requisicion DESC LIMIT 1;";
-				NpgsqlDataReader lector = comando.ExecuteReader ();
-				
-				if ((bool) lector.Read()){
-					idrequisicion = (int) lector["id_requisicion"] + 1;
-				}else{
-					idrequisicion = 1;
-				}
-				lector.Close ();
-			}catch (NpgsqlException ex){
-				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
-					MessageType.Error, 
-					ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
-				msgBoxError.Run ();						msgBoxError.Destroy();
-			}
-			conexion.Close();
-			return(idrequisicion);
-		}
- 		
+ 		 		
  		void on_button_guardar_requisicion_clicked(object sender, EventArgs args)
  		{
  			string mensajebox = "";
@@ -1116,7 +1080,7 @@ namespace osiris
 			if(this.descripinternamiento2 != "" && this.descripcion_tipo_requi != "" && this.entry_observaciones.Text != ""){			
 				if(enviadacompras == false){
 					if (editar == false){
-						this.entry_requisicion.Text = ultimarequisicion().ToString().Trim();
+						this.entry_requisicion.Text = classpublic.lee_ultimonumero_registrado("osiris_erp_requisicion_enca","id_requisicion","");
 						ultima_requisicion = this.entry_requisicion.Text;
 					}
 					// Grabando Detalle de la requisicion
@@ -1270,8 +1234,7 @@ namespace osiris
 							editar = true;
 							this.button_envio_compras.Sensitive = true;
 			 				this.entry_status_requisicion.Text = "NO ESTA ENVIADA A COMPRAS";			 				
-			 				// Actualizando el treeview
-			 				llenado_de_requisicion();			 				
+			 				// Actualizando el treeview			 				
 						}catch (NpgsqlException ex){
 							MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
 														MessageType.Error,ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
@@ -1295,7 +1258,9 @@ namespace osiris
 						this.entry_requisicion.Sensitive = true;
 						this.button_selecciona_requisicion.Sensitive = true;
 						this.checkbutton_nueva_requisicion.Active = false;
-						this.entry_requisicion.Text = ultima_requisicion;											
+						this.entry_requisicion.Text = ultima_requisicion;
+						// Actualizando el treeview
+			 			llenado_de_requisicion();
 					}else{
 						MessageDialog msgBox = new MessageDialog (MyWin,DialogFlags.Modal,
 										MessageType.Info,ButtonsType.Ok,"Esta requisicion no tiene productos, debe agregar por lo menos uno...");

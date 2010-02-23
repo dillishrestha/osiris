@@ -1,6 +1,6 @@
 // rpt_compras_farmacia.cs created with MonoDevelop
 // User: jbuentello at 10:54 a 15/08/2008
-// Hospital Santa Cecilia
+// Sistema Hospitalario Osiris
 // Monterrey - Mexico
 //
 // Autor    	: Ing. Jesus Buentello Garza (Programacion)
@@ -167,14 +167,12 @@ namespace osiris
 			col_costo.Title = "Costo Uni";
 			col_costo.PackStart(cel_costo, true);
 			col_costo.AddAttribute(cel_costo, "text", 4);
-
 			
 			TreeViewColumn col_precio_producto = new TreeViewColumn();
 			CellRendererText cel_precio_producto = new CellRendererText();
 			col_precio_producto.Title = "Precio Producto";
 			col_precio_producto.PackStart(cel_precio_producto, true);
 			col_precio_producto.AddAttribute(cel_precio_producto, "text", 5);
-
 			
 			TreeViewColumn col_fecha = new TreeViewColumn();
 			CellRendererText cel_fecha = new CellRendererText();
@@ -222,17 +220,13 @@ namespace osiris
 			col_compro.Title = "Compro";
 			col_compro.PackStart(cel_precio_producto, true);
 			col_compro.AddAttribute(cel_precio_producto, "text", 12);
-
 			
 			TreeViewColumn col_medico = new TreeViewColumn();
 			CellRendererText cel_medico = new CellRendererText();
 			col_medico.Title = "Medico";
 			col_medico.PackStart(cel_medico, true);
 			col_medico.AddAttribute(cel_medico, "text", 13);
-			col_medico.SortColumnId = (int) Column.col_medico;
-			
-			
-				
+			col_medico.SortColumnId = (int) Column.col_medico;				
 		
 			lista_compra_farmacia.AppendColumn(col_folio);
 			lista_compra_farmacia.AppendColumn(col_orden_compra);
@@ -354,10 +348,12 @@ namespace osiris
 		/*
 		void on_imprime_reporte_clicked (object sender, EventArgs args)
 		{
-			Gnome.PrintJob    trabajo   = new Gnome.PrintJob (PrintConfig.Default());
-			Gnome.PrintDialog dialogo   = new Gnome.PrintDialog (trabajo, "Reporte de Farmacia", 0);
-			int         respuesta = dialogo.Run ();
-			if (respuesta == (int) PrintButtons.Cancel){
+			
+			Gnome.PrintJob    trabajo   = new Gnome.PrintJob ();
+			Gnome.PrintDialog dialogo = new Gnome.PrintDialog (trabajo, "Reporte de Farmacia", 0);
+						
+			int respuesta = dialogo.Run ();
+			if (respuesta == (int) Gnome.PrintButtons.Cancel){
 				dialogo.Hide (); 
 				dialogo.Dispose (); 
 				return;
@@ -365,19 +361,18 @@ namespace osiris
 			Gnome.PrintContext ctx = trabajo.Context;
 			ComponerPagina2(ctx, trabajo); 
 			trabajo.Close();
-			switch (respuesta)
-			{
-			case (int) PrintButtons.Print:   
-				trabajo.Print (); 
+			switch (respuesta){
+				case (int) PrintButtons.Print:   
+					trabajo.Print (); 
 				break;
-			case (int) PrintButtons.Preview:
-				new PrintJobPreview(trabajo, "REPORTE FARMACIA").Show();
+				case (int) PrintButtons.Preview:
+					new PrintJobPreview(trabajo, "REPORTE FARMACIA").Show();
 				break;
 			}
 			dialogo.Hide (); dialogo.Dispose ();	
 		}
 		
-		void ComponerPagina2 (Gnome.PrintContext ContextoImp, Gnome.PrintJob trabajoImpresion)
+		void ComponerPagina2 (PrintContext ContextoImp, PrintJob trabajoImpresion)
 		{
 			TreeIter iter;
 			fila = -90;
@@ -478,7 +473,7 @@ namespace osiris
 			ContextoImp.ShowPage();
 		}
 		
-		void salto_pagina(Gnome.PrintContext ContextoImp, Gnome.PrintJob trabajoImpresion)
+		void salto_pagina(PrintContext ContextoImp, PrintJob trabajoImpresion)
 		{
 	        if (contador > 48 ){
 	        	numpage +=1;        	contador=1;
@@ -491,7 +486,7 @@ namespace osiris
 	     	}
 		}
 		
-		void imprime_encabezado(Gnome.PrintContext ContextoImp, Gnome.PrintJob trabajoImpresion)
+		void imprime_encabezado(PrintContext ContextoImp,PrintJob trabajoImpresion)
 		{        		
       		// Cambiar la fuente
 			Gnome.Print.Setfont (ContextoImp, fuente6);
@@ -524,7 +519,6 @@ namespace osiris
 			ContextoImp.MoveTo(698, -80);			ContextoImp.Show("Medico");
       	}
 		*/
-		
 		void on_cierraventanas_clicked (object sender, EventArgs args)	
 		{
 			Widget win = (Widget) sender;

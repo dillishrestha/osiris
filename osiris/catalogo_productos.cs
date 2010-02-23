@@ -28,7 +28,7 @@
 //////////////////////////////////////////////////////////
 // Programa		: nuevos_productos.cs
 // Proposito	: agregar nuevos productos 
-// Objeto		: almacen_costos_compras.glade
+// Objeto		: 
 //////////////////////////////////////////////////////////	
 
 using System;
@@ -1144,7 +1144,7 @@ namespace osiris
 	               								"AND osiris_empresas.lista_de_precio = true "+
 	               								"AND osiris_empresas.id_tipo_paciente = '"+id_tipopaciente.ToString()+"' "+
 	               								"ORDER BY osiris_empresas.id_tipo_paciente;";
-	               					//Console.WriteLine(comando1.CommandText);
+	               					Console.WriteLine(comando1.CommandText);
 									NpgsqlDataReader lector1 = comando1.ExecuteReader ();
 									int idtipopaciente_empresa = 0;
 									int idempresa_empresa = 0;

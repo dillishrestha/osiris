@@ -75,7 +75,7 @@ namespace osiris
 		
 		
 		// Variables publica
-		float valoriva = 15;
+		float valoriva;
 		int idsubalmacen = 1;
 		string descsubalmacen = "";
 		int idalmacenorigen = 0;
@@ -199,6 +199,7 @@ namespace osiris
 		    	idsubalmacen = (int) combobox_sub_almacenes.Model.GetValue(iter,1);
 		    	descsubalmacen = (string) combobox_sub_almacenes.Model.GetValue(iter,0);
 		    	if (checkbutton_envio_directo.Active == false){
+					Console.WriteLine("selecciona sub almacen");
 					llenado_de_material_solicitado();
 				}
 	     	}
@@ -363,7 +364,7 @@ namespace osiris
 	                                                                        "WHERE id_almacen = '"+idalmacenorigen+"' "+
 	                                                                        "AND id_producto = '"+(string) lista_de_materiales_solicitados.Model.GetValue (iterSelected,5)+"' ;";
 	                                                //Console.WriteLine("Actualiza el Producto");
-	                                                											Console.WriteLine("entra "+comando2.CommandText);
+	                                                Console.WriteLine("entra "+comando2.CommandText);
 	                                                											
 	                                                comando2.ExecuteNonQuery();
 	                                                comando2.Dispose();
@@ -839,7 +840,7 @@ namespace osiris
                						"to_char(fechahora_solicitud,'dd-MM-yyyy') AS fechahorasolicitud,"+
                						"to_char(fechahora_autorizado,'dd-MM-yyyy') AS fechahoraautorizado,"+
                						"status,surtido,osiris_productos.descripcion_producto,"+
-               						"to_char(id_secuencia,'9999999999') AS idsecuencia,"+
+               						"to_char(osiris_his_solicitudes_deta.id_secuencia,'9999999999') AS idsecuencia,"+
                						"to_char(folio_de_solicitud,'9999999999') AS foliodesolicitud,"+
                						"osiris_his_solicitudes_deta.eliminado,"+
 									"descripcion_grupo_producto,descripcion_grupo1_producto "+
@@ -858,7 +859,7 @@ namespace osiris
 									"AND envio_directo = 'false' "+
 									"AND osiris_his_solicitudes_deta.eliminado = 'false' "+
 									"ORDER BY osiris_his_solicitudes_deta.id_secuencia;";
-				Console.WriteLine(comando.CommandText);
+				//Console.WriteLine(comando.CommandText);
 				NpgsqlDataReader lector = comando.ExecuteReader ();
 				while(lector.Read()){			
 					this.treeViewEngineSolicitado.AppendValues(false,

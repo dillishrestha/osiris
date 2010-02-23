@@ -70,7 +70,7 @@ namespace osiris
 		
 		int comienzo_linea = 0;
 		int separacion_linea = 10;  		
-		int escala_en_linux_windows = 1;		// Linux = 1  Windows = 8
+		int escala_en_linux_windows;		// Linux = 1  Windows = 8
 		
 		//query de rango de fechas
 		string query_todo = " ";
@@ -114,6 +114,7 @@ namespace osiris
 		protected Gtk.Window MyWinError;
 		
 		class_conexion conexion_a_DB = new class_conexion();
+		class_public classpublic = new class_public();
 		
 		public proc_cobranza (int PidPaciente_,int folioservicio_,string nombrebd_ ,string entry_fecha_admision_,string entry_fechahora_alta_,
 						string entry_numero_factura_,string entry_nombre_paciente_,string entry_telefono_paciente_,string entry_doctor_,
@@ -125,6 +126,7 @@ namespace osiris
 			
 			connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
 			nombrebd = conexion_a_DB._nombrebd;
+			escala_en_linux_windows = classpublic.escala_linux_windows;
 			
 			//nombrebd = _nombrebd_;//
 			fecha_admision = entry_fecha_admision_;//
@@ -164,6 +166,7 @@ namespace osiris
 			PrintContext context = args.Context;
 			
 			ejecutar_consulta_reporte(context);
+			
 			// crea una pagina nueva
 			/*
 			Cairo.Context cr = context.CairoContext;
@@ -183,19 +186,9 @@ namespace osiris
 				
 		void ejecutar_consulta_reporte(PrintContext context)
 		{
-			Cairo.Context cr = context.CairoContext;
-			Pango.Layout layout = context.CreatePangoLayout ();
-			Pango.FontDescription desc = Pango.FontDescription.FromString ("Sans");									
-			// cr.Rotate(90)  Imprimir Orizontalmente rota la hoja cambian las posiciones de las lineas y columna					
-			fontSize = 8.0;
-			layout = null;
-			layout = context.CreatePangoLayout ();
-			desc.Size = (int)(fontSize * pangoScale);
-			layout.FontDescription = desc;
-			
 			NpgsqlConnection conexion; 
         	conexion = new NpgsqlConnection (connectionString+nombrebd);
-        	// Verifica que la base de datos este conectada
+			// Verifica que la base de datos este conectada
         	//Querys
 			query_todo = "SELECT "+
 					"osiris_erp_cobros_deta.folio_de_servicio,osiris_erp_cobros_deta.pid_paciente, "+ 
@@ -227,13 +220,24 @@ namespace osiris
 					"AND osiris_erp_cobros_enca.folio_de_servicio = '"+folioservicio.ToString()+"' "+
 		        	"AND osiris_erp_cobros_deta.eliminado = 'false' ";
 			try{
- 				conexion.Open ();
-        		NpgsqlCommand comando; 
-        		comando = conexion.CreateCommand (); 
-        		comando.CommandText = query_todo + query_rango_fechas + "ORDER BY  to_char(osiris_erp_cobros_deta.fechahora_creacion,'yyyy-MM-dd') ASC, osiris_erp_cobros_deta.id_tipo_admisiones ASC, osiris_productos.id_grupo_producto,osiris_erp_cobros_deta.id_secuencia; ";
-				Console.WriteLine(query_todo + query_rango_fechas + "ORDER BY  to_char(osiris_erp_cobros_deta.fechahora_creacion,'yyyy-MM-dd') ASC, osiris_erp_cobros_deta.id_tipo_admisiones ASC, osiris_productos.id_grupo_producto,osiris_erp_cobros_deta.id_secuencia; ");			
-        		NpgsqlDataReader lector = comando.ExecuteReader ();
-        		//Console.WriteLine("query proc cobr: "+comando.CommandText.ToString());
+				//if (numpage == 1){
+					Cairo.Context cr = context.CairoContext;
+					Pango.Layout layout = context.CreatePangoLayout ();
+					Pango.FontDescription desc = Pango.FontDescription.FromString ("Sans");									
+					// cr.Rotate(90)  Imprimir Orizontalmente rota la hoja cambian las posiciones de las lineas y columna					
+					fontSize = 8.0;
+					layout = null;
+					layout = context.CreatePangoLayout ();
+					desc.Size = (int)(fontSize * pangoScale);
+					layout.FontDescription = desc;
+ 					conexion.Open ();
+        			NpgsqlCommand comando; 
+        			comando = conexion.CreateCommand (); 
+        			comando.CommandText = query_todo + query_rango_fechas + "ORDER BY  to_char(osiris_erp_cobros_deta.fechahora_creacion,'yyyy-MM-dd') ASC, osiris_erp_cobros_deta.id_tipo_admisiones ASC, osiris_productos.id_grupo_producto,osiris_erp_cobros_deta.id_secuencia; ";
+					Console.WriteLine(query_todo + query_rango_fechas + "ORDER BY  to_char(osiris_erp_cobros_deta.fechahora_creacion,'yyyy-MM-dd') ASC, osiris_erp_cobros_deta.id_tipo_admisiones ASC, osiris_productos.id_grupo_producto,osiris_erp_cobros_deta.id_secuencia; ");			
+        			NpgsqlDataReader lector = comando.ExecuteReader ();
+        			//Console.WriteLine("query proc cobr: "+comando.CommandText.ToString());
+					//}
 				if (lector.Read()){	
 					if (  (int) lector["idadmisiones"] == 100 && id_tipopaciente == 101 && (bool) apl_desc_siempre == true
 							||(int) lector["idadmisiones"] == 300 && id_tipopaciente == 101 && (bool) apl_desc_siempre == true
@@ -294,7 +298,8 @@ namespace osiris
 					contador+=1;
 					salto_pagina(context,contador);				
 					idadmision_ = (int) lector["idadmisiones"];
-					idproducto = (int) lector["id_grupo_producto"];					
+					idproducto = (int) lector["id_grupo_producto"];		
+					
 					while (lector.Read()){
 						if (  (int) lector["idadmisiones"] == 100 && id_tipopaciente == 101 && (bool) apl_desc_siempre == true
 							||(int) lector["idadmisiones"] == 300 && id_tipopaciente == 101 && (bool) apl_desc_siempre == true
@@ -342,8 +347,8 @@ namespace osiris
 						fcreacion = (string) lector["fechcreacion"];
 						
 						//imprime_linea_producto(context,(string) lector["idproducto"],(string) lector["cantidadaplicada"],datos,(string) lector["preciounitario"],subtotal,ivaprod,total);
-						//contador+=1;
-						//salto_pagina(context,contador);
+						contador+=1;
+						salto_pagina(context,contador);
 ///////////////////////////////// SI LA ADMISION SIGUE SIENDO LA MISMA HACE ESTO://////////////////////////////////////////						
 						if(idadmision_ == (int) lector["idadmisiones"] && fcreacion == (string) lector["fechcreacion"]) { //}else{
 							//Console.WriteLine("sigue en: "+(string) lector["descripcion_admisiones"]);
@@ -683,19 +688,15 @@ namespace osiris
 		
 		void salto_pagina(PrintContext context,int contador_)
 		{			
-			/*
-			Cairo.Context cr = context.CairoContext;
-			if (contador_ > 57 )	{
-				Console.WriteLine("Salto de Pagina");				
-				// crea una pagina nueva
-				//cr.ShowPage();
-					
+			if (contador_ > 57 ){
+				Cairo.Context cr = context.CairoContext;
+				cr.ShowPage();				
 				numpage +=1;
 				comienzo_linea = 0;
 				separacion_linea = 10;
 				contador = 1;
+				imprime_encabezado(context);
 			}
-			*/
 		}
 				
 		private void OnEndPrint (object obj, Gtk.EndPrintArgs args)

@@ -666,7 +666,7 @@ namespace osiris
                						"to_char(fechahora_solicitud,'dd-MM-yyyy') AS fechahorasolicitud,"+
                						"to_char(fechahora_autorizado,'dd-MM-yyyy') AS fechahoraautorizado,"+
                						"status,surtido,osiris_productos.descripcion_producto,"+
-               						"to_char(id_secuencia,'9999999999') AS idsecuencia,"+
+               						"to_char(osiris_his_solicitudes_deta.id_secuencia,'9999999999') AS idsecuencia,"+
 									"descripcion_grupo_producto,descripcion_grupo1_producto,descripcion_grupo2_producto "+
                						"FROM osiris_his_solicitudes_deta,osiris_productos,osiris_grupo_producto,osiris_grupo1_producto,osiris_grupo2_producto "+
                						"WHERE osiris_his_solicitudes_deta.folio_de_solicitud = '"+(string) numerodesolicutud+"' "+
@@ -677,7 +677,7 @@ namespace osiris
 									"AND osiris_productos.id_grupo2_producto = osiris_grupo2_producto.id_grupo2_producto "+
 									"AND id_almacen = '"+this.idalmacen.ToString().Trim()+"' "+
 									"ORDER BY osiris_his_solicitudes_deta.id_secuencia;";
-				//Console.WriteLine(comando.CommandText);
+				Console.WriteLine(comando.CommandText);
 				NpgsqlDataReader lector = comando.ExecuteReader ();
 				while(lector.Read()){
 					if((bool) lector["status"] == false){

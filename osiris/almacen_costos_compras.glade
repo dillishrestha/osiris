@@ -13763,7 +13763,7 @@ Proveedor</property>
 
 			      <child>
 				<widget class="GtkEntry" id="entry18">
-				  <property name="width_request">20</property>
+				  <property name="width_request">10</property>
 				  <property name="visible">True</property>
 				  <property name="can_focus">True</property>
 				  <property name="editable">True</property>
@@ -13783,7 +13783,7 @@ Proveedor</property>
 
 			      <child>
 				<widget class="GtkEntry" id="entry22">
-				  <property name="width_request">266</property>
+				  <property name="width_request">350</property>
 				  <property name="visible">True</property>
 				  <property name="can_focus">True</property>
 				  <property name="editable">True</property>
@@ -13876,6 +13876,18 @@ Proveedor</property>
 				  <property name="padding">0</property>
 				  <property name="expand">False</property>
 				  <property name="fill">False</property>
+				</packing>
+			      </child>
+
+			      <child>
+				<widget class="GtkFixed" id="fixed256">
+				  <property name="width_request">100</property>
+				  <property name="visible">True</property>
+				</widget>
+				<packing>
+				  <property name="padding">0</property>
+				  <property name="expand">True</property>
+				  <property name="fill">True</property>
 				</packing>
 			      </child>
 			    </widget>
@@ -14050,7 +14062,7 @@ Proveedor</property>
 
 			  <child>
 			    <widget class="GtkTreeView" id="treeview3">
-			      <property name="width_request">830</property>
+			      <property name="width_request">832</property>
 			      <property name="height_request">410</property>
 			      <property name="visible">True</property>
 			      <property name="can_focus">True</property>
@@ -14357,7 +14369,7 @@ Proveedor</property>
 	      </child>
 
 	      <child>
-		<widget class="GtkButton" id="button29">
+		<widget class="GtkButton" id="button_salir">
 		  <property name="width_request">90</property>
 		  <property name="visible">True</property>
 		  <property name="can_focus">True</property>

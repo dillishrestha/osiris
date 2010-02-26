@@ -284,6 +284,7 @@ namespace osiris
 			button_selec_folio.Clicked += new EventHandler(on_selec_folio_clicked);
 			// Validando que sen solo numeros
 			entry_folio_servicio.KeyPressEvent += onKeyPressEvent_enter_folio;
+			entry_folio_servicio.ModifyBase(StateType.Normal, new Gdk.Color(255,243,169)); // Color Amarillo
 			// Activacion de grabacion de informacion
 	    	button_graba_pago.Clicked += new EventHandler(on_button_graba_pago_clicked);
 	    	//boton para dar de alta al paciente

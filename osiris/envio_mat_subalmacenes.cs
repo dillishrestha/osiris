@@ -979,8 +979,7 @@ namespace osiris
 		void selecciona_fila(object sender, ToggledArgs args)
 		{
 			TreeIter iter;
-			TreePath path = new TreePath (args.Path);
-			if (lista_de_materiales_solicitados.Model.GetIter (out iter, path)) {
+			if (lista_de_materiales_solicitados.Model.GetIter (out iter,new TreePath (args.Path))) {
 				bool old = (bool) lista_de_materiales_solicitados.Model.GetValue (iter,0);
 				lista_de_materiales_solicitados.Model.SetValue(iter,0,!old);
 			}	

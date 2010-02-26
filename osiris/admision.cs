@@ -169,7 +169,7 @@ namespace osiris
 		
 		public void on_button_paquetes_clicked(object sender, EventArgs a)
 		{
-			if (LoginEmpleado =="DOLIVARES"){
+			if (LoginEmpleado =="DOLIVARES" || LoginEmpleado =="ADMIN" ){
  				new osiris.paquetes_cirugias (LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
 			}else{
 				MessageDialog msgBox = new MessageDialog (MyWin,DialogFlags.Modal,
@@ -211,8 +211,7 @@ namespace osiris
 		
 		void on_button_cancela_folios_clicked(object sender, EventArgs args)
 		{
-			if (LoginEmpleado =="DOLIVARES" || LoginEmpleado =="HVARGAS" || LoginEmpleado =="JBUENTELLO" ||  
-				LoginEmpleado == "N000309" ){
+			if (LoginEmpleado =="DOLIVARES" || LoginEmpleado =="ADMIN"){
 				menu_admision.Destroy();
 				Glade.XML gxml = new Glade.XML (null, "registro_admision.glade", "cancelador_folios", null);
 				gxml.Autoconnect (this);

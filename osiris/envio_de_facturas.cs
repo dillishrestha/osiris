@@ -477,7 +477,7 @@ namespace osiris
 		
 		void on_selecciona_cliente(object sender, EventArgs args)
 		{
-			Console.WriteLine("ENTRE");
+			//Console.WriteLine("ENTRE");
 			TreeModel model;
 			TreeIter iterSelected;
 			if (lista_de_busqueda.Selection.GetSelected(out model, out iterSelected)) 

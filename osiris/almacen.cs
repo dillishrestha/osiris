@@ -99,6 +99,7 @@ namespace osiris
 		
 		void on_button_captura_fact_orden_comp_clicked(object sender, EventArgs args)
 		{
+			// captura_fac_ordenes_compra.cs
 			new osiris.factura_orden_compra(LoginEmpleado,NomEmpleado+" "+AppEmpleado+" "+ApmEmpleado,nombrebd);
 		}
 

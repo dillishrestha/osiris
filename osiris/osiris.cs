@@ -155,8 +155,8 @@ namespace osiris
 			button_cancelar.Clicked += new EventHandler(on_button_salir_clicked);
 			button_aceptar.Clicked += new EventHandler(on_aceptar_clicked);
 			// activacion de la tecla Enter en los entry
-			//entry_login.KeyPressEvent += onKeyPressEvent_enter;
-			//entry_password.KeyPressEvent += onKeyPressEvent_enter;
+			entry_login.KeyPressEvent += onKeyPressEvent_enter;
+			entry_password.KeyPressEvent += onKeyPressEvent_enter;
 		}
 		
 		private void on_aceptar_clicked(object o, EventArgs args)
@@ -170,9 +170,7 @@ namespace osiris
 			class_conexion conexion_a_DB = new class_conexion();
 			connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
 			nombrebd = conexion_a_DB._nombrebd;
-			
-			Console.WriteLine(connectionString);
-			
+						
 			NpgsqlConnection conexion;
             conexion = new NpgsqlConnection(connectionString+nombrebd);
             // Verifica que la base de datos este conectada
@@ -305,7 +303,7 @@ namespace osiris
 			//button_farmacia.Hide();
 			button_nutricion.Hide();
 			button_afiliados.Hide();
-			button_proveedores.Hide();
+			//button_proveedores.Hide();
 			button_inhaloterapia.Hide();
 			button_hemodialisis.Hide();
 				
@@ -580,6 +578,15 @@ namespace osiris
 				}
 			}			
         }
+		
+		[GLib.ConnectBefore ()]   	  // Esto es indispensable para que funcione    
+		public void onKeyPressEvent_enter(object o, Gtk.KeyPressEventArgs args)
+		{
+			if (args.Event.Key == Gdk.Key.Return || args.Event.Key == Gdk.Key.KP_Enter){
+				args.RetVal = true;				
+				 verifica_usuariopasswd();
+			}
+		}
 		
 		// Valida entradas que solo sean numericas, se utiliza eb ventana de
 		// carga de producto

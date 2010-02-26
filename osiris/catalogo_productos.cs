@@ -121,7 +121,7 @@ namespace osiris
 	 	decimal precio_uni = 0;
 	 	bool aplica_descuento;
 	 	string tipounidadproducto = "";
-		
+				
 		// Almacena los valores anterios para guardar los cuando actualiza algun precio, o descripcion
 	 	decimal precio_unitario_anterior = 0;
 	 	decimal precio_costo_anterior = 0;
@@ -182,12 +182,14 @@ namespace osiris
 		protected Gtk.Window MyWin;
 		
 		class_conexion conexion_a_DB = new class_conexion();
+		class_public classpublic = new class_public();
 						
 		public catalogo_productos_nuevos (string LoginEmp, string NomEmpleado, string AppEmpleado, string ApmEmpleado, string nombrebd_ )
 		{
 			LoginEmpleado = LoginEmp;
 			connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
 			nombrebd = conexion_a_DB._nombrebd;
+						
 			//Direcciona al glade
 			Glade.XML gxml = new Glade.XML (null, "almacen_costos_compras.glade", "catalogo_productos", null);
 			gxml.Autoconnect (this);
@@ -804,6 +806,7 @@ namespace osiris
 				decimal descuentocero = 0;
 				decimal descuento = decimal.Parse(this.entry_descuento_en_porciento.Text, System.Globalization.NumberStyles.Float, new System.Globalization.CultureInfo( "es-MX" )); 
 				decimal porcientodescuento = 0;
+				decimal valoriva = decimal.Parse(classpublic.ivaparaaplicar);
 				
 				if (this.checkbutton_descuento.Active == true){
 					descuento = (precio_uni * descuento)/100;
@@ -813,7 +816,7 @@ namespace osiris
 					this.entry_descuento_en_porciento.Text = descuentocero.ToString("F").Replace(",",".");
 				}
 				if(this.checkbutton_apl_iva.Active == true){
-					calculo_iva = (precio_pub*15)/100;
+					calculo_iva = (precio_pub*valoriva)/100;
 					preciopublico = calculo_iva + precio_pub;
 					this.entry_iva.Text = calculo_iva.ToString("F").Replace(",",".");					
 					entry_precio_publico.Text = preciopublico.ToString("F").Replace(",",".");
@@ -1023,7 +1026,7 @@ namespace osiris
 				float preciocondesc;
 				float tomaprecio;
 				float tomadescue;
-				float valoriva = 15;
+				float valoriva = float.Parse(classpublic.ivaparaaplicar);
 							
 				while (lector.Read()){
 					calculodeiva = 0;

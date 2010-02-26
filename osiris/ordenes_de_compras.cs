@@ -74,8 +74,7 @@ namespace osiris
     	string descripinternamiento = "";	// Descripcion de Centro de Costos - Solicitado por
 		
 		TreeStore treeViewEngineProductosaComprar;	// Lista de proctos que se van a comprar
-		TreeStore treeViewEngineproveedores;		// Lista de proveedores en el treeview
-		
+				
 		//Declaracion de ventana de error
 		protected Gtk.Window MyWinError;
 		protected Gtk.Window MyWin;		
@@ -136,7 +135,7 @@ namespace osiris
 			TreeIter iterSelected;
 			TreeModel model;
 			TreeIter iter;
-									
+			//this.treeViewEngineProductosaComprar.GetSortColumnId(out iterSelected,			
 			if (this.treeViewEngineProductosaComprar.GetIterFirst(out iterSelected)){
 				if ((bool)this.lista_productos_a_comprar.Model.GetValue (iterSelected,0) == true){
 					if (variable_paso_01 == true){
@@ -175,14 +174,14 @@ namespace osiris
 			 										"HOSPITAL"+"','"+
 			 										"SU CONDUCTO"+"','"+
 			 										this.entry_formapago.Text+"','"+
-	 												(string)lista_productos_a_comprar.Model.GetValue(iterSelected,12)+"','"+
-	 												(string)lista_productos_a_comprar.Model.GetValue(iterSelected,2)+"','"+
-	 												(string)lista_productos_a_comprar.Model.GetValue(iterSelected,16)+"','"+
-	 												(string)lista_productos_a_comprar.Model.GetValue(iterSelected,17)+"','"+
-	 												(string)lista_productos_a_comprar.Model.GetValue(iterSelected,18)+"','"+
-	 												(string)lista_productos_a_comprar.Model.GetValue(iterSelected,19)+"','"+
-	 												(string)lista_productos_a_comprar.Model.GetValue(iterSelected,20)+"','"+
-	 												(string)lista_productos_a_comprar.Model.GetValue(iterSelected,21)+"','"+
+	 												(string) lista_productos_a_comprar.Model.GetValue(iterSelected,12)+"','"+
+	 												(string) lista_productos_a_comprar.Model.GetValue(iterSelected,2).ToString().Trim()+"','"+
+	 												(string) lista_productos_a_comprar.Model.GetValue(iterSelected,16)+"','"+
+	 												(string) lista_productos_a_comprar.Model.GetValue(iterSelected,17)+"','"+
+	 												(string) lista_productos_a_comprar.Model.GetValue(iterSelected,18)+"','"+
+	 												(string) lista_productos_a_comprar.Model.GetValue(iterSelected,19)+"','"+
+	 												(string) lista_productos_a_comprar.Model.GetValue(iterSelected,20)+"','"+
+	 												(string) lista_productos_a_comprar.Model.GetValue(iterSelected,21)+"','"+
 	 													 												
 	 												this.ultimaorden.ToString()+
 
@@ -214,7 +213,7 @@ namespace osiris
 							NpgsqlCommand comando3; 
 							comando3 = conexion3.CreateCommand();
 							comando3.CommandText =  "UPDATE osiris_erp_requisicion_deta SET id_quien_compro = ' "+LoginEmpleado+"', "+
-											    "fechahora_compra = '"+DateTime.Now.ToString("dd-MM-yyyy")+"', "+
+											    "fechahora_compra = '"+DateTime.Now.ToString("yyyy-MM-dd")+"', "+
 											    "comprado = 'true', "+
 											    "id_proveedor = '"+variable_paso_02+"', "+
 											    "numero_orden_compra = '"+this.ultimaorden.ToString()+"' "+
@@ -272,14 +271,14 @@ namespace osiris
 			 										"HOSPITAL"+"','"+
 			 										"SU CONDUCTO"+"','"+
 			 										this.entry_formapago.Text+"','"+
-	 												(string)lista_productos_a_comprar.Model.GetValue(iterSelected,12)+"','"+
-	 												(string)lista_productos_a_comprar.Model.GetValue(iterSelected,2)+"','"+
-	 												(string)lista_productos_a_comprar.Model.GetValue(iterSelected,16)+"','"+
-	 												(string)lista_productos_a_comprar.Model.GetValue(iterSelected,17)+"','"+
-	 												(string)lista_productos_a_comprar.Model.GetValue(iterSelected,18)+"','"+
-	 												(string)lista_productos_a_comprar.Model.GetValue(iterSelected,19)+"','"+
-	 												(string)lista_productos_a_comprar.Model.GetValue(iterSelected,20)+"','"+
-	 												(string)lista_productos_a_comprar.Model.GetValue(iterSelected,21)+"','"+
+	 												(string) lista_productos_a_comprar.Model.GetValue(iterSelected,12)+"','"+
+	 												(string) lista_productos_a_comprar.Model.GetValue(iterSelected,2)+"','"+
+	 												(string) lista_productos_a_comprar.Model.GetValue(iterSelected,16)+"','"+
+	 												(string) lista_productos_a_comprar.Model.GetValue(iterSelected,17)+"','"+
+	 												(string) lista_productos_a_comprar.Model.GetValue(iterSelected,18)+"','"+
+	 												(string) lista_productos_a_comprar.Model.GetValue(iterSelected,19)+"','"+
+	 												(string) lista_productos_a_comprar.Model.GetValue(iterSelected,20)+"','"+
+	 												(string) lista_productos_a_comprar.Model.GetValue(iterSelected,21)+"','"+
 	 													 												
 	 												this.ultimaorden.ToString()+
 
@@ -311,7 +310,7 @@ namespace osiris
 							NpgsqlCommand comando3; 
 							comando3 = conexion3.CreateCommand();
 							comando3.CommandText =  "UPDATE osiris_erp_requisicion_deta SET id_quien_compro = ' "+LoginEmpleado+"', "+
-											    "fechahora_compra = '"+DateTime.Now.ToString("dd-MM-yyyy")+"', "+
+											    "fechahora_compra = '"+DateTime.Now.ToString("yyyy-MM-dd")+"', "+
 											    "comprado = 'true', "+
 											    "id_proveedor = '"+variable_paso_02+"', "+
 											    "numero_orden_compra = '"+this.ultimaorden.ToString()+"' "+

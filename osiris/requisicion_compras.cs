@@ -885,7 +885,7 @@ namespace osiris
 										"osiris_productos.tipo_unidad_producto,to_char(numero_orden_compra,'9999999999') AS numeroordencompra,"+
 										"autorizada,to_char(fechahora_autorizado,'yyyy-MM-dd') AS fechahoraautorizado,"+
 										"to_char(osiris_erp_requisicion_deta.costo_por_unidad,'999999999.99') AS costoporunidad,to_char(osiris_erp_requisicion_deta.costo_producto,'999999999.99') AS costoproducto,"+
-										"to_char(fechahora_compra,'yyyy-MM-dd') AS fechahoracompra,to_char(id_secuencia,'9999999999') AS idsecuencia,"+
+										"to_char(fechahora_compra,'yyyy-MM-dd') AS fechahoracompra,to_char(osiris_erp_requisicion_deta.id_secuencia,'9999999999') AS idsecuencia,"+
 										"to_char(id_proveedor1,'9999999999') AS idproveedor1,osiris_erp_proveedores.descripcion_proveedor,"+
 										"to_char(id_proveedor2,'9999999999') AS idproveedor2,descripcion_proveedor2,"+
 										"to_char(id_proveedor3,'9999999999') AS idproveedor3,descripcion_proveedor3,"+
@@ -1323,7 +1323,7 @@ namespace osiris
 				float preciocondesc;
 				float tomaprecio;
 				float tomadescue;
-				float valoriva = 15;							
+				float valoriva = float.Parse(classpublic.ivaparaaplicar);							
 				while (lector.Read()){
 					calculodeiva = 0;
 					preciomasiva = 0;

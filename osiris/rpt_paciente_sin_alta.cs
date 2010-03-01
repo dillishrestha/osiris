@@ -35,6 +35,7 @@ using Gtk;
 using Npgsql;
 using System.Data;
 using Glade;
+using Gnome;
 
 namespace osiris
 {
@@ -81,14 +82,14 @@ namespace osiris
 								
 		// Declarando variable de fuente para la impresion
 		// Declaracion de fuentes tipo Bitstream Vera sans
-		//public Gnome.Font fuente6 = Gnome.Font.FindClosest("Bitstream Vera Sans", 6);
-		//public Gnome.Font fuente7 = Gnome.Font.FindClosest("Bitstream Vera Sans", 7);
-		//public Gnome.Font fuente8 = Gnome.Font.FindClosest("Bitstream Vera Sans", 8);
-		//public Gnome.Font fuente9 = Gnome.Font.FindClosest("Bitstream Vera Sans", 9);
-		//public Gnome.Font fuente10 = Gnome.Font.FindClosest("Bitstream Vera Sans", 10);
-		//public Gnome.Font fuente11 = Gnome.Font.FindClosest("Bitstream Vera Sans", 11);
-		//public Gnome.Font fuente12 = Gnome.Font.FindClosest("Bitstream Vera Sans", 12);
-		//public Gnome.Font fuente36 = Gnome.Font.FindClosest("Bitstream Vera Sans", 36);
+		Gnome.Font fuente6 = Gnome.Font.FindClosest("Bitstream Vera Sans", 6);
+		Gnome.Font fuente7 = Gnome.Font.FindClosest("Bitstream Vera Sans", 7);
+		Gnome.Font fuente8 = Gnome.Font.FindClosest("Bitstream Vera Sans", 8);
+		Gnome.Font fuente9 = Gnome.Font.FindClosest("Bitstream Vera Sans", 9);
+		Gnome.Font fuente10 = Gnome.Font.FindClosest("Bitstream Vera Sans", 10);
+		Gnome.Font fuente11 = Gnome.Font.FindClosest("Bitstream Vera Sans", 11);
+		Gnome.Font fuente12 = Gnome.Font.FindClosest("Bitstream Vera Sans", 12);
+		Gnome.Font fuente36 = Gnome.Font.FindClosest("Bitstream Vera Sans", 36);
 		
 		//Declaracion de ventana de error
 		protected Gtk.Window MyWinError;
@@ -409,9 +410,6 @@ namespace osiris
 		
 		void imprime_reporte(object sender, EventArgs args)
 		{
-			
-		}
-		/*
 			titulo = "REPORTE DE OCUPACION";
 			Gnome.PrintJob    trabajo   = new Gnome.PrintJob (PrintConfig.Default());
         	Gnome.PrintDialog dialogo   = new Gnome.PrintDialog (trabajo, titulo, 0);
@@ -437,7 +435,7 @@ namespace osiris
         	dialogo.Hide (); dialogo.Dispose ();
 		}
 		
-		void ComponerPagina (object ContextoImp, object trabajoImpresion)
+		void ComponerPagina (Gnome.PrintContext ContextoImp, Gnome.PrintJob trabajoImpresion)
 		{	
 			ContextoImp.BeginPage("Pagina 1");
 			ContextoImp.Rotate(90);
@@ -447,7 +445,7 @@ namespace osiris
 		
 ///////////////////////////////REPORTE DE OCUPACION/////////////////////////////////////////////////////////
 ///////////////////////////////REPORTE DE OCUPACION/////////////////////////////////////////////////////////
-		void imprime_rpt_ocupacion(object ContextoImp, object trabajoImpresion)
+		void imprime_rpt_ocupacion(Gnome.PrintContext ContextoImp, Gnome.PrintJob trabajoImpresion)
 		{	
 				TreeIter iter;
 				string tomovalor1 = "";
@@ -583,16 +581,16 @@ namespace osiris
 				salto_pagina(ContextoImp,trabajoImpresion);				
 		}
 		
-		void imprime_encabezado(object ContextoImp, object trabajoImpresion)
+		void imprime_encabezado(Gnome.PrintContext ContextoImp, Gnome.PrintJob trabajoImpresion)
 		{
 	 		// Cambiar la fuente
 			Gnome.Print.Setfont (ContextoImp, fuente6);
 			ContextoImp.MoveTo(65.5, -30);			ContextoImp.Show("Sistema Hospitalario OSIRIS");
 			ContextoImp.MoveTo(66, -30);			ContextoImp.Show("Sistema Hospitalario OSIRIS");
-			ContextoImp.MoveTo(65.5, -40);			ContextoImp.Show("Direccion: Isacc Garza #200 Ote. Centro Monterrey, NL.");
-			ContextoImp.MoveTo(66, -40);			ContextoImp.Show("Direccion: Isacc Garza #200 Ote. Centro Monterrey, NL.");
-			ContextoImp.MoveTo(65.5, -50);			ContextoImp.Show("Conmutador:(81) 81-25-56-10");
-			ContextoImp.MoveTo(66, -50);			ContextoImp.Show("Conmutador:(81) 81-25-56-10");
+			ContextoImp.MoveTo(65.5, -40);			ContextoImp.Show("Direccion:");
+			ContextoImp.MoveTo(66, -40);			ContextoImp.Show("Direccion:");
+			ContextoImp.MoveTo(65.5, -50);			ContextoImp.Show("Conmutador:");
+			ContextoImp.MoveTo(66, -50);			ContextoImp.Show("Conmutador:");
 			Gnome.Print.Setfont(ContextoImp,fuente11);
 			ContextoImp.MoveTo(350.5, -40);			ContextoImp.Show(titulo);
 			ContextoImp.MoveTo(351, -40);			ContextoImp.Show(titulo);
@@ -604,7 +602,7 @@ namespace osiris
 			imprime_titulo(ContextoImp,trabajoImpresion);
 	  	}
 		
-		void imprime_titulo(object ContextoImp, object trabajoImpresion)
+		void imprime_titulo(Gnome.PrintContext ContextoImp, Gnome.PrintJob trabajoImpresion)
 		{	
 			Gnome.Print.Setfont(ContextoImp,fuente9);
 			ContextoImp.MoveTo(55.5, -65);					ContextoImp.Show("Pid"); //| Fecha | Nº Atencion | Paciente | SubTotal al 15 | SubTotal al 0 | IVA | SubTotal Deducible | Coaseguro | Total | Hono. Medico");
@@ -644,7 +642,7 @@ namespace osiris
 			ContextoImp.MoveTo(716, -65);					ContextoImp.Show("Aseg./Empresa");
 		} 
 		
-		void salto_pagina(object ContextoImp, object trabajoImpresion)
+		void salto_pagina(Gnome.PrintContext ContextoImp, Gnome.PrintJob trabajoImpresion)
 		{
 	        if (contador > 55 ){
 	        	numpage +=1;        	contador=1;
@@ -655,8 +653,7 @@ namespace osiris
 				imprime_encabezado(ContextoImp,trabajoImpresion);
 	     	}
 		}
-		*/
-		
+				
 		// Valida entradas que solo sean numericas, se utiliza eb ventana de
 		//de rangos de fechas
 		[GLib.ConnectBefore ()]   	  // Esto es indispensable para que funcione    

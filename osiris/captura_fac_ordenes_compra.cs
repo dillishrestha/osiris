@@ -373,19 +373,30 @@ namespace osiris
 				conexion.Open ();
 				NpgsqlCommand comando; 
 				comando = conexion.CreateCommand ();
-               	comando.CommandText = "SELECT numero_orden_compra,to_char(id_proveedor,'999999999999') AS idproveedor,descripcion_proveedor,direccion_proveedor,"+
+               	comando.CommandText = "SELECT numero_orden_compra,id_proveedor,descripcion_proveedor,direccion_proveedor,"+
 					"faxnextel_proveedor,contacto_proveedor,condiciones_de_pago,fechahora_creacion "+
 					"FROM osiris_erp_ordenes_compras_enca WHERE numero_orden_compra = '"+entry_orden_de_compra.Text.Trim()+"';";
 				//Console.WriteLine(comando.CommandText);
 				NpgsqlDataReader lector = comando.ExecuteReader ();							
 				if (lector.Read()){
-					entry_id_proveedor.Text = (string) lector["idproveedor"].ToString().Trim();
+					entry_id_proveedor.Text = Convert.ToString((int) lector["id_proveedor"]).ToString().Trim();
 					entry_nombre_proveedor.Text = (string) lector["descripcion_proveedor"];
 					entry_direccion_proveedor.Text = (string) lector["direccion_proveedor"];
 					entry_tel_proveedor.Text = (string) lector["faxnextel_proveedor"];
 					entry_contacto_proveedor.Text  = (string) lector["contacto_proveedor"];
 					entry_formapago.Text  = (string) lector["condiciones_de_pago"];
 				}
+				comando = conexion.CreateCommand ();
+				
+               	comando.CommandText = "SELECT * "+
+					"FROM osiris_erp_requisicion_deta WHERE numero_orden_compra = '"+entry_orden_de_compra.Text.Trim()+"';";
+				//Console.WriteLine(comando.CommandText);
+				NpgsqlDataReader lector1 = comando.ExecuteReader ();							
+				while (lector1.Read()){
+					treeViewEngineListaProdRequi.AppendValues (false,this.entry_num_factura_proveedor.Text.Trim(),
+					                                           float.Parse(Convert.ToString((decimal) lector1["cantidad_solicitada"]).ToString()).ToString("F"));
+				}
+								
 			}catch (NpgsqlException ex){
 	   			MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
 								MessageType.Warning, ButtonsType.Ok, "PostgresSQL error: {0}",ex.Message);

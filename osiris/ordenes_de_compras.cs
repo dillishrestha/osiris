@@ -314,7 +314,9 @@ namespace osiris
 											    "comprado = 'true', "+
 											    "id_proveedor = '"+variable_paso_02+"', "+
 											    "numero_orden_compra = '"+this.ultimaorden.ToString()+"' "+
-												//"cantidad_comprada = '"+
+												//"cantidad_comprada = '"+  +"',"+
+												//precio_proveedor_1 = '"+  +"',"+
+												//id_proveedor1 = '"+  +"',"+
 							                    "WHERE id_requisicion ='"+(string) this.lista_productos_a_comprar.Model.GetValue (iterSelected,2)+"' "+
 							                    "AND id_producto ='"+(string) this.lista_productos_a_comprar.Model.GetValue (iterSelected,6)+"' ;"; 
 							    
@@ -389,7 +391,7 @@ namespace osiris
 							this.lista_productos_a_comprar.Model.SetValue(iter,0,true);
 							
 							this.lista_productos_a_comprar.Model.SetValue(iter,10,(string) lector["preciocosto"]);					// precio prov
-							this.lista_productos_a_comprar.Model.SetValue(iter,11,(string) lector["preciocostounitario"]);		// precio unitario
+							this.lista_productos_a_comprar.Model.SetValue(iter,11,(string) lector["preciocostounitario"]);			// precio unitario
 							this.lista_productos_a_comprar.Model.SetValue(iter,13,(string) lector["codigo_producto_proveedor"]);	// Codigo
 							this.lista_productos_a_comprar.Model.SetValue(iter,14,(string) lector["codigo_de_barra"]);				// Barras						
 							this.lista_productos_a_comprar.Model.SetValue(iter,12,(string) this.entry_nombre_proveedor.Text);		// Nombre Proveedor
@@ -428,7 +430,7 @@ namespace osiris
                				if (lector.Read()){					
 								this.lista_productos_a_comprar.Model.SetValue(iter,0,true);
 								this.lista_productos_a_comprar.Model.SetValue(iter,10,(string) lector["preciocosto"]);					// precio prov
-								this.lista_productos_a_comprar.Model.SetValue(iter,11,(string) lector["preciocostounitario"]);		// precio unitario
+								this.lista_productos_a_comprar.Model.SetValue(iter,11,(string) lector["preciocostounitario"]);			// precio unitario
 								this.lista_productos_a_comprar.Model.SetValue(iter,13,(string) lector["codigo_producto_proveedor"]);	// Codigo
 								this.lista_productos_a_comprar.Model.SetValue(iter,14,(string) lector["codigo_de_barra"]);				// Barras
 								this.lista_productos_a_comprar.Model.SetValue(iter,12,(string) this.entry_nombre_proveedor.Text);		// actualiza treeview con el nombre del proveedor

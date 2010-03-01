@@ -101,6 +101,9 @@
     <File name="cagos_modulos_medicos.cs" subtype="Code" buildaction="Compile" />
     <File name="class_buscador.cs" subtype="Code" buildaction="Compile" />
     <File name="OSIRISLogo.jpg" subtype="Code" buildaction="Nothing" />
+    <File name="rpt_separacion_de_paquetes.cs" subtype="Code" buildaction="Compile" />
+    <File name="rpt_paciente_con_alta.cs" subtype="Code" buildaction="Compile" />
+    <File name="rpt_presupuestos.cs" subtype="Code" buildaction="Compile" />
   </Contents>
   <References>
     <ProjectReference type="Gac" localcopy="True" refto="Mono.Cairo, Version=2.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756" />
@@ -114,6 +117,8 @@
     <ProjectReference type="Gac" localcopy="True" refto="pango-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
     <ProjectReference type="Gac" localcopy="True" refto="atk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
     <ProjectReference type="Gac" localcopy="True" refto="System.Xml, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+    <ProjectReference type="Gac" localcopy="True" refto="gnome-sharp, Version=2.24.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
+    <ProjectReference type="Gac" localcopy="True" refto="gnome-print-sharp, Version=2.18.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
   </References>
   <DeploymentInformation strategy="File" />
 </Project>

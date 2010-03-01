@@ -1,15 +1,17 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workbench ActiveDocument="osiris\osiris.cs" ctype="Workbench">
+  <MonoDevelop.Ide.Workbench ActiveDocument="osiris/cambia_paciente.cs" ctype="Workbench">
     <Files>
-      <File FileName="osiris\historia_clinica.cs" Line="204" Column="40" />
-      <File FileName="osiris\osiris.cs" Line="174" Column="60" />
+      <File FileName="osiris/captura_fac_ordenes_compra.cs" Line="117" Column="1" />
+      <File FileName="osiris/cagos_modulos_medicos.cs" Line="1345" Column="1" />
+      <File FileName="osiris/rpt_cons_informado.cs" Line="1" Column="60" />
+      <File FileName="osiris/cambia_paciente.cs" Line="199" Column="65" />
+      <File FileName="osiris/autorizacion_doctores_compra.cs" Line="1195" Column="4" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
         <State expanded="True">
           <Node name="osiris" expanded="True">
-            <Node name="References" expanded="True" />
-            <Node name="osiris.cs" selected="True" />
+            <Node name="References" expanded="True" selected="True" />
           </Node>
         </State>
       </Pad>

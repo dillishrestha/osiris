@@ -35,7 +35,6 @@ using Npgsql;
 using System.Data;
 using Glade;
 using System.Collections;
-using GtkSharp;
 
 namespace osiris
 {
@@ -60,17 +59,17 @@ namespace osiris
 		[Widget] Gtk.Button button_rep;
 		[Widget] Gtk.Button button_salir;
 				
-		public string nombrebd;
-		public string query_fechas = " ";
-		public string rango1 = "";
-		public string rango2 = "";
+		string nombrebd;
+		string query_fechas = " ";
+		string rango1 = "";
+		string rango2 = "";
 		
-		public int columna = 0;
-		public int fila = -80;
-		public int contador = 1;
-		public int numpage = 1;
+		int columna = 0;
+		int fila = -80;
+		int contador = 1;
+		int numpage = 1;
 		
-		public string titulo = "REPORTE PRESUPUESTOS";
+		string titulo = "REPORTE PRESUPUESTOS";
 		
 		private ListStore treeViewEnginepresupuesto;
 		
@@ -80,24 +79,24 @@ namespace osiris
 		
 		// Declarando variable de fuente para la impresion
 		// Declaracion de fuentes tipo Bitstream Vera sans
-		public Gnome.Font fuente5 = Gnome.Font.FindClosest("Luxi Sans", 5);
-		public Gnome.Font fuente6 = Gnome.Font.FindClosest("Luxi Sans", 6);
-		public Gnome.Font fuente7 = Gnome.Font.FindClosest("Luxi Sans", 7);
-		public Gnome.Font fuente8 = Gnome.Font.FindClosest("Luxi Sans", 8);//Bitstream Vera Sans
-		public Gnome.Font fuente9 = Gnome.Font.FindClosest("Luxi Sans", 9);
-		public Gnome.Font fuente10 = Gnome.Font.FindClosest("Luxi Sans", 10);
-		public Gnome.Font fuente11 = Gnome.Font.FindClosest("Luxi Sans", 11);
-		public Gnome.Font fuente12 = Gnome.Font.FindClosest("Luxi Sans", 12);
-		public Gnome.Font fuente36 = Gnome.Font.FindClosest("Luxi Sans", 36);
+		Gnome.Font fuente5 = Gnome.Font.FindClosest("Luxi Sans", 5);
+		Gnome.Font fuente6 = Gnome.Font.FindClosest("Luxi Sans", 6);
+		Gnome.Font fuente7 = Gnome.Font.FindClosest("Luxi Sans", 7);
+		Gnome.Font fuente8 = Gnome.Font.FindClosest("Luxi Sans", 8);//Bitstream Vera Sans
+		Gnome.Font fuente9 = Gnome.Font.FindClosest("Luxi Sans", 9);
+		Gnome.Font fuente10 = Gnome.Font.FindClosest("Luxi Sans", 10);
+		Gnome.Font fuente11 = Gnome.Font.FindClosest("Luxi Sans", 11);
+		Gnome.Font fuente12 = Gnome.Font.FindClosest("Luxi Sans", 12);
+		Gnome.Font fuente36 = Gnome.Font.FindClosest("Luxi Sans", 36);
 		
-		public string connectionString = "Server=localhost;" +
-						"Port=5432;" +
-						 "User ID=admin;" +
-						"Password=1qaz2wsx;";
+		string connectionString;
+		
+		class_conexion conexion_a_DB = new class_conexion();
 						
-		public rpt_presupuesto(string _nombrebd_)		
+		public rpt_presupuesto(string nombrebd_)
 		{
-			nombrebd = _nombrebd_;
+			connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
+			nombrebd = conexion_a_DB._nombrebd;
 			
 			Glade.XML gxml = new Glade.XML (null, "almacen_costos_compras.glade", "envio_almacenes", null);
 			gxml.Autoconnect (this);
@@ -131,8 +130,8 @@ namespace osiris
 				rango1 = entry_ano_inicio.Text+"-"+entry_mes_inicio.Text+"-"+entry_dia_inicio.Text;
 				rango2 = entry_ano_termino.Text+"-"+entry_mes_termino.Text+"-"+entry_dia_inicio.Text;
 				
-				query_fechas = " AND to_char(hscmty_his_presupuestos_enca.fecha_de_creacion_presupuesto,'yyyy-MM-dd') >= '"+rango1+"' "+
-								"AND to_char(hscmty_his_presupuestos_enca.fecha_de_creacion_presupuesto,'yyyy-MM-dd') <= '"+rango2+"' ";
+				query_fechas = " AND to_char(osiris_his_presupuestos_enca.fecha_de_creacion_presupuesto,'yyyy-MM-dd') >= '"+rango1+"' "+
+								"AND to_char(osiris_his_presupuestos_enca.fecha_de_creacion_presupuesto,'yyyy-MM-dd') <= '"+rango2+"' ";
 							
 			}
 			llenando_lista_de_presupuestos();
@@ -282,20 +281,20 @@ namespace osiris
 				NpgsqlCommand comando; 
 				comando = conexion.CreateCommand ();
 				
-					comando.CommandText = "SELECT to_char(hscmty_his_presupuestos_enca.id_presupuesto,'999999999') AS idpresupuesto,"+
-								"to_char(hscmty_his_presupuestos_enca.id_tipo_cirugia,'999999999') AS idcirugia,"+ 
-								"hscmty_his_presupuestos_enca.id_quien_creo,"+
-								"to_char(hscmty_his_presupuestos_enca.precio_convenido,'999999999.99') AS precioconvenido,"+
-								"to_char(hscmty_his_presupuestos_enca.fecha_de_creacion_presupuesto,'yyyy-MM-dd') AS fechacreacion,"+
-								"to_char(hscmty_his_presupuestos_enca.total_presupuesto,'999999999.99') AS total,"+ 
-								"hscmty_his_tipo_cirugias.descripcion_cirugia,"+
-								"hscmty_his_tipo_cirugias.id_tipo_cirugia,"+
-								"to_char(hscmty_his_presupuestos_enca.deposito_minimo,'999999999.99') AS depositominimo,"+
-								"to_char(hscmty_his_presupuestos_enca.dias_internamiento,'999999999') AS dias,"+
-								"to_char(hscmty_his_presupuestos_enca.id_medico,'999999999') AS idmedico,"+
-								"hscmty_his_presupuestos_enca.telefono_medico "+
-								"FROM hscmty_his_presupuestos_enca,hscmty_his_tipo_cirugias "+
-								"WHERE hscmty_his_tipo_cirugias.id_tipo_cirugia = hscmty_his_presupuestos_enca.id_tipo_cirugia "+
+					comando.CommandText = "SELECT to_char(osiris_his_presupuestos_enca.id_presupuesto,'999999999') AS idpresupuesto,"+
+								"to_char(osiris_his_presupuestos_enca.id_tipo_cirugia,'999999999') AS idcirugia,"+ 
+								"osiris_his_presupuestos_enca.id_quien_creo,"+
+								"to_char(osiris_his_presupuestos_enca.precio_convenido,'999999999.99') AS precioconvenido,"+
+								"to_char(osiris_his_presupuestos_enca.fecha_de_creacion_presupuesto,'yyyy-MM-dd') AS fechacreacion,"+
+								"to_char(osiris_his_presupuestos_enca.total_presupuesto,'999999999.99') AS total,"+ 
+								"osiris_his_tipo_cirugias.descripcion_cirugia,"+
+								"osiris_his_tipo_cirugias.id_tipo_cirugia,"+
+								"to_char(osiris_his_presupuestos_enca.deposito_minimo,'999999999.99') AS depositominimo,"+
+								"to_char(osiris_his_presupuestos_enca.dias_internamiento,'999999999') AS dias,"+
+								"to_char(osiris_his_presupuestos_enca.id_medico,'999999999') AS idmedico,"+
+								"osiris_his_presupuestos_enca.telefono_medico "+
+								"FROM osiris_his_presupuestos_enca,osiris_his_tipo_cirugias "+
+								"WHERE osiris_his_tipo_cirugias.id_tipo_cirugia = osiris_his_presupuestos_enca.id_tipo_cirugia "+
 								""+query_fechas+" ";
 								
 				Console.WriteLine(comando.CommandText);
@@ -366,8 +365,8 @@ namespace osiris
 			}else{
 				rango1 = entry_ano_inicio.Text+"-"+entry_mes_inicio.Text+"-"+entry_dia_inicio.Text;
 				rango2 = entry_ano_termino.Text+"-"+entry_mes_termino.Text+"-"+entry_dia_termino.Text;
-				query_fechas = " AND to_char(hscmty_his_presupuestos_enca.fecha_de_creacion_presupuesto,'yyyy-MM-dd') >= '"+rango1+"' "+
-								"AND to_char(hscmty_his_presupuestos_enca.fecha_de_creacion_presupuesto,'yyyy-MM-dd') <= '"+rango2+"' ";
+				query_fechas = " AND to_char(osiris_his_presupuestos_enca.fecha_de_creacion_presupuesto,'yyyy-MM-dd') >= '"+rango1+"' "+
+								"AND to_char(osiris_his_presupuestos_enca.fecha_de_creacion_presupuesto,'yyyy-MM-dd') <= '"+rango2+"' ";
 							
 
 			}
@@ -430,7 +429,7 @@ namespace osiris
  			string query_in_num = "";
  			
  			if (variable_paso_02_1 > 0){
-	 				query_in_num = " AND hscmty_his_presupuestos_enca.id_presupuesto IN ('"+numeros_seleccionado+"') ";  
+	 				query_in_num = " AND osiris_his_presupuestos_enca.id_presupuesto IN ('"+numeros_seleccionado+"') ";  
 			}			
 		
 	        NpgsqlConnection conexion; 
@@ -441,34 +440,34 @@ namespace osiris
 		       	NpgsqlCommand comando; 
 		       	comando = conexion.CreateCommand (); 
 
-		        		       		comando.CommandText ="SELECT to_char(hscmty_his_presupuestos_enca.id_presupuesto,'999999999') AS idpresupuesto,"+
-								"to_char(hscmty_his_presupuestos_enca.id_tipo_cirugia,'999999999') AS idcirugia,"+ 
-								"hscmty_his_presupuestos_enca.id_quien_creo,"+
-								"to_char(hscmty_his_presupuestos_enca.precio_convenido,'999999999.99') AS precioconvenido,"+
-								"to_char(hscmty_his_presupuestos_enca.fecha_de_creacion_presupuesto,'yyyy-MM-dd') AS fechacreacion,"+
-								"to_char(hscmty_his_presupuestos_enca.total_presupuesto,'999999999.99') AS total,"+ 
-								"hscmty_his_presupuestos_enca.notas,"+
-								"hscmty_his_tipo_cirugias.descripcion_cirugia,"+
-								"hscmty_his_tipo_cirugias.id_tipo_cirugia,"+
-								"hscmty_his_presupuestos_enca.notas,"+
-								"to_char(hscmty_his_presupuestos_enca.deposito_minimo,'999999999.99') AS depositominimo,"+
-								"to_char(hscmty_his_presupuestos_enca.dias_internamiento,'999999999') AS dias,"+
-								"to_char(hscmty_his_presupuestos_enca.id_medico,'999999999') AS idmedico,"+
-								"hscmty_his_presupuestos_enca.medico_provisional,"+
-								"hscmty_his_medicos.id_medico,"+
-								"hscmty_his_medicos.nombre_medico,"+
-								"hscmty_his_presupuestos_enca.telefono_medico,"+
-								"hscmty_empleado.nombre1_empleado || ' ' || "+ 
-								"hscmty_empleado.nombre2_empleado || ' ' || "+ 
-								"hscmty_empleado.apellido_paterno_empleado || ' ' || "+ 
-								"hscmty_empleado.apellido_materno_empleado AS nombreempl "+
-								"FROM hscmty_his_presupuestos_enca,hscmty_his_tipo_cirugias,hscmty_empleado,hscmty_his_medicos "+
-								"WHERE hscmty_his_tipo_cirugias.id_tipo_cirugia = hscmty_his_presupuestos_enca.id_tipo_cirugia "+
-								"AND hscmty_empleado.login_empleado = hscmty_his_presupuestos_enca.id_quien_creo "+
-								"AND hscmty_his_medicos.id_medico = hscmty_his_presupuestos_enca.id_medico "+
+		        		       		comando.CommandText ="SELECT to_char(osiris_his_presupuestos_enca.id_presupuesto,'999999999') AS idpresupuesto,"+
+								"to_char(osiris_his_presupuestos_enca.id_tipo_cirugia,'999999999') AS idcirugia,"+ 
+								"osiris_his_presupuestos_enca.id_quien_creo,"+
+								"to_char(osiris_his_presupuestos_enca.precio_convenido,'999999999.99') AS precioconvenido,"+
+								"to_char(osiris_his_presupuestos_enca.fecha_de_creacion_presupuesto,'yyyy-MM-dd') AS fechacreacion,"+
+								"to_char(osiris_his_presupuestos_enca.total_presupuesto,'999999999.99') AS total,"+ 
+								"osiris_his_presupuestos_enca.notas,"+
+								"osiris_his_tipo_cirugias.descripcion_cirugia,"+
+								"osiris_his_tipo_cirugias.id_tipo_cirugia,"+
+								"osiris_his_presupuestos_enca.notas,"+
+								"to_char(osiris_his_presupuestos_enca.deposito_minimo,'999999999.99') AS depositominimo,"+
+								"to_char(osiris_his_presupuestos_enca.dias_internamiento,'999999999') AS dias,"+
+								"to_char(osiris_his_presupuestos_enca.id_medico,'999999999') AS idmedico,"+
+								"osiris_his_presupuestos_enca.medico_provisional,"+
+								"osiris_his_medicos.id_medico,"+
+								"osiris_his_medicos.nombre_medico,"+
+								"osiris_his_presupuestos_enca.telefono_medico,"+
+								"osiris_empleado.nombre1_empleado || ' ' || "+ 
+								"osiris_empleado.nombre2_empleado || ' ' || "+ 
+								"osiris_empleado.apellido_paterno_empleado || ' ' || "+ 
+								"osiris_empleado.apellido_materno_empleado AS nombreempl "+
+								"FROM osiris_his_presupuestos_enca,osiris_his_tipo_cirugias,osiris_empleado,osiris_his_medicos "+
+								"WHERE osiris_his_tipo_cirugias.id_tipo_cirugia = osiris_his_presupuestos_enca.id_tipo_cirugia "+
+								"AND osiris_empleado.login_empleado = osiris_his_presupuestos_enca.id_quien_creo "+
+								"AND osiris_his_medicos.id_medico = osiris_his_presupuestos_enca.id_medico "+
 								query_in_num+ " "+
 								query_fechas+" "+
-								"ORDER BY hscmty_his_presupuestos_enca.id_presupuesto";
+								"ORDER BY osiris_his_presupuestos_enca.id_presupuesto";
 									
 			        	//Console.WriteLine(comando.CommandText);
 			        	NpgsqlDataReader lector = comando.ExecuteReader ();

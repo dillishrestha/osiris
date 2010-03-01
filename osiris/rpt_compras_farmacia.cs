@@ -33,6 +33,7 @@ using Npgsql;
 using System.Data;
 using Gtk;
 using Glade;
+using Gnome;
 
 namespace osiris
 {
@@ -65,6 +66,18 @@ namespace osiris
 		string ApmEmpleado;
 		string nombrebd;
 		string connectionString;
+		
+		// Declarando variable de fuente para la impresion
+		// Declaracion de fuentes tipo Bitstream Vera sans
+		Gnome.Font fuente5 = Gnome.Font.FindClosest("Luxi Sans", 5);
+		Gnome.Font fuente6 = Gnome.Font.FindClosest("Luxi Sans", 6);
+		Gnome.Font fuente7 = Gnome.Font.FindClosest("Luxi Sans", 7);
+		Gnome.Font fuente8 = Gnome.Font.FindClosest("Luxi Sans", 8);//Bitstream Vera Sans
+		Gnome.Font fuente9 = Gnome.Font.FindClosest("Luxi Sans", 9);
+		Gnome.Font fuente10 = Gnome.Font.FindClosest("Luxi Sans", 10);
+		Gnome.Font fuente11 = Gnome.Font.FindClosest("Luxi Sans", 11);
+		Gnome.Font fuente12 = Gnome.Font.FindClosest("Luxi Sans", 12);
+		Gnome.Font fuente36 = Gnome.Font.FindClosest("Luxi Sans", 36);
 		
 		private TreeStore treeViewEngineFarmacia;
 	
@@ -101,7 +114,7 @@ namespace osiris
 			entry_mes2.Text =DateTime.Now.ToString("MM");
 			entry_ano2.Text =DateTime.Now.ToString("yyyy");
 			
-			//this.button_imprimir.Clicked += new EventHandler(on_imprime_reporte_clicked);
+			this.button_imprimir.Clicked += new EventHandler(on_imprime_reporte_clicked);
 			
 			crea_treview_compra_farmacia();
 			this.button_selecciona.Clicked += new EventHandler(on_llena_lista_compra_farmacia_clicked );
@@ -345,7 +358,6 @@ namespace osiris
 			}
 		}
 		
-		/*
 		void on_imprime_reporte_clicked (object sender, EventArgs args)
 		{
 			
@@ -372,7 +384,7 @@ namespace osiris
 			dialogo.Hide (); dialogo.Dispose ();	
 		}
 		
-		void ComponerPagina2 (PrintContext ContextoImp, PrintJob trabajoImpresion)
+		void ComponerPagina2 (Gnome.PrintContext ContextoImp, Gnome.PrintJob trabajoImpresion)
 		{
 			TreeIter iter;
 			fila = -90;
@@ -473,7 +485,7 @@ namespace osiris
 			ContextoImp.ShowPage();
 		}
 		
-		void salto_pagina(PrintContext ContextoImp, PrintJob trabajoImpresion)
+		void salto_pagina(Gnome.PrintContext ContextoImp, Gnome.PrintJob trabajoImpresion)
 		{
 	        if (contador > 48 ){
 	        	numpage +=1;        	contador=1;
@@ -486,7 +498,7 @@ namespace osiris
 	     	}
 		}
 		
-		void imprime_encabezado(PrintContext ContextoImp,PrintJob trabajoImpresion)
+		void imprime_encabezado(Gnome.PrintContext ContextoImp,Gnome.PrintJob trabajoImpresion)
 		{        		
       		// Cambiar la fuente
 			Gnome.Print.Setfont (ContextoImp, fuente6);
@@ -518,7 +530,7 @@ namespace osiris
 			ContextoImp.MoveTo(643, -80);			ContextoImp.Show("Compro");
 			ContextoImp.MoveTo(698, -80);			ContextoImp.Show("Medico");
       	}
-		*/
+		
 		void on_cierraventanas_clicked (object sender, EventArgs args)	
 		{
 			Widget win = (Widget) sender;

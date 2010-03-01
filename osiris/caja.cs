@@ -810,7 +810,7 @@ namespace osiris
 				msgBoxError.Run ();
 				msgBoxError.Destroy();
 			}else{
-				//new osiris.cargos_extras(this.folioservicio.ToString().Trim(),this.nombrebd);	
+				new osiris.validacion_cargos_extras(this.folioservicio.ToString().Trim(),this.nombrebd);	
 			}			
 		}
 		

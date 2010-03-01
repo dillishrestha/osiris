@@ -84,6 +84,7 @@ namespace osiris
 		string connectionString;
 		string nombrebd;
 		class_conexion conexion_a_DB = new class_conexion();
+		class_public classpublic = new class_public();
        	
 		TreeStore treeViewEngineCargos;
 		TreeStore treeViewEngineBusca;
@@ -229,11 +230,11 @@ namespace osiris
 							//calculando el iva 
 							if((bool) lector1["aplicar_iva"] == true){
 								//iva = 0;
-								iva = Convert.ToDecimal((Convert.ToDouble((string) lector1["precioproducto"]) * 1.15) - Convert.ToDouble((string) lector1["precioproducto"]));
+								iva = Convert.ToDecimal((Convert.ToDecimal((string) lector1["precioproducto"]) * ((decimal.Parse(classpublic.ivaparaaplicar))/100)+1) - Convert.ToDecimal((string) lector1["precioproducto"]));
 								
 							}else{ 
 								iva = 0;
-									}
+							}
 							//calcula el total iva + precio
 							total = 0;
 							total = iva + Convert.ToDecimal((string) lector1["precioproducto"]);

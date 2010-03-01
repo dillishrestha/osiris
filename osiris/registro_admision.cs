@@ -7,7 +7,7 @@
 //				  Daniel Olivares - arcangeldoc@gmail.com (Diseño de Pantallas Glade)
 // 				  
 // Licencia		: GLP
-// S.O. 		: GNU/Linux Ubuntu 6.06 LTS (Dapper Drake)
+// S.O. 		: 
 //////////////////////////////////////////////////////////
 //
 // proyect osiris is free software; you can redistribute it and/or modify
@@ -2198,8 +2198,7 @@ namespace osiris
 				
 				// destruye la ventana de busqueda
  				Widget win = (Widget) sender;
-				win.Toplevel.Destroy();
-				
+				win.Toplevel.Destroy();				
  			}
 		}
 		
@@ -2236,6 +2235,7 @@ namespace osiris
 			entry_ano_nacimiento.KeyPressEvent += onKeyPressEvent;
 			// Cierra Ventana
 			button_salir.Clicked += new EventHandler(on_cierraventanas_clicked);
+			
 			// llenado de comobobox
 			// Tipos de Paciente
 			combobox_tipo_paciente.Clear();
@@ -2245,15 +2245,38 @@ namespace osiris
 	        
 			ListStore store1 = new ListStore( typeof (string),typeof (int));
 			combobox_tipo_paciente.Model = store1;
-	        
+			store1.Clear();
+			
 			store1.AppendValues ("",0);
-			store1.AppendValues ("Particular-Privado",200);
-			store1.AppendValues ("Aseguradora",400);
-			store1.AppendValues ("Membresias",100);
-			store1.AppendValues ("Tarjeta de Descuento",101);
-			store1.AppendValues ("Empresas",102);
-			store1.AppendValues ("Sistema Hospitalario OSIRIS",300);
-			store1.AppendValues ("Municipios",500);
+			
+			NpgsqlConnection conexion; 
+			conexion = new NpgsqlConnection (connectionString+nombrebd);
+			//this.PidPaciente
+			try{
+				conexion.Open ();
+				NpgsqlCommand comando;
+				comando = conexion.CreateCommand ();
+				comando.CommandText = "SELECT * FROM osiris_his_tipo_pacientes ORDER BY descripcion_tipo_paciente;";
+				//Console.WriteLine(comando.CommandText);
+				NpgsqlDataReader lector = comando.ExecuteReader ();
+				while (lector.Read()){
+					store1.AppendValues ((string) lector["descripcion_tipo_paciente"].ToString().ToUpper(),(int) lector["id_tipo_paciente"]);
+				}
+			}catch (NpgsqlException ex){
+	   			MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+										MessageType.Error, ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
+				msgBoxError.Run ();			msgBoxError.Destroy();
+			}
+			conexion.Close ();
+			
+			
+			//store1.AppendValues ("Particular-Privado",200);
+			//store1.AppendValues ("Aseguradora",400);
+			//store1.AppendValues ("Membresias",100);
+			//store1.AppendValues ("Tarjeta de Descuento",101);
+			//store1.AppendValues ("Empresas",102);
+			//store1.AppendValues ("Sistema Hospitalario OSIRIS",300);
+			//store1.AppendValues ("Municipios",500);
 	        	              
 			TreeIter iter1;
 			if (store1.GetIterFirst(out iter1)){
@@ -2556,6 +2579,7 @@ namespace osiris
 			store3.AppendValues ("Cuñado(a)");
 			store3.AppendValues ("Tutor");
 			store3.AppendValues ("Hijo(a)");
+			store3.AppendValues ("Concuño(a)");
 	        		
 			TreeIter iter3;
 			if (store3.GetIterFirst(out iter3)){

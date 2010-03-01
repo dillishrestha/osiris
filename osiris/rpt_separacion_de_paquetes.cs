@@ -11,7 +11,6 @@ using Npgsql;
 using System.Data;
 using Glade;
 using System.Collections;
-using GtkSharp;
 
 namespace osiris
 {
@@ -30,57 +29,58 @@ namespace osiris
 		[Widget] Gtk.Label label243;
 		[Widget] Gtk.Label label244;
 		
-		public string connectionString = "Server=localhost;" +
-        	    	                     "Port=5432;" +
-            	    	                 "User ID=admin;" +
-                	    	             "Password=1qaz2wsx;";
-        public string nombrebd;
-		public string tiporeporte = "SEPARACION DE PAQUETES";
-		public string titulo = "REPORTE SEPARACION DE PAQUETES";
+		string connectionString;
+        string nombrebd;
+		string tiporeporte = "SEPARACION DE PAQUETES";
+		string titulo = "REPORTE SEPARACION DE PAQUETES";
 		
-		public int fila = -70;
-		public int contador = 1;
-		public int numpage = 1;
+		int fila = -70;
+		int contador = 1;
+		int numpage = 1;
 		
-		public int idcuarto = 0;
-		public decimal saldos = 0;
-		public decimal totabono = 0;
-		public decimal totcuenta = 0;
-		public decimal sumacuenta = 0;
-		public decimal abono = 0;
+		int idcuarto = 0;
+		decimal saldos = 0;
+		decimal totabono = 0;
+		decimal totcuenta = 0;
+		decimal sumacuenta = 0;
+		decimal abono = 0;
 	//	public decimal abonomuestra = 0;
 		
 		private TreeStore treeViewEngineocupacion;
 		
 		//Declarando las celdas
-		public CellRendererText cellrt0;			public CellRendererText cellrt1;
-		public CellRendererText cellrt2;			public CellRendererText cellrt3;
-		public CellRendererText cellrt4;			public CellRendererText cellrt5;
-		public CellRendererText cellrt6;			public CellRendererText cellrt7;
-		public CellRendererText cellrt8;			public CellRendererText cellrt9;			
+		CellRendererText cellrt0;			CellRendererText cellrt1;
+		CellRendererText cellrt2;			CellRendererText cellrt3;
+		CellRendererText cellrt4;			CellRendererText cellrt5;
+		CellRendererText cellrt6;			CellRendererText cellrt7;
+		CellRendererText cellrt8;			CellRendererText cellrt9;			
 								
 		// Declarando variable de fuente para la impresion
 		// Declaracion de fuentes tipo Bitstream Vera sans
-		public Gnome.Font fuente6 = Gnome.Font.FindClosest("Bitstream Vera Sans", 6);
-		public Gnome.Font fuente7 = Gnome.Font.FindClosest("Bitstream Vera Sans", 7);
-		public Gnome.Font fuente8 = Gnome.Font.FindClosest("Bitstream Vera Sans", 8);
-		public Gnome.Font fuente9 = Gnome.Font.FindClosest("Bitstream Vera Sans", 9);
-		public Gnome.Font fuente10 = Gnome.Font.FindClosest("Bitstream Vera Sans", 10);
-		public Gnome.Font fuente11 = Gnome.Font.FindClosest("Bitstream Vera Sans", 11);
-		public Gnome.Font fuente12 = Gnome.Font.FindClosest("Bitstream Vera Sans", 12);
-		public Gnome.Font fuente36 = Gnome.Font.FindClosest("Bitstream Vera Sans", 36);
+		Gnome.Font fuente6 = Gnome.Font.FindClosest("Bitstream Vera Sans", 6);
+		Gnome.Font fuente7 = Gnome.Font.FindClosest("Bitstream Vera Sans", 7);
+		Gnome.Font fuente8 = Gnome.Font.FindClosest("Bitstream Vera Sans", 8);
+		Gnome.Font fuente9 = Gnome.Font.FindClosest("Bitstream Vera Sans", 9);
+		Gnome.Font fuente10 = Gnome.Font.FindClosest("Bitstream Vera Sans", 10);
+		Gnome.Font fuente11 = Gnome.Font.FindClosest("Bitstream Vera Sans", 11);
+		Gnome.Font fuente12 = Gnome.Font.FindClosest("Bitstream Vera Sans", 12);
+		Gnome.Font fuente36 = Gnome.Font.FindClosest("Bitstream Vera Sans", 36);
 		
 		//Declaracion de ventana de error
 		protected Gtk.Window MyWinError;
 		protected Gtk.Window MyWin;
 		
-		public rpt_separacion_de_paquetes(string _nombrebd_)
+		class_conexion conexion_a_DB = new class_conexion();
+		
+		public rpt_separacion_de_paquetes(string nombrebd_)
 		{
-			nombrebd = _nombrebd_;
+			connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
+			nombrebd = conexion_a_DB._nombrebd;
 			
 			Glade.XML  gxml = new Glade.XML  (null, "registro_admision.glade", "rpt_ocupacion", null);
 			gxml.Autoconnect  (this);	
 			rpt_ocupacion.Show();
+			rpt_ocupacion.Title = "Reporte de Separacion Paquetes";
 			
 			this.button_salir.Clicked += new EventHandler(on_cierraventanas_clicked);
 			this.button_imprime_rangofecha.Clicked += new EventHandler(imprime_reporte);
@@ -235,37 +235,37 @@ namespace osiris
 					NpgsqlCommand comando; 
 					comando = conexion.CreateCommand ();
 					// asigna el numero de folio de ingreso de paciente (FOLIO)
-					comando.CommandText ="SELECT DISTINCT(hscmty_erp_movcargos.folio_de_servicio),"+							
-								"to_char(hscmty_erp_movcargos.folio_de_servicio,'9999999999') AS foliodeatencion, "+
-								"to_char(hscmty_erp_cobros_enca.pid_paciente,'9999999999') AS pidpaciente, "+
+					comando.CommandText ="SELECT DISTINCT(osiris_erp_movcargos.folio_de_servicio),"+							
+								"to_char(osiris_erp_movcargos.folio_de_servicio,'9999999999') AS foliodeatencion, "+
+								"to_char(osiris_erp_cobros_enca.pid_paciente,'9999999999') AS pidpaciente, "+
 								"nombre1_paciente || ' ' || nombre2_paciente || ' ' || apellido_paterno_paciente || ' ' || apellido_materno_paciente AS nombre_completo, "+
-								"to_char(to_number(to_char(age('2008-01-26 13:30:39',hscmty_his_paciente.fecha_nacimiento_paciente),'yyyy') ,'9999'),'9999') AS edad, "+
-								"to_char(to_number(to_char(age('2008-01-26 01:30:39',hscmty_his_paciente.fecha_nacimiento_paciente),'MM'),'99'),'99') AS mesesedad, "+
-								"hscmty_erp_cobros_enca.nombre_medico_encabezado, "+
-								"hscmty_erp_cobros_enca.id_medico,nombre_medico, "+
-								"hscmty_erp_cobros_enca.id_medico_tratante,nombre_medico,"+
-								"hscmty_erp_cobros_enca.nombre_medico_tratante,"+
-								"hscmty_erp_cobros_enca.id_aseguradora,descripcion_aseguradora,"+
-								"hscmty_erp_cobros_enca.id_empresa,descripcion_empresa,"+
-								"to_char(hscmty_erp_cobros_enca.id_cuarto,'999999999') AS cuarto, "+
-								"to_char(hscmty_erp_cobros_enca.total_abonos,'99999999.99') AS totabonos, "+
-								"hscmty_erp_movcargos.descripcion_diagnostico_movcargos,"+
-								"to_char(hscmty_erp_cobros_enca.fechahora_creacion,'dd-MM-yyyy HH24:mi') AS fecha_ingreso, "+
-						        "to_char(hscmty_erp_cobros_enca.fecha_reservacion,'dd-MM-yyyy HH24:mi')AS fecha_reservacion, "+  ///////fecha de reservacion////////
-								"to_char(hscmty_erp_cobros_enca.total_procedimiento,'99999999.99') AS totalproc,"+
-								"hscmty_erp_movcargos.id_tipo_paciente AS idtipopaciente, descripcion_tipo_paciente "+
-								"FROM hscmty_erp_cobros_enca,hscmty_his_paciente,hscmty_erp_movcargos,hscmty_his_tipo_pacientes,hscmty_aseguradoras,hscmty_empresas,hscmty_his_medicos "+
-								"WHERE hscmty_erp_cobros_enca.pid_paciente = hscmty_his_paciente.pid_paciente "+
-								"AND hscmty_erp_movcargos.folio_de_servicio = hscmty_erp_cobros_enca.folio_de_servicio "+
-								"AND hscmty_erp_cobros_enca.id_aseguradora = hscmty_aseguradoras.id_aseguradora "+
-								"AND hscmty_erp_movcargos.id_tipo_paciente = hscmty_his_tipo_pacientes.id_tipo_paciente "+
-								"AND hscmty_his_paciente.id_empresa = hscmty_empresas.id_empresa "+
-								"AND hscmty_his_medicos.id_medico = hscmty_erp_cobros_enca.id_medico "+
-								//"AND hscmty_his_medicos.id_medico = hscmty_erp_cobros_enca.id_medico_tratante "+
-								"AND hscmty_erp_cobros_enca.reservacion = 'true' "+
-								//"AND hscmty_erp_cobros_enca.alta_paciente = 'false' "+
-								"AND hscmty_erp_cobros_enca.cancelado = 'false' "+
-								"AND hscmty_erp_movcargos.id_tipo_admisiones > '16' "+
+								"to_char(to_number(to_char(age('2008-01-26 13:30:39',osiris_his_paciente.fecha_nacimiento_paciente),'yyyy') ,'9999'),'9999') AS edad, "+
+								"to_char(to_number(to_char(age('2008-01-26 01:30:39',osiris_his_paciente.fecha_nacimiento_paciente),'MM'),'99'),'99') AS mesesedad, "+
+								"osiris_erp_cobros_enca.nombre_medico_encabezado, "+
+								"osiris_erp_cobros_enca.id_medico,nombre_medico, "+
+								"osiris_erp_cobros_enca.id_medico_tratante,nombre_medico,"+
+								"osiris_erp_cobros_enca.nombre_medico_tratante,"+
+								"osiris_erp_cobros_enca.id_aseguradora,descripcion_aseguradora,"+
+								"osiris_erp_cobros_enca.id_empresa,descripcion_empresa,"+
+								"to_char(osiris_erp_cobros_enca.id_cuarto,'999999999') AS cuarto, "+
+								"to_char(osiris_erp_cobros_enca.total_abonos,'99999999.99') AS totabonos, "+
+								"osiris_erp_movcargos.descripcion_diagnostico_movcargos,"+
+								"to_char(osiris_erp_cobros_enca.fechahora_creacion,'dd-MM-yyyy HH24:mi') AS fecha_ingreso, "+
+						        "to_char(osiris_erp_cobros_enca.fecha_reservacion,'dd-MM-yyyy HH24:mi')AS fecha_reservacion, "+  ///////fecha de reservacion////////
+								"to_char(osiris_erp_cobros_enca.total_procedimiento,'99999999.99') AS totalproc,"+
+								"osiris_erp_movcargos.id_tipo_paciente AS idtipopaciente, descripcion_tipo_paciente "+
+								"FROM osiris_erp_cobros_enca,osiris_his_paciente,osiris_erp_movcargos,osiris_his_tipo_pacientes,osiris_aseguradoras,osiris_empresas,osiris_his_medicos "+
+								"WHERE osiris_erp_cobros_enca.pid_paciente = osiris_his_paciente.pid_paciente "+
+								"AND osiris_erp_movcargos.folio_de_servicio = osiris_erp_cobros_enca.folio_de_servicio "+
+								"AND osiris_erp_cobros_enca.id_aseguradora = osiris_aseguradoras.id_aseguradora "+
+								"AND osiris_erp_movcargos.id_tipo_paciente = osiris_his_tipo_pacientes.id_tipo_paciente "+
+								"AND osiris_his_paciente.id_empresa = osiris_empresas.id_empresa "+
+								"AND osiris_his_medicos.id_medico = osiris_erp_cobros_enca.id_medico "+
+								//"AND osiris_his_medicos.id_medico = osiris_erp_cobros_enca.id_medico_tratante "+
+								"AND osiris_erp_cobros_enca.reservacion = 'true' "+
+								//"AND osiris_erp_cobros_enca.alta_paciente = 'false' "+
+								"AND osiris_erp_cobros_enca.cancelado = 'false' "+
+								"AND osiris_erp_movcargos.id_tipo_admisiones > '16' "+
 								"ORDER BY nombre_completo ;";
 					//Console.WriteLine(comando.CommandText);	
 					NpgsqlDataReader lector = comando.ExecuteReader ();

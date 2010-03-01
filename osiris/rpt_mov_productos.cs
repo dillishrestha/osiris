@@ -17,11 +17,7 @@ namespace osiris
 	public class imprime_mov_productos
 	{
 		
-		public string connectionString = "Server=localhost;" +
-						"Port=5432;" +
-						 "User ID=admin;" +
-						"Password=1qaz2wsx;";
-						
+		public string connectionString;						
 		public string nombrebd;
 		public string LoginEmpleado;
     	public string NomEmpleado;

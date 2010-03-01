@@ -118,12 +118,12 @@ namespace osiris
 		
 		void on_button_reportes_de_ocupacion_clicked(object sender, EventArgs args)
 		{
-			//new osiris.reporte_pacientes_sin_alta(nombrebd);
+			new osiris.reporte_pacientes_sin_alta(nombrebd);
 		}
 		
 		void on_button_rpt_separacion_paquetes_clicked(object sender, EventArgs args)
 		{
-			//new osiris.rpt_separacion_de_paquetes(nombrebd);
+			new osiris.rpt_separacion_de_paquetes(nombrebd);
 		}
 		
 		void on_button_separa_folio_clicked(object sender, EventArgs a)
@@ -196,7 +196,7 @@ namespace osiris
 		
 		void on_button_rpt_pacientes_alta_clicked(object sender, EventArgs args)
 		{
-			//new osiris.reporte_pacientes_con_alta(nombrebd);
+			new osiris.reporte_pacientes_con_alta(nombrebd);
 		}
 				
 		void on_button_presupuestos_clicked (object sender, EventArgs args)
@@ -206,7 +206,7 @@ namespace osiris
 		
 		void on_button_rpt_presupuestos_clicked(object sender, EventArgs args)
 		{
-			//new osiris.rpt_presupuesto(nombrebd);
+			new osiris.rpt_presupuesto(nombrebd);
 		}
 		
 		void on_button_cancela_folios_clicked(object sender, EventArgs args)

@@ -38,7 +38,6 @@ using Npgsql;
 using System.Data;
 using Glade;
 using System.Collections;
-using GtkSharp;
 
 namespace osiris
 {
@@ -60,41 +59,41 @@ namespace osiris
 		[Widget] Gtk.CheckButton checkbutton_agregar_monto;
 		[Widget] Gtk.Button button_salir;
 		
-		public string connectionString = "Server=localhost;" +
-        	    	                     "Port=5432;" +
-            	    	                 "User ID=admin;" +
-                	    	             "Password=1qaz2wsx;";
-        public string nombrebd;
-		public string tiporeporte = "CONALTA";
-		public string titulo = "REPORTE DE PACIENTES CON ALTA";
+		string connectionString;
+        string nombrebd;
+		string tiporeporte = "CONALTA";
+		string titulo = "REPORTE DE PACIENTES CON ALTA";
 		
-		public int columna = 0;
-		public int fila = -70;
-		public int contador = 1;
-		public int numpage = 1;
+		int columna = 0;
+		int fila = -70;
+		int contador = 1;
+		int numpage = 1;
 		
-		public string query_fechas = " ";
-		public string orden = " ";
-		public string rango1 = "";
-		public string rango2 = "";
+		string query_fechas = " ";
+		string orden = " ";
+		string rango1 = "";
+		string rango2 = "";
 								
 		// Declarando variable de fuente para la impresion
 		// Declaracion de fuentes tipo Bitstream Vera sans
-		public Gnome.Font fuente6 = Gnome.Font.FindClosest("Bitstream Vera Sans", 6);
-		public Gnome.Font fuente7 = Gnome.Font.FindClosest("Bitstream Vera Sans", 7);
-		public Gnome.Font fuente8 = Gnome.Font.FindClosest("Bitstream Vera Sans", 8);
-		public Gnome.Font fuente9 = Gnome.Font.FindClosest("Bitstream Vera Sans", 9);
-		public Gnome.Font fuente10 = Gnome.Font.FindClosest("Bitstream Vera Sans", 10);
-		public Gnome.Font fuente11 = Gnome.Font.FindClosest("Bitstream Vera Sans", 11);
-		public Gnome.Font fuente12 = Gnome.Font.FindClosest("Bitstream Vera Sans", 12);
-		public Gnome.Font fuente36 = Gnome.Font.FindClosest("Bitstream Vera Sans", 36);
+		Gnome.Font fuente6 = Gnome.Font.FindClosest("Bitstream Vera Sans", 6);
+		Gnome.Font fuente7 = Gnome.Font.FindClosest("Bitstream Vera Sans", 7);
+		Gnome.Font fuente8 = Gnome.Font.FindClosest("Bitstream Vera Sans", 8);
+		Gnome.Font fuente9 = Gnome.Font.FindClosest("Bitstream Vera Sans", 9);
+		Gnome.Font fuente10 = Gnome.Font.FindClosest("Bitstream Vera Sans", 10);
+		Gnome.Font fuente11 = Gnome.Font.FindClosest("Bitstream Vera Sans", 11);
+		Gnome.Font fuente12 = Gnome.Font.FindClosest("Bitstream Vera Sans", 12);
+		Gnome.Font fuente36 = Gnome.Font.FindClosest("Bitstream Vera Sans", 36);
 		
 		//Declaracion de ventana de error
 		protected Gtk.Window MyWinError;
 		
+		class_conexion conexion_a_DB = new class_conexion();
+		
 		public reporte_pacientes_con_alta (string _nombrebd_)
 		{
-			nombrebd = _nombrebd_;
+			connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
+			nombrebd = conexion_a_DB._nombrebd;
 			Glade.XML  gxml = new Glade.XML  (null, "registro_admision.glade", "rang_fech_pac_sin_alta", null);
 			gxml.Autoconnect  (this);	
 			rang_fech_pac_sin_alta.Show();
@@ -126,8 +125,8 @@ namespace osiris
 			}else{
 				rango1 = entry_dia1.Text+"/"+entry_mes1.Text+"/"+entry_ano1.Text;
 				rango2 = entry_dia2.Text+"/"+entry_mes2.Text+"/"+entry_ano2.Text;
-				query_fechas = "AND to_char(hscmty_erp_cobros_enca.fecha_alta_paciente,'yyyy-MM-dd') >= '"+entry_ano1.Text+"-"+entry_mes1.Text+"-"+entry_dia1.Text+"' "+
-								"AND to_char(hscmty_erp_cobros_enca.fecha_alta_paciente,'yyyy-MM-dd') <= '"+entry_ano2.Text+"-"+entry_mes2.Text+"-"+entry_dia2.Text+"' ";
+				query_fechas = "AND to_char(osiris_erp_cobros_enca.fecha_alta_paciente,'yyyy-MM-dd') >= '"+entry_ano1.Text+"-"+entry_mes1.Text+"-"+entry_dia1.Text+"' "+
+								"AND to_char(osiris_erp_cobros_enca.fecha_alta_paciente,'yyyy-MM-dd') <= '"+entry_ano2.Text+"-"+entry_mes2.Text+"-"+entry_dia2.Text+"' ";
 			}
 			rang_fech_pac_sin_alta.Destroy();
 			titulo = "REPORTE DE PACIENTES CON ALTA";
@@ -180,69 +179,69 @@ namespace osiris
                	// asigna el numero de folio de ingreso de paciente (FOLIO)
 				if (this.checkbutton_agregar_monto.Active == false)
 				{
-					comando.CommandText ="SELECT DISTINCT(hscmty_erp_movcargos.folio_de_servicio),"+
-								"to_char(hscmty_erp_movcargos.folio_de_servicio,'9999999999') AS foliodeatencion, "+
-								"to_char(hscmty_erp_cobros_enca.pid_paciente,'9999999999') AS pidpaciente, "+
+					comando.CommandText ="SELECT DISTINCT(osiris_erp_movcargos.folio_de_servicio),"+
+								"to_char(osiris_erp_movcargos.folio_de_servicio,'9999999999') AS foliodeatencion, "+
+								"to_char(osiris_erp_cobros_enca.pid_paciente,'9999999999') AS pidpaciente, "+
 								"nombre1_paciente || ' ' || nombre2_paciente || ' ' || apellido_paterno_paciente || ' ' || apellido_materno_paciente AS nombre_completo, "+
-								"to_char(to_number(to_char(age('2008-01-26 13:30:39',hscmty_his_paciente.fecha_nacimiento_paciente),'yyyy') ,'9999'),'9999') AS edad, "+
-								"to_char(to_number(to_char(age('2008-01-26 01:30:39',hscmty_his_paciente.fecha_nacimiento_paciente),'MM'),'99'),'99') AS mesesedad, "+
-								"hscmty_erp_cobros_enca.nombre_medico_encabezado, "+
-								"hscmty_erp_cobros_enca.id_aseguradora,descripcion_aseguradora,"+
-								"hscmty_erp_cobros_enca.id_empresa,descripcion_empresa,"+
-								"hscmty_erp_movcargos.descripcion_diagnostico_movcargos,"+
-								"to_char(hscmty_erp_cobros_enca.fecha_alta_paciente,'dd-MM-yyyy HH24:mi') AS fecha_alta "+
-								"FROM hscmty_erp_cobros_enca,hscmty_his_paciente,hscmty_erp_movcargos,hscmty_his_tipo_pacientes, hscmty_aseguradoras,hscmty_empresas "+
-								"WHERE hscmty_erp_cobros_enca.pid_paciente = hscmty_his_paciente.pid_paciente "+
-								"AND hscmty_erp_movcargos.folio_de_servicio = hscmty_erp_cobros_enca.folio_de_servicio "+
-								"AND hscmty_erp_cobros_enca.id_aseguradora = hscmty_aseguradoras.id_aseguradora "+
-								"AND hscmty_erp_movcargos.id_tipo_paciente = hscmty_his_tipo_pacientes.id_tipo_paciente "+
-								"AND hscmty_his_paciente.id_empresa = hscmty_empresas.id_empresa "+
+								"to_char(to_number(to_char(age('2008-01-26 13:30:39',osiris_his_paciente.fecha_nacimiento_paciente),'yyyy') ,'9999'),'9999') AS edad, "+
+								"to_char(to_number(to_char(age('2008-01-26 01:30:39',osiris_his_paciente.fecha_nacimiento_paciente),'MM'),'99'),'99') AS mesesedad, "+
+								"osiris_erp_cobros_enca.nombre_medico_encabezado, "+
+								"osiris_erp_cobros_enca.id_aseguradora,descripcion_aseguradora,"+
+								"osiris_erp_cobros_enca.id_empresa,descripcion_empresa,"+
+								"osiris_erp_movcargos.descripcion_diagnostico_movcargos,"+
+								"to_char(osiris_erp_cobros_enca.fecha_alta_paciente,'dd-MM-yyyy HH24:mi') AS fecha_alta "+
+								"FROM osiris_erp_cobros_enca,osiris_his_paciente,osiris_erp_movcargos,osiris_his_tipo_pacientes, osiris_aseguradoras,osiris_empresas "+
+								"WHERE osiris_erp_cobros_enca.pid_paciente = osiris_his_paciente.pid_paciente "+
+								"AND osiris_erp_movcargos.folio_de_servicio = osiris_erp_cobros_enca.folio_de_servicio "+
+								"AND osiris_erp_cobros_enca.id_aseguradora = osiris_aseguradoras.id_aseguradora "+
+								"AND osiris_erp_movcargos.id_tipo_paciente = osiris_his_tipo_pacientes.id_tipo_paciente "+
+								"AND osiris_his_paciente.id_empresa = osiris_empresas.id_empresa "+
 								" "+query_fechas+" "+
-								"AND hscmty_erp_cobros_enca.reservacion = 'false' "+
-								"AND hscmty_erp_cobros_enca.alta_paciente = 'true' "+
-								"AND hscmty_erp_cobros_enca.cancelado = 'false' "+
-								"AND hscmty_erp_movcargos.id_tipo_admisiones > '16' ;";
+								"AND osiris_erp_cobros_enca.reservacion = 'false' "+
+								"AND osiris_erp_cobros_enca.alta_paciente = 'true' "+
+								"AND osiris_erp_cobros_enca.cancelado = 'false' "+
+								"AND osiris_erp_movcargos.id_tipo_admisiones > '16' ;";
 				}
 				else
 				{
-					comando.CommandText ="SELECT DISTINCT(hscmty_erp_movcargos.folio_de_servicio),to_char(hscmty_erp_movcargos.folio_de_servicio,'9999999999') AS foliodeatencion, "+
-								"to_char(hscmty_erp_cobros_enca.pid_paciente,'9999999999') AS pidpaciente, "+
+					comando.CommandText ="SELECT DISTINCT(osiris_erp_movcargos.folio_de_servicio),to_char(osiris_erp_movcargos.folio_de_servicio,'9999999999') AS foliodeatencion, "+
+								"to_char(osiris_erp_cobros_enca.pid_paciente,'9999999999') AS pidpaciente, "+
 								"nombre1_paciente || ' ' || nombre2_paciente || ' ' || apellido_paterno_paciente || ' ' || apellido_materno_paciente AS nombre_completo, "+
-								"to_char(to_number(to_char(age('2008-01-26 13:30:39',hscmty_his_paciente.fecha_nacimiento_paciente),'yyyy') ,'9999'),'9999') AS edad, "+
-								"to_char(to_number(to_char(age('2008-01-26 01:30:39',hscmty_his_paciente.fecha_nacimiento_paciente),'MM'),'99'),'99') AS mesesedad, "+
-								"hscmty_erp_cobros_enca.nombre_medico_encabezado, "+
-								"hscmty_erp_movcargos.descripcion_diagnostico_movcargos, "+
-								"hscmty_erp_movcargos.id_tipo_paciente AS idtipopaciente, descripcion_tipo_paciente, "+
-								"hscmty_erp_cobros_enca.id_aseguradora,descripcion_aseguradora, "+
-								"hscmty_erp_cobros_enca.id_empresa,descripcion_empresa, "+
-								"to_char(hscmty_erp_cobros_enca.fecha_alta_paciente,'dd-MM-yyyy HH24:mi') AS fecha_alta, "+
-								"to_char(hscmty_erp_cobros_enca.fechahora_creacion,'dd-MM-yyyy HH24:mi') AS fecha_ingreso, "+
-								"to_char(sum(hscmty_erp_cobros_deta.cantidad_aplicada),'9999999999.99') AS totaldeproductos, "+
-								"to_char(sum(hscmty_erp_cobros_deta.precio_producto * hscmty_erp_cobros_deta.cantidad_aplicada),'9999999999.99') AS totalpreciopublico, "+
-								"to_char(sum(hscmty_erp_cobros_deta.precio_costo_unitario * hscmty_erp_cobros_deta.cantidad_aplicada),'9999999999.99') AS totalpreciocosto "+
-								"FROM hscmty_erp_movcargos,hscmty_erp_cobros_enca,hscmty_his_paciente,hscmty_erp_cobros_deta,hscmty_his_tipo_pacientes,hscmty_aseguradoras,hscmty_empresas "+
-								"WHERE hscmty_erp_movcargos.pid_paciente = hscmty_his_paciente.pid_paciente "+
-								"AND hscmty_erp_cobros_enca.pid_paciente = hscmty_his_paciente.pid_paciente "+
-								"AND hscmty_erp_cobros_deta.pid_paciente = hscmty_his_paciente.pid_paciente "+
-								"AND hscmty_erp_movcargos.folio_de_servicio = hscmty_erp_cobros_enca.folio_de_servicio "+
-								"AND hscmty_erp_movcargos.folio_de_servicio = hscmty_erp_cobros_deta.folio_de_servicio "+
-								"AND hscmty_erp_movcargos.id_tipo_paciente = hscmty_his_tipo_pacientes.id_tipo_paciente "+
-								"AND hscmty_erp_cobros_enca.id_aseguradora = hscmty_aseguradoras.id_aseguradora "+
-								"AND hscmty_his_paciente.id_empresa = hscmty_empresas.id_empresa "+
-								"AND hscmty_erp_cobros_enca.cancelado = 'false' "+
-								"AND hscmty_erp_cobros_enca.reservacion = 'false' "+
+								"to_char(to_number(to_char(age('2008-01-26 13:30:39',osiris_his_paciente.fecha_nacimiento_paciente),'yyyy') ,'9999'),'9999') AS edad, "+
+								"to_char(to_number(to_char(age('2008-01-26 01:30:39',osiris_his_paciente.fecha_nacimiento_paciente),'MM'),'99'),'99') AS mesesedad, "+
+								"osiris_erp_cobros_enca.nombre_medico_encabezado, "+
+								"osiris_erp_movcargos.descripcion_diagnostico_movcargos, "+
+								"osiris_erp_movcargos.id_tipo_paciente AS idtipopaciente, descripcion_tipo_paciente, "+
+								"osiris_erp_cobros_enca.id_aseguradora,descripcion_aseguradora, "+
+								"osiris_erp_cobros_enca.id_empresa,descripcion_empresa, "+
+								"to_char(osiris_erp_cobros_enca.fecha_alta_paciente,'dd-MM-yyyy HH24:mi') AS fecha_alta, "+
+								"to_char(osiris_erp_cobros_enca.fechahora_creacion,'dd-MM-yyyy HH24:mi') AS fecha_ingreso, "+
+								"to_char(sum(osiris_erp_cobros_deta.cantidad_aplicada),'9999999999.99') AS totaldeproductos, "+
+								"to_char(sum(osiris_erp_cobros_deta.precio_producto * osiris_erp_cobros_deta.cantidad_aplicada),'9999999999.99') AS totalpreciopublico, "+
+								"to_char(sum(osiris_erp_cobros_deta.precio_costo_unitario * osiris_erp_cobros_deta.cantidad_aplicada),'9999999999.99') AS totalpreciocosto "+
+								"FROM osiris_erp_movcargos,osiris_erp_cobros_enca,osiris_his_paciente,osiris_erp_cobros_deta,osiris_his_tipo_pacientes,osiris_aseguradoras,osiris_empresas "+
+								"WHERE osiris_erp_movcargos.pid_paciente = osiris_his_paciente.pid_paciente "+
+								"AND osiris_erp_cobros_enca.pid_paciente = osiris_his_paciente.pid_paciente "+
+								"AND osiris_erp_cobros_deta.pid_paciente = osiris_his_paciente.pid_paciente "+
+								"AND osiris_erp_movcargos.folio_de_servicio = osiris_erp_cobros_enca.folio_de_servicio "+
+								"AND osiris_erp_movcargos.folio_de_servicio = osiris_erp_cobros_deta.folio_de_servicio "+
+								"AND osiris_erp_movcargos.id_tipo_paciente = osiris_his_tipo_pacientes.id_tipo_paciente "+
+								"AND osiris_erp_cobros_enca.id_aseguradora = osiris_aseguradoras.id_aseguradora "+
+								"AND osiris_his_paciente.id_empresa = osiris_empresas.id_empresa "+
+								"AND osiris_erp_cobros_enca.cancelado = 'false' "+
+								"AND osiris_erp_cobros_enca.reservacion = 'false' "+
 								" "+query_fechas+" "+
-								"AND hscmty_erp_cobros_enca.alta_paciente = 'true' "+
-								"AND hscmty_erp_movcargos.id_tipo_admisiones > '16' "+
-								"GROUP BY hscmty_erp_movcargos.folio_de_servicio,hscmty_erp_cobros_enca.pid_paciente,nombre1_paciente || ' ' || nombre2_paciente || ' ' || apellido_paterno_paciente || ' ' || apellido_materno_paciente, "+
-								"to_char(to_number(to_char(age('2008-01-26 13:30:39',hscmty_his_paciente.fecha_nacimiento_paciente),'yyyy') ,'9999'),'9999'), "+
-								"to_char(to_number(to_char(age('2008-01-26 01:30:39',hscmty_his_paciente.fecha_nacimiento_paciente),'MM'),'99'),'99'), "+
-								"to_char(hscmty_erp_cobros_enca.fecha_alta_paciente,'dd-MM-yyyy HH24:mi'), "+
-								"to_char(hscmty_erp_cobros_enca.fechahora_creacion,'dd-MM-yyyy HH24:mi'), "+
-								"hscmty_erp_movcargos.id_tipo_paciente,descripcion_tipo_paciente,hscmty_erp_movcargos.descripcion_diagnostico_movcargos, "+
-								"hscmty_erp_cobros_enca.id_aseguradora,descripcion_aseguradora, "+
-								"hscmty_erp_cobros_enca.nombre_medico_encabezado, "+
-								"hscmty_erp_cobros_enca.id_empresa,descripcion_empresa;";
+								"AND osiris_erp_cobros_enca.alta_paciente = 'true' "+
+								"AND osiris_erp_movcargos.id_tipo_admisiones > '16' "+
+								"GROUP BY osiris_erp_movcargos.folio_de_servicio,osiris_erp_cobros_enca.pid_paciente,nombre1_paciente || ' ' || nombre2_paciente || ' ' || apellido_paterno_paciente || ' ' || apellido_materno_paciente, "+
+								"to_char(to_number(to_char(age('2008-01-26 13:30:39',osiris_his_paciente.fecha_nacimiento_paciente),'yyyy') ,'9999'),'9999'), "+
+								"to_char(to_number(to_char(age('2008-01-26 01:30:39',osiris_his_paciente.fecha_nacimiento_paciente),'MM'),'99'),'99'), "+
+								"to_char(osiris_erp_cobros_enca.fecha_alta_paciente,'dd-MM-yyyy HH24:mi'), "+
+								"to_char(osiris_erp_cobros_enca.fechahora_creacion,'dd-MM-yyyy HH24:mi'), "+
+								"osiris_erp_movcargos.id_tipo_paciente,descripcion_tipo_paciente,osiris_erp_movcargos.descripcion_diagnostico_movcargos, "+
+								"osiris_erp_cobros_enca.id_aseguradora,descripcion_aseguradora, "+
+								"osiris_erp_cobros_enca.nombre_medico_encabezado, "+
+								"osiris_erp_cobros_enca.id_empresa,descripcion_empresa;";
 				}
 				//Console.WriteLine(comando.CommandText.ToString());			
 				NpgsqlDataReader lector = comando.ExecuteReader ();
@@ -321,12 +320,12 @@ namespace osiris
       		// Cambiar la fuente
 			Gnome.Print.Setfont(ContextoImp,fuente6);
 			
-			ContextoImp.MoveTo(69.7,-30);			ContextoImp.Show("Hospital Santa Cecilia");//19.7, 770
-			ContextoImp.MoveTo(70, -30);			ContextoImp.Show("Hospital Santa Cecilia");
-			ContextoImp.MoveTo(69.7, -40);			ContextoImp.Show("Direccion: Isacc Garza #200 Ote. Centro Monterrey, NL.");
-			ContextoImp.MoveTo(70, -40);			ContextoImp.Show("Direccion: Isacc Garza #200 Ote. Centro Monterrey, NL.");
-			ContextoImp.MoveTo(69.7, -50);			ContextoImp.Show("Conmutador:(81) 81-25-56-10");
-			ContextoImp.MoveTo(70, -50);			ContextoImp.Show("Conmutador:(81) 81-25-56-10");
+			ContextoImp.MoveTo(69.7,-30);			ContextoImp.Show("Sistema Hospitalario OSIRIS");//19.7, 770
+			ContextoImp.MoveTo(70, -30);			ContextoImp.Show("Sistema Hospitalario OSIRIS");
+			ContextoImp.MoveTo(69.7, -40);			ContextoImp.Show("Direccion:");
+			ContextoImp.MoveTo(70, -40);			ContextoImp.Show("Direccion:");
+			ContextoImp.MoveTo(69.7, -50);			ContextoImp.Show("Conmutador:");
+			ContextoImp.MoveTo(70, -50);			ContextoImp.Show("Conmutador:");
 			
 			Gnome.Print.Setfont(ContextoImp,fuente11);
 			ContextoImp.MoveTo(319.7, -40);			ContextoImp.Show(titulo);
@@ -345,33 +344,7 @@ namespace osiris
 			}
 			//imprimo el titulo
 			imprime_titulo(ContextoImp,trabajoImpresion);
-				
-//////////////////////////////////////DIBUJANDO LA TABLA////////////////////////////////////////////////////////				
-//////////////////////////////////////DIBUJANDO LA TABLA////////////////////////////////////////////////////////
-			
-			Gnome.Print.Setfont (ContextoImp, fuente36);
-			ContextoImp.MoveTo(68, -55);			ContextoImp.Show("_____________________________________");
-			ContextoImp.MoveTo(68, -575);			ContextoImp.Show("_____________________________________");
-			Gnome.Print.Setfont (ContextoImp, fuente11);
-			int filal = -66;
-			for (int i1=0; i1 < 52; i1++)//30 veces para tamaño carta
-			{
-					ContextoImp.MoveTo(119,filal);				ContextoImp.Show("|");
-					ContextoImp.MoveTo(308,filal);				ContextoImp.Show("|");
-					ContextoImp.MoveTo(329,filal);				ContextoImp.Show("|");
-					ContextoImp.MoveTo(463,filal);				ContextoImp.Show("|");
-					ContextoImp.MoveTo(605,filal);				ContextoImp.Show("|");
-					ContextoImp.MoveTo(679,filal);				ContextoImp.Show("|");
-					ContextoImp.MoveTo(745,filal);				ContextoImp.Show("|");
-					filal-=10;
-			}
-			Gnome.Print.Setfont (ContextoImp, fuente36);
-			ContextoImp.Rotate(270);
-			ContextoImp.MoveTo(56, 810);			ContextoImp.Show("__________________________");
-			ContextoImp.MoveTo(56,70);				ContextoImp.Show("__________________________");
-			///termino de dibujo de tabla
-			ContextoImp.Rotate(90);//RESTAURO EL ORDEN A VERTICAL
-			Gnome.Print.Setfont(ContextoImp,fuente7);//RESTAURO FUENTE A TAMAÑO 7
+			Gnome.Print.Setfont(ContextoImp,fuente7);//RESTAURO FUENTE A TAMAÑO 7			
 		}	
 						
 		void imprime_titulo(Gnome.PrintContext ContextoImp, Gnome.PrintJob trabajoImpresion)
@@ -380,33 +353,25 @@ namespace osiris
 			ContextoImp.MoveTo(70.7, -65);					ContextoImp.Show("HAB-EXP."); //| Fecha | Nº Atencion | Paciente | SubTotal al 15 | SubTotal al 0 | IVA | SubTotal Deducible | Coaseguro | Total | Hono. Medico");
 			ContextoImp.MoveTo(71, -65);					ContextoImp.Show("HAB-EXP.");
 			
-			ContextoImp.MoveTo(119,-65);					ContextoImp.Show("|");
-			
 			ContextoImp.MoveTo(121,-65);					ContextoImp.Show("PACIENTE");
 			ContextoImp.MoveTo(121.5,-65);					ContextoImp.Show("PACIENTE");//80,-70
 			
-			ContextoImp.MoveTo(308,-65);					ContextoImp.Show("|");
 			ContextoImp.MoveTo(310,-65);					ContextoImp.Show("EDAD ");//120,-70
 			ContextoImp.MoveTo(310.5,-65);					ContextoImp.Show("EDAD ");//120,-70
 			
-			
-			ContextoImp.MoveTo(329,-65);					ContextoImp.Show("|");//170,-70
 			ContextoImp.MoveTo(337  ,-65);					ContextoImp.Show("MEDICO TRATANTE");//170,-70
 			ContextoImp.MoveTo(337.5,-65);					ContextoImp.Show("MEDICO TRATANTE");
 			
-			ContextoImp.MoveTo(463,-65);					ContextoImp.Show("|");//290,-70
 			ContextoImp.MoveTo(500,-65);					ContextoImp.Show("DIAGNOSTICO");  
 			ContextoImp.MoveTo(500.5,-65);					ContextoImp.Show("DIAGNOSTICO");//290,-70
 			
-			ContextoImp.MoveTo(604.7,-65);					ContextoImp.Show("|");
 			ContextoImp.MoveTo(612,-65);					ContextoImp.Show("INSTITUCION");
 			ContextoImp.MoveTo(612.5,-65);					ContextoImp.Show("INSTITUCION");//360,-70
 			
-			ContextoImp.MoveTo(679,-65);					ContextoImp.Show("|");
 			ContextoImp.MoveTo(680,-65);					ContextoImp.Show("ALTA");
 			ContextoImp.MoveTo(680.5,-65);					ContextoImp.Show("ALTA");//
 			
-			ContextoImp.MoveTo(745,-65);					ContextoImp.Show("|");
+			
 			ContextoImp.MoveTo(748,-65);					ContextoImp.Show("TOTALES");
 			ContextoImp.MoveTo(748.5,-65);					ContextoImp.Show("TOTALES");//420,-70
 			Gnome.Print.Setfont(ContextoImp,fuente7);

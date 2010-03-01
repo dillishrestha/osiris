@@ -4,6 +4,7 @@ using Npgsql;
 using System.Data;
 using Glade;
 using System.Collections;
+using Gnome;
 
 namespace osiris
 {
@@ -107,18 +108,19 @@ namespace osiris
     	string query_tipo_reporte = " ";
     	string query_medico = " ";
     	string query_orden =  "ORDER BY osiris_erp_movcargos.folio_de_servicio;";
-    	
-		private static double headerHeight = (10*72/25.4);
-		private static double headerGap = (3*72/25.4);
-		private static int pangoScale = 1024;
-
-		private PrintOperation print;
-
-		private double fontSize = 10.0;
-		private int linesPerPage;
-		private string[] lines;
-		private int numLines;
-		private int numPages;
+    		
+		// Declarando variable de fuente para la impresion
+		// Declaracion de fuentes tipo Bitstream Vera sans
+		Gnome.Font fuente5 = Gnome.Font.FindClosest("Luxi Sans", 5);
+		Gnome.Font fuente6 = Gnome.Font.FindClosest("Luxi Sans", 6);
+		Gnome.Font fuente7 = Gnome.Font.FindClosest("Luxi Sans", 7);
+		Gnome.Font fuente8 = Gnome.Font.FindClosest("Luxi Sans", 8);//Bitstream Vera Sans
+		Gnome.Font fuente9 = Gnome.Font.FindClosest("Luxi Sans", 9);
+		Gnome.Font fuente10 = Gnome.Font.FindClosest("Luxi Sans", 10);
+		Gnome.Font fuente11 = Gnome.Font.FindClosest("Luxi Sans", 11);
+		Gnome.Font fuente12 = Gnome.Font.FindClosest("Luxi Sans", 12);
+		Gnome.Font fuente36 = Gnome.Font.FindClosest("Luxi Sans", 36);
+		
 		
 		class_conexion conexion_a_DB = new class_conexion();
                                
@@ -886,103 +888,6 @@ namespace osiris
 		}
 ////////////////////////////////////VOID PARA IMPRESION DE PAGINA/////////////////////////////	
 		void on_button_imprimir_clicked(object sender, EventArgs a)
-		{
-			print = new PrintOperation ();
-			
-			print.BeginPrint += new BeginPrintHandler (OnBeginPrint);
-			print.DrawPage += new DrawPageHandler (OnDrawPage);
-			print.EndPrint += new EndPrintHandler (OnEndPrint);
-
-			print.Run (PrintOperationAction.PrintDialog, null);
-		}
-		
-		private void OnBeginPrint (object obj, Gtk.BeginPrintArgs args)
-		{
-			string contents;
-			double height;
-
-			PrintContext context = args.Context;
-			height = context.Height;
-			
-			print.NPages = 1; //numPages;			
-		}
-
-		private void OnDrawPage (object obj, Gtk.DrawPageArgs args)
-		{
-			PrintContext context = args.Context;
-
-			Cairo.Context cr = context.CairoContext;
-			double width = context.Width;
-
-			//cr.Rectangle (0, 0, width, headerHeight);
-			//cr.SetSourceRGB (0.8, 0.8, 0.8);
-			//cr.FillPreserve ();
-
-			//cr.SetSourceRGB (0, 0, 0);
-			//cr.LineWidth = 1;
-			//cr.Stroke();
-
-			Pango.Layout layout = context.CreatePangoLayout ();
-			
-			Pango.FontDescription desc = Pango.FontDescription.FromString ("sans 10");
-			layout.FontDescription = desc;
-			
-			//layout.SetText ("Titulo del Reporte");
-			//layout.SetText (fileName);
-			//layout.Width = (int)width;
-			//layout.Alignment = Pango.Alignment.Center;
-
-			int layoutWidth, layoutHeight;
-			layout.GetSize (out layoutWidth, out layoutHeight);
-			double textHeight = (double)layoutHeight / (double)pangoScale;
-
-			//cr.MoveTo (width/2, (headerHeight - textHeight) / 2);
-			//Pango.CairoHelper.ShowLayout (cr, layout);
-
-			string pageStr = String.Format ("{0}/{1}", args.PageNr + 1, numPages);
-			layout.SetText (pageStr);
-			layout.Alignment = Pango.Alignment.Right;
-
-			//cr.MoveTo (width - 2, (headerHeight - textHeight) / 2);
-			//Pango.CairoHelper.ShowLayout (cr, layout);
-						
-			layout = null;
-			layout = context.CreatePangoLayout ();
-			desc.Size = (int)(fontSize * pangoScale);
-			layout.FontDescription = desc;
-			
-			cr.MoveTo(100,100);	layout.SetText("Prueba de Impresion");
-			Pango.CairoHelper.ShowLayout (cr, layout);
-			
-			cr.MoveTo(19.5, 10);		   	layout.SetText("Sistema Hospitalario OSIRIS");
-			cr.MoveTo(20, 10);		    	layout.SetText("Sistema Hospitalario OSIRIS");
-			Pango.CairoHelper.ShowLayout (cr, layout);
-			
-			//------------------------------------------
-			layout = null;
-			layout = context.CreatePangoLayout ();
-			desc.Size = (int)(fontSize * pangoScale);
-			layout.FontDescription = desc;			
-			
-			cr.MoveTo (0, headerHeight + headerGap);
-			int line = args.PageNr * linesPerPage;
-			for (int i=0; i < linesPerPage && line < numLines; i++)
-			{
-				layout.SetText (lines[line]);
-				Pango.CairoHelper.ShowLayout (cr, layout);
-				cr.RelMoveTo (0, fontSize);
-				line++;
-			}
-			(cr as IDisposable).Dispose ();
-			layout = null;
-		}
-
-		private void OnEndPrint (object obj, Gtk.EndPrintArgs args)
-		{
-		}
-		
-		/*
-		void on_button_imprimir_clicked(object sender, EventArgs a)
 		{		
 			numpage = 1;
 			filas = 684;
@@ -1026,40 +931,37 @@ namespace osiris
 		{
 			// Cambiar la fuente
 			//Console.WriteLine("imprimo encabezado");
-			Gnome.Print.Setfont (ContextoImp, fuente4);
+			Gnome.Print.Setfont (ContextoImp, fuente6);
 			ContextoImp.MoveTo(19.5, 770);		    			ContextoImp.Show("Sistema Hospitalario OSIRIS");
 			ContextoImp.MoveTo(20, 770);		    			ContextoImp.Show("Sistema Hospitalario OSIRIS");
-			ContextoImp.MoveTo(19.5, 760);		    			ContextoImp.Show("Direccion: Isacc Garza #200 Ote. Centro Monterrey, NL.");
-			ContextoImp.MoveTo(20, 760);		    			ContextoImp.Show("Direccion: Isacc Garza #200 Ote. Centro Monterrey, NL.");
+			ContextoImp.MoveTo(19.5, 760);		    			ContextoImp.Show("Direccion:");
+			ContextoImp.MoveTo(20, 760);		    			ContextoImp.Show("Direccion:");
 			ContextoImp.MoveTo(19.5, 750);		    			ContextoImp.Show("Conmutador:(81) 81-25-56-10");
 			ContextoImp.MoveTo(20, 750);		    			ContextoImp.Show("Conmutador:(81) 81-25-56-10");
 			//ContextoImp.MoveTo(464.5, 760);		   			ContextoImp.Show("Fecha de reporte: "+DateTime.Now.ToString("dd-MM-yyyy"));
 			//ContextoImp.MoveTo(465, 760);		    			ContextoImp.Show("Fecha de reporte: "+DateTime.Now.ToString("dd-MM-yyyy"));
 			
-			Gnome.Print.Setfont (ContextoImp, fuente);
+			Gnome.Print.Setfont (ContextoImp, fuente12);
 			ContextoImp.MoveTo(189.5, 740);						ContextoImp.Show("REPORTE DE ADMISIONES Y REGISTRO ");
 			ContextoImp.MoveTo(190, 740);						ContextoImp.Show("REPORTE DE ADMISIONES Y REGISTRO ");	
 
-    		Gnome.Print.Setfont (ContextoImp, fuente2);
-    		ContextoImp.MoveTo(20, 740);  						ContextoImp.Show("____________________________");
-
-    		Gnome.Print.Setfont (ContextoImp, fuente3);
+    		Gnome.Print.Setfont (ContextoImp, fuente9);
     		ContextoImp.MoveTo(59.5, 710);						ContextoImp.Show("PID");
     		ContextoImp.MoveTo(60, 710);						ContextoImp.Show("PID");
 			
-			Gnome.Print.Setfont (ContextoImp, fuente4);
+			Gnome.Print.Setfont (ContextoImp, fuente6);
 			ContextoImp.MoveTo(19.5, 720);						ContextoImp.Show("FOLIO");
 			ContextoImp.MoveTo(20, 720);						ContextoImp.Show("FOLIO");
 			ContextoImp.MoveTo(19.5, 710);						ContextoImp.Show("SERVICIO");
 			ContextoImp.MoveTo(20, 710);						ContextoImp.Show("SERVICIO");
    		
-   			Gnome.Print.Setfont (ContextoImp, fuente4);
+   			Gnome.Print.Setfont (ContextoImp, fuente6);
 			ContextoImp.MoveTo(99.5, 720);		    			ContextoImp.Show("FECHA");
 			ContextoImp.MoveTo(100, 720);		    			ContextoImp.Show("FECHA");
 			ContextoImp.MoveTo(99.5, 710);		    			ContextoImp.Show("ADMISION");
 			ContextoImp.MoveTo(100, 710);		    			ContextoImp.Show("ADMISION");
 			
-			Gnome.Print.Setfont (ContextoImp, fuente3);
+			Gnome.Print.Setfont (ContextoImp, fuente9);
 			ContextoImp.MoveTo(154.5,710);		    			ContextoImp.Show("NOMBRE DEL PACIENTE");
 			ContextoImp.MoveTo(155,710);		    			ContextoImp.Show("NOMBRE DEL PACIENTE");
 			ContextoImp.MoveTo(319.5, 710);						ContextoImp.Show("TIPO PACIENTE");
@@ -1068,7 +970,7 @@ namespace osiris
 			ContextoImp.MoveTo(464.5, 710);						ContextoImp.Show("TIPOS DE ADMISIONES");
 			ContextoImp.MoveTo(465, 710);						ContextoImp.Show("TIPOS DE ADMISIONES");
 			
-			Gnome.Print.Setfont (ContextoImp, fuente1);
+			Gnome.Print.Setfont (ContextoImp, fuente7);
 			ContextoImp.MoveTo(230.7, 50);						ContextoImp.Show("Pagina "+numpage.ToString()+"  fecha de reporte "+DateTime.Now.ToString("dd-MM-yyyy HH:mm:ss"));
 			ContextoImp.MoveTo(230, 50);						ContextoImp.Show("Pagina "+numpage.ToString()+"  fecha de reporte "+DateTime.Now.ToString("dd-MM-yyyy HH:mm:ss"));
 		}
@@ -1129,7 +1031,7 @@ namespace osiris
 					//Console.WriteLine("contador inicial "+contador.ToString());
 					if(contador == 1 ) { imprime_encabezado(ContextoImp, trabajoImpresion); }
 					
-					Gnome.Print.Setfont (ContextoImp, fuente1);
+					Gnome.Print.Setfont (ContextoImp, fuente7);
 			
 					int pidpaciente = (int) lector["pid_paciente"];//se transforma el pid de integer (numerico) a string (cadena de caracteres) para poder ser leido
 					int folioregist = (int) lector["folio_de_servicio"];
@@ -1288,6 +1190,5 @@ namespace osiris
 				return; 
 			}
 		}
-		*/	
 	}
 }

@@ -1,7 +1,7 @@
-	// created on 11/02/2008 at 04:56 p
+// created on 11/02/2008 at 04:56 p
 //////////////////////////////////////////////////////////////////////
 // created on 21/01/2008 at 08:28 p
-// Hospital Santa Cecilia
+// Sistema Hospitalario OSIRIS
 // Monterrey - Mexico
 //
 // Autor    	: Ing. Daniel Olivares C. (Pre-Programacion, Modificaciones y Ajustes)
@@ -93,69 +93,67 @@ namespace osiris
 		//ventana de busqueda de medicos
 		[Widget] Gtk.TreeView lista_de_medicos;
 		
-		public string connectionString = "Server=localhost;" +
-        	    	                     "Port=5432;" +
-            	    	                 "User ID=admin;" +
-                	    	             "Password=1qaz2wsx;";
-        public string nombrebd;
-		public string tiporeporte = "REGLAB";
-		public string titulo = "REPORTE DE REGISTRO DE PACIENTES DE LABORATORIO";
+		string connectionString;
+        string nombrebd;
+		string tiporeporte = "REGLAB";
+		string titulo = "REPORTE DE REGISTRO DE PACIENTES DE LABORATORIO";
 		
-		public int columna = 0;
-		public int fila = -70;
-		public int contador = 1;
-		public int numpage = 1;
+		int columna = 0;
+		int fila = -70;
+		int contador = 1;
+		int numpage = 1;
 		
-		public string query_fechas = "";
-		public string orden = " ";
-		public string rango1 = "";
-		public string rango2 = "";
+		string query_fechas = "";
+		string orden = " ";
+		string rango1 = "";
+		string rango2 = "";
+				
+		string tipointernamiento = "CENTRO MEDICO";
+   		int idtipointernamiento = 10;
+   	    string tipopaciente = "Todos"; 
+		string tipoadmision = "Todos";
+		int id_tipoadmision = 0;
+		int id_tipopaciente = 0;
+		string busqueda = "";
+		int	filas = 684;
+		string query_tipo_paciente = "AND osiris_erp_movcargos.id_tipo_paciente > '0' ";
 		
-		
-		public string tipointernamiento = "CENTRO MEDICO";
-   		public int idtipointernamiento = 10;
-   	    public string tipopaciente = "Todos"; 
-		public string tipoadmision = "Todos";
-		public int id_tipoadmision = 0;
-		public int id_tipopaciente = 0;
-		public string busqueda = "";
-		public int 	filas = 684;
-		public string query_tipo_paciente = "AND hscmty_erp_movcargos.id_tipo_paciente > '0' ";
-		
-		public string query_sexo = " "; 
-    	public string query_tipo_reporte = " ";
-    	public string query_orden =  " ";
-		public string query_solicitado;
-		public string querytipo_reporte = "";
-		public string nombredepartamento = "";
+		string query_sexo = " "; 
+    	string query_tipo_reporte = " ";
+    	string query_orden =  " ";
+		string query_solicitado;
+		string querytipo_reporte = "";
+		string nombredepartamento = "";
 				
 		// Declarando variable de fuente para la impresion
 		// Declaracion de fuentes tipo Bitstream Vera sans
-		public Gnome.Font fuente6 = Gnome.Font.FindClosest("Bitstream Vera Sans", 6);
-		public Gnome.Font fuente7 = Gnome.Font.FindClosest("Bitstream Vera Sans", 7);
-		public Gnome.Font fuente8 = Gnome.Font.FindClosest("Bitstream Vera Sans", 8);
-		public Gnome.Font fuente9 = Gnome.Font.FindClosest("Bitstream Vera Sans", 9);
-		public Gnome.Font fuente10 = Gnome.Font.FindClosest("Bitstream Vera Sans", 10);
-		public Gnome.Font fuente11 = Gnome.Font.FindClosest("Bitstream Vera Sans", 11);
-		public Gnome.Font fuente12 = Gnome.Font.FindClosest("Bitstream Vera Sans", 12);
-		public Gnome.Font fuente36 = Gnome.Font.FindClosest("Bitstream Vera Sans", 36);
+		Gnome.Font fuente6 = Gnome.Font.FindClosest("Bitstream Vera Sans", 6);
+		Gnome.Font fuente7 = Gnome.Font.FindClosest("Bitstream Vera Sans", 7);
+		Gnome.Font fuente8 = Gnome.Font.FindClosest("Bitstream Vera Sans", 8);
+		Gnome.Font fuente9 = Gnome.Font.FindClosest("Bitstream Vera Sans", 9);
+		Gnome.Font fuente10 = Gnome.Font.FindClosest("Bitstream Vera Sans", 10);
+		Gnome.Font fuente11 = Gnome.Font.FindClosest("Bitstream Vera Sans", 11);
+		Gnome.Font fuente12 = Gnome.Font.FindClosest("Bitstream Vera Sans", 12);
+		Gnome.Font fuente36 = Gnome.Font.FindClosest("Bitstream Vera Sans", 36);
 		
 		//Declaracion de ventana de error
 		protected Gtk.Window MyWinError;
 		protected Gtk.Window MyWin;
 		
+		class_conexion conexion_a_DB = new class_conexion();
+		
 		public rep_reg_pac_labo_rx(string _nombrebd_,string querytipo_reporte_,string nombredepartamento_)
 		{
-			nombrebd = _nombrebd_;
 			querytipo_reporte = querytipo_reporte_;
 			nombredepartamento = nombredepartamento_;
+			connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
+			nombrebd = conexion_a_DB._nombrebd;
 			
 			Glade.XML  gxml = new Glade.XML  (null, "laboratorio.glade", "busqueda_por_fecha", null);
 			gxml.Autoconnect  (this);	
 			busqueda_por_fecha.Show();
 			llenado_cbox_tipo_paciente();
 			llenado_combobox_tipo_paciente();
-			
 			
 			entry_dia1.KeyPressEvent += onKeyPressEvent;
 			entry_mes1.KeyPressEvent += onKeyPressEvent;
@@ -213,7 +211,7 @@ namespace osiris
 				conexion.Open ();
 				NpgsqlCommand comando; 
 				comando = conexion.CreateCommand ();
-               	comando.CommandText = "SELECT * FROM hscmty_his_tipo_admisiones "+
+               	comando.CommandText = "SELECT * FROM osiris_his_tipo_admisiones "+
                						"WHERE cuenta_mayor = 4000 "+
                						"ORDER BY descripcion_admisiones;";
 				
@@ -249,13 +247,13 @@ namespace osiris
 	  		if (combobox_tipo_admision.GetActiveIter (out iter)){
 	  			tipoadmision = (string) combobox_tipo_admision.Model.GetValue(iter,0);
 		   		id_tipoadmision = (int) combobox_tipo_admision.Model.GetValue(iter,1);
-		   		query_solicitado = "AND hscmty_his_tipo_admisiones.id_tipo_admisiones = '"+id_tipoadmision.ToString()+"' ";
+		   		query_solicitado = "AND osiris_his_tipo_admisiones.id_tipo_admisiones = '"+id_tipoadmision.ToString()+"' ";
 	    	}
 	    }
 	    
 		void llenado_cbox_tipo_paciente()
 		{
-		// Tipos de Paciente
+			// Tipos de Paciente
 		    combobox_tipo_paciente.Clear();
 		    CellRendererText cell1 = new CellRendererText();
 		    combobox_tipo_paciente.PackStart(cell1, true);
@@ -272,7 +270,7 @@ namespace osiris
 				conexion.Open ();
 				NpgsqlCommand comando; 
 				comando = conexion.CreateCommand ();
-               	comando.CommandText = "SELECT * FROM hscmty_his_tipo_pacientes "+
+               	comando.CommandText = "SELECT * FROM osiris_his_tipo_pacientes "+
                							" ORDER BY id_tipo_paciente;";
 				
 				NpgsqlDataReader lector = comando.ExecuteReader ();
@@ -308,7 +306,7 @@ namespace osiris
 			if (combobox_tipo_paciente.GetActiveIter (out iter)){
 				tipopaciente = (string) combobox_tipo_paciente.Model.GetValue(iter,0);
 		   		id_tipopaciente = (int) combobox_tipo_paciente.Model.GetValue(iter,1);
-		   		query_tipo_paciente = "AND hscmty_erp_movcargos.id_tipo_paciente = '"+id_tipopaciente.ToString()+"' ";
+		   		query_tipo_paciente = "AND osiris_erp_movcargos.id_tipo_paciente = '"+id_tipopaciente.ToString()+"' ";
 		   	}
 		}
 		
@@ -359,25 +357,25 @@ namespace osiris
 				query_sexo = " ";
 			}
 			if(radiobutton_femenino.Active == true){ 
-				query_sexo = "AND hscmty_his_paciente.sexo_paciente = 'M' ";
+				query_sexo = "AND osiris_his_paciente.sexo_paciente = 'M' ";
 			}
 			if(radiobutton_masculino.Active == true){ 
-				query_sexo = "AND hscmty_his_paciente.sexo_paciente = 'H' "; 
+				query_sexo = "AND osiris_his_paciente.sexo_paciente = 'H' "; 
 			}
 		}
 		
 		void tipo_orden_query(object sender, EventArgs args)
 		{
 			if(radiobutton_folio_servicio.Active == true){
-				query_orden = "hscmty_erp_movcargos.folio_de_servicio ;" ; }
+				query_orden = "osiris_erp_movcargos.folio_de_servicio ;" ; }
 			if(radiobutton_pid_paciente.Active == true){
-				query_orden = "hscmty_erp_cobros_deta.pid_paciente ;"; }
+				query_orden = "osiris_erp_cobros_deta.pid_paciente ;"; }
 			if(radiobutton_nombres.Active == true){
 				query_orden = "nombre1_paciente || ' ' || nombre2_paciente || ' ' || apellido_paterno_paciente || ' ' || apellido_materno_paciente ;"; }
 			if(radiobutton_tipo_admision.Active == true){
 				query_orden = "id_tipo_paciente ;"; }
 			if(radiobutton_folio_lab.Active == true){
-				query_orden = "to_char(hscmty_erp_cobros_deta.folio_interno_dep,'999999999999') ;";
+				query_orden = "to_char(osiris_erp_cobros_deta.folio_interno_dep,'999999999999') ;";
 			}
 		}
 		
@@ -397,8 +395,8 @@ namespace osiris
 			if(this.checkbutton_todas_fechas.Active == false){
 				rango1 = entry_dia1.Text+"/"+entry_mes1.Text+"/"+entry_ano1.Text;
 				rango2 = entry_dia2.Text+"/"+entry_mes2.Text+"/"+entry_ano2.Text;
-				query_fechas = "AND to_char(hscmty_erp_cobros_deta.fechahora_creacion,'yyyy-MM-dd') >= '"+entry_ano1.Text+"-"+entry_mes1.Text+"-"+entry_dia1.Text+"' "+
-							"AND to_char(hscmty_erp_cobros_deta.fechahora_creacion,'yyyy-MM-dd') <= '"+entry_ano2.Text+"-"+entry_mes2.Text+"-"+entry_dia2.Text+"' ";
+				query_fechas = "AND to_char(osiris_erp_cobros_deta.fechahora_creacion,'yyyy-MM-dd') >= '"+entry_ano1.Text+"-"+entry_mes1.Text+"-"+entry_dia1.Text+"' "+
+							"AND to_char(osiris_erp_cobros_deta.fechahora_creacion,'yyyy-MM-dd') <= '"+entry_ano2.Text+"-"+entry_mes2.Text+"-"+entry_dia2.Text+"' ";
 			}
 			
 			NpgsqlConnection conexion; 
@@ -409,41 +407,41 @@ namespace osiris
 				NpgsqlCommand comando; 
 				comando = conexion.CreateCommand ();
                	// asigna el numero de folio de ingreso de paciente (FOLIO)
-					comando.CommandText = "SELECT DISTINCT(hscmty_erp_movcargos.folio_de_servicio),to_char(hscmty_erp_cobros_deta.folio_de_servicio,'999999999999') AS folioservicio, "+
-						"to_char(hscmty_erp_cobros_deta.pid_paciente,'999999999999') AS pidpaciente, "+
+					comando.CommandText = "SELECT DISTINCT(osiris_erp_movcargos.folio_de_servicio),to_char(osiris_erp_cobros_deta.folio_de_servicio,'999999999999') AS folioservicio, "+
+						"to_char(osiris_erp_cobros_deta.pid_paciente,'999999999999') AS pidpaciente, "+
 						"nombre1_paciente || ' ' || nombre2_paciente || ' ' || apellido_paterno_paciente || ' ' || apellido_materno_paciente AS nombre_completo, "+
-						"to_char(to_number(to_char(age('"+DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss")+"',hscmty_his_paciente.fecha_nacimiento_paciente),'yyyy') ,'9999'),'9999') AS edad, "+
-						"hscmty_his_paciente.sexo_paciente,"+
-						"to_char(hscmty_his_paciente.fecha_nacimiento_paciente,'dd-MM-yyyy') AS fecha_nac, "+
-						"hscmty_his_tipo_admisiones.descripcion_admisiones, "+
-						"hscmty_productos.descripcion_producto, "+
-						"hscmty_erp_cobros_enca.nombre_medico_tratante, "+
-						"hscmty_erp_cobros_enca.id_medico, "+
-						"hscmty_erp_cobros_deta.pid_paciente, "+
-						"to_char(hscmty_erp_cobros_deta.fechahora_creacion,'dd-MM-yyyy') AS fecha_crea, "+
-						"hscmty_his_tipo_pacientes.id_tipo_paciente, "+
-						"to_char(hscmty_erp_cobros_deta.folio_interno_dep,'999999999999') AS foliointernodep,"+ 
-						"to_char(hscmty_erp_cobros_deta.fechahora_solicitud,'dd-MM-yyyy HH24:mi:ss') AS fechahorasolicitud,"+
+						"to_char(to_number(to_char(age('"+DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss")+"',osiris_his_paciente.fecha_nacimiento_paciente),'yyyy') ,'9999'),'9999') AS edad, "+
+						"osiris_his_paciente.sexo_paciente,"+
+						"to_char(osiris_his_paciente.fecha_nacimiento_paciente,'dd-MM-yyyy') AS fecha_nac, "+
+						"osiris_his_tipo_admisiones.descripcion_admisiones, "+
+						"osiris_productos.descripcion_producto, "+
+						"osiris_erp_cobros_enca.nombre_medico_tratante, "+
+						"osiris_erp_cobros_enca.id_medico, "+
+						"osiris_erp_cobros_deta.pid_paciente, "+
+						"to_char(osiris_erp_cobros_deta.fechahora_creacion,'dd-MM-yyyy') AS fecha_crea, "+
+						"osiris_his_tipo_pacientes.id_tipo_paciente, "+
+						"to_char(osiris_erp_cobros_deta.folio_interno_dep,'999999999999') AS foliointernodep,"+ 
+						"to_char(osiris_erp_cobros_deta.fechahora_solicitud,'dd-MM-yyyy HH24:mi:ss') AS fechahorasolicitud,"+
 						"costo_por_unidad,precio_producto_publico,porcentage_ganancia "+
-						"FROM hscmty_productos,hscmty_erp_movcargos,hscmty_erp_cobros_enca,hscmty_his_medicos,hscmty_his_tipo_admisiones,hscmty_his_paciente,hscmty_grupo_producto,hscmty_grupo1_producto,hscmty_his_tipo_pacientes,hscmty_grupo2_producto,hscmty_erp_cobros_deta "+//  
-						"WHERE hscmty_productos.id_grupo_producto = hscmty_grupo_producto.id_grupo_producto "+
-						"AND hscmty_productos.id_grupo1_producto = hscmty_grupo1_producto.id_grupo1_producto "+
-						"AND hscmty_productos.id_grupo2_producto = hscmty_grupo2_producto.id_grupo2_producto "+
-						"AND hscmty_erp_cobros_deta.id_producto =  hscmty_productos.id_producto "+
-						"AND hscmty_erp_cobros_deta.pid_paciente = hscmty_his_paciente.pid_paciente "+
-						"AND hscmty_erp_cobros_enca.pid_paciente = hscmty_his_paciente.pid_paciente "+
-						"AND hscmty_erp_movcargos.id_tipo_paciente = hscmty_his_tipo_pacientes.id_tipo_paciente "+
-						"AND hscmty_erp_cobros_deta.folio_de_servicio = hscmty_erp_cobros_enca.folio_de_servicio "+
-						"AND hscmty_erp_movcargos.folio_de_servicio = hscmty_erp_cobros_enca.folio_de_servicio "+
-						"AND hscmty_erp_cobros_enca.id_medico = hscmty_his_medicos.id_medico "+
-						"AND hscmty_erp_cobros_deta.id_tipo_admisiones2 = hscmty_his_tipo_admisiones.id_tipo_admisiones "+
-						"AND hscmty_erp_cobros_deta.cantidad_aplicada > 0 "+
+						"FROM osiris_productos,osiris_erp_movcargos,osiris_erp_cobros_enca,osiris_his_medicos,osiris_his_tipo_admisiones,osiris_his_paciente,osiris_grupo_producto,osiris_grupo1_producto,osiris_his_tipo_pacientes,osiris_grupo2_producto,osiris_erp_cobros_deta "+//  
+						"WHERE osiris_productos.id_grupo_producto = osiris_grupo_producto.id_grupo_producto "+
+						"AND osiris_productos.id_grupo1_producto = osiris_grupo1_producto.id_grupo1_producto "+
+						"AND osiris_productos.id_grupo2_producto = osiris_grupo2_producto.id_grupo2_producto "+
+						"AND osiris_erp_cobros_deta.id_producto =  osiris_productos.id_producto "+
+						"AND osiris_erp_cobros_deta.pid_paciente = osiris_his_paciente.pid_paciente "+
+						"AND osiris_erp_cobros_enca.pid_paciente = osiris_his_paciente.pid_paciente "+
+						"AND osiris_erp_movcargos.id_tipo_paciente = osiris_his_tipo_pacientes.id_tipo_paciente "+
+						"AND osiris_erp_cobros_deta.folio_de_servicio = osiris_erp_cobros_enca.folio_de_servicio "+
+						"AND osiris_erp_movcargos.folio_de_servicio = osiris_erp_cobros_enca.folio_de_servicio "+
+						"AND osiris_erp_cobros_enca.id_medico = osiris_his_medicos.id_medico "+
+						"AND osiris_erp_cobros_deta.id_tipo_admisiones2 = osiris_his_tipo_admisiones.id_tipo_admisiones "+
+						"AND osiris_erp_cobros_deta.cantidad_aplicada > 0 "+
 						" "+query_fechas+" "+
 						" "+query_sexo+" "+
 						" "+query_tipo_reporte+" "+
 						" "+query_solicitado+" "+
 						querytipo_reporte+
-						//"AND hscmty_erp_cobros_deta.id_tipo_admisiones = '400' "+
+						//"AND osiris_erp_cobros_deta.id_tipo_admisiones = '400' "+
 						"ORDER BY "+query_orden+" ;";
 				Console.WriteLine(comando.CommandText.ToString());			
 				NpgsqlDataReader lector = comando.ExecuteReader ();
@@ -622,12 +620,12 @@ namespace osiris
       		// Cambiar la fuente
 			Gnome.Print.Setfont(ContextoImp,fuente6);
 			
-			ContextoImp.MoveTo(69.7,-30);			ContextoImp.Show("Hospital Santa Cecilia");//19.7, 770
-			ContextoImp.MoveTo(70, -30);			ContextoImp.Show("Hospital Santa Cecilia");
-			ContextoImp.MoveTo(69.7, -40);			ContextoImp.Show("Direccion: Isacc Garza #200 Ote. Centro Monterrey, NL.");
-			ContextoImp.MoveTo(70, -40);			ContextoImp.Show("Direccion: Isacc Garza #200 Ote. Centro Monterrey, NL.");
-			ContextoImp.MoveTo(69.7, -50);			ContextoImp.Show("Conmutador:(81) 81-25-56-10");
-			ContextoImp.MoveTo(70, -50);			ContextoImp.Show("Conmutador:(81) 81-25-56-10");
+			ContextoImp.MoveTo(69.7,-30);			ContextoImp.Show("Sistema Hospitalario OSIRIS");//19.7, 770
+			ContextoImp.MoveTo(70, -30);			ContextoImp.Show("Sistema Hospitalario OSIRIS");
+			ContextoImp.MoveTo(69.7, -40);			ContextoImp.Show("Direccion:");
+			ContextoImp.MoveTo(70, -40);			ContextoImp.Show("Direccion:");
+			ContextoImp.MoveTo(69.7, -50);			ContextoImp.Show("Conmutador:");
+			ContextoImp.MoveTo(70, -50);			ContextoImp.Show("Conmutador:");
 			
 			Gnome.Print.Setfont(ContextoImp,fuente11);
 			ContextoImp.MoveTo(319.7, -30);			ContextoImp.Show(titulo);

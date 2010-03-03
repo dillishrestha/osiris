@@ -16,51 +16,53 @@ namespace osiris
 {
 	public class imprime_mov_productos
 	{
-		
-		public string connectionString;						
-		public string nombrebd;
-		public string LoginEmpleado;
-    	public string NomEmpleado;
-    	public string AppEmpleado;
-    	public string ApmEmpleado;
+		string connectionString;						
+		string nombrebd;
+		string LoginEmpleado;
+    	string NomEmpleado;
+    	string AppEmpleado;
+    	string ApmEmpleado;
 		// Declarando el treeview
-		public Gtk.TreeView lista_resumen_productos;
-		public Gtk.TreeStore treeViewEngineResumen;
-		public string titulo = "REPORTE  MOVIMIENTOS DE PRODUCTOS POR PACIENTE";
-		public int contador = 1;
-		public int numpage = 1;
-		public int filas = -75;
-		public string query1  = " ";
-		public string query_fechas =" ";
-		public string CantidadAplicada;
-		public string idproducto;
-	    public string descripcionproducto;
-		public string foliodeservicio;
-		public string pidpaciente;
-		public string nombrepaciente; 
-		public string idtipoadmisiones;  
-		public string descripcionadmisiones;
+		Gtk.TreeView lista_resumen_productos;
+		Gtk.TreeStore treeViewEngineResumen;
+		string titulo = "REPORTE  MOVIMIENTOS DE PRODUCTOS POR PACIENTE";
+		int contador = 1;
+		int numpage = 1;
+		int filas = -75;
+		string query1  = " ";
+		string query_fechas =" ";
+		string CantidadAplicada;
+		string idproducto;
+	    string descripcionproducto;
+		string foliodeservicio;
+		string pidpaciente;
+		string nombrepaciente; 
+		string idtipoadmisiones;  
+		string descripcionadmisiones;
 		//public string fechahoracreacion;
-		public string desripcionproductorecortado;
-		public string entry_dia1;
-		public string entry_mes1;
-		public string entry_ano1; 
-		public string entry_dia2;
-		public string entry_mes2;
-		public string entry_ano2; 
-		public string entry_total_aplicado;
-		public string nombrepacienterecortado;
-		public string titulopagina;
-	 //Declaracion de ventana de error:
+		string desripcionproductorecortado;
+		string entry_dia1;
+		string entry_mes1;
+		string entry_ano1; 
+		string entry_dia2;
+		string entry_mes2;
+		string entry_ano2; 
+		string entry_total_aplicado;
+		string nombrepacienterecortado;
+		string titulopagina;
+	 	//Declaracion de ventana de error:
 		protected Gtk.Window MyWinError;
 		protected Gtk.Window MyWin;
+		
+		class_conexion conexion_a_DB = new class_conexion();
 		                                                                                                                   
 		public imprime_mov_productos(string entry_total_aplicado_,string entry_dia1_,string entry_mes1_,string entry_ano1_, string entry_dia2_,string entry_mes2_,string entry_ano2_  ,object _lista_resumen_productos_,object _treeViewEngineResumen_, string _query1_,  string _nombrebd_, string titulopagina_)
 		{
 			lista_resumen_productos = _lista_resumen_productos_ as Gtk.TreeView;
 			treeViewEngineResumen =  _treeViewEngineResumen_ as Gtk.TreeStore;
 			query1  = _query1_;
-			nombrebd =_nombrebd_;
+			connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
+			nombrebd = conexion_a_DB._nombrebd;
 			titulopagina = titulopagina_;
 			entry_dia1 = entry_dia1_; 
 			entry_mes1 = entry_mes1_;
@@ -116,9 +118,9 @@ namespace osiris
 			Gnome.Print.Setfont(ContextoImp,fuente5);
 			ContextoImp.MoveTo(320.7, -40);	       ContextoImp.Show( titulo+"");
 			Gnome.Print.Setfont(ContextoImp,fuente2);
-			ContextoImp.MoveTo(95, -30);			ContextoImp.Show("Hospital Santa Cecilia");
-			ContextoImp.MoveTo(95, -40);			ContextoImp.Show("Direccion: Isacc Garza #200 Ote. Centro Monterrey, NL.");
-			ContextoImp.MoveTo(95, -50);			ContextoImp.Show("Conmutador:(81) 81-25-56-10");
+			ContextoImp.MoveTo(95, -30);			ContextoImp.Show("Sistema Hospitalario OSIRIS");
+			ContextoImp.MoveTo(95, -40);			ContextoImp.Show("Direccion:");
+			ContextoImp.MoveTo(95, -50);			ContextoImp.Show("Conmutador:");
 			ContextoImp.MoveTo(445, -50);			ContextoImp.Show("PAGINA "+numpage);
 			ContextoImp.MoveTo(399, -60);			ContextoImp.Show("Fecha Impresion: "+DateTime.Now.ToString("dd-MM-yyyy HH:mm"));
 			ContextoImp.MoveTo(370, -70);			ContextoImp.Show("Rango de Fechas :  Inicio " +entry_dia1+ "/"+entry_mes1+ "/"+entry_ano1+   "  Termino "  +entry_dia2+ "/"+entry_mes2+ "/"+entry_ano2);
@@ -209,9 +211,9 @@ namespace osiris
 				Gnome.Print.Setfont(ContextoImp,fuente5);
 				ContextoImp.MoveTo(320.7, -40);	       ContextoImp.Show( titulo+"");
 				Gnome.Print.Setfont(ContextoImp,fuente2);
-				ContextoImp.MoveTo(95, -30);			ContextoImp.Show("Hospital Santa Cecilia");
-				ContextoImp.MoveTo(95, -40);			ContextoImp.Show("Direccion: Isacc Garza #200 Ote. Centro Monterrey, NL.");
-				ContextoImp.MoveTo(95, -50);			ContextoImp.Show("Conmutador:(81) 81-25-56-10");
+				ContextoImp.MoveTo(95, -30);			ContextoImp.Show("Sistema Hospitalario OSIRIS");
+				ContextoImp.MoveTo(95, -40);			ContextoImp.Show("Direccion:");
+				ContextoImp.MoveTo(95, -50);			ContextoImp.Show("Conmutador:");
 				ContextoImp.MoveTo(445, -50);			ContextoImp.Show("PAGINA "+numpage);
 				ContextoImp.MoveTo(399, -60);			ContextoImp.Show("Fecha Impresion: "+DateTime.Now.ToString("dd-MM-yyyy HH:mm"));
 				ContextoImp.MoveTo(370, -70);			ContextoImp.Show("Rango de Fechas :  Inicio " +entry_dia1+ "/"+entry_mes1+ "/"+entry_ano1+   "  Termino "  +entry_dia2+ "/"+entry_mes2+ "/"+entry_ano2);

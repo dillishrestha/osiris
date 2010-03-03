@@ -34,6 +34,8 @@ using Npgsql;
 using System.Data;
 using Gtk;
 using Glade;
+using Gnome;
+using GtkSharp;
 
 namespace osiris
 {
@@ -97,6 +99,18 @@ namespace osiris
 		string tiporeporte = "STOCK";
 		string titulo = "REPORTE DE STOCK HOSPITALIZACION";
 		
+		// Declarando variable de fuente para la impresion
+		// Declaracion de fuentes tipo Bitstream Vera sans
+		Gnome.Font fuente5 = Gnome.Font.FindClosest("Luxi Sans", 5);
+		Gnome.Font fuente6 = Gnome.Font.FindClosest("Luxi Sans", 6);
+		Gnome.Font fuente7 = Gnome.Font.FindClosest("Luxi Sans", 7);
+		Gnome.Font fuente8 = Gnome.Font.FindClosest("Luxi Sans", 8);//Bitstream Vera Sans
+		Gnome.Font fuente9 = Gnome.Font.FindClosest("Luxi Sans", 9);
+		Gnome.Font fuente10 = Gnome.Font.FindClosest("Luxi Sans", 10);
+		Gnome.Font fuente11 = Gnome.Font.FindClosest("Luxi Sans", 11);
+		Gnome.Font fuente12 = Gnome.Font.FindClosest("Luxi Sans", 12);
+		Gnome.Font fuente36 = Gnome.Font.FindClosest("Luxi Sans", 36);
+		
 		//Declaracion de ventana de error
 		protected Gtk.Window MyWinError;
 		protected Gtk.Window MyWin;
@@ -140,8 +154,8 @@ namespace osiris
 			inventario_sub_almacenes.Show();
 			Console.WriteLine(descsubalmacen+"   almacen");
 			button_salir.Clicked += new EventHandler(on_cierraventanas_clicked);
-			//button_imprimir.Clicked += new EventHandler(imprime_reporte_stock);
-			//button_imprime_traspaso.Clicked += new EventHandler(imprime_reporte_traspaso);
+			button_imprimir.Clicked += new EventHandler(imprime_reporte_stock);
+			button_imprime_traspaso.Clicked += new EventHandler(imprime_reporte_traspaso);
 			button_actualizar.Clicked += new EventHandler(actualizar);
 			checkbutton_sin_stock.Clicked += new EventHandler(on_checkbutton_articulos_sin_stock_clicked);
 			checkbutton_articulos_con_stock.Clicked += new EventHandler(on_checkbutton_articulos_con_stock_clicked);
@@ -1333,7 +1347,6 @@ namespace osiris
 				this.entry_numero_de_traspaso.Text = "0";
 		}	
 		
-		/*
 		void imprime_reporte_traspaso(object sender, EventArgs args)
 		{
 			titulo = "REPORTE DE ENVIO ENTRE SUB-ALMACENES";
@@ -1405,11 +1418,11 @@ namespace osiris
 					ContextoImp.MoveTo(65, filas);		ContextoImp.Show(tomovalor1);
 					ContextoImp.MoveTo(300, filas);		ContextoImp.Show((string) lector["cantAut"]);
 					//ContextoImp.MoveTo(340, filas);		ContextoImp.Show("_____");
-					ContextoImp.MoveTo(350, filas);		ContextoImp.Show((string) lector["id_almacen_origen"]);
-					ContextoImp.MoveTo(380, filas);		ContextoImp.Show((string) lector["id_almacen"]);
+					ContextoImp.MoveTo(350, filas);		ContextoImp.Show((string) lector["id_almacen_origen"].ToString().Trim());
+					ContextoImp.MoveTo(380, filas);		ContextoImp.Show((string) lector["id_almacen"].ToString().Trim());
 					ContextoImp.MoveTo(430, filas);		ContextoImp.Show((string) lector["fechatraspaso"]);
 					ContextoImp.MoveTo(510, filas);		ContextoImp.Show((string) lector["id_quien_traspaso"]);
-					ContextoImp.MoveTo(600, filas);		ContextoImp.Show((string) lector["numero_de_traspaso"]);
+					ContextoImp.MoveTo(600, filas);		ContextoImp.Show((string) lector["numero_de_traspaso"].ToString().Trim());
 					filas-=10;
 					contador+=1;
 					salto_pagina(ContextoImp,trabajoImpresion,contador);
@@ -1424,11 +1437,11 @@ namespace osiris
 					ContextoImp.MoveTo(65, filas);		ContextoImp.Show(tomovalor1);
 					ContextoImp.MoveTo(300, filas);		ContextoImp.Show((string) lector["cantAut"]);
 					//ContextoImp.MoveTo(340, filas);		ContextoImp.Show("_____");
-					ContextoImp.MoveTo(350, filas);		ContextoImp.Show((string) lector["id_almacen_origen"]);
-					ContextoImp.MoveTo(380, filas);		ContextoImp.Show((string) lector["id_almacen"]);
+					ContextoImp.MoveTo(350, filas);		ContextoImp.Show((string) lector["id_almacen_origen"].ToString().Trim());
+					ContextoImp.MoveTo(380, filas);		ContextoImp.Show((string) lector["id_almacen"].ToString().Trim());
 					ContextoImp.MoveTo(430, filas);		ContextoImp.Show((string) lector["fechatraspaso"]);
 					ContextoImp.MoveTo(510, filas);		ContextoImp.Show((string) lector["id_quien_traspaso"]);
-					ContextoImp.MoveTo(600, filas);		ContextoImp.Show((string) lector["numero_de_traspaso"]);
+					ContextoImp.MoveTo(600, filas);		ContextoImp.Show((string) lector["numero_de_traspaso"].ToString().Trim());
 					filas-=10;
 					contador+=1;
 					salto_pagina(ContextoImp,trabajoImpresion,contador);
@@ -1605,7 +1618,7 @@ namespace osiris
 	        	filas=690;
 	        }
 		}
-		*/
+
 		void llenado_grupo(string tipo_, string descripciongrupo_,int idgrupoproducto_ )
 		{
 			combobox_grupo.Clear();

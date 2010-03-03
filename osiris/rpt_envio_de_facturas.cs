@@ -11,58 +11,53 @@ using Gtk;
 using Glade;
 using Gnome;
 using System.Collections;
-using GtkSharp;
 
 namespace osiris
 {
-	
-	
 	public class rpt_envio_de_facturas
 	{
-	   public string connectionString = "Server=localhost;" +
-						"Port=5432;" +
-						 "User ID=admin;" +
-						"Password=1qaz2wsx;";
+		string connectionString;		
+		string nombrebd;
+		string query_facturas = "" ;
 		
-		public string nombrebd;
-		public string query_facturas = "" ;
-		
-		public Gtk.TreeView treeview_lista_facturas;
-		public Gtk.TreeStore treeViewEngineBuscafacturas;
+		Gtk.TreeView treeview_lista_facturas;
+		Gtk.TreeStore treeViewEngineBuscafacturas;
 		
 		//public string check_todos_clientes;//Gtk.CheckButton check_todos_clientes;	
 	    
-		public string entry_al_dia;
-		public string entry_al_mes;
-		public string entry_al_anno;
-		public string entry_del_dia;
-		public string entry_del_mes;
-		public string entry_del_anno;
-		public string entry_buscar;
+		string entry_al_dia;
+		string entry_al_mes;
+		string entry_al_anno;
+		string entry_del_dia;
+		string entry_del_mes;
+		string entry_del_anno;
+		string entry_buscar;
 		
-		public string pagado;
-		public int numerofactura;
-		public string totalfactura;
-		public string fechadefectura;
-		public int foliodeservicio;
-		public string nombrepaciente;
-		public string fecha_de_envio;
-		public string descripcioncliente;
-		public decimal total_facturas_enviadas = 1;
-		public decimal total_monto_facturas;
+		string pagado;
+		int numerofactura;
+		string totalfactura;
+		string fechadefectura;
+		int foliodeservicio;
+		string nombrepaciente;
+		string fecha_de_envio;
+		string descripcioncliente;
+		decimal total_facturas_enviadas = 1;
+		decimal total_monto_facturas;
 		
-		public string nombrepacienterecortado;
-		public string descripcionclienterecortado;
+		string nombrepacienterecortado;
+		string descripcionclienterecortado;
 		
-		public string titulo = "REPORTE ENVIO DE FACTURAS";
+		string titulo = "REPORTE ENVIO DE FACTURAS";
 		
-		public int contador = 1;
-		public int numpage = 1;
-		public int filas = 730;
+		int contador = 1;
+		int numpage = 1;
+		int filas = 730;
 		
 		//Declaracion de ventana de error:
 		protected Gtk.Window MyWinError;
 		protected Gtk.Window MyWin;
+		
+		class_conexion conexion_a_DB = new class_conexion();
 		
 		public rpt_envio_de_facturas(decimal total_monto_facturas_,string fecha_de_envio_,string entry_buscar_,string entry_al_dia_,string entry_al_mes_,string entry_al_anno_,string entry_del_dia_,string entry_del_mes_,string entry_del_anno_,object _treeview_lista_facturas_,object _treeViewEngineBuscafacturas_,string query_facturas_,string nombrebd_)
 		{
@@ -78,7 +73,8 @@ namespace osiris
             treeview_lista_facturas = _treeview_lista_facturas_ as Gtk.TreeView;
             treeViewEngineBuscafacturas = _treeViewEngineBuscafacturas_ as Gtk.TreeStore;	
             query_facturas = query_facturas_;
-            nombrebd = nombrebd_;
+            connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
+			nombrebd = conexion_a_DB._nombrebd;
           
 			Gnome.PrintJob    trabajo   = new Gnome.PrintJob (PrintConfig.Default ());
 			Gnome.PrintDialog dialogo   = new Gnome.PrintDialog (trabajo, titulo, 0);
@@ -188,9 +184,9 @@ namespace osiris
 				
 				Gnome.Print.Setfont(ContextoImp,fuente2);
 				ContextoImp.MoveTo(300, 758);            ContextoImp.Show("SISTEMA HOSPITALARIO OSIRIS");
-			    ContextoImp.MoveTo(20, 752);            ContextoImp.Show("Hospital Santa Cecilia");
-				ContextoImp.MoveTo(20, 744);            ContextoImp.Show("Direccion: Isacc Garza #200 Ote. Centro Monterrey, NL.");
-				ContextoImp.MoveTo(20, 736);            ContextoImp.Show("Conmutador:(81) 81-25-56-10");
+			    ContextoImp.MoveTo(20, 752);            ContextoImp.Show("SISTEMA HOSPITALARIO OSIRIS");
+				ContextoImp.MoveTo(20, 744);            ContextoImp.Show("Direccion:");
+				ContextoImp.MoveTo(20, 736);            ContextoImp.Show("Conmutador:");
 				ContextoImp.MoveTo(340, 730);			ContextoImp.Show("PAGINA "+numpage);
 				ContextoImp.MoveTo(340.5, 730);			ContextoImp.Show("PAGINA ");
 					
@@ -246,48 +242,48 @@ namespace osiris
 			Gnome.Font fuente4 = Gnome.Font.FindClosest("Bitstream Vera Sans", 10);
 			Gnome.Font fuente5 = Gnome.Font.FindClosest("Bitstream Vera Sans", 9);
 			Gnome.Print.Setfont(ContextoImp,fuente);
-				ContextoImp.MoveTo(270, 744);           ContextoImp.Show( titulo+"");	
-				ContextoImp.MoveTo(270.5, 744);           ContextoImp.Show( titulo+"");
+			ContextoImp.MoveTo(270, 744);           ContextoImp.Show( titulo+"");	
+			ContextoImp.MoveTo(270.5, 744);           ContextoImp.Show( titulo+"");
 				
-				Gnome.Print.Setfont(ContextoImp,fuente2);
-				ContextoImp.MoveTo(300, 758);            ContextoImp.Show("SISTEMA HOSPITALARIO OSIRIS");
-			    ContextoImp.MoveTo(20, 752);            ContextoImp.Show("Hospital Santa Cecilia");
-				ContextoImp.MoveTo(20, 744);            ContextoImp.Show("Direccion: Isacc Garza #200 Ote. Centro Monterrey, NL.");
-				ContextoImp.MoveTo(20, 736);            ContextoImp.Show("Conmutador:(81) 81-25-56-10");
-				ContextoImp.MoveTo(340, 730);			ContextoImp.Show("PAGINA "+numpage);
-				ContextoImp.MoveTo(340.5, 730);			ContextoImp.Show("PAGINA ");
+			Gnome.Print.Setfont(ContextoImp,fuente2);
+			ContextoImp.MoveTo(300, 758);            ContextoImp.Show("SISTEMA HOSPITALARIO OSIRIS");
+			ContextoImp.MoveTo(20, 752);            ContextoImp.Show("SISTEMA HOSPITALARIO OSIRIS");
+			ContextoImp.MoveTo(20, 744);            ContextoImp.Show("Direccion:");
+			ContextoImp.MoveTo(20, 736);            ContextoImp.Show("Conmutador:");
+			ContextoImp.MoveTo(340, 730);			ContextoImp.Show("PAGINA "+numpage);
+			ContextoImp.MoveTo(340.5, 730);			ContextoImp.Show("PAGINA ");
 					
-				Gnome.Print.Setfont(ContextoImp,fuente4);
-			    ContextoImp.MoveTo(60, 720);			ContextoImp.Show(entry_buscar);
-				ContextoImp.MoveTo(60.5, 720);			ContextoImp.Show(entry_buscar);
-			    ContextoImp.MoveTo(455, 720);			ContextoImp.Show(fecha_de_envio);
-				ContextoImp.MoveTo(455.5, 720);			ContextoImp.Show(fecha_de_envio);
+			Gnome.Print.Setfont(ContextoImp,fuente4);
+			ContextoImp.MoveTo(60, 720);			ContextoImp.Show(entry_buscar);
+			ContextoImp.MoveTo(60.5, 720);			ContextoImp.Show(entry_buscar);
+			ContextoImp.MoveTo(455, 720);			ContextoImp.Show(fecha_de_envio);
+			ContextoImp.MoveTo(455.5, 720);			ContextoImp.Show(fecha_de_envio);
 				   
-				Gnome.Print.Setfont(ContextoImp,fuente4);
-				ContextoImp.MoveTo(20, 720);			ContextoImp.Show("Cliente:");
-				ContextoImp.MoveTo(20.5, 720);			ContextoImp.Show("Cliente:");
-				ContextoImp.MoveTo(390, 720);			ContextoImp.Show("Fecha Envio:");
-				ContextoImp.MoveTo(390.5, 720);			ContextoImp.Show("Fecha Envio:");
-				ContextoImp.MoveTo(390, 710);			ContextoImp.Show("Fecha Impresion: "+DateTime.Now.ToString("dd-MM-yyyy HH:mm"));
-				ContextoImp.MoveTo(390.5, 710);			ContextoImp.Show("Fecha Impresion:");
+			Gnome.Print.Setfont(ContextoImp,fuente4);
+			ContextoImp.MoveTo(20, 720);			ContextoImp.Show("Cliente:");
+			ContextoImp.MoveTo(20.5, 720);			ContextoImp.Show("Cliente:");
+			ContextoImp.MoveTo(390, 720);			ContextoImp.Show("Fecha Envio:");
+			ContextoImp.MoveTo(390.5, 720);			ContextoImp.Show("Fecha Envio:");
+			ContextoImp.MoveTo(390, 710);			ContextoImp.Show("Fecha Impresion: "+DateTime.Now.ToString("dd-MM-yyyy HH:mm"));
+			ContextoImp.MoveTo(390.5, 710);			ContextoImp.Show("Fecha Impresion:");
 				
-				Gnome.Print.Setfont(ContextoImp,fuente1);
-				ContextoImp.MoveTo(20, 700);            ContextoImp.Show("Nº de Factura:");
-				ContextoImp.MoveTo(20.5, 700);          ContextoImp.Show("Nº de Factura:");
-				ContextoImp.MoveTo(65, 700);			ContextoImp.Show("Fecha Factura:");
-				ContextoImp.MoveTo(65.5, 700);			ContextoImp.Show("Fecha Factura:");
-				ContextoImp.MoveTo(110, 700);			ContextoImp.Show("Monto Factura:");
-				ContextoImp.MoveTo(110.5, 700);			ContextoImp.Show("Monto Factura:");
-				ContextoImp.MoveTo(155, 700);			ContextoImp.Show("No. Atencion:");
-				ContextoImp.MoveTo(155.5, 700);			ContextoImp.Show("No. Atencion:");
-				ContextoImp.MoveTo(195, 700);			ContextoImp.Show("Fecha de Envio:");
-				ContextoImp.MoveTo(195.5, 700);			ContextoImp.Show("Fecha de Envio:");
-				ContextoImp.MoveTo(245, 700);			ContextoImp.Show("Pagado:");
-				ContextoImp.MoveTo(245.5, 700);			ContextoImp.Show("Pagado:");
-				ContextoImp.MoveTo(275, 700);			ContextoImp.Show("Paciente:");
-				ContextoImp.MoveTo(275.5, 700);			ContextoImp.Show("Paciente:");
-				ContextoImp.MoveTo(400, 700);			ContextoImp.Show("Cliente:");
-				ContextoImp.MoveTo(400.5, 700);			ContextoImp.Show("Cliente:");
+			Gnome.Print.Setfont(ContextoImp,fuente1);
+			ContextoImp.MoveTo(20, 700);            ContextoImp.Show("Nº de Factura:");
+			ContextoImp.MoveTo(20.5, 700);          ContextoImp.Show("Nº de Factura:");
+			ContextoImp.MoveTo(65, 700);			ContextoImp.Show("Fecha Factura:");
+			ContextoImp.MoveTo(65.5, 700);			ContextoImp.Show("Fecha Factura:");
+			ContextoImp.MoveTo(110, 700);			ContextoImp.Show("Monto Factura:");
+			ContextoImp.MoveTo(110.5, 700);			ContextoImp.Show("Monto Factura:");
+			ContextoImp.MoveTo(155, 700);			ContextoImp.Show("No. Atencion:");
+			ContextoImp.MoveTo(155.5, 700);			ContextoImp.Show("No. Atencion:");
+			ContextoImp.MoveTo(195, 700);			ContextoImp.Show("Fecha de Envio:");
+			ContextoImp.MoveTo(195.5, 700);			ContextoImp.Show("Fecha de Envio:");
+			ContextoImp.MoveTo(245, 700);			ContextoImp.Show("Pagado:");
+			ContextoImp.MoveTo(245.5, 700);			ContextoImp.Show("Pagado:");
+			ContextoImp.MoveTo(275, 700);			ContextoImp.Show("Paciente:");
+			ContextoImp.MoveTo(275.5, 700);			ContextoImp.Show("Paciente:");
+			ContextoImp.MoveTo(400, 700);			ContextoImp.Show("Cliente:");
+			ContextoImp.MoveTo(400.5, 700);			ContextoImp.Show("Cliente:");
 			filas=690;
 		}
 		

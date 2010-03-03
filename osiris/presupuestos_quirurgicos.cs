@@ -530,11 +530,10 @@ namespace osiris
 							"existente para que el  se muestre \n"+"o no a pulsado el boton ''Seleccionar''");
 				msgBoxError.Run ();			msgBoxError.Destroy();
 			}else{
-				/*new paquetes_reporte (int.Parse(entry_id_presupuesto.Text),entry_cirugia.Text,entry_medico.Text,
+				new paquetes_reporte (int.Parse(entry_id_presupuesto.Text),entry_cirugia.Text,entry_medico.Text,
 					nombrebd,"presupuestos",entry_deposito_minimo.Text.Trim(),entry_dias_internamiento.Text.Trim(),
 					entry_tel_medico.Text.Trim(),entry_tel_opcional.Text.Trim(),entry_fax.Text.Trim(),
 					entry_id_presupuesto.Text.Trim(),entry_notas.Text.Trim().ToUpper(),true,"0");   // rpt_proc_cobranza.cs
-				*/
 			}
 		}
 		
@@ -546,11 +545,10 @@ namespace osiris
 							"existente para que el  se muestre \n"+"o no a pulsado el boton ''Seleccionar''");
 				msgBoxError.Run ();			msgBoxError.Destroy();
 			}else{
-				/*new paquetes_reporte (int.Parse(entry_id_presupuesto.Text),entry_cirugia.Text,entry_medico.Text,
+				new paquetes_reporte (int.Parse(entry_id_presupuesto.Text),entry_cirugia.Text,entry_medico.Text,
 					nombrebd,"presupuestos",entry_deposito_minimo.Text.Trim(),entry_dias_internamiento.Text.Trim(),
 					entry_tel_medico.Text.Trim(),entry_tel_opcional.Text.Trim(),entry_fax.Text.Trim(),
 					entry_id_presupuesto.Text.Trim(),entry_notas.Text.Trim().ToUpper(),false,"0");   // rpt_proc_cobranza.cs
-				*/
 			}
 		}
 		

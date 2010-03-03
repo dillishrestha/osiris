@@ -142,8 +142,7 @@ namespace osiris
 
         	Gnome.PrintContext ctx = trabajo.Context;        
         	ComponerPagina(ctx, trabajo); 
-        	trabajo.Close();
-             
+        	trabajo.Close();             
         	switch (respuesta)
         	{
                   case (int) Gnome.PrintButtons.Print:   

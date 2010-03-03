@@ -175,7 +175,7 @@ namespace osiris
 		
 		void on_button_button_rpt_abonos_clicked(object sender, EventArgs args)
 		{
-			//new osiris.reporte_de_abonos(nombrebd);	
+			new osiris.reporte_de_abonos(nombrebd);	
 		}
 		
 		void on_button_envio_facturas_clicked(object sender, EventArgs args)
@@ -394,7 +394,7 @@ namespace osiris
 			}
 						
 			rango_de_fecha.Destroy();
-			//new osiris.rpt_honorario_med_fecha(rango1,rango2,query_fechas,nombrebd,LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,facturados,orden,query_medico);		
+			new osiris.rpt_honorario_med_fecha(rango1,rango2,query_fechas,nombrebd,LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,facturados,orden,query_medico);		
 			  
 		}
 	
@@ -918,20 +918,20 @@ namespace osiris
 				if (this.pagados == false){			
 					Console.WriteLine("entra");
 					bool pagados = true;
-					//new osiris.reporte_porcedimientos_facturados(pagados,rango1,rango2,query_fechas,nombrebd,LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,facturados,orden,query_cliente);
+					new osiris.reporte_porcedimientos_facturados(pagados,rango1,rango2,query_fechas,nombrebd,LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,facturados,orden,query_cliente);
 				}else{
 					query_fechas =	"AND to_char(osiris_erp_factura_enca.fechahora_pago_factura,'yyyy-MM-dd') >= '"+entry_ano1.Text+"-"+entry_mes1.Text+"-"+entry_dia1.Text+"' "+
 									"AND to_char(osiris_erp_factura_enca.fechahora_pago_factura,'yyyy-MM-dd') <= '"+entry_ano2.Text+"-"+entry_mes2.Text+"-"+entry_dia2.Text+"' ";
 										
-					//new osiris.reporte_facturas_pagadas(rango1,rango2,query_fechas,nombrebd,LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,facturados,orden,query_cliente,facturas_);
+					new osiris.reporte_facturas_pagadas(rango1,rango2,query_fechas,nombrebd,LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,facturados,orden,query_cliente,facturas_);
 				}
 			}
 			if (facturados == "NO FACTURADOS"){ 
 					bool pagados = false;
-				//new osiris.reporte_porcedimientos_facturados(pagados,rango1,rango2,query_fechas,nombrebd,LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,facturados,"","");
+				new osiris.reporte_porcedimientos_facturados(pagados,rango1,rango2,query_fechas,nombrebd,LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,facturados,"","");
 			}
 			if (facturados == "CERRADOS"){
-				//new osiris.reporte_porcedimientos_cerrados(rango1,rango2,query_fechas,nombrebd,LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,facturados,"","");
+				new osiris.reporte_porcedimientos_cerrados(rango1,rango2,query_fechas,nombrebd,LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,facturados,"","");
 			}
 		}
 		

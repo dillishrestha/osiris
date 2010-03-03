@@ -36,7 +36,6 @@ using Npgsql;
 using System.Data;
 using Glade;
 using System.Collections;
-using GtkSharp;
 
 namespace osiris
 {
@@ -63,74 +62,74 @@ namespace osiris
 		[Widget] Gtk.CheckButton checkbutton_impr_todo_proce;
 		[Widget] Gtk.CheckButton checkbutton_todos_los_clientes;
 		
-		public string connectionString = "Server=localhost;" +
-        	    	                     "Port=5432;" +
-            	    	                 "User ID=admin;" +
-                	    	             "Password=1qaz2wsx;";
-        public string nombrebd;
-		public string tiporeporte = "ABONOS";
-		public string titulo = "REPORTE DE ABONOS";
+		string connectionString;
+        string nombrebd;
+		string tiporeporte = "ABONOS";
+		string titulo = "REPORTE DE ABONOS";
 		
-		public int columna = 0;
-		public int fila = -70;
-		public int contador = 1;
-		public int numpage = 1;
-		public string schars = "";
-		public int filas=710;
+		int columna = 0;
+		int fila = -70;
+		int contador = 1;
+		int numpage = 1;
+		string schars = "";
+		int filas=710;
 		
-		public string query_fechas = " ";
-		public string orden = " ";
-		public string rango1 = "";
-		public string rango2 = "";
+		string query_fechas = " ";
+		string orden = " ";
+		string rango1 = "";
+		string rango2 = "";
 		
 		// Declaracion de fuentes tipo Bitstream Vera sans
-		public Gnome.Font fuente6 = Gnome.Font.FindClosest("Bitstream Vera Sans", 6);
-		public Gnome.Font fuente8 = Gnome.Font.FindClosest("Bitstream Vera Sans", 8);
-		public Gnome.Font fuente12 = Gnome.Font.FindClosest("Bitstream Vera Sans", 12);
-		public Gnome.Font fuente10 = Gnome.Font.FindClosest("Bitstream Vera Sans", 10);
-		public Gnome.Font fuente11 = Gnome.Font.FindClosest("Bitstream Vera Sans", 11);
-		public Gnome.Font fuente36 = Gnome.Font.FindClosest("Bitstream Vera Sans", 36);
-		public Gnome.Font fuente7 = Gnome.Font.FindClosest("Bitstream Vera Sans", 7);
-		public Gnome.Font fuente9 = Gnome.Font.FindClosest("Bitstream Vera Sans", 9);
+		Gnome.Font fuente6 = Gnome.Font.FindClosest("Bitstream Vera Sans", 6);
+		Gnome.Font fuente8 = Gnome.Font.FindClosest("Bitstream Vera Sans", 8);
+		Gnome.Font fuente12 = Gnome.Font.FindClosest("Bitstream Vera Sans", 12);
+		Gnome.Font fuente10 = Gnome.Font.FindClosest("Bitstream Vera Sans", 10);
+		Gnome.Font fuente11 = Gnome.Font.FindClosest("Bitstream Vera Sans", 11);
+		Gnome.Font fuente36 = Gnome.Font.FindClosest("Bitstream Vera Sans", 36);
+		Gnome.Font fuente7 = Gnome.Font.FindClosest("Bitstream Vera Sans", 7);
+		Gnome.Font fuente9 = Gnome.Font.FindClosest("Bitstream Vera Sans", 9);
 		//Declaracion de ventana de error
 		protected Gtk.Window MyWinError;
 		
-	public reporte_de_abonos(string _nombrebd_)
-	{
-		nombrebd = _nombrebd_;
-		Glade.XML gxml = new Glade.XML (null, "caja.glade", "rango_de_fecha", null);
-		gxml.Autoconnect                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 (this);
-        rango_de_fecha.Show();
-        checkbutton_impr_todo_proce.Label = "Imprime TODO";
-		entry_referencia_inicial.Editable = false;
-		entry_referencia_inicial.Text = DateTime.Now.ToString("dd-MM-yyyy");
-		entry_dia1.KeyPressEvent += onKeyPressEvent;
-		entry_mes1.KeyPressEvent += onKeyPressEvent;
-		entry_ano1.KeyPressEvent += onKeyPressEvent;
-		entry_dia2.KeyPressEvent += onKeyPressEvent;
-		entry_mes2.KeyPressEvent += onKeyPressEvent;
-		entry_ano2.KeyPressEvent += onKeyPressEvent;
-		entry_dia1.Text =DateTime.Now.ToString("dd");
-		entry_mes1.Text =DateTime.Now.ToString("MM");
-		entry_ano1.Text =DateTime.Now.ToString("yyyy");
-		entry_dia2.Text =DateTime.Now.ToString("dd");
-		entry_mes2.Text =DateTime.Now.ToString("MM");
-		entry_ano2.Text =DateTime.Now.ToString("yyyy");
-        button_salir.Clicked += new EventHandler(on_cierraventanas_clicked);
-        button_imprime_rangofecha.Clicked += new EventHandler(imprime_reporte_abonos);
-        label_orden.Hide();
-		label_nom_cliente.Hide();
-		label142.Hide();
-		radiobutton_cliente.Hide();
-		radiobutton_fecha.Hide();
-		checkbutton_todos_los_clientes.Hide();
-		entry_referencia_inicial.Hide();
-		entry_cliente.Hide();
-		button_busca_cliente.Hide();
+		class_conexion conexion_a_DB = new class_conexion();
 		
-    }    
+		public reporte_de_abonos(string _nombrebd_)
+		{
+			connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
+			nombrebd = conexion_a_DB._nombrebd;
+			Glade.XML gxml = new Glade.XML (null, "caja.glade", "rango_de_fecha", null);
+			gxml.Autoconnect                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 (this);
+        	rango_de_fecha.Show();
+			
+        	checkbutton_impr_todo_proce.Label = "Imprime TODO";
+			entry_referencia_inicial.Editable = false;
+			entry_referencia_inicial.Text = DateTime.Now.ToString("dd-MM-yyyy");
+			entry_dia1.KeyPressEvent += onKeyPressEvent;
+			entry_mes1.KeyPressEvent += onKeyPressEvent;
+			entry_ano1.KeyPressEvent += onKeyPressEvent;
+			entry_dia2.KeyPressEvent += onKeyPressEvent;
+			entry_mes2.KeyPressEvent += onKeyPressEvent;
+			entry_ano2.KeyPressEvent += onKeyPressEvent;
+			entry_dia1.Text =DateTime.Now.ToString("dd");
+			entry_mes1.Text =DateTime.Now.ToString("MM");
+			entry_ano1.Text =DateTime.Now.ToString("yyyy");
+			entry_dia2.Text =DateTime.Now.ToString("dd");
+			entry_mes2.Text =DateTime.Now.ToString("MM");
+			entry_ano2.Text =DateTime.Now.ToString("yyyy");
+        	button_salir.Clicked += new EventHandler(on_cierraventanas_clicked);
+        	button_imprime_rangofecha.Clicked += new EventHandler(imprime_reporte_abonos);
+        	label_orden.Hide();
+			label_nom_cliente.Hide();
+			label142.Hide();
+			radiobutton_cliente.Hide();
+			radiobutton_fecha.Hide();
+			checkbutton_todos_los_clientes.Hide();
+			entry_referencia_inicial.Hide();
+			entry_cliente.Hide();
+			button_busca_cliente.Hide();		
+    	}    
 		
-	void imprime_reporte_abonos(object sender, EventArgs args)
+		void imprime_reporte_abonos(object sender, EventArgs args)
 		{
 			if (this.checkbutton_impr_todo_proce.Active == true) { 
 				query_fechas = " ";	 
@@ -139,8 +138,8 @@ namespace osiris
 			}else{
 				rango1 = entry_dia1.Text+"-"+entry_mes1.Text+"-"+entry_ano1.Text;
 				rango2 = entry_dia2.Text+"-"+entry_mes2.Text+"-"+entry_ano2.Text;
-				query_fechas = "AND to_char(hscmty_erp_abonos.fecha_abono,'yyyy-MM-dd') >= '"+entry_ano1.Text+"-"+entry_mes1.Text+"-"+entry_dia1.Text+"' "+//;//;//'"+rango1+"' "+
-								"AND to_char(hscmty_erp_abonos.fecha_abono,'yyyy-MM-dd') <= '"+entry_ano2.Text+"-"+entry_mes2.Text+"-"+entry_dia2.Text+"' ";			
+				query_fechas = "AND to_char(osiris_erp_abonos.fecha_abono,'yyyy-MM-dd') >= '"+entry_ano1.Text+"-"+entry_mes1.Text+"-"+entry_dia1.Text+"' "+//;//;//'"+rango1+"' "+
+								"AND to_char(osiris_erp_abonos.fecha_abono,'yyyy-MM-dd') <= '"+entry_ano2.Text+"-"+entry_mes2.Text+"-"+entry_dia2.Text+"' ";			
 			}
 			Gnome.PrintJob    trabajo = new Gnome.PrintJob(Gnome.PrintConfig.Default());
         	Gnome.PrintDialog dialogo = new Gnome.PrintDialog(trabajo, "Reporte de Abonos/Pagos", 0);
@@ -170,45 +169,45 @@ namespace osiris
 		}	
 			
 			
- 	void ComponerPagina(Gnome.PrintContext ContextoImp, Gnome.PrintJob trabajoImpresion)
-	{	
-		string tomovalor1 = "";
-		int contadorprocedimientos = 0;
-		decimal total = 0;
-		NpgsqlConnection conexion;
-		conexion = new NpgsqlConnection (connectionString+nombrebd);
-        // Verifica que la base de datos este conectada
-		try{
-			conexion.Open ();
-			NpgsqlCommand comando; 
-			comando = conexion.CreateCommand ();
-			comando.CommandText = "SELECT to_char(hscmty_erp_abonos.folio_de_servicio,'9999999999') AS folio, "+
-							"to_char(hscmty_erp_abonos.id_abono,'9999999999') AS idabono, "+
+ 		void ComponerPagina(Gnome.PrintContext ContextoImp, Gnome.PrintJob trabajoImpresion)
+		{	
+			string tomovalor1 = "";
+			int contadorprocedimientos = 0;
+			decimal total = 0;
+			NpgsqlConnection conexion;
+			conexion = new NpgsqlConnection (connectionString+nombrebd);
+        	// Verifica que la base de datos este conectada
+			try{
+				conexion.Open ();
+				NpgsqlCommand comando; 
+				comando = conexion.CreateCommand ();
+				comando.CommandText = "SELECT to_char(osiris_erp_abonos.folio_de_servicio,'9999999999') AS folio, "+
+							"to_char(osiris_erp_abonos.id_abono,'9999999999') AS idabono, "+
 							"to_char(numero_recibo_caja,'9999999999') AS recibocaja, "+
 							"id_quien_creo, "+
-							"to_char(hscmty_erp_abonos.monto_de_abono_procedimiento,'9,999,999,999.99') AS abono, "+
-							"hscmty_erp_abonos.concepto_del_abono AS concepto, "+
-							"hscmty_erp_abonos.eliminado, "+
-							"hscmty_erp_abonos.id_quien_elimino, "+
-							"hscmty_erp_abonos.fechahora_eliminado, "+
-							"to_char(hscmty_erp_abonos.fecha_abono,'yyyy-MM-dd') AS fechaabono, "+
-							"hscmty_erp_abonos.id_forma_de_pago, "+ 
-							"hscmty_erp_forma_de_pago.id_forma_de_pago,descripcion_forma_de_pago AS descripago, "+
-							"hscmty_his_paciente.pid_paciente || '   ' || nombre1_paciente || ' ' || nombre2_paciente || ' ' || apellido_paterno_paciente || ' ' || apellido_materno_paciente AS nombre_completo "+
-							"FROM hscmty_erp_abonos,hscmty_erp_forma_de_pago,hscmty_erp_cobros_enca,hscmty_his_paciente "+
-							"WHERE hscmty_erp_abonos.eliminado = false "+
-							"AND hscmty_erp_abonos.id_forma_de_pago = hscmty_erp_forma_de_pago.id_forma_de_pago "+
-							"AND hscmty_erp_abonos.folio_de_servicio = hscmty_erp_cobros_enca.folio_de_servicio "+
-							"AND hscmty_erp_cobros_enca.pid_paciente = hscmty_his_paciente.pid_paciente "+
+							"to_char(osiris_erp_abonos.monto_de_abono_procedimiento,'9,999,999,999.99') AS abono, "+
+							"osiris_erp_abonos.concepto_del_abono AS concepto, "+
+							"osiris_erp_abonos.eliminado, "+
+							"osiris_erp_abonos.id_quien_elimino, "+
+							"osiris_erp_abonos.fechahora_eliminado, "+
+							"to_char(osiris_erp_abonos.fecha_abono,'yyyy-MM-dd') AS fechaabono, "+
+							"osiris_erp_abonos.id_forma_de_pago, "+ 
+							"osiris_erp_forma_de_pago.id_forma_de_pago,descripcion_forma_de_pago AS descripago, "+
+							"osiris_his_paciente.pid_paciente || '   ' || nombre1_paciente || ' ' || nombre2_paciente || ' ' || apellido_paterno_paciente || ' ' || apellido_materno_paciente AS nombre_completo "+
+							"FROM osiris_erp_abonos,osiris_erp_forma_de_pago,osiris_erp_cobros_enca,osiris_his_paciente "+
+							"WHERE osiris_erp_abonos.eliminado = false "+
+							"AND osiris_erp_abonos.id_forma_de_pago = osiris_erp_forma_de_pago.id_forma_de_pago "+
+							"AND osiris_erp_abonos.folio_de_servicio = osiris_erp_cobros_enca.folio_de_servicio "+
+							"AND osiris_erp_cobros_enca.pid_paciente = osiris_his_paciente.pid_paciente "+
 							" "+query_fechas+" "+
-							"ORDER BY hscmty_erp_abonos.folio_de_servicio;";															
-			Console.WriteLine(comando.CommandText);
-			NpgsqlDataReader lector = comando.ExecuteReader ();
-			ContextoImp.BeginPage("Pagina 1");
-			imprime_encabezado(ContextoImp,trabajoImpresion);
-			Gnome.Print.Setfont (ContextoImp, fuente6);
-			while (lector.Read())
-			{
+							"ORDER BY osiris_erp_abonos.folio_de_servicio;";															
+				//Console.WriteLine(comando.CommandText);
+				NpgsqlDataReader lector = comando.ExecuteReader ();
+				ContextoImp.BeginPage("Pagina 1");
+				imprime_encabezado(ContextoImp,trabajoImpresion);
+				Gnome.Print.Setfont (ContextoImp, fuente6);
+				while (lector.Read())
+				{
 					ContextoImp.MoveTo(15, filas);		ContextoImp.Show((string) lector["folio".Trim()]);
 					ContextoImp.MoveTo(40, filas);		ContextoImp.Show((string) lector["abono".Trim()]);
 					ContextoImp.MoveTo(93, filas);		ContextoImp.Show((string) lector["fechaabono"]);
@@ -228,17 +227,16 @@ namespace osiris
 					contador+=1;
 					contadorprocedimientos += 1;
 					salto_pagina(ContextoImp,trabajoImpresion);
-			}
-			Gnome.Print.Setfont (ContextoImp, fuente9);
-			filas -= 15;
-			ContextoImp.MoveTo(300,filas);				ContextoImp.Show("TOTAL DE ABONOS "+contadorprocedimientos.ToString());
-			ContextoImp.MoveTo(300,filas);				ContextoImp.Show("TOTAL DE ABONOS "+contadorprocedimientos.ToString());
-			ContextoImp.MoveTo(420,filas);				ContextoImp.Show("TOTAL" );
-			ContextoImp.MoveTo(420,filas);				ContextoImp.Show("TOTAL" );
-			ContextoImp.MoveTo(465,filas);				ContextoImp.Show(total.ToString("C"));
-			ContextoImp.MoveTo(465,filas);				ContextoImp.Show(total.ToString("C"));
-			
-			
+				}
+				Gnome.Print.Setfont (ContextoImp, fuente9);
+				filas -= 15;
+				ContextoImp.MoveTo(300,filas);				ContextoImp.Show("TOTAL DE ABONOS "+contadorprocedimientos.ToString());
+				ContextoImp.MoveTo(300,filas);				ContextoImp.Show("TOTAL DE ABONOS "+contadorprocedimientos.ToString());
+				ContextoImp.MoveTo(420,filas);				ContextoImp.Show("TOTAL" );
+				ContextoImp.MoveTo(420,filas);				ContextoImp.Show("TOTAL" );
+				ContextoImp.MoveTo(465,filas);				ContextoImp.Show(total.ToString("C"));
+				ContextoImp.MoveTo(465,filas);				ContextoImp.Show(total.ToString("C"));
+				/*		
 				double ancho;
 				double alto;
 				trabajoImpresion.GetPageSize (out ancho, out alto);
@@ -251,21 +249,18 @@ namespace osiris
 				Gnome.Print.Moveto (ContextoImp, 600, 1);
 				Gnome.Print.Pixbuf (ContextoImp, logohosp);
 				Gnome.Print.Moveto (ContextoImp, 600, 1);
-				ContextoImp.MoveTo(20,500);
+				ContextoImp.MoveTo(20,500);*/
 				//Prin.Grestore (ContextoImp);
 			
 			ContextoImp.ShowPage();
 			contadorprocedimientos += 1;
-			salto_pagina(ContextoImp,trabajoImpresion);
-			
-		}
-		catch(NpgsqlException ex){
+			salto_pagina(ContextoImp,trabajoImpresion);			
+		}catch(NpgsqlException ex){
 				Console.WriteLine("PostgresSQL error: {0}",ex.Message);
 				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
 								MessageType.Error,ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
 				msgBoxError.Run ();		msgBoxError.Destroy();
-		}
-			
+		}			
 	}
  	
 	void imprime_encabezado(Gnome.PrintContext ContextoImp, Gnome.PrintJob trabajoImpresion)
@@ -310,11 +305,11 @@ namespace osiris
 				}else{
 					ContextoImp.MoveTo(195, 740);	ContextoImp.Show("Rango del "+rango1+" al "+rango2);
 				}
-		}
-		Gnome.Print.Setrgbcolor(ContextoImp, 0,0,0);//regreso color fuente a negro
-  	}
+			}
+			Gnome.Print.Setrgbcolor(ContextoImp, 0,0,0);//regreso color fuente a negro
+  		}
 	
-	void salto_pagina(Gnome.PrintContext ContextoImp, Gnome.PrintJob trabajoImpresion)
+		void salto_pagina(Gnome.PrintContext ContextoImp, Gnome.PrintJob trabajoImpresion)
 		{
 	        if (contador > 80 )
 	        {

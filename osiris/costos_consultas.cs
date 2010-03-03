@@ -843,16 +843,14 @@ namespace osiris
 		[Widget] Gtk.Window busca_producto;
 		[Widget] Gtk.TreeView lista_de_producto;
 				
-		public string busqueda = "";
-		
-		public string connectionString;
-						
-		public string nombrebd;
-		public string LoginEmpleado;
-    	public string NomEmpleado;
-    	public string AppEmpleado;
-    	public string ApmEmpleado;
-    	public string ano_seleccionado = "";
+		string busqueda = "";
+		string connectionString;
+		string nombrebd;
+		string LoginEmpleado;
+    	string NomEmpleado;
+    	string AppEmpleado;
+    	string ApmEmpleado;
+    	string ano_seleccionado = "";
     	
     	private TreeStore treeViewEngineBusca2;		// Para la busqueda de Productos
     	private TreeStore treeViewEngineProdSelec;	// Lista de Productos seleccionados
@@ -1380,7 +1378,7 @@ namespace osiris
 		{
 			TreeIter iter;
 			if (this.treeViewEngineResumen.GetIterFirst (out iter)){
-				//new osiris.imprime_consumo_productos (this.lista_resumen_productos,this.treeViewEngineResumen,this.ano_seleccionado);
+				new osiris.imprime_consumo_productos (this.lista_resumen_productos,this.treeViewEngineResumen,this.ano_seleccionado);
 			}else{
 				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
 							MessageType.Error, 

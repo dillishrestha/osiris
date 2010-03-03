@@ -1,5 +1,5 @@
 // created on 18/06/2007 at 09:51 a
-// Hospital Santa Cecilia
+// Sistema Hospitalario OSIRIS
 // Monterrey - Mexico
 //
 // Autor    	: Juan Antonio Peña Gonzalez (Programacion) gjuanzz@gmail.com
@@ -39,62 +39,59 @@ namespace osiris
 {
 	public class hoja_cargos
 	{
-		public string connectionString = "Server=localhost;" +
-        	    	                     "Port=5432;" +
-            	    	                 "User ID=admin;" +
-                	    	             "Password=1qaz2wsx;";
-        public string nombrebd;
-		public int PidPaciente = 0;
-		public int folioservicio = 0;
-		public string fecha_admision;
-		public string fechahora_alta;
-		public string nombre_paciente;
-		public string telefono_paciente;
-		public string doctor;
-		public string cirugia;
-		public string fecha_nacimiento;
-		public string edadpac;
-		public int id_tipopaciente = 0;
-		public string tipo_paciente;
-		public string aseguradora;
-		public string dir_pac;
-		public string empresapac;
-		public bool apl_desc_siempre = true;
-		public bool apl_desc;
-		public string area;
-		public string LoginEmpleado;
-		public string NomEmpleado;
-		public string AppEmpleado;
-		public string ApmEmpleado;
+		string connectionString;
+        string nombrebd;
+		int PidPaciente = 0;
+		int folioservicio = 0;
+		string fecha_admision;
+		string fechahora_alta;
+		string nombre_paciente;
+		string telefono_paciente;
+		string doctor;
+		string cirugia;
+		string fecha_nacimiento;
+		string edadpac;
+		int id_tipopaciente = 0;
+		string tipo_paciente;
+		string aseguradora;
+		string dir_pac;
+		string empresapac;
+		bool apl_desc_siempre = true;
+		bool apl_desc;
+		string area;
+		string LoginEmpleado;
+		string NomEmpleado;
+		string AppEmpleado;
+		string ApmEmpleado;
 				
-		public int idadmision_ = 0;
-		public int idproducto = 0;
-		public string datos = "";
-		public string query_rango;
-		public int tipointernamiento = 10;
+		int idadmision_ = 0;
+		int idproducto = 0;
+		string datos = "";
+		string query_rango;
+		int tipointernamiento = 10;
 		
-		public int filas=690;//635
-		public int contador = 1;
-		public int contadorprod = 0;
-		public int numpage = 1;
-		
+		int filas=690;//635
+		int contador = 1;
+		int contadorprod = 0;
+		int numpage = 1;		
 				
 		// Declarando variable de fuente para la impresion
 		// Declaracion de fuentes tipo Bitstream Vera sans
-		public Gnome.Font fuente6 = Gnome.Font.FindClosest("Bitstream Vera Sans", 6);
-		public Gnome.Font fuente7 = Gnome.Font.FindClosest("Bitstream Vera Sans", 7);
-		public Gnome.Font fuente8 = Gnome.Font.FindClosest("Bitstream Vera Sans", 8);
-		public Gnome.Font fuente9 = Gnome.Font.FindClosest("Bitstream Vera Sans", 9);
-		public Gnome.Font fuente10 = Gnome.Font.FindClosest("Bitstream Vera Sans", 10);
-		public Gnome.Font fuente11 = Gnome.Font.FindClosest("Bitstream Vera Sans", 11);
-		public Gnome.Font fuente12 = Gnome.Font.FindClosest("Bitstream Vera Sans", 12);
-		public Gnome.Font fuente36 = Gnome.Font.FindClosest("Bitstream Vera Sans", 36);
+		Gnome.Font fuente6 = Gnome.Font.FindClosest("Bitstream Vera Sans", 6);
+		Gnome.Font fuente7 = Gnome.Font.FindClosest("Bitstream Vera Sans", 7);
+		Gnome.Font fuente8 = Gnome.Font.FindClosest("Bitstream Vera Sans", 8);
+		Gnome.Font fuente9 = Gnome.Font.FindClosest("Bitstream Vera Sans", 9);
+		Gnome.Font fuente10 = Gnome.Font.FindClosest("Bitstream Vera Sans", 10);
+		Gnome.Font fuente11 = Gnome.Font.FindClosest("Bitstream Vera Sans", 11);
+		Gnome.Font fuente12 = Gnome.Font.FindClosest("Bitstream Vera Sans", 12);
+		Gnome.Font fuente36 = Gnome.Font.FindClosest("Bitstream Vera Sans", 36);
 		
-				
 		//Declaracion de ventana de error
 		protected Gtk.Window MyWinError;
 		
-		public hoja_cargos ( int PidPaciente_ , int folioservicio_,string _nombrebd_ ,string entry_fecha_admision_,string entry_fechahora_alta_,
+		class_conexion conexion_a_DB = new class_conexion();
+		
+		public hoja_cargos ( int PidPaciente_ , int folioservicio_,string nombrebd_ ,string entry_fecha_admision_,string entry_fechahora_alta_,
 						string entry_nombre_paciente_,string entry_telefono_paciente_,string entry_doctor_,
 						string entry_tipo_paciente_,string entry_aseguradora_,string edadpac_,string fecha_nacimiento_,string dir_pac_,
 						string cirugia_,string empresapac_,int idtipopaciente_,string area_,string NomEmpleado_,string AppEmpleado_,
@@ -105,25 +102,26 @@ namespace osiris
 			AppEmpleado = AppEmpleado_;
 			ApmEmpleado = ApmEmpleado_;
 			
-			PidPaciente = PidPaciente_;//
-			folioservicio = folioservicio_;//
-			nombrebd = _nombrebd_;//
-			fecha_admision = entry_fecha_admision_;//
-			fechahora_alta = entry_fechahora_alta_;//
-			nombre_paciente = entry_nombre_paciente_;//
-			telefono_paciente = entry_telefono_paciente_;//
-			doctor = entry_doctor_;//
-			cirugia = cirugia_;//
+			PidPaciente = PidPaciente_;
+			folioservicio = folioservicio_;
+			fecha_admision = entry_fecha_admision_;
+			fechahora_alta = entry_fechahora_alta_;
+			nombre_paciente = entry_nombre_paciente_;
+			telefono_paciente = entry_telefono_paciente_;
+			doctor = entry_doctor_;
+			cirugia = cirugia_;
 			id_tipopaciente = idtipopaciente_;
-			tipo_paciente = entry_tipo_paciente_;//
-			aseguradora = entry_aseguradora_;//
-			edadpac = edadpac_;//
-			fecha_nacimiento = fecha_nacimiento_;//
-			dir_pac = dir_pac_;//
-			empresapac = empresapac_;//
-			query_rango = query_;//
-			tipointernamiento = tipointernamiento_;//
+			tipo_paciente = entry_tipo_paciente_;
+			aseguradora = entry_aseguradora_;
+			edadpac = edadpac_;
+			fecha_nacimiento = fecha_nacimiento_;
+			dir_pac = dir_pac_;
+			empresapac = empresapac_;
+			query_rango = query_;
+			tipointernamiento = tipointernamiento_;
 			area = area_;							// Recibe el parametro del modulo que manda a imprimir (UCIA, Hospital, Urgencia, etc)
+			connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
+			nombrebd = conexion_a_DB._nombrebd;
 			
 			Gnome.PrintJob    trabajo   = new Gnome.PrintJob (PrintConfig.Default());
         	Gnome.PrintDialog dialogo   = new Gnome.PrintDialog (trabajo, "Hoja de Registro", 0);
@@ -149,12 +147,12 @@ namespace osiris
 		{
       		// Cambiar la fuente
 			Gnome.Print.Setfont (ContextoImp, fuente6);
-			ContextoImp.MoveTo(19.7, 770);			ContextoImp.Show("Hospital Santa Cecilia");
-			ContextoImp.MoveTo(20, 770);			ContextoImp.Show("Hospital Santa Cecilia");
-			ContextoImp.MoveTo(19.7, 760);			ContextoImp.Show("Direccion: Isacc Garza #200 Ote. Centro Monterrey, NL.");
-			ContextoImp.MoveTo(20, 760);			ContextoImp.Show("Direccion: Isacc Garza #200 Ote. Centro Monterrey, NL.");
-			ContextoImp.MoveTo(19.7, 750);			ContextoImp.Show("Conmutador:(81) 81-25-56-10");
-			ContextoImp.MoveTo(20, 750);			ContextoImp.Show("Conmutador:(81) 81-25-56-10");
+			ContextoImp.MoveTo(19.7, 770);			ContextoImp.Show("Sistema Hospitalario OSIRIS");
+			ContextoImp.MoveTo(20, 770);			ContextoImp.Show("Sistema Hospitalario OSIRIS");
+			ContextoImp.MoveTo(19.7, 760);			ContextoImp.Show("Direccion:");
+			ContextoImp.MoveTo(20, 760);			ContextoImp.Show("Direccion:");
+			ContextoImp.MoveTo(19.7, 750);			ContextoImp.Show("Conmutador:");
+			ContextoImp.MoveTo(20, 750);			ContextoImp.Show("Conmutador:");
 			
 			  			
 			Gnome.Print.Setfont (ContextoImp, fuente12);
@@ -322,32 +320,32 @@ namespace osiris
         //Querys
         string ampm = " AM. ";
 		string query_todo = "SELECT "+
-					"hscmty_erp_cobros_deta.folio_de_servicio,hscmty_erp_cobros_deta.pid_paciente, "+ 
-					"hscmty_productos.id_grupo_producto,descripcion_producto, "+
-					"hscmty_his_tipo_admisiones.id_tipo_admisiones AS idadmisiones,"+
-					"hscmty_grupo_producto.descripcion_grupo_producto, "+
+					"osiris_erp_cobros_deta.folio_de_servicio,osiris_erp_cobros_deta.pid_paciente, "+ 
+					"osiris_productos.id_grupo_producto,descripcion_producto, "+
+					"osiris_his_tipo_admisiones.id_tipo_admisiones AS idadmisiones,"+
+					"osiris_grupo_producto.descripcion_grupo_producto, "+
 					"  "+
-					"to_char(hscmty_erp_cobros_deta.fechahora_creacion,'dd-mm-yyyy') AS fechcreacion,  "+
-					"to_char(hscmty_erp_cobros_deta.fechahora_creacion,'HH:mi') AS horacreacion,  "+
-					"to_char(hscmty_erp_cobros_deta.fechahora_creacion,'HH24') AS tiempocreacion,  "+
-					"to_char(hscmty_erp_cobros_deta.id_producto,'999999999999') AS idproducto, "+
-					"to_char(hscmty_erp_cobros_deta.cantidad_aplicada,'9999.99') AS cantidadaplicada  "+
+					"to_char(osiris_erp_cobros_deta.fechahora_creacion,'dd-mm-yyyy') AS fechcreacion,  "+
+					"to_char(osiris_erp_cobros_deta.fechahora_creacion,'HH:mi') AS horacreacion,  "+
+					"to_char(osiris_erp_cobros_deta.fechahora_creacion,'HH24') AS tiempocreacion,  "+
+					"to_char(osiris_erp_cobros_deta.id_producto,'999999999999') AS idproducto, "+
+					"to_char(osiris_erp_cobros_deta.cantidad_aplicada,'9999.99') AS cantidadaplicada  "+
 					"FROM "+ 
-					"hscmty_erp_cobros_deta,hscmty_his_tipo_admisiones,hscmty_productos,hscmty_grupo_producto "+
+					"osiris_erp_cobros_deta,osiris_his_tipo_admisiones,osiris_productos,osiris_grupo_producto "+
 					"WHERE "+
-					"hscmty_erp_cobros_deta.id_tipo_admisiones = hscmty_his_tipo_admisiones.id_tipo_admisiones "+
-					"AND hscmty_erp_cobros_deta.id_tipo_admisiones = '"+tipointernamiento.ToString()+"' "+
-					"AND hscmty_erp_cobros_deta.id_producto = hscmty_productos.id_producto  "+ 
-					"AND hscmty_productos.id_grupo_producto = hscmty_grupo_producto.id_grupo_producto "+
-					"AND hscmty_erp_cobros_deta.folio_de_servicio = '"+folioservicio.ToString()+"' "+
+					"osiris_erp_cobros_deta.id_tipo_admisiones = osiris_his_tipo_admisiones.id_tipo_admisiones "+
+					"AND osiris_erp_cobros_deta.id_tipo_admisiones = '"+tipointernamiento.ToString()+"' "+
+					"AND osiris_erp_cobros_deta.id_producto = osiris_productos.id_producto  "+ 
+					"AND osiris_productos.id_grupo_producto = osiris_grupo_producto.id_grupo_producto "+
+					"AND osiris_erp_cobros_deta.folio_de_servicio = '"+folioservicio.ToString()+"' "+
 		        	"AND id_empleado = '"+LoginEmpleado+"' "+
-		        	"AND hscmty_erp_cobros_deta.eliminado = 'false' ";
+		        	"AND osiris_erp_cobros_deta.eliminado = 'false' ";
 		try 
         {
  			conexion.Open ();
         	NpgsqlCommand comando; 
         	comando = conexion.CreateCommand (); 
-        	comando.CommandText =query_todo+query_rango+ "ORDER BY  to_char(hscmty_erp_cobros_deta.fechahora_creacion,'yyyy-MM-dd 24HH:mm') ASC, hscmty_productos.id_grupo_producto,hscmty_erp_cobros_deta.id_secuencia; ";
+        	comando.CommandText =query_todo+query_rango+ "ORDER BY  to_char(osiris_erp_cobros_deta.fechahora_creacion,'yyyy-MM-dd 24HH:mm') ASC, osiris_productos.id_grupo_producto,osiris_erp_cobros_deta.id_secuencia; ";
 			NpgsqlDataReader lector = comando.ExecuteReader ();
         	//Console.WriteLine("query proc cobr: "+comando.CommandText.ToString());
 			ContextoImp.BeginPage("Pagina 1");

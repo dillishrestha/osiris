@@ -95,7 +95,7 @@ namespace osiris
 		
 		void on_button_rpt_reg_pacientes_clicked(object sender, EventArgs args)
 		{
-			//new osiris.rep_reg_pac_labo_rx(nombrebd,"AND osiris_grupo_producto.agrupacion = 'LAB' ","LABORATORIO");
+			new osiris.rep_reg_pac_labo_rx(nombrebd,"AND osiris_grupo_producto.agrupacion = 'LAB' ","LABORATORIO");
 		}
 		
 		void on_cierraventanas_clicked (object sender, EventArgs args)

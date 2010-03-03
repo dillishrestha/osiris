@@ -132,13 +132,13 @@ namespace osiris
 			
 			this.button_buscar_busqueda.Clicked += new EventHandler(on_buscar_busqueda_clicked);
 			
-			this.entry_area.Editable = false;
-			this.entry_descripcion.Editable = false;
-			this.entry_id_habitacion.Editable = false;
-			this.entry_paciente.Editable = false;
-            this.entry_dia_ocupacion.Editable = false;
-			this.entry_mes_ocupacion.Editable = false;
-			this.entry_anno_ocupacion.Editable = false;
+			this.entry_area.IsEditable = false;
+			this.entry_descripcion.IsEditable = false;
+			this.entry_id_habitacion.IsEditable = false;
+			this.entry_paciente.IsEditable = false;
+            this.entry_dia_ocupacion.IsEditable = false;
+			this.entry_mes_ocupacion.IsEditable = false;
+			this.entry_anno_ocupacion.IsEditable = false;
 			this.button_lista_espera.Sensitive = false;
 			
 			this.entry_folio.ModifyBase(StateType.Normal, new Gdk.Color(170,220,170));
@@ -1228,13 +1228,11 @@ namespace osiris
 		{
 			TreeModel model;
 			TreeIter iterSelected;
-
  			if (lista_de_Pacientes.Selection.GetSelected(out model, out iterSelected)){
  				this.entry_paciente.Text = model.GetValue(iterSelected,2) + " " + model.GetValue(iterSelected,3) + " "+ model.GetValue(iterSelected,4) + " " + model.GetValue(iterSelected,5);
  			    pid = (int) model.GetValue(iterSelected,1);
 				folio_atencion = (int) model.GetValue(iterSelected,0);
-			}
-          
+			}          
 			this.entry_dia_ocupacion.Text = DateTime.Today.ToString("dd");
 			this.entry_mes_ocupacion.Text = DateTime.Today.ToString("MM");
 			this.entry_anno_ocupacion.Text = DateTime.Today.ToString("yyyy");
@@ -1242,8 +1240,7 @@ namespace osiris
 		
       
 		void limpia_variables()
-		{
-			        
+		{			        
 			this.treeViewEngineBuscahabitacion.Clear();
 			on_buscar_paciente_clicked();
 			this.on_busca_paciente_Asigancion();
@@ -1267,7 +1264,7 @@ namespace osiris
 
 		void on_reporte_clicked(object sender, EventArgs args)
 		{
-			//new osiris.reporte_pacientes_sin_alta(nombrebd);
+			new osiris.reporte_pacientes_sin_alta(nombrebd);
 		}
 		
 		void on_cierraventanas_clicked(object sender, EventArgs args)

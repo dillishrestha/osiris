@@ -37,54 +37,53 @@ using Npgsql;
 using System.Data;
 using Glade;
 using System.Collections;
-using GtkSharp;
 
 namespace osiris
 {
 	public class reporte_porcedimientos_facturados
 	{
-		public string connectionString = "Server=localhost;" +
-        	    	                     "Port=5432;" +
-            	    	                 "User ID=admin;" +
-                	    	             "Password=1qaz2wsx;";
-        public string nombrebd;
-		public string LoginEmpleado;
-		public string NomEmpleado;
-		public string AppEmpleado;
-		public string ApmEmpleado;
-		public string tiporeporte = "NO FACTURADOS";
-		public string titulo = "REPORTE DE PROCEDIMIENTOS NO FACTURADOS";
+		string connectionString;
+        string nombrebd;
+		string LoginEmpleado;
+		string NomEmpleado;
+		string AppEmpleado;
+		string ApmEmpleado;
+		string tiporeporte = "NO FACTURADOS";
+		string titulo = "REPORTE DE PROCEDIMIENTOS NO FACTURADOS";
 		
-		public int columna = 0;
-		public int fila = -70;
-		public int contador = 1;
-		public int numpage = 1;
+		int columna = 0;
+		int fila = -70;
+		int contador = 1;
+		int numpage = 1;
 		
-		public string query_fechas = " ";
-		public string query_cliente = " ";
-		public string orden = " ";
-		public string rango1 = "";
-		public string rango2 = "";
-		public bool pagados = false;
+		string query_fechas = " ";
+		string query_cliente = " ";
+		string orden = " ";
+		string rango1 = "";
+		string rango2 = "";
+		bool pagados = false;
 				
 		// Declarando variable de fuente para la impresion
 		// Declaracion de fuentes tipo Bitstream Vera sans
-		public Gnome.Font fuente6 = Gnome.Font.FindClosest("Bitstream Vera Sans", 6);
-		public Gnome.Font fuente7 = Gnome.Font.FindClosest("Bitstream Vera Sans", 7);
-		public Gnome.Font fuente8 = Gnome.Font.FindClosest("Bitstream Vera Sans", 8);
-		public Gnome.Font fuente9 = Gnome.Font.FindClosest("Bitstream Vera Sans", 9);
-		public Gnome.Font fuente10 = Gnome.Font.FindClosest("Bitstream Vera Sans", 10);
-		public Gnome.Font fuente11 = Gnome.Font.FindClosest("Bitstream Vera Sans", 11);
-		public Gnome.Font fuente12 = Gnome.Font.FindClosest("Bitstream Vera Sans", 12);
-		public Gnome.Font fuente36 = Gnome.Font.FindClosest("Bitstream Vera Sans", 36);
+		Gnome.Font fuente6 = Gnome.Font.FindClosest("Bitstream Vera Sans", 6);
+		Gnome.Font fuente7 = Gnome.Font.FindClosest("Bitstream Vera Sans", 7);
+		Gnome.Font fuente8 = Gnome.Font.FindClosest("Bitstream Vera Sans", 8);
+		Gnome.Font fuente9 = Gnome.Font.FindClosest("Bitstream Vera Sans", 9);
+		Gnome.Font fuente10 = Gnome.Font.FindClosest("Bitstream Vera Sans", 10);
+		Gnome.Font fuente11 = Gnome.Font.FindClosest("Bitstream Vera Sans", 11);
+		Gnome.Font fuente12 = Gnome.Font.FindClosest("Bitstream Vera Sans", 12);
+		Gnome.Font fuente36 = Gnome.Font.FindClosest("Bitstream Vera Sans", 36);
 		
 		//Declaracion de ventana de error
 		protected Gtk.Window MyWinError;
 		
-		public reporte_porcedimientos_facturados (bool pagados_,string rango1_,string rango2_,string query_fechas_,string _nombrebd_,string LoginEmpleado_,string NomEmpleado_,
+		class_conexion conexion_a_DB = new class_conexion();
+		
+		public reporte_porcedimientos_facturados (bool pagados_,string rango1_,string rango2_,string query_fechas_,string nombrebd_,string LoginEmpleado_,string NomEmpleado_,
 												string AppEmpleado_,string ApmEmpleado_,string tiporeporte_,string orden_,string query_cliente_)
 		{
-			nombrebd = _nombrebd_;
+			connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
+			nombrebd = conexion_a_DB._nombrebd;
 			LoginEmpleado = LoginEmpleado_;
 			NomEmpleado = NomEmpleado_;
 			AppEmpleado = AppEmpleado_;
@@ -160,32 +159,32 @@ namespace osiris
 				comando = conexion.CreateCommand ();
                	
 				// asigna el numero de folio de ingreso de paciente (FOLIO)
-				comando.CommandText = "SELECT DISTINCT(hscmty_erp_movcargos.folio_de_servicio),to_char(hscmty_erp_movcargos.folio_de_servicio,'9999999999') AS foliodeatencion, "+
-								"hscmty_erp_cobros_enca.pid_paciente,cerrado, alta_paciente, "+
+				comando.CommandText = "SELECT DISTINCT(osiris_erp_movcargos.folio_de_servicio),to_char(osiris_erp_movcargos.folio_de_servicio,'9999999999') AS foliodeatencion, "+
+								"osiris_erp_cobros_enca.pid_paciente,cerrado, alta_paciente, "+
 				            	"nombre1_paciente || ' ' || nombre2_paciente || ' ' || apellido_paterno_paciente || ' ' || apellido_materno_paciente AS nombre_completo,"+
-				            	"hscmty_empresas.descripcion_empresa,"+
-				            	"to_char(hscmty_erp_cobros_enca.fechahora_creacion,'dd-MM-yyyy HH24:mm') AS fecha_ingreso,"+
-				            	"to_char(hscmty_erp_cobros_enca.fecha_alta_paciente,'dd-MM-yyyy HH24:mm') AS fecha_egreso,"+
-				            	"hscmty_erp_movcargos.id_tipo_paciente AS idtipopaciente, "+
+				            	"osiris_empresas.descripcion_empresa,"+
+				            	"to_char(osiris_erp_cobros_enca.fechahora_creacion,'dd-MM-yyyy HH24:mm') AS fecha_ingreso,"+
+				            	"to_char(osiris_erp_cobros_enca.fecha_alta_paciente,'dd-MM-yyyy HH24:mm') AS fecha_egreso,"+
+				            	"osiris_erp_movcargos.id_tipo_paciente AS idtipopaciente, "+
 				            	"descripcion_tipo_paciente,"+
-            					"hscmty_erp_cobros_enca.id_aseguradora,descripcion_aseguradora,"+
-				            	"to_char(hscmty_erp_cobros_enca.total_procedimiento,'999999999.99') AS totalprocedimiento,"+
-				            	"to_char(hscmty_erp_cobros_enca.honorario_medico,'999999999.99') AS honorariomedico "+
+            					"osiris_erp_cobros_enca.id_aseguradora,descripcion_aseguradora,"+
+				            	"to_char(osiris_erp_cobros_enca.total_procedimiento,'999999999.99') AS totalprocedimiento,"+
+				            	"to_char(osiris_erp_cobros_enca.honorario_medico,'999999999.99') AS honorariomedico "+
 				            	"FROM "+ 
-				            	"hscmty_erp_cobros_enca,hscmty_his_paciente,hscmty_erp_movcargos,hscmty_his_tipo_pacientes, "+
-				            	"hscmty_aseguradoras,hscmty_empresas "+
+				            	"osiris_erp_cobros_enca,osiris_his_paciente,osiris_erp_movcargos,osiris_his_tipo_pacientes, "+
+				            	"osiris_aseguradoras,osiris_empresas "+
 				            	"WHERE "+
-				            	"hscmty_erp_cobros_enca.pid_paciente = hscmty_his_paciente.pid_paciente "+
-				            	"AND hscmty_erp_movcargos.folio_de_servicio = hscmty_erp_cobros_enca.folio_de_servicio "+
-				            	"AND hscmty_erp_cobros_enca.id_aseguradora = hscmty_aseguradoras.id_aseguradora "+ 
-								"AND hscmty_erp_movcargos.id_tipo_paciente = hscmty_his_tipo_pacientes.id_tipo_paciente "+
-								"AND hscmty_his_paciente.id_empresa = hscmty_empresas.id_empresa "+ 
+				            	"osiris_erp_cobros_enca.pid_paciente = osiris_his_paciente.pid_paciente "+
+				            	"AND osiris_erp_movcargos.folio_de_servicio = osiris_erp_cobros_enca.folio_de_servicio "+
+				            	"AND osiris_erp_cobros_enca.id_aseguradora = osiris_aseguradoras.id_aseguradora "+ 
+								"AND osiris_erp_movcargos.id_tipo_paciente = osiris_his_tipo_pacientes.id_tipo_paciente "+
+								"AND osiris_his_paciente.id_empresa = osiris_empresas.id_empresa "+ 
 								" "+query_fechas+" "+
-								//"AND hscmty_erp_cobros_enca.cerrado = 'true' "+
-								"AND hscmty_erp_cobros_enca.cancelado = 'false' "+
-								"AND hscmty_erp_movcargos.id_tipo_admisiones > '16' "+
-								"AND hscmty_erp_cobros_enca.id_aseguradora != '17' "+
-								"AND hscmty_erp_cobros_enca.facturacion = 'false' ;";
+								//"AND osiris_erp_cobros_enca.cerrado = 'true' "+
+								"AND osiris_erp_cobros_enca.cancelado = 'false' "+
+								"AND osiris_erp_movcargos.id_tipo_admisiones > '16' "+
+								"AND osiris_erp_cobros_enca.id_aseguradora != '17' "+
+								"AND osiris_erp_cobros_enca.facturacion = 'false' ;";
 				
 				NpgsqlDataReader lector = comando.ExecuteReader ();
 				Console.WriteLine(comando.CommandText.ToString());
@@ -306,27 +305,27 @@ namespace osiris
 			NpgsqlConnection conexion; 
 			conexion = new NpgsqlConnection (connectionString+nombrebd);
             
-            string query_facturados = "SELECT hscmty_erp_factura_enca.id_cliente,descripcion_cliente,"+
-									"hscmty_erp_factura_enca.numero_factura,hscmty_erp_factura_enca.cancelado, "+ 
-									"to_char(hscmty_erp_factura_enca.fecha_factura, 'dd-MM-yyyy') AS fechacreacion, "+
+            string query_facturados = "SELECT osiris_erp_factura_enca.id_cliente,descripcion_cliente,"+
+									"osiris_erp_factura_enca.numero_factura,osiris_erp_factura_enca.cancelado, "+ 
+									"to_char(osiris_erp_factura_enca.fecha_factura, 'dd-MM-yyyy') AS fechacreacion, "+
 									"nombre1_paciente || ' ' || nombre2_paciente || ' ' || apellido_paterno_paciente || ' ' || apellido_materno_paciente AS nombre_completo, "+
-									"to_char(hscmty_erp_factura_enca.deducible,'99999999.99') AS deducible, "+
-									"to_char(hscmty_erp_factura_enca.honorario_medico,'9999999999.99') AS honorariomedico_factura,"+
-									"to_char(hscmty_erp_factura_enca.sub_total_15,'99999999.99') AS subtotal_15, "+ 
-									"to_char(hscmty_erp_factura_enca.sub_total_0,'99999999.99') AS subtotal_0, "+
-									"to_char(hscmty_erp_factura_enca.iva_al_15,'99999999.99') AS ivaal_15, "+ 
-									"to_char(hscmty_erp_factura_enca.valor_coaseguro,'99999999.99') AS valorcoaseguro, "+ 
-									"to_char(hscmty_erp_cobros_enca.folio_de_servicio, '999999') AS folioservicio, "+
-									"to_char(hscmty_erp_cobros_enca.fechahora_creacion, 'dd-MM-yyyy') AS fechacreacionproc, "+
-									"to_char(hscmty_erp_cobros_enca.subtotal15,'99999999.99') AS sub15proc, "+
-									"to_char(hscmty_erp_cobros_enca.subtotal0,'99999999.99') AS sub0proc, "+
-									"(hscmty_erp_cobros_enca.subtotal15)*.15 AS ivaproc, "+
-									"to_char(hscmty_erp_cobros_enca.total_procedimiento,'99999999.99') AS totalproc "+
+									"to_char(osiris_erp_factura_enca.deducible,'99999999.99') AS deducible, "+
+									"to_char(osiris_erp_factura_enca.honorario_medico,'9999999999.99') AS honorariomedico_factura,"+
+									"to_char(osiris_erp_factura_enca.sub_total_15,'99999999.99') AS subtotal_15, "+ 
+									"to_char(osiris_erp_factura_enca.sub_total_0,'99999999.99') AS subtotal_0, "+
+									"to_char(osiris_erp_factura_enca.iva_al_15,'99999999.99') AS ivaal_15, "+ 
+									"to_char(osiris_erp_factura_enca.valor_coaseguro,'99999999.99') AS valorcoaseguro, "+ 
+									"to_char(osiris_erp_cobros_enca.folio_de_servicio, '999999') AS folioservicio, "+
+									"to_char(osiris_erp_cobros_enca.fechahora_creacion, 'dd-MM-yyyy') AS fechacreacionproc, "+
+									"to_char(osiris_erp_cobros_enca.subtotal15,'99999999.99') AS sub15proc, "+
+									"to_char(osiris_erp_cobros_enca.subtotal0,'99999999.99') AS sub0proc, "+
+									"(osiris_erp_cobros_enca.subtotal15)*.15 AS ivaproc, "+
+									"to_char(osiris_erp_cobros_enca.total_procedimiento,'99999999.99') AS totalproc "+
 									"FROM "+
-									"hscmty_erp_cobros_enca,hscmty_his_paciente,hscmty_erp_factura_enca "+
+									"osiris_erp_cobros_enca,osiris_his_paciente,osiris_erp_factura_enca "+
 									"WHERE "+
-									"hscmty_erp_factura_enca.numero_factura = hscmty_erp_cobros_enca.numero_factura  "+
-									"AND hscmty_erp_cobros_enca.pid_paciente = hscmty_his_paciente.pid_paciente ";
+									"osiris_erp_factura_enca.numero_factura = osiris_erp_cobros_enca.numero_factura  "+
+									"AND osiris_erp_cobros_enca.pid_paciente = osiris_his_paciente.pid_paciente ";
             
 			// Verifica que la base de datos este conectada
 			try{
@@ -335,14 +334,14 @@ namespace osiris
 				comando = conexion.CreateCommand ();
                	//Console.WriteLine(query_fechas);
                	if(orden == "CLIENTE") {
-					comando.CommandText = query_facturados+" "+query_fechas+" "+query_cliente+" "+"AND hscmty_erp_factura_enca.pagada = 'false' "+
-						" ORDER BY hscmty_erp_factura_enca.id_cliente,hscmty_erp_factura_enca.numero_factura ";
+					comando.CommandText = query_facturados+" "+query_fechas+" "+query_cliente+" "+"AND osiris_erp_factura_enca.pagada = 'false' "+
+						" ORDER BY osiris_erp_factura_enca.id_cliente,osiris_erp_factura_enca.numero_factura ";
 				}
 				if(orden == "FECHA"){
 					comando.CommandText = query_facturados+" "+query_fechas+" "+query_cliente+" "+
-						" ORDER BY hscmty_erp_factura_enca.fechahora_creacion_factura,hscmty_erp_factura_enca.id_cliente ";
+						" ORDER BY osiris_erp_factura_enca.fechahora_creacion_factura,osiris_erp_factura_enca.id_cliente ";
 				}
-				Console.WriteLine(comando.CommandText.ToString());
+				//Console.WriteLine(comando.CommandText.ToString());
 				NpgsqlDataReader lector = comando.ExecuteReader ();
 										
 					string nombre = "";
@@ -588,12 +587,12 @@ namespace osiris
       		// Cambiar la fuente
 			Gnome.Print.Setfont(ContextoImp,fuente6);
 			
-			ContextoImp.MoveTo(69.7,-30);			ContextoImp.Show("Hospital Santa Cecilia");//19.7, 770
-			ContextoImp.MoveTo(70, -30);			ContextoImp.Show("Hospital Santa Cecilia");
-			ContextoImp.MoveTo(69.7, -40);			ContextoImp.Show("Direccion: Isacc Garza #200 Ote. Centro Monterrey, NL.");
-			ContextoImp.MoveTo(70, -40);			ContextoImp.Show("Direccion: Isacc Garza #200 Ote. Centro Monterrey, NL.");
-			ContextoImp.MoveTo(69.7, -50);			ContextoImp.Show("Conmutador:(81) 81-25-56-10");
-			ContextoImp.MoveTo(70, -50);			ContextoImp.Show("Conmutador:(81) 81-25-56-10");
+			ContextoImp.MoveTo(69.7,-30);			ContextoImp.Show("Sistema Hospitalario OSIRIS");//19.7, 770
+			ContextoImp.MoveTo(70, -30);			ContextoImp.Show("Sistema Hospitalario OSIRIS");
+			ContextoImp.MoveTo(69.7, -40);			ContextoImp.Show("Direccion:");
+			ContextoImp.MoveTo(70, -40);			ContextoImp.Show("Direccion:");
+			ContextoImp.MoveTo(69.7, -50);			ContextoImp.Show("Conmutador:");
+			ContextoImp.MoveTo(70, -50);			ContextoImp.Show("Conmutador:");
 			
 			Gnome.Print.Setfont(ContextoImp,fuente11);
 			ContextoImp.MoveTo(319.7, -40);			ContextoImp.Show(titulo);
@@ -613,26 +612,6 @@ namespace osiris
 			//imprimo el titulo
 			imprime_titulo(ContextoImp,trabajoImpresion,cliente);
 			
-			/////////DIBUJANDO LA TABLA/////////
-			Gnome.Print.Setfont (ContextoImp, fuente36);
-			ContextoImp.MoveTo(68, -55);			ContextoImp.Show("_____________________________________");
-			ContextoImp.MoveTo(68, -575);			ContextoImp.Show("_____________________________________");
-			Gnome.Print.Setfont (ContextoImp, fuente11);
-			if(tiporeporte == "NO FACTURADOS")
-			{
-				int filal = -66;
-				for (int i1=0; i1 < 52; i1++)//30 veces para tamaño carta
-				{
-					ContextoImp.MoveTo(119.5,filal);				ContextoImp.Show("| ");
-					ContextoImp.MoveTo(309.5,filal);				ContextoImp.Show("|	");
-					ContextoImp.MoveTo(379.5,filal);				ContextoImp.Show("|	");
-					ContextoImp.MoveTo(539.5,filal);				ContextoImp.Show("|	");  
-					ContextoImp.MoveTo(604.5,filal);				ContextoImp.Show("|	");
-					ContextoImp.MoveTo(679.5,filal);				ContextoImp.Show("|	");
-					ContextoImp.MoveTo(744.5,filal);				ContextoImp.Show("|	");
-					filal-=10;
-				}
-			}
 			Gnome.Print.Setfont (ContextoImp, fuente36);
 			ContextoImp.Rotate(270);
 			ContextoImp.MoveTo(56, 810);			ContextoImp.Show("__________________________");
@@ -644,18 +623,18 @@ namespace osiris
 		
 		void genera_columnas(Gnome.PrintContext ContextoImp, Gnome.PrintJob trabajoImpresion)
 		{
-			Gnome.Print.Setfont (ContextoImp, fuente12);			
-			ContextoImp.MoveTo(111,fila);					ContextoImp.Show("|	");
-			ContextoImp.MoveTo(156.5,fila);					ContextoImp.Show("|	");
-			ContextoImp.MoveTo(190,fila);					ContextoImp.Show("|	");
-			ContextoImp.MoveTo(360,fila);					ContextoImp.Show("|	");	
-			ContextoImp.MoveTo(425,fila);					ContextoImp.Show("|	");
-			ContextoImp.MoveTo(490,fila);					ContextoImp.Show("| ");
-			ContextoImp.MoveTo(555,fila);					ContextoImp.Show("|	");
-			ContextoImp.MoveTo(620,fila);					ContextoImp.Show("|	");
-			ContextoImp.MoveTo(685,fila);					ContextoImp.Show("|	");
-			ContextoImp.MoveTo(750,fila);					ContextoImp.Show("|	");
-			Gnome.Print.Setfont (ContextoImp, fuente7);
+			//Gnome.Print.Setfont (ContextoImp, fuente12);			
+			//ContextoImp.MoveTo(111,fila);					ContextoImp.Show("|	");
+			//ContextoImp.MoveTo(156.5,fila);					ContextoImp.Show("|	");
+			//ContextoImp.MoveTo(190,fila);					ContextoImp.Show("|	");
+			//ContextoImp.MoveTo(360,fila);					ContextoImp.Show("|	");	
+			//ContextoImp.MoveTo(425,fila);					ContextoImp.Show("|	");
+			//ContextoImp.MoveTo(490,fila);					ContextoImp.Show("| ");
+			//ContextoImp.MoveTo(555,fila);					ContextoImp.Show("|	");
+			//ContextoImp.MoveTo(620,fila);					ContextoImp.Show("|	");
+			//ContextoImp.MoveTo(685,fila);					ContextoImp.Show("|	");
+			//ContextoImp.MoveTo(750,fila);					ContextoImp.Show("|	");
+			//Gnome.Print.Setfont (ContextoImp, fuente7);
 		}
 		
 		void imprime_titulo(Gnome.PrintContext ContextoImp, Gnome.PrintJob trabajoImpresion,string cliente)
@@ -665,20 +644,20 @@ namespace osiris
 				Gnome.Print.Setfont(ContextoImp,fuente7);
 				ContextoImp.MoveTo(70.7, -65);					ContextoImp.Show("Nº ATENCION"); //| Fecha | Nº Atencion | Paciente | SubTotal al 15 | SubTotal al 0 | IVA | SubTotal Deducible | Coaseguro | Total | Hono. Medico");
 				ContextoImp.MoveTo(71, -65);					ContextoImp.Show("Nº ATENCION");
-				ContextoImp.MoveTo(119.7,-65);					ContextoImp.Show("| PACIENTE");
-				ContextoImp.MoveTo(120,-65);					ContextoImp.Show("|	PACIENTE");//80,-70
-				ContextoImp.MoveTo(309.7,-65);					ContextoImp.Show("|	TIPO ");
-				ContextoImp.MoveTo(310,-65);					ContextoImp.Show("|	TIPO ");//120,-70
-				ContextoImp.MoveTo(379.7,-65);					ContextoImp.Show("|	EMPRESA");
-				ContextoImp.MoveTo(380,-65);					ContextoImp.Show("|	EMPRESA");//170,-70
-				ContextoImp.MoveTo(539.7,-65);					ContextoImp.Show("|	FECHA INGRESO");  
-				ContextoImp.MoveTo(540,-65);					ContextoImp.Show("|	FECHA INGRESO");//290,-70
-				ContextoImp.MoveTo(604.7,-65);					ContextoImp.Show("|	FECHA ENGRESO");
-				ContextoImp.MoveTo(605,-65);					ContextoImp.Show("|	FECHA ENGRESO");//360,-70
-				ContextoImp.MoveTo(679.7,-65);					ContextoImp.Show("|	TOTAL");
-				ContextoImp.MoveTo(680,-65);					ContextoImp.Show("|	TOTAL");//
-				ContextoImp.MoveTo(744.7,-65);					ContextoImp.Show("|	HONO. MEDICOS");
-				ContextoImp.MoveTo(745,-65);					ContextoImp.Show("|	HONO. MEDICOS");//420,-70
+				ContextoImp.MoveTo(119.7,-65);					ContextoImp.Show("PACIENTE");
+				ContextoImp.MoveTo(120,-65);					ContextoImp.Show("PACIENTE");//80,-70
+				ContextoImp.MoveTo(309.7,-65);					ContextoImp.Show("TIPO ");
+				ContextoImp.MoveTo(310,-65);					ContextoImp.Show("TIPO ");//120,-70
+				ContextoImp.MoveTo(379.7,-65);					ContextoImp.Show("EMPRESA");
+				ContextoImp.MoveTo(380,-65);					ContextoImp.Show("EMPRESA");//170,-70
+				ContextoImp.MoveTo(539.7,-65);					ContextoImp.Show("FECHA INGRESO");  
+				ContextoImp.MoveTo(540,-65);					ContextoImp.Show("FECHA INGRESO");//290,-70
+				ContextoImp.MoveTo(604.7,-65);					ContextoImp.Show("FECHA ENGRESO");
+				ContextoImp.MoveTo(605,-65);					ContextoImp.Show("FECHA ENGRESO");//360,-70
+				ContextoImp.MoveTo(679.7,-65);					ContextoImp.Show("TOTAL");
+				ContextoImp.MoveTo(680,-65);					ContextoImp.Show("TOTAL");//
+				ContextoImp.MoveTo(744.7,-65);					ContextoImp.Show("HONO. MEDICOS");
+				ContextoImp.MoveTo(745,-65);					ContextoImp.Show("HONO. MEDICOS");//420,-70
 				Gnome.Print.Setfont(ContextoImp,fuente7);
 				ContextoImp.MoveTo(70, -66);					ContextoImp.Show   ("_______________________________________________________________________________________________"+
 																					"_______________________________________________________________________________________________");
@@ -699,26 +678,26 @@ namespace osiris
 				Gnome.Print.Setfont(ContextoImp,fuente7);
 				ContextoImp.MoveTo(71.7, fila);					ContextoImp.Show("Nº FACT.");
 				ContextoImp.MoveTo(72, fila);					ContextoImp.Show("Nº FACT.");
-				ContextoImp.MoveTo(111.7,fila);					ContextoImp.Show("|	FECHA");
-				ContextoImp.MoveTo(112,fila);					ContextoImp.Show("|	FECHA");
-				ContextoImp.MoveTo(157.7,fila);					ContextoImp.Show("|	Nº ATEN");
-				ContextoImp.MoveTo(158,fila);					ContextoImp.Show("|	Nº ATEN");
-				ContextoImp.MoveTo(191.5,fila);					ContextoImp.Show("|	PACIENTE");
-				ContextoImp.MoveTo(192,fila);					ContextoImp.Show("|	PACIENTE");
-				ContextoImp.MoveTo(360.7,fila);					ContextoImp.Show("|	SUBTOTAL 15");
-				ContextoImp.MoveTo(361,fila);					ContextoImp.Show("|	SUBTOTAL 15");
-				ContextoImp.MoveTo(425.7,fila);					ContextoImp.Show("|	SUBTOTAL 0 ");  
-				ContextoImp.MoveTo(426,fila);					ContextoImp.Show("|	SUBTOTAL 0 ");
-				ContextoImp.MoveTo(490.7,fila);					ContextoImp.Show("|	  IVA ");
-				ContextoImp.MoveTo(491,fila);					ContextoImp.Show("|	  IVA ");
-				ContextoImp.MoveTo(555.7,fila);					ContextoImp.Show("|	DEDUCIBLE ");
-				ContextoImp.MoveTo(556,fila);					ContextoImp.Show("|	DEDUCIBLE ");
-				ContextoImp.MoveTo(620.7,fila);					ContextoImp.Show("|	COASEGURO ");
-				ContextoImp.MoveTo(621,fila);					ContextoImp.Show("|	COASEGURO ");
-				ContextoImp.MoveTo(685.7,fila);					ContextoImp.Show("|	TOTAL ");
-				ContextoImp.MoveTo(686,fila);					ContextoImp.Show("|	TOTAL ");
-				ContextoImp.MoveTo(750.7,fila);					ContextoImp.Show("|	HONO. MEDICO");
-				ContextoImp.MoveTo(751,fila);					ContextoImp.Show("|	HONO. MEDICO");
+				ContextoImp.MoveTo(111.7,fila);					ContextoImp.Show("FECHA");
+				ContextoImp.MoveTo(112,fila);					ContextoImp.Show("FECHA");
+				ContextoImp.MoveTo(157.7,fila);					ContextoImp.Show("Nº ATEN");
+				ContextoImp.MoveTo(158,fila);					ContextoImp.Show("Nº ATEN");
+				ContextoImp.MoveTo(191.5,fila);					ContextoImp.Show("PACIENTE");
+				ContextoImp.MoveTo(192,fila);					ContextoImp.Show("PACIENTE");
+				ContextoImp.MoveTo(360.7,fila);					ContextoImp.Show("SUBTOTAL 15");
+				ContextoImp.MoveTo(361,fila);					ContextoImp.Show("SUBTOTAL 15");
+				ContextoImp.MoveTo(425.7,fila);					ContextoImp.Show("SUBTOTAL 0 ");  
+				ContextoImp.MoveTo(426,fila);					ContextoImp.Show("SUBTOTAL 0 ");
+				ContextoImp.MoveTo(490.7,fila);					ContextoImp.Show("IVA ");
+				ContextoImp.MoveTo(491,fila);					ContextoImp.Show("IVA ");
+				ContextoImp.MoveTo(555.7,fila);					ContextoImp.Show("DEDUCIBLE ");
+				ContextoImp.MoveTo(556,fila);					ContextoImp.Show("DEDUCIBLE ");
+				ContextoImp.MoveTo(620.7,fila);					ContextoImp.Show("COASEGURO ");
+				ContextoImp.MoveTo(621,fila);					ContextoImp.Show("COASEGURO ");
+				ContextoImp.MoveTo(685.7,fila);					ContextoImp.Show("TOTAL ");
+				ContextoImp.MoveTo(686,fila);					ContextoImp.Show("TOTAL ");
+				ContextoImp.MoveTo(750.7,fila);					ContextoImp.Show("HONO. MEDICO");
+				ContextoImp.MoveTo(751,fila);					ContextoImp.Show("HONO. MEDICO");
 				Gnome.Print.Setfont(ContextoImp,fuente7);
 				ContextoImp.MoveTo(70, fila);					ContextoImp.Show   ("_______________________________________________________________________________________________"+
 																			"_______________________________________________________________________________________________");
@@ -748,10 +727,7 @@ namespace osiris
 
 	public class reporte_facturas_pagadas
 	{		
-		public string connectionString = "Server=localhost;" +
-        	    	                     "Port=5432;" +
-            	    	                 "User ID=admin;" +
-                	    	             "Password=1qaz2wsx;";
+		public string connectionString;
 		public string nombrebd;
 		public string LoginEmpleado;
 		public string NomEmpleado;
@@ -786,10 +762,13 @@ namespace osiris
 		//Declaracion de ventana de error
 		protected Gtk.Window MyWinError;
 		
-		public reporte_facturas_pagadas(string rango1_,string rango2_,string query_fechas_,string _nombrebd_,string LoginEmpleado_,string NomEmpleado_,
+		class_conexion conexion_a_DB = new class_conexion();
+		
+		public reporte_facturas_pagadas(string rango1_,string rango2_,string query_fechas_,string nombrebd_,string LoginEmpleado_,string NomEmpleado_,
 												string AppEmpleado_,string ApmEmpleado_,string tiporeporte_,string orden_,string query_cliente_,string _facturas_)
 		{
-			nombrebd = _nombrebd_;
+			connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
+			nombrebd = conexion_a_DB._nombrebd;
 			LoginEmpleado = LoginEmpleado_;
 			NomEmpleado = NomEmpleado_;
 			AppEmpleado = AppEmpleado_;
@@ -869,31 +848,31 @@ namespace osiris
 			int contadorproc = 0;
 			bool primeralinea = true;
 			bool masdeunfolio = false;
-			string query_fac_pagadas ="SELECT hscmty_erp_factura_enca.id_cliente,descripcion_cliente,"+
-									"hscmty_erp_factura_enca.numero_factura,hscmty_erp_factura_enca.cancelado, "+ 
-									"to_char(hscmty_erp_factura_enca.fecha_factura, 'dd-MM-yyyy') AS fechacreacion, "+
-									"to_char(hscmty_erp_factura_enca.fechahora_pago_factura, 'dd-MM-yyyy') AS fechapago, "+
+			string query_fac_pagadas ="SELECT osiris_erp_factura_enca.id_cliente,descripcion_cliente,"+
+									"osiris_erp_factura_enca.numero_factura,osiris_erp_factura_enca.cancelado, "+ 
+									"to_char(osiris_erp_factura_enca.fecha_factura, 'dd-MM-yyyy') AS fechacreacion, "+
+									"to_char(osiris_erp_factura_enca.fechahora_pago_factura, 'dd-MM-yyyy') AS fechapago, "+
 									"nombre1_paciente || ' ' || nombre2_paciente || ' ' || apellido_paterno_paciente || ' ' || apellido_materno_paciente AS nombre_completo, "+
-									"to_char(hscmty_erp_factura_enca.deducible,'99999999.99') AS deducible, "+
-									"to_char(hscmty_erp_factura_enca.honorario_medico,'9999999999.99') AS honorariomedico_factura,"+
-									"to_char(hscmty_erp_factura_enca.sub_total_15,'99999999.99') AS subtotal_15, "+ 
-									"to_char(hscmty_erp_factura_enca.sub_total_0,'99999999.99') AS subtotal_0, "+
-									"to_char(hscmty_erp_factura_enca.iva_al_15,'99999999.99') AS ivaal_15, "+ 
-									"to_char(hscmty_erp_factura_enca.valor_coaseguro,'99999999.99') AS valorcoaseguro, "+ 
-									"to_char(hscmty_erp_cobros_enca.folio_de_servicio, '999999') AS folioservicio, "+
-									"to_char(hscmty_erp_cobros_enca.fechahora_creacion, 'dd-MM-yyyy') AS fechacreacionproc, "+
-									"to_char(hscmty_erp_cobros_enca.subtotal15,'99999999.99') AS sub15proc, "+
-									"to_char(hscmty_erp_factura_enca.coaseguro,'99999999.99') AS coaseguro, "+
-   									"to_char(hscmty_erp_cobros_enca.subtotal0,'99999999.99') AS sub0proc, "+
-									"(hscmty_erp_cobros_enca.subtotal15)*.15 AS ivaproc, "+
-									"to_char(hscmty_erp_cobros_enca.total_procedimiento,'99999999.99') AS totalproc, "+
-									"to_char(hscmty_erp_cobros_enca.total_procedimiento + hscmty_erp_cobros_enca.honorario_medico,'9999999999.99') AS honototal,"+
-									"hscmty_erp_factura_enca.pagada "+
+									"to_char(osiris_erp_factura_enca.deducible,'99999999.99') AS deducible, "+
+									"to_char(osiris_erp_factura_enca.honorario_medico,'9999999999.99') AS honorariomedico_factura,"+
+									"to_char(osiris_erp_factura_enca.sub_total_15,'99999999.99') AS subtotal_15, "+ 
+									"to_char(osiris_erp_factura_enca.sub_total_0,'99999999.99') AS subtotal_0, "+
+									"to_char(osiris_erp_factura_enca.iva_al_15,'99999999.99') AS ivaal_15, "+ 
+									"to_char(osiris_erp_factura_enca.valor_coaseguro,'99999999.99') AS valorcoaseguro, "+ 
+									"to_char(osiris_erp_cobros_enca.folio_de_servicio, '999999') AS folioservicio, "+
+									"to_char(osiris_erp_cobros_enca.fechahora_creacion, 'dd-MM-yyyy') AS fechacreacionproc, "+
+									"to_char(osiris_erp_cobros_enca.subtotal15,'99999999.99') AS sub15proc, "+
+									"to_char(osiris_erp_factura_enca.coaseguro,'99999999.99') AS coaseguro, "+
+   									"to_char(osiris_erp_cobros_enca.subtotal0,'99999999.99') AS sub0proc, "+
+									"(osiris_erp_cobros_enca.subtotal15)*.15 AS ivaproc, "+
+									"to_char(osiris_erp_cobros_enca.total_procedimiento,'99999999.99') AS totalproc, "+
+									"to_char(osiris_erp_cobros_enca.total_procedimiento + osiris_erp_cobros_enca.honorario_medico,'9999999999.99') AS honototal,"+
+									"osiris_erp_factura_enca.pagada "+
 									"FROM "+
-									"hscmty_erp_cobros_enca,hscmty_his_paciente,hscmty_erp_factura_enca "+
+									"osiris_erp_cobros_enca,osiris_his_paciente,osiris_erp_factura_enca "+
 									"WHERE "+
-									"hscmty_erp_factura_enca.numero_factura = hscmty_erp_cobros_enca.numero_factura  "+
-									"AND hscmty_erp_cobros_enca.pid_paciente = hscmty_his_paciente.pid_paciente "+
+									"osiris_erp_factura_enca.numero_factura = osiris_erp_cobros_enca.numero_factura  "+
+									"AND osiris_erp_cobros_enca.pid_paciente = osiris_his_paciente.pid_paciente "+
 									facturas_+
 									query_fechas+" "+
 									query_cliente;
@@ -901,9 +880,9 @@ namespace osiris
 					 Console.WriteLine(query_fac_pagadas); 
 
 				if(orden == "CLIENTE") {
-					query_fac_pagadas = query_fac_pagadas+" ORDER BY hscmty_erp_factura_enca.id_cliente,hscmty_erp_factura_enca.numero_factura;";
+					query_fac_pagadas = query_fac_pagadas+" ORDER BY osiris_erp_factura_enca.id_cliente,osiris_erp_factura_enca.numero_factura;";
 				}else{
-					query_fac_pagadas = query_fac_pagadas+" ORDER BY hscmty_erp_factura_enca.fechahora_creacion_factura,hscmty_erp_factura_enca.numero_factura;";
+					query_fac_pagadas = query_fac_pagadas+" ORDER BY osiris_erp_factura_enca.fechahora_creacion_factura,osiris_erp_factura_enca.numero_factura;";
 				}
 			
 			// Verifica que la base de datos este conectada

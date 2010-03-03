@@ -137,7 +137,7 @@ namespace osiris
 		{
 			TreeIter iter;
 			if (this.treeViewEngineBuscafacturas.GetIterFirst (out iter)){
-				//new osiris.rpt_envio_de_facturas (total_monto_facturas,fecha_de_envio,entry_buscar.Text,entry_al_dia.Text,entry_al_mes.Text,entry_al_anno.Text,entry_del_dia.Text,entry_del_mes.Text,entry_del_anno.Text,this.treeview_lista_facturas,this.treeViewEngineBuscafacturas,this.query_facturas,this.nombrebd);
+				new osiris.rpt_envio_de_facturas (total_monto_facturas,fecha_de_envio,entry_buscar.Text,entry_al_dia.Text,entry_al_mes.Text,entry_al_anno.Text,entry_del_dia.Text,entry_del_mes.Text,entry_del_anno.Text,this.treeview_lista_facturas,this.treeViewEngineBuscafacturas,this.query_facturas,this.nombrebd);
 			}else{
 				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
 								MessageType.Error, 

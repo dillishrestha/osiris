@@ -35,16 +35,12 @@ using Npgsql;
 using System.Data;
 using Glade;
 using System.Collections;
-using GtkSharp;
 
 namespace osiris
 {
 	public class rpt_honorario_med
 	{
-		public string connectionString = "Server=localhost;" +
-        	    	                     "Port=5432;" +
-            	    	                 "User ID=admin;" +
-                	    	             "Password=1qaz2wsx;";
+		public string connectionString;
 		public int PidPaciente = 0;
 		public int folioservicio = 0;
 		public int id_tipopaciente = 0;
@@ -67,7 +63,6 @@ namespace osiris
 		public string honorario_med; 
 		public string numfactu;
 		
-
 		public int filas=635;
 		public int contador = 1;
 		public int numpage = 1;
@@ -81,20 +76,22 @@ namespace osiris
 		public Gnome.Font fuente10 = Gnome.Font.FindClosest("Bitstream Vera Sans", 10);
 		public Gnome.Font fuente11 = Gnome.Font.FindClosest("Bitstream Vera Sans", 11);
 		public Gnome.Font fuente12 = Gnome.Font.FindClosest("Bitstream Vera Sans", 12);
-		public Gnome.Font fuente36 = Gnome.Font.FindClosest("Bitstream Vera Sans", 36);
-		
+		public Gnome.Font fuente36 = Gnome.Font.FindClosest("Bitstream Vera Sans", 36);		
 				
 		//Declaracion de ventana de error
 		protected Gtk.Window MyWinError;
 		
-		public rpt_honorario_med(int PidPaciente_ , int folioservicio_,string _nombrebd_ ,string entry_fecha_admision_,string entry_fechahora_alta_,
+		class_conexion conexion_a_DB = new class_conexion();
+		
+		public rpt_honorario_med(int PidPaciente_ , int folioservicio_,string nombrebd_ ,string entry_fecha_admision_,string entry_fechahora_alta_,
 						string entry_numero_factura_,string entry_nombre_paciente_,string entry_telefono_paciente_,string entry_doctor_,
 						string entry_tipo_paciente_,string entry_aseguradora_,string edadpac_,string fecha_nacimiento_,string dir_pac_,
 						string cirugia_,string empresapac_,int idtipopaciente_, string honorario_med_, string numfactu_)
 		{		
 			PidPaciente = PidPaciente_;//
 			folioservicio = folioservicio_;//
-			nombrebd = _nombrebd_;//
+			connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
+			nombrebd = conexion_a_DB._nombrebd;
 			fecha_admision = entry_fecha_admision_;//
 			fechahora_alta = entry_fechahora_alta_;//
 			nombre_paciente = entry_nombre_paciente_;//
@@ -139,12 +136,12 @@ namespace osiris
 		{
 			// Cambiar la fuente
 			Gnome.Print.Setfont (ContextoImp, fuente6);
-			ContextoImp.MoveTo(19.7, 770);			ContextoImp.Show("Hospital Santa Cecilia");
-			ContextoImp.MoveTo(20, 770);			ContextoImp.Show("Hospital Santa Cecilia");
-			ContextoImp.MoveTo(19.7, 760);			ContextoImp.Show("Direccion: Isacc Garza #200 Ote. Centro Monterrey, NL.");
-			ContextoImp.MoveTo(20, 760);			ContextoImp.Show("Direccion: Isacc Garza #200 Ote. Centro Monterrey, NL.");
-			ContextoImp.MoveTo(19.7, 750);			ContextoImp.Show("Conmutador:(81) 81-25-56-10");
-			ContextoImp.MoveTo(20, 750);			ContextoImp.Show("Conmutador:(81) 81-25-56-10");
+			ContextoImp.MoveTo(19.7, 770);			ContextoImp.Show("Sistemas Hospitalario OSIRIS");
+			ContextoImp.MoveTo(20, 770);			ContextoImp.Show("Sistemas Hospitalario OSIRIS");
+			ContextoImp.MoveTo(19.7, 760);			ContextoImp.Show("Direccion: ");
+			ContextoImp.MoveTo(20, 760);			ContextoImp.Show("Direccion: ");
+			ContextoImp.MoveTo(19.7, 750);			ContextoImp.Show("Conmutador:");
+			ContextoImp.MoveTo(20, 750);			ContextoImp.Show("Conmutador:");
 			
 			//ContextoImp.MoveTo(484.7, 770);			ContextoImp.Show("Fo-tes-11/Rev.02/20-mar-07");
 			//ContextoImp.MoveTo(485, 770);			ContextoImp.Show("Fo-tes-11/Rev.02/20-mar-07");
@@ -278,11 +275,11 @@ namespace osiris
 	        	        	  
 				comando.CommandText ="SELECT nombre1_medico,nombre2_medico,apellido_paterno_medico, "+
 	           						"apellido_materno_medico,monto_del_abono "+
-									"FROM hscmty_his_medicos,hscmty_erp_honorarios_medicos "+
+									"FROM osiris_his_medicos,osiris_erp_honorarios_medicos "+
 									"WHERE "+
-									"hscmty_erp_honorarios_medicos.id_medico = hscmty_his_medicos.id_medico "+
-									"AND hscmty_erp_honorarios_medicos.eliminado = false "+
-									"AND hscmty_erp_honorarios_medicos.folio_de_servicio = '"+folioservicio+"' ;";
+									"osiris_erp_honorarios_medicos.id_medico = osiris_his_medicos.id_medico "+
+									"AND osiris_erp_honorarios_medicos.eliminado = false "+
+									"AND osiris_erp_honorarios_medicos.folio_de_servicio = '"+folioservicio+"' ;";
 				NpgsqlDataReader lector = comando.ExecuteReader ();
 				//Console.WriteLine("query honorarios: "+comando.CommandText.ToString());
 				ContextoImp.BeginPage("Pagina 1");
@@ -321,10 +318,7 @@ namespace osiris
 /////////////////////////////////////////////////////////////////////////////////////////////////////
  	public class rpt_honorario_med_fecha
 	{
-		public string connectionString = "Server=localhost;" +
-        	    	                     "Port=5432;" +
-            	    	                 "User ID=admin;" +
-                	    	             "Password=1qaz2wsx;";
+		public string connectionString;
 		public string nombrebd;
 		public string LoginEmpleado;
 		public string NomEmpleado;
@@ -355,16 +349,18 @@ namespace osiris
 		public Gnome.Font fuente10 = Gnome.Font.FindClosest("Bitstream Vera Sans", 10);
 		public Gnome.Font fuente11 = Gnome.Font.FindClosest("Bitstream Vera Sans", 11);
 		public Gnome.Font fuente12 = Gnome.Font.FindClosest("Bitstream Vera Sans", 12);
-		public Gnome.Font fuente36 = Gnome.Font.FindClosest("Bitstream Vera Sans", 36);
-		
+		public Gnome.Font fuente36 = Gnome.Font.FindClosest("Bitstream Vera Sans", 36);		
 				
 		//Declaracion de ventana de error 
 		protected Gtk.Window MyWinError;
 		
+		class_conexion conexion_a_DB = new class_conexion();
+		
 		public rpt_honorario_med_fecha(string rango1_,string rango2_,string query_fechas_,string _nombrebd_,string LoginEmpleado_,string NomEmpleado_,
 												string AppEmpleado_,string ApmEmpleado_,string tiporeporte_,string orden_,string query_medico_)
 		{
-			nombrebd = _nombrebd_;
+			connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
+			nombrebd = conexion_a_DB._nombrebd;
 			LoginEmpleado = LoginEmpleado_;
 			NomEmpleado = NomEmpleado_;
 			AppEmpleado = AppEmpleado_;
@@ -388,15 +384,15 @@ namespace osiris
 			ComponerPagina2(ctx, trabajo); 
 			trabajo.Close();
 			switch (respuesta)
-			{
-				case (int) PrintButtons.Print:   
-					trabajo.Print (); 
-				break;
-				case (int) PrintButtons.Preview:
-					new PrintJobPreview(trabajo, "HONORARIOS MEDICOS FECHA").Show();
-				break;
-			}
-			dialogo.Hide (); dialogo.Dispose ();
+        	{
+                  case (int) Gnome.PrintButtons.Print:   
+                  		trabajo.Print (); 
+                  		break;
+                  case (int) Gnome.PrintButtons.Preview:
+                      	new Gnome.PrintJobPreview(trabajo, "").Show();
+                        break;
+        	}
+        	dialogo.Hide (); dialogo.Dispose ();
 		}
 		
 		void ComponerPagina2 (Gnome.PrintContext ContextoImp, Gnome.PrintJob trabajoImpresion)
@@ -411,24 +407,24 @@ namespace osiris
 				comando = conexion.CreateCommand ();
 	        	        	  
 				comando.CommandText ="SELECT "+
-				"to_char(hscmty_erp_factura_enca.numero_factura,'9999999999') AS numerofactura, to_char(fecha_factura,'dd-MM-yyyy') AS fecha_de_facturacion, to_char(hscmty_erp_honorarios_medicos.folio_de_servicio,'999999') AS folioservicio, "+
-				"hscmty_erp_honorarios_medicos.id_medico AS idmedico, "+  
+				"to_char(osiris_erp_factura_enca.numero_factura,'9999999999') AS numerofactura, to_char(fecha_factura,'dd-MM-yyyy') AS fecha_de_facturacion, to_char(osiris_erp_honorarios_medicos.folio_de_servicio,'999999') AS folioservicio, "+
+				"osiris_erp_honorarios_medicos.id_medico AS idmedico, "+  
 				"to_char(monto_del_abono,'9999999.99') AS montodelabono, "+
 				"to_char(fechahora_abono,'dd-MM-yyyy') AS fechaabono, "+
 				"to_char(fecha_pago,'dd-MM-yyyy') AS fechapago, "+ 
 				"nombre_medico,descripcion_especialidad, "+
-				"hscmty_his_paciente.nombre1_paciente || ' ' || "+  
-				"hscmty_his_paciente.nombre2_paciente || ' ' || "+
-				"hscmty_his_paciente.apellido_paterno_paciente || ' ' || "+
-				"hscmty_his_paciente.apellido_materno_paciente AS nombre_paciente "+
-				"FROM hscmty_erp_honorarios_medicos,hscmty_his_medicos,hscmty_his_tipo_especialidad,hscmty_erp_factura_enca,hscmty_erp_cobros_enca,hscmty_his_paciente "+
-				"WHERE  hscmty_erp_honorarios_medicos.id_medico = hscmty_his_medicos.id_medico "+
-				"AND hscmty_his_medicos.id_especialidad = hscmty_his_tipo_especialidad.id_especialidad "+
-				"AND hscmty_erp_honorarios_medicos.eliminado = 'false' "+
-				"AND hscmty_erp_factura_enca.numero_factura = hscmty_erp_honorarios_medicos.numero_factura "+
-				"AND hscmty_erp_cobros_enca.numero_factura =hscmty_erp_honorarios_medicos.numero_factura "+
+				"osiris_his_paciente.nombre1_paciente || ' ' || "+  
+				"osiris_his_paciente.nombre2_paciente || ' ' || "+
+				"osiris_his_paciente.apellido_paterno_paciente || ' ' || "+
+				"osiris_his_paciente.apellido_materno_paciente AS nombre_paciente "+
+				"FROM osiris_erp_honorarios_medicos,osiris_his_medicos,osiris_his_tipo_especialidad,osiris_erp_factura_enca,osiris_erp_cobros_enca,osiris_his_paciente "+
+				"WHERE  osiris_erp_honorarios_medicos.id_medico = osiris_his_medicos.id_medico "+
+				"AND osiris_his_medicos.id_especialidad = osiris_his_tipo_especialidad.id_especialidad "+
+				"AND osiris_erp_honorarios_medicos.eliminado = 'false' "+
+				"AND osiris_erp_factura_enca.numero_factura = osiris_erp_honorarios_medicos.numero_factura "+
+				"AND osiris_erp_cobros_enca.numero_factura =osiris_erp_honorarios_medicos.numero_factura "+
 				query_medico+
-				"AND hscmty_erp_cobros_enca.pid_paciente = hscmty_his_paciente.pid_paciente "+query_fechas+" "+orden+";";
+				"AND osiris_erp_cobros_enca.pid_paciente = osiris_his_paciente.pid_paciente "+query_fechas+" "+orden+";";
 				
 				NpgsqlDataReader lector = comando.ExecuteReader ();
 				Console.WriteLine(comando.CommandText.ToString());
@@ -475,9 +471,7 @@ namespace osiris
 					salto_pagina(ContextoImp,trabajoImpresion,contador);
 					fila-=10;
 					total_honorario_medico += decimal.Parse((string) lector["montodelabono"]);
-					contador+=1;
-		       		    
-		       		    
+					contador+=1;		       		    		       		    
 		       		   		       		
 					while (lector.Read())///AQUI SE LEE LA PRIMERA LINEA PARA DESPUES COMPARAR LAS ADMISIONES
 					{ 

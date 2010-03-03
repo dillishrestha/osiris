@@ -104,6 +104,24 @@
     <File name="rpt_separacion_de_paquetes.cs" subtype="Code" buildaction="Compile" />
     <File name="rpt_paciente_con_alta.cs" subtype="Code" buildaction="Compile" />
     <File name="rpt_presupuestos.cs" subtype="Code" buildaction="Compile" />
+    <File name="rpt_paquetes.cs" subtype="Code" buildaction="Compile" />
+    <File name="rpt_abonos.cs" subtype="Code" buildaction="Compile" />
+    <File name="rpt_honorario_medicos.cs" subtype="Code" buildaction="Compile" />
+    <File name="rpt_proc_cerrados.cs" subtype="Code" buildaction="Compile" />
+    <File name="rpt_proc_facturados.cs" subtype="Code" buildaction="Compile" />
+    <File name="rpt_envio_de_facturas.cs" subtype="Code" buildaction="Compile" />
+    <File name="rpt_requisicion_compras.cs" subtype="Code" buildaction="Compile" />
+    <File name="rpt_orden_compras.cs" subtype="Code" buildaction="Compile" />
+    <File name="rpt_envio_mat_almacen.cs" subtype="Code" buildaction="Compile" />
+    <File name="rpt_mov_productos.cs" subtype="Code" buildaction="Compile" />
+    <File name="rpt_comprobante_serv.cs" subtype="Code" buildaction="Compile" />
+    <File name="rpt_caja_comprobante.cs" subtype="Code" buildaction="Compile" />
+    <File name="rpt_proc_totales.cs" subtype="Code" buildaction="Compile" />
+    <File name="rpt_reg_pac_lab_rx.cs" subtype="Code" buildaction="Compile" />
+    <File name="rpt_hoja_de_cargos.cs" subtype="Code" buildaction="Compile" />
+    <File name="rpt_notas_de_cargos.cs" subtype="Code" buildaction="Compile" />
+    <File name="rpt_resultado_lab.cs" subtype="Code" buildaction="Compile" />
+    <File name="rpt_consumo_productos.cs" subtype="Code" buildaction="Compile" />
   </Contents>
   <References>
     <ProjectReference type="Gac" localcopy="True" refto="Mono.Cairo, Version=2.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756" />

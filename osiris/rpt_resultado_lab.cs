@@ -1,7 +1,7 @@
 // created on 05/02/2008 at 06:54 p
 ///////////////////////////////////////////////////////////
 // project created on 24/10/2006 at 10:20 a
-// Hospital Santa Cecilia
+// Sistema Hospitalario OSIRIS
 // Monterrey - Mexico
 //
 // Autor    	: Daniel Olivares - arcangeldoc@gmail.com (Programacion Mono)
@@ -40,42 +40,41 @@ namespace osiris
 {
 	public class imprime_resultadolab
 	{
-		public string connectionString = "Server=localhost;" +
-        	    	                     "Port=5432;" +
-            	    	                 "User ID=admin;" +
-                	    	             "Password=1qaz2wsx;";
-        public string nombrebd;
-		public int PidPaciente = 0;
-		public int folioservicio = 0;
-		public string LoginEmpleado;
-		public string dir_paciente;
-		public string edadpac;
-		public string empresapac;
-		public string folio_laboratorio;
-		public string fecha_solucitud;
-		public string nombre_paciente;
-		public string quimicoautorizado;
-		public string fecha_nac;
-		public string tipo_examen;
-		public string tipo_paciente;
-		public string hora_solicitud_estudio;
-		public string sexopaciente;
-		public string procedencia;
-		public string medicotratante;
-		public string nombre_estudio;
-		public string observa;
-		public string cedulaquimico;
-		public bool checkbutton_parametros;
+		string connectionString;
+        string nombrebd;
+		int PidPaciente = 0;
+		int folioservicio = 0;
+		string LoginEmpleado;
+		string dir_paciente;
+		string edadpac;
+		string empresapac;
+		string folio_laboratorio;
+		string fecha_solucitud;
+		string nombre_paciente;
+		string quimicoautorizado;
+		string fecha_nac;
+		string tipo_examen;
+		string tipo_paciente;
+		string hora_solicitud_estudio;
+		string sexopaciente;
+		string procedencia;
+		string medicotratante;
+		string nombre_estudio;
+		string observa;
+		string cedulaquimico;
+		bool checkbutton_parametros;
 		
-		public Gtk.ListStore treeViewEngineresultados;
-		public Gtk.TreeView lista_de_resultados;
+		Gtk.ListStore treeViewEngineresultados;
+		Gtk.TreeView lista_de_resultados;
 		
 		//Declaracion de ventana de error
 		protected Gtk.Window MyWinError;
 		protected Gtk.Window MyWin;
 		//public System.Drawing.Image myimage;
+		
+		class_conexion conexion_a_DB = new class_conexion();
 	
-		public imprime_resultadolab (object _lista_de_resultados_,object _treeViewEngineresultados_,string _LoginEmpleado_,string _nombrebd_,
+		public imprime_resultadolab (object _lista_de_resultados_,object _treeViewEngineresultados_,string _LoginEmpleado_,string nombrebd_,
 									string _dir_paciente_,string _edadpac_,string _empresapac_,string entry_folio_laboratorio_res,
 									string _entry_fecha_solicitud_res_,int PidPaciente_,string _entry_nombre_paciente_,
 									string _quimicoaut_,int _folioservicio_,string _fecha_nacimiento_,
@@ -85,10 +84,10 @@ namespace osiris
 		{
 			lista_de_resultados = _lista_de_resultados_ as Gtk.TreeView;
 			treeViewEngineresultados = _treeViewEngineresultados_ as Gtk.ListStore;
-			
+			connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
+			nombrebd = conexion_a_DB._nombrebd;			
 			PidPaciente = PidPaciente_;
 			folioservicio = _folioservicio_;
-			nombrebd = _nombrebd_;
 			LoginEmpleado = _LoginEmpleado_;
 			dir_paciente = _dir_paciente_;
 			edadpac = _edadpac_;
@@ -231,8 +230,8 @@ namespace osiris
 			
 			Gnome.Print.Setfont (ContextoImp, fuente4);
 			ContextoImp.MoveTo(100, 161); 		ContextoImp.Show("----------------------------------------------------------");
-			ContextoImp.MoveTo(100, 153);		ContextoImp.Show("  Q.B.P. DIANA LIBIA ROMERO GONZALEZ");
-			ContextoImp.MoveTo(100, 145);		ContextoImp.Show("     CED. PROFESIONAL 2370632");
+			ContextoImp.MoveTo(100, 153);		ContextoImp.Show("  Q.B.P. DANIEL OLIVARES");
+			ContextoImp.MoveTo(100, 145);		ContextoImp.Show("     CED. PROFESIONAL 1234567");
 			ContextoImp.MoveTo(100, 137);		ContextoImp.Show("               AUTORIZA");
 			
 			ContextoImp.MoveTo(350, 161);		ContextoImp.Show("----------------------------------------------------------");

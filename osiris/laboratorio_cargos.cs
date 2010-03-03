@@ -2845,14 +2845,12 @@ namespace osiris
 				
 		void on_button_imprimir_clicked(object sender, EventArgs args)
 		{
-			/*
 			new osiris.imprime_resultadolab(this.lista_de_resultados,this.treeViewEngineresultados,LoginEmpleado,this.nombrebd,this.dir_pac,this.edadpac,this.empresapac,
 											this.entry_folio_laboratorio_res.Text,this.entry_fecha_solicitud_res.Text,
 											this.PidPaciente,nombpaciente,this.quimicoaut,this.folioservicio,
 											this.fecha_nacimiento,this.tipoexamen,tipo_paciente,this.entry_hora_solicitud_res.Text,this.sexopaciente,this.procedencia,
 											this.medicotratante,this.nombre_estudio,this.entry_observaciones.Text,this.cedulaquimico
-											);
-			*/
+											);			
 		}
 		
 		public bool Verificacion_de_valores()

@@ -58,14 +58,14 @@ namespace osiris
 		[Widget] Gtk.Button button_rep;
 		[Widget] Gtk.Button button_salir;
 		
-		public string query_fechas = " ";
-		public string rango1 = "";
-		public string rango2 = "";
-		public string nombrebd;
-		public int idsubalmacen;
-		public int filas=690;
-		public int contador = 1;
-		public int numpage = 1;
+		string query_fechas = " ";
+		string rango1 = "";
+		string rango2 = "";
+		string nombrebd;
+		int idsubalmacen;
+		int filas=690;
+		int contador = 1;
+		int numpage = 1;
 		
 		private ListStore treeViewEnginesolicitud;
 		
@@ -75,24 +75,25 @@ namespace osiris
 		
 		// Declarando variable de fuente para la impresion
 		// Declaracion de fuentes tipo Bitstream Vera sans
-		//public Gnome.Font fuente5 = Gnome.Font.FindClosest("Luxi Sans", 5);
-		public Gnome.Font fuente6 = Gnome.Font.FindClosest("Luxi Sans", 6);
-		public Gnome.Font fuente7 = Gnome.Font.FindClosest("Luxi Sans", 7);
-		public Gnome.Font fuente8 = Gnome.Font.FindClosest("Luxi Sans", 8);//Bitstream Vera Sans
-		public Gnome.Font fuente9 = Gnome.Font.FindClosest("Luxi Sans", 9);
-		public Gnome.Font fuente10 = Gnome.Font.FindClosest("Luxi Sans", 10);
-		public Gnome.Font fuente11 = Gnome.Font.FindClosest("Luxi Sans", 11);
-		public Gnome.Font fuente12 = Gnome.Font.FindClosest("Luxi Sans", 12);
-		public Gnome.Font fuente36 = Gnome.Font.FindClosest("Luxi Sans", 36);
+		Gnome.Font fuente5 = Gnome.Font.FindClosest("Luxi Sans", 5);
+		Gnome.Font fuente6 = Gnome.Font.FindClosest("Luxi Sans", 6);
+		Gnome.Font fuente7 = Gnome.Font.FindClosest("Luxi Sans", 7);
+		Gnome.Font fuente8 = Gnome.Font.FindClosest("Luxi Sans", 8);//Bitstream Vera Sans
+		Gnome.Font fuente9 = Gnome.Font.FindClosest("Luxi Sans", 9);
+		Gnome.Font fuente10 = Gnome.Font.FindClosest("Luxi Sans", 10);
+		Gnome.Font fuente11 = Gnome.Font.FindClosest("Luxi Sans", 11);
+		Gnome.Font fuente12 = Gnome.Font.FindClosest("Luxi Sans", 12);
+		Gnome.Font fuente36 = Gnome.Font.FindClosest("Luxi Sans", 36);
 		
-		public string connectionString = "Server=localhost;" +
-						"Port=5432;" +
-						 "User ID=admin;" +
-						"Password=1qaz2wsx;";
+		string connectionString;
+		
+		class_conexion conexion_a_DB = new class_conexion();
 						
-		public rpt_envio_almacen(string _nombrebd_,int idsubalmacen_)		
+		public rpt_envio_almacen(string nombrebd_,int idsubalmacen_)		
 		{
-			nombrebd = _nombrebd_;
+			connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
+			nombrebd = conexion_a_DB._nombrebd;
+			
 			idsubalmacen = idsubalmacen_;
 			Glade.XML gxml = new Glade.XML (null, "almacen_costos_compras.glade", "envio_almacenes", null);
 			gxml.Autoconnect (this);
@@ -117,7 +118,7 @@ namespace osiris
             
 		void crea_treeview_solicitud()
 		{
-				treeViewEnginesolicitud = new ListStore(typeof(bool),//0
+			treeViewEnginesolicitud = new ListStore(typeof(bool),//0
 														typeof(string),
 														typeof(string),
 														typeof(string),
@@ -182,17 +183,17 @@ namespace osiris
 				NpgsqlCommand comando; 
 				comando = conexion.CreateCommand ();
 				
-					comando.CommandText = "SELECT COUNT(hscmty_his_solicitudes_deta.folio_de_solicitud) AS cantidad_solicitud,to_char(folio_de_solicitud,'9999999999') AS foliodesolicitud,"+
-								"to_char(hscmty_his_solicitudes_deta.id_almacen,'999999999') AS idalmacen,hscmty_almacenes.descripcion_almacen AS descripcionalmacen,"+
-								"to_char(hscmty_his_solicitudes_deta.fecha_envio_almacen,'dd-MM-yyyy HH24:mi') AS fecha_envio,hscmty_his_solicitudes_deta.id_empleado "+
-								"FROM hscmty_his_solicitudes_deta,hscmty_almacenes "+								
-								"WHERE hscmty_his_solicitudes_deta.id_almacen = hscmty_almacenes.id_almacen "+
-								"AND hscmty_his_solicitudes_deta.folio_de_solicitud > 0 "+
+					comando.CommandText = "SELECT COUNT(osiris_his_solicitudes_deta.folio_de_solicitud) AS cantidad_solicitud,to_char(folio_de_solicitud,'9999999999') AS foliodesolicitud,"+
+								"to_char(osiris_his_solicitudes_deta.id_almacen,'999999999') AS idalmacen,osiris_almacenes.descripcion_almacen AS descripcionalmacen,"+
+								"to_char(osiris_his_solicitudes_deta.fecha_envio_almacen,'dd-MM-yyyy HH24:mi') AS fecha_envio,osiris_his_solicitudes_deta.id_empleado "+
+								"FROM osiris_his_solicitudes_deta,osiris_almacenes "+								
+								"WHERE osiris_his_solicitudes_deta.id_almacen = osiris_almacenes.id_almacen "+
+								"AND osiris_his_solicitudes_deta.folio_de_solicitud > 0 "+
 								"AND status = 'true' "+								
 								""+query_fechas+" "+
-								"GROUP BY hscmty_his_solicitudes_deta.folio_de_solicitud,hscmty_his_solicitudes_deta.id_almacen,"+
-								"hscmty_almacenes.descripcion_almacen,to_char(hscmty_his_solicitudes_deta.fecha_envio_almacen,'dd-MM-yyyy HH24:mi'),hscmty_his_solicitudes_deta.id_empleado "+
-								"ORDER BY hscmty_his_solicitudes_deta.id_almacen,hscmty_his_solicitudes_deta.folio_de_solicitud;";
+								"GROUP BY osiris_his_solicitudes_deta.folio_de_solicitud,osiris_his_solicitudes_deta.id_almacen,"+
+								"osiris_almacenes.descripcion_almacen,to_char(osiris_his_solicitudes_deta.fecha_envio_almacen,'dd-MM-yyyy HH24:mi'),osiris_his_solicitudes_deta.id_empleado "+
+								"ORDER BY osiris_his_solicitudes_deta.id_almacen,osiris_his_solicitudes_deta.folio_de_solicitud;";
 				//Console.WriteLine(comando.CommandText);
 				NpgsqlDataReader lector = comando.ExecuteReader ();
 
@@ -254,8 +255,8 @@ namespace osiris
 			}else{
 				rango1 = entry_ano_inicio.Text+"-"+entry_mes_inicio.Text+"-"+entry_dia_inicio.Text;
 				rango2 = entry_ano_termino.Text+"-"+entry_mes_termino.Text+"-"+entry_dia_termino.Text;
-				query_fechas = " AND to_char(hscmty_his_solicitudes_deta.fecha_envio_almacen,'yyyy-MM-dd') >= '"+rango1+"' "+
-								"AND to_char(hscmty_his_solicitudes_deta.fecha_envio_almacen,'yyyy-MM-dd') <= '"+rango2+"' ";
+				query_fechas = " AND to_char(osiris_his_solicitudes_deta.fecha_envio_almacen,'yyyy-MM-dd') >= '"+rango1+"' "+
+								"AND to_char(osiris_his_solicitudes_deta.fecha_envio_almacen,'yyyy-MM-dd') <= '"+rango2+"' ";
 				}	
 				llenando_lista_de_solicitudes();
 			}
@@ -269,8 +270,8 @@ namespace osiris
 			}else{
 				rango1 = entry_ano_inicio.Text+"-"+entry_mes_inicio.Text+"-"+entry_dia_inicio.Text;
 				rango2 = entry_ano_termino.Text+"-"+entry_mes_termino.Text+"-"+entry_dia_termino.Text;				
-				query_fechas = " AND to_char(hscmty_his_solicitudes_deta.fecha_envio_almacen,'yyyy-MM-dd') >= '"+rango1+"' "+
-								"AND to_char(hscmty_his_solicitudes_deta.fecha_envio_almacen,'yyyy-MM-dd') <= '"+rango2+"' ";
+				query_fechas = " AND to_char(osiris_his_solicitudes_deta.fecha_envio_almacen,'yyyy-MM-dd') >= '"+rango1+"' "+
+								"AND to_char(osiris_his_solicitudes_deta.fecha_envio_almacen,'yyyy-MM-dd') <= '"+rango2+"' ";
 			}
 			
 			Gnome.PrintJob    trabajo = new Gnome.PrintJob(Gnome.PrintConfig.Default());
@@ -338,8 +339,8 @@ namespace osiris
  			string query_in_almacen = ""; 
  			
  			if (variable_paso_02_1 > 0){
-	 			query_in_num = " AND hscmty_his_solicitudes_deta.folio_de_solicitud IN ('"+numeros_seleccionado+"') ";
-				query_in_almacen = " AND hscmty_his_solicitudes_deta.id_almacen IN ('"+almacenes_seleccionados+"') ";
+	 			query_in_num = " AND osiris_his_solicitudes_deta.folio_de_solicitud IN ('"+numeros_seleccionado+"') ";
+				query_in_almacen = " AND osiris_his_solicitudes_deta.id_almacen IN ('"+almacenes_seleccionados+"') ";
 			}
 			NpgsqlConnection conexion; 
         	conexion = new NpgsqlConnection (connectionString+nombrebd);
@@ -349,35 +350,35 @@ namespace osiris
 	        	NpgsqlCommand comando; 
 	        	comando = conexion.CreateCommand (); 
 
-	        	comando.CommandText = "SELECT DISTINCT (hscmty_his_solicitudes_deta.folio_de_solicitud), "+
-	        		       		"to_char(hscmty_his_solicitudes_deta.fecha_envio_almacen,'dd-MM-yyyy'),"+
-								"to_char(hscmty_his_solicitudes_deta.folio_de_solicitud,'999999999') AS foliosol,"+
-								"to_char(hscmty_his_solicitudes_deta.fechahora_solicitud,'dd-MM-yyyy HH24:mi') AS fecha_sol,"+
-								"to_char(hscmty_his_solicitudes_deta.fechahora_autorizado,'dd-MM-yyyy') AS fecha_autorizado,"+
-								"to_char(hscmty_his_solicitudes_deta.fecha_envio_almacen,'dd-MM-yyyy HH24:mi') AS fecha_envio,"+								
-								"hscmty_his_solicitudes_deta.id_quien_solicito,"+
-								"to_char(hscmty_productos.id_producto,'999999999999') AS idproducto,"+
-								"hscmty_his_solicitudes_deta.id_producto,"+
-								"hscmty_his_solicitudes_deta.sin_stock,"+	
-								"hscmty_his_solicitudes_deta.solicitado_erroneo,"+
-								"hscmty_his_solicitudes_deta.surtido,"+
-								"hscmty_empleado.id_empleado,"+	
-								"hscmty_productos.descripcion_producto,"+
-								"to_char(hscmty_his_solicitudes_deta.cantidad_solicitada,'9999999.99') AS cantsol,"+
-								"to_char(hscmty_his_solicitudes_deta.cantidad_autorizada,'9999999.99') AS cantaut,"+
-								"hscmty_his_solicitudes_deta.id_almacen AS idalmacen,hscmty_almacenes.descripcion_almacen,hscmty_almacenes.id_almacen,"+
-								"hscmty_empleado.nombre1_empleado || ' ' || "+"hscmty_empleado.nombre2_empleado || ' ' || "+"hscmty_empleado.apellido_paterno_empleado || ' ' || "+ 
-								"hscmty_empleado.apellido_materno_empleado AS nombreempl "+
-								"FROM hscmty_his_solicitudes_deta,hscmty_almacenes,hscmty_productos,hscmty_empleado "+
-								"WHERE hscmty_his_solicitudes_deta.id_almacen = hscmty_almacenes.id_almacen "+
-								"AND hscmty_empleado.login_empleado = hscmty_his_solicitudes_deta.id_empleado "+
-								"AND hscmty_his_solicitudes_deta.folio_de_solicitud > 0 "+
-								"AND hscmty_productos.cobro_activo = 'true' "+
-								"AND hscmty_his_solicitudes_deta.id_producto = hscmty_productos.id_producto "+
-								"AND hscmty_his_solicitudes_deta.eliminado = 'false' "+
+	        	comando.CommandText = "SELECT DISTINCT (osiris_his_solicitudes_deta.folio_de_solicitud), "+
+	        		       		"to_char(osiris_his_solicitudes_deta.fecha_envio_almacen,'dd-MM-yyyy'),"+
+								"to_char(osiris_his_solicitudes_deta.folio_de_solicitud,'999999999') AS foliosol,"+
+								"to_char(osiris_his_solicitudes_deta.fechahora_solicitud,'dd-MM-yyyy HH24:mi') AS fecha_sol,"+
+								"to_char(osiris_his_solicitudes_deta.fechahora_autorizado,'dd-MM-yyyy') AS fecha_autorizado,"+
+								"to_char(osiris_his_solicitudes_deta.fecha_envio_almacen,'dd-MM-yyyy HH24:mi') AS fecha_envio,"+								
+								"osiris_his_solicitudes_deta.id_quien_solicito,"+
+								"to_char(osiris_productos.id_producto,'999999999999') AS idproducto,"+
+								"osiris_his_solicitudes_deta.id_producto,"+
+								"osiris_his_solicitudes_deta.sin_stock,"+	
+								"osiris_his_solicitudes_deta.solicitado_erroneo,"+
+								"osiris_his_solicitudes_deta.surtido,"+
+								"osiris_empleado.id_empleado,"+	
+								"osiris_productos.descripcion_producto,"+
+								"to_char(osiris_his_solicitudes_deta.cantidad_solicitada,'9999999.99') AS cantsol,"+
+								"to_char(osiris_his_solicitudes_deta.cantidad_autorizada,'9999999.99') AS cantaut,"+
+								"osiris_his_solicitudes_deta.id_almacen AS idalmacen,osiris_almacenes.descripcion_almacen,osiris_almacenes.id_almacen,"+
+								"osiris_empleado.nombre1_empleado || ' ' || "+"osiris_empleado.nombre2_empleado || ' ' || "+"osiris_empleado.apellido_paterno_empleado || ' ' || "+ 
+								"osiris_empleado.apellido_materno_empleado AS nombreempl "+
+								"FROM osiris_his_solicitudes_deta,osiris_almacenes,osiris_productos,osiris_empleado "+
+								"WHERE osiris_his_solicitudes_deta.id_almacen = osiris_almacenes.id_almacen "+
+								"AND osiris_empleado.login_empleado = osiris_his_solicitudes_deta.id_empleado "+
+								"AND osiris_his_solicitudes_deta.folio_de_solicitud > 0 "+
+								"AND osiris_productos.cobro_activo = 'true' "+
+								"AND osiris_his_solicitudes_deta.id_producto = osiris_productos.id_producto "+
+								"AND osiris_his_solicitudes_deta.eliminado = 'false' "+
 								query_in_num+
 								query_in_almacen+
-								query_fechas+" ORDER BY hscmty_his_solicitudes_deta.id_almacen,hscmty_his_solicitudes_deta.folio_de_solicitud;";
+								query_fechas+" ORDER BY osiris_his_solicitudes_deta.id_almacen,osiris_his_solicitudes_deta.folio_de_solicitud;";
 								
 		        	Console.WriteLine(comando.CommandText);
 		        	NpgsqlDataReader lector = comando.ExecuteReader ();
@@ -571,12 +572,12 @@ namespace osiris
 		{        		
       		// Cambiar la fuente
 			Gnome.Print.Setfont (ContextoImp, fuente6);
-			ContextoImp.MoveTo(19.7, 770);			ContextoImp.Show("Hospital Santa Cecilia");
-			ContextoImp.MoveTo(20, 770);			ContextoImp.Show("Hospital Santa Cecilia");
-			ContextoImp.MoveTo(19.7, 760);			ContextoImp.Show("Direccion: Isacc Garza #200 Ote. Centro Monterrey, NL.");
-			ContextoImp.MoveTo(20, 760);			ContextoImp.Show("Direccion: Isacc Garza #200 Ote. Centro Monterrey, NL.");
-			ContextoImp.MoveTo(19.7, 750);			ContextoImp.Show("Conmutador:(81) 81-25-56-10");
-			ContextoImp.MoveTo(20, 750);			ContextoImp.Show("Conmutador:(81) 81-25-56-10");
+			ContextoImp.MoveTo(19.7, 770);			ContextoImp.Show("Sistema Hospitalario OSIRIS");
+			ContextoImp.MoveTo(20, 770);			ContextoImp.Show("Sistema Hospitalario OSIRIS");
+			ContextoImp.MoveTo(19.7, 760);			ContextoImp.Show("Direccion:");
+			ContextoImp.MoveTo(20, 760);			ContextoImp.Show("Direccion:");
+			ContextoImp.MoveTo(19.7, 750);			ContextoImp.Show("Conmutador:");
+			ContextoImp.MoveTo(20, 750);			ContextoImp.Show("Conmutador:");
 
 			Gnome.Print.Setfont (ContextoImp, fuente7);
 			ContextoImp.MoveTo(20, 700);			ContextoImp.Show("Cantidad");										

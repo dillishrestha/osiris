@@ -11,64 +11,62 @@ using Gtk;
 using Glade;
 using Gnome;
 using System.Collections;
-using GtkSharp;
 
 namespace osiris
 {
 	public class rpt_requisicion_compras
 	{
-		public string connectionString = "Server=localhost;" +
-							"Port=5432;" +
-							 "User ID=admin;" +
-							"Password=1qaz2wsx;";
-						
-		public string nombrebd;
-		public string LoginEmpleado;
-    	public string NomEmpleado;
-    	public string AppEmpleado;
-    	public string ApmEmpleado;
+		string connectionString;						
+		string nombrebd;
+		string LoginEmpleado;
+    	string NomEmpleado;
+    	string AppEmpleado;
+    	string ApmEmpleado;
     	
-    	public string querylist = "";
+    	string querylist = "";
     	
     	// Declarando el treeview
-		public Gtk.TreeView lista_requisicion_productos;
-		public Gtk.TreeStore treeViewEngineRequisicion;
+		Gtk.TreeView lista_requisicion_productos;
+		Gtk.TreeStore treeViewEngineRequisicion;
     		
-    	public string titulo = "REQUISICION DE COMPRAS ";
-    	public string requisicion;
-		public string status_requisicion;
-		public string fecha_solicitud;
-		public string dia_requerida;
-		public string mes_requerida;
-		public string ano_requerida;
-		public string observaciones;
-		public string nombre_prodrequisado;
-		public string totalitems_productos;
+    	string titulo = "REQUISICION DE COMPRAS ";
+    	string requisicion;
+		string status_requisicion;
+		string fecha_solicitud;
+		string dia_requerida;
+		string mes_requerida;
+		string ano_requerida;
+		string observaciones;
+		string nombre_prodrequisado;
+		string totalitems_productos;
 		
-		public string descripcion_tipo_requi;
-    	public string descripinternamiento2;
-    	public string descripinternamiento;
-    	public string solicitante;
+		string descripcion_tipo_requi;
+    	string descripinternamiento2;
+    	string descripinternamiento;
+    	string solicitante;
 		
-		public string nombrepacienterecortado;
+		string nombrepacienterecortado;
 		
-		public string cantidadsolicitada;
-		public string descripcionproducto;
-		public string unidadproducto;
+		string cantidadsolicitada;
+		string descripcionproducto;
+		string unidadproducto;
 		
-		public int contador = 1;
-		public int numpage = 1;
-		public int filas =-174;
+		int contador = 1;
+		int numpage = 1;
+		int filas =-174;
     		
     	//Declaracion de ventana de error:
 		protected Gtk.Window MyWinError;
 		protected Gtk.Window MyWin;
+		
+		class_conexion conexion_a_DB = new class_conexion();
 	
 		public rpt_requisicion_compras(string nombrebd_,string requisicion_,string status_requisicion_,string fecha_solicitud_,string dia_requerida_,
 									string mes_requerida_,string ano_requerida_,string observaciones_,string nombre_prodrequisado_,string totalitems_productos_,
 									object lista_requisicion_productos_,object treeViewEngineRequisicion_)
     	{
-    	 	nombrebd = nombrebd_;
+    	 	connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
+			nombrebd = conexion_a_DB._nombrebd;
     	 	requisicion = requisicion_;
     		status_requisicion = status_requisicion_;
     		fecha_solicitud = fecha_solicitud_;
@@ -174,9 +172,9 @@ namespace osiris
 			ContextoImp.MoveTo(380.5, -55);			    ContextoImp.Show("PAGINA: ");
 			
 			Gnome.Print.Setfont(ContextoImp,fuente2);
-			ContextoImp.MoveTo(95, -30);			    ContextoImp.Show("Hospital Santa Cecilia");
-			ContextoImp.MoveTo(95, -40);			    ContextoImp.Show("Direccion: Isacc Garza #200 Ote. Centro Monterrey, NL.");
-			ContextoImp.MoveTo(95, -50);			    ContextoImp.Show("Conmutador:(81) 81-25-56-10");
+			ContextoImp.MoveTo(95, -30);			    ContextoImp.Show("Sistemas Hospitalario OSIRIS");
+			ContextoImp.MoveTo(95, -40);			    ContextoImp.Show("Direccion:");
+			ContextoImp.MoveTo(95, -50);			    ContextoImp.Show("Conmutador:");
 			
 			Gnome.Print.Setfont(ContextoImp,fuente);
 			ContextoImp.MoveTo(700, -90);			    ContextoImp.Show(requisicion);
@@ -327,8 +325,8 @@ namespace osiris
 				NpgsqlCommand comando1;
 				comando1 = conexion1.CreateCommand ();
 				comando1.CommandText ="SELECT * "+
-				                      "FROM hscmty_erp_requisicion_enca,hscmty_empleado "+
-				                      "WHERE hscmty_erp_requisicion_enca.id_quien_requiso = hscmty_empleado.login_empleado "+ 
+				                      "FROM osiris_erp_requisicion_enca,osiris_empleado "+
+				                      "WHERE osiris_erp_requisicion_enca.id_quien_requiso = osiris_empleado.login_empleado "+ 
 						              "AND id_requisicion = '"+requisicion +"';";
 				//Console.WriteLine(comando1.CommandText.ToString());
 				NpgsqlDataReader lector1 = comando1.ExecuteReader ();

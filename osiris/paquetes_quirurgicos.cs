@@ -295,9 +295,8 @@ namespace osiris
 							"existente para que el  se muestre \n"+"o no a pulsado el boton ''Seleccionar''");
 				msgBoxError.Run ();				msgBoxError.Destroy();
 			}else{
-				/*new paquetes_reporte (int.Parse(entry_id_cirugia.Text),entry_cirugia.Text," ",nombrebd,"paquetes",
-					entry_deposito_minimo.Text.Trim(),entry_dias_internamiento.Text.Trim(),"","","","","",true,"0");   // rpt_proc_cobranza.cs
-					*/
+				new paquetes_reporte (int.Parse(entry_id_cirugia.Text),entry_cirugia.Text," ",nombrebd,"paquetes",
+					entry_deposito_minimo.Text.Trim(),entry_dias_internamiento.Text.Trim(),"","","","","",true,"0");   // rpt_proc_cobranza.cs				
 			}
 		}
 		
@@ -311,9 +310,8 @@ namespace osiris
 							"existente para que el  se muestre \n"+"o no a pulsado el boton ''Seleccionar''");
 				msgBoxError.Run ();				msgBoxError.Destroy();
 			}else{
-				/*new paquetes_reporte (int.Parse(entry_id_cirugia.Text),entry_cirugia.Text," ",nombrebd,"paquetes",
-					entry_deposito_minimo.Text.Trim(),entry_dias_internamiento.Text.Trim(),"","","","","",false,"0");   // rpt_proc_cobranza.cs
-					*/
+				new paquetes_reporte (int.Parse(entry_id_cirugia.Text),entry_cirugia.Text," ",nombrebd,"paquetes",
+					entry_deposito_minimo.Text.Trim(),entry_dias_internamiento.Text.Trim(),"","","","","",false,"0");   // rpt_proc_cobranza.cs				
 			}
 		}
 		

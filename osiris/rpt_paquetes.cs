@@ -41,61 +41,60 @@ namespace osiris
 {
 	public class paquetes_reporte
 	{
-		public string connectionString = "Server=localhost;" +
-        	    	                     "Port=5432;" +
-            	    	                 "User ID=admin;" +
-                	    	             "Password=1qaz2wsx;";
-        public string nombrebd;
-		public string cirugia = "";
-		public string medico = "";
-		public int id;
-		public string tiporeporte = "";
-		public string deposito_minimo = "";
-		public string dias_internamiento = "";
-		public string tel_medico = "";
-		public string tel_opcional = "";
-		public string fax = "";
-		public string notas = "";
-		public string numpresupuesto = "";
-		public string titulo = "PAQUETES DE CIRUGIA";
-		public string schars = "";
-		public bool rptconprecio = true;
+		string connectionString;
+        string nombrebd;
+		string cirugia = "";
+		string medico = "";
+		int id;
+		string tiporeporte = "";
+		string deposito_minimo = "";
+		string dias_internamiento = "";
+		string tel_medico = "";
+		string tel_opcional = "";
+		string fax = "";
+		string notas = "";
+		string numpresupuesto = "";
+		string titulo = "PAQUETES DE CIRUGIA";
+		string schars = "";
+		bool rptconprecio = true;
 		
-		public int filas=690;//635
-		public int contador = 1;
-		public int numpage = 1;
+		int filas=690;//635
+		int contador = 1;
+		int numpage = 1;
 		
 		//variables para rangos de fecha
 				
-		public int idadmision_ = 0;
-		public int idproducto = 0;
-		public string datos = "";
-		public string fcreacion = "";
-		public decimal cantaplicada= 0;
-		public decimal ivaprod = 0;
-		public decimal subtotal = 0;
-		public decimal subt15 = 0;
-		public decimal subt0 = 0;
-		public decimal sumaiva = 0;
-		public decimal total = 0;
-		public decimal totaladm = 0;
-		public decimal subtotaldelmov = 0;
-		public decimal deducible = 0;
-		public decimal coaseguro = 0;
-				
+		int idadmision_ = 0;
+		int idproducto = 0;
+		string datos = "";
+		string fcreacion = "";
+		decimal cantaplicada= 0;
+		decimal ivaprod = 0;
+		decimal subtotal = 0;
+		decimal subt15 = 0;
+		decimal subt0 = 0;
+		decimal sumaiva = 0;
+		decimal total = 0;
+		decimal totaladm = 0;
+		decimal subtotaldelmov = 0;
+		decimal deducible = 0;
+		decimal coaseguro = 0;
+		decimal valoriva;
+		
+		class_conexion conexion_a_DB = new class_conexion();
+		class_public classpublic = new class_public();
 				
 		// Declarando variable de fuente para la impresion
 		// Declaracion de fuentes tipo Bitstream Vera sans
-		public Gnome.Font fuente6 = Gnome.Font.FindClosest("Bitstream Vera Sans", 6);
-		public Gnome.Font fuente7 = Gnome.Font.FindClosest("Bitstream Vera Sans", 7);
-		public Gnome.Font fuente8 = Gnome.Font.FindClosest("Bitstream Vera Sans", 8);
-		public Gnome.Font fuente9 = Gnome.Font.FindClosest("Bitstream Vera Sans", 9);
-		public Gnome.Font fuente10 = Gnome.Font.FindClosest("Bitstream Vera Sans", 10);
-		public Gnome.Font fuente11 = Gnome.Font.FindClosest("Bitstream Vera Sans", 11);
-		public Gnome.Font fuente12 = Gnome.Font.FindClosest("Bitstream Vera Sans", 12);
-		public Gnome.Font fuente36 = Gnome.Font.FindClosest("Bitstream Vera Sans", 36);
-		
-				
+		Gnome.Font fuente6 = Gnome.Font.FindClosest("Bitstream Vera Sans", 6);
+		Gnome.Font fuente7 = Gnome.Font.FindClosest("Bitstream Vera Sans", 7);
+		Gnome.Font fuente8 = Gnome.Font.FindClosest("Bitstream Vera Sans", 8);
+		Gnome.Font fuente9 = Gnome.Font.FindClosest("Bitstream Vera Sans", 9);
+		Gnome.Font fuente10 = Gnome.Font.FindClosest("Bitstream Vera Sans", 10);
+		Gnome.Font fuente11 = Gnome.Font.FindClosest("Bitstream Vera Sans", 11);
+		Gnome.Font fuente12 = Gnome.Font.FindClosest("Bitstream Vera Sans", 12);
+		Gnome.Font fuente36 = Gnome.Font.FindClosest("Bitstream Vera Sans", 36);
+						
 		//Declaracion de ventana de error
 		protected Gtk.Window MyWinError;
 		
@@ -103,7 +102,8 @@ namespace osiris
 								string deposito_minimo_,string dias_internamiento_,string tel_medico_,
 								string tel_opcional_,string fax_,string numpresupuesto_,string notas_,bool rptconprecio_,string presupuesto_seleccionados_)
 		{
-			nombrebd = _nombrebd_;//
+			connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
+			nombrebd = conexion_a_DB._nombrebd;
 			cirugia = nombcirugia; 
 			id = _id_;
 			medico = _medico_;
@@ -116,6 +116,7 @@ namespace osiris
 			notas = notas_;
 			numpresupuesto = numpresupuesto_;
 			rptconprecio = rptconprecio_;
+			valoriva = decimal.Parse(classpublic.ivaparaaplicar);
 			
 			if(tiporeporte == "presupuestos") { 
 				titulo = "PRESUPUESTO DE CIRUGIA";
@@ -150,12 +151,12 @@ namespace osiris
 		{
       		// Cambiar la fuente
 			Gnome.Print.Setfont (ContextoImp, fuente6);
-			ContextoImp.MoveTo(19.7, 770);			ContextoImp.Show("Hospital Santa Cecilia");
-			ContextoImp.MoveTo(20, 770);			ContextoImp.Show("Hospital Santa Cecilia");
-			ContextoImp.MoveTo(19.7, 760);			ContextoImp.Show("Direccion: Isacc Garza #200 Ote. Centro Monterrey, NL.");
-			ContextoImp.MoveTo(20, 760);			ContextoImp.Show("Direccion: Isacc Garza #200 Ote. Centro Monterrey, NL.");
-			ContextoImp.MoveTo(19.7, 750);			ContextoImp.Show("Conmutador:(81) 81-25-56-10");
-			ContextoImp.MoveTo(20, 750);			ContextoImp.Show("Conmutador:(81) 81-25-56-10");
+			ContextoImp.MoveTo(19.7, 770);			ContextoImp.Show("Sistema Hospitalario OSIRIS");
+			ContextoImp.MoveTo(20, 770);			ContextoImp.Show("Sistema Hospitalario OSIRIS");
+			ContextoImp.MoveTo(19.7, 760);			ContextoImp.Show("Direccion:");
+			ContextoImp.MoveTo(20, 760);			ContextoImp.Show("Direccion:");
+			ContextoImp.MoveTo(19.7, 750);			ContextoImp.Show("Conmutador:");
+			ContextoImp.MoveTo(20, 750);			ContextoImp.Show("Conmutador:");
 			
 			Gnome.Print.Setfont (ContextoImp, fuente12);
 			ContextoImp.MoveTo(200.5, 740);			ContextoImp.Show(titulo);
@@ -323,53 +324,53 @@ namespace osiris
         	
         	if(tiporeporte == "paquetes")
         	{
-           		comando.CommandText = "SELECT descripcion_producto,hscmty_his_tipo_admisiones.descripcion_admisiones, "+
-							"id_empleado,hscmty_his_cirugias_deta.eliminado,hscmty_productos.aplicar_iva,hscmty_his_cirugias_deta.id_tipo_admisiones,  "+
-							"hscmty_productos.descripcion_producto,descripcion_grupo_producto,hscmty_productos.id_grupo_producto, "+
-							"to_char(hscmty_his_tipo_cirugias.precio_de_venta,'999999999999') AS precioventa, "+
-							"to_char(hscmty_his_cirugias_deta.id_producto,'999999999999') AS idproducto, "+
-							"to_char(hscmty_his_cirugias_deta.cantidad_aplicada,'99999.99') AS cantidadaplicada, "+
-							"to_char(hscmty_productos.precio_producto_publico,'99999999.99') AS preciopublico,"+
-							"to_char(hscmty_productos.costo_por_unidad,'999999999.99') AS costoproductounitario, "+
-							"to_char(hscmty_productos.porcentage_ganancia,'99999.99') AS porcentageutilidad, "+
-							"to_char(hscmty_productos.costo_producto,'999999999.99') AS costoproducto, "+
-							"to_char(hscmty_his_cirugias_deta.fechahora_creacion,'dd-MM-yyyy HH:mi:ss') AS fechcreacion ,"+
-							"to_char(hscmty_his_cirugias_deta.id_secuencia,'9999999999') AS secuencia "+
+           		comando.CommandText = "SELECT descripcion_producto,osiris_his_tipo_admisiones.descripcion_admisiones, "+
+							"id_empleado,osiris_his_cirugias_deta.eliminado,osiris_productos.aplicar_iva,osiris_his_cirugias_deta.id_tipo_admisiones,  "+
+							"osiris_productos.descripcion_producto,descripcion_grupo_producto,osiris_productos.id_grupo_producto, "+
+							"to_char(osiris_his_tipo_cirugias.precio_de_venta,'999999999999') AS precioventa, "+
+							"to_char(osiris_his_cirugias_deta.id_producto,'999999999999') AS idproducto, "+
+							"to_char(osiris_his_cirugias_deta.cantidad_aplicada,'99999.99') AS cantidadaplicada, "+
+							"to_char(osiris_productos.precio_producto_publico,'99999999.99') AS preciopublico,"+
+							"to_char(osiris_productos.costo_por_unidad,'999999999.99') AS costoproductounitario, "+
+							"to_char(osiris_productos.porcentage_ganancia,'99999.99') AS porcentageutilidad, "+
+							"to_char(osiris_productos.costo_producto,'999999999.99') AS costoproducto, "+
+							"to_char(osiris_his_cirugias_deta.fechahora_creacion,'dd-MM-yyyy HH:mi:ss') AS fechcreacion ,"+
+							"to_char(osiris_his_cirugias_deta.id_secuencia,'9999999999') AS secuencia "+
 							"FROM "+
-							"hscmty_his_cirugias_deta,hscmty_productos,hscmty_his_tipo_cirugias,hscmty_his_tipo_admisiones,hscmty_grupo_producto "+
+							"osiris_his_cirugias_deta,osiris_productos,osiris_his_tipo_cirugias,osiris_his_tipo_admisiones,osiris_grupo_producto "+
 							"WHERE "+
-							"hscmty_his_cirugias_deta.id_producto = hscmty_productos.id_producto "+
-							"AND hscmty_productos.id_grupo_producto = hscmty_grupo_producto.id_grupo_producto "+
-							"AND hscmty_his_cirugias_deta.id_tipo_cirugia = hscmty_his_tipo_cirugias.id_tipo_cirugia "+
-							"AND hscmty_his_cirugias_deta.eliminado = false "+ 
-							"AND hscmty_his_cirugias_deta.id_tipo_admisiones = hscmty_his_tipo_admisiones.id_tipo_admisiones "+
-							"AND hscmty_his_cirugias_deta.id_tipo_cirugia = '"+id.ToString() +"' "+
-							"ORDER BY hscmty_his_cirugias_deta.id_tipo_admisiones,hscmty_productos.id_grupo_producto,hscmty_productos.descripcion_producto;";
+							"osiris_his_cirugias_deta.id_producto = osiris_productos.id_producto "+
+							"AND osiris_productos.id_grupo_producto = osiris_grupo_producto.id_grupo_producto "+
+							"AND osiris_his_cirugias_deta.id_tipo_cirugia = osiris_his_tipo_cirugias.id_tipo_cirugia "+
+							"AND osiris_his_cirugias_deta.eliminado = false "+ 
+							"AND osiris_his_cirugias_deta.id_tipo_admisiones = osiris_his_tipo_admisiones.id_tipo_admisiones "+
+							"AND osiris_his_cirugias_deta.id_tipo_cirugia = '"+id.ToString() +"' "+
+							"ORDER BY osiris_his_cirugias_deta.id_tipo_admisiones,osiris_productos.id_grupo_producto,osiris_productos.descripcion_producto;";
         	}else{
 	        	if(tiporeporte == "presupuestos")
 	        	{
 	        		comando.CommandText = "SELECT descripcion_producto,descripcion_admisiones, "+
-							"id_empleado,hscmty_his_presupuestos_deta.eliminado,hscmty_productos.aplicar_iva,hscmty_his_presupuestos_deta.id_tipo_admisiones,  "+
-							"hscmty_productos.descripcion_producto,descripcion_grupo_producto,hscmty_productos.id_grupo_producto, "+
-							"to_char(hscmty_his_presupuestos_enca.precio_convenido,'999999999999') AS precioventa, "+
-							"to_char(hscmty_his_presupuestos_deta.id_producto,'999999999999') AS idproducto, "+
-							"to_char(hscmty_his_presupuestos_deta.cantidad_aplicada,'99999.99') AS cantidadaplicada, "+
-							"to_char(hscmty_productos.precio_producto_publico,'99999999.99') AS preciopublico,"+
-							"to_char(hscmty_productos.costo_por_unidad,'999999999.99') AS costoproductounitario, "+
-							"to_char(hscmty_productos.porcentage_ganancia,'99999.99') AS porcentageutilidad, "+
-							"to_char(hscmty_productos.costo_producto,'999999999.99') AS costoproducto, "+
-							"to_char(hscmty_his_presupuestos_deta.fechahora_creacion,'dd-MM-yyyy HH:mi:ss') AS fechcreacion ,"+
-							"to_char(hscmty_his_presupuestos_deta.id_secuencia,'9999999999') AS secuencia "+
+							"id_empleado,osiris_his_presupuestos_deta.eliminado,osiris_productos.aplicar_iva,osiris_his_presupuestos_deta.id_tipo_admisiones,  "+
+							"osiris_productos.descripcion_producto,descripcion_grupo_producto,osiris_productos.id_grupo_producto, "+
+							"to_char(osiris_his_presupuestos_enca.precio_convenido,'999999999999') AS precioventa, "+
+							"to_char(osiris_his_presupuestos_deta.id_producto,'999999999999') AS idproducto, "+
+							"to_char(osiris_his_presupuestos_deta.cantidad_aplicada,'99999.99') AS cantidadaplicada, "+
+							"to_char(osiris_productos.precio_producto_publico,'99999999.99') AS preciopublico,"+
+							"to_char(osiris_productos.costo_por_unidad,'999999999.99') AS costoproductounitario, "+
+							"to_char(osiris_productos.porcentage_ganancia,'99999.99') AS porcentageutilidad, "+
+							"to_char(osiris_productos.costo_producto,'999999999.99') AS costoproducto, "+
+							"to_char(osiris_his_presupuestos_deta.fechahora_creacion,'dd-MM-yyyy HH:mi:ss') AS fechcreacion ,"+
+							"to_char(osiris_his_presupuestos_deta.id_secuencia,'9999999999') AS secuencia "+
 							"FROM "+
-							"hscmty_his_presupuestos_enca,hscmty_his_presupuestos_deta,hscmty_productos,hscmty_his_tipo_admisiones,hscmty_grupo_producto "+
+							"osiris_his_presupuestos_enca,osiris_his_presupuestos_deta,osiris_productos,osiris_his_tipo_admisiones,osiris_grupo_producto "+
 							"WHERE "+
-							"hscmty_his_presupuestos_deta.id_producto = hscmty_productos.id_producto "+
-							"AND hscmty_productos.id_grupo_producto = hscmty_grupo_producto.id_grupo_producto "+
-							"AND hscmty_his_presupuestos_enca.id_presupuesto = hscmty_his_presupuestos_deta.id_presupuesto "+
-							"AND hscmty_his_presupuestos_deta.eliminado = 'false' "+ 
-							"AND hscmty_his_presupuestos_deta.id_tipo_admisiones = hscmty_his_tipo_admisiones.id_tipo_admisiones "+
-							"AND hscmty_his_presupuestos_deta.id_presupuesto IN ('"+id.ToString()+"') "+							
-							"ORDER BY hscmty_his_presupuestos_deta.id_tipo_admisiones,hscmty_productos.id_grupo_producto,hscmty_productos.descripcion_producto;";
+							"osiris_his_presupuestos_deta.id_producto = osiris_productos.id_producto "+
+							"AND osiris_productos.id_grupo_producto = osiris_grupo_producto.id_grupo_producto "+
+							"AND osiris_his_presupuestos_enca.id_presupuesto = osiris_his_presupuestos_deta.id_presupuesto "+
+							"AND osiris_his_presupuestos_deta.eliminado = 'false' "+ 
+							"AND osiris_his_presupuestos_deta.id_tipo_admisiones = osiris_his_tipo_admisiones.id_tipo_admisiones "+
+							"AND osiris_his_presupuestos_deta.id_presupuesto IN ('"+id.ToString()+"') "+							
+							"ORDER BY osiris_his_presupuestos_deta.id_tipo_admisiones,osiris_productos.id_grupo_producto,osiris_productos.descripcion_producto;";
 	        	}
         	}	
         	
@@ -387,7 +388,7 @@ namespace osiris
 				subtotal = decimal.Parse((string) lector["preciopublico"])*cantaplicada;
 				
 				if((bool) lector["aplicar_iva"]== true){
-					ivaprod = (subtotal*15)/100;
+					ivaprod = (subtotal*valoriva)/100;
 					subt15 += subtotal;
 				}else{
 					subt0 += subtotal;
@@ -450,7 +451,7 @@ namespace osiris
 					subtotal = decimal.Parse((string) lector["preciopublico"]) * cantaplicada;
 					
 					if((bool) lector["aplicar_iva"]== true){
-						ivaprod = (subtotal*15)/100;
+						ivaprod = (subtotal*valoriva)/100;
 						subt15 += subtotal;
 					}else{
 						subt0 += subtotal;
@@ -560,8 +561,8 @@ namespace osiris
 	    			filas-=10;
 	    			salto_pagina(ContextoImp,trabajoImpresion,contador);
 					
-					ContextoImp.MoveTo(381.5, filas) ;		ContextoImp.Show("SUBTOTAL AL 15%"); 
-	    			ContextoImp.MoveTo(382, filas);			ContextoImp.Show("SUBTOTAL AL 15%");	
+					ContextoImp.MoveTo(381.5, filas) ;		ContextoImp.Show("SUBTOTAL AL "+valoriva.ToString().Trim()); 
+	    			ContextoImp.MoveTo(382, filas);			ContextoImp.Show("SUBTOTAL AL "+valoriva.ToString().Trim());	
 					ContextoImp.MoveTo(529.5, filas);		ContextoImp.Show(subt15.ToString("C")); 
 					ContextoImp.MoveTo(530, filas);			ContextoImp.Show(subt15.ToString("C")); 
 					contador+=1;
@@ -583,8 +584,8 @@ namespace osiris
 					ContextoImp.MoveTo(50.5,filas);			ContextoImp.Show("DEPOSITO MINIMO: "+(decimal.Parse(deposito_minimo)).ToString("C"));
 					ContextoImp.MoveTo(51,filas);			ContextoImp.Show("DEPOSITO MINIMO: "+(decimal.Parse(deposito_minimo)).ToString("C"));
 					Gnome.Print.Setfont (ContextoImp, fuente7);
-					ContextoImp.MoveTo(381.5, filas);		ContextoImp.Show("IVA AL 15%");
-					ContextoImp.MoveTo(382, filas);			ContextoImp.Show("IVA AL 15%");	
+					ContextoImp.MoveTo(381.5, filas);		ContextoImp.Show("IVA AL  "+valoriva.ToString().Trim());
+					ContextoImp.MoveTo(382, filas);			ContextoImp.Show("IVA AL  "+valoriva.ToString().Trim());	
 					ContextoImp.MoveTo(529.5, filas);		ContextoImp.Show(sumaiva.ToString("C")); 
 					ContextoImp.MoveTo(530, filas);			ContextoImp.Show(sumaiva.ToString("C")); 
 					contador+=1;

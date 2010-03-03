@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////
 // created on 08/02/2008 at 08:39 a
-// Hospital Santa Cecilia
+// Sistema Hospitalario OSIRIS
 // Monterrey - Mexico
 //
 // Autor    	: Ing. Daniel Olivares (Programacion)
@@ -42,24 +42,24 @@ namespace osiris
 	public class imprime_consumo_productos
 	{
 		// Declarando el treeview
-		public Gtk.TreeView lista_resumen_productos;
-		public Gtk.TreeStore treeViewEngineResumen;
+		Gtk.TreeView lista_resumen_productos;
+		Gtk.TreeStore treeViewEngineResumen;
 		
-		public string titulo = "REPORTE DE CONSUMO DE PRODUCTOS";
+		string titulo = "REPORTE DE CONSUMO DE PRODUCTOS";
 		
-		public int contador = 1;
-		public int numpage = 1;
-		public string ano_consumo = "";
+		int contador = 1;
+		int numpage = 1;
+		string ano_consumo = "";
 			
 		// Declarando variable de fuente para la impresion
-		public Gnome.Font fuente6 = Gnome.Font.FindClosest("Luxi Sans", 6);
-		public Gnome.Font fuente7 = Gnome.Font.FindClosest("Luxi Sans", 7);
-		public Gnome.Font fuente8 = Gnome.Font.FindClosest("Luxi Sans", 8);//Bitstream Vera Sans
-		public Gnome.Font fuente9 = Gnome.Font.FindClosest("Luxi Sans", 9);
-		public Gnome.Font fuente10 = Gnome.Font.FindClosest("Luxi Sans", 10);
-		public Gnome.Font fuente11 = Gnome.Font.FindClosest("Luxi Sans", 11);
-		public Gnome.Font fuente12 = Gnome.Font.FindClosest("Luxi Sans", 12);
-		public Gnome.Font fuente36 = Gnome.Font.FindClosest("Luxi Sans", 36);
+		Gnome.Font fuente6 = Gnome.Font.FindClosest("Luxi Sans", 6);
+		Gnome.Font fuente7 = Gnome.Font.FindClosest("Luxi Sans", 7);
+		Gnome.Font fuente8 = Gnome.Font.FindClosest("Luxi Sans", 8);//Bitstream Vera Sans
+		Gnome.Font fuente9 = Gnome.Font.FindClosest("Luxi Sans", 9);
+		Gnome.Font fuente10 = Gnome.Font.FindClosest("Luxi Sans", 10);
+		Gnome.Font fuente11 = Gnome.Font.FindClosest("Luxi Sans", 11);
+		Gnome.Font fuente12 = Gnome.Font.FindClosest("Luxi Sans", 12);
+		Gnome.Font fuente36 = Gnome.Font.FindClosest("Luxi Sans", 36);
 		
 		public imprime_consumo_productos(object _lista_resumen_productos_,object _treeViewEngineResumen_, string _ano_consumo_)
 		{
@@ -106,12 +106,12 @@ namespace osiris
 			// Cambiar la fuente
 			Gnome.Print.Setfont(ContextoImp,fuente6);
 			
-			ContextoImp.MoveTo(69.7,-30);			ContextoImp.Show("Hospital Santa Cecilia");//19.7, 770
-			ContextoImp.MoveTo(70, -30);			ContextoImp.Show("Hospital Santa Cecilia");
-			ContextoImp.MoveTo(69.7, -40);			ContextoImp.Show("Direccion: Isacc Garza #200 Ote. Centro Monterrey, NL.");
-			ContextoImp.MoveTo(70, -40);			ContextoImp.Show("Direccion: Isacc Garza #200 Ote. Centro Monterrey, NL.");
-			ContextoImp.MoveTo(69.7, -50);			ContextoImp.Show("Conmutador:(81) 81-25-56-10");
-			ContextoImp.MoveTo(70, -50);			ContextoImp.Show("Conmutador:(81) 81-25-56-10");
+			ContextoImp.MoveTo(69.7,-30);			ContextoImp.Show("Sistema Hospitalario OSIRIS");//19.7, 770
+			ContextoImp.MoveTo(70, -30);			ContextoImp.Show("Sistema Hospitalario OSIRIS");
+			ContextoImp.MoveTo(69.7, -40);			ContextoImp.Show("Direccion:");
+			ContextoImp.MoveTo(70, -40);			ContextoImp.Show("Direccion:");
+			ContextoImp.MoveTo(69.7, -50);			ContextoImp.Show("Conmutador:");
+			ContextoImp.MoveTo(70, -50);			ContextoImp.Show("Conmutador:");
 			
 			Gnome.Print.Setfont(ContextoImp,fuente11);
 			ContextoImp.MoveTo(319.7, -40);			ContextoImp.Show(titulo+" "+ano_consumo);
@@ -193,8 +193,7 @@ namespace osiris
 					//ContextoImp.MoveTo(1050, filas); ContextoImp.Show((string) lista_resumen_productos.Model.GetValue (iter,18));*/
 					filas -= 08;
 				}
-			}
-			
+			}			
 			ContextoImp.ShowPage();
 		}
 	}

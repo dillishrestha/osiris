@@ -219,7 +219,8 @@ namespace osiris
 		
 		void on_button_rpt_surtido_clicked(object sender, EventArgs args)
 		{
-			//new osiris.rpt_envio_almacen(this.nombrebd,this.idsubalmacen);
+			// rpt_envio_mat_almacenes.cs
+			new osiris.rpt_envio_almacen(this.nombrebd,this.idsubalmacen);
 		}
 		
 		void on_button_busca_producto_clicked(object sender, EventArgs args)

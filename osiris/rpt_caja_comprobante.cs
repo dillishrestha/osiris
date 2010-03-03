@@ -38,65 +38,56 @@ using GtkSharp;
 
 namespace osiris
 {
-	public class 	caja_comprobante
+	public class caja_comprobante
 	{
-		public string connectionString = "Server=localhost;" +
-        	    	                     "Port=5432;" +
-            	    	                 "User ID=admin;" +
-                	    	             "Password=1qaz2wsx;";
-        public string nombrebd;
-		public int PidPaciente = 0;
-		public int folioservicio = 0;
-		public string fecha_admision;
-		public string fechahora_alta;
-		public string nombre_paciente;
-		public string telefono_paciente;
-		public string doctor;
-		public string cirugia;
-		public string fecha_nacimiento;
-		public string edadpac;
-		public string tipo_paciente;
-		public int id_tipopaciente;
-		public string aseguradora;
-		public string dir_pac;
-		public string empresapac;
-		public bool apl_desc_siempre = true;
-		public bool apl_desc;
-		public string nombrecajero;
-		public string totalabonos;
+		string connectionString;
+        string nombrebd;
+		int PidPaciente = 0;
+		int folioservicio = 0;
+		string fecha_admision;
+		string fechahora_alta;
+		string nombre_paciente;
+		string telefono_paciente;
+		string doctor;
+		string cirugia;
+		string fecha_nacimiento;
+		string edadpac;
+		string tipo_paciente;
+		int id_tipopaciente;
+		string aseguradora;
+		string dir_pac;
+		string empresapac;
+		bool apl_desc_siempre = true;
+		bool apl_desc;
+		string nombrecajero;
+		string totalabonos;
+		float valoriva;
 		
-		
-		// traductor de numeros a letras
-		public string[] sUnidades = {"", "un", "dos", "tres", "cuatro", "cinco", "seis", "siete", "ocho", "nueve", "diez", 
-									"once", "doce", "trece", "catorce", "quince", "dieciseis", "diecisiete", "dieciocho", "diecinueve", "veinte", 
-									"veintiún", "veintidos", "veintitres", "veinticuatro", "veinticinco", "veintiseis", "veintisiete", "veintiocho", "veintinueve"};
- 		public string[] sDecenas = {"", "diez", "veinte", "treinta", "cuarenta", "cincuenta", "sesenta", "setenta", "ochenta", "noventa"};
- 		public string[] sCentenas = {"", "ciento", "doscientos", "trescientos", "cuatrocientos", "quinientos", "seiscientos", "setecientos", "ochocientos", "novecientos"};
-  		public string sResultado = "";				
-		public int filas=645;
-				
+		int filas=645;				
 				
 		// Declarando variable de fuente para la impresion
 		// Declaracion de fuentes tipo Bitstream Vera sans
-		public Gnome.Font fuente6 = Gnome.Font.FindClosest("Bitstream Vera Sans", 6);
-		public Gnome.Font fuente8 = Gnome.Font.FindClosest("Bitstream Vera Sans", 8);
-		public Gnome.Font fuente12 = Gnome.Font.FindClosest("Bitstream Vera Sans", 12);
-		public Gnome.Font fuente10 = Gnome.Font.FindClosest("Bitstream Vera Sans", 10);
-		public Gnome.Font fuente36 = Gnome.Font.FindClosest("Bitstream Vera Sans", 36);
-		public Gnome.Font fuente7 = Gnome.Font.FindClosest("Bitstream Vera Sans", 7);
-		public Gnome.Font fuente9 = Gnome.Font.FindClosest("Bitstream Vera Sans", 9);
+		Gnome.Font fuente6 = Gnome.Font.FindClosest("Bitstream Vera Sans", 6);
+		Gnome.Font fuente8 = Gnome.Font.FindClosest("Bitstream Vera Sans", 8);
+		Gnome.Font fuente12 = Gnome.Font.FindClosest("Bitstream Vera Sans", 12);
+		Gnome.Font fuente10 = Gnome.Font.FindClosest("Bitstream Vera Sans", 10);
+		Gnome.Font fuente36 = Gnome.Font.FindClosest("Bitstream Vera Sans", 36);
+		Gnome.Font fuente7 = Gnome.Font.FindClosest("Bitstream Vera Sans", 7);
+		Gnome.Font fuente9 = Gnome.Font.FindClosest("Bitstream Vera Sans", 9);
 				
 		//Declaracion de ventana de error
 		protected Gtk.Window MyWinError;
 		
-		public caja_comprobante ( int PidPaciente_ , int folioservicio_,string _nombrebd_ ,string entry_fecha_admision_,string entry_fechahora_alta_,
+		class_conexion conexion_a_DB = new class_conexion();
+		class_public classpublic = new class_public();
+		
+		public caja_comprobante ( int PidPaciente_ , int folioservicio_,string nombrebd_ ,string entry_fecha_admision_,string entry_fechahora_alta_,
 						string entry_numero_factura_,string entry_nombre_paciente_,string entry_telefono_paciente_,string entry_doctor_,
 						string entry_tipo_paciente_,string entry_aseguradora_,string edadpac_,string fecha_nacimiento_,string dir_pac_,
 						string cirugia_,string empresapac_, int idtipopaciente_, string nombrecajero_, string totalabonos_)
 		{
 			PidPaciente = PidPaciente_;//
 			folioservicio = folioservicio_;//
-			nombrebd = _nombrebd_;//
 			fecha_admision = entry_fecha_admision_;//
 			fechahora_alta = entry_fechahora_alta_;//
 			nombre_paciente = entry_nombre_paciente_;//
@@ -111,7 +102,10 @@ namespace osiris
 			dir_pac = dir_pac_;//
 			empresapac = empresapac_;//
 			nombrecajero = nombrecajero_;
-			totalabonos = totalabonos_;			
+			totalabonos = totalabonos_;
+			connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
+			nombrebd = conexion_a_DB._nombrebd;
+			valoriva = float.Parse(classpublic.ivaparaaplicar);	
 		
 			Gnome.PrintJob    trabajo   = new Gnome.PrintJob (PrintConfig.Default());
         	Gnome.PrintDialog dialogo   = new Gnome.PrintDialog (trabajo, "COMPROBANTE DE CAJA", 0);
@@ -175,29 +169,28 @@ namespace osiris
 			ContextoImp.MoveTo(396, 670);		ContextoImp.Show("Fecha Admision: ");			
 		}
     
-    void imprime_titulo(Gnome.PrintContext ContextoImp, Gnome.PrintJob trabajoImpresion, string descrp_admin)
-    {
-    	Gnome.Print.Setfont (ContextoImp, fuente9);
-		//LUGAR DE CARGO
-		ContextoImp.MoveTo(90.5, filas);		ContextoImp.Show("SERVICIO "+descrp_admin);//635
-		ContextoImp.MoveTo(91, filas);			ContextoImp.Show("SERVICIO "+descrp_admin);//635
-		filas+=20;
-	}
+    	void imprime_titulo(Gnome.PrintContext ContextoImp, Gnome.PrintJob trabajoImpresion, string descrp_admin)
+    	{
+    		Gnome.Print.Setfont (ContextoImp, fuente9);
+			//LUGAR DE CARGO
+			ContextoImp.MoveTo(90.5, filas);		ContextoImp.Show("SERVICIO "+descrp_admin);//635
+			ContextoImp.MoveTo(91, filas);			ContextoImp.Show("SERVICIO "+descrp_admin);//635
+			filas+=20;
+		}
 	
-	void imprime_subtitulo(Gnome.PrintContext ContextoImp, Gnome.PrintJob trabajoImpresion, string tipoproducto,float total)
-	{
-		Gnome.Print.Setfont (ContextoImp, fuente7);
-		if(tipoproducto.Length > 90)
+		void imprime_subtitulo(Gnome.PrintContext ContextoImp, Gnome.PrintJob trabajoImpresion, string tipoproducto,float total)
 		{
-			ContextoImp.MoveTo(100.5, filas);	ContextoImp.Show(tipoproducto.Substring(0,90)); 
-			ContextoImp.MoveTo(515, filas);		ContextoImp.Show(total.ToString("C"));
-		}else{
-			ContextoImp.MoveTo(101, filas);		ContextoImp.Show(tipoproducto.ToString());
-			ContextoImp.MoveTo(515, filas);		ContextoImp.Show(total.ToString("C"));
-		} 
-		filas-=15;
-		Gnome.Print.Setfont (ContextoImp, fuente9);
-    }
+			Gnome.Print.Setfont (ContextoImp, fuente7);
+			if(tipoproducto.Length > 90){
+				ContextoImp.MoveTo(100.5, filas);	ContextoImp.Show(tipoproducto.Substring(0,90)); 
+				ContextoImp.MoveTo(515, filas);		ContextoImp.Show(total.ToString("C"));
+			}else{
+				ContextoImp.MoveTo(101, filas);		ContextoImp.Show(tipoproducto.ToString());
+				ContextoImp.MoveTo(515, filas);		ContextoImp.Show(total.ToString("C"));
+			} 
+			filas-=15;
+			Gnome.Print.Setfont (ContextoImp, fuente9);
+    	}
 	
 	void ComponerPagina (Gnome.PrintContext ContextoImp, Gnome.PrintJob trabajoImpresion)
 	{
@@ -213,34 +206,34 @@ namespace osiris
 	        	NpgsqlCommand comando; 
 	        	comando = conexion.CreateCommand (); 
 	           	comando.CommandText ="SELECT "+
-						"hscmty_erp_cobros_deta.folio_de_servicio,hscmty_erp_cobros_deta.pid_paciente, "+ 
-						"hscmty_his_tipo_admisiones.descripcion_admisiones,aplicar_iva, "+
-						"hscmty_his_tipo_admisiones.id_tipo_admisiones AS idadmisiones,"+
-						"hscmty_grupo_producto.descripcion_grupo_producto, "+
-						"hscmty_productos.id_grupo_producto,  "+
-						"to_char(hscmty_erp_cobros_deta.porcentage_descuento,999.99) AS porcdesc, "+
-						"to_char(hscmty_erp_cobros_deta.fechahora_creacion,'dd-mm-yyyy') AS fechcreacion,  "+
-						"to_char(hscmty_erp_cobros_deta.fechahora_creacion,'HH:mm') AS horacreacion,  "+
-						"to_char(hscmty_erp_cobros_deta.id_producto,'999999999999') AS idproducto,descripcion_producto, "+
-						"to_char(hscmty_erp_cobros_deta.cantidad_aplicada,'99999999.99') AS cantidadaplicada, "+
-						"to_char(hscmty_erp_cobros_deta.precio_producto,'9999999.99') AS preciounitario, "+
-						"ltrim(to_char(hscmty_erp_cobros_deta.precio_producto,'9999999.99')) AS preciounitarioprod, "+
-						"to_char(hscmty_erp_cobros_deta.iva_producto,'999999.99') AS ivaproducto, "+
-						//"to_char(hscmty_erp_cobros_deta.precio_por_cantidad,'999999.99') AS ppcantidad, "+
-						"to_char(hscmty_erp_cobros_deta.cantidad_aplicada * hscmty_erp_cobros_deta.precio_producto,'99999999.99') AS ppcantidad,"+
-						"to_char(hscmty_productos.precio_producto_publico,'999999999.99999') AS preciopublico "+
+						"osiris_erp_cobros_deta.folio_de_servicio,osiris_erp_cobros_deta.pid_paciente, "+ 
+						"osiris_his_tipo_admisiones.descripcion_admisiones,aplicar_iva, "+
+						"osiris_his_tipo_admisiones.id_tipo_admisiones AS idadmisiones,"+
+						"osiris_grupo_producto.descripcion_grupo_producto, "+
+						"osiris_productos.id_grupo_producto,  "+
+						"to_char(osiris_erp_cobros_deta.porcentage_descuento,'999.99') AS porcdesc, "+
+						"to_char(osiris_erp_cobros_deta.fechahora_creacion,'dd-mm-yyyy') AS fechcreacion,  "+
+						"to_char(osiris_erp_cobros_deta.fechahora_creacion,'HH:mm') AS horacreacion,  "+
+						"to_char(osiris_erp_cobros_deta.id_producto,'999999999999') AS idproducto,descripcion_producto, "+
+						"to_char(osiris_erp_cobros_deta.cantidad_aplicada,'99999999.99') AS cantidadaplicada, "+
+						"to_char(osiris_erp_cobros_deta.precio_producto,'9999999.99') AS preciounitario, "+
+						"ltrim(to_char(osiris_erp_cobros_deta.precio_producto,'9999999.99')) AS preciounitarioprod, "+
+						"to_char(osiris_erp_cobros_deta.iva_producto,'999999.99') AS ivaproducto, "+
+						//"to_char(osiris_erp_cobros_deta.precio_por_cantidad,'999999.99') AS ppcantidad, "+
+						"to_char(osiris_erp_cobros_deta.cantidad_aplicada * osiris_erp_cobros_deta.precio_producto,'99999999.99') AS ppcantidad,"+
+						"to_char(osiris_productos.precio_producto_publico,'999999999.99999') AS preciopublico "+
 						"FROM "+ 
-						"hscmty_erp_cobros_deta,hscmty_his_tipo_admisiones,hscmty_productos,hscmty_grupo_producto "+
+						"osiris_erp_cobros_deta,osiris_his_tipo_admisiones,osiris_productos,osiris_grupo_producto "+
 						"WHERE "+
-						"hscmty_erp_cobros_deta.id_tipo_admisiones = hscmty_his_tipo_admisiones.id_tipo_admisiones "+
-						"AND hscmty_erp_cobros_deta.id_producto = hscmty_productos.id_producto  "+ 
-						"AND hscmty_productos.id_grupo_producto = hscmty_grupo_producto.id_grupo_producto "+
-						"AND hscmty_erp_cobros_deta.folio_de_servicio = '"+folioservicio.ToString()+"' "+
-			        	"AND hscmty_erp_cobros_deta.eliminado = 'false' "+
-			        	" ORDER BY  hscmty_erp_cobros_deta.id_tipo_admisiones ASC, hscmty_productos.id_grupo_producto;";
-	        			//"AND to_char(hscmty_erp_movcargos.fechahora_admision_registro,'dd') >= '"+DateTime.Now.ToString("dd")+"'  AND to_char(hscmty_erp_movcargos.fechahora_admision_registro,'dd') <= '"+DateTime.Now.ToString("dd")+"' "+
-						//"AND to_char(hscmty_erp_movcargos.fechahora_admision_registro,'MM') >= '"+DateTime.Now.ToString("MM")+"' AND to_char(hscmty_erp_movcargos.fechahora_admision_registro,'MM') <= '"+DateTime.Now.ToString("MM")+"' "+
-						//"AND to_char(hscmty_erp_movcargos.fechahora_admision_registro,'yyyy') >= '"+DateTime.Now.ToString("yyyy")+"' AND to_char(hscmty_erp_movcargos.fechahora_admision_registro,'yyyy') <= '"+DateTime.Now.ToString("yyyy")+"' " ;
+						"osiris_erp_cobros_deta.id_tipo_admisiones = osiris_his_tipo_admisiones.id_tipo_admisiones "+
+						"AND osiris_erp_cobros_deta.id_producto = osiris_productos.id_producto  "+ 
+						"AND osiris_productos.id_grupo_producto = osiris_grupo_producto.id_grupo_producto "+
+						"AND osiris_erp_cobros_deta.folio_de_servicio = '"+folioservicio.ToString()+"' "+
+			        	"AND osiris_erp_cobros_deta.eliminado = 'false' "+
+			        	" ORDER BY  osiris_erp_cobros_deta.id_tipo_admisiones ASC, osiris_productos.id_grupo_producto;";
+	        			//"AND to_char(osiris_erp_movcargos.fechahora_admision_registro,'dd') >= '"+DateTime.Now.ToString("dd")+"'  AND to_char(osiris_erp_movcargos.fechahora_admision_registro,'dd') <= '"+DateTime.Now.ToString("dd")+"' "+
+						//"AND to_char(osiris_erp_movcargos.fechahora_admision_registro,'MM') >= '"+DateTime.Now.ToString("MM")+"' AND to_char(osiris_erp_movcargos.fechahora_admision_registro,'MM') <= '"+DateTime.Now.ToString("MM")+"' "+
+						//"AND to_char(osiris_erp_movcargos.fechahora_admision_registro,'yyyy') >= '"+DateTime.Now.ToString("yyyy")+"' AND to_char(osiris_erp_movcargos.fechahora_admision_registro,'yyyy') <= '"+DateTime.Now.ToString("yyyy")+"' " ;
 	        	
 	        	//Console.WriteLine("query caja "+comando.CommandText.ToString());
 				
@@ -288,7 +281,7 @@ namespace osiris
 					//ivaprod = float.Parse((string) lector["ivaproducto"], System.Globalization.NumberStyles.Float, new System.Globalization.CultureInfo( "es-MX" ));
 					porcentajedes =  float.Parse((string) lector["porcdesc"], System.Globalization.NumberStyles.Float, new System.Globalization.CultureInfo( "es-MX" ));
 					if((bool) lector["aplicar_iva"]== true){
-						ivaprod = (subtotal*15)/100;
+						ivaprod = (subtotal * valoriva)/100;
 						subt15 += subtotal;
 					}else{
 						subt0 += subtotal;
@@ -298,7 +291,7 @@ namespace osiris
 					total = subtotal + ivaprod;
 					if(apl_desc == true && apl_desc_siempre == true && porcentajedes > 0.00){
 						descsiniva = (subtotal*(porcentajedes/100));
-						ivadedesc =descsiniva*15/100;
+						ivadedesc = (descsiniva * valoriva) / 100;
 						descuento = descsiniva+ivadedesc;
 						//Console.WriteLine(descuento.ToString("C"));
 	        		}else{
@@ -358,7 +351,7 @@ namespace osiris
 							//ivaprod = float.Parse((string) lector["ivaproducto"], System.Globalization.NumberStyles.Float, new System.Globalization.CultureInfo( "es-MX" ));
 							porcentajedes =  float.Parse((string) lector["porcdesc"], System.Globalization.NumberStyles.Float, new System.Globalization.CultureInfo( "es-MX" ));
 							if((bool) lector["aplicar_iva"]== true){
-								ivaprod = (subtotal*15)/100;
+								ivaprod = (subtotal * valoriva)/100;
 								subt15 += subtotal;
 							}else{
 								subt0 += subtotal;
@@ -369,7 +362,7 @@ namespace osiris
 							sumadesc = 0;
 							if(apl_desc == true && apl_desc_siempre == true && porcentajedes > 0.00){
 								descsiniva = (subtotal*(porcentajedes/100));
-								ivadedesc =descsiniva*15/100;
+								ivadedesc =descsiniva * valoriva/100;
 								descuento = descsiniva+ivadedesc;
 								//Console.WriteLine(descuento.ToString("C"));
 			        		}else{
@@ -410,7 +403,7 @@ namespace osiris
 							//ivaprod = float.Parse((string) lector["ivaproducto"], System.Globalization.NumberStyles.Float, new System.Globalization.CultureInfo( "es-MX" ));
 							porcentajedes =  float.Parse((string) lector["porcdesc"], System.Globalization.NumberStyles.Float, new System.Globalization.CultureInfo( "es-MX" ));
 							if((bool) lector["aplicar_iva"]== true){
-								ivaprod = (subtotal*15)/100;
+								ivaprod = (subtotal * valoriva)/100;
 								subt15 += subtotal;
 							}else{
 								subt0 += subtotal;
@@ -420,7 +413,7 @@ namespace osiris
 							total = subtotal + ivaprod;
 							if(apl_desc == true && apl_desc_siempre == true && porcentajedes > 0.00){
 								descsiniva = (subtotal*(porcentajedes/100));
-								ivadedesc =descsiniva*15/100;
+								ivadedesc = (descsiniva * valoriva) /100;
 								descuento = descsiniva+ivadedesc;
 								//Console.WriteLine(descuento.ToString("C"));
 			        		}else{
@@ -469,7 +462,7 @@ namespace osiris
         			ContextoImp.MoveTo(514.7, filas);			ContextoImp.Show(totaladm.ToString("C").PadLeft(10));
         			ContextoImp.MoveTo(515, filas);				ContextoImp.Show(totaladm.ToString("C").PadLeft(10));
         			
-        			ContextoImp.MoveTo(110, 475);				ContextoImp.Show(traduce_numeros(apagar.ToString("F")));
+        			ContextoImp.MoveTo(110, 475);				ContextoImp.Show(classpublic.ConvertirCadena(apagar.ToString("F"),"Peso"));
         			ContextoImp.MoveTo(90.5, 515);				ContextoImp.Show("Total descuento");
         			ContextoImp.MoveTo(515.7, 515);				ContextoImp.Show(totaldesc.ToString("C").PadLeft(10)+" -");
 		       		
@@ -503,154 +496,5 @@ namespace osiris
 		}
 	}
 	
-	public string traduce_numeros (string sNumero) {
-			double dNumero;
-			double dNumAux = 0;
-			char x;
-			string sAux;
-			
-			sResultado = " ";
-			try {
-				dNumero = Convert.ToDouble (sNumero);
-			}
-			catch {				
-				return "";
-			}
- 
-			if (dNumero > 999999999999)
-				return "";
- 
-			if (dNumero > 999999999) {
-				dNumAux = dNumero % 1000000000000;
-				sResultado += Numeros (dNumAux, 1000000000) + " mil ";
-			}
- 
-			if (dNumero > 999999) {
-				dNumAux = dNumero % 1000000000;
-				sResultado += Numeros (dNumAux, 1000000) + " millones ";
-			}
- 
-			if (dNumero > 999) {
-				dNumAux = dNumero % 1000000;
-				sResultado += Numeros (dNumAux, 1000) + " mil ";
-			}
- 
-			dNumAux = dNumero % 1000;	
-			sResultado += Numeros (dNumAux, 1);
-  
-			//Enseguida verificamos si contiene punto, si es así, los convertimos a texto.
-			sAux = dNumero.ToString();
- 
-			if (sAux.IndexOf(".") >= 0)
-				sResultado += ObtenerDecimales (sNumero);
-			//Las siguientes líneas convierten el primer caracter a mayúscula.
-			sAux = sResultado;
-			x = char.ToUpper (sResultado[1]);
-			sResultado = x.ToString ();
- 
-			for (int i = 2; i<sAux.Length; i++)
-				sResultado += sAux[i].ToString();
- 
-			return sResultado;
-		}
-		 
-		public string ConvertirCadena (double dNumero) {
-			double dNumAux = 0;
-			char x;
-			string sAux;
-			 
-			sResultado = " ";
- 
-			if (dNumero > 999999999999)
-				return "";
- 
-			if (dNumero > 999999999) {
-				dNumAux = dNumero % 1000000000000;
-				sResultado += Numeros (dNumAux, 1000000000) + " mil ";
-			}
- 
-			if (dNumero > 999999) {
-				dNumAux = dNumero % 1000000000;
-				sResultado += Numeros (dNumAux, 1000000) + " millones ";
-			}
- 
-			if (dNumero > 999) {
-				dNumAux = dNumero % 1000000;
-				sResultado += Numeros (dNumAux, 1000) + " mil ";
-			}
- 
-			dNumAux = dNumero % 1000;	
-			sResultado += Numeros (dNumAux, 1);
- 
- 
-			//Enseguida verificamos si contiene punto, si es así, los convertimos a texto.
-			sAux = dNumero.ToString();
- 
-			if (sAux.IndexOf(".") >= 0)
-				sResultado += ObtenerDecimales (sAux);
- 
-			//Las siguientes líneas convierten el primer caracter a mayúscula.
-			sAux = sResultado;
-			x = char.ToUpper (sResultado[1]);
-			sResultado = x.ToString ();
- 
-			for (int i = 2; i<sAux.Length; i++)
-				sResultado += sAux[i].ToString();
- 
-			return sResultado;
-		}
- 
-		private string Numeros (double dNumAux, double dFactor) {
-			double dCociente = dNumAux / dFactor;
-			double dNumero = 0;
-			int iNumero = 0;
-			string sNumero = "";
-			string sTexto = "";
- 
-			if (dCociente >= 100){
-				dNumero = dCociente / 100;
-				sNumero = dNumero.ToString();
-				iNumero = int.Parse (sNumero[0].ToString());
-				sTexto  +=  this.sCentenas [iNumero] + " ";
-			}
- 
-			dCociente = dCociente % 100;
-			if (dCociente >= 30){
-				dNumero = dCociente / 10;			
-				sNumero = dNumero.ToString();
-				iNumero = int.Parse (sNumero[0].ToString());
-				if (iNumero > 0)
-					sTexto  += this.sDecenas [iNumero] + " ";
- 
-				dNumero = dCociente % 10;
-				sNumero = dNumero.ToString();
-				iNumero = int.Parse (sNumero[0].ToString());
-				if (iNumero > 0)
-					sTexto  += "y " + this.sUnidades [iNumero] + " ";
-			}else{
-				dNumero = dCociente;	
-				sNumero = dNumero.ToString();
-				if (sNumero.Length > 1)
-					if (sNumero[1] != '.')
-						iNumero = int.Parse (sNumero[0].ToString() + sNumero[1].ToString());
-					else
-						iNumero = int.Parse (sNumero[0].ToString());
-				else
-					iNumero = int.Parse (sNumero[0].ToString());
-				sTexto  += this.sUnidades[iNumero] + " ";
-			}
-			return sTexto;
-		}		
-
-		private string ObtenerDecimales (string sNumero) {
-			string[] sNumPuntos;
-			string sTexto = "";
-			double dNumero = 0;
-			sNumPuntos = sNumero.Split('.');
-    		dNumero = Convert.ToDouble(sNumPuntos[1]);
-			sTexto = "peso "+dNumero.ToString().Trim()+"/100 M.N."; 
-			//sTexto = "peso con " + Numeros(dNumero,1);
-			return sTexto;
-		}
- }    
+	}    
 }

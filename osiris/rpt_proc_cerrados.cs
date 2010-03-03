@@ -37,53 +37,52 @@ using Npgsql;
 using System.Data;
 using Glade;
 using System.Collections;
-using GtkSharp;
 
 namespace osiris
 {
 	public class reporte_porcedimientos_cerrados
 	{
-		public string connectionString = "Server=localhost;" +
-        	    	                     "Port=5432;" +
-            	    	                 "User ID=admin;" +
-                	    	             "Password=1qaz2wsx;";
-        public string nombrebd;
-		public string LoginEmpleado;
-		public string NomEmpleado;
-		public string AppEmpleado;
-		public string ApmEmpleado;
-		public string tiporeporte = "CERRADOS";
-		public string titulo = "REPORTE DE PROCEDIMIENTOS CERRADOS";
+		string connectionString;
+        string nombrebd;
+		string LoginEmpleado;
+		string NomEmpleado;
+		string AppEmpleado;
+		string ApmEmpleado;
+		string tiporeporte = "CERRADOS";
+		string titulo = "REPORTE DE PROCEDIMIENTOS CERRADOS";
 		
-		public int columna = 0;
-		public int fila = -70;
-		public int contador = 1;
-		public int numpage = 1;
+		int columna = 0;
+		int fila = -70;
+		int contador = 1;
+		int numpage = 1;
 		
-		public string query_fechas = " ";
-		public string query_cliente = " ";
-		public string orden = " ";
-		public string rango1 = "";
-		public string rango2 = "";
+		string query_fechas = " ";
+		string query_cliente = " ";
+		string orden = " ";
+		string rango1 = "";
+		string rango2 = "";
 				
 		// Declarando variable de fuente para la impresion
 		// Declaracion de fuentes tipo Bitstream Vera sans
-		public Gnome.Font fuente6 = Gnome.Font.FindClosest("Bitstream Vera Sans", 6);
-		public Gnome.Font fuente7 = Gnome.Font.FindClosest("Bitstream Vera Sans", 7);
-		public Gnome.Font fuente8 = Gnome.Font.FindClosest("Bitstream Vera Sans", 8);
-		public Gnome.Font fuente9 = Gnome.Font.FindClosest("Bitstream Vera Sans", 9);
-		public Gnome.Font fuente10 = Gnome.Font.FindClosest("Bitstream Vera Sans", 10);
-		public Gnome.Font fuente11 = Gnome.Font.FindClosest("Bitstream Vera Sans", 11);
-		public Gnome.Font fuente12 = Gnome.Font.FindClosest("Bitstream Vera Sans", 12);
-		public Gnome.Font fuente36 = Gnome.Font.FindClosest("Bitstream Vera Sans", 36);
+		Gnome.Font fuente6 = Gnome.Font.FindClosest("Bitstream Vera Sans", 6);
+		Gnome.Font fuente7 = Gnome.Font.FindClosest("Bitstream Vera Sans", 7);
+		Gnome.Font fuente8 = Gnome.Font.FindClosest("Bitstream Vera Sans", 8);
+		Gnome.Font fuente9 = Gnome.Font.FindClosest("Bitstream Vera Sans", 9);
+		Gnome.Font fuente10 = Gnome.Font.FindClosest("Bitstream Vera Sans", 10);
+		Gnome.Font fuente11 = Gnome.Font.FindClosest("Bitstream Vera Sans", 11);
+		Gnome.Font fuente12 = Gnome.Font.FindClosest("Bitstream Vera Sans", 12);
+		Gnome.Font fuente36 = Gnome.Font.FindClosest("Bitstream Vera Sans", 36);
 		
 		//Declaracion de ventana de error
 		protected Gtk.Window MyWinError;
 		
-		public reporte_porcedimientos_cerrados (string rango1_,string rango2_,string query_fechas_,string _nombrebd_,string LoginEmpleado_,string NomEmpleado_,
+		class_conexion conexion_a_DB = new class_conexion();
+		
+		public reporte_porcedimientos_cerrados (string rango1_,string rango2_,string query_fechas_,string nombrebd_,string LoginEmpleado_,string NomEmpleado_,
 												string AppEmpleado_,string ApmEmpleado_,string tiporeporte_,string orden_,string query_cliente_)
 		{
-			nombrebd = _nombrebd_;
+			connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
+			nombrebd = conexion_a_DB._nombrebd;
 			LoginEmpleado = LoginEmpleado_;
 			NomEmpleado = NomEmpleado_;
 			AppEmpleado = AppEmpleado_;
@@ -149,33 +148,33 @@ namespace osiris
                	
 				// asigna el numero de folio de ingreso de paciente (FOLIO)
 	
-				comando.CommandText ="SELECT DISTINCT(hscmty_erp_movcargos.folio_de_servicio),to_char(hscmty_erp_movcargos.folio_de_servicio,'9999999999') AS foliodeatencion, "+
-								"hscmty_erp_cobros_enca.pid_paciente,cerrado, alta_paciente, "+
+				comando.CommandText ="SELECT DISTINCT(osiris_erp_movcargos.folio_de_servicio),to_char(osiris_erp_movcargos.folio_de_servicio,'9999999999') AS foliodeatencion, "+
+								"osiris_erp_cobros_enca.pid_paciente,cerrado, alta_paciente, "+
 				            	"nombre1_paciente || ' ' || nombre2_paciente || ' ' || apellido_paterno_paciente || ' ' || apellido_materno_paciente AS nombre_completo,"+
-				            	"hscmty_empresas.descripcion_empresa,"+
-				            	"to_char(hscmty_erp_cobros_enca.fechahora_creacion,'dd-MM-yyyy HH24:mm') AS fecha_ingreso,"+
-				            	"to_char(hscmty_erp_cobros_enca.fecha_alta_paciente,'dd-MM-yyyy HH24:mm') AS fecha_egreso,"+
-				            	"to_char(hscmty_erp_cobros_enca.fechahora_cerrado,'dd-MM-yyyy HH24:mm') AS fechahoracerrado,"+
-				            	"hscmty_erp_movcargos.id_tipo_paciente AS idtipopaciente, "+
+				            	"osiris_empresas.descripcion_empresa,"+
+				            	"to_char(osiris_erp_cobros_enca.fechahora_creacion,'dd-MM-yyyy HH24:mm') AS fecha_ingreso,"+
+				            	"to_char(osiris_erp_cobros_enca.fecha_alta_paciente,'dd-MM-yyyy HH24:mm') AS fecha_egreso,"+
+				            	"to_char(osiris_erp_cobros_enca.fechahora_cerrado,'dd-MM-yyyy HH24:mm') AS fechahoracerrado,"+
+				            	"osiris_erp_movcargos.id_tipo_paciente AS idtipopaciente, "+
 				            	"descripcion_tipo_paciente,"+
-            					"hscmty_erp_cobros_enca.id_aseguradora,descripcion_aseguradora,"+
-				            	"to_char(hscmty_erp_cobros_enca.total_procedimiento + hscmty_erp_cobros_enca.honorario_medico,'999999999.99') AS totalprocedimiento,"+
-				            	"to_char(hscmty_erp_cobros_enca.contador_cerrados,'9999999') AS contadorcerrado "+
+            					"osiris_erp_cobros_enca.id_aseguradora,descripcion_aseguradora,"+
+				            	"to_char(osiris_erp_cobros_enca.total_procedimiento + osiris_erp_cobros_enca.honorario_medico,'999999999.99') AS totalprocedimiento,"+
+				            	"to_char(osiris_erp_cobros_enca.contador_cerrados,'9999999') AS contadorcerrado "+
 				            	"FROM "+ 
-				            	"hscmty_erp_cobros_enca,hscmty_his_paciente,hscmty_erp_movcargos,hscmty_his_tipo_pacientes, "+
-				            	"hscmty_aseguradoras,hscmty_empresas "+
+				            	"osiris_erp_cobros_enca,osiris_his_paciente,osiris_erp_movcargos,osiris_his_tipo_pacientes, "+
+				            	"osiris_aseguradoras,osiris_empresas "+
 				            	"WHERE "+
-				            	"hscmty_erp_cobros_enca.pid_paciente = hscmty_his_paciente.pid_paciente "+
-				            	"AND hscmty_erp_movcargos.folio_de_servicio = hscmty_erp_cobros_enca.folio_de_servicio "+
-				            	"AND hscmty_erp_cobros_enca.id_aseguradora = hscmty_aseguradoras.id_aseguradora "+ 
-								"AND hscmty_erp_movcargos.id_tipo_paciente = hscmty_his_tipo_pacientes.id_tipo_paciente "+
-								"AND hscmty_his_paciente.id_empresa = hscmty_empresas.id_empresa "+ 
+				            	"osiris_erp_cobros_enca.pid_paciente = osiris_his_paciente.pid_paciente "+
+				            	"AND osiris_erp_movcargos.folio_de_servicio = osiris_erp_cobros_enca.folio_de_servicio "+
+				            	"AND osiris_erp_cobros_enca.id_aseguradora = osiris_aseguradoras.id_aseguradora "+ 
+								"AND osiris_erp_movcargos.id_tipo_paciente = osiris_his_tipo_pacientes.id_tipo_paciente "+
+								"AND osiris_his_paciente.id_empresa = osiris_empresas.id_empresa "+ 
 								" "+query_fechas+" "+
-								"AND hscmty_erp_cobros_enca.reservacion = 'false' "+
-								"AND hscmty_erp_cobros_enca.cerrado = 'true' "+
-								"AND hscmty_erp_cobros_enca.cancelado = 'false' "+
-								"AND hscmty_erp_movcargos.id_tipo_admisiones > '16' "+
-								"AND hscmty_erp_cobros_enca.id_aseguradora != '17'; ";
+								"AND osiris_erp_cobros_enca.reservacion = 'false' "+
+								"AND osiris_erp_cobros_enca.cerrado = 'true' "+
+								"AND osiris_erp_cobros_enca.cancelado = 'false' "+
+								"AND osiris_erp_movcargos.id_tipo_admisiones > '16' "+
+								"AND osiris_erp_cobros_enca.id_aseguradora != '17'; ";
 								
 				Console.WriteLine(comando.CommandText.ToString());				
 				NpgsqlDataReader lector = comando.ExecuteReader ();
@@ -308,26 +307,6 @@ namespace osiris
 			//imprimo el titulo
 			imprime_titulo(ContextoImp,trabajoImpresion,cliente);
 			
-			/////////DIBUJANDO LA TABLA/////////
-			Gnome.Print.Setfont (ContextoImp, fuente36);
-			ContextoImp.MoveTo(68, -55);			ContextoImp.Show("_____________________________________");
-			ContextoImp.MoveTo(68, -575);			ContextoImp.Show("_____________________________________");
-			Gnome.Print.Setfont (ContextoImp, fuente11);
-			if(tiporeporte == "CERRADOS")
-			{
-				int filal = -66;
-				for (int i1=0; i1 < 52; i1++)//30 veces para tamaño carta
-				{
-					ContextoImp.MoveTo(119.5,filal);				ContextoImp.Show("| ");
-					ContextoImp.MoveTo(309.5,filal);				ContextoImp.Show("|	");
-					ContextoImp.MoveTo(379.5,filal);				ContextoImp.Show("|	");
-					ContextoImp.MoveTo(539.5,filal);				ContextoImp.Show("|	");  
-					ContextoImp.MoveTo(604.5,filal);				ContextoImp.Show("|	");
-					ContextoImp.MoveTo(679.5,filal);				ContextoImp.Show("|	");
-					ContextoImp.MoveTo(744.5,filal);				ContextoImp.Show("|	");
-					filal-=10;
-				}
-			}
 			Gnome.Print.Setfont (ContextoImp, fuente36);
 			ContextoImp.Rotate(270);
 			ContextoImp.MoveTo(56, 810);			ContextoImp.Show("__________________________");
@@ -339,18 +318,18 @@ namespace osiris
 		
 		void genera_columnas(Gnome.PrintContext ContextoImp, Gnome.PrintJob trabajoImpresion)
 		{
-			Gnome.Print.Setfont (ContextoImp, fuente12);			
-			ContextoImp.MoveTo(111,fila);					ContextoImp.Show("|	");
-			ContextoImp.MoveTo(156.5,fila);					ContextoImp.Show("|	");
-			ContextoImp.MoveTo(190,fila);					ContextoImp.Show("|	");
-			ContextoImp.MoveTo(360,fila);					ContextoImp.Show("|	");	
-			ContextoImp.MoveTo(425,fila);					ContextoImp.Show("|	");
-			ContextoImp.MoveTo(490,fila);					ContextoImp.Show("| ");
-			ContextoImp.MoveTo(555,fila);					ContextoImp.Show("|	");
-			ContextoImp.MoveTo(620,fila);					ContextoImp.Show("|	");
-			ContextoImp.MoveTo(685,fila);					ContextoImp.Show("|	");
-			ContextoImp.MoveTo(750,fila);					ContextoImp.Show("|	");
-			Gnome.Print.Setfont (ContextoImp, fuente7);
+			//Gnome.Print.Setfont (ContextoImp, fuente12);			
+			//ContextoImp.MoveTo(111,fila);					ContextoImp.Show("|	");
+			//ContextoImp.MoveTo(156.5,fila);					ContextoImp.Show("|	");
+			//ContextoImp.MoveTo(190,fila);					ContextoImp.Show("|	");
+			//ContextoImp.MoveTo(360,fila);					ContextoImp.Show("|	");	
+			//ContextoImp.MoveTo(425,fila);					ContextoImp.Show("|	");
+			//ContextoImp.MoveTo(490,fila);					ContextoImp.Show("| ");
+			//ContextoImp.MoveTo(555,fila);					ContextoImp.Show("|	");
+			//ContextoImp.MoveTo(620,fila);					ContextoImp.Show("|	");
+			//ContextoImp.MoveTo(685,fila);					ContextoImp.Show("|	");
+			//ContextoImp.MoveTo(750,fila);					ContextoImp.Show("|	");
+			//Gnome.Print.Setfont (ContextoImp, fuente7);
 		}
 		
 		void imprime_titulo(Gnome.PrintContext ContextoImp, Gnome.PrintJob trabajoImpresion,string cliente)
@@ -360,20 +339,20 @@ namespace osiris
 				Gnome.Print.Setfont(ContextoImp,fuente7);
 				ContextoImp.MoveTo(70.7, -65);					ContextoImp.Show("Nº ATENCION"); //| Fecha | Nº Atencion | Paciente | SubTotal al 15 | SubTotal al 0 | IVA | SubTotal Deducible | Coaseguro | Total | Hono. Medico");
 				ContextoImp.MoveTo(71, -65);					ContextoImp.Show("Nº ATENCION");
-				ContextoImp.MoveTo(119.7,-65);					ContextoImp.Show("| PACIENTE");
-				ContextoImp.MoveTo(120,-65);					ContextoImp.Show("|	PACIENTE");//80,-70
-				ContextoImp.MoveTo(309.7,-65);					ContextoImp.Show("|	TIPO ");
-				ContextoImp.MoveTo(310,-65);					ContextoImp.Show("|	TIPO ");//120,-70
-				ContextoImp.MoveTo(379.7,-65);					ContextoImp.Show("|	EMPRESA");
-				ContextoImp.MoveTo(380,-65);					ContextoImp.Show("|	EMPRESA");//170,-70
-				ContextoImp.MoveTo(539.7,-65);					ContextoImp.Show("|	FECHA INGRESO");  
-				ContextoImp.MoveTo(540,-65);					ContextoImp.Show("|	FECHA INGRESO");//290,-70
-				ContextoImp.MoveTo(604.7,-65);					ContextoImp.Show("|	FECHA ALTA");
-				ContextoImp.MoveTo(605,-65);					ContextoImp.Show("|	FECHA ALTA");//360,-70
-				ContextoImp.MoveTo(679.7,-65);					ContextoImp.Show("|	FECHA CIERRE");
-				ContextoImp.MoveTo(680,-65);					ContextoImp.Show("|	FECHA CIERRE");//
-				ContextoImp.MoveTo(744.7,-65);					ContextoImp.Show("|	TOTAL");
-				ContextoImp.MoveTo(745,-65);					ContextoImp.Show("|	TOTAL");//420,-70
+				ContextoImp.MoveTo(119.7,-65);					ContextoImp.Show("PACIENTE");
+				ContextoImp.MoveTo(120,-65);					ContextoImp.Show("PACIENTE");//80,-70
+				ContextoImp.MoveTo(309.7,-65);					ContextoImp.Show("TIPO ");
+				ContextoImp.MoveTo(310,-65);					ContextoImp.Show("TIPO ");//120,-70
+				ContextoImp.MoveTo(379.7,-65);					ContextoImp.Show("EMPRESA");
+				ContextoImp.MoveTo(380,-65);					ContextoImp.Show("EMPRESA");//170,-70
+				ContextoImp.MoveTo(539.7,-65);					ContextoImp.Show("FECHA INGRESO");  
+				ContextoImp.MoveTo(540,-65);					ContextoImp.Show("FECHA INGRESO");//290,-70
+				ContextoImp.MoveTo(604.7,-65);					ContextoImp.Show("FECHA ALTA");
+				ContextoImp.MoveTo(605,-65);					ContextoImp.Show("FECHA ALTA");//360,-70
+				ContextoImp.MoveTo(679.7,-65);					ContextoImp.Show("FECHA CIERRE");
+				ContextoImp.MoveTo(680,-65);					ContextoImp.Show("FECHA CIERRE");//
+				ContextoImp.MoveTo(744.7,-65);					ContextoImp.Show("TOTAL");
+				ContextoImp.MoveTo(745,-65);					ContextoImp.Show("TOTAL");//420,-70
 				Gnome.Print.Setfont(ContextoImp,fuente7);
 				ContextoImp.MoveTo(70, -66);					ContextoImp.Show   ("_______________________________________________________________________________________________"+
 																					"_______________________________________________________________________________________________");

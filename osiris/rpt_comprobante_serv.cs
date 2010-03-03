@@ -4,6 +4,7 @@
 // Monterrey - Mexico
 //
 // Autor    	: Juan Antonio Peña Gonzalez (Programacion) gjuanzz@gmail.com
+//                Daniel Olivares Cuevas (Pre-Programacion, Colaboracion y Ajustes) arcangeldoc@gmail.com
 // 				  
 // Licencia		: GLP
 //////////////////////////////////////////////////////////
@@ -39,68 +40,68 @@ namespace osiris
 {
 	public class 	comprobante_serv 
 	{
-		public string connectionString = "Server=localhost;" +
-        	    	                     "Port=5432;" +
-            	    	                 "User ID=admin;" +
-                	    	             "Password=1qaz2wsx;";
-        public string nombrebd;
-		public int PidPaciente = 0;
-		public int folioservicio = 0;
-		public string fecha_admision;
-		public string fechahora_alta;
-		public string nombre_paciente;
-		public string telefono_paciente;
-		public string doctor;
-		public string cirugia;
-		public string fecha_nacimiento;
-		public string edadpac;
-		public string tipo_paciente;
-		public int id_tipopaciente;
-		public string aseguradora;
-		public string dir_pac;
-		public string empresapac;
-		public bool apl_desc_siempre = true;
-		public bool apl_desc;
+		string connectionString;
+        string nombrebd;
+		int PidPaciente = 0;
+		int folioservicio = 0;
+		string fecha_admision;
+		string fechahora_alta;
+		string nombre_paciente;
+		string telefono_paciente;
+		string doctor;
+		string cirugia;
+		string fecha_nacimiento;
+		string edadpac;
+		string tipo_paciente;
+		int id_tipopaciente;
+		string aseguradora;
+		string dir_pac;
+		string empresapac;
+		bool apl_desc_siempre = true;
+		bool apl_desc;
+		float valoriva = 0;
 		
-		
-		public int filas=645;
-				
-				
+		int filas=645;
+					
 		// Declarando variable de fuente para la impresion
 		// Declaracion de fuentes tipo Bitstream Vera sans
-		public Gnome.Font fuente6 = Gnome.Font.FindClosest("Bitstream Vera Sans", 6);
-		public Gnome.Font fuente8 = Gnome.Font.FindClosest("Bitstream Vera Sans", 8);
-		public Gnome.Font fuente12 = Gnome.Font.FindClosest("Bitstream Vera Sans", 12);
-		public Gnome.Font fuente10 = Gnome.Font.FindClosest("Bitstream Vera Sans", 10);
-		public Gnome.Font fuente36 = Gnome.Font.FindClosest("Bitstream Vera Sans", 36);
-		public Gnome.Font fuente7 = Gnome.Font.FindClosest("Bitstream Vera Sans", 7);
-		public Gnome.Font fuente9 = Gnome.Font.FindClosest("Bitstream Vera Sans", 9);
+		Gnome.Font fuente6 = Gnome.Font.FindClosest("Bitstream Vera Sans", 6);
+		Gnome.Font fuente8 = Gnome.Font.FindClosest("Bitstream Vera Sans", 8);
+		Gnome.Font fuente12 = Gnome.Font.FindClosest("Bitstream Vera Sans", 12);
+		Gnome.Font fuente10 = Gnome.Font.FindClosest("Bitstream Vera Sans", 10);
+		Gnome.Font fuente36 = Gnome.Font.FindClosest("Bitstream Vera Sans", 36);
+		Gnome.Font fuente7 = Gnome.Font.FindClosest("Bitstream Vera Sans", 7);
+		Gnome.Font fuente9 = Gnome.Font.FindClosest("Bitstream Vera Sans", 9);
 				
 		//Declaracion de ventana de error
 		protected Gtk.Window MyWinError;
 		
-		public comprobante_serv  ( int PidPaciente_ , int folioservicio_,string _nombrebd_ ,string entry_fecha_admision_,string entry_fechahora_alta_,
+		class_conexion conexion_a_DB = new class_conexion();
+		class_public classpublic = new class_public();
+		
+		public comprobante_serv  ( int PidPaciente_ , int folioservicio_,string nombrebd_ ,string entry_fecha_admision_,string entry_fechahora_alta_,
 						string entry_numero_factura_,string entry_nombre_paciente_,string entry_telefono_paciente_,string entry_doctor_,
 						string entry_tipo_paciente_,string entry_aseguradora_,string edadpac_,string fecha_nacimiento_,
 						string dir_pac_,string cirugia_,string empresapac_,int idtipopaciente_)
 		{
-			PidPaciente = PidPaciente_;//
-			folioservicio = folioservicio_;//
-			nombrebd = _nombrebd_;//
-			fecha_admision = entry_fecha_admision_;//
-			fechahora_alta = entry_fechahora_alta_;//
-			nombre_paciente = entry_nombre_paciente_;//
-			telefono_paciente = entry_telefono_paciente_;//
-			doctor = entry_doctor_;//
-			cirugia = cirugia_;//
-			tipo_paciente = entry_tipo_paciente_;//
+			PidPaciente = PidPaciente_;
+			folioservicio = folioservicio_;
+			fecha_admision = entry_fecha_admision_;
+			fechahora_alta = entry_fechahora_alta_;
+			nombre_paciente = entry_nombre_paciente_;
+			telefono_paciente = entry_telefono_paciente_;
+			doctor = entry_doctor_;
+			cirugia = cirugia_;
+			tipo_paciente = entry_tipo_paciente_;
 			id_tipopaciente = idtipopaciente_;
-			aseguradora = entry_aseguradora_;//
-			edadpac = edadpac_;//
-			fecha_nacimiento = fecha_nacimiento_;//
-			dir_pac = dir_pac_;//
-			empresapac = empresapac_;//
-			
+			aseguradora = entry_aseguradora_;
+			edadpac = edadpac_;
+			fecha_nacimiento = fecha_nacimiento_;
+			dir_pac = dir_pac_;
+			empresapac = empresapac_;
+			connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
+			nombrebd = conexion_a_DB._nombrebd;
+			valoriva = float.Parse(classpublic.ivaparaaplicar);			
 		
 			Gnome.PrintJob    trabajo   = new Gnome.PrintJob (PrintConfig.Default());
         	Gnome.PrintDialog dialogo   = new Gnome.PrintDialog (trabajo, "COMPROBANTE DE CAJA", 0);
@@ -203,33 +204,33 @@ namespace osiris
 	        	NpgsqlCommand comando; 
 	        	comando = conexion.CreateCommand (); 
 	           	comando.CommandText ="SELECT "+
-							"hscmty_erp_cobros_deta.folio_de_servicio,hscmty_erp_cobros_deta.pid_paciente, "+ 
-							"hscmty_his_tipo_admisiones.descripcion_admisiones,aplicar_iva, "+
-							"hscmty_his_tipo_admisiones.id_tipo_admisiones AS idadmisiones,"+
-							"hscmty_grupo_producto.descripcion_grupo_producto, "+
-							"hscmty_productos.id_grupo_producto,  "+
-							"to_char(hscmty_erp_cobros_deta.porcentage_descuento,999.99) AS porcdesc, "+
-							"to_char(hscmty_erp_cobros_deta.fechahora_creacion,'dd-mm-yyyy') AS fechcreacion,  "+
-							"to_char(hscmty_erp_cobros_deta.fechahora_creacion,'HH:mm') AS horacreacion,  "+
-							"to_char(hscmty_erp_cobros_deta.id_producto,'999999999999') AS idproducto,descripcion_producto, "+
-							"to_char(hscmty_erp_cobros_deta.cantidad_aplicada,'9999.99') AS cantidadaplicada, "+
-							"to_char(hscmty_erp_cobros_deta.precio_producto,'999999.99') AS preciounitario, "+
-							"ltrim(to_char(hscmty_erp_cobros_deta.precio_producto,'9999999.99')) AS preciounitarioprod, "+
-							"to_char(hscmty_erp_cobros_deta.iva_producto,'999999.99') AS ivaproducto, "+
-							"to_char(hscmty_erp_cobros_deta.precio_por_cantidad,'999999.99') AS ppcantidad, "+
-							"to_char(hscmty_productos.precio_producto_publico,'999999999.99999') AS preciopublico "+
+							"osiris_erp_cobros_deta.folio_de_servicio,osiris_erp_cobros_deta.pid_paciente, "+ 
+							"osiris_his_tipo_admisiones.descripcion_admisiones,aplicar_iva, "+
+							"osiris_his_tipo_admisiones.id_tipo_admisiones AS idadmisiones,"+
+							"osiris_grupo_producto.descripcion_grupo_producto, "+
+							"osiris_productos.id_grupo_producto,  "+
+							"to_char(osiris_erp_cobros_deta.porcentage_descuento,999.99) AS porcdesc, "+
+							"to_char(osiris_erp_cobros_deta.fechahora_creacion,'dd-mm-yyyy') AS fechcreacion,  "+
+							"to_char(osiris_erp_cobros_deta.fechahora_creacion,'HH:mm') AS horacreacion,  "+
+							"to_char(osiris_erp_cobros_deta.id_producto,'999999999999') AS idproducto,descripcion_producto, "+
+							"to_char(osiris_erp_cobros_deta.cantidad_aplicada,'9999.99') AS cantidadaplicada, "+
+							"to_char(osiris_erp_cobros_deta.precio_producto,'999999.99') AS preciounitario, "+
+							"ltrim(to_char(osiris_erp_cobros_deta.precio_producto,'9999999.99')) AS preciounitarioprod, "+
+							"to_char(osiris_erp_cobros_deta.iva_producto,'999999.99') AS ivaproducto, "+
+							"to_char(osiris_erp_cobros_deta.precio_por_cantidad,'999999.99') AS ppcantidad, "+
+							"to_char(osiris_productos.precio_producto_publico,'999999999.99999') AS preciopublico "+
 							"FROM "+ 
-							"hscmty_erp_cobros_deta,hscmty_his_tipo_admisiones,hscmty_productos,hscmty_grupo_producto "+
+							"osiris_erp_cobros_deta,osiris_his_tipo_admisiones,osiris_productos,osiris_grupo_producto "+
 							"WHERE "+
-							"hscmty_erp_cobros_deta.id_tipo_admisiones = hscmty_his_tipo_admisiones.id_tipo_admisiones "+
-							"AND hscmty_erp_cobros_deta.id_producto = hscmty_productos.id_producto  "+ 
-							"AND hscmty_productos.id_grupo_producto = hscmty_grupo_producto.id_grupo_producto "+
-							"AND hscmty_erp_cobros_deta.folio_de_servicio = '"+folioservicio.ToString()+"' "+
-				        	"AND hscmty_erp_cobros_deta.eliminado = 'false' "+
-				        	" ORDER BY  hscmty_erp_cobros_deta.id_tipo_admisiones ASC, hscmty_productos.id_grupo_producto;";
-		        			//"AND to_char(hscmty_erp_movcargos.fechahora_admision_registro,'dd') >= '"+DateTime.Now.ToString("dd")+"'  AND to_char(hscmty_erp_movcargos.fechahora_admision_registro,'dd') <= '"+DateTime.Now.ToString("dd")+"' "+
-							//"AND to_char(hscmty_erp_movcargos.fechahora_admision_registro,'MM') >= '"+DateTime.Now.ToString("MM")+"' AND to_char(hscmty_erp_movcargos.fechahora_admision_registro,'MM') <= '"+DateTime.Now.ToString("MM")+"' "+
-							//"AND to_char(hscmty_erp_movcargos.fechahora_admision_registro,'yyyy') >= '"+DateTime.Now.ToString("yyyy")+"' AND to_char(hscmty_erp_movcargos.fechahora_admision_registro,'yyyy') <= '"+DateTime.Now.ToString("yyyy")+"' " ;
+							"osiris_erp_cobros_deta.id_tipo_admisiones = osiris_his_tipo_admisiones.id_tipo_admisiones "+
+							"AND osiris_erp_cobros_deta.id_producto = osiris_productos.id_producto  "+ 
+							"AND osiris_productos.id_grupo_producto = osiris_grupo_producto.id_grupo_producto "+
+							"AND osiris_erp_cobros_deta.folio_de_servicio = '"+folioservicio.ToString()+"' "+
+				        	"AND osiris_erp_cobros_deta.eliminado = 'false' "+
+				        	" ORDER BY  osiris_erp_cobros_deta.id_tipo_admisiones ASC, osiris_productos.id_grupo_producto;";
+		        			//"AND to_char(osiris_erp_movcargos.fechahora_admision_registro,'dd') >= '"+DateTime.Now.ToString("dd")+"'  AND to_char(osiris_erp_movcargos.fechahora_admision_registro,'dd') <= '"+DateTime.Now.ToString("dd")+"' "+
+							//"AND to_char(osiris_erp_movcargos.fechahora_admision_registro,'MM') >= '"+DateTime.Now.ToString("MM")+"' AND to_char(osiris_erp_movcargos.fechahora_admision_registro,'MM') <= '"+DateTime.Now.ToString("MM")+"' "+
+							//"AND to_char(osiris_erp_movcargos.fechahora_admision_registro,'yyyy') >= '"+DateTime.Now.ToString("yyyy")+"' AND to_char(osiris_erp_movcargos.fechahora_admision_registro,'yyyy') <= '"+DateTime.Now.ToString("yyyy")+"' " ;
 							
 	        	NpgsqlDataReader lector = comando.ExecuteReader ();
 	        	//Console.WriteLine("query serv "+comando.CommandText.ToString());
@@ -275,7 +276,7 @@ namespace osiris
 					//ivaprod = float.Parse((string) lector["ivaproducto"], System.Globalization.NumberStyles.Float, new System.Globalization.CultureInfo( "es-MX" ));
 					porcentajedes =  float.Parse((string) lector["porcdesc"], System.Globalization.NumberStyles.Float, new System.Globalization.CultureInfo( "es-MX" ));
 					if((bool) lector["aplicar_iva"]== true){
-						ivaprod = (subtotal*15)/100;
+						ivaprod = (subtotal * valoriva)/100;
 						subt15 += subtotal;
 					}else{
 						subt0 += subtotal;
@@ -337,7 +338,7 @@ namespace osiris
 							//ivaprod = float.Parse((string) lector["ivaproducto"], System.Globalization.NumberStyles.Float, new System.Globalization.CultureInfo( "es-MX" ));
 							porcentajedes =  float.Parse((string) lector["porcdesc"], System.Globalization.NumberStyles.Float, new System.Globalization.CultureInfo( "es-MX" ));
 							if((bool) lector["aplicar_iva"]== true){
-								ivaprod = (subtotal*15)/100;
+								ivaprod = (subtotal * valoriva)/100;
 								subt15 += subtotal;
 							}else{
 								subt0 += subtotal;
@@ -387,7 +388,7 @@ namespace osiris
 							//ivaprod = float.Parse((string) lector["ivaproducto"], System.Globalization.NumberStyles.Float, new System.Globalization.CultureInfo( "es-MX" ));
 							porcentajedes =  float.Parse((string) lector["porcdesc"], System.Globalization.NumberStyles.Float, new System.Globalization.CultureInfo( "es-MX" ));
 							if((bool) lector["aplicar_iva"]== true){
-								ivaprod = (subtotal*15)/100;
+								ivaprod = (subtotal * valoriva)/100;
 								subt15 += subtotal;
 							}else{
 								subt0 += subtotal;

@@ -257,7 +257,7 @@ namespace osiris
 		bool cuenta_bloqueada;
 		bool cuenta_cerrada;
 		
-		float valoriva = 15;
+		float valoriva;
 		bool aplicar_descuento = true;
 		bool aplicar_siempre = false;
 		
@@ -304,6 +304,7 @@ namespace osiris
 		string connectionString;
 		string nombrebd;		
 		class_conexion conexion_a_DB = new class_conexion();
+		class_public classpublic = new class_public();
 					
 		CellRendererText cel_descripcion;
 		
@@ -319,6 +320,7 @@ namespace osiris
 			ApmEmpleado = ApmEmpleado_;
 			connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
 			nombrebd = conexion_a_DB._nombrebd;
+			valoriva = float.Parse(classpublic.ivaparaaplicar);	
 			
 			Glade.XML gxml = new Glade.XML (null, "caja.glade", "caja", null);
 			gxml.Autoconnect (this);
@@ -423,7 +425,7 @@ namespace osiris
 		void on_button_traspasa_productos_clicked(object sender, EventArgs args)
 		{
 			numerosecuencia_deta_cobro = "";
-			if(LoginEmpleado =="DOLIVARES"){
+			if(LoginEmpleado =="DOLIVARES" || LoginEmpleado =="ADMIN"){
  				TreeIter iter;
  				TreeModel model;
 	 			if (lista_de_servicios.Selection.GetSelected (out model, out iter)){	 					
@@ -446,7 +448,7 @@ namespace osiris
 					
 					entry_motivo.Text = (string) lista_de_servicios.Model.GetValue (iter,0);
 					numerosecuencia_deta_cobro = (string) lista_de_servicios.Model.GetValue (iter,18);
-					entry_motivo.Editable = false;
+					entry_motivo.IsEditable = false;
 					
 				}else{
 					MessageDialog msgBox = new MessageDialog (MyWin,DialogFlags.Modal,
@@ -747,8 +749,7 @@ namespace osiris
 		
 		void on_button_abre_folio_clicked(object sender, EventArgs args)
 		{
-			if(LoginEmpleado =="N000436" || LoginEmpleado =="N000426" || LoginEmpleado =="N000429"  
-						|| LoginEmpleado =="DOLIVARES" || LoginEmpleado =="HVARGAS" || LoginEmpleado =="JBUENTELLO" || LoginEmpleado =="IPENA"){
+			if(LoginEmpleado == "DOLIVARES" || LoginEmpleado =="ADMIN" ){
 				MessageDialog msgBox = new MessageDialog (MyWin,DialogFlags.Modal,
 							MessageType.Question,ButtonsType.YesNo,"¿ Esta seguro de Abrir este Nº de Atencion ?");
 				ResponseType miResultado = (ResponseType)msgBox.Run ();
@@ -843,7 +844,7 @@ namespace osiris
 				msgBoxError.Run ();
 				msgBoxError.Destroy();
 			}else{
-				//new protocolo_admision(PidPaciente,this.folioservicio,nombrebd,"");   // rpt_prot_admision.cs
+				new protocolo_admision(PidPaciente,this.folioservicio,nombrebd,"");   // rpt_prot_admision.cs
 			}
 		}
 		
@@ -1441,14 +1442,13 @@ namespace osiris
 		
 		void on_button_imprime_honorarios_clicked(object sender, EventArgs args)
 		{
-			//string  query = " ";
-			/*
+			//string  query = " ";			
 			new rpt_honorario_med(PidPaciente,this.folioservicio,nombrebd,
 						entry_ingreso.Text,entry_egreso.Text,entry_numero_factura.Text,
 						entry_nombre_paciente.Text,entry_telefono_paciente.Text,entry_doctor.Text,
 						entry_tipo_paciente.Text,entry_aseguradora.Text,edadpac+" Años y "+mesespac+" Meses",fecha_nacimiento,
 						dir_pac,cirugia,empresapac,id_tipopaciente,entry_totalbonos_medicos.Text,"0");   // rpt_honorarios_medicos.cs
-			honorario_medico.Destroy();*/
+			honorario_medico.Destroy();
 		}
 						
 		void on_button_guardar_honorario_clicked(object sender, EventArgs args)
@@ -1654,13 +1654,12 @@ namespace osiris
 				
 			}
 			if (tipodereporte == "resumen_factura"){
-				/*
+				// rpt_proc_totales.cs
 				new proc_totales (PidPaciente,this.folioservicio,nombrebd,
 						entry_ingreso.Text,entry_egreso.Text,entry_numero_factura.Text,
 						entry_nombre_paciente.Text,entry_telefono_paciente.Text,entry_doctor.Text,
 						entry_tipo_paciente.Text,entry_aseguradora.Text,edadpac+" Años y "+mesespac+" Meses",fecha_nacimiento,dir_pac,
-						cirugia,empresapac,id_tipopaciente,query);   // rpt_proc_cobranza.cs
-				*/
+						cirugia,empresapac,id_tipopaciente,query);				
 			}			
 			rango_de_fecha.Destroy();
 		}
@@ -1688,10 +1687,10 @@ namespace osiris
 				this.entry_ano1.Text = DateTime.Now.ToString("yyyy");
 				this.entry_hora_compr.Text = DateTime.Now.ToString("HH:mm:ss");
 				
-				this.entry_dia1.Editable = false;
-				this.entry_mes1.Editable = false;
-				this.entry_ano1.Editable = false;
-				entry_hora_compr.Editable = false;
+				this.entry_dia1.IsEditable = false;
+				this.entry_mes1.IsEditable = false;
+				this.entry_ano1.IsEditable = false;
+				entry_hora_compr.IsEditable = false;
 				
 				button_guardar_pago.Clicked += new EventHandler(on_button_guardar_pago_clicked);
 				button_salir.Clicked += new EventHandler(on_cierraventanas_clicked); // esta sub-clase esta en hscmty.cs
@@ -1830,14 +1829,12 @@ namespace osiris
 		
 		void comprobante_de_caja_pago()
 		{
-			/*
 			new caja_comprobante ( PidPaciente,this.folioservicio,nombrebd,
 					entry_ingreso.Text,entry_egreso.Text,entry_numero_factura.Text,
 					entry_nombre_paciente.Text,entry_telefono_paciente.Text,entry_doctor.Text,
 					entry_tipo_paciente.Text,entry_aseguradora.Text,edadpac+" Años y "+mesespac+" Meses",
 					fecha_nacimiento,dir_pac,cirugia,empresapac,id_tipopaciente,NomEmpleado+" "+AppEmpleado+" "+ApmEmpleado,
 					this.entry_total_abonos_caja.Text.Trim());
-			*/
 		}
 		
 		void on_button_compro_serv_clicked(object sender, EventArgs args)
@@ -1849,12 +1846,11 @@ namespace osiris
 							"existente para que el comprobante se muestre \n"+"o no a pulsado el boton ''Seleccionar''");
 				msgBoxError.Run ();				msgBoxError.Destroy();
 			}else{
-				/*
+				// rpt_comprobante_serv.cs
 				new comprobante_serv ( PidPaciente,this.folioservicio,nombrebd,
 						entry_ingreso.Text,entry_egreso.Text,entry_numero_factura.Text,
 						entry_nombre_paciente.Text,entry_telefono_paciente.Text,entry_doctor.Text,
 						entry_tipo_paciente.Text,entry_aseguradora.Text,edadpac+" Años y "+mesespac+" Meses",fecha_nacimiento,dir_pac,cirugia,empresapac,id_tipopaciente);
-						*/
 			}
 		}
 		
@@ -2551,9 +2547,7 @@ namespace osiris
 	 					entry_a_pagar.Text = toma_a_pagar.ToString("F");
 	 				}else{
 	 					string descripcionprod = (string) lista_de_servicios.Model.GetValue (iter,0);
-	 					if (LoginEmpleado =="DOLIVARES" || LoginEmpleado =="HVARGAS" || LoginEmpleado == "JBUENTELLO" || LoginEmpleado =="IPENA"){
-	 						//LoginEmpleado =="N000147" || LoginEmpleado =="N000204" || LoginEmpleado =="N000150" ||
-	 						//LoginEmpleado =="N000315") {//|| LoginEmpleado =="N000288"
+	 					if (LoginEmpleado =="DOLIVARES" || LoginEmpleado =="ADMIN"){
 	 						MessageDialog msgBox = new MessageDialog (MyWin,DialogFlags.Modal,
 							MessageType.Question,ButtonsType.YesNo,"¿ Desea DEVOLVER este producto ? \n"+"Descripcion: "+descripcionprod);
 							ResponseType miResultado = (ResponseType)msgBox.Run ();
@@ -2628,10 +2622,6 @@ namespace osiris
 						        							"WHERE id_secuencia =  '"+(string) lista_de_servicios.Model.GetValue (iter,18)+"';";
 						        			//Console.WriteLine(comando.CommandText.ToString());
 						        	comando.ExecuteNonQuery();     	comando.Dispose();
-						        	
-						        	
-						        	
-						        	
 				        			msgBox = new MessageDialog (MyWin,DialogFlags.Modal,
 											MessageType.Info,ButtonsType.Ok,"El Producto "+descripcionprod+
 											"\n se devolvio satisfactoriamente");
@@ -2887,9 +2877,7 @@ namespace osiris
 											// habilitando boton para poder realizar mas cargos
 											if ((bool) lector ["bloqueo_de_folio"] == false){
 												button_busca_producto.Sensitive = true;
-												if(LoginEmpleado == "N000219" || LoginEmpleado =="N000150" || LoginEmpleado =="N000180" || LoginEmpleado =="N000288"  
-													|| LoginEmpleado =="N000204" || LoginEmpleado =="N000147" || LoginEmpleado =="N000315"
-													|| LoginEmpleado =="DOLIVARES" || LoginEmpleado =="HVARGAS" || LoginEmpleado =="JPENA" || LoginEmpleado =="JBUENTELLO" || LoginEmpleado =="IPENA"){
+												if(LoginEmpleado =="DOLIVARES" || LoginEmpleado =="ADMIN"){
 													button_busca_producto.Sensitive = true;
 												}else{
 													button_cierre_cuenta.Sensitive = false;
@@ -2897,9 +2885,7 @@ namespace osiris
 													button_busca_producto.Sensitive = true;
 												}
 											}else{
-												if(LoginEmpleado == "N000219" || LoginEmpleado =="N000150" || LoginEmpleado =="N000180" || LoginEmpleado =="N000288"  
-													|| LoginEmpleado =="N000204" || LoginEmpleado =="N000147" || LoginEmpleado =="N000315" 
-													|| LoginEmpleado =="DOLIVARES" || LoginEmpleado =="HVARGAS" || LoginEmpleado =="JPENA" || LoginEmpleado =="JBUENTELLO" || LoginEmpleado =="IPENA"){
+												if(LoginEmpleado =="DOLIVARES" || LoginEmpleado =="ADMIN"){
 													
 													button_bloquea_cuenta.Sensitive = false;
 												}else{

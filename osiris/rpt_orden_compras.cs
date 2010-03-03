@@ -13,41 +13,37 @@ using Gnome;
 using System.Collections;
 using GtkSharp;
 
-
 namespace osiris
 {
 	public class rpt_orden_compras
 	{
-		public string connectionString = "Server=localhost;" +
-							"Port=5432;" +
-							 "User ID=admin;" +
-							"Password=1qaz2wsx;";
-						
-		public string nombrebd;
-		public string LoginEmpleado;
-    	public string NomEmpleado;
-    	public string AppEmpleado;
-    	public string ApmEmpleado;
+		string connectionString;						
+		string nombrebd;
+		string LoginEmpleado;
+    	string NomEmpleado;
+    	string AppEmpleado;
+    	string ApmEmpleado;
 		
 		// Declarando el treeview
-		public Gtk.TreeView lista_productos_a_comprar;
-		public Gtk.TreeStore treeViewEngineProductosaComprar;
+		Gtk.TreeView lista_productos_a_comprar;
+		Gtk.TreeStore treeViewEngineProductosaComprar;
 		
-		public string titulo = "ORDEN DE COMPRAS ";
+		string titulo = "ORDEN DE COMPRAS ";
 		
-		public int contador = 1;
-		public int numpage = 1;
-		public int filas =-174;
-		
-		// Declarando el treeview
+		int contador = 1;
+		int numpage = 1;
+		int filas =-174;
 		
 		//Declaracion de ventana de error:
 		protected Gtk.Window MyWinError;
 		protected Gtk.Window MyWin;
 		
+		class_conexion conexion_a_DB = new class_conexion();
+		
 		public rpt_orden_compras(string nombrebd_,object lista_productos_a_comprar_,object treeViewEngineProductosaComprar_)
 		{
-			nombrebd = nombrebd_;
+			connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
+			nombrebd = conexion_a_DB._nombrebd;
 			lista_productos_a_comprar = lista_productos_a_comprar_ as Gtk.TreeView;
 			treeViewEngineProductosaComprar = treeViewEngineProductosaComprar_ as Gtk.TreeStore; 
 			
@@ -84,12 +80,9 @@ namespace osiris
 			Gnome.Font fuente2 = Gnome.Font.FindClosest("Bitstream Vera Sans", 7);
 			Gnome.Font fuente3 = Gnome.Font.FindClosest("Bitstream Vera Sans", 8);
 			Gnome.Font fuente5 = Gnome.Font.FindClosestFromWeightSlant("Bitstream Vera Sans", FontWeight.Bold ,false, 12);
-			
 				
-			// ESTA FUNCION ES PARA QUE EL TEXTO SALGA EN NEGRITA
-
-			numpage = 1;
-			
+			// ESTA FUNCION ES PARA QUE EL TEXTO SALGA EN NEGRITA			
+			numpage = 1;			
 			ContextoImp.BeginPage("Pagina "+numpage.ToString());
 			//Encabezado de pagina
 			ContextoImp.Rotate(90);
@@ -180,8 +173,8 @@ namespace osiris
 			ContextoImp.MoveTo(570.5, -445);			ContextoImp.Show("SUB-TOTAL_15: ");
 			ContextoImp.MoveTo(570.5, -455);			ContextoImp.Show("SUB-TOTAL_0: ");
 			ContextoImp.MoveTo(570.5, -455);			ContextoImp.Show("SUB-TOTAL_0: ");
-			ContextoImp.MoveTo(570, -465);			    ContextoImp.Show("15% I.V.A: ");
-			ContextoImp.MoveTo(570.5, -465);			ContextoImp.Show("15% I.V.A: ");
+			ContextoImp.MoveTo(570, -465);			    ContextoImp.Show("16% I.V.A: ");
+			ContextoImp.MoveTo(570.5, -465);			ContextoImp.Show("16% I.V.A: ");
 			ContextoImp.MoveTo(570, -475);			    ContextoImp.Show("TOTAL: ");
 			ContextoImp.MoveTo(570.5, -475);			ContextoImp.Show("TOTAL: ");
 			

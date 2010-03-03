@@ -518,11 +518,13 @@ namespace osiris
 		void on_button_imprimir_movimiento_clicked(object sender, EventArgs args)
 		{
 			TreeIter iter;
-			/*if(this.query1.GetIterFirst (out iter)){         
-				new osiris.imprime_mov_productos (this.query1,this.lista_resumen_productos,this.treeViewEngineResumen);*/
+			//if(this.query1.GetIterFirst (out iter)){         
+			//	new osiris.imprime_mov_productos (this.query1,this.lista_resumen_productos,this.treeViewEngineResumen);
+			//}
 			if (this.treeViewEngineResumen.GetIterFirst (out iter)){
-				//Console.WriteLine(query1);                                              
-				//new osiris.imprime_mov_productos (entry_total_aplicado.Text,entry_dia1.Text,entry_mes1.Text,entry_ano1.Text,entry_dia2.Text,entry_mes2.Text,entry_ano2.Text, this.lista_resumen_productos,this.treeViewEngineResumen,this.query1,this.nombrebd,this.titulopagina);
+				//Console.WriteLine(query1);
+				
+				new osiris.imprime_mov_productos (entry_total_aplicado.Text,entry_dia1.Text,entry_mes1.Text,entry_ano1.Text,entry_dia2.Text,entry_mes2.Text,entry_ano2.Text, this.lista_resumen_productos,this.treeViewEngineResumen,this.query1,this.nombrebd,this.titulopagina);
 			}else{
 				
 				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,

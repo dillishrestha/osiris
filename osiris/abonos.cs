@@ -33,6 +33,7 @@ using System;
 using Gtk;
 using Npgsql;
 using Glade;
+using Gnome;
 
 namespace osiris
 {
@@ -554,17 +555,14 @@ namespace osiris
 				presupuesto = (string) model.GetValue(iterSelected, 5);
 				paquete = (string) model.GetValue(iterSelected, 6);
 				descripcion = (string) model.GetValue(iterSelected, 7);
-				/*
 				new osiris.comprobante_abono_resumen(tipo_reporte,PidPaciente,folioservicio,nombrebd,
 						fecha_admision,fechahora_alta,nombre_paciente,telefono_paciente,doctor,cirugia,
 						tipo_paciente,id_tipopaciente,aseguradora,edadpac,fecha_nacimiento,dir_pac,
 						empresapac,nombrecajero,LoginEmpleado,monto,fecha,concepto,idcreo,recibo,
 						presupuesto,paquete,this.lista_abonos,this.treeViewEngineabonos,descripcion);
-				*/
 			}
 		}
-		if (tipo_reporte == "resumen")
-			{
+		if (tipo_reporte == "resumen"){
 				monto = ""; 				
  				fecha = "";
 				concepto = "";
@@ -573,13 +571,11 @@ namespace osiris
 				presupuesto = "";
 				paquete = "";
 				descripcion = "";
-				/*
 				new osiris.comprobante_abono_resumen(tipo_reporte,PidPaciente,folioservicio,nombrebd,
 						fecha_admision,fechahora_alta,nombre_paciente,telefono_paciente,doctor,cirugia,
 						tipo_paciente,id_tipopaciente,aseguradora,edadpac,fecha_nacimiento,dir_pac,
 						empresapac,nombrecajero,LoginEmpleado,monto,fecha,concepto,idcreo,recibo,
 						presupuesto,paquete,this.lista_abonos,this.treeViewEngineabonos,descripcion);
-				*/
 			}
 		}
 		
@@ -596,91 +592,83 @@ namespace osiris
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 	public class comprobante_abono_resumen
 	{
+			
+		string connectionString;		
+		string tipo_reporte;
+		string nombrebd;
+		int PidPaciente = 0;
+		int folioservicio = 0;
+		string fecha_admision;
+		string fechahora_alta;
+		string nombre_paciente;
+		string telefono_paciente;
+		string doctor;
+		string cirugia;
+		string fecha_nacimiento;
+		string edadpac;
+		string tipo_paciente;
+		int id_tipopaciente;
+		string aseguradora;
+		string dir_pac;
+		string empresapac;
+		string nombrecajero;		
+		string LoginEmpleado;
+		string monto;
+		string fecha;
+		string concepto;
+		string idcreo;
+		string recibo;
+		string presupuesto;
+		string paquete;
+		string descripcion;
+		string datos = "";
+		int contador = 1;
+		int numpage = 1;
+		string schars = "";
+		int filas=645;
 		
-	}
-		/*		
-		public string connectionString;		
-		public string tipo_reporte;
-		public string nombrebd;
-		public int PidPaciente = 0;
-		public int folioservicio = 0;
-		public string fecha_admision;
-		public string fechahora_alta;
-		public string nombre_paciente;
-		public string telefono_paciente;
-		public string doctor;
-		public string cirugia;
-		public string fecha_nacimiento;
-		public string edadpac;
-		public string tipo_paciente;
-		public int id_tipopaciente;
-		public string aseguradora;
-		public string dir_pac;
-		public string empresapac;
-		public string nombrecajero;		
-		public string LoginEmpleado;
-		public string monto;
-		public string fecha;
-		public string concepto;
-		public string idcreo;
-		public string recibo;
-		public string presupuesto;
-		public string paquete;
-		public string descripcion;
-		public string datos = "";
-		public int contador = 1;
-		public int numpage = 1;
-		public string schars = "";
-		public int filas=645;
-		
-		public Gtk.TreeView lista_abonos;
-		public Gtk.TreeStore treeViewEngineabonos;
+		Gtk.TreeView lista_abonos;
+		Gtk.TreeStore treeViewEngineabonos;
 		
 		// Declaracion de fuentes tipo Bitstream Vera sans
-		public Gnome.Font fuente6 = Gnome.Font.FindClosest("Bitstream Vera Sans", 6);
-		public Gnome.Font fuente8 = Gnome.Font.FindClosest("Bitstream Vera Sans", 8);
-		public Gnome.Font fuente12 = Gnome.Font.FindClosest("Bitstream Vera Sans", 12);
-		public Gnome.Font fuente10 = Gnome.Font.FindClosest("Bitstream Vera Sans", 10);
-		public Gnome.Font fuente36 = Gnome.Font.FindClosest("Bitstream Vera Sans", 36);
-		public Gnome.Font fuente7 = Gnome.Font.FindClosest("Bitstream Vera Sans", 7);
-		public Gnome.Font fuente9 = Gnome.Font.FindClosest("Bitstream Vera Sans", 9);
+		Gnome.Font fuente6 = Gnome.Font.FindClosest("Bitstream Vera Sans", 6);
+		//Gnome.Font fuente8 = Gnome.Font.FindClosest("Bitstream Vera Sans", 8);
+		//Gnome.Font fuente12 = Gnome.Font.FindClosest("Bitstream Vera Sans", 12);
+		Gnome.Font fuente10 = Gnome.Font.FindClosest("Bitstream Vera Sans", 10);
+		Gnome.Font fuente36 = Gnome.Font.FindClosest("Bitstream Vera Sans", 36);
+		//Gnome.Font fuente7 = Gnome.Font.FindClosest("Bitstream Vera Sans", 7);
+		Gnome.Font fuente9 = Gnome.Font.FindClosest("Bitstream Vera Sans", 9);
 		
-		// traductor de numeros a letras
-		public string[] sUnidades = {"", "un", "dos", "tres", "cuatro", "cinco", "seis", "siete", "ocho", "nueve", "diez", 
-									"once", "doce", "trece", "catorce", "quince", "dieciseis", "diecisiete", "dieciocho", "diecinueve", "veinte", 
-									"veintiún", "veintidos", "veintitres", "veinticuatro", "veinticinco", "veintiseis", "veintisiete", "veintiocho", "veintinueve"};
- 		public string[] sDecenas = {"", "diez", "veinte", "treinta", "cuarenta", "cincuenta", "sesenta", "setenta", "ochenta", "noventa"};
- 		public string[] sCentenas = {"", "ciento", "doscientos", "trescientos", "cuatrocientos", "quinientos", "seiscientos", "setecientos", "ochocientos", "novecientos"};
-  		public string sResultado = "";				
+		class_conexion conexion_a_DB = new class_conexion();
+		class_public classpublic = new class_public();
 		
 		public comprobante_abono_resumen(string tipo_reporte_,int PidPaciente_,int folioservicio_,
-					string _nombrebd_,string entry_fecha_admision_,string entry_fechahora_alta_,
+					string nombrebd_,string entry_fecha_admision_,string entry_fechahora_alta_,
 					string entry_nombre_paciente_,string entry_telefono_paciente_,string entry_doctor_,
 					string cirugia_,string entry_tipo_paciente_,int idtipopaciente_,string entry_aseguradora_,
 					string edadpac_,string fecha_nacimiento_,string dir_pac_,string empresapac_,string nombrecajero_,
 					string LoginEmpleado_,string monto_,string fecha_,string concepto_,string idcreo_,string recibo_,
 					string presupuesto_,string paquete_,object lista_abonos_,object treeViewEngineabonos_,
 					string descripcion_)
-			{		
+		{		
 			lista_abonos = lista_abonos_ as Gtk.TreeView;
 			treeViewEngineabonos = treeViewEngineabonos_ as Gtk.TreeStore;
 			tipo_reporte = tipo_reporte_;
-			PidPaciente = PidPaciente_;//
-			folioservicio = folioservicio_;//
-			nombrebd = _nombrebd_;//
-			fecha_admision = entry_fecha_admision_;//
-			fechahora_alta = entry_fechahora_alta_;//
-			nombre_paciente = entry_nombre_paciente_;//
-			telefono_paciente = entry_telefono_paciente_;//
-			doctor = entry_doctor_;//
-			cirugia = cirugia_;//
-			tipo_paciente = entry_tipo_paciente_;//
+			PidPaciente = PidPaciente_;
+			folioservicio = folioservicio_;
+			fecha_admision = entry_fecha_admision_;
+			fechahora_alta = entry_fechahora_alta_;
+			nombre_paciente = entry_nombre_paciente_;
+			telefono_paciente = entry_telefono_paciente_;
+			doctor = entry_doctor_;
+			cirugia = cirugia_;
+			tipo_paciente = entry_tipo_paciente_;
 			id_tipopaciente = idtipopaciente_;
-			aseguradora = entry_aseguradora_;//
-			edadpac = edadpac_;//
-			fecha_nacimiento = fecha_nacimiento_;//
-			dir_pac = dir_pac_;//
-			empresapac = empresapac_;//
+			aseguradora = entry_aseguradora_;
+			edadpac = edadpac_;
+			fecha_nacimiento = fecha_nacimiento_;
+			dir_pac = dir_pac_;
+			empresapac = empresapac_;
 			nombrecajero = nombrecajero_;
 			LoginEmpleado = LoginEmpleado_;
 			monto = monto_;
@@ -691,6 +679,7 @@ namespace osiris
 			presupuesto = presupuesto_;
 			paquete = paquete_;
 			descripcion = descripcion_;
+			nombrebd = conexion_a_DB._nombrebd;
 			
 			if (this.tipo_reporte == "resumen")	{
 				imprime_resumen_comprobante("RESUMEN DE ABONOS","resumen");
@@ -819,10 +808,10 @@ namespace osiris
 			Gnome.Print.Setfont (ContextoImp, fuente6);
 			ContextoImp.MoveTo(19.7, 770);			ContextoImp.Show("Sistema Hospitalario OSIRIS");
 			ContextoImp.MoveTo(20, 770);			ContextoImp.Show("Sistema Hospitalario OSIRIS");
-			ContextoImp.MoveTo(19.7, 760);			ContextoImp.Show("Direccion: Isacc Garza #200 Ote. Centro Monterrey, NL.");
-			ContextoImp.MoveTo(20, 760);			ContextoImp.Show("Direccion: Isacc Garza #200 Ote. Centro Monterrey, NL.");
-			ContextoImp.MoveTo(19.7, 750);			ContextoImp.Show("Conmutador:(81) 81-25-56-10");
-			ContextoImp.MoveTo(20, 750);			ContextoImp.Show("Conmutador:(81) 81-25-56-10");
+			ContextoImp.MoveTo(19.7, 760);			ContextoImp.Show("Direccion:");
+			ContextoImp.MoveTo(20, 760);			ContextoImp.Show("Direccion:");
+			ContextoImp.MoveTo(19.7, 750);			ContextoImp.Show("Conmutador:");
+			ContextoImp.MoveTo(20, 750);			ContextoImp.Show("Conmutador:");
 			Gnome.Print.Setfont (ContextoImp, fuente36);
 			ContextoImp.MoveTo(20, 738);			ContextoImp.Show("_______________________________");
 			//Print.Setrgbcolor(ContextoImp, 150,0,0);///cambio color de fuente a rojo
@@ -882,7 +871,7 @@ namespace osiris
 				ContextoImp.MoveTo(515, 600);			ContextoImp.Show("$: "+monto.Trim());
 			 	filas-=30;
 				float apagar = float.Parse(monto);
-				ContextoImp.MoveTo(175, 450);				ContextoImp.Show(traduce_numeros(apagar.ToString("F")));
+				ContextoImp.MoveTo(175, 450);				ContextoImp.Show(classpublic.ConvertirCadena(apagar.ToString("F"),"Peso"));
 				ContextoImp.MoveTo(175, 440);				ContextoImp.Show("Forma de Pago: "+descripcion.ToUpper());
 				ContextoImp.MoveTo(514.7, 465);				ContextoImp.Show(apagar.ToString("C").PadLeft(10));
 				ContextoImp.MoveTo(515, 465);				ContextoImp.Show(apagar.ToString("C").PadLeft(10));
@@ -893,8 +882,7 @@ namespace osiris
 				filas-=10;
 				ContextoImp.ShowPage();
 			}
-		}
-		
-			}*/
+		}		
+	}
 }
 	

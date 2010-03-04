@@ -1299,7 +1299,7 @@ namespace osiris
 				msgBoxError.Run ();					msgBoxError.Destroy();
 			
 			}else{ 
-				//new osiris.rpt_historia_clinica(entry_pid_paciente.Text,entry_nombre_paciente.Text,this.nombrebd,entry_fpp.Text,entry_fum.Text,entry_fup.Text,entry_edad_paciente.Text,this.fecha_admision,this.fecha_nacimiento);
+				new osiris.rpt_historia_clinica(entry_pid_paciente.Text,entry_nombre_paciente.Text,this.nombrebd,entry_fpp.Text,entry_fum.Text,entry_fup.Text,entry_edad_paciente.Text,this.fecha_admision,this.fecha_nacimiento);
 			}
 		}
 		
@@ -1331,7 +1331,7 @@ namespace osiris
 				msgBoxError.Run ();					msgBoxError.Destroy();
 			//,entry_ta.Text,entry_fc.Text,entry_fr.Text,entry_temp.Text,entry_pso.Text,entry_talla.Text
 			}else{ 
-				//new osiris.imprime_pag2(entry_pid_paciente.Text,this.nombrebd);
+				new osiris.imprime_pag2(entry_pid_paciente.Text,this.nombrebd);
 			}
 		}
 		

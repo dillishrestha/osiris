@@ -11,31 +11,31 @@ namespace osiris
 {
 	public class rpt_contrato_empleado
 	{
-	   public string tiempocontrato;
-	   public string tiempoc;
-	   public string tipocontrato ;
-	   public string appaterno ;
-	   public string apmaterno ;
-	   public string nom1 ;
-	   public string nom2 ;
-	   public string edad ;
-	   public string direccion;
-	   public string colonia;
-	   public string calle;
-	   public string numero;
-	   public string depto;
-	   public string puesto;
-	   public string jornada;
-	   public string funcion;
-	   public string tiempocomida;
-	   public string fechacontrato;
-	   public string sueldo;
-	   public string tipopago;
-	   public string fechacobro;
-	   public string tipopagosubstring;
-	   public string nacionalidad;
-	
-	  public rpt_contrato_empleado(string tipocontrato_ , 
+		string tiempocontrato;
+	    string tiempoc;
+	    string tipocontrato ;
+	    string appaterno ;
+	    string apmaterno ;
+	    string nom1 ;
+	    string nom2 ;
+	    string edad ;
+	    string direccion;
+	    string colonia;
+	    string calle;
+	    string numero;
+	    string depto;
+	    string puesto;
+	    string jornada;
+	    string funcion;
+	    string tiempocomida;
+	    string fechacontrato;
+	    string sueldo;
+	    string tipopago;
+	    string fechacobro;
+	    string tipopagosubstring;
+	    string nacionalidad;
+		
+		public rpt_contrato_empleado(string tipocontrato_ , 
 	                               string appaterno_, 
 	                               string apmaterno_,
 	                               string nom1_,

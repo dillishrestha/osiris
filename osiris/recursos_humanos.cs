@@ -2158,36 +2158,34 @@ namespace osiris
 		void on_button_imprimir_clicked (object sender, EventArgs args)
 		{
 		
-		Glade.XML gxml = new Glade.XML (null, "recursos_humanos.glade", "imp_cont_o_reg_alta", null);
-		gxml.Autoconnect (this);
+			Glade.XML gxml = new Glade.XML (null, "recursos_humanos.glade", "imp_cont_o_reg_alta", null);
+			gxml.Autoconnect (this);
 	        
 			// Muestra ventana de Glade
 			catalogo_empleado.Show();
 			
-	    this.entry_nomb_imp.Text = this.entry_apellido_paterno_empleado.Text+ " " + this.entry_apellido_materno_empleado.Text+" "+ this.entry_nombre1_empleado.Text+ " "+this.entry_nombre2_empleado.Text;		
-		this.entry_id_emp_imp.Text = this.entry_id_empleado_etiqueta.Text;
-		this.entry_direc_imp.Text = this.entry_calle_empleado.Text+ " #"+ this.entry_numcalle_empleado.Text+ " , "+this.entry_colonia_empleado.Text;
-		this.entry_edad_imp.Text = this.entry_edad.Text;
-		this.entry_naci_imp.Text = this.entry_nacionalidad.Text;
-		this.entry_fech_nac_imp.Text = this.entry_dia_nac.Text + "/"+this.entry_mes_nac.Text + "/"+this.entry_anno_nac.Text;
+	    	this.entry_nomb_imp.Text = this.entry_apellido_paterno_empleado.Text+ " " + this.entry_apellido_materno_empleado.Text+" "+ this.entry_nombre1_empleado.Text+ " "+this.entry_nombre2_empleado.Text;		
+			this.entry_id_emp_imp.Text = this.entry_id_empleado_etiqueta.Text;
+			this.entry_direc_imp.Text = this.entry_calle_empleado.Text+ " #"+ this.entry_numcalle_empleado.Text+ " , "+this.entry_colonia_empleado.Text;
+			this.entry_edad_imp.Text = this.entry_edad.Text;
+			this.entry_naci_imp.Text = this.entry_nacionalidad.Text;
+			this.entry_fech_nac_imp.Text = this.entry_dia_nac.Text + "/"+this.entry_mes_nac.Text + "/"+this.entry_anno_nac.Text;
 		
-		this.entry_nomb_imp.Editable = false;
-		this.entry_id_emp_imp.Editable = false;
-		this.entry_direc_imp.Editable = false;
-		this.entry_edad_imp.Editable = false;
-		this.entry_naci_imp.Editable = false;
-		this.entry_fech_nac_imp.Editable = false;
+			this.entry_nomb_imp.Editable = false;
+			this.entry_id_emp_imp.Editable = false;
+			this.entry_direc_imp.Editable = false;
+			this.entry_edad_imp.Editable = false;
+			this.entry_naci_imp.Editable = false;
+			this.entry_fech_nac_imp.Editable = false;
 		
-		button_imp_cont.Clicked += new EventHandler(on_button_imp_cont_clicked);
-		button_imp_reg.Clicked += new EventHandler(on_button_imp_reg_clicked);
+			button_imp_cont.Clicked += new EventHandler(on_button_imp_cont_clicked);
+			button_imp_reg.Clicked += new EventHandler(on_button_imp_reg_clicked);
             
 		}
 		
 		void on_button_imp_reg_clicked(object sender, EventArgs args)
 		{
-		
-			imp_cont_o_reg_alta.Destroy();
-			/*
+			imp_cont_o_reg_alta.Destroy();			
 			new rpt_detalle_empleados(entry_contrato_empleado.Text,
 										entry_apellido_paterno_empleado.Text,
 										entry_apellido_materno_empleado.Text,
@@ -2226,23 +2224,17 @@ namespace osiris
 										tipo_pago_oculta,
 										entry_numero_locker.Text,
 										sueldo_actual_oculta.Trim());
-		
-			*/
 		}
 		
 		void on_button_imp_cont_clicked (object sender, EventArgs args)
 		{
 		
-			imp_cont_o_reg_alta.Destroy();
-		
+			imp_cont_o_reg_alta.Destroy();		
 			//crea formato dd/mes/aa
 			//string month = Convert.ToString( DateTime.Parse( mes_contrato_oculta+"/01/2000").ToLongDateString());
-			//string fechacontrato = dia_contrato_oculta + "/" + month.Substring(5,month.Length-13).ToUpper() +"/"+anno_contrato_oculta;
-		
+			//string fechacontrato = dia_contrato_oculta + "/" + month.Substring(5,month.Length-13).ToUpper() +"/"+anno_contrato_oculta;		
 			// crea formato largo de fecha
 			string fechacontrato = Convert.ToString( Convert.ToDateTime(dia_contrato_oculta + "/" + mes_contrato_oculta +"/"+anno_contrato_oculta).ToLongDateString());
-		
-			/*
 			new rpt_contrato_empleado(entry_contrato_empleado.Text,
 						  		entry_apellido_paterno_empleado.Text,
 						  		entry_apellido_materno_empleado.Text,
@@ -2264,8 +2256,7 @@ namespace osiris
 							    
 							    //feca de cobro
 							    
-								);
-			*/
+								);		
 		}
 		   
 		void on_button_baja_empleado_clicked (object sender, EventArgs args)
@@ -2302,9 +2293,7 @@ namespace osiris
 			string misDigitos = ".0123456789ﾰﾱﾲﾳﾴﾵﾶﾷﾸﾹﾮ";
 			if (Array.IndexOf(misDigitos.ToCharArray(), Convert.ToChar(args.Event.Key)) == -1 && args.Event.Key != Gdk.Key.BackSpace  && args.Event.Key != Gdk.Key.Delete )
 			{
-
-			args.RetVal = true;
-
+				args.RetVal = true;
 			}
 		}
 		

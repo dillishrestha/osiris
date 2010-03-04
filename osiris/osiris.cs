@@ -264,13 +264,13 @@ namespace osiris
 			verificapermisos(accesoHIS,accesoERP,accesoGENERAL,autorizaHIS,autorizaERP,autorizaGENERAL);
 												 
 			// llamando a los eventos
-			button_registro_admision.Clicked += new EventHandler( on_button_registro_admision_clicked );
+			button_registro_admision.Clicked += new EventHandler(on_button_registro_admision_clicked );
 			button_compras.Clicked += new EventHandler(on_button_compras_clicked);
 			button_almacen.Clicked += new EventHandler(on_button_almacen_clicked);
 			button_recursos_humanos.Clicked += new EventHandler(on_button_recursos_humanos_clicked);
 			button_caja.Clicked += new EventHandler(on_button_caja_clicked );
 			button_costos.Clicked += new EventHandler(on_button_costos_clicked);
-			button_cargos_urgencia.Clicked += new EventHandler( on_button_cargos_urgencia_clicked );
+			button_cargos_urgencia.Clicked += new EventHandler(on_button_cargos_urgencia_clicked );
 			button_agredecimientos.Clicked += new EventHandler(on_button_agredecimientos_clicked);
 			button_ocupacion_hscmty.Clicked += new EventHandler(on_button_ocupacion_osiris_clicked);
 			button_cargos_hospital.Clicked += new EventHandler( on_button_cargos_hospital_clicked );
@@ -288,8 +288,7 @@ namespace osiris
 			button_cambio_contraseña.Clicked += new EventHandler(on_button_cambio_contraseña_clicked);					 							 			
 			button_herramientas.Clicked += new EventHandler(on_button_herramientas_clicked);		
 						
-			button_farmacia.Clicked += new EventHandler(on_button_farmacia_clicked);
-			
+			button_farmacia.Clicked += new EventHandler(on_button_farmacia_clicked);			
 			 			
 			//button_nutricion.Clicked += new EventHandler(on_button_nutricion_clicked);
 			//button_hemodialisis.Clicked += new EventHandler(on_button_hemodialisis_clicked);

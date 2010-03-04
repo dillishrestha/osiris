@@ -147,7 +147,7 @@ namespace osiris
 			descsubalmacen =_descsubalmacen_;
 			tipoalmacen = tipoalmacen_;   // 1 = inventario sub-almacenes   2 = Traspasos de Sub-Almacenes   3 = AMBOS para almacen general
 			connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
-			nombrebd = conexion_a_DB._nombrebd;			
+			nombrebd = conexion_a_DB._nombrebd;
 			
 			Glade.XML gxml = new Glade.XML (null, "hospitalizacion.glade", "inventario_sub_almacenes", null);
 			gxml.Autoconnect (this);

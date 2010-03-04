@@ -11,46 +11,46 @@ namespace osiris
 {	
 	public class rpt_detalle_empleados
 	{
-		public string contrato_empleado;
-		public string appaterno;
-		public string apmaterno;
-		public string nom1;
-		public string nom2;
-		public string dia_nac;
-		public string mes_nac;
-		public string anno_nac;
-		public string lugar_nac;
-		public string rfc_empleado;
-		public string curp_empleado;
-		public string imss_empleado;
-		public string infonavit_empleado;
-		public string afore_empleado;
-		public string residencia_empleado;
-		public string nom_padre;
-		public string nom_madre;
-		public string calle_empleado;
-		public string codigo_postal;
-		public string colonia_empleado;
-		public string tel1;
-		public string notas_empleado;
-		public string dia_ingreso;
-		public string mes_ingreso;
-		public string anno_ingreso;
-		public string contrato;
-		public string nombrepuesto;
-		public string depto_empleado;
-		public string id_empleado;
-		public string edad;
-		public string puesto;
-		public string numcalle_empleado;
-		public string tmp_estado_civil;
-		public string tmp_municipios;
-		public string tmp_estado;
-		public string var_tipo_casa;
-		public string tipo_contrato_oculta;
-		public string tipo_pago_oculta;
-		public string sueldo_actual_oculta;
-		public string locker;
+		string contrato_empleado;
+		string appaterno;
+		string apmaterno;
+		string nom1;
+		string nom2;
+		string dia_nac;
+		string mes_nac;
+		string anno_nac;
+		string lugar_nac;
+		string rfc_empleado;
+		string curp_empleado;
+		string imss_empleado;
+		string infonavit_empleado;
+		string afore_empleado;
+		string residencia_empleado;
+		string nom_padre;
+		string nom_madre;
+		string calle_empleado;
+		string codigo_postal;
+		string colonia_empleado;
+		string tel1;
+		string notas_empleado;
+		string dia_ingreso;
+		string mes_ingreso;
+		string anno_ingreso;
+		string contrato;
+		string nombrepuesto;
+		string depto_empleado;
+		string id_empleado;
+		string edad;
+		string puesto;
+		string numcalle_empleado;
+		string tmp_estado_civil;
+		string tmp_municipios;
+		string tmp_estado;
+		string var_tipo_casa;
+		string tipo_contrato_oculta;
+		string tipo_pago_oculta;
+		string sueldo_actual_oculta;
+		string locker;
 		
 		public rpt_detalle_empleados(string contrato_empleado_, string appaterno_, string apmaterno_,string nom1_,string nom2_,string dia_nac_,string mes_nac_,string anno_nac_,
 		                     string lugar_nac_,string rfc_empleado_,string curp_empleado_,string imss_empleado_,string infonavit_empleado_,
@@ -62,9 +62,6 @@ namespace osiris
 		                     string tmp_estado_,string var_tipo_casa_,
 		                     string tipo_contrato_oculta_,string tipo_pago_oculta_,string locker_,
 		                     string sueldo_actual_oculta_)
-		
-		
-		
 		{
 			contrato_empleado = contrato_empleado_;
 			appaterno = appaterno_;

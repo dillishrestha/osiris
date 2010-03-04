@@ -16,118 +16,117 @@ namespace osiris
 {
 	public class rpt_historia_clinica
 	{
-		public string connectionString = "Server=localhost;" +
-						"Port=5432;" +
-						 "User ID=admin;" +
-						"Password=1qaz2wsx;";
-						
-		public string nombrebd;
-		public string LoginEmpleado;
-    	public string NomEmpleado;
-    	public string AppEmpleado;
-    	public string ApmEmpleado;
+		string connectionString;						
+		string nombrebd;
+		string LoginEmpleado;
+    	string NomEmpleado;
+    	string AppEmpleado;
+    	string ApmEmpleado;
 		
 		//Entrys:
-		public int foliodeservicio;
-		public string pid_paciente;
-		public string fpp;
-		public string fum;
-		public string fup;
-		public string fecha_admision;
-		public string fecha_nacimiento;
+		int foliodeservicio;
+		string pid_paciente;
+		string fpp;
+		string fum;
+		string fup;
+		string fecha_admision;
+		string fecha_nacimiento;
 		
-		public string nombre_paciente;
-		public string edad_paciente;
-		public string enfermedad_padre;
-		public string enfermedad_madre;
-		public string enfermedad_hermanos;
-		public string enfermedad_hijos;
-		public string enfermedad_apaternos;
-		public string enfermedad_amaternos;
-		public string otros_ahf; 
-		public string tipo_casahabit;
-		public string observaciones;
-		public string medicamentos;
-		public string otros_app;
-        public string ivsa;
-		public string ritmo;
-		public string contracepcion;
-		public string pap; 
-		public string otros_ago;
-		public string perinatales;
-		public int peso;
-		public string patologicos;
-		public string alumbramiento; 
-		public string infecciones;
-		public string cirugias;
-		public string alergias;
-		public string hospitalizaciones;
-		public string traumatismos;
-		public string inmunizaciones;
-		public string des_psicomotor;
-		public string otros_hcp; 
+		string nombre_paciente;
+		string edad_paciente;
+		string enfermedad_padre;
+		string enfermedad_madre;
+		string enfermedad_hermanos;
+		string enfermedad_hijos;
+		string enfermedad_apaternos;
+		string enfermedad_amaternos;
+		string otros_ahf; 
+		string tipo_casahabit;
+		string observaciones;
+		string medicamentos;
+		string otros_app;
+        string ivsa;
+		string ritmo;
+		string contracepcion;
+		string pap; 
+		string otros_ago;
+		string perinatales;
+		int peso;
+		string patologicos;
+		string alumbramiento; 
+		string infecciones;
+		string cirugias;
+		string alergias;
+		string hospitalizaciones;
+		string traumatismos;
+		string inmunizaciones;
+		string des_psicomotor;
+		string otros_hcp; 
 		 //SpinButtons:
-		public int edad_madre;
-		public int edad_padre;
-		public int novivos_hermanos;
-		public int novivos_hijos;
-		public int novivos_amaternos;
-		public int novivos_apaternos;
-		public int nomuertos_hermanos;
-		public int nomuertos_hijos;
-		public int nomuertos_apaternos;
-		public int nomuertos_amaternos;
-		public int menarca;
-		public int aborto;
-		public int cesarea;
-		public int gestacion;
-		public int parto;
-		public int ed_madre;
-		public int edad_gestional;
-		public int no_embarazo;
+		int edad_madre;
+		int edad_padre;
+		int novivos_hermanos;
+		int novivos_hijos;
+		int novivos_amaternos;
+		int novivos_apaternos;
+		int nomuertos_hermanos;
+		int nomuertos_hijos;
+		int nomuertos_apaternos;
+		int nomuertos_amaternos;
+		int menarca;
+		int aborto;
+		int cesarea;
+		int gestacion;
+		int parto;
+		int ed_madre;
+		int edad_gestional;
+		int no_embarazo;
 		//Combobox:
-		public string vivomuertopadre;
-		public string vivomuertomadre;
-		public string pntabaquismo;
-		public string pnalcoholismo;
-		public string pndrogas;
-		public string pncronicodegenerativos;
-		public string pnhospitalizaciones;
-		public string pnquirurgicos;
-		public string pnalergicos;
-		public string pntraumaticos;
-		public string pnneurologicos;
+		string vivomuertopadre;
+		string vivomuertomadre;
+		string pntabaquismo;
+		string pnalcoholismo;
+		string pndrogas;
+		string pncronicodegenerativos;
+		string pnhospitalizaciones;
+		string pnquirurgicos;
+		string pnalergicos;
+		string pntraumaticos;
+		string pnneurologicos;
 		//FICHA DE IDENTIDAD
-		public string sexo;
-		public string estado_civil;
-		public string lugar_origen;
-		public string religion ;
-		public string escolaridad ;
-		public string ocupacion;
-		public string residencia_actual;
+		string sexo;
+		string estado_civil;
+		string lugar_origen;
+		string religion ;
+		string escolaridad ;
+		string ocupacion;
+		string residencia_actual;
 		
-		public string obsercronicodegenerativo;
-		public string obseralergicos;
-		public string obserhospitalizaciones;
-		public string obsertraumaticos;
-		public string obserquirurgicos;
-		public string obserneurologicos; 
+		string obsercronicodegenerativo;
+		string obseralergicos;
+		string obserhospitalizaciones;
+		string obsertraumaticos;
+		string obserquirurgicos;
+		string obserneurologicos; 
 		
 		//Declaracion de ventana de error:
 		protected Gtk.Window MyWinError;
 		protected Gtk.Window MyWin;
 		
+		class_conexion conexion_a_DB = new class_conexion();
+		
 		public rpt_historia_clinica(string pid_paciente_,string nombre_paciente_,string nombrebd_,string fpp_,string fum_,string fup_,string edad_paciente_,string fecha_admision_,string fecha_nacimiento_)
 		{
 			pid_paciente = pid_paciente_;
 			nombre_paciente = nombre_paciente_;
-			nombrebd = nombrebd_;
 			fpp = fpp_;
 			fum = fum_;
 			fup = fup_;
 			edad_paciente = edad_paciente_;
 			fecha_admision = fecha_admision_;
 			fecha_nacimiento = fecha_nacimiento_;
+			connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
+			nombrebd = conexion_a_DB._nombrebd;
 			
 			Gnome.PrintJob    trabajo   = new Gnome.PrintJob(Gnome.PrintConfig.Default());
         	Gnome.PrintDialog dialogo   = new Gnome.PrintDialog(trabajo, "historia clinica del paciente", 0);
@@ -194,10 +193,10 @@ namespace osiris
 				NpgsqlCommand comando1;
 				comando1 = conexion1.CreateCommand ();
 				comando1.CommandText ="SELECT * "+
-					                  "FROM hscmty_his_historia_clinica,hscmty_his_paciente,hscmty_erp_cobros_enca "+
-						              "WHERE hscmty_his_paciente.historia_clinica = 'true' "+
-						              "AND hscmty_erp_cobros_enca.pid_paciente = hscmty_his_historia_clinica.pid_paciente "+
-						              "AND hscmty_his_historia_clinica.pid_paciente = '"+pid_paciente+"';";
+					                  "FROM osiris_his_historia_clinica,osiris_his_paciente,osiris_erp_cobros_enca "+
+						              "WHERE osiris_his_paciente.historia_clinica = 'true' "+
+						              "AND osiris_erp_cobros_enca.pid_paciente = osiris_his_historia_clinica.pid_paciente "+
+						              "AND osiris_his_historia_clinica.pid_paciente = '"+pid_paciente+"';";
 				
 			    Console.WriteLine(comando1.CommandText.ToString());
 				
@@ -434,49 +433,49 @@ namespace osiris
 	}
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-public class imprime_pag2
+	public class imprime_pag2
 	{
-		public string connectionString = "Server=localhost;" +
-		              	                 "Port=5432;" +
-				                         "User ID=admin;" +
-				                         "Password=1qaz2wsx;";
-		
-		public string nombrebd;
-		public string LoginEmpleado;
-		public string NomEmpleado;
-		public string AppEmpleado;
-		public string ApmEmpleado;
+		string connectionString;		
+		string nombrebd;
+		string LoginEmpleado;
+		string NomEmpleado;
+		string AppEmpleado;
+		string ApmEmpleado;
 		
 		//PAGINA2:  
-		public string pid_paciente;
-		public string motivoingreso;
-		public string padecimientoactual;
-		public string ta;
-		public string fc;
-		public string fr;
-		public string temp;
-		public string pso;
-		public string talla; 
-		public string habitus_ext;
-		public string cabeza;
-		public string cuello;
-		public string torax;
-		public string abdomen;
-		public string extremidades;
-		public string genitourinario;
-		public string neurologico; 
-		public string diagnosticos;
-		public string plan_diag;
-		public string nombre_plan_diag;
+		string pid_paciente;
+		string motivoingreso;
+		string padecimientoactual;
+		string ta;
+		string fc;
+		string fr;
+		string temp;
+		string pso;
+		string talla; 
+		string habitus_ext;
+		string cabeza;
+		string cuello;
+		string torax;
+		string abdomen;
+		string extremidades;
+		string genitourinario;
+		string neurologico; 
+		string diagnosticos;
+		string plan_diag;
+		string nombre_plan_diag;
 		
 		//Declaracion de ventana de error:
 		protected Gtk.Window MyWinError;
 		protected Gtk.Window MyWin;
 		//,string ta_,string fc_,string fr_,string temp_,string pso_,string talla_
+		
+		class_conexion conexion_a_DB = new class_conexion();
+		
 		public imprime_pag2(string pid_paciente_,string nombrebd_)
 		{
 			pid_paciente = pid_paciente_;
-			nombrebd = nombrebd_;
+			connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
+			nombrebd = conexion_a_DB._nombrebd;
 			
 			Gnome.PrintJob    trabajo   = new Gnome.PrintJob(Gnome.PrintConfig.Default());
         	Gnome.PrintDialog dialogo   = new Gnome.PrintDialog(trabajo, "historia clinica del paciente Pagina2", 0);
@@ -523,8 +522,8 @@ public class imprime_pag2
 				NpgsqlCommand comando1;
 				comando1 = conexion1.CreateCommand ();
 				comando1.CommandText ="SELECT * "+
-					                  "FROM hscmty_his_historia_clinica "+
-						              "WHERE hscmty_his_historia_clinica.pid_paciente = '"+pid_paciente+"';";
+					                  "FROM osiris_his_historia_clinica "+
+						              "WHERE osiris_his_historia_clinica.pid_paciente = '"+pid_paciente+"';";
 				
 			    Console.WriteLine(comando1.CommandText.ToString());
 				

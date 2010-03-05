@@ -49,6 +49,7 @@ namespace osiris
 		[Widget] Gtk.Button button_guarda = null;
 		[Widget] Gtk.Button button_editar = null;		
 		[Widget] Gtk.Button button_salir = null;
+		[Widget] Gtk.Entry entry_id_proveedor = null;
 		[Widget] Gtk.Entry entry_nombre_proveedor = null;
 		[Widget] Gtk.Entry entry_producto = null;
 		[Widget] Gtk.Entry entry_precio = null;
@@ -59,7 +60,6 @@ namespace osiris
 		[Widget] Gtk.Entry entry_clave = null;
 		[Widget] Gtk.TreeView lista_precios_proveedor = null;
 		[Widget] Gtk.CheckButton checkbutton_aprobar = null;
-		[Widget] Gtk.Entry entry_id_proveedor = null;
 		[Widget] Gtk.Label label_titulo_cantidad = null;
 		[Widget] Gtk.ComboBox combobox_tipo_unidad = null;
 		[Widget] Gtk.Statusbar statusbar_alta_producto = null;
@@ -107,19 +107,19 @@ namespace osiris
 		private TreeStore treeViewEngineBusca2;
 
 		//declaracion de columnas y celdas de treeview de busqueda de productos
-		TreeViewColumn col_idproducto;				CellRendererText cellr0;
+		TreeViewColumn col_idproducto;			CellRendererText cellr0;
 		TreeViewColumn col_desc_producto;		CellRendererText cellr1;
-		TreeViewColumn col_precioprod;				CellRendererText cellrt2;
-		TreeViewColumn col_ivaprod;					CellRendererText cellrt3;
-		TreeViewColumn col_totalprod;				CellRendererText cellrt4;
+		TreeViewColumn col_precioprod;			CellRendererText cellrt2;
+		TreeViewColumn col_ivaprod;				CellRendererText cellrt3;
+		TreeViewColumn col_totalprod;			CellRendererText cellrt4;
 		TreeViewColumn col_descuentoprod;		CellRendererText cellrt5;
 		TreeViewColumn col_preciocondesc;		CellRendererText cellrt6;
-		TreeViewColumn col_stock_actual;			CellRendererText cellrt7;
-		TreeViewColumn col_grupoprod;				CellRendererText cellrt8;
+		TreeViewColumn col_stock_actual;		CellRendererText cellrt7;
+		TreeViewColumn col_grupoprod;			CellRendererText cellrt8;
 		TreeViewColumn col_grupo1prod;			CellRendererText cellrt9;
 		TreeViewColumn col_grupo2prod;			CellRendererText cellrt10;
-		TreeViewColumn col_aplica_iva;				CellRendererText cellrt20;
-		TreeViewColumn col_cobro_activo;			CellRendererText cellrt21;
+		TreeViewColumn col_aplica_iva;			CellRendererText cellrt20;
+		TreeViewColumn col_cobro_activo;		CellRendererText cellrt21;
 		
 		public alta_productos_proveedores(string LoginEmp_, string NomEmpleado_, string AppEmpleado_, string ApmEmpleado_, string nombrebd_) 
 		{
@@ -510,18 +510,18 @@ namespace osiris
 								"colonia_proveedor,municipio_proveedor,estado_proveedor,telefono1_proveedor, "+ 
 								"telefono2_proveedor,celular_proveedor,rfc_proveedor, proveedor_activo, "+
 								"id_proveedor,contacto1_proveedor,mail_proveedor,pagina_web_proveedor,"+
-								"osiris_erp_proveedores.id_forma_de_pago, fax_proveedor "+
+								"osiris_erp_proveedores.id_forma_de_pago,descripcion_forma_de_pago,fax_proveedor "+
 								"FROM osiris_erp_proveedores, osiris_erp_forma_de_pago "+
 								"WHERE osiris_erp_proveedores.id_forma_de_pago = osiris_erp_forma_de_pago.id_forma_de_pago ",				
 								"SELECT descripcion_proveedor,direccion_proveedor,rfc_proveedor,curp_proveedor, "+
 								"colonia_proveedor,municipio_proveedor,estado_proveedor,telefono1_proveedor, "+ 
 								"telefono2_proveedor,celular_proveedor,rfc_proveedor, proveedor_activo, "+
 								"id_proveedor,contacto1_proveedor,mail_proveedor,pagina_web_proveedor, "+
-								"osiris_erp_proveedores.id_forma_de_pago, fax_proveedor "+
+								"osiris_erp_proveedores.id_forma_de_pago,descripcion_forma_de_pago,fax_proveedor "+
 								"FROM osiris_erp_proveedores, osiris_erp_forma_de_pago "+
 								"WHERE osiris_erp_proveedores.id_forma_de_pago = osiris_erp_forma_de_pago.id_forma_de_pago "+
-								"AND descripcion_proveedor LIKE '%"};			
-			classfind_data.buscandor(parametros_objetos,parametros_sql,"find_proveedores"," ORDER BY descripcion_proveedor;","%' ");
+								"AND descripcion_proveedor LIKE '%"};
+			classfind_data.buscandor(parametros_objetos,parametros_sql,"find_proveedores_catalogo_producto"," ORDER BY descripcion_proveedor;","%' ");			
 		}
 
 		void selecciona_fila(object sender, ToggledArgs args)
@@ -768,6 +768,11 @@ namespace osiris
 		}		
 		
 		void on_button_selecciona_clicked(object sender, EventArgs args)
+		{
+			selecciona_proveedor_llena_catalogo();	
+		}
+		
+		void selecciona_proveedor_llena_catalogo()
 		{
 			if ((string) this.entry_id_proveedor.Text == ""){
 				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,

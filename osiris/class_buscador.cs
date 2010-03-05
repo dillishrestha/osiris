@@ -128,7 +128,7 @@ namespace osiris
 			gxml.Autoconnect(this);
 	        //Muestra ventana de Glade
 			buscador.Show();
-			
+						
 			//Console.WriteLine("nº de argumentos: {0}", args.Length);
 			//for (int i = 0; i < args.Length; i++)
         	//Console.WriteLine("args[{0}] = {1} {2}", i, args[i],@args[i]);  
@@ -198,6 +198,11 @@ namespace osiris
 					entry_id_proveedor = (object) args[0] as Gtk.Entry;
 					entry_nombre_proveedor = (object) args[1] as Gtk.Entry;
 					entry_formapago = (object) args[2] as Gtk.Entry;
+				break;
+				
+				case "find_proveedores_catalogo_producto":
+					entry_id_proveedor = (object) args[0] as Gtk.Entry;
+					entry_nombre_proveedor = (object) args[1] as Gtk.Entry;
 				break;
 			}			
 			consulta_sql1 = (string) args_sql[0];
@@ -387,6 +392,23 @@ namespace osiris
 													//(string) lector["fax_proveedor"], //12
 							                        //(int) lector["id_forma_de_pago"]);//13
 							break;
+							
+							case "find_proveedores_catalogo_producto":
+								treeViewEngineBuscador.AppendValues ((int) lector["id_proveedor"],//0
+													(string) lector["descripcion_proveedor"],//1
+							                        (bool) lector["proveedor_activo"], //, // 2
+													(string) lector["direccion_proveedor"],//3
+													(string) lector["colonia_proveedor"],//4
+													(string) lector["municipio_proveedor"],//5
+													(string) lector["estado_proveedor"],//6
+													(string) lector["telefono1_proveedor"],//7
+													(string) lector["contacto1_proveedor"],//8
+													(string) lector["rfc_proveedor"],//9
+													(string) lector["pagina_web_proveedor"],//10
+													(string) lector["descripcion_forma_de_pago"]);//11
+													//(string) lector["fax_proveedor"], //12
+							                        //(int) lector["id_forma_de_pago"]);//13
+							break;
 						}
 					}
 				}catch (NpgsqlException ex){
@@ -468,23 +490,24 @@ namespace osiris
 						togglebutton_editar_grupo2.Sensitive = true;
 						togglebutton_editar_grupo2.Active = false;
 						checkbutton_activar_grupo2.Sensitive = false;
-					break;
-					
+					break;					
 					case "find_centrodecosto":
 						entry_id_centrocosto.Text = tomaid.ToString();
 						entry_descripcion_centrocosto.Text = (string) model.GetValue(iterSelected, 1);
-					break;	
-					
+					break;
 					case "find_marca_producto":
 						entry_idmarca_producto.Text = tomaid.ToString();
 						entry_descripcion_marca_producto.Text = (string) model.GetValue(iterSelected, 1);
 					break;
-					
 					case "find_proveedores":
 						entry_id_proveedor.Text = tomaid.ToString();
 						entry_nombre_proveedor.Text = (string) model.GetValue(iterSelected, 1);
 						entry_formapago.Text = (string) model.GetValue(iterSelected, 11);
-					break;					
+					break;
+					case "find_proveedores_catalogo_producto":
+						entry_id_proveedor.Text = tomaid.ToString();
+						entry_nombre_proveedor.Text = (string) model.GetValue(iterSelected, 1);
+					break;
 				}				
 			}
 			Widget win = (Widget) sender;
@@ -506,5 +529,30 @@ namespace osiris
 			Widget win = (Widget) sender;
 			win.Toplevel.Destroy();
 		}
-	}
+		
+		////////////////////
+		// Selecciona
+		/// <summary>
+		/// //
+		/// </summary>
+		/// <param name="args">
+		/// A <see cref="System.Object"/>
+		/// </param>
+		/// <param name="args_sql">
+		/// A <see cref="System.String"/>
+		/// </param>
+		/// <param name="type_find_">
+		/// A <see cref="System.String"/>
+		/// </param>
+		/// <param name="order_sql_">
+		/// A <see cref="System.String"/>
+		/// </param>
+		/// <param name="comodin_">
+		/// A <see cref="System.String"/>
+		/// </param>
+		public void selecciona(object[] args, string[] args_sql, string type_find_,string order_sql_,string comodin_)
+		{
+		
+		}
+	}	
 }

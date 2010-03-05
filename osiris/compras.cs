@@ -100,7 +100,7 @@ namespace osiris
 		
 		void on_button_ver_ordencompra_clicked(object sender, EventArgs args)
 		{
-			new osiris.consulta_ordenescompra(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
+			new osiris.consulta_ordencompra(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
 		}
 		
 		void on_button_catalogo_proveedores_clicked(object sender, EventArgs args)
@@ -126,53 +126,5 @@ namespace osiris
 			Widget win = (Widget) sender;
 			win.Toplevel.Destroy();
 		}
-	}
-	
-	public class consulta_ordenescompra
-	{
-		// Boton general para salir de las ventanas
-		// Todas la ventanas en glade este boton debe estra declarado identico
-		[Widget] Gtk.Button button_salir;
-		
-		// Declarando ventana de consulta de ordenes de compra
-		[Widget] Gtk.Window consulta_ordenes_compra = null;
-		//consulta_ordenes_compra
-		string LoginEmpleado;
-    	string NomEmpleado;
-    	string AppEmpleado;
-    	string ApmEmpleado;
-		string connectionString;
-		string nombrebd;
-		
-		class_conexion conexion_a_DB = new class_conexion();
-		public consulta_ordenescompra(string LoginEmp_, string NomEmpleado_, string AppEmpleado_, string ApmEmpleado_, string nombrebd_)
-		{
-			LoginEmpleado = LoginEmp_;
-    		NomEmpleado = NomEmpleado_;
-    		AppEmpleado = AppEmpleado_;
-    		ApmEmpleado = ApmEmpleado_;
-    		connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
-			nombrebd = conexion_a_DB._nombrebd;
-    		
-			Glade.XML gxml = new Glade.XML (null, "almacen_costos_compras.glade", "consulta_ordenes_compra", null);
-			gxml.Autoconnect (this);
-			////// Muestra ventana de Glade
-			consulta_ordenes_compra.Show();	
-			// Sale de la ventana
-			button_salir.Clicked += new EventHandler(on_cierraventanas_clicked);
-			crea_treeview_ordencompra();
-		}
-		
-		void crea_treeview_ordencompra()
-		{
-			
-		}
-		
-		// cierra ventanas emergentes
-		void on_cierraventanas_clicked (object sender, EventArgs args)
-		{
-			Widget win = (Widget) sender;
-			win.Toplevel.Destroy();
-		}
-	}
+	}	
 }

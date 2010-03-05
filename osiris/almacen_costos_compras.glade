@@ -14319,7 +14319,7 @@ Proveedor</property>
 			      </child>
 
 			      <child>
-				<widget class="GtkEntry" id="entry15">
+				<widget class="GtkEntry" id="entry_dia_inicio">
 				  <property name="width_request">50</property>
 				  <property name="visible">True</property>
 				  <property name="can_focus">True</property>
@@ -14364,7 +14364,7 @@ Proveedor</property>
 			      </child>
 
 			      <child>
-				<widget class="GtkEntry" id="entry17">
+				<widget class="GtkEntry" id="entry_mes_inicio">
 				  <property name="width_request">50</property>
 				  <property name="visible">True</property>
 				  <property name="can_focus">True</property>
@@ -14409,7 +14409,7 @@ Proveedor</property>
 			      </child>
 
 			      <child>
-				<widget class="GtkEntry" id="entry19">
+				<widget class="GtkEntry" id="entry_ano_inicio">
 				  <property name="width_request">50</property>
 				  <property name="visible">True</property>
 				  <property name="can_focus">True</property>
@@ -14454,7 +14454,7 @@ Proveedor</property>
 			      </child>
 
 			      <child>
-				<widget class="GtkEntry" id="entry21">
+				<widget class="GtkEntry" id="entry_dia_termino">
 				  <property name="width_request">50</property>
 				  <property name="visible">True</property>
 				  <property name="can_focus">True</property>
@@ -14499,7 +14499,7 @@ Proveedor</property>
 			      </child>
 
 			      <child>
-				<widget class="GtkEntry" id="entry16">
+				<widget class="GtkEntry" id="entry_mes_termino">
 				  <property name="width_request">50</property>
 				  <property name="visible">True</property>
 				  <property name="can_focus">True</property>
@@ -14544,7 +14544,7 @@ Proveedor</property>
 			      </child>
 
 			      <child>
-				<widget class="GtkEntry" id="entry20">
+				<widget class="GtkEntry" id="entry_ano_termino">
 				  <property name="width_request">50</property>
 				  <property name="visible">True</property>
 				  <property name="can_focus">True</property>
@@ -14589,7 +14589,7 @@ Proveedor</property>
 			      <property name="spacing">0</property>
 
 			      <child>
-				<widget class="GtkCheckButton" id="checkbutton2">
+				<widget class="GtkCheckButton" id="checkbutton_todos_proveedores">
 				  <property name="visible">True</property>
 				  <property name="can_focus">True</property>
 				  <property name="label" translatable="yes">Todos </property>
@@ -14633,7 +14633,7 @@ Proveedor</property>
 			      </child>
 
 			      <child>
-				<widget class="GtkEntry" id="entry18">
+				<widget class="GtkEntry" id="entry_id_proveedor">
 				  <property name="width_request">10</property>
 				  <property name="visible">True</property>
 				  <property name="can_focus">True</property>
@@ -14653,7 +14653,7 @@ Proveedor</property>
 			      </child>
 
 			      <child>
-				<widget class="GtkEntry" id="entry22">
+				<widget class="GtkEntry" id="entry_nombre_proveedor">
 				  <property name="width_request">350</property>
 				  <property name="visible">True</property>
 				  <property name="can_focus">True</property>
@@ -14673,7 +14673,8 @@ Proveedor</property>
 			      </child>
 
 			      <child>
-				<widget class="GtkButton" id="button28">
+				<widget class="GtkButton" id="button_busca_proveedor">
+				  <property name="width_request">90</property>
 				  <property name="visible">True</property>
 				  <property name="can_focus">True</property>
 				  <property name="relief">GTK_RELIEF_NORMAL</property>
@@ -14752,7 +14753,7 @@ Proveedor</property>
 
 			      <child>
 				<widget class="GtkFixed" id="fixed256">
-				  <property name="width_request">100</property>
+				  <property name="width_request">200</property>
 				  <property name="visible">True</property>
 				</widget>
 				<packing>
@@ -14776,8 +14777,9 @@ Proveedor</property>
 			      <property name="spacing">0</property>
 
 			      <child>
-				<widget class="GtkCheckButton" id="checkbutton3">
+				<widget class="GtkCheckButton" id="checkbutton_oc_recibidas">
 				  <property name="visible">True</property>
+				  <property name="tooltip" translatable="yes">Agrega a tu consulta la O.C. que se han recibido con su correspondiente Factura de Proveedor</property>
 				  <property name="can_focus">True</property>
 				  <property name="label" translatable="yes">Recibidas </property>
 				  <property name="use_underline">True</property>
@@ -14795,8 +14797,9 @@ Proveedor</property>
 			      </child>
 
 			      <child>
-				<widget class="GtkCheckButton" id="checkbutton4">
+				<widget class="GtkCheckButton" id="checkbutton_oc_canceladas">
 				  <property name="visible">True</property>
+				  <property name="tooltip" translatable="yes">Agrega a tu consulta las O.C. Canceladas</property>
 				  <property name="can_focus">True</property>
 				  <property name="label" translatable="yes">Canceladas</property>
 				  <property name="use_underline">True</property>
@@ -14814,29 +14817,11 @@ Proveedor</property>
 			      </child>
 
 			      <child>
-				<widget class="GtkCheckButton" id="checkbutton5">
+				<widget class="GtkCheckButton" id="checkbutton_oc_pendiente">
 				  <property name="visible">True</property>
+				  <property name="tooltip" translatable="yes">Agrega a tu consulta la O.C. que no se han recibido con su Factura de Proveedor</property>
 				  <property name="can_focus">True</property>
 				  <property name="label" translatable="yes">Pendientes</property>
-				  <property name="use_underline">True</property>
-				  <property name="relief">GTK_RELIEF_NORMAL</property>
-				  <property name="focus_on_click">True</property>
-				  <property name="active">False</property>
-				  <property name="inconsistent">False</property>
-				  <property name="draw_indicator">True</property>
-				</widget>
-				<packing>
-				  <property name="padding">0</property>
-				  <property name="expand">False</property>
-				  <property name="fill">False</property>
-				</packing>
-			      </child>
-
-			      <child>
-				<widget class="GtkCheckButton" id="checkbutton6">
-				  <property name="visible">True</property>
-				  <property name="can_focus">True</property>
-				  <property name="label" translatable="yes">checkbutton6</property>
 				  <property name="use_underline">True</property>
 				  <property name="relief">GTK_RELIEF_NORMAL</property>
 				  <property name="focus_on_click">True</property>
@@ -14995,7 +14980,7 @@ Proveedor</property>
 	      <property name="spacing">0</property>
 
 	      <child>
-		<widget class="GtkButton" id="button25">
+		<widget class="GtkButton" id="button_consultar_OC">
 		  <property name="visible">True</property>
 		  <property name="can_focus">True</property>
 		  <property name="relief">GTK_RELIEF_NORMAL</property>
@@ -15039,9 +15024,9 @@ Proveedor</property>
 			  <child>
 			    <widget class="GtkLabel" id="label366">
 			      <property name="visible">True</property>
-			      <property name="label" translatable="yes">_Aplicar</property>
+			      <property name="label" translatable="yes">&lt;b&gt;_Consultar&lt;/b&gt;</property>
 			      <property name="use_underline">True</property>
-			      <property name="use_markup">False</property>
+			      <property name="use_markup">True</property>
 			      <property name="justify">GTK_JUSTIFY_LEFT</property>
 			      <property name="wrap">False</property>
 			      <property name="selectable">False</property>
@@ -15073,14 +15058,14 @@ Proveedor</property>
 	      </child>
 
 	      <child>
-		<widget class="GtkButton" id="button26">
+		<widget class="GtkButton" id="button_imprimir_reporte">
 		  <property name="visible">True</property>
 		  <property name="can_focus">True</property>
 		  <property name="relief">GTK_RELIEF_NORMAL</property>
 		  <property name="focus_on_click">True</property>
 
 		  <child>
-		    <widget class="GtkAlignment" id="alignment126">
+		    <widget class="GtkAlignment" id="alignment142">
 		      <property name="visible">True</property>
 		      <property name="xalign">0.5</property>
 		      <property name="yalign">0.5</property>
@@ -15092,13 +15077,13 @@ Proveedor</property>
 		      <property name="right_padding">0</property>
 
 		      <child>
-			<widget class="GtkHBox" id="hbox253">
+			<widget class="GtkHBox" id="hbox269">
 			  <property name="visible">True</property>
 			  <property name="homogeneous">False</property>
 			  <property name="spacing">2</property>
 
 			  <child>
-			    <widget class="GtkImage" id="image77">
+			    <widget class="GtkImage" id="image93">
 			      <property name="visible">True</property>
 			      <property name="stock">gtk-print</property>
 			      <property name="icon_size">4</property>
@@ -15115,87 +15100,9 @@ Proveedor</property>
 			  </child>
 
 			  <child>
-			    <widget class="GtkLabel" id="label367">
+			    <widget class="GtkLabel" id="label389">
 			      <property name="visible">True</property>
-			      <property name="label" translatable="yes">button26</property>
-			      <property name="use_underline">True</property>
-			      <property name="use_markup">False</property>
-			      <property name="justify">GTK_JUSTIFY_LEFT</property>
-			      <property name="wrap">False</property>
-			      <property name="selectable">False</property>
-			      <property name="xalign">0.5</property>
-			      <property name="yalign">0.5</property>
-			      <property name="xpad">0</property>
-			      <property name="ypad">0</property>
-			      <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
-			      <property name="width_chars">-1</property>
-			      <property name="single_line_mode">False</property>
-			      <property name="angle">0</property>
-			    </widget>
-			    <packing>
-			      <property name="padding">0</property>
-			      <property name="expand">False</property>
-			      <property name="fill">False</property>
-			    </packing>
-			  </child>
-			</widget>
-		      </child>
-		    </widget>
-		  </child>
-		</widget>
-		<packing>
-		  <property name="padding">0</property>
-		  <property name="expand">False</property>
-		  <property name="fill">False</property>
-		</packing>
-	      </child>
-
-	      <child>
-		<widget class="GtkButton" id="button27">
-		  <property name="visible">True</property>
-		  <property name="can_focus">True</property>
-		  <property name="relief">GTK_RELIEF_NORMAL</property>
-		  <property name="focus_on_click">True</property>
-
-		  <child>
-		    <widget class="GtkAlignment" id="alignment127">
-		      <property name="visible">True</property>
-		      <property name="xalign">0.5</property>
-		      <property name="yalign">0.5</property>
-		      <property name="xscale">0</property>
-		      <property name="yscale">0</property>
-		      <property name="top_padding">0</property>
-		      <property name="bottom_padding">0</property>
-		      <property name="left_padding">0</property>
-		      <property name="right_padding">0</property>
-
-		      <child>
-			<widget class="GtkHBox" id="hbox254">
-			  <property name="visible">True</property>
-			  <property name="homogeneous">False</property>
-			  <property name="spacing">2</property>
-
-			  <child>
-			    <widget class="GtkImage" id="image78">
-			      <property name="visible">True</property>
-			      <property name="stock">gtk-print</property>
-			      <property name="icon_size">4</property>
-			      <property name="xalign">0.5</property>
-			      <property name="yalign">0.5</property>
-			      <property name="xpad">0</property>
-			      <property name="ypad">0</property>
-			    </widget>
-			    <packing>
-			      <property name="padding">0</property>
-			      <property name="expand">False</property>
-			      <property name="fill">False</property>
-			    </packing>
-			  </child>
-
-			  <child>
-			    <widget class="GtkLabel" id="label368">
-			      <property name="visible">True</property>
-			      <property name="label" translatable="yes">button27</property>
+			      <property name="label" translatable="yes">_Imprimir</property>
 			      <property name="use_underline">True</property>
 			      <property name="use_markup">False</property>
 			      <property name="justify">GTK_JUSTIFY_LEFT</property>

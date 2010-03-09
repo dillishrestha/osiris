@@ -3,8 +3,9 @@
 // Sistema Hospitalario OSIRIS
 // Monterrey - Mexico
 //
-// Autor    	: ing. Juan Antonio Peña Gonzalez (gjuanzz@gmail.com) 
-// 				  
+// Autor    	: Ing. Juan Antonio Peña Gonzalez (gjuanzz@gmail.com) 
+//				  Ing. Daniel Olivares C. (Adecuaciones y mejoras) arcangeldoc@gmail.com 01/03/2010
+//
 // Licencia		: GLP
 //////////////////////////////////////////////////////////
 //
@@ -62,6 +63,7 @@ namespace osiris
 		[Widget] Gtk.CheckButton checkbutton_nueva_cirugia;
 		[Widget] Gtk.CheckButton checkbutton_copia_productos;
 		[Widget] Gtk.CheckButton checkbutton_cambiar_cirugia;
+		[Widget] Gtk.CheckButton checkbutton_paquete_sino = null;
 		
 		[Widget] Gtk.TreeView lista_de_servicios;
 		//[Widget] Gtk.ProgressBar progressbar_status_llenado;
@@ -90,36 +92,24 @@ namespace osiris
 		[Widget] Gtk.Entry entry_folio;
 		[Widget] Gtk.Button button_carga_productos;
 		
-		
 		//Declarando la barra de estado
-		[Widget] Gtk.Statusbar statusbar_caja;
+		[Widget] Gtk.Statusbar statusbar_caja = null;
 		
 		/////// Ventana Busqueda de productos\\\\\\\\
 		//[Widget] Gtk.Window busca_producto;
-		[Widget] Gtk.TreeView lista_de_producto;
-		[Widget] Gtk.ComboBox combobox_tipo_admision;
+		[Widget] Gtk.TreeView lista_de_producto = null;
+		[Widget] Gtk.ComboBox combobox_tipo_admision = null;
 		
-		[Widget] Gtk.Entry entry_cantidad_aplicada;
-		
-		///////Ventana de Busqueda de cirugias
-		[Widget] Gtk.TreeView lista_cirugia;
-		[Widget] Gtk.Button button_llena_cirugias;
-		
-		TreeStore treeViewEngineBusca;
+		[Widget] Gtk.Entry entry_cantidad_aplicada = null;
+						
 		TreeStore treeViewEngineBusca2;
 		TreeStore treeViewEngineServicio;
 		
 		//private ArrayList arraycargosrealizados;
 		
 		// Declaracion de variables publicas
-		int idtipocirugia = 1;	        			// Toma el valor de numero de atencion de paciente
-		string cirugia;
-		int idtipoesp = 1;
-		string especialidad;
 		string nommedico;
-		
-		float valoriva;
-		
+		float valoriva;		
 		string id_produ = "";
 		string desc_produ = "";
 		string precio_produ ="";
@@ -139,29 +129,25 @@ namespace osiris
 		bool nuevacirugia = false;
 		bool copiaproductos = false;
 		string tipobusqueda = "";
-		bool tienepaquete = false;
-		
+		bool tienepaquete = false;		
 		// Sumas Totales para los calculos
 		float subtotal_al_15;
 		float subtotal_al_0;
 		float total_iva;
 		float sub_total;
-		float totaldescuento;
-		
+		float totaldescuento;		
 		bool aplico_cargos = false;
-		string LoginEmpleado;
-			
+		string LoginEmpleado;			
 		string connectionString;
 		string nombrebd;
-				
-		CellRendererText cel_descripcion;
-		
+					
 		//Declaracion de ventana de error
 		protected Gtk.Window MyWinError;
 		protected Gtk.Window MyWin;
 		
 		class_conexion conexion_a_DB = new class_conexion();
 		class_public classpublic = new class_public();
+		class_buscador classfind_data = new class_buscador();
 		
 		public paquetes_cirugias(string LoginEmp, string NomEmpleado, string AppEmpleado, string ApmEmpleado, string nombrebd_ ) 
 		{
@@ -231,7 +217,9 @@ namespace osiris
 			button_copia_procedimiento.Sensitive = false;
 			checkbutton_copia_productos.Sensitive = false;
 			//checkbutton_nueva_cirugia.Sensitive = false;
+			entry_id_cirugia.IsEditable = false;
 			lista_de_servicios.Sensitive = false;
+			entry_id_cirugia.Text = "0";
 			
 			statusbar_caja.Pop(0);
 			statusbar_caja.Push(1, "login: "+LoginEmpleado+"  |Usuario: "+NomEmpleado+" "+AppEmpleado+" "+ApmEmpleado);
@@ -251,7 +239,6 @@ namespace osiris
 				msgBoxError.Run ();			msgBoxError.Destroy();
 			}else{
 				//Console.WriteLine ("on_selec_id selecciono el ID");
-				idtipocirugia = int.Parse(entry_id_cirugia.Text.ToString());
 				llenado_de_cirugia(entry_id_cirugia.Text );
 			}
 		}
@@ -265,7 +252,6 @@ namespace osiris
 				msgBoxError.Run ();			msgBoxError.Destroy();
 			}else{
 				//Console.WriteLine ("button_actualizar selecciono el ID");
-				idtipocirugia = int.Parse((string) entry_id_cirugia.Text);
 				llenado_de_cirugia( entry_id_cirugia.Text );
 			}
 		}
@@ -341,8 +327,7 @@ namespace osiris
 						checkbutton_nueva_cirugia.Active = false;		//nuevacirugia = false;
 						checkbutton_copia_productos.Active = false;		//copiaproductos = false;
 						limpia_valores();
-						entry_id_cirugia.Text = idtipocirugia.ToString();
-						llenado_de_cirugia(idtipocirugia.ToString());
+						llenado_de_cirugia(entry_id_cirugia.Text.ToString().Trim());
 					}else{
 						if(nuevacirugia == false){ //si nuevacirugia == false hace esto==>
 							//Console.WriteLine("NO guardo solo ACTUALIZO DATOS Y GRABO PRODUCTOS");
@@ -354,8 +339,7 @@ namespace osiris
 							checkbutton_nueva_cirugia.Active = false;		//nuevacirugia = false;
 							checkbutton_copia_productos.Active = false;		//copiaproductos = false;
 							limpia_valores();
-							entry_id_cirugia.Text = idtipocirugia.ToString();
-							llenado_de_cirugia(idtipocirugia.ToString());
+							llenado_de_cirugia(entry_id_cirugia.Text.ToString().Trim());
 						}
 					}
        			}else{///termina el proceso de nuevacirugia == false
@@ -369,11 +353,11 @@ namespace osiris
 		void on_checkbutton_cambiar_cirugia_clicked(object sender, EventArgs args)
 		{
 			if(checkbutton_cambiar_cirugia.Active == true){
-				this.entry_cirugia.Editable = true;
+				this.entry_cirugia.IsEditable = true;
 				this.entry_cirugia.ModifyText(StateType.Normal, new Gdk.Color(16,35,222));
 				this.entry_id_cirugia.Sensitive = false;
 			}else{
-				this.entry_cirugia.Editable = false;
+				this.entry_cirugia.IsEditable = false;
 				this.entry_cirugia.ModifyText(StateType.Normal, new Gdk.Color(0,0,0));
 				this.entry_id_cirugia.Sensitive = true;
 			}
@@ -436,13 +420,13 @@ namespace osiris
 		 							(string) entry_cirugia.Text.ToUpper()+"','"+
 		 							(bool) true+"','"+
 		 							float.Parse(entry_total.Text)+"','"+//entry_a_pagar
-		 							idtipoesp+"','"+
+		 							this.entry_id_especialidad.Text.ToString().Trim()+"','"+
 		 							float.Parse(entry_deposito_minimo.Text)+"','"+
 		 							float.Parse(entry_precio_publico.Text)+"','"+
 		 							int.Parse(entry_dias_internamiento.Text)+"');";
 				//Console.WriteLine("guarda cirugia: "+comando.CommandText.ToString().Substring(0,70)+
 									//"\n"+comando.CommandText.ToString().Substring(71));
-				idtipocirugia = int.Parse(entry_id_cirugia.Text.Trim());
+				
 				comando.ExecuteNonQuery();	    	comando.Dispose();
 		    	}catch (NpgsqlException ex){
 		   			Console.WriteLine ("PostgresSQL error: {0}",ex.Message);
@@ -469,7 +453,7 @@ namespace osiris
 				comando.CommandText = "UPDATE osiris_his_tipo_cirugias SET "+
 									"tiene_paquete = '"+(bool) tienepaquete+"', "+
 		 							"valor_paquete = '"+float.Parse(entry_total.Text)+"', "+//entry_a_pagar
-		 							"id_especialidad = '"+idtipoesp+"', "+
+		 							"id_especialidad = '"+this.entry_id_especialidad.Text.ToString().Trim()+"', "+
 		 							cambia_descripcion_cirugia+
 		 							"dias_internamiento = '"+int.Parse(entry_dias_internamiento.Text)+"', "+
 		 							"deposito_minimo = '"+float.Parse (entry_deposito_minimo.Text )+"', "+
@@ -497,7 +481,7 @@ namespace osiris
 				comando = conexion.CreateCommand ();
 				TreeIter iter;
 				//Console.WriteLine("guarda PRODUCTOS a la cirugia: "+idtipocirugia);
-				if ((int) this.idtipocirugia > 0){  // Validando que seleccione un folio de atencion
+				if ((int) int.Parse(this.entry_id_cirugia.Text) > 0){  // Validando que seleccione un folio de atencion
 					if (treeViewEngineServicio.GetIterFirst (out iter)){
 						if ((bool)lista_de_servicios.Model.GetValue (iter,10) == false){
 							//Console.WriteLine("leeo primer linea"+(string) lista_de_servicios.Model.GetValue(iter,2));
@@ -510,7 +494,7 @@ namespace osiris
 													"id_tipo_admisiones) "+
 													"VALUES ('"+
 													long.Parse((string) lista_de_servicios.Model.GetValue(iter,2))+"','"+
-													idtipocirugia+"','"+
+													this.entry_id_cirugia.Text.ToString().Trim()+"','"+
 													(float) lista_de_servicios.Model.GetValue(iter,1)+"','"+
 													LoginEmpleado+"','"+
 													DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"','"+
@@ -531,7 +515,7 @@ namespace osiris
 														"id_tipo_admisiones) "+
 														"VALUES ('"+
 														long.Parse((string) lista_de_servicios.Model.GetValue(iter,2))+"','"+
-														idtipocirugia+"','"+
+														this.entry_id_cirugia.Text.ToString().Trim()+"','"+
 														(float) lista_de_servicios.Model.GetValue(iter,1)+"','"+
 														LoginEmpleado+"','"+
 														DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"','"+
@@ -557,221 +541,30 @@ namespace osiris
 		
 		void on_button_buscar_cirugia_clicked(object sender, EventArgs args)
 		{
-			Glade.XML gxml = new Glade.XML (null, "registro_admision.glade", "busca_cirugias", null);
-			gxml.Autoconnect (this);
-			tipobusqueda ="cirugia";
-			// Activa la salida de la ventana
-			button_salir.Clicked += new EventHandler(on_cierraventanas_clicked);
-			// Activa la seleccion de cirugia
-			button_selecciona.Clicked += new EventHandler(on_selecciona_cirugia_clicked);
-			// Activa boton de busqueda
-			button_llena_cirugias.Clicked += new EventHandler(on_button_llena_cirugias_clicked);
-	        
-			treeViewEngineBusca = new TreeStore( typeof(int), typeof(string),typeof(string),typeof(string));
-			lista_cirugia.Model = treeViewEngineBusca;
-			
-			lista_cirugia.RulesHint = true;
-			
-			lista_cirugia.RowActivated += on_selecciona_cirugia_clicked;  // Doble click selecciono paciente*/
-			
-			TreeViewColumn col_idcirugia = new TreeViewColumn();
-			CellRendererText cellr0 = new CellRendererText();
-			col_idcirugia.Title = "ID Cirugia"; // titulo de la cabecera de la columna, si está visible
-			col_idcirugia.PackStart(cellr0, true);
-			col_idcirugia.AddAttribute (cellr0, "text", 0);    // la siguiente columna será 1 en vez de 1
-			
-			TreeViewColumn col_descripcirugia = new TreeViewColumn();
-			CellRendererText cellrt1 = new CellRendererText();
-			col_descripcirugia.Title = "Descripcion de Cirugia";
-			col_descripcirugia.PackStart(cellrt1, true);
-			col_descripcirugia.AddAttribute (cellrt1, "text", 1); // la siguiente columna será 1 en vez de 2
-			
-			TreeViewColumn col_tienepaquete = new TreeViewColumn();
-			CellRendererText cellrt2 = new CellRendererText();
-			col_tienepaquete.Title = "Paquete";
-			col_tienepaquete.PackStart(cellrt2, true);
-			col_tienepaquete.AddAttribute (cellrt2, "text", 2); // la siguiente columna será 1 en vez de 2
-			
-			TreeViewColumn col_preciobase = new TreeViewColumn();
-			CellRendererText cellrt3 = new CellRendererText();
-			col_preciobase.Title = "P. Base";
-			col_preciobase.PackStart(cellrt3, true);
-			col_preciobase.AddAttribute (cellrt3, "text", 3); // la siguiente columna será 1 en vez de 2
-			
-			lista_cirugia.AppendColumn(col_idcirugia);
-			lista_cirugia.AppendColumn(col_descripcirugia);
-			lista_cirugia.AppendColumn(col_tienepaquete);
-			lista_cirugia.AppendColumn(col_preciobase);
+			// Los parametros de del SQL siempre es primero cuando busca todo y la otra por expresion
+			// la clase recibe tambien el orden del query
+			// es importante definir que tipo de busqueda es para que los objetos caigan ahi mismo
+			object[] parametros_objetos = {entry_id_cirugia,entry_cirugia,checkbutton_paquete_sino};
+			string[] parametros_sql = {"SELECT id_tipo_cirugia,descripcion_cirugia,tiene_paquete,to_char(valor_paquete,'999999999.99') AS valorpaquete "+
+										"FROM osiris_his_tipo_cirugias ",															
+										"SELECT id_tipo_cirugia,descripcion_cirugia,tiene_paquete,to_char(valor_paquete,'999999999.99') AS valorpaquete "+
+										"FROM osiris_his_tipo_cirugias "+
+										"WHERE descripcion_cirugia LIKE '%"};			
+			classfind_data.buscandor(parametros_objetos,parametros_sql,"find_cirugia_paquetes"," ORDER BY id_tipo_cirugia","%' ");
 		}
 		
 		void on_button_buscar_especialidad_clicked (object sender, EventArgs args)
 		{
-			Glade.XML gxml = new Glade.XML (null, "registro_admision.glade", "busca_cirugias", null);
-			gxml.Autoconnect (this);
-			tipobusqueda ="especialidad";
-			// Activa la salida de la ventana
-			button_salir.Clicked += new EventHandler(on_cierraventanas_clicked);
-			// Activa la seleccion de cirugia
-			button_selecciona.Clicked += new EventHandler(on_selecciona_cirugia_clicked);
-			// Activa boton de busqueda
-			button_llena_cirugias.Clicked += new EventHandler(on_button_llena_cirugias_clicked);
-	        
-			treeViewEngineBusca = new TreeStore( typeof(int), typeof(string));
-			lista_cirugia.Model = treeViewEngineBusca;
-			
-			lista_cirugia.RulesHint = true;
-			
-			lista_cirugia.RowActivated += on_selecciona_cirugia_clicked;  // Doble click selecciono paciente*/
-			
-			TreeViewColumn col_idcirugia = new TreeViewColumn();
-			CellRendererText cellr0 = new CellRendererText();
-			col_idcirugia.Title = "ID Especialidad"; // titulo de la cabecera de la columna, si está visible
-			col_idcirugia.PackStart(cellr0, true);
-			col_idcirugia.AddAttribute (cellr0, "text", 0);    // la siguiente columna será 1 en vez de 1
-			
-			TreeViewColumn col_descripcirugia = new TreeViewColumn();
-			CellRendererText cellrt1 = new CellRendererText();
-			col_descripcirugia.Title = "Especialidad";
-			col_descripcirugia.PackStart(cellrt1, true);
-			col_descripcirugia.AddAttribute (cellrt1, "text", 1); // la siguiente columna será 1 en vez de 2
-			
-			lista_cirugia.AppendColumn(col_idcirugia);
-			lista_cirugia.AppendColumn(col_descripcirugia);
+			// Los parametros de del SQL siempre es primero cuando busca todo y la otra por expresion
+			// la clase recibe tambien el orden del query
+			// es importante definir que tipo de busqueda es para que los objetos caigan ahi mismo
+			object[] parametros_objetos = {entry_id_especialidad,entry_descripcion_especialidad};
+			string[] parametros_sql = {"SELECT * FROM osiris_his_tipo_especialidad ",															
+										"SELECT * FROM osiris_his_tipo_especialidad "+
+										"WHERE descripcion_especialidad LIKE '%"};			
+			classfind_data.buscandor(parametros_objetos,parametros_sql,"find_especialidad_medica"," ORDER BY id_especialidad","%' ");
 		}
-		
-		void on_selecciona_cirugia_clicked (object sender, EventArgs args)
-		{
-			TreeModel model;			TreeIter iterSelected;
-			if (lista_cirugia.Selection.GetSelected(out model, out iterSelected)) {
-				if(tipobusqueda == "cirugia")  {
-					idtipocirugia = (int) model.GetValue(iterSelected, 0);
-					cirugia = (string) model.GetValue(iterSelected, 1);
-					entry_id_cirugia.Text = idtipocirugia.ToString(); 
-					entry_cirugia.Text = cirugia;
-					llenado_de_cirugia(idtipocirugia.ToString());
-					// cierra la ventana despues que almaceno la informacion en variables
-					Widget win = (Widget) sender;
-					win.Toplevel.Destroy();
-				}
-				if(tipobusqueda == "especialidad") {
-					idtipoesp  = (int) model.GetValue(iterSelected, 0);
-					especialidad = (string) model.GetValue(iterSelected, 1);
-					entry_id_especialidad.Text = idtipoesp.ToString(); 
-					entry_descripcion_especialidad.Text = especialidad;
-					// cierra la ventana despues que almaceno la informacion en variables
-					Widget win = (Widget) sender;
-					win.Toplevel.Destroy();
-				}
-			}
-		}
-		
-		void on_button_llena_cirugias_clicked(object sender, EventArgs args)
-		{
-			llena_lista_de_busqueda();
-		}
-		
-		void llena_lista_de_busqueda() 
-		{
-			 if(tipobusqueda == "cirugia") {
-				treeViewEngineBusca.Clear();// Limpia el treeview cuando realiza una nueva busqueda
-				NpgsqlConnection conexion; 
-				conexion = new NpgsqlConnection (connectionString+nombrebd);
-           		// Verifica que la base de datos este conectada
-				try{
-					conexion.Open ();
-					NpgsqlCommand comando; 
-					comando = conexion.CreateCommand ();
-	              	if ((string) entry_expresion.Text.ToUpper() == "*")	{
-						comando.CommandText ="SELECT id_tipo_cirugia,descripcion_cirugia,tiene_paquete,to_char(valor_paquete,'999999999.99') AS valorpaquete "+
-											"FROM osiris_his_tipo_cirugias "+
-											"ORDER BY id_tipo_cirugia;";
-					}else{
-						comando.CommandText ="SELECT id_tipo_cirugia,descripcion_cirugia,tiene_paquete,to_char(valor_paquete,'999999999.99') AS valorpaquete FROM osiris_his_tipo_cirugias "+
-											"WHERE descripcion_cirugia LIKE '%"+entry_expresion.Text.ToUpper()+"%' "+
-											"ORDER BY id_tipo_cirugia;";
-					}
-					NpgsqlDataReader lector = comando.ExecuteReader ();
-					string paquete_sino = "";
-					while (lector.Read()){
-						if((bool) lector["tiene_paquete"]){
-							paquete_sino = "ES PAQUETE";
-						}else{
-							paquete_sino = "";
-						}
-						treeViewEngineBusca.AppendValues ((int) lector["id_tipo_cirugia"],
-									(string) lector["descripcion_cirugia"],
-									paquete_sino,
-									(string) lector["valorpaquete"]
-									);//TreeIter iter =
-					}
-				}catch (NpgsqlException ex){
-	   					Console.WriteLine ("PostgresSQL error: {0}",ex.Message);
-	   						MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
-									MessageType.Info,ButtonsType.Close, "PostgresSQL error: {0} ",ex.Message);
-						msgBoxError.Run ();		msgBoxError.Destroy();
-				}
-				conexion.Close ();
-			}
-			if(tipobusqueda =="especialidad") {
-				treeViewEngineBusca.Clear();// Limpia el treeview cuando realiza una nueva busqueda
-				NpgsqlConnection conexion; 
-				conexion = new NpgsqlConnection (connectionString+nombrebd);
-           		// Verifica que la base de datos este conectada
-				try{
-						conexion.Open ();
-						NpgsqlCommand comando; 
-						comando = conexion.CreateCommand ();
-		              	if ((string) entry_expresion.Text.ToUpper() == "*")	{
-							comando.CommandText ="SELECT * FROM osiris_his_tipo_especialidad "+
-												" ORDER BY id_especialidad;";
-						}else{
-							comando.CommandText ="SELECT * FROM osiris_his_tipo_especialidad "+
-												"WHERE descripcion_especialidad LIKE '%"+entry_expresion.Text.ToUpper()+"%' "+
-												" ORDER BY id_especialidad;";
-						}
-						NpgsqlDataReader lector = comando.ExecuteReader ();
-						while (lector.Read())	{
-							treeViewEngineBusca.AppendValues ((int) lector["id_especialidad"],(string) lector["descripcion_especialidad"]);//TreeIter iter =
-						}
-					}catch (NpgsqlException ex){
-		   					Console.WriteLine ("PostgresSQL error: {0}",ex.Message);
-		   						MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
-										MessageType.Info,ButtonsType.Close, "PostgresSQL error: {0} ",ex.Message);
-							msgBoxError.Run ();		msgBoxError.Destroy();
-					}
-				conexion.Close ();
-			}
-			if(tipobusqueda =="medico") {
-				treeViewEngineBusca.Clear();// Limpia el treeview cuando realiza una nueva busqueda
-				NpgsqlConnection conexion; 
-				conexion = new NpgsqlConnection (connectionString+nombrebd);
-           		// Verifica que la base de datos este conectada
-				try{
-						conexion.Open ();
-						NpgsqlCommand comando; 
-						comando = conexion.CreateCommand ();
-		              	if ((string) entry_expresion.Text.ToUpper() == "*")	{
-							comando.CommandText ="SELECT * FROM osiris_his_medicos "+
-												" ORDER BY id_medico;";
-						}else{
-							comando.CommandText ="SELECT * FROM osiris_his_medicos "+
-												"WHERE nombre_medico LIKE '%"+entry_expresion.Text.ToUpper()+"%' "+
-												" ORDER BY id_medico;";
-						}
-						NpgsqlDataReader lector = comando.ExecuteReader ();
-						while (lector.Read())	{
-							treeViewEngineBusca.AppendValues ((int) lector["id_medico"],(string) lector["nombre_medico"]);//TreeIter iter =
-						}
-					}catch (NpgsqlException ex){
-		   					Console.WriteLine ("PostgresSQL error: {0}",ex.Message);
-		   						MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
-										MessageType.Info,ButtonsType.Close, "PostgresSQL error: {0} ",ex.Message);
-							msgBoxError.Run ();		msgBoxError.Destroy();
-					}
-				conexion.Close ();
-			}
-		}
-		
+				
 		void on_button_copia_procedimiento_clicked(object sender, EventArgs args)
 		{
 			Glade.XML gxml = new Glade.XML (null, "registro_admision.glade", "carga_folio", null);
@@ -1300,16 +1093,14 @@ namespace osiris
 				//Console.WriteLine("query llenado cirugia: "+comando.CommandText.ToString());				
 				NpgsqlDataReader lector = comando.ExecuteReader ();
 				
-				if(lector.Read())
-				{
-					idtipocirugia = int.Parse(idcirugia);
-					idtipoesp = int.Parse((string) lector["idespecialidad"]);
-					entry_cirugia.Text = (string) lector["descripcion_cirugia"];
-					entry_dias_internamiento.Text = (string) lector["diasinternamiento"];
-	           		entry_id_especialidad.Text = (string) lector["idespecialidad"];
-	           		entry_descripcion_especialidad.Text = (string) lector["descripcion_especialidad"];
-	           		entry_precio_publico.Text = (string) lector["precioventa"];
-	           		entry_deposito_minimo.Text = (string) lector["depominimo"];
+				if(lector.Read()){
+					entry_cirugia.Text = (string) lector["descripcion_cirugia"].ToString().Trim();
+					entry_dias_internamiento.Text = (string) lector["diasinternamiento"].ToString().Trim();
+	           		entry_id_especialidad.Text = (string) lector["idespecialidad"].ToString().Trim();
+	           		entry_descripcion_especialidad.Text = (string) lector["descripcion_especialidad"].ToString().Trim();
+	           		entry_precio_publico.Text = (string) lector["precioventa"].ToString().Trim();
+	           		entry_deposito_minimo.Text = (string) lector["depominimo"].ToString().Trim();
+					//checkbutton_paquete_sino.Active = false;
 	           		llenado_de_material_aplicado( idcirugia);
 	           	}else{
 	           		MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
@@ -1340,7 +1131,7 @@ namespace osiris
 			///////RESTABLESCO VALORES A LOS PREDETERMINADOS\\\\\\\\\\\\\\\\\\
 			//entry_id_cirugia.Sensitive = true;
 			entry_cirugia.Sensitive = true;
-			entry_cirugia.Editable = false;
+			entry_cirugia.IsEditable = false;
 			entry_id_especialidad.Sensitive = true;
 			entry_descripcion_especialidad.Sensitive = true;
 			entry_dias_internamiento.Sensitive = true;
@@ -1421,16 +1212,16 @@ namespace osiris
 						
 						treeViewEngineServicio.AppendValues (toma_descrip_prod,//0
 															toma_cantaplicada,//1
-															(string) lector["idproducto"],//2
-															(string) lector["preciopublico"],//3
-															ppcantidad.ToString("F").PadLeft(10),//4
-															calculo_del_iva_producto.ToString("F") ,//5
-															toma_subtotal.ToString("F"),//6
+															(string) lector["idproducto"].ToString().Trim(),//2
+															(string) lector["preciopublico"].ToString().Trim(),//3
+															ppcantidad.ToString("F").PadLeft(10).ToString().Trim(),//4
+															calculo_del_iva_producto.ToString("F").Trim() ,//5
+															toma_subtotal.ToString("F").Trim(),//6
 															(string) lector["id_empleado"],//7
 															(string) lector["fechcreacion"],//8
 															(string) lector["descripcion_admisiones"],//9
 															(bool) true,//10
-															(string) lector["secuencia"],//11
+															(string) lector["secuencia"].ToString().Trim(),//11
 															(int) lector["id_tipo_admisiones"]);//12
 					}
 				}
@@ -1641,7 +1432,7 @@ namespace osiris
 		
 		public void limpia_valores()
 		{	
-			this.entry_id_cirugia.Text = "";
+			this.entry_id_cirugia.Text = "0";
 			this.entry_cirugia.Text = "";
 			this.entry_id_especialidad.Text = "";
 			this.entry_descripcion_especialidad.Text = "";
@@ -1657,6 +1448,7 @@ namespace osiris
 				this.entry_subtotal.Text = "0.00";
 				this.entry_precio_publico.Text = "0.00";
 			}
+			this.checkbutton_paquete_sino.Active = false;
 		}
 		
 		void on_checkbutton_nueva_cirugia_clicked(object sender, EventArgs args)
@@ -1676,7 +1468,12 @@ namespace osiris
 					nuevacirugia = true; //Console.WriteLine("nuevacirugia = "+ nuevacirugia);
 				}else{
 					checkbutton_nueva_cirugia.Active = false;
+					button_buscar_cirugia.Sensitive = true;
+					button_selec_id.Sensitive = true;
 				}
+			}else{
+				button_buscar_cirugia.Sensitive = true;
+				button_selec_id.Sensitive = true;
 			}
 			if(checkbutton_nueva_cirugia.Active == false){
 				checkbutton_copia_productos.Active = false;
@@ -1688,7 +1485,7 @@ namespace osiris
 		{
 			//entry_id_cirugia.Sensitive = !valor;
 			entry_cirugia.Sensitive = valor;
-			entry_cirugia.Editable = valor;
+			entry_cirugia.IsEditable = valor;
 			entry_id_especialidad.Sensitive = valor;
 			entry_descripcion_especialidad.Sensitive = valor;
 			entry_dias_internamiento.Sensitive = valor;

@@ -2360,9 +2360,9 @@ namespace osiris
 				entry_fecha_solicitud_res.Text = DateTime.Now.ToString("yyyy-MM-dd");
 				entry_hora_solicitud_res.Text = DateTime.Now.ToString("HH:mm");			
 				entry_folio_laboratorio_res.Text = "";
-				entry_fecha_solicitud_res.Editable = true;
-				entry_hora_solicitud_res.Editable = true;			
-				entry_folio_laboratorio_res.Editable = true;
+				entry_fecha_solicitud_res.IsEditable = true;
+				entry_hora_solicitud_res.IsEditable = true;			
+				entry_folio_laboratorio_res.IsEditable = true;
 			}
 			
 			//SE LLENA EL COMBO BOX	

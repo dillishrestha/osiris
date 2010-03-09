@@ -67,6 +67,8 @@ namespace osiris
     	string NomEmpleado;
     	string AppEmpleado;
     	string ApmEmpleado;
+		int contador_prod_asignados = 0;
+		int contador_prod_noasignad = 0;
     	
     	int ultimaorden = 0;
     	
@@ -130,215 +132,239 @@ namespace osiris
 		
 		void on_button_orden_compra_clicked(object sender, EventArgs args)
 		{
-			ultimaorden = int.Parse(classpublic.lee_ultimonumero_registrado("osiris_erp_ordenes_compras_enca","numero_orden_compra",""));
-			bool variable_paso_01 = true;
-			string variable_paso_02 = "";   // se usa para asignar el proveedor de que se utilizo en la requisicion
-			TreeIter iterSelected;
-			TreeModel model;
-			TreeIter iter;
-			//this.treeViewEngineProductosaComprar.GetSortColumnId(out iterSelected,			
-			if (this.treeViewEngineProductosaComprar.GetIterFirst(out iterSelected)){
-				if ((bool)this.lista_productos_a_comprar.Model.GetValue (iterSelected,0) == true){
-					if (variable_paso_01 == true){
-						NpgsqlConnection conexion1;
-						conexion1 = new NpgsqlConnection (connectionString+nombrebd );
-						// Verifica que la base de datos este conectada
-						try{
-							conexion1.Open ();
-							NpgsqlCommand comando; 
-							comando = conexion1.CreateCommand ();
+			if (contador_prod_asignados != 0 ){
+				MessageDialog msgBox = new MessageDialog (MyWin,DialogFlags.Modal,
+									MessageType.Question,ButtonsType.YesNo,"¿ Esta seguro de CREAR una Nueva ORDEN DE COMPRA ?");
+				ResponseType miResultado = (ResponseType)msgBox.Run ();
+				msgBox.Destroy();
+		 		if (miResultado == ResponseType.Yes){							
+					ultimaorden = int.Parse(classpublic.lee_ultimonumero_registrado("osiris_erp_ordenes_compras_enca","numero_orden_compra",""));
+					bool variable_paso_01 = true;
+					string variable_paso_02 = "";   // se usa para asignar el proveedor de que se utilizo en la requisicion
+					TreeIter iterSelected;
+					TreeModel model;
+					TreeIter iter;
+					//this.treeViewEngineProductosaComprar.GetSortColumnId(out iterSelected,			
+					if (this.treeViewEngineProductosaComprar.GetIterFirst(out iterSelected)){
+						if ((bool)this.lista_productos_a_comprar.Model.GetValue (iterSelected,0) == true){
+							if (variable_paso_01 == true){
+								NpgsqlConnection conexion1;
+								conexion1 = new NpgsqlConnection (connectionString+nombrebd );
+								// Verifica que la base de datos este conectada
+								try{
+									conexion1.Open ();
+									NpgsqlCommand comando; 
+									comando = conexion1.CreateCommand ();
+									
+									comando.CommandText = "INSERT INTO osiris_erp_ordenes_compras_enca ("+
+															"id_proveedor,"+
+			 												"fechahora_creacion,"+
+			 												"fecha_solicitud,"+
+			 												"fecha_de_entrega,"+
+			 												"id_quien_creo,"+
+			 												"lugar_de_entrega,"+
+			 												"embarque,"+
+			 												"condiciones_de_pago,"+
+			 												"descripcion_proveedor,"+
+			 												"numero_requisiciones,"+
+			 												"direccion_proveedor,"+
+			 												"telefonos_proveedor,"+
+			 												"contacto_proveedor,"+
+			 												"correo_electronico,"+
+			 												"rfc_proveedor,"+
+			 												"faxnextel_proveedor,"+
+			 												"numero_orden_compra) "+
+															//"subtotal_orden_compra
+															//iva_orden_compra
+															//total_orden_compra
+			 												"VALUES ('"+
+			 												int.Parse((string) this.lista_productos_a_comprar.Model.GetValue(iterSelected,15))+"','"+//id_prod
+					 										DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"','"+//fechahora_creacion
+					 										DateTime.Now.ToString("yyyy-MM-dd")+"','"+//fechahora_solicitud
+					 										this.entry_ano.Text+"-"+this.entry_mes.Text+"-"+this.entry_dia.Text+"','"+
+					 										LoginEmpleado+"','"+//id_empleado
+					 										"HOSPITAL"+"','"+
+					 										"SU CONDUCTO"+"','"+
+					 										this.entry_formapago.Text+"','"+
+			 												(string) lista_productos_a_comprar.Model.GetValue(iterSelected,12)+"','"+
+			 												(string) lista_productos_a_comprar.Model.GetValue(iterSelected,2).ToString().Trim()+"','"+
+			 												(string) lista_productos_a_comprar.Model.GetValue(iterSelected,16)+"','"+
+			 												(string) lista_productos_a_comprar.Model.GetValue(iterSelected,17)+"','"+
+			 												(string) lista_productos_a_comprar.Model.GetValue(iterSelected,18)+"','"+
+			 												(string) lista_productos_a_comprar.Model.GetValue(iterSelected,19)+"','"+
+			 												(string) lista_productos_a_comprar.Model.GetValue(iterSelected,20)+"','"+
+			 												(string) lista_productos_a_comprar.Model.GetValue(iterSelected,21)+"','"+
+			 													 												
+			 												this.ultimaorden.ToString()+
+		
+			 												"');";
+									//Console.WriteLine(comando.CommandText);							
+									comando.ExecuteNonQuery(); 	    comando.Dispose();
+									variable_paso_01 = false;
+									
+								}catch (NpgsqlException ex){
+									MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+																		MessageType.Error, 
+																		ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
+									msgBoxError.Run ();
+								}
+							}	
 							
-							comando.CommandText = "INSERT INTO osiris_erp_ordenes_compras_enca ("+
-													"id_proveedor,"+
-	 												"fechahora_creacion,"+
-	 												"fecha_solicitud,"+
-	 												"fecha_de_entrega,"+
-	 												"id_quien_creo,"+
-	 												"lugar_de_entrega,"+
-	 												"embarque,"+
-	 												"condiciones_de_pago,"+
-	 												"descripcion_proveedor,"+
-	 												"numero_requisiciones,"+
-	 												"direccion_proveedor,"+
-	 												"telefonos_proveedor,"+
-	 												"contacto_proveedor,"+
-	 												"correo_electronico,"+
-	 												"rfc_proveedor,"+
-	 												"faxnextel_proveedor,"+
-	 												"numero_orden_compra) "+
-	 												"VALUES ('"+
-	 												int.Parse((string) this.lista_productos_a_comprar.Model.GetValue(iterSelected,15))+"','"+//id_prod
-			 										DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"','"+//fechahora_creacion
-			 										DateTime.Now.ToString("yyyy-MM-dd")+"','"+//fechahora_solicitud
-			 										this.entry_ano.Text+"-"+this.entry_mes.Text+"-"+this.entry_dia.Text+"','"+
-			 										LoginEmpleado+"','"+//id_empleado
-			 										"HOSPITAL"+"','"+
-			 										"SU CONDUCTO"+"','"+
-			 										this.entry_formapago.Text+"','"+
-	 												(string) lista_productos_a_comprar.Model.GetValue(iterSelected,12)+"','"+
-	 												(string) lista_productos_a_comprar.Model.GetValue(iterSelected,2).ToString().Trim()+"','"+
-	 												(string) lista_productos_a_comprar.Model.GetValue(iterSelected,16)+"','"+
-	 												(string) lista_productos_a_comprar.Model.GetValue(iterSelected,17)+"','"+
-	 												(string) lista_productos_a_comprar.Model.GetValue(iterSelected,18)+"','"+
-	 												(string) lista_productos_a_comprar.Model.GetValue(iterSelected,19)+"','"+
-	 												(string) lista_productos_a_comprar.Model.GetValue(iterSelected,20)+"','"+
-	 												(string) lista_productos_a_comprar.Model.GetValue(iterSelected,21)+"','"+
-	 													 												
-	 												this.ultimaorden.ToString()+
-
-	 												"');";
-							//Console.WriteLine(comando.CommandText);							
-							comando.ExecuteNonQuery(); 	    comando.Dispose();
-							variable_paso_01 = false;
-							
-						}catch (NpgsqlException ex){
-							MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
-																MessageType.Error, 
-																ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
-							msgBoxError.Run ();
-						}
-					}	
+							if(variable_paso_01 == false){
+								// Validando que seleccione un proveedor
+								if (this.entry_id_proveedor.Text.Trim() == ""){
+										variable_paso_02 = (string) this.lista_productos_a_comprar.Model.GetValue (iterSelected,15);
+								}else{
+										variable_paso_02 = this.entry_id_proveedor.Text;
+								}
+								
+								NpgsqlConnection conexion3; 
+								conexion3 = new NpgsqlConnection (connectionString+nombrebd);
+								try{
+									conexion3.Open ();
+									NpgsqlCommand comando3; 
+									comando3 = conexion3.CreateCommand();
+									comando3.CommandText =  "UPDATE osiris_erp_requisicion_deta SET id_quien_compro = ' "+LoginEmpleado+"', "+
+													    "fechahora_compra = '"+DateTime.Now.ToString("yyyy-MM-dd")+"', "+
+													    "comprado = 'true', "+
+													    "id_proveedor = '"+variable_paso_02+"', "+
+													    "numero_orden_compra = '"+this.ultimaorden.ToString()+"',"+
+														//"cantidad_comprada = '"+  +"',"+
+														//precio_proveedor_1 = '"+  +"',"+
+														//id_proveedor1 = '"+  +"',"+
+														//costo_producto = '"+  +"',"+
+														"precio_costo_prov_selec ='"+(string) this.lista_productos_a_comprar.Model.GetValue (iterSelected,10).ToString().Trim()+"',"+
+														"precio_unitario_prov_selec ='"+(string) this.lista_productos_a_comprar.Model.GetValue (iterSelected,11).ToString().Trim()+"' "+
+									                    "WHERE id_requisicion ='"+(string) this.lista_productos_a_comprar.Model.GetValue (iterSelected,2).ToString().Trim()+"' "+
+									                    "AND id_producto ='"+(string) this.lista_productos_a_comprar.Model.GetValue (iterSelected,6).ToString().Trim()+"' ;"; 
+									Console.WriteLine(comando3.CommandText);
+									comando3.ExecuteNonQuery();
+									comando3.Dispose();																	
+								}catch (NpgsqlException ex){
+									MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+								                                               MessageType.Error, 
+								                                               ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
+									msgBoxError.Run ();
+								}
+								conexion3.Close();
+							}					
+						}	
+					}
 					
-					if(variable_paso_01 == false){
-						// Validando que seleccione un proveedor
-						if (this.entry_id_proveedor.Text.Trim() == ""){
-								variable_paso_02 = (string) this.lista_productos_a_comprar.Model.GetValue (iterSelected,15);
-						}else{
-								variable_paso_02 = this.entry_id_proveedor.Text;
-						}
-						
-						NpgsqlConnection conexion3; 
-						conexion3 = new NpgsqlConnection (connectionString+nombrebd);
-						try{
-							conexion3.Open ();
-							NpgsqlCommand comando3; 
-							comando3 = conexion3.CreateCommand();
-							comando3.CommandText =  "UPDATE osiris_erp_requisicion_deta SET id_quien_compro = ' "+LoginEmpleado+"', "+
-											    "fechahora_compra = '"+DateTime.Now.ToString("yyyy-MM-dd")+"', "+
-											    "comprado = 'true', "+
-											    "id_proveedor = '"+variable_paso_02+"', "+
-											    "numero_orden_compra = '"+this.ultimaorden.ToString()+"' "+
-							                    "WHERE id_requisicion ='"+(string) this.lista_productos_a_comprar.Model.GetValue (iterSelected,2)+"' "+
-							                    "AND id_producto ='"+(string) this.lista_productos_a_comprar.Model.GetValue (iterSelected,6)+"' ;"; 
-							    
-							comando3.ExecuteNonQuery();
-							comando3.Dispose();																	
-						}catch (NpgsqlException ex){
-							MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
-						                                               MessageType.Error, 
-						                                               ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
-							msgBoxError.Run ();
-						}
-						conexion3.Close();
-					}					
-				}	
-			}
-			
-			while (this.treeViewEngineProductosaComprar.IterNext(ref iterSelected)){							
-				if ((bool)this.lista_productos_a_comprar.Model.GetValue (iterSelected,0) == true){
-					if (variable_paso_01 == true){
-						NpgsqlConnection conexion1;
-						conexion1 = new NpgsqlConnection (connectionString+nombrebd );
-						// Verifica que la base de datos este conectada
-						try{
-							conexion1.Open ();
-							NpgsqlCommand comando; 
-							comando = conexion1.CreateCommand ();
+					while (this.treeViewEngineProductosaComprar.IterNext(ref iterSelected)){							
+						if ((bool)this.lista_productos_a_comprar.Model.GetValue (iterSelected,0) == true){
+							if (variable_paso_01 == true){
+								NpgsqlConnection conexion1;
+								conexion1 = new NpgsqlConnection (connectionString+nombrebd );
+								// Verifica que la base de datos este conectada
+								try{
+									conexion1.Open ();
+									NpgsqlCommand comando; 
+									comando = conexion1.CreateCommand ();
+									
+									comando.CommandText = "INSERT INTO osiris_erp_ordenes_compras_enca ("+
+															"id_proveedor,"+
+			 												"fechahora_creacion,"+
+			 												"fecha_solicitud,"+
+			 												"fecha_de_entrega,"+
+			 												"id_quien_creo,"+
+			 												"lugar_de_entrega,"+
+			 												"embarque,"+
+			 												"condiciones_de_pago,"+
+			 												"descripcion_proveedor,"+
+			 												"numero_requisiciones,"+
+			 												"direccion_proveedor,"+
+			 												"telefonos_proveedor,"+
+			 												"contacto_proveedor,"+
+			 												"correo_electronico,"+
+			 												"rfc_proveedor,"+
+			 												"faxnextel_proveedor,"+
+			 												"numero_orden_compra) "+
+			 												"VALUES ('"+
+			 												int.Parse((string) this.lista_productos_a_comprar.Model.GetValue(iterSelected,15))+"','"+//id_prod
+					 										DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"','"+//fechahora_creacion
+					 										DateTime.Now.ToString("yyyy-MM-dd")+"','"+//fechahora_solicitud
+					 										this.entry_ano.Text+"-"+this.entry_mes.Text+"-"+this.entry_dia.Text+"','"+
+					 										LoginEmpleado+"','"+//id_empleado
+					 										"HOSPITAL"+"','"+
+					 										"SU CONDUCTO"+"','"+
+					 										this.entry_formapago.Text+"','"+
+			 												(string) lista_productos_a_comprar.Model.GetValue(iterSelected,12)+"','"+
+			 												(string) lista_productos_a_comprar.Model.GetValue(iterSelected,2)+"','"+
+			 												(string) lista_productos_a_comprar.Model.GetValue(iterSelected,16)+"','"+
+			 												(string) lista_productos_a_comprar.Model.GetValue(iterSelected,17)+"','"+
+			 												(string) lista_productos_a_comprar.Model.GetValue(iterSelected,18)+"','"+
+			 												(string) lista_productos_a_comprar.Model.GetValue(iterSelected,19)+"','"+
+			 												(string) lista_productos_a_comprar.Model.GetValue(iterSelected,20)+"','"+
+			 												(string) lista_productos_a_comprar.Model.GetValue(iterSelected,21)+"','"+
+			 													 												
+			 												this.ultimaorden.ToString()+
+		
+			 												"');";
+									//Console.WriteLine(comando.CommandText);							
+									comando.ExecuteNonQuery(); 	    comando.Dispose();
+									variable_paso_01 = false;
+									
+								}catch (NpgsqlException ex){
+									MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+																		MessageType.Error, 
+																		ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
+									msgBoxError.Run ();
+								}
+							}	
 							
-							comando.CommandText = "INSERT INTO osiris_erp_ordenes_compras_enca ("+
-													"id_proveedor,"+
-	 												"fechahora_creacion,"+
-	 												"fecha_solicitud,"+
-	 												"fecha_de_entrega,"+
-	 												"id_quien_creo,"+
-	 												"lugar_de_entrega,"+
-	 												"embarque,"+
-	 												"condiciones_de_pago,"+
-	 												"descripcion_proveedor,"+
-	 												"numero_requisiciones,"+
-	 												"direccion_proveedor,"+
-	 												"telefonos_proveedor,"+
-	 												"contacto_proveedor,"+
-	 												"correo_electronico,"+
-	 												"rfc_proveedor,"+
-	 												"faxnextel_proveedor,"+
-	 												"numero_orden_compra) "+
-	 												"VALUES ('"+
-	 												int.Parse((string) this.lista_productos_a_comprar.Model.GetValue(iterSelected,15))+"','"+//id_prod
-			 										DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"','"+//fechahora_creacion
-			 										DateTime.Now.ToString("yyyy-MM-dd")+"','"+//fechahora_solicitud
-			 										this.entry_ano.Text+"-"+this.entry_mes.Text+"-"+this.entry_dia.Text+"','"+
-			 										LoginEmpleado+"','"+//id_empleado
-			 										"HOSPITAL"+"','"+
-			 										"SU CONDUCTO"+"','"+
-			 										this.entry_formapago.Text+"','"+
-	 												(string) lista_productos_a_comprar.Model.GetValue(iterSelected,12)+"','"+
-	 												(string) lista_productos_a_comprar.Model.GetValue(iterSelected,2)+"','"+
-	 												(string) lista_productos_a_comprar.Model.GetValue(iterSelected,16)+"','"+
-	 												(string) lista_productos_a_comprar.Model.GetValue(iterSelected,17)+"','"+
-	 												(string) lista_productos_a_comprar.Model.GetValue(iterSelected,18)+"','"+
-	 												(string) lista_productos_a_comprar.Model.GetValue(iterSelected,19)+"','"+
-	 												(string) lista_productos_a_comprar.Model.GetValue(iterSelected,20)+"','"+
-	 												(string) lista_productos_a_comprar.Model.GetValue(iterSelected,21)+"','"+
-	 													 												
-	 												this.ultimaorden.ToString()+
-
-	 												"');";
-							//Console.WriteLine(comando.CommandText);							
-							comando.ExecuteNonQuery(); 	    comando.Dispose();
-							variable_paso_01 = false;
-							
-						}catch (NpgsqlException ex){
-							MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
-																MessageType.Error, 
-																ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
-							msgBoxError.Run ();
+							if(variable_paso_01 == false){
+								// Validando que seleccione un proveedor
+								if (this.entry_id_proveedor.Text.Trim() == ""){
+										variable_paso_02 = (string) this.lista_productos_a_comprar.Model.GetValue (iterSelected,15);
+								}else{
+										variable_paso_02 = this.entry_id_proveedor.Text;
+								}
+								
+								NpgsqlConnection conexion3; 
+								conexion3 = new NpgsqlConnection (connectionString+nombrebd);
+								try{
+									conexion3.Open ();
+									NpgsqlCommand comando3; 
+									comando3 = conexion3.CreateCommand();
+									comando3.CommandText =  "UPDATE osiris_erp_requisicion_deta SET id_quien_compro = ' "+LoginEmpleado+"', "+
+													    "fechahora_compra = '"+DateTime.Now.ToString("yyyy-MM-dd")+"', "+
+													    "comprado = 'true', "+
+													    "id_proveedor = '"+variable_paso_02+"', "+
+													    "numero_orden_compra = '"+this.ultimaorden.ToString()+"',"+
+														//"cantidad_comprada = '"+  +"',"+
+														//precio_proveedor_1 = '"+  +"',"+
+														//id_proveedor1 = '"+  +"',"+
+														//costo_producto = '"+  +"',"+
+														"precio_costo_prov_selec ='"+(string) this.lista_productos_a_comprar.Model.GetValue (iterSelected,10).ToString().Trim()+"',"+
+														"precio_unitario_prov_selec ='"+(string) this.lista_productos_a_comprar.Model.GetValue (iterSelected,11).ToString().Trim()+"' "+
+									                    "WHERE id_requisicion ='"+(string) this.lista_productos_a_comprar.Model.GetValue (iterSelected,2).ToString().Trim()+"' "+
+									                    "AND id_producto ='"+(string) this.lista_productos_a_comprar.Model.GetValue (iterSelected,6).ToString().Trim()+"' ;"; 
+									Console.WriteLine(comando3.CommandText);    
+									comando3.ExecuteNonQuery();
+									comando3.Dispose();																	
+								}catch (NpgsqlException ex){
+									MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+								                                               MessageType.Error, 
+								                                               ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
+									msgBoxError.Run ();
+								}
+								conexion3.Close();
+							}					
 						}
-					}	
-					
-					if(variable_paso_01 == false){
-						// Validando que seleccione un proveedor
-						if (this.entry_id_proveedor.Text.Trim() == ""){
-								variable_paso_02 = (string) this.lista_productos_a_comprar.Model.GetValue (iterSelected,15);
-						}else{
-								variable_paso_02 = this.entry_id_proveedor.Text;
-						}
-						
-						NpgsqlConnection conexion3; 
-						conexion3 = new NpgsqlConnection (connectionString+nombrebd);
-						try{
-							conexion3.Open ();
-							NpgsqlCommand comando3; 
-							comando3 = conexion3.CreateCommand();
-							comando3.CommandText =  "UPDATE osiris_erp_requisicion_deta SET id_quien_compro = ' "+LoginEmpleado+"', "+
-											    "fechahora_compra = '"+DateTime.Now.ToString("yyyy-MM-dd")+"', "+
-											    "comprado = 'true', "+
-											    "id_proveedor = '"+variable_paso_02+"', "+
-											    "numero_orden_compra = '"+this.ultimaorden.ToString()+"' "+
-												//"cantidad_comprada = '"+  +"',"+
-												//precio_proveedor_1 = '"+  +"',"+
-												//id_proveedor1 = '"+  +"',"+
-							                    "WHERE id_requisicion ='"+(string) this.lista_productos_a_comprar.Model.GetValue (iterSelected,2)+"' "+
-							                    "AND id_producto ='"+(string) this.lista_productos_a_comprar.Model.GetValue (iterSelected,6)+"' ;"; 
-							    
-							comando3.ExecuteNonQuery();
-							comando3.Dispose();																	
-						}catch (NpgsqlException ex){
-							MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
-						                                               MessageType.Error, 
-						                                               ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
-							msgBoxError.Run ();
-						}
-						conexion3.Close();
-					}					
+					}
+				
+					MessageDialog msgBoxError1 = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+								                                               MessageType.Info,ButtonsType.Close, " La ORDEN DE COMPRA se creo CORRECTAMENTE con el Numero :"+ultimaorden.ToString().Trim());
+					msgBoxError1.Run ();			msgBoxError1.Destroy();
+				
+					llena_requiciones_para_comprar();
 				}
+			}else{
+					MessageDialog msgBoxError1 = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+								                                               MessageType.Info,ButtonsType.Close, "ERROR usted no asigno ningun PROVEEDOR...");
+					msgBoxError1.Run ();			msgBoxError1.Destroy();
 			}
-			
-			MessageDialog msgBoxError1 = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
-							                                               MessageType.Info,ButtonsType.Close, " Las ORDEN DE COMPRA SE CREO CORRECTAMENTE");
-			msgBoxError1.Run ();			msgBoxError1.Destroy();
-			
-			llena_requiciones_para_comprar();
 		}
 		
 		void on_imprime_orden_clicked(object sender, EventArgs args)
@@ -363,8 +389,8 @@ namespace osiris
 			TreeIter iter;
 			if (this.treeViewEngineProductosaComprar.GetIterFirst (out iter)){
 				// buscar el producto en el catalogo del proveedor
-				int contador_prod_asignados = 0;
-				int contador_prod_noasignad = 0;
+				contador_prod_asignados = 0;
+				contador_prod_noasignad = 0;
 				NpgsqlConnection conexion; 
 				conexion = new NpgsqlConnection (connectionString+nombrebd);
 				conexion.Open ();
@@ -385,7 +411,7 @@ namespace osiris
                								"WHERE osiris_catalogo_productos_proveedores.id_producto = '"+(string) this.lista_productos_a_comprar.Model.GetValue (iter,6)+"' "+
                								"AND osiris_catalogo_productos_proveedores.id_proveedor = '"+(string) this.entry_id_proveedor.Text+"' "+
                								"AND osiris_catalogo_productos_proveedores.id_proveedor = osiris_erp_proveedores.id_proveedor;";
-               			//Console.WriteLine(comando.CommandText);
+						//Console.WriteLine(comando.CommandText);
 						NpgsqlDataReader lector = comando.ExecuteReader ();
 						
                			if (lector.Read()){
@@ -426,7 +452,7 @@ namespace osiris
                								"WHERE osiris_catalogo_productos_proveedores.id_producto = '"+(string) this.lista_productos_a_comprar.Model.GetValue (iter,6)+"' "+
                								"AND osiris_catalogo_productos_proveedores.id_proveedor = '"+(string) this.entry_id_proveedor.Text+"' "+
                								"AND osiris_catalogo_productos_proveedores.id_proveedor = osiris_erp_proveedores.id_proveedor;";
-							//Console.WriteLine(comando.CommandText);
+							Console.WriteLine(comando.CommandText);
 							NpgsqlDataReader lector = comando.ExecuteReader ();						
                				if (lector.Read()){					
 								this.lista_productos_a_comprar.Model.SetValue(iter,0,true);

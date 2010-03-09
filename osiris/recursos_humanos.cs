@@ -2171,12 +2171,12 @@ namespace osiris
 			this.entry_naci_imp.Text = this.entry_nacionalidad.Text;
 			this.entry_fech_nac_imp.Text = this.entry_dia_nac.Text + "/"+this.entry_mes_nac.Text + "/"+this.entry_anno_nac.Text;
 		
-			this.entry_nomb_imp.Editable = false;
-			this.entry_id_emp_imp.Editable = false;
-			this.entry_direc_imp.Editable = false;
-			this.entry_edad_imp.Editable = false;
-			this.entry_naci_imp.Editable = false;
-			this.entry_fech_nac_imp.Editable = false;
+			this.entry_nomb_imp.IsEditable = false;
+			this.entry_id_emp_imp.IsEditable = false;
+			this.entry_direc_imp.IsEditable = false;
+			this.entry_edad_imp.IsEditable = false;
+			this.entry_naci_imp.IsEditable = false;
+			this.entry_fech_nac_imp.IsEditable = false;
 		
 			button_imp_cont.Clicked += new EventHandler(on_button_imp_cont_clicked);
 			button_imp_reg.Clicked += new EventHandler(on_button_imp_reg_clicked);

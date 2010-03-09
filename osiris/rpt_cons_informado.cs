@@ -379,9 +379,9 @@ namespace osiris
 			    ContextoImp.Show("Direccion: Isaac Garza #200 Ote. Centro Monterrey, NL.");
 			
 				ContextoImp.MoveTo(19.5, 730);
-		    	ContextoImp.Show("Conmutador:(81) 81-25-56-10");
+		    	ContextoImp.Show("Conmutador: ");
 				ContextoImp.MoveTo(20, 730);
-		    	ContextoImp.Show("Conmutador:(81) 81-25-56-10");
+		    	ContextoImp.Show("Conmutador: ");
 		    
 		    	Gnome.Print.Setfont (ContextoImp, fuente);
 				ContextoImp.MoveTo(219.5, 720);

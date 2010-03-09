@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////
 // created on 14/02/2008 at 16:10 p
-// Hospital Santa Cecilia
+// Sistema Hospitalario OSIRIS
 // Monterrey - Mexico
 //
 // Autor    	: Ing. Jesus Buentello G.(Programacion) 
@@ -79,15 +79,15 @@ namespace osiris
 		
 		// Declarando variable de fuente para la impresion
 		// Declaracion de fuentes tipo Bitstream Vera sans
-		Gnome.Font fuente5 = Gnome.Font.FindClosest("Luxi Sans", 5);
+		//Gnome.Font fuente5 = Gnome.Font.FindClosest("Luxi Sans", 5);
 		Gnome.Font fuente6 = Gnome.Font.FindClosest("Luxi Sans", 6);
 		Gnome.Font fuente7 = Gnome.Font.FindClosest("Luxi Sans", 7);
-		Gnome.Font fuente8 = Gnome.Font.FindClosest("Luxi Sans", 8);//Bitstream Vera Sans
+		//Gnome.Font fuente8 = Gnome.Font.FindClosest("Luxi Sans", 8);//Bitstream Vera Sans
 		Gnome.Font fuente9 = Gnome.Font.FindClosest("Luxi Sans", 9);
-		Gnome.Font fuente10 = Gnome.Font.FindClosest("Luxi Sans", 10);
-		Gnome.Font fuente11 = Gnome.Font.FindClosest("Luxi Sans", 11);
-		Gnome.Font fuente12 = Gnome.Font.FindClosest("Luxi Sans", 12);
-		Gnome.Font fuente36 = Gnome.Font.FindClosest("Luxi Sans", 36);
+		//Gnome.Font fuente10 = Gnome.Font.FindClosest("Luxi Sans", 10);
+		//Gnome.Font fuente11 = Gnome.Font.FindClosest("Luxi Sans", 11);
+		//Gnome.Font fuente12 = Gnome.Font.FindClosest("Luxi Sans", 12);
+		//Gnome.Font fuente36 = Gnome.Font.FindClosest("Luxi Sans", 36);
 		
 		string connectionString;
 		
@@ -331,12 +331,12 @@ namespace osiris
 			ContextoImp.MoveTo(230, -60);			ContextoImp.Show("REPORTE PRESUPUESTO GLOBAL");	
 			Gnome.Print.Setfont(ContextoImp,fuente6);
 			
-			ContextoImp.MoveTo(69.7,-30);			ContextoImp.Show("Hospital Santa Cecilia");//19.7, 770
-			ContextoImp.MoveTo(70, -30);			ContextoImp.Show("Hospital Santa Cecilia");
-			ContextoImp.MoveTo(69.7, -40);			ContextoImp.Show("Direccion: Isacc Garza #200 Ote. Centro Monterrey, NL.");
-			ContextoImp.MoveTo(70, -40);			ContextoImp.Show("Direccion: Isacc Garza #200 Ote. Centro Monterrey, NL.");
-			ContextoImp.MoveTo(69.7, -50);			ContextoImp.Show("Conmutador:(81) 81-25-56-10");
-			ContextoImp.MoveTo(70, -50);			ContextoImp.Show("Conmutador:(81) 81-25-56-10");
+			ContextoImp.MoveTo(69.7,-30);			ContextoImp.Show("Sistema Hospitalario OSIRIS");//19.7, 770
+			ContextoImp.MoveTo(70, -30);			ContextoImp.Show("Sistema Hospitalario OSIRIS");
+			ContextoImp.MoveTo(69.7, -40);			ContextoImp.Show("Direccion: ");
+			ContextoImp.MoveTo(70, -40);			ContextoImp.Show("Direccion: ");
+			ContextoImp.MoveTo(69.7, -50);			ContextoImp.Show("Conmutador: ");
+			ContextoImp.MoveTo(70, -50);			ContextoImp.Show("Conmutador: ");
 									
 			Gnome.Print.Setfont(ContextoImp,fuente6);							
 			ContextoImp.MoveTo(65, -70);			ContextoImp.Show("Id");

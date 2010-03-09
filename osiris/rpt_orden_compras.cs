@@ -75,10 +75,10 @@ namespace osiris
 		void ComponerPagina (Gnome.PrintContext ContextoImp, Gnome.PrintJob trabajoImpresion)
 		{
 			// Crear una fuente 
-			Gnome.Font fuente = Gnome.Font.FindClosest("Bitstream Vera Sans", 12);
-			Gnome.Font fuente1 = Gnome.Font.FindClosest("Bitstream Vera Sans", 6);
+			//Gnome.Font fuente = Gnome.Font.FindClosest("Bitstream Vera Sans", 12);
+			//Gnome.Font fuente1 = Gnome.Font.FindClosest("Bitstream Vera Sans", 6);
 			Gnome.Font fuente2 = Gnome.Font.FindClosest("Bitstream Vera Sans", 7);
-			Gnome.Font fuente3 = Gnome.Font.FindClosest("Bitstream Vera Sans", 8);
+			//Gnome.Font fuente3 = Gnome.Font.FindClosest("Bitstream Vera Sans", 8);
 			Gnome.Font fuente5 = Gnome.Font.FindClosestFromWeightSlant("Bitstream Vera Sans", FontWeight.Bold ,false, 12);
 				
 			// ESTA FUNCION ES PARA QUE EL TEXTO SALGA EN NEGRITA			
@@ -116,9 +116,9 @@ namespace osiris
 			Gnome.Print.Setfont(ContextoImp,fuente5);
 			ContextoImp.MoveTo(340.5, -25);	            ContextoImp.Show( titulo+"");
 			Gnome.Print.Setfont(ContextoImp,fuente2);
-			ContextoImp.MoveTo(95, -20);			    ContextoImp.Show("Hospital Santa Cecilia");
-			ContextoImp.MoveTo(95, -30);			    ContextoImp.Show("Direccion: Isacc Garza #200 Ote. Centro Monterrey, NL.");
-			ContextoImp.MoveTo(95, -40);			    ContextoImp.Show("Conmutador:(81) 81-25-56-10");
+			ContextoImp.MoveTo(95, -20);			    ContextoImp.Show("Sistema Hospitalario OSIRIS");
+			ContextoImp.MoveTo(95, -30);			    ContextoImp.Show("Direccion: ");
+			ContextoImp.MoveTo(95, -40);			    ContextoImp.Show("Conmutador: ");
 			
 			Gnome.Print.Setfont(ContextoImp,fuente2);
 			ContextoImp.MoveTo(620, -30);			    ContextoImp.Show("FOLIO:");

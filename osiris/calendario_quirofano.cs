@@ -372,27 +372,27 @@ namespace osiris
 
 		void activa_desactiva_entry(bool activa_desactiva)
 		{
-			entry_cirugia.Editable = activa_desactiva;	
-            entry_id_cirugia.Editable = activa_desactiva;
+			entry_cirugia.IsEditable = activa_desactiva;	
+            entry_id_cirugia.IsEditable = activa_desactiva;
 	        //entry_programacion.Editable = activa_desactiva;
-			entry_dia.Editable = activa_desactiva;
-			entry_mes.Editable = activa_desactiva;
-			entry_año.Editable = activa_desactiva;
-			entry_hora.Editable = activa_desactiva;
-			entry_medico.Editable = activa_desactiva;
-			entry_especialidadmed.Editable = activa_desactiva;
+			entry_dia.IsEditable = activa_desactiva;
+			entry_mes.IsEditable = activa_desactiva;
+			entry_año.IsEditable = activa_desactiva;
+			entry_hora.IsEditable = activa_desactiva;
+			entry_medico.IsEditable = activa_desactiva;
+			entry_especialidadmed.IsEditable = activa_desactiva;
 			//entry_paciente_prog.Editable = activa_desactiva;
-			entry_sexo_prog.Editable = activa_desactiva;
-			entry_edad_prog.Editable = activa_desactiva;
-			entry_diagnostico.Editable = activa_desactiva;
+			entry_sexo_prog.IsEditable = activa_desactiva;
+			entry_edad_prog.IsEditable = activa_desactiva;
+			entry_diagnostico.IsEditable = activa_desactiva;
 			this.combobox_sala_2.Sensitive = activa_desactiva;
-			entry_cirujano.Editable = activa_desactiva;
-	        entry_ayudante.Editable = activa_desactiva;
-	        entry_neonatologo.Editable = activa_desactiva;
-	        entry_anestesiologo.Editable = activa_desactiva;
-	        entry_circulante1.Editable = activa_desactiva;
-			entry_circulante2.Editable = activa_desactiva;
-			entry_internista.Editable = activa_desactiva;
+			entry_cirujano.IsEditable = activa_desactiva;
+	        entry_ayudante.IsEditable = activa_desactiva;
+	        entry_neonatologo.IsEditable = activa_desactiva;
+	        entry_anestesiologo.IsEditable = activa_desactiva;
+	        entry_circulante1.IsEditable = activa_desactiva;
+			entry_circulante2.IsEditable = activa_desactiva;
+			entry_internista.IsEditable = activa_desactiva;
 			entry_tipo_anestecia.Sensitive = false;			
 			button_buscar_cirujano.Sensitive = activa_desactiva;
 			button_buscar_neonatologo.Sensitive = activa_desactiva;			
@@ -400,10 +400,10 @@ namespace osiris
 			button_buscar_anestesiologo.Sensitive = activa_desactiva;			
 			button_buscar_cirugia.Sensitive = activa_desactiva;
 			button_busc_diag.Sensitive = activa_desactiva;
-			entry_tipo_paciente.Editable = activa_desactiva;
-			entry_aseguradora.Editable = activa_desactiva;
+			entry_tipo_paciente.IsEditable = activa_desactiva;
+			entry_aseguradora.IsEditable = activa_desactiva;
 			button_selec_id_diag.Sensitive = activa_desactiva;
-			entry_id_diagnostico.Editable = activa_desactiva;
+			entry_id_diagnostico.IsEditable = activa_desactiva;
 			button_selec_id.Sensitive = activa_desactiva;
 			button_buscar_medico.Sensitive = activa_desactiva;
 			entry_dia2.Sensitive = activa_desactiva;
@@ -418,7 +418,7 @@ namespace osiris
 			entry_termino_cirugia.Sensitive = false;		
 			entry_notas.Sensitive = false;
 			entry_intrs_especial.Sensitive = false;
-			entry_tipo_paciente.Editable = activa_desactiva;
+			entry_tipo_paciente.IsEditable = activa_desactiva;
 			//button_guardar_prog.Sensitive = activa_desactiva;
 			button_cancelar_progra.Sensitive = activa_desactiva;
 		}

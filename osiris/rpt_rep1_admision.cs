@@ -111,15 +111,15 @@ namespace osiris
     		
 		// Declarando variable de fuente para la impresion
 		// Declaracion de fuentes tipo Bitstream Vera sans
-		Gnome.Font fuente5 = Gnome.Font.FindClosest("Luxi Sans", 5);
+		//Gnome.Font fuente5 = Gnome.Font.FindClosest("Luxi Sans", 5);
 		Gnome.Font fuente6 = Gnome.Font.FindClosest("Luxi Sans", 6);
 		Gnome.Font fuente7 = Gnome.Font.FindClosest("Luxi Sans", 7);
-		Gnome.Font fuente8 = Gnome.Font.FindClosest("Luxi Sans", 8);//Bitstream Vera Sans
+		//Gnome.Font fuente8 = Gnome.Font.FindClosest("Luxi Sans", 8);//Bitstream Vera Sans
 		Gnome.Font fuente9 = Gnome.Font.FindClosest("Luxi Sans", 9);
-		Gnome.Font fuente10 = Gnome.Font.FindClosest("Luxi Sans", 10);
-		Gnome.Font fuente11 = Gnome.Font.FindClosest("Luxi Sans", 11);
+		//Gnome.Font fuente10 = Gnome.Font.FindClosest("Luxi Sans", 10);
+		//Gnome.Font fuente11 = Gnome.Font.FindClosest("Luxi Sans", 11);
 		Gnome.Font fuente12 = Gnome.Font.FindClosest("Luxi Sans", 12);
-		Gnome.Font fuente36 = Gnome.Font.FindClosest("Luxi Sans", 36);
+		//Gnome.Font fuente36 = Gnome.Font.FindClosest("Luxi Sans", 36);
 		
 		
 		class_conexion conexion_a_DB = new class_conexion();
@@ -936,8 +936,8 @@ namespace osiris
 			ContextoImp.MoveTo(20, 770);		    			ContextoImp.Show("Sistema Hospitalario OSIRIS");
 			ContextoImp.MoveTo(19.5, 760);		    			ContextoImp.Show("Direccion:");
 			ContextoImp.MoveTo(20, 760);		    			ContextoImp.Show("Direccion:");
-			ContextoImp.MoveTo(19.5, 750);		    			ContextoImp.Show("Conmutador:(81) 81-25-56-10");
-			ContextoImp.MoveTo(20, 750);		    			ContextoImp.Show("Conmutador:(81) 81-25-56-10");
+			ContextoImp.MoveTo(19.5, 750);		    			ContextoImp.Show("Conmutador: ");
+			ContextoImp.MoveTo(20, 750);		    			ContextoImp.Show("Conmutador: ");
 			//ContextoImp.MoveTo(464.5, 760);		   			ContextoImp.Show("Fecha de reporte: "+DateTime.Now.ToString("dd-MM-yyyy"));
 			//ContextoImp.MoveTo(465, 760);		    			ContextoImp.Show("Fecha de reporte: "+DateTime.Now.ToString("dd-MM-yyyy"));
 			

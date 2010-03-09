@@ -1,7 +1,7 @@
  // created on 21/05/2007 at 05:28 p
 ///////////////////////////////////////////////////////////
 // project created on 24/10/2006 at 10:20 a
-// Hospital Santa Cecilia
+// Sistema Hospitalario OSIRIS
 // Monterrey - Mexico
 //
 // Autor    	: Juan Antonio Peña Gonzalez (Programacion) gjuanzz@gmail.com
@@ -539,12 +539,12 @@ namespace osiris
 			// Cambiar la fuente
 			//genera_tabla(ContextoImp,trabajoImpresion);
 			Gnome.Print.Setfont (ContextoImp, fuente6);
-			ContextoImp.MoveTo(19.7, 770);			ContextoImp.Show("Hospital Santa Cecilia");
-			ContextoImp.MoveTo(20, 770);			ContextoImp.Show("Hospital Santa Cecilia");
-			ContextoImp.MoveTo(19.7, 760);			ContextoImp.Show("Direccion: Isacc Garza #200 Ote. Centro Monterrey, NL.");
-			ContextoImp.MoveTo(20, 760);			ContextoImp.Show("Direccion: Isacc Garza #200 Ote. Centro Monterrey, NL.");
-			ContextoImp.MoveTo(19.7, 750);			ContextoImp.Show("Conmutador:(81) 81-25-56-10");
-			ContextoImp.MoveTo(20, 750);			ContextoImp.Show("Conmutador:(81) 81-25-56-10");
+			ContextoImp.MoveTo(19.7, 770);			ContextoImp.Show("Sistema Hospitalario OSIRIS");
+			ContextoImp.MoveTo(20, 770);			ContextoImp.Show("Sistema Hospitalario OSIRIS");
+			ContextoImp.MoveTo(19.7, 760);			ContextoImp.Show("Direccion: ");
+			ContextoImp.MoveTo(20, 760);			ContextoImp.Show("Direccion: ");
+			ContextoImp.MoveTo(19.7, 750);			ContextoImp.Show("Conmutador: ");
+			ContextoImp.MoveTo(20, 750);			ContextoImp.Show("Conmutador: ");
 			
 			ContextoImp.MoveTo(240, 720);			ContextoImp.Show("Fecha de impresiom");
 			ContextoImp.MoveTo(340, 720.5);			ContextoImp.Show(DateTime.Now.ToString("dd-MM-yyyy") );

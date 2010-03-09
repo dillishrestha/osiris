@@ -34,6 +34,7 @@ using Npgsql;
 using System.Data;
 using Gtk;
 using Glade;
+using Gnome;
 
 namespace osiris
 {
@@ -84,9 +85,9 @@ namespace osiris
 		
 		//imprimir
 		//public Gnome.Font fuente5 = Gnome.Font.FindClosest("Luxi Sans", 5);
-		//public Gnome.Font fuente6 = Gnome.Font.FindClosest("Luxi Sans", 6);
+		Gnome.Font fuente6 = Gnome.Font.FindClosest("Luxi Sans", 6);
 		//public Gnome.Font fuente7 = Gnome.Font.FindClosest("Luxi Sans", 7);
-		//public Gnome.Font fuente8 = Gnome.Font.FindClosest("Luxi Sans", 8);//Bitstream Vera Sans
+		Gnome.Font fuente8 = Gnome.Font.FindClosest("Luxi Sans", 8);//Bitstream Vera Sans
 		//public Gnome.Font fuente9 = Gnome.Font.FindClosest("Luxi Sans", 9);
 		//public Gnome.Font fuente10 = Gnome.Font.FindClosest("Luxi Sans", 10);
 		//public Gnome.Font fuente11 = Gnome.Font.FindClosest("Luxi Sans", 11);
@@ -178,9 +179,7 @@ namespace osiris
 
 		void on_button_imprime_solicitud_clicked(object sender, EventArgs args)
 		{
-		}
 		
-		/*
 			Gnome.PrintJob    trabajo = new Gnome.PrintJob(Gnome.PrintConfig.Default());
         	Gnome.PrintDialog dialogo = new Gnome.PrintDialog(trabajo, "Envio Materiales Almacen", 0);
         	
@@ -384,10 +383,10 @@ namespace osiris
 			Gnome.Print.Setfont (ContextoImp, fuente6);
 			ContextoImp.MoveTo(19.7, 770);			ContextoImp.Show("Sistema Hospitalario OSIRIS");
 			ContextoImp.MoveTo(20, 770);			ContextoImp.Show("Sistema Hospitalario OSIRIS");
-			ContextoImp.MoveTo(19.7, 760);			ContextoImp.Show("Direccion: Isacc Garza #200 Ote. Centro Monterrey, NL.");
-			ContextoImp.MoveTo(20, 760);			ContextoImp.Show("Direccion: Isacc Garza #200 Ote. Centro Monterrey, NL.");
-			ContextoImp.MoveTo(19.7, 750);			ContextoImp.Show("Conmutador:(81) 81-25-56-10");
-			ContextoImp.MoveTo(20, 750);			ContextoImp.Show("Conmutador:(81) 81-25-56-10");
+			ContextoImp.MoveTo(19.7, 760);			ContextoImp.Show("Direccion: ");
+			ContextoImp.MoveTo(20, 760);			ContextoImp.Show("Direccion: ");
+			ContextoImp.MoveTo(19.7, 750);			ContextoImp.Show("Conmutador: ");
+			ContextoImp.MoveTo(20, 750);			ContextoImp.Show("Conmutador: ");
 			
 			ContextoImp.MoveTo(20, 700);			ContextoImp.Show("Folio Producto");
 			ContextoImp.MoveTo(80, 700);			ContextoImp.Show("Descripcion");
@@ -398,8 +397,7 @@ namespace osiris
 			
 			Gnome.Print.Setfont (ContextoImp, fuente8);
 		}
-		*/
-
+		
 		void on_button_busca_producto_clicked(object sender, EventArgs args)
 		{
 			Glade.XML gxml = new Glade.XML (null, "hospitalizacion.glade", "busca_producto", null);

@@ -1,7 +1,7 @@
 // created on 29/01/2008 at 10:11 a
 //////////////////////////////////////////////////////////////////////
 // created on 21/01/2008 at 08:28 p
-// Hospital Santa Cecilia
+// Sistema Hospitalario OSIRIS
 // Monterrey - Mexico
 //
 // Autor    	: Ing. Juan Antonio Peña Gonzalez (Programacion) gjuanzz@gmail.com

@@ -502,12 +502,12 @@ namespace osiris
 		{        		
       		// Cambiar la fuente
 			Gnome.Print.Setfont (ContextoImp, fuente6);
-			ContextoImp.MoveTo(65.5, -30);			ContextoImp.Show("Hospital Santa Cecilia");
-			ContextoImp.MoveTo(66, -30);			ContextoImp.Show("Hospital Santa Cecilia");
-			ContextoImp.MoveTo(65.5, -40);			ContextoImp.Show("Direccion: Isacc Garza #200 Ote. Centro Monterrey, NL.");
-			ContextoImp.MoveTo(66, -40);			ContextoImp.Show("Direccion: Isacc Garza #200 Ote. Centro Monterrey, NL.");
-			ContextoImp.MoveTo(65.5, -50);			ContextoImp.Show("Conmutador:(81) 81-25-56-10");
-			ContextoImp.MoveTo(66, -50);			ContextoImp.Show("Conmutador:(81) 81-25-56-10");
+			ContextoImp.MoveTo(65.5, -30);			ContextoImp.Show("Sistema Hospitalario OSIRIS");
+			ContextoImp.MoveTo(66, -30);			ContextoImp.Show("Sistema Hospitalario OSIRIS");
+			ContextoImp.MoveTo(65.5, -40);			ContextoImp.Show("Direccion: ");
+			ContextoImp.MoveTo(66, -40);			ContextoImp.Show("Direccion: ");
+			ContextoImp.MoveTo(65.5, -50);			ContextoImp.Show("Conmutador: ");
+			ContextoImp.MoveTo(66, -50);			ContextoImp.Show("Conmutador: ");
 
 			Gnome.Print.Setfont (ContextoImp, fuente12);
 			ContextoImp.MoveTo(66, -65);			ContextoImp.Show("REPORTE FARMACIA");

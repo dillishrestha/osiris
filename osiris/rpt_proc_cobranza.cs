@@ -712,10 +712,10 @@ namespace osiris
 			Gnome.Print.Setfont (ContextoImp, fuente6);
 			ContextoImp.MoveTo(19.7, 770);			ContextoImp.Show("Sistema Hospitalario OSIRIS");
 			ContextoImp.MoveTo(20, 770);			ContextoImp.Show("Sistema Hospitalario OSIRIS");
-			ContextoImp.MoveTo(19.7, 760);			ContextoImp.Show("Direccion: Isacc Garza #200 Ote. Centro Monterrey, NL.");
-			ContextoImp.MoveTo(20, 760);			ContextoImp.Show("Direccion: Isacc Garza #200 Ote. Centro Monterrey, NL.");
-			ContextoImp.MoveTo(19.7, 750);			ContextoImp.Show("Conmutador:(81) 81-25-56-10");
-			ContextoImp.MoveTo(20, 750);			ContextoImp.Show("Conmutador:(81) 81-25-56-10");
+			ContextoImp.MoveTo(19.7, 760);			ContextoImp.Show("Direccion: ");
+			ContextoImp.MoveTo(20, 760);			ContextoImp.Show("Direccion: ");
+			ContextoImp.MoveTo(19.7, 750);			ContextoImp.Show("Conmutador: ");
+			ContextoImp.MoveTo(20, 750);			ContextoImp.Show("Conmutador: ");
 			ContextoImp.MoveTo(20, 740);			ContextoImp.Show("Sistema Hospitalario OSIRIS");
 			
 			ContextoImp.MoveTo(479.7, 770);			ContextoImp.Show("Fo-tes-11/Rev.02/20-mar-07");

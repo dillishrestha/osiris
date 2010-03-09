@@ -237,8 +237,8 @@ namespace osiris
 			// Desactivando Botones de operacion se activa cuando selecciona una atencion
 			//entry_id_presupuesto.Sensitive = false;
 			
-			entry_cirugia.Editable = false;
-			entry_medico.Editable = false;
+			entry_cirugia.IsEditable = false;
+			entry_medico.IsEditable = false;
 			button_busca_medico.Sensitive = false;
 			button_buscar_cirugia.Sensitive = false;
 			//button_busca_producto.Sensitive = false;
@@ -408,7 +408,7 @@ namespace osiris
 			///////RESTABLESCO VALORES A LOS PREDETERMINADOS\\\\\\\\\\\\\\\\\\
 			if(enviado == true) {activacio_de_los_campos(false); button_enviado.Sensitive = false;}//Console.WriteLine("entro a la desactivacion");
 			if(enviado == false) { activacio_de_los_campos(true); }//Console.WriteLine("entro a la activacion");
-			entry_cirugia.Editable = false;
+			entry_cirugia.IsEditable = false;
 			checkbutton_copia_productos.Sensitive = true;
 			button_actualizar.Sensitive = true;
 			button_limpiar.Sensitive = true;

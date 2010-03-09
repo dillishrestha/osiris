@@ -128,7 +128,7 @@ namespace osiris
 		
 		// Asignando Clases
 		class_conexion conexion_a_DB = new class_conexion();
-		class_public classpublic = new class_public();
+		//class_public classpublic = new class_public();
 		
 		protected Gtk.Window MyWinError;
 		
@@ -257,8 +257,8 @@ namespace osiris
 		{
 			Glade.XML gxml = new Glade.XML (null, "osiris.glade", "menuprincipal", null);
 			gxml.Autoconnect (this);				 			
-			//hscmtylogo.Pixbuf = new Gdk.Pixbuf(System.IO.Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory,"OSIRISLogo.jpg"));   //en windows
-			hscmtylogo.Pixbuf = new Gdk.Pixbuf("OSIRISLogo.jpg");   // en Linux
+			hscmtylogo.Pixbuf = new Gdk.Pixbuf(System.IO.Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory,"OSIRISLogo.jpg"));   //en windows
+			//hscmtylogo.Pixbuf = new Gdk.Pixbuf("OSIRISLogo.jpg");   // en Linux
 			menuprincipal.Show();
 					 					 											
 			verificapermisos(accesoHIS,accesoERP,accesoGENERAL,autorizaHIS,autorizaERP,autorizaGENERAL);

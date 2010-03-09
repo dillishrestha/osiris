@@ -848,15 +848,15 @@ namespace osiris
 				NpgsqlDataReader lector = comando.ExecuteReader ();
 				while(lector.Read()){					
 					treeViewEngineaprobados.AppendValues(false,
-					                                     (string) lector["descripcion_producto"],
-					                                     (string) lector["preciocosto"],
-					                                     (string) lector["preciocostouni"],
-					                                     (string) lector["codigo_producto_proveedor"],"","",
+					                                     (string) lector["descripcion_producto"].ToString().Trim(),
+					                                     (string) lector["preciocosto"].ToString().Trim(),
+					                                     (string) lector["preciocostouni"].ToString().Trim(),
+					                                     (string) lector["codigo_producto_proveedor"].ToString().Trim(),"","",
 					                                    // (string) lector["costoproducto"],
 					                                     //(string) lector["costoproductounitario"],
-					                                     (string) lector["idproducto"],
-					                                     (string) lector["descripcion_producto_hsc"],
-					                                     (string) lector["idsecuencia"]);
+					                                     (string) lector["idproducto"].ToString().Trim(),
+					                                     (string) lector["descripcion_producto_hsc"].ToString().Trim(),
+					                                     (string) lector["idsecuencia"].ToString().Trim());
 													
 				}	
 			}catch (NpgsqlException ex){
@@ -889,15 +889,15 @@ namespace osiris
 				NpgsqlDataReader lector1 = comando1.ExecuteReader ();
 				while(lector1.Read()){
 					treeViewEngineaprobados.AppendValues(false,
-					                                     (string) lector1["descripcion_producto"],
-					                                     (string) lector1["preciocosto"],
-					                                     (string) lector1["preciocostouni"],
-					                                     (string) lector1["codigo_producto_proveedor"],
-					                                     (string) lector1["costoproducto"],
-					                                     (string) lector1["costoproductounitario"],
-					                                     (string) lector1["idproducto"],
-					                                     (string) lector1["descripcion_producto_hsc"],
-					                                     (string) lector1["idsecuencia"]);
+					                                     (string) lector1["descripcion_producto"].ToString().Trim(),
+					                                     (string) lector1["preciocosto"].ToString().Trim(),
+					                                     (string) lector1["preciocostouni"].ToString().Trim(),
+					                                     (string) lector1["codigo_producto_proveedor"].ToString().Trim(),
+					                                     (string) lector1["costoproducto"].ToString().Trim(),
+					                                     (string) lector1["costoproductounitario"].ToString().Trim(),
+					                                     (string) lector1["idproducto"].ToString().Trim(),
+					                                     (string) lector1["descripcion_producto_hsc"].ToString().Trim(),
+					                                     (string) lector1["idsecuencia"].ToString().Trim());
 													
 				}										
 			}catch (NpgsqlException ex){
@@ -1245,13 +1245,13 @@ namespace osiris
 				NpgsqlDataReader lector = comando.ExecuteReader ();
 				if(lector.Read()){	
 										
-					this.secuencial = (string) lector["secuencia"];			
-					this.entry_producto.Text = (string) lector["descripcion_producto"].ToString().ToUpper();
-					this.entry_precio.Text = (string) lector["preciocosto"];
-					this.entry_embalaje.Text = (string) lector["cantidadembalaje"];
-					this.entry_codigo.Text = (string) lector["codigo_producto_proveedor"].ToString().ToUpper();
-					this.entry_cod_barras.Text = (string) lector["codigo_de_barra"];		
-					this.entry_clave.Text = (string) lector["clave"].ToString().ToUpper();	
+					this.secuencial = (string) lector["secuencia"].ToString().Trim();			
+					this.entry_producto.Text = (string) lector["descripcion_producto"].ToString().ToUpper().Trim();
+					this.entry_precio.Text = (string) lector["preciocosto"].ToString().Trim();
+					this.entry_embalaje.Text = (string) lector["cantidadembalaje"].ToString().Trim();
+					this.entry_codigo.Text = (string) lector["codigo_producto_proveedor"].ToString().ToUpper().Trim();
+					this.entry_cod_barras.Text = (string) lector["codigo_de_barra"].ToString().Trim();
+					this.entry_clave.Text = (string) lector["clave"].ToString().ToUpper().Trim();
 					//this.combobox_tipo_unidad = (string) lector["tipo_unidad_producto"];	
 					
 					llena_combo_tipounidad();

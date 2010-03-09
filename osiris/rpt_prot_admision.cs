@@ -549,9 +549,9 @@ namespace osiris
 		    	layout.SetText("Dirección: Isaac Garza #200 Ote. Centro Monterrey, NL.");
 			
 				cr.MoveTo(19.5, 750);
-		    	layout.SetText("Conmutador:(81) 81-25-56-10");
+		    	layout.SetText("Conmutador: ");
 				cr.MoveTo(20, 750);
-		    	layout.SetText("Conmutador:(81) 81-25-56-10");
+		    	layout.SetText("Conmutador: ");
 		    
 		    	//se cambia el tamaño de texto por ser titulo
 		    

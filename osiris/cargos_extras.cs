@@ -946,10 +946,10 @@ namespace osiris
       		Gnome.Print.Setfont (ContextoImp, fuente6);
 			ContextoImp.MoveTo(19.7, 780);			ContextoImp.Show("Sistema Hospitalario OSIRIS");
 			ContextoImp.MoveTo(20, 780);			ContextoImp.Show("Sistema Hospitalario OSIRIS");
-			ContextoImp.MoveTo(19.7, 770);			ContextoImp.Show("Direccion: Isacc Garza #200 Ote. Centro Monterrey, NL.");
-			ContextoImp.MoveTo(20, 770);			ContextoImp.Show("Direccion: Isacc Garza #200 Ote. Centro Monterrey, NL.");
-			ContextoImp.MoveTo(19.7, 760);			ContextoImp.Show("Conmutador:(81) 81-25-56-10");
-			ContextoImp.MoveTo(20, 760);			ContextoImp.Show("Conmutador:(81) 81-25-56-10");
+			ContextoImp.MoveTo(19.7, 770);			ContextoImp.Show("Direccion: ");
+			ContextoImp.MoveTo(20, 770);			ContextoImp.Show("Direccion: ");
+			ContextoImp.MoveTo(19.7, 760);			ContextoImp.Show("Conmutador: ");
+			ContextoImp.MoveTo(20, 760);			ContextoImp.Show("Conmutador: ");
 			ContextoImp.MoveTo(300, 740);			ContextoImp.Show(" COMPARACION ");
 			ContextoImp.MoveTo(300.3, 740);			ContextoImp.Show(" COMPARACION ");
 			ContextoImp.MoveTo(15, 720);			ContextoImp.Show("ID Producto");

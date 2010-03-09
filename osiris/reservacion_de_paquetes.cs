@@ -139,9 +139,9 @@ namespace osiris
 	        this.entry_anno_reservacion.KeyPressEvent += onKeyPressEventactual;
 			
 			//no deja editar la fecha proseso:
-			this.entry_dia1.Editable = false; 
-			this.entry_mes1.Editable = false;
-			this.entry_anno1.Editable = false;
+			this.entry_dia1.IsEditable = false; 
+			this.entry_mes1.IsEditable = false;
+			this.entry_anno1.IsEditable = false;
 			
 			this.entry_nombre_paciente.Sensitive = false;
 			this.entry_pid_paciente.Sensitive = false;

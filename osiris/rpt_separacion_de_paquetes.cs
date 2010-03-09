@@ -492,12 +492,12 @@ namespace osiris
 		void imprime_encabezado(Gnome.PrintContext ContextoImp, Gnome.PrintJob trabajoImpresion)
 		{  
 				Gnome.Print.Setfont (ContextoImp, fuente6);
-				ContextoImp.MoveTo(65.5, -30);			ContextoImp.Show("Hospital Santa Cecilia");
-				ContextoImp.MoveTo(66, -30);			ContextoImp.Show("Hospital Santa Cecilia");
-				ContextoImp.MoveTo(65.5, -40);			ContextoImp.Show("Direccion: Isacc Garza #200 Ote. Centro Monterrey, NL.");
-				ContextoImp.MoveTo(66, -40);			ContextoImp.Show("Direccion: Isacc Garza #200 Ote. Centro Monterrey, NL.");
-				ContextoImp.MoveTo(65.5, -50);			ContextoImp.Show("Conmutador:(81) 81-25-56-10");
-				ContextoImp.MoveTo(66, -50);			ContextoImp.Show("Conmutador:(81) 81-25-56-10");
+				ContextoImp.MoveTo(65.5, -30);			ContextoImp.Show("Sistema Hospitalario OSIRIS");
+				ContextoImp.MoveTo(66, -30);			ContextoImp.Show("Sistema Hospitalario OSIRIS");
+				ContextoImp.MoveTo(65.5, -40);			ContextoImp.Show("Direccion: ");
+				ContextoImp.MoveTo(66, -40);			ContextoImp.Show("Direccion: ");
+				ContextoImp.MoveTo(65.5, -50);			ContextoImp.Show("Conmutador: ");
+				ContextoImp.MoveTo(66, -50);			ContextoImp.Show("Conmutador: ");
 				Gnome.Print.Setfont(ContextoImp,fuente11);
 				ContextoImp.MoveTo(350.5, -40);			ContextoImp.Show(titulo);
 				ContextoImp.MoveTo(351, -40);			ContextoImp.Show(titulo);

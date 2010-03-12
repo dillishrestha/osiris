@@ -179,9 +179,9 @@ namespace osiris
 		decimal iva_de_descuento = 0;			// valor iva del descuento 
 		decimal descuento_del_grupo = 0;		// suma del iva del desc y del desc neto
 		decimal subtotal_del_grupo = 0;		//subtotal del grupo de productos
-		decimal subtotal_al_15_grupo = 0;		//es el subtotal de los productos que contienen iva en un grupo de productos
+		decimal subtotal_al_impuesto_grupo = 0;		//es el subtotal de los productos que contienen iva en un grupo de productos
 		decimal subtotal_al_0_grupo = 0;		//es el subtotal de los productos que no contienen iva en un grupo de productos
-		decimal subtotal_al_15 = 0;			//es el subtotal de los productos que contienen iva en todo el movimiento
+		decimal subtotal_al_impuesto = 0;			//es el subtotal de los productos que contienen iva en todo el movimiento
 		decimal subtotal_al_0 = 0;			//es el subtotal de los productos que no contienen iva en todo el movimiento
 		decimal total_del_grupo = 0;			//precio total del grupo de productos
 		decimal total_de_iva = 0;				//suma de todos los ivas de todos los lugares y grupos de productos
@@ -318,7 +318,7 @@ namespace osiris
 		void on_button_nota_credito_clicked(object sender, EventArgs args)
 		{
 			new osiris.nota_de_credito(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,numerodefactura,this.idcliente,
-			                          subtotal_al_0,subtotal_al_15,total_de_iva,subtotales,num_nota);
+			                          subtotal_al_0,subtotal_al_impuesto,total_de_iva,subtotales,num_nota);
 		}
 		
 		void on_checkbutton_nueva_factura_clicked(object sender, EventArgs args)
@@ -337,7 +337,7 @@ namespace osiris
 		 			this.button_pagar_factura.Sensitive = false;
 		 			
 					subtotal_al_0 = 0; 
-					subtotal_al_15 = 0;
+					subtotal_al_impuesto = 0;
 					total_de_iva = 0;
 					subtotales = 0;
 					
@@ -423,7 +423,7 @@ namespace osiris
 									"osiris_erp_factura_enca.fax_cliente,osiris_erp_factura_enca.mail_cliente,osiris_erp_factura_enca.cp_cliente,"+
 									"osiris_erp_factura_enca.contacto_cliente,osiris_erp_factura_enca.telefono_contacto_cliente,to_char(deducible,'99999999.99') AS deducible_,to_char(coaseguro,'99999999.99') AS coaseguro_,"+
 									"to_char(honorario_medico,'99999999.99') AS honorariomedico,to_char(sub_total_15,'99999999.99') AS subtotal_15,to_char(sub_total_0,'99999999.99') AS subtotal_0,"+
-									"to_char(iva_al_15,'99999999.99') AS ivaal_15,to_char(valor_coaseguro,'99999999.99') AS valorcoaseguro,numero_factura, "+
+									"to_char(iva_al_impuesto,'99999999.99') AS ivaal_15,to_char(valor_coaseguro,'99999999.99') AS valorcoaseguro,numero_factura, "+
 									"cancelado,to_char(fechahora_cancelacion,'dd-MM-yyyy') AS fechahoracancelacion,to_char(fecha_factura,'dd-MM-yyyy') AS fechafactura,"+
 									"motivo_cancelacion,pagada,to_char(fechahora_pago_factura,'dd-MM-yyyy') AS fechahorapagofactura,"+
 									"osiris_erp_factura_enca.id_quien_creo,osiris_erp_clientes.envio_factura,numero_ntacred,"+
@@ -489,7 +489,7 @@ namespace osiris
 		 			totalhonorariomedico = float.Parse((string) lector["honorariomedico"],System.Globalization.NumberStyles.Float,new System.Globalization.CultureInfo("es-MX"));
 					
 					subtotal_al_0 = decimal.Parse((string) lector["subtotal_0"],System.Globalization.NumberStyles.Float,new System.Globalization.CultureInfo("es-MX"));
-                    subtotal_al_15 = decimal.Parse((string) lector["subtotal_15"],System.Globalization.NumberStyles.Float,new System.Globalization.CultureInfo("es-MX"));
+                    subtotal_al_impuesto = decimal.Parse((string) lector["subtotal_15"],System.Globalization.NumberStyles.Float,new System.Globalization.CultureInfo("es-MX"));
                     total_de_iva = decimal.Parse((string) lector["ivaal_15"],System.Globalization.NumberStyles.Float,new System.Globalization.CultureInfo("es-MX"));
                     subtotales = Convert.ToDecimal((float.Parse((string) lector["honorariomedico"],System.Globalization.NumberStyles.Float,new System.Globalization.CultureInfo("es-MX"))+
                                                   float.Parse((string) lector["subtotal_15"],System.Globalization.NumberStyles.Float,new System.Globalization.CultureInfo("es-MX"))+
@@ -661,7 +661,7 @@ namespace osiris
 		void on_button_acepta_deducible_clicked(object sender, EventArgs args)
 		{
 			
-				decimal subtotal_factura = subtotal_al_15+subtotal_al_0+total_de_iva;
+				decimal subtotal_factura = subtotal_al_impuesto+subtotal_al_0+total_de_iva;
 				
 				deducible_factura = decimal.Parse(entry_deducible_coaseguro.Text);
 				
@@ -678,7 +678,7 @@ namespace osiris
 		
 		void on_button_acepta_coaseguro_clicked(object sender, EventArgs args)
 		{
-			decimal subtotal_factura = subtotal_al_15+subtotal_al_0+total_de_iva;
+			decimal subtotal_factura = subtotal_al_impuesto+subtotal_al_0+total_de_iva;
 				
 			coaseguro_factura = decimal.Parse(entry_deducible_coaseguro.Text);
 				
@@ -801,7 +801,7 @@ namespace osiris
 				iva = (Convert.ToDouble((precio * cantidad)) * valoriva);// + Convert.ToDouble(suma_);
 				treeViewEngineDetaFact.AppendValues("+ IVA",descripcion_producto,"",Convert.ToString(suma_));
 				total_de_iva += Convert.ToDecimal(iva);
-				subtotal_al_15 += suma_;
+				subtotal_al_impuesto += suma_;
 			}
 				
 				
@@ -826,9 +826,9 @@ namespace osiris
 			}			
 				
 			this.entry_subtotal_0.Text = subtotal_al_0.ToString("C");
-			this.entry_subtotal_15.Text = (subtotal_al_15).ToString("C");
+			this.entry_subtotal_15.Text = (subtotal_al_impuesto).ToString("C");
 			this.entry_total_iva.Text = total_de_iva.ToString("C");
-			subtotales = subtotal_al_0 + subtotal_al_15 + total_de_iva + Convert.ToDecimal(totalhonorariomedico);
+			subtotales = subtotal_al_0 + subtotal_al_impuesto + total_de_iva + Convert.ToDecimal(totalhonorariomedico);
 			this.entry_subtotal.Text = subtotales.ToString("C");
 			this.entry_total_factura.Text = subtotales.ToString("C");
 				
@@ -864,7 +864,7 @@ namespace osiris
 																				
 					treeViewEngineDetaFact.Remove (ref iter); 					
 					if (toma_valor1 == "+ IVA"){
-						subtotal_al_15 = subtotal_al_15 - Convert.ToDecimal (toma_valor4);
+						subtotal_al_impuesto = subtotal_al_impuesto - Convert.ToDecimal (toma_valor4);
 						total_de_iva = total_de_iva - (Convert.ToDecimal(toma_valor4) * Convert.ToDecimal(valoriva));
 						
 					}else{
@@ -872,10 +872,10 @@ namespace osiris
 					}
 	
 					this.entry_subtotal_0.Text = subtotal_al_0.ToString("C");
-					this.entry_subtotal_15.Text = (subtotal_al_15).ToString("C");
+					this.entry_subtotal_15.Text = (subtotal_al_impuesto).ToString("C");
 					this.entry_total_iva.Text = total_de_iva.ToString("C");
 					
-					subtotales = subtotal_al_0 + subtotal_al_15 + total_de_iva;
+					subtotales = subtotal_al_0 + subtotal_al_impuesto + total_de_iva;
 					this.entry_subtotal.Text = subtotales.ToString("C");
 					this.entry_total_factura.Text = subtotales.ToString("C");				
 					
@@ -987,7 +987,7 @@ namespace osiris
 	                					"cp_cliente,"+
 	                					"sub_total_15,"+
 	                					"sub_total_0,"+
-	                					"iva_al_15,"+
+	                					"iva_al_impuesto,"+
 	                					"valor_coaseguro,"+
 	                					"fecha_factura) "+
 	                					"VALUES ('"+
@@ -1014,7 +1014,7 @@ namespace osiris
 	                					total_honorario_medico+"','"+
 	                					//dias_de_credito+"','"+
 	                					entry_cp_cliente.Text.Trim()+"','"+
-	                					subtotal_al_15+"','"+
+	                					subtotal_al_impuesto+"','"+
 	                					subtotal_al_0+"','"+
 	                					total_de_iva+"','"+
 	                					valor_coaseguro+"','"+
@@ -1127,7 +1127,7 @@ namespace osiris
 								button_selecc_folios.Sensitive = false;
 								
 								subtotal_al_0 = 0; 
-								subtotal_al_15 = 0;
+								subtotal_al_impuesto = 0;
 								total_de_iva = 0;
 								subtotales = 0;																
 							}else{							
@@ -1221,7 +1221,7 @@ namespace osiris
 								button_imprime_factura.Sensitive = true;
 								
 								subtotal_al_0 = 0; 
-								subtotal_al_15 = 0;
+								subtotal_al_impuesto = 0;
 								total_de_iva = 0;
 								subtotales = 0;														
 							}
@@ -1691,7 +1691,7 @@ namespace osiris
 			this.entry_subtotal_15.Text = "";
 			this.entry_total_iva.Text = "";
 			subtotal_al_0 = 0; 
-			subtotal_al_15 = 0;
+			subtotal_al_impuesto = 0;
 			total_de_iva = 0;
 			this.entry_subtotal.Text = "";
 			this.entry_total_factura.Text  = "";
@@ -2005,12 +2005,12 @@ namespace osiris
 				
 				bool cobrar_1400 = true;
 				decimal ivaproducto = 0;
-				subtotal_al_15 = 0;
+				subtotal_al_impuesto = 0;
 				subtotal_al_0 = 0;
 				total_de_iva = 0;
 				
 				subtotal_del_grupo = 0;
-				subtotal_al_15_grupo = 0;
+				subtotal_al_impuesto_grupo = 0;
 				iva_del_grupo = 0;
 								
 				//Console.WriteLine(lector1.Read());
@@ -2026,19 +2026,19 @@ namespace osiris
 					
 					deducible_factura = 200;
 											
-					subtotal_al_15 = 1400;
+					subtotal_al_impuesto = 1400;
 					subtotal_al_0 = 0;
-					total_de_iva = (subtotal_al_15*15)/100;
-					subtotal_factura = subtotal_al_15+subtotal_al_0+total_de_iva;
+					total_de_iva = (subtotal_al_impuesto*15)/100;
+					subtotal_factura = subtotal_al_impuesto+subtotal_al_0+total_de_iva;
 					
 					total_honorario_medico = 0;
 					
 					total_de_la_factura = (subtotal_factura-deducible_factura)+total_honorario_medico;
 					
 					treeViewEngineDetaFact.AppendValues("","      SERVICIO MEDICO","","");
-					treeViewEngineDetaFact.AppendValues("","PAQUETE URGENCIAS","",subtotal_al_15.ToString().PadLeft(10));
+					treeViewEngineDetaFact.AppendValues("","PAQUETE URGENCIAS","",subtotal_al_impuesto.ToString().PadLeft(10));
 										        			        
-					entry_subtotal_15.Text = subtotal_al_15.ToString("C").PadLeft(10);
+					entry_subtotal_15.Text = subtotal_al_impuesto.ToString("C").PadLeft(10);
 					entry_subtotal_0.Text = subtotal_al_0.ToString("C").PadLeft(10);
 					        
 					entry_total_iva.Text= total_de_iva.ToString("C").PadLeft(10);
@@ -2138,8 +2138,8 @@ namespace osiris
 						//Console.WriteLine(comando.CommandText.ToString());
 						bool verifica_el_iva = false;
 						
-						subtotal_al_15 = 0;
-						subtotal_al_15_grupo = 0;
+						subtotal_al_impuesto = 0;
+						subtotal_al_impuesto_grupo = 0;
 						total_de_iva = 0;
 						iva_del_grupo = 0;								
 						subtotal_al_0 = 0;
@@ -2193,15 +2193,15 @@ namespace osiris
 							
 							verifica_el_iva = (bool) lector["aplicar_iva"];
 							if((bool) lector["aplicar_iva"] == true){
-								subtotal_al_15 += precio_por_cantidad;
-								subtotal_al_15_grupo += precio_por_cantidad;
+								subtotal_al_impuesto += precio_por_cantidad;
+								subtotal_al_impuesto_grupo += precio_por_cantidad;
 								total_de_iva += ivaproducto;
 								iva_del_grupo += ivaproducto;								
 							}else{
 								subtotal_al_0 += precio_por_cantidad;
 								subtotal_al_0_grupo += precio_por_cantidad;
 							}
-							subtotal_del_grupo =subtotal_al_15_grupo+subtotal_al_0_grupo;
+							subtotal_del_grupo =subtotal_al_impuesto_grupo+subtotal_al_0_grupo;
 												
 							/////DATOS DE PRODUCTOS
 			      		  	
@@ -2250,15 +2250,15 @@ namespace osiris
 									}
 									verifica_el_iva = (bool) lector["aplicar_iva"];
 									if((bool) lector["aplicar_iva"] == true){
-										subtotal_al_15 += precio_por_cantidad;
-										subtotal_al_15_grupo += precio_por_cantidad;
+										subtotal_al_impuesto += precio_por_cantidad;
+										subtotal_al_impuesto_grupo += precio_por_cantidad;
 										total_de_iva += ivaproducto;
 									}else{
 										subtotal_al_0 += precio_por_cantidad;
 										subtotal_al_0_grupo += precio_por_cantidad;
 										ivaproducto = 0;
 									}
-									subtotal_del_grupo = subtotal_al_15_grupo+subtotal_al_0_grupo;
+									subtotal_del_grupo = subtotal_al_impuesto_grupo+subtotal_al_0_grupo;
 									
 									iva_del_grupo += ivaproducto;
 								}else{
@@ -2276,7 +2276,7 @@ namespace osiris
 										descripciongrupo_prod = (string) lector["descripcion_grupo_producto"];
 												       		 				       		 			
 				       		 			subtotal_al_0_grupo = 0;
-										subtotal_al_15_grupo = 0;
+										subtotal_al_impuesto_grupo = 0;
 										iva_del_grupo = 0;
 										
 										descuento_neto = 0;
@@ -2300,15 +2300,15 @@ namespace osiris
 										}
 										verifica_el_iva = (bool) lector["aplicar_iva"];
 										if((bool) lector["aplicar_iva"]== true){
-											subtotal_al_15 += precio_por_cantidad;
-											subtotal_al_15_grupo += precio_por_cantidad;
+											subtotal_al_impuesto += precio_por_cantidad;
+											subtotal_al_impuesto_grupo += precio_por_cantidad;
 											total_de_iva += ivaproducto;
 											iva_del_grupo += ivaproducto;
 										}else{
 											subtotal_al_0 += precio_por_cantidad;
 											subtotal_al_0_grupo += precio_por_cantidad; 
 										}
-										subtotal_del_grupo =subtotal_al_15_grupo+subtotal_al_0_grupo;
+										subtotal_del_grupo =subtotal_al_impuesto_grupo+subtotal_al_0_grupo;
 										idadmision_ = 0;				//limpio admsiosion para que no entre al otro if
 									}
 									
@@ -2326,7 +2326,7 @@ namespace osiris
 										total_del_grupo = subtotal_del_grupo + iva_del_grupo;
 												       		 				       		 			
 				       		 			subtotal_al_0_grupo = 0;
-										subtotal_al_15_grupo = 0;
+										subtotal_al_impuesto_grupo = 0;
 										iva_del_grupo = 0;
 										
 										descuento_neto = 0;
@@ -2350,8 +2350,8 @@ namespace osiris
 										}
 										verifica_el_iva = (bool) lector["aplicar_iva"];
 										if((bool) lector["aplicar_iva"]== true){
-											subtotal_al_15 += precio_por_cantidad;
-											subtotal_al_15_grupo += precio_por_cantidad;
+											subtotal_al_impuesto += precio_por_cantidad;
+											subtotal_al_impuesto_grupo += precio_por_cantidad;
 											total_de_iva += ivaproducto;
 											iva_del_grupo += ivaproducto;
 											
@@ -2359,7 +2359,7 @@ namespace osiris
 											subtotal_al_0 += precio_por_cantidad;
 											subtotal_al_0_grupo += precio_por_cantidad;
 										}
-										subtotal_del_grupo = subtotal_al_15_grupo+subtotal_al_0_grupo;
+										subtotal_del_grupo = subtotal_al_impuesto_grupo+subtotal_al_0_grupo;
 									}
 									idadmision_ = (int) lector["idadmisiones"];				//obtengo valor de admision para futura comparacion
 									idgrupoproducto = (int) lector["id_grupo_producto"];		//obtengo valor del grupo para futura comparacion
@@ -2418,8 +2418,8 @@ namespace osiris
 					        }
 					        
 					        if (idcliente == 1){
-					        	decimal subtotal_factura = subtotal_al_15+subtotal_al_0+total_de_iva+total_honorario_medico;
-					        	decimal subtotal_al_quince = subtotal_al_15+total_de_iva;
+					        	decimal subtotal_factura = subtotal_al_impuesto+subtotal_al_0+total_de_iva+total_honorario_medico;
+					        	decimal subtotal_al_quince = subtotal_al_impuesto+total_de_iva;
 						        			        
 						        entry_subtotal_15.Text = subtotal_al_quince.ToString("C").PadLeft(10);
 						        entry_subtotal_0.Text = subtotal_al_0.ToString("C").PadLeft(10);
@@ -2442,9 +2442,9 @@ namespace osiris
 								//Console.WriteLine(cantidad_en_letras);
 					        
 					        }else{
-						        decimal subtotal_factura = subtotal_al_15+subtotal_al_0+total_de_iva+total_honorario_medico;
+						        decimal subtotal_factura = subtotal_al_impuesto+subtotal_al_0+total_de_iva+total_honorario_medico;
 						        			        
-						        entry_subtotal_15.Text = subtotal_al_15.ToString("C").PadLeft(10);
+						        entry_subtotal_15.Text = subtotal_al_impuesto.ToString("C").PadLeft(10);
 						        entry_subtotal_0.Text = subtotal_al_0.ToString("C").PadLeft(10);
 						        
 						        entry_total_iva.Text= total_de_iva.ToString("C").PadLeft(10);
@@ -2664,7 +2664,7 @@ namespace osiris
 		class_public classpublic = new class_public();
 		
 		public nota_de_credito(string LoginEmp_, string NomEmpleado_, string AppEmpleado_, string ApmEmpleado_, string nombrebd_, 
-		                       string numerodefactura_, int id_cliente_, decimal subtotal_al_0_, decimal subtotal_al_15_, decimal total_de_iva_,
+		                       string numerodefactura_, int id_cliente_, decimal subtotal_al_0_, decimal subtotal_al_impuesto_, decimal total_de_iva_,
 		                       decimal subtotales_, int num_nota_)
 		{
 			LoginEmpleado = LoginEmp_;
@@ -2677,7 +2677,7 @@ namespace osiris
 			nombrebd = conexion_a_DB._nombrebd;
 			valoriva = double.Parse(classpublic.ivaparaaplicar)/10;
 			
-			subtotal_15 = subtotal_al_15_;
+			subtotal_15 = subtotal_al_impuesto_;
 			subtotal = subtotales_;
 			subtotal_0 = subtotal_al_0_;
 			total_de_iva = total_de_iva_;
@@ -2745,10 +2745,10 @@ namespace osiris
 						"to_char(osiris_erp_notacredito_enca.numero_factura,'999999999') AS numfact,"+
 				        "to_char(osiris_erp_notacredito_enca.sub_total_15,'999999999.99') AS sub15,"+
                         "to_char(osiris_erp_notacredito_enca.sub_total_0,'999999999.99') AS sub0,"+
-                        "to_char(osiris_erp_notacredito_enca.iva_al_15,'999999999.99') AS iva15,"+
+                        "to_char(osiris_erp_notacredito_enca.iva_al_impuesto,'999999999.99') AS iva15,"+
 						"to_char(osiris_erp_notacredito_enca.total,'999999999.99') AS total_,"+
 					    "descripcion1, descripcion2,"+
-					    "to_char(osiris_erp_notacredito_enca.sub_total_15 + osiris_erp_notacredito_enca.sub_total_0 + osiris_erp_notacredito_enca.iva_al_15,'99999999.99') AS subtotal "+
+					    "to_char(osiris_erp_notacredito_enca.sub_total_15 + osiris_erp_notacredito_enca.sub_total_0 + osiris_erp_notacredito_enca.iva_al_impuesto,'99999999.99') AS subtotal "+
 						"FROM osiris_erp_notacredito_enca "+
 	                    "WHERE osiris_erp_notacredito_enca.numero_factura = '"+numerodefactura+"' "+
                         "AND osiris_erp_notacredito_enca.cancelado = false ";
@@ -2921,10 +2921,10 @@ namespace osiris
 							"to_char(osiris_erp_notacredito_enca.numero_ntacred,'99999999') AS numnota,"+
 							"to_char(osiris_erp_notacredito_enca.sub_total_15,'99999999.99') AS subtotal15,"+
 						    "to_char(osiris_erp_notacredito_enca.sub_total_0,'99999999.99') AS subtotal0,"+
-							"to_char(osiris_erp_notacredito_enca.iva_al_15,'99999999.99') AS iva15,"+
+							"to_char(osiris_erp_notacredito_enca.iva_al_impuesto,'99999999.99') AS iva15,"+
 						    "to_char(osiris_erp_notacredito_enca.total,'99999999.99') AS total_,"+
 						    "to_char(osiris_erp_notacredito_enca.fecha_creacion_nota_credito,'dd-MM-yyyy') AS fechcreacion,"+ 	
-					        "to_char(osiris_erp_notacredito_enca.sub_total_15 + osiris_erp_notacredito_enca.sub_total_0 + osiris_erp_notacredito_enca.iva_al_15,'99999999.99') AS subtotal,"+
+					        "to_char(osiris_erp_notacredito_enca.sub_total_15 + osiris_erp_notacredito_enca.sub_total_0 + osiris_erp_notacredito_enca.iva_al_impuesto,'99999999.99') AS subtotal,"+
 						    "osiris_erp_factura_enca.descripcion_cliente,"+
 						    "to_char(osiris_his_paciente.pid_paciente,'99999') AS pid,"+
 						    "osiris_erp_notacredito_enca.id_quien_creo,"+
@@ -3157,7 +3157,7 @@ namespace osiris
 	                					"fecha_creacion_nota_credito,"+
 	                					"sub_total_15,"+
 	                					"sub_total_0,"+
-	                					"iva_al_15,"+
+	                					"iva_al_impuesto,"+
 						                "descripcion1,"+
 						                "descripcion2,"+
 	                					"id_quien_creo,"+

@@ -864,6 +864,8 @@ namespace osiris
 			col_desc_producto.AddAttribute (cellr1, "text", 1);    // la siguiente columna será 1 en vez de 1
 			col_desc_producto.SortColumnId = (int) Column_inv.col_desc_producto;
 			col_desc_producto.SetCellDataFunc(cellr1, new Gtk.TreeCellDataFunc(cambia_colores_fila));
+			col_desc_producto.Resizable = true;
+			cellr1.Width = 400;
 			
             TreeViewColumn col_stock = new TreeViewColumn();
 			CellRendererText cellrt2 = new CellRendererText();

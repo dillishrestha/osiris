@@ -363,41 +363,6 @@ namespace osiris
 			}
 		}
 		
-		public int nuevo_idcirugia()
-		{
-			//Console.WriteLine("leeo el  id de la tabla de postgres y lo cargo");
-			NpgsqlConnection conexion; 
-			conexion = new NpgsqlConnection (connectionString+nombrebd );
-            int tomavalor = 1;
-            // Verifica que la base de datos este conectada
-			try{
-				conexion.Open ();
-				NpgsqlCommand comando; 
-				comando = conexion.CreateCommand ();
-				comando.CommandText = "SELECT id_tipo_cirugia FROM osiris_his_tipo_cirugias "+
-									"ORDER BY id_tipo_cirugia DESC LIMIT 1;";
-				//Console.WriteLine(comando.CommandText.ToString());
-				NpgsqlDataReader lector = comando.ExecuteReader ();
-				if ((bool) lector.Read())
-				{
-					//Console.WriteLine("ultimo id: "+(int) lector["id_tipo_cirugia"]);
-					tomavalor = (int) lector["id_tipo_cirugia"]+1;
-					//Console.WriteLine(idtipocirugia.ToString() );
-					//Console.WriteLine(tomavalor.ToString() );
-					return tomavalor;
-					//entry_id_cirugia.Text = tomavalor.ToString();
-					//lector.Close ();
-				}
-			}catch (NpgsqlException ex){
-	   			Console.WriteLine ("PostgresSQL error: {0}",ex.Message);
-   				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
-									MessageType.Info,ButtonsType.Close, "PostgresSQL error: {0} ",ex.Message);
-				msgBoxError.Run ();		msgBoxError.Destroy();
-			}
-			conexion.Close ();
-			return tomavalor;///entry_id_cirugia.Text = idtipocirugia.ToString();
-		}
-		
 		void crea_nuevacirugia()
 		{
 			//Console.WriteLine("NUEVA cirugia");
@@ -545,9 +510,11 @@ namespace osiris
 			// la clase recibe tambien el orden del query
 			// es importante definir que tipo de busqueda es para que los objetos caigan ahi mismo
 			object[] parametros_objetos = {entry_id_cirugia,entry_cirugia,checkbutton_paquete_sino};
-			string[] parametros_sql = {"SELECT id_tipo_cirugia,descripcion_cirugia,tiene_paquete,to_char(valor_paquete,'999999999.99') AS valorpaquete "+
+			string[] parametros_sql = {"SELECT id_tipo_cirugia,descripcion_cirugia,tiene_paquete,to_char(valor_paquete,'999999999.99') AS valorpaquetereal,"+
+										"to_char(precio_de_venta,'999999999.99') AS valorpaquete "+
 										"FROM osiris_his_tipo_cirugias ",															
-										"SELECT id_tipo_cirugia,descripcion_cirugia,tiene_paquete,to_char(valor_paquete,'999999999.99') AS valorpaquete "+
+										"SELECT id_tipo_cirugia,descripcion_cirugia,tiene_paquete,to_char(valor_paquete,'999999999.99') AS valorpaquetereal,"+
+										"to_char(precio_de_venta,'999999999.99') AS valorpaquete "+
 										"FROM osiris_his_tipo_cirugias "+
 										"WHERE descripcion_cirugia LIKE '%"};			
 			classfind_data.buscandor(parametros_objetos,parametros_sql,"find_cirugia_paquetes"," ORDER BY id_tipo_cirugia","%' ");
@@ -710,7 +677,7 @@ namespace osiris
  					entry_total.Text = sub_total.ToString("F");
  					entry_precio_publico.Text = sub_total.ToString("F");
  				}else{
- 					if (LoginEmpleado =="DOLIVARES" || LoginEmpleado =="HVARGAS" || LoginEmpleado =="JBUENTELLO" ||  LoginEmpleado == "N000062" || LoginEmpleado == "N000059"){
+ 					if (LoginEmpleado =="DOLIVARES" || LoginEmpleado =="ADMIN" ){
  						MessageDialog msgBox = new MessageDialog (MyWin,DialogFlags.Modal,
 						MessageType.Question,ButtonsType.YesNo,"¿ Desea eliminar del paquete este producto ?");
 						ResponseType miResultado = (ResponseType)msgBox.Run ();
@@ -1458,13 +1425,11 @@ namespace osiris
 						MessageType.Question,ButtonsType.YesNo,"¿En realidad quiere crear una nueva cirugia?");
 				ResponseType miResultado = (ResponseType)
 				msgBoxError.Run ();			msgBoxError.Destroy();
-				int tomonuevoid = 1;
 				if (miResultado == ResponseType.Yes){
-					activa_campos(true);
-					tomonuevoid = (int) nuevo_idcirugia();
+					activa_campos(true);					
 					entry_cirugia.GrabFocus();
 					limpia_valores();
-					entry_id_cirugia.Text = tomonuevoid.ToString();
+					entry_id_cirugia.Text = classpublic.lee_ultimonumero_registrado("osiris_his_tipo_cirugias","id_tipo_cirugia","");
 					nuevacirugia = true; //Console.WriteLine("nuevacirugia = "+ nuevacirugia);
 				}else{
 					checkbutton_nueva_cirugia.Active = false;

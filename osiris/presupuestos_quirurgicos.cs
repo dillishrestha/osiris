@@ -1425,7 +1425,7 @@ namespace osiris
  					entry_total.Text = sub_total.ToString("F");
  					//entry_precio_convenido.Text = sub_total.ToString("F");
  				}else{
- 					if (LoginEmpleado =="DOLIVARES" || LoginEmpleado =="HVARGAS" || LoginEmpleado =="JBUENTELLO" ||  LoginEmpleado == "N000062" || LoginEmpleado == "N000059"){
+ 					if (LoginEmpleado =="DOLIVARES" || LoginEmpleado =="ADMIN"){
  						MessageDialog msgBox = new MessageDialog (MyWin,DialogFlags.Modal,
 						MessageType.Question,ButtonsType.YesNo,"¿ Desea eliminar del paquete este producto ?");
 						ResponseType miResultado = (ResponseType)msgBox.Run ();

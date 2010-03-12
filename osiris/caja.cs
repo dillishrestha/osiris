@@ -3041,6 +3041,7 @@ namespace osiris
 							//"to_char(osiris_erp_cobros_deta.precio_por_cantidad,'99999999.99') AS precioporcant,"+
 							"to_char(osiris_erp_cobros_deta.cantidad_aplicada * osiris_erp_cobros_deta.precio_producto,'99999999.99') AS ppcantidad_,"+							
 							//"to_char(osiris_erp_cobros_deta.iva_producto,'99999999.99') AS ivaproducto,"+
+							"to_char(osiris_erp_cobros_deta.porcentage_iva,'99999999.99') AS porcentageiva,"+
 							"to_char(osiris_erp_cobros_deta.porcentage_descuento,'999.99') AS pdescuento,"+
 							"id_empleado,"+
 							"to_char(osiris_erp_cobros_deta.fechahora_creacion,'dd-MM-yyyy HH24:mi:ss') AS fechcreacion, "+
@@ -3075,7 +3076,7 @@ namespace osiris
 					
 						toma_cantaplicada = float.Parse((string) lector["cantidadaplicada"]);
 						if ((bool) lector["aplicar_iva"]){	
-							calculo_del_iva_producto = (float.Parse((string) lector["ppcantidad_"])*valoriva)/100;
+							calculo_del_iva_producto = (float.Parse((string) lector["ppcantidad_"])*float.Parse((string) lector["porcentageiva"]))/100;
 						}else{
 							calculo_del_iva_producto = 0;
 						}

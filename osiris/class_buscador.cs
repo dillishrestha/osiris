@@ -129,6 +129,7 @@ namespace osiris
 		TreeViewColumn col_idlista;		CellRendererText cellrt0;
 		TreeViewColumn col_descripcion;	CellRendererText cellrt1;
 		TreeViewColumn col_bool;		CellRendererToggle cellrt2;
+		TreeViewColumn col_colum03;		CellRendererText cellrt3;
 			
 		//Declaracion de ventana de error y mensaje
 		protected Gtk.Window MyWinError;
@@ -213,8 +214,10 @@ namespace osiris
 					entry_cirugia = (object) args[1] as Gtk.Entry;
 					checkbutton_paquete_sino = (object) args[2] as Gtk.CheckButton;
 					col_bool.Title = "Es Paquete";
+					col_colum03.Title = "Precio Paquete";
 					cellrt1.Width = 450;
 					lista_de_busqueda.AppendColumn(col_bool);
+					lista_de_busqueda.AppendColumn(col_colum03);
 				break;
 				case "find_especialidad_medica":
 					entry_id_especialidad =  (object) args[0] as Gtk.Entry;
@@ -291,6 +294,15 @@ namespace osiris
 			col_bool.PackStart(cellrt2, true);
 			col_bool.AddAttribute (cellrt2, "active", 2);
 			col_bool.SortColumnId = (int) col_treview.col_bool;
+			
+			col_colum03 = new TreeViewColumn();
+			cellrt3 = new CellRendererText();
+			col_colum03.Title = "Descripcion";
+			col_colum03.PackStart(cellrt3, true);
+			col_colum03.AddAttribute (cellrt3, "text", 3);
+			//col_descripcion.SetCellDataFunc(cellrt1, new Gtk.TreeCellDataFunc(cambia_colores_cliente));
+			col_descripcion.SortColumnId = (int) col_treview.col_colum03;
+			col_colum03.Resizable = true;
 						        
 			lista_de_busqueda.AppendColumn(col_idlista);
 			lista_de_busqueda.AppendColumn(col_descripcion);
@@ -300,7 +312,8 @@ namespace osiris
 		{
 			col_idlista,
 			col_descripcion,
-			col_bool
+			col_bool,
+			col_colum03
 		}
 		
 		void cambia_colores_fila(Gtk.TreeViewColumn column, Gtk.CellRenderer cell, Gtk.TreeModel model, Gtk.TreeIter iter)
@@ -427,7 +440,7 @@ namespace osiris
 								treeViewEngineBuscador.AppendValues((int) lector["id_tipo_cirugia"],
 													(string) lector["descripcion_cirugia"],
 													(bool) lector["tiene_paquete"],
-													(string) lector["valorpaquete"]);
+													(string) lector["valorpaquete"].ToString().Trim());
 							
 							break;
 							case "find_especialidad_medica":							

@@ -825,8 +825,8 @@ namespace osiris
 				msgBoxError.Run ();
 				msgBoxError.Destroy();
 			}else{
-				//new osiris.inventario_almacen_reporte (int.Parse(entry_id_almacen.Text.ToString()),entry_almacen.Text,mesinventario,entry_ano_inventario.Text,
-				//									LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
+				new osiris.inventario_almacen_reporte (int.Parse(entry_id_almacen.Text.ToString()),entry_almacen.Text,mesinventario,entry_ano_inventario.Text,
+													LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
 			}
 		}
 				
@@ -851,7 +851,7 @@ namespace osiris
 				
 			TreeViewColumn col_idproducto = new TreeViewColumn();
 			CellRendererText cellr0 = new CellRendererText();
-			col_idproducto.Title = "ID Producto"; // titulo de la cabecera de la columna, si está visible
+			col_idproducto.Title = "ID Producto";
 			col_idproducto.PackStart(cellr0, true);
 			col_idproducto.AddAttribute (cellr0, "text", 0);    // la siguiente columna será 1 en vez de 1
 			col_idproducto.SortColumnId = (int) Column_inv.col_idproducto;
@@ -859,9 +859,9 @@ namespace osiris
 			
 			TreeViewColumn col_desc_producto = new TreeViewColumn();
 			CellRendererText cellr1 = new CellRendererText();
-			col_desc_producto.Title = "Descripcion de Producto"; // titulo de la cabecera de la columna, si está visible
+			col_desc_producto.Title = "Descripcion de Producto";
 			col_desc_producto.PackStart(cellr1, true);
-			col_desc_producto.AddAttribute (cellr1, "text", 1);    // la siguiente columna será 1 en vez de 1
+			col_desc_producto.AddAttribute (cellr1, "text", 1);
 			col_desc_producto.SortColumnId = (int) Column_inv.col_desc_producto;
 			col_desc_producto.SetCellDataFunc(cellr1, new Gtk.TreeCellDataFunc(cambia_colores_fila));
 			col_desc_producto.Resizable = true;
@@ -871,7 +871,7 @@ namespace osiris
 			CellRendererText cellrt2 = new CellRendererText();
 			col_stock.Title = "stock";
 			col_stock.PackStart(cellrt2, true);
-			col_stock.AddAttribute (cellrt2, "text", 2); // la siguiente columna será 1 en vez de 2
+			col_stock.AddAttribute (cellrt2, "text", 2);
 			col_stock.SortColumnId = (int) Column_inv.col_stock;
 			col_stock.SetCellDataFunc(cellrt2,new Gtk.TreeCellDataFunc(cambia_colores_fila));
             
@@ -879,7 +879,7 @@ namespace osiris
 			CellRendererText cellrt3 = new CellRendererText();
 			col_precioprod.Title = "Costo Unit.";
 			col_precioprod.PackStart(cellrt3, true);
-			col_precioprod.AddAttribute (cellrt3, "text", 3); // la siguiente columna será 1 en vez de 2
+			col_precioprod.AddAttribute (cellrt3, "text", 3);
 			col_precioprod.SortColumnId = (int) Column_inv.col_precioprod;
 			col_precioprod.SetCellDataFunc(cellrt3,new Gtk.TreeCellDataFunc(cambia_colores_fila));
            
@@ -887,7 +887,7 @@ namespace osiris
 			CellRendererText cellrt4 = new CellRendererText();
 			col_costo_prod.Title = "Costo Prod";
 			col_costo_prod.PackStart(cellrt4, true);
-			col_costo_prod.AddAttribute (cellrt4, "text", 4); // la siguiente columna será 7 en vez de 8
+			col_costo_prod.AddAttribute (cellrt4, "text", 4);
 			col_costo_prod.SortColumnId = (int) Column_inv.col_costo_prod;
 			col_costo_prod.SetCellDataFunc(cellrt4, new Gtk.TreeCellDataFunc(cambia_colores_fila));
 			
@@ -895,7 +895,7 @@ namespace osiris
 			CellRendererText cellrt5 = new CellRendererText();
 			col_embalaje.Title = "Embalaje";
 			col_embalaje.PackStart(cellrt5, true);
-			col_embalaje.AddAttribute (cellrt5, "text", 5); // la siguiente columna será 7 en vez de 8
+			col_embalaje.AddAttribute (cellrt5, "text", 5);
 			col_embalaje.SortColumnId = (int) Column_inv.col_embalaje;
 			col_embalaje.SetCellDataFunc(cellrt5, new Gtk.TreeCellDataFunc(cambia_colores_fila));
 			
@@ -903,7 +903,7 @@ namespace osiris
 			CellRendererText cellrt6 = new CellRendererText();
 			col_precio_pub.Title = "Precio Publico";
 			col_precio_pub.PackStart(cellrt6, true);
-			col_precio_pub.AddAttribute (cellrt6, "text", 6); // la siguiente columna será 7 en vez de 8
+			col_precio_pub.AddAttribute (cellrt6, "text", 6);
 			col_precio_pub.SortColumnId = (int) Column_inv.col_precio_pub;
            	col_precio_pub.SetCellDataFunc(cellrt6, new Gtk.TreeCellDataFunc(cambia_colores_fila));
            
@@ -911,7 +911,7 @@ namespace osiris
 			CellRendererText cellrt7 = new CellRendererText();
 			col_grupoprod.Title = "Grupo Producto";
 			col_grupoprod.PackStart(cellrt7, true);
-			col_grupoprod.AddAttribute (cellrt7, "text", 7); // la siguiente columna será 7 en vez de 8
+			col_grupoprod.AddAttribute (cellrt7, "text", 7);
 			col_grupoprod.SortColumnId = (int) Column_inv.col_grupoprod;
 			col_grupoprod.SetCellDataFunc(cellrt7, new Gtk.TreeCellDataFunc(cambia_colores_fila));
           
@@ -919,7 +919,7 @@ namespace osiris
 			CellRendererText cellrt8 = new CellRendererText();
 			col_grupo1prod.Title = "Grupo1 Producto";
 			col_grupo1prod.PackStart(cellrt8, true);
-			col_grupo1prod.AddAttribute (cellrt8, "text", 8); // la siguiente columna será 8 en vez de 9
+			col_grupo1prod.AddAttribute (cellrt8, "text", 8);
 			col_grupo1prod.SortColumnId = (int) Column_inv.col_grupo1prod;
 			col_grupo1prod.SetCellDataFunc(cellrt8, new Gtk.TreeCellDataFunc(cambia_colores_fila));
                         
@@ -927,7 +927,7 @@ namespace osiris
 			CellRendererText cellrt9 = new CellRendererText();
 			col_grupo2prod.Title = "Grupo2 Producto";
 			col_grupo2prod.PackStart(cellrt9, true);
-			col_grupo2prod.AddAttribute (cellrt9, "text", 9); // la siguiente columna será 8 en vez de 9
+			col_grupo2prod.AddAttribute (cellrt9, "text", 9);
 			col_grupo2prod.SortColumnId = (int) Column_inv.col_grupo2prod;
 			col_grupo2prod.SetCellDataFunc(cellrt9, new Gtk.TreeCellDataFunc(cambia_colores_fila));
 			
@@ -935,16 +935,15 @@ namespace osiris
 			CellRendererText cellrt10 = new CellRendererText();
 			col_fecha_hora.Title = "Fecha de creacion";
 			col_fecha_hora.PackStart(cellrt10, true);
-			col_fecha_hora.AddAttribute (cellrt10, "text", 10); // la siguiente columna será 8 en vez de 9
+			col_fecha_hora.AddAttribute (cellrt10, "text", 10);
 			col_fecha_hora.SortColumnId = (int) Column_inv.col_fecha_hora;
 			col_fecha_hora.SetCellDataFunc(cellrt10, new Gtk.TreeCellDataFunc(cambia_colores_fila));
-			
-			
+						
 			TreeViewColumn col_empleado = new TreeViewColumn();
 			CellRendererText cellrt11 = new CellRendererText();
 			col_empleado.Title = "Empleado";
 			col_empleado.PackStart(cellrt11, true);
-			col_empleado.AddAttribute (cellrt11, "text", 11); // la siguiente columna será 8 en vez de 9
+			col_empleado.AddAttribute (cellrt11, "text", 11);
 			col_empleado.SortColumnId = (int) Column_inv.col_empleado;
 			col_empleado.SetCellDataFunc(cellrt11, new Gtk.TreeCellDataFunc(cambia_colores_fila));
 			
@@ -996,16 +995,16 @@ namespace osiris
 				
 			TreeViewColumn col_idproducto = new TreeViewColumn();
 			CellRendererText cellr0 = new CellRendererText();
-			col_idproducto.Title = "ID Producto"; // titulo de la cabecera de la columna, si está visible
+			col_idproducto.Title = "ID Producto";
 			col_idproducto.PackStart(cellr0, true);
-			col_idproducto.AddAttribute (cellr0, "text", 0);    // la siguiente columna será 1 en vez de 1
+			col_idproducto.AddAttribute (cellr0, "text", 0);
 			col_idproducto.SortColumnId = (int) Column_prod.col_idproducto;
 			
 			TreeViewColumn col_desc_producto = new TreeViewColumn();
 			CellRendererText cellr1 = new CellRendererText();
-			col_desc_producto.Title = "Descripcion de Producto"; // titulo de la cabecera de la columna, si está visible
+			col_desc_producto.Title = "Descripcion de Producto";
 			col_desc_producto.PackStart(cellr1, true);
-			col_desc_producto.AddAttribute (cellr1, "text", 1);    // la siguiente columna será 1 en vez de 1
+			col_desc_producto.AddAttribute (cellr1, "text", 1);
 			col_desc_producto.SortColumnId = (int) Column_prod.col_desc_producto;
 			//cellr0.Editable = true;   // Permite edita este campo
             
@@ -1013,49 +1012,49 @@ namespace osiris
 			CellRendererText cellrt2 = new CellRendererText();
 			col_precioprod.Title = "Costo Unit.";
 			col_precioprod.PackStart(cellrt2, true);
-			col_precioprod.AddAttribute (cellrt2, "text", 2); // la siguiente columna será 1 en vez de 2
+			col_precioprod.AddAttribute (cellrt2, "text", 2);
 			col_precioprod.SortColumnId = (int) Column_prod.col_precioprod;
            
            	TreeViewColumn col_costo_prod = new TreeViewColumn();
 			CellRendererText cellrt3 = new CellRendererText();
 			col_costo_prod.Title = "Costo Prod";
 			col_costo_prod.PackStart(cellrt3, true);
-			col_costo_prod.AddAttribute (cellrt3, "text", 3); // la siguiente columna será 7 en vez de 8
+			col_costo_prod.AddAttribute (cellrt3, "text", 3);
 			col_costo_prod.SortColumnId = (int) Column_prod.col_costo_prod;
 			
 			TreeViewColumn col_embalaje = new TreeViewColumn();
 			CellRendererText cellrt4 = new CellRendererText();
 			col_embalaje.Title = "Embalaje";
 			col_embalaje.PackStart(cellrt4, true);
-			col_embalaje.AddAttribute (cellrt4, "text", 4); // la siguiente columna será 7 en vez de 8
+			col_embalaje.AddAttribute (cellrt4, "text", 4);
 			col_embalaje.SortColumnId = (int) Column_prod.col_embalaje;
 			
 			TreeViewColumn col_precio_pub = new TreeViewColumn();
 			CellRendererText cellrt5 = new CellRendererText();
 			col_precio_pub.Title = "Precio Publico";
 			col_precio_pub.PackStart(cellrt5, true);
-			col_precio_pub.AddAttribute (cellrt5, "text", 5); // la siguiente columna será 7 en vez de 8
+			col_precio_pub.AddAttribute (cellrt5, "text", 5);
 			col_precio_pub.SortColumnId = (int) Column_prod.col_precio_pub;
            
 			TreeViewColumn col_grupoprod = new TreeViewColumn();
 			CellRendererText cellrt6 = new CellRendererText();
 			col_grupoprod.Title = "Grupo Producto";
 			col_grupoprod.PackStart(cellrt6, true);
-			col_grupoprod.AddAttribute (cellrt6, "text", 6); // la siguiente columna será 7 en vez de 8
+			col_grupoprod.AddAttribute (cellrt6, "text", 6);
 			col_grupoprod.SortColumnId = (int) Column_prod.col_grupoprod;
           
 			TreeViewColumn col_grupo1prod = new TreeViewColumn();
 			CellRendererText cellrt7 = new CellRendererText();
 			col_grupo1prod.Title = "Grupo1 Producto";
 			col_grupo1prod.PackStart(cellrt7, true);
-			col_grupo1prod.AddAttribute (cellrt7, "text", 7); // la siguiente columna será 8 en vez de 9
+			col_grupo1prod.AddAttribute (cellrt7, "text", 7);
 			col_grupo1prod.SortColumnId = (int) Column_prod.col_grupo1prod;
                         
 			TreeViewColumn col_grupo2prod = new TreeViewColumn();
 			CellRendererText cellrt8 = new CellRendererText();
 			col_grupo2prod.Title = "Grupo2 Producto";
 			col_grupo2prod.PackStart(cellrt8, true);
-			col_grupo2prod.AddAttribute (cellrt8, "text", 8); // la siguiente columna será 8 en vez de 9
+			col_grupo2prod.AddAttribute (cellrt8, "text", 8);
 			col_grupo2prod.SortColumnId = (int) Column_prod.col_grupo2prod;
 			
 			lista_de_producto.AppendColumn(col_idproducto);  // 0

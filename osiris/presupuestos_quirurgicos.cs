@@ -1199,8 +1199,8 @@ namespace osiris
 				// cierra la ventana despues que almaceno la informacion en variables
 				Widget win = (Widget) sender;
 				win.Toplevel.Destroy();
-				if(id_medico == 1) { entry_medico.Editable = true;	entry_medico.GrabFocus();
-				}else { entry_medico.Editable = false; }
+				if(id_medico == 1) { entry_medico.IsEditable = true;	entry_medico.GrabFocus();
+				}else { entry_medico.IsEditable = false; }
 			}
 		}
 		

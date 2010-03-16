@@ -54,12 +54,12 @@ namespace osiris
 		// Declarando variable de fuente para la impresion
 		Gnome.Font fuente6 = Gnome.Font.FindClosest("Luxi Sans", 6);
 		Gnome.Font fuente7 = Gnome.Font.FindClosest("Luxi Sans", 7);
-		Gnome.Font fuente8 = Gnome.Font.FindClosest("Luxi Sans", 8);//Bitstream Vera Sans
-		Gnome.Font fuente9 = Gnome.Font.FindClosest("Luxi Sans", 9);
-		Gnome.Font fuente10 = Gnome.Font.FindClosest("Luxi Sans", 10);
+		//Gnome.Font fuente8 = Gnome.Font.FindClosest("Luxi Sans", 8);//Bitstream Vera Sans
+		//Gnome.Font fuente9 = Gnome.Font.FindClosest("Luxi Sans", 9);
+		//Gnome.Font fuente10 = Gnome.Font.FindClosest("Luxi Sans", 10);
 		Gnome.Font fuente11 = Gnome.Font.FindClosest("Luxi Sans", 11);
-		Gnome.Font fuente12 = Gnome.Font.FindClosest("Luxi Sans", 12);
-		Gnome.Font fuente36 = Gnome.Font.FindClosest("Luxi Sans", 36);
+		//Gnome.Font fuente12 = Gnome.Font.FindClosest("Luxi Sans", 12);
+		//Gnome.Font fuente36 = Gnome.Font.FindClosest("Luxi Sans", 36);
 		
 		public imprime_consumo_productos(object _lista_resumen_productos_,object _treeViewEngineResumen_, string _ano_consumo_)
 		{

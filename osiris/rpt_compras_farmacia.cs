@@ -71,13 +71,13 @@ namespace osiris
 		// Declaracion de fuentes tipo Bitstream Vera sans
 		Gnome.Font fuente5 = Gnome.Font.FindClosest("Luxi Sans", 5);
 		Gnome.Font fuente6 = Gnome.Font.FindClosest("Luxi Sans", 6);
-		Gnome.Font fuente7 = Gnome.Font.FindClosest("Luxi Sans", 7);
+		//Gnome.Font fuente7 = Gnome.Font.FindClosest("Luxi Sans", 7);
 		Gnome.Font fuente8 = Gnome.Font.FindClosest("Luxi Sans", 8);//Bitstream Vera Sans
-		Gnome.Font fuente9 = Gnome.Font.FindClosest("Luxi Sans", 9);
-		Gnome.Font fuente10 = Gnome.Font.FindClosest("Luxi Sans", 10);
-		Gnome.Font fuente11 = Gnome.Font.FindClosest("Luxi Sans", 11);
+		//Gnome.Font fuente9 = Gnome.Font.FindClosest("Luxi Sans", 9);
+		//Gnome.Font fuente10 = Gnome.Font.FindClosest("Luxi Sans", 10);
+		//Gnome.Font fuente11 = Gnome.Font.FindClosest("Luxi Sans", 11);
 		Gnome.Font fuente12 = Gnome.Font.FindClosest("Luxi Sans", 12);
-		Gnome.Font fuente36 = Gnome.Font.FindClosest("Luxi Sans", 36);
+		//Gnome.Font fuente36 = Gnome.Font.FindClosest("Luxi Sans", 36);
 		
 		private TreeStore treeViewEngineFarmacia;
 	

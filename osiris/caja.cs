@@ -4172,6 +4172,7 @@ namespace osiris
  				total1_linea = precio_linea + iva_linea; 
  				
 			} catch (Exception e) {
+				Console.WriteLine(e.Message);
 				return;
 			}
  			treeViewEngineExtras.SetValue (iter, (int) Colum_cargos_extras.col_cantidad, foo.col_cantidad);

@@ -94,15 +94,13 @@ namespace osiris
 		//public Gnome.Font fuente12 = Gnome.Font.FindClosest("Luxi Sans", 12);
 		//public Gnome.Font fuente36 = Gnome.Font.FindClosest("Luxi Sans", 36);
 		
-		//private ArrayList arraysolicitudmat;
-		
+		//private ArrayList arraysolicitudmat;		
 		string LoginEmpleado;
 		string NomEmpleado;
 		string AppEmpleado;
 		string ApmEmpleado;
 		string nombrebd;
-		string connectionString;
-		
+		string connectionString;		
 		float valoriva;
 		int idalmacen;    // Esta variable almacena el codigo del almacen de esta clase, se recibe como parametro de la clase
 		
@@ -229,7 +227,7 @@ namespace osiris
                						"to_char(fechahora_autorizado,'dd-MM-yyyy') AS fechahoraautorizado,"+
                						"osiris_his_solicitudes_deta.id_quien_solicito,"+
                						"status,surtido,osiris_productos.descripcion_producto,"+
-               						"to_char(id_secuencia,'9999999999') AS idsecuencia,"+
+               						"to_char(osiris_his_solicitudes_deta.id_secuencia,'9999999999') AS idsecuencia,"+
                						"osiris_almacenes.descripcion_almacen,"+
                						"osiris_his_solicitudes_deta.sin_stock,"+	
 									"osiris_his_solicitudes_deta.solicitado_erroneo,"+

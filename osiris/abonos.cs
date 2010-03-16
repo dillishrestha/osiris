@@ -183,7 +183,7 @@ namespace osiris
 			lista_abonos.RowActivated += on_button_imprimir_clicked;  // Doble click selecciono paciente
 			
 			TreeViewColumn col_abono = new TreeViewColumn();
-			CellRendererText cellr0 = new CellRendererText();
+			cellr0 = new CellRendererText();
 			col_abono.Title = "Abonos Ralizados"; // titulo de la cabecera de la columna, si está visible
 			col_abono.PackStart(cellr0, true);
 			col_abono.AddAttribute (cellr0, "text", 0);    // la siguiente columna será 1

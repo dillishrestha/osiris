@@ -98,7 +98,7 @@ namespace osiris
 		Gnome.Font fuente8 = Gnome.Font.FindClosest("Luxi Sans", 8);//Bitstream Vera Sans
 		Gnome.Font fuente9 = Gnome.Font.FindClosest("Luxi Sans", 9);
 		Gnome.Font fuente10 = Gnome.Font.FindClosest("Luxi Sans", 10);
-		Gnome.Font fuente11 = Gnome.Font.FindClosest("Luxi Sans", 11);
+		//Gnome.Font fuente11 = Gnome.Font.FindClosest("Luxi Sans", 11);
 		Gnome.Font fuente12 = Gnome.Font.FindClosest("Luxi Sans", 12);
 		Gnome.Font fuente36 = Gnome.Font.FindClosest("Luxi Sans", 36);
 						

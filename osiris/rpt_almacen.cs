@@ -33,77 +33,73 @@ using Npgsql;
 using System.Data;
 using Glade;
 using System.Collections;
-using GtkSharp;
 
 namespace osiris
 {
 	public class inventario_almacen_reporte
 	{
-		public string connectionString = "Server=localhost;" +
-        	    	                     "Port=5432;" +
-            	    	                 "User ID=admin;" +
-                	    	             "Password=1qaz2wsx;";
-        public string nombrebd;
-		public int idalmacen;
-		public string almacen;
-		public string mesinventario;
-		public string anoinventario;
-		public string LoginEmpleado;
-		public string NomEmpleado;
-		public string AppEmpleado;
-		public string ApmEmpleado;
+		string connectionString;
+        string nombrebd;
+		int idalmacen;
+		string almacen;
+		string mesinventario;
+		string anoinventario;
+		string LoginEmpleado;
+		string NomEmpleado;
+		string AppEmpleado;
+		string ApmEmpleado;
 		
-		public int columnas=-10;
-		public int contador = 1;
-		public int numpage = 1;
+		int columnas=-10;
+		int contador = 1;
+		int numpage = 1;
 		
-		public int idproducto = 0;
-		public string producto = "";
+		int idproducto = 0;
+		string producto = "";
 		
-		public string datos = "";
-		public string fcreacion = "";
-		public decimal porcentajedes =  0;
-		public decimal descsiniva = 0;
-		public decimal ivadedesc = 0;
-		public decimal descuento = 0;
-		public decimal ivaprod = 0;
-		public decimal subtotal = 0;
-		public decimal subtotalelim = 0;
-		public decimal subt15 = 0;
-		public decimal subt15elim = 0;
-		public decimal subt0 = 0;
-		public decimal subt0elim = 0;
-		public decimal sumadesc = 0;
-		public decimal sumadescelim = 0;
-		public decimal sumaiva = 0;
-		public decimal sumaivaelim = 0;
-		public decimal total = 0;
-		public decimal totalelim = 0;
-		public decimal totaladm = 0;
-		public decimal totaladmelim = 0;
-		public decimal totaldesc = 0;
-		public decimal subtotaldelmov = 0;	
+		string datos = "";
+		string fcreacion = "";
+		decimal porcentajedes =  0;
+		decimal descsiniva = 0;
+		decimal ivadedesc = 0;
+		decimal descuento = 0;
+		decimal ivaprod = 0;
+		decimal subtotal = 0;
+		decimal subtotalelim = 0;
+		decimal subt15 = 0;
+		decimal subt15elim = 0;
+		decimal subt0 = 0;
+		decimal subt0elim = 0;
+		decimal sumadesc = 0;
+		decimal sumadescelim = 0;
+		decimal sumaiva = 0;
+		decimal sumaivaelim = 0;
+		decimal total = 0;
+		decimal totalelim = 0;
+		decimal totaladm = 0;
+		decimal totaladmelim = 0;
+		decimal totaldesc = 0;
+		decimal subtotaldelmov = 0;	
 				
 		// Declarando variable de fuente para la impresion
 		// Declaracion de fuentes tipo Bitstream Vera sans
-		public Gnome.Font fuente6 = Gnome.Font.FindClosest("Bitstream Vera Sans", 6);
-		public Gnome.Font fuente7 = Gnome.Font.FindClosest("Bitstream Vera Sans", 7);
-		public Gnome.Font fuente8 = Gnome.Font.FindClosest("Bitstream Vera Sans", 8);
-		public Gnome.Font fuente9 = Gnome.Font.FindClosest("Bitstream Vera Sans", 9);
-		public Gnome.Font fuente10 = Gnome.Font.FindClosest("Bitstream Vera Sans", 10);
-		public Gnome.Font fuente11 = Gnome.Font.FindClosest("Bitstream Vera Sans", 11);
-		public Gnome.Font fuente12 = Gnome.Font.FindClosest("Bitstream Vera Sans", 12);
-		public Gnome.Font fuente36 = Gnome.Font.FindClosest("Bitstream Vera Sans", 36);
-		
+		Gnome.Font fuente6 = Gnome.Font.FindClosest("Bitstream Vera Sans", 6);
+		Gnome.Font fuente7 = Gnome.Font.FindClosest("Bitstream Vera Sans", 7);
+		Gnome.Font fuente8 = Gnome.Font.FindClosest("Bitstream Vera Sans", 8);
+		Gnome.Font fuente9 = Gnome.Font.FindClosest("Bitstream Vera Sans", 9);
+		Gnome.Font fuente10 = Gnome.Font.FindClosest("Bitstream Vera Sans", 10);
+		Gnome.Font fuente11 = Gnome.Font.FindClosest("Bitstream Vera Sans", 11);
+		Gnome.Font fuente12 = Gnome.Font.FindClosest("Bitstream Vera Sans", 12);
+		Gnome.Font fuente36 = Gnome.Font.FindClosest("Bitstream Vera Sans", 36);		
 				
 		//Declaracion de ventana de error
 		protected Gtk.Window MyWinError;
 		
+		class_conexion conexion_a_DB = new class_conexion();
+		
 		public inventario_almacen_reporte (int id_almacen_,string almacen_,string mesinventario_,string ano_inventario_,
 										string LoginEmpleado_,string NomEmpleado_,string AppEmpleado_,
-										string ApmEmpleado_,string _nombrebd_)
+										string ApmEmpleado_,string nombrebd_)
 		{
-			nombrebd = _nombrebd_;//
 			idalmacen = id_almacen_;
 			almacen = almacen_;
 			mesinventario = mesinventario_;
@@ -112,9 +108,11 @@ namespace osiris
 			NomEmpleado = NomEmpleado_;
 			AppEmpleado = AppEmpleado_;
 			ApmEmpleado = ApmEmpleado_;
+			connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
+			nombrebd = conexion_a_DB._nombrebd;
 			
 			Gnome.PrintJob    trabajo   = new Gnome.PrintJob (PrintConfig.Default());
-        	Gnome.PrintDialog dialogo   = new Gnome.PrintDialog (trabajo, "PROCEDIMIENTO COBRANZA", 0);
+        	Gnome.PrintDialog dialogo   = new Gnome.PrintDialog (trabajo, "INVENTARIO FISICO", 0);
         	int         respuesta = dialogo.Run ();
         	if (respuesta == (int) PrintButtons.Cancel) 
 			{
@@ -131,7 +129,7 @@ namespace osiris
                 trabajo.Print (); 
                 break;
                 case (int) PrintButtons.Preview:
-                new PrintJobPreview(trabajo, "PROCEDIMIENTO COBRANZA").Show();
+                new PrintJobPreview(trabajo, "INVETARIO FISICO").Show();
                 break;
         	}
 			dialogo.Hide (); dialogo.Dispose ();
@@ -142,12 +140,12 @@ namespace osiris
       		// Cambiar la fuente
 			Gnome.Print.Setfont (ContextoImp, fuente6);
 			ContextoImp.Rotate(90);
-			ContextoImp.MoveTo(19.7,-10);			ContextoImp.Show("Hospital Santa Cecilia");//19.7, 770
-			ContextoImp.MoveTo(20, -10);			ContextoImp.Show("Hospital Santa Cecilia");
-			ContextoImp.MoveTo(19.7, -20);			ContextoImp.Show("Direccion: Isacc Garza #200 Ote. Centro Monterrey, NL.");
-			ContextoImp.MoveTo(20, -20);			ContextoImp.Show("Direccion: Isacc Garza #200 Ote. Centro Monterrey, NL.");
-			ContextoImp.MoveTo(19.7, -30);			ContextoImp.Show("Conmutador:(81) 81-25-56-10");
-			ContextoImp.MoveTo(20, -30);			ContextoImp.Show("Conmutador:(81) 81-25-56-10");
+			ContextoImp.MoveTo(19.7,-10);			ContextoImp.Show("Sistema Hospitalario OSIRIS");//19.7, 770
+			ContextoImp.MoveTo(20, -10);			ContextoImp.Show("Sistema Hospitalario OSIRIS");
+			ContextoImp.MoveTo(19.7, -20);			ContextoImp.Show("Direccion:");
+			ContextoImp.MoveTo(20, -20);			ContextoImp.Show("Direccion:");
+			ContextoImp.MoveTo(19.7, -30);			ContextoImp.Show("Conmutador:");
+			ContextoImp.MoveTo(20, -30);			ContextoImp.Show("Conmutador:");
 							
 			Gnome.Print.Setfont (ContextoImp, fuente12);
 			Gnome.Print.Setrgbcolor(ContextoImp, 150,0,0);
@@ -155,8 +153,6 @@ namespace osiris
 			Gnome.Print.Setfont (ContextoImp, fuente36);
 			Gnome.Print.Setrgbcolor(ContextoImp, 0,0,0);
 			ContextoImp.MoveTo(20, -40);				ContextoImp.Show("____________________________");
-									    			
-		
       }
       
       void genera_tabla(Gnome.PrintContext ContextoImp, Gnome.PrintJob trabajoImpresion)
@@ -223,25 +219,27 @@ namespace osiris
         	NpgsqlCommand comando; 
         	comando = conexion.CreateCommand (); 
         	comando.CommandText = "SELECT descripcion_producto,eliminado, "+
-							"id_quien_creo,hscmty_productos.aplicar_iva,hscmty_catalogo_almacenes.id_almacen,  "+
+							"id_quien_creo,osiris_productos.aplicar_iva,osiris_inventario_almacenes.id_almacen,  "+
 							"descripcion_grupo_producto,descripcion_grupo1_producto,descripcion_grupo2_producto, "+
-							"to_char(hscmty_catalogo_almacenes.id_producto,'999999999999') AS idproducto, "+
-							"to_char(hscmty_catalogo_almacenes."+mesinventario.ToString()+",'99999.99') AS stock, "+
-							"to_char(hscmty_productos.costo_por_unidad,'999999999.99') AS costoproductounitario, "+
-							"to_char(hscmty_productos.costo_producto,'999999999.99') AS costoproducto, "+
-							"to_char(hscmty_productos.precio_producto_publico,'99999999.99') AS preciopublico,"+
-							"to_char(hscmty_productos.cantidad_de_embalaje,'999999999.99') AS embalaje, "+
-							"to_char(hscmty_catalogo_almacenes.fechahora_alta,'dd-MM-yyyy HH:mi:ss') AS fechcreacion "+
+							"to_char(osiris_inventario_almacenes.id_producto,'999999999999') AS idproducto, "+
+							//"to_char(osiris_inventario_almacenes."+mesinventario.ToString()+",'99999.99') AS stock, "+
+							"to_char(osiris_inventario_almacenes.stock,'999999.99') AS stock, "+
+							"to_char(osiris_productos.costo_por_unidad,'999999999.99') AS costoproductounitario, "+
+							"to_char(osiris_productos.costo_producto,'999999999.99') AS costoproducto, "+
+							"to_char(osiris_productos.precio_producto_publico,'99999999.99') AS preciopublico,"+
+							"to_char(osiris_productos.cantidad_de_embalaje,'999999999.99') AS embalaje, "+
+							"to_char(osiris_inventario_almacenes.fechahora_alta,'dd-MM-yyyy HH:mi:ss') AS fechcreacion "+
 							"FROM "+
-							"hscmty_catalogo_almacenes,hscmty_productos,hscmty_almacenes,hscmty_grupo_producto,hscmty_grupo1_producto,hscmty_grupo2_producto "+
-							"WHERE hscmty_catalogo_almacenes.id_producto = hscmty_productos.id_producto "+ 
-							"AND hscmty_productos.id_grupo_producto = hscmty_grupo_producto.id_grupo_producto "+
-							"AND hscmty_productos.id_grupo1_producto = hscmty_grupo1_producto.id_grupo1_producto "+
-							"AND hscmty_productos.id_grupo2_producto = hscmty_grupo2_producto.id_grupo2_producto "+
-							"AND hscmty_catalogo_almacenes.id_almacen = hscmty_almacenes.id_almacen "+
-							"AND hscmty_catalogo_almacenes.id_almacen = '"+(int) idalmacen +"' "+
-							"AND hscmty_catalogo_almacenes.ano_inventario = '"+(string) anoinventario +"' "+
-							"ORDER BY hscmty_productos.descripcion_producto,to_char(hscmty_catalogo_almacenes.fechahora_alta,'yyyy-mm-dd HH:mm:ss');";
+							"osiris_inventario_almacenes,osiris_productos,osiris_almacenes,osiris_grupo_producto,osiris_grupo1_producto,osiris_grupo2_producto "+
+							"WHERE osiris_inventario_almacenes.id_producto = osiris_productos.id_producto "+ 
+							"AND osiris_productos.id_grupo_producto = osiris_grupo_producto.id_grupo_producto "+
+							"AND osiris_productos.id_grupo1_producto = osiris_grupo1_producto.id_grupo1_producto "+
+							"AND osiris_productos.id_grupo2_producto = osiris_grupo2_producto.id_grupo2_producto "+
+							"AND osiris_inventario_almacenes.id_almacen = osiris_almacenes.id_almacen "+
+							"AND osiris_inventario_almacenes.id_almacen = '"+(int) idalmacen +"' "+
+							"AND osiris_inventario_almacenes.ano_inventario = '"+(string) anoinventario +"' "+
+							"AND osiris_inventario_almacenes.mes_inventario = '"+mesinventario+"' "+
+							"ORDER BY osiris_productos.descripcion_producto,to_char(osiris_inventario_almacenes.fechahora_alta,'yyyy-mm-dd HH:mm:ss');";
 						
         	NpgsqlDataReader lector = comando.ExecuteReader ();
         	//Console.WriteLine("query proc cobr: "+comando.CommandText.ToString());
@@ -297,7 +295,7 @@ namespace osiris
         			}*/
         			genera_lineac(ContextoImp, trabajoImpresion);
 					ContextoImp.MoveTo(80, columnas);						ContextoImp.Show((string) lector["stock"]);	
-					ContextoImp.MoveTo(22, columnas);						ContextoImp.Show((string) lector["idproducto"]);
+					ContextoImp.MoveTo(22, columnas);						ContextoImp.Show((string) lector["idproducto"]+" "+(string) lector["descripcion_producto"]);
 					if(datos.Length > 64)
 					{
 					ContextoImp.MoveTo(110, columnas);				ContextoImp.Show(datos.Substring(0,60));
@@ -386,8 +384,7 @@ namespace osiris
 			}else{
 				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
 				MessageType.Error, 
-				ButtonsType.Close, "Este folio no contiene productos aplicados \n"+
-							"existentes para que el procedimiento se muestre \n");
+				ButtonsType.Close, "ERROR...");
 				msgBoxError.Run ();				msgBoxError.Destroy();
 			}	
 		}catch (NpgsqlException ex){

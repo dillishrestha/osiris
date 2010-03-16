@@ -82,7 +82,7 @@ namespace osiris
 		Gnome.Font fuente8 = Gnome.Font.FindClosest("Bitstream Vera Sans", 8);
 		Gnome.Font fuente9 = Gnome.Font.FindClosest("Bitstream Vera Sans", 9);
 		Gnome.Font fuente10 = Gnome.Font.FindClosest("Bitstream Vera Sans", 10);
-		Gnome.Font fuente11 = Gnome.Font.FindClosest("Bitstream Vera Sans", 11);
+		//Gnome.Font fuente11 = Gnome.Font.FindClosest("Bitstream Vera Sans", 11);
 		Gnome.Font fuente12 = Gnome.Font.FindClosest("Bitstream Vera Sans", 12);
 		Gnome.Font fuente36 = Gnome.Font.FindClosest("Bitstream Vera Sans", 36);
 		

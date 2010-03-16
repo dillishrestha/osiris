@@ -101,15 +101,15 @@ namespace osiris
 		
 		// Declarando variable de fuente para la impresion
 		// Declaracion de fuentes tipo Bitstream Vera sans
-		Gnome.Font fuente5 = Gnome.Font.FindClosest("Luxi Sans", 5);
+		//Gnome.Font fuente5 = Gnome.Font.FindClosest("Luxi Sans", 5);
 		Gnome.Font fuente6 = Gnome.Font.FindClosest("Luxi Sans", 6);
 		Gnome.Font fuente7 = Gnome.Font.FindClosest("Luxi Sans", 7);
 		Gnome.Font fuente8 = Gnome.Font.FindClosest("Luxi Sans", 8);//Bitstream Vera Sans
 		Gnome.Font fuente9 = Gnome.Font.FindClosest("Luxi Sans", 9);
-		Gnome.Font fuente10 = Gnome.Font.FindClosest("Luxi Sans", 10);
-		Gnome.Font fuente11 = Gnome.Font.FindClosest("Luxi Sans", 11);
-		Gnome.Font fuente12 = Gnome.Font.FindClosest("Luxi Sans", 12);
-		Gnome.Font fuente36 = Gnome.Font.FindClosest("Luxi Sans", 36);
+		//Gnome.Font fuente10 = Gnome.Font.FindClosest("Luxi Sans", 10);
+		//Gnome.Font fuente11 = Gnome.Font.FindClosest("Luxi Sans", 11);
+		//Gnome.Font fuente12 = Gnome.Font.FindClosest("Luxi Sans", 12);
+		//Gnome.Font fuente36 = Gnome.Font.FindClosest("Luxi Sans", 36);
 		
 		//Declaracion de ventana de error
 		protected Gtk.Window MyWinError;
@@ -372,7 +372,7 @@ namespace osiris
 		
 		void on_button_quitar_clicked (object sender, EventArgs args)		
 		{
-			if(LoginEmpleado =="DOLIVARES"){
+			if(LoginEmpleado =="DOLIVARES" || LoginEmpleado =="ADMIN"){
 					MessageDialog msgBox2 = new MessageDialog (MyWin,DialogFlags.Modal,
 						                 MessageType.Question,ButtonsType.YesNo,"¿ Esta seguro de Borrar los Materiales Seleccionados?");
 					ResponseType miResultado2 = (ResponseType)msgBox2.Run ();
@@ -790,7 +790,7 @@ namespace osiris
 				//msgBoxError.Run ();
 				//msgBoxError.Destroy();
 			//}else{
-				if(LoginEmpleado =="DOLIVARES"){
+				if(LoginEmpleado =="DOLIVARES" || LoginEmpleado =="ADMIN"){
 					if (this.checkbutton_enviar_articulos.Active == true){
 						if (idsubalmacen != 1){
 							MessageDialog msgBox = new MessageDialog (MyWin,DialogFlags.Modal,

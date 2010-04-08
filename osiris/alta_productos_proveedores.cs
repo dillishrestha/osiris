@@ -323,7 +323,8 @@ namespace osiris
 										comando3.CommandText =  "UPDATE osiris_catalogo_productos_proveedores SET eliminado = 'true',"+
 						     			                        "fecha_eliminado = '"+DateTime.Now.ToString("yyyy-MM-dd")+"', "+
 										                        "id_quien_elimino = ' "+LoginEmpleado+" ' "+
-									                            "WHERE codigo_producto_proveedor = '"+(string) lista_precios_proveedor.Model.GetValue (iter,3)+"' "+
+									                            //"WHERE codigo_producto_proveedor = '"+(string) lista_precios_proveedor.Model.GetValue (iter,3)+"' "+
+																"WHERE id_secuencia = '"+(string) lista_precios_proveedor.Model.GetValue (iter,9)+"' "+
 					             					            "AND id_proveedor = '"+this.entry_id_proveedor.Text+"' ;";
 										comando3.ExecuteNonQuery(); 
 										comando3.Dispose();
@@ -470,10 +471,8 @@ namespace osiris
 			entry_clave.Text = "";
 			treeViewEngineaprobados.Clear();
 			treeViewEngineproductos.Clear();
-			
-			if(this.checkbutton_aprobar.Active == true)
-			{
-				
+						
+			if(this.checkbutton_aprobar.Active == true){				
 				this.button_quita.Sensitive = true;
 				this.button_selecciona.Sensitive = true;
 				this.lista_precios_proveedor.Sensitive = true;
@@ -483,8 +482,7 @@ namespace osiris
 				this.entry_id_proveedor.Sensitive = true;
 				this.entry_nombre_proveedor.Sensitive = true;
 				this.button_busca_provedor.Sensitive = true;
-				this.button_editar.Sensitive = true;
-				
+				this.button_editar.Sensitive = true;				
 			}else{
 				this.button_quita.Sensitive = false;
 				this.button_selecciona.Sensitive = false;
@@ -495,8 +493,7 @@ namespace osiris
 				this.entry_id_proveedor.Sensitive = false;
 				this.entry_nombre_proveedor.Sensitive = false;
 				this.button_busca_provedor.Sensitive = false;
-				this.button_editar.Sensitive = false;
-				
+				this.button_editar.Sensitive = false;				
 			}
 		}
 				
@@ -546,8 +543,7 @@ namespace osiris
 													typeof(string),
 			                                        typeof(string),
 			                                        typeof(string),
-													typeof(string));
-													
+													typeof(string));													
 												
 			lista_productos_agregados.Model = treeViewEngineproductos;
 			
@@ -713,33 +709,33 @@ namespace osiris
 			//col_cod_provedor.SetCellDataFunc(cellrt3, new Gtk.TreeCellDataFunc(cambia_colores));
 			col_cod_provedor.SortColumnId = (int) Col_autoriza.col_cod_provedor;
 			
-			TreeViewColumn col_precio_hscmty = new TreeViewColumn();
+			TreeViewColumn col_precio_osiris = new TreeViewColumn();
 			CellRendererText cellrt4 = new CellRendererText();
-			col_precio_hscmty.Title = "Precio HSCMTY ";
-			col_precio_hscmty.PackStart(cellrt4, true);
-			col_precio_hscmty.AddAttribute (cellrt4, "text", 5); // la siguiente columna será 3
-			//col_precio_hscmty.SetCellDataFunc(cellrt4, new Gtk.TreeCellDataFunc(cambia_colores));
-			col_precio_hscmty.SortColumnId = (int) Col_autoriza.col_precio_hscmty;
+			col_precio_osiris.Title = "Precio OSIRIS";
+			col_precio_osiris.PackStart(cellrt4, true);
+			col_precio_osiris.AddAttribute (cellrt4, "text", 5); // la siguiente columna será 3
+			//col_precio_osiris.SetCellDataFunc(cellrt4, new Gtk.TreeCellDataFunc(cambia_colores));
+			col_precio_osiris.SortColumnId = (int) Col_autoriza.col_precio_osiris;
 			
-			TreeViewColumn col_precio_xuni_hscmty = new TreeViewColumn();
+			TreeViewColumn col_precio_xuni_osiris = new TreeViewColumn();
 			CellRendererText cellrt5 = new CellRendererText();
-			col_precio_xuni_hscmty.Title = "Precio X Unidad ";
-			col_precio_xuni_hscmty.PackStart(cellrt5, true);
-			col_precio_xuni_hscmty.AddAttribute (cellrt5, "text", 6); // la siguiente columna será 3
-			//col_precio_xuni_hscmty.SetCellDataFunc(cellrt5, new Gtk.TreeCellDataFunc(cambia_colores));
-			//col_precio_xuni_hscmty.SortColumnId = (int) Col_autoriza.col_precio_xuni_hscmty;
+			col_precio_xuni_osiris.Title = "Precio X Unidad ";
+			col_precio_xuni_osiris.PackStart(cellrt5, true);
+			col_precio_xuni_osiris.AddAttribute (cellrt5, "text", 6); // la siguiente columna será 3
+			//col_precio_xuni_osiris.SetCellDataFunc(cellrt5, new Gtk.TreeCellDataFunc(cambia_colores));
+			//col_precio_xuni_osiris.SortColumnId = (int) Col_autoriza.col_precio_xuni_osiris;
 			
-			TreeViewColumn col_cod_hscmty = new TreeViewColumn();
+			TreeViewColumn col_cod_osiris = new TreeViewColumn();
 			CellRendererText cellrt6 = new CellRendererText();
-			col_cod_hscmty.Title = "Cod.HSCMTY ";
-			col_cod_hscmty.PackStart(cellrt6, true);
-			col_cod_hscmty.AddAttribute (cellrt6, "text", 7); // la siguiente columna será 3
-			//col_cod_hscmty.SetCellDataFunc(cellrt6, new Gtk.TreeCellDataFunc(cambia_colores));
-			col_cod_hscmty.SortColumnId = (int) Col_autoriza.col_cod_hscmty;
+			col_cod_osiris.Title = "Cod.OSIRIS ";
+			col_cod_osiris.PackStart(cellrt6, true);
+			col_cod_osiris.AddAttribute (cellrt6, "text", 7); // la siguiente columna será 3
+			//col_cod_osiris.SetCellDataFunc(cellrt6, new Gtk.TreeCellDataFunc(cambia_colores));
+			col_cod_osiris.SortColumnId = (int) Col_autoriza.col_cod_osiris;
 			
 			TreeViewColumn col_descripcion_hsc = new TreeViewColumn();
 			CellRendererText cellrt7 = new CellRendererText();
-			col_descripcion_hsc.Title = "DescripcionHSCMTY";
+			col_descripcion_hsc.Title = "Descripcion OSIRIS";
 			col_descripcion_hsc.PackStart(cellrt7, true);
 			col_descripcion_hsc.AddAttribute (cellrt7, "text", 8); // la siguiente columna será 3
 			col_descripcion_hsc.SortColumnId = (int) Col_autoriza.col_descripcion_hsc;
@@ -750,9 +746,9 @@ namespace osiris
 			lista_precios_proveedor.AppendColumn(col_precio_prov);			//2
 			lista_precios_proveedor.AppendColumn(col_precio_xuni_prov);		//3
 			lista_precios_proveedor.AppendColumn(col_cod_provedor);			//4
-			lista_precios_proveedor.AppendColumn(col_precio_hscmty);		//5
-			lista_precios_proveedor.AppendColumn(col_precio_xuni_hscmty);	//6
-			lista_precios_proveedor.AppendColumn(col_cod_hscmty);			//7
+			lista_precios_proveedor.AppendColumn(col_precio_osiris);		//5
+			lista_precios_proveedor.AppendColumn(col_precio_xuni_osiris);	//6
+			lista_precios_proveedor.AppendColumn(col_cod_osiris);			//7
 			lista_precios_proveedor.AppendColumn(col_descripcion_hsc);		//8
 		}
 		
@@ -762,8 +758,8 @@ namespace osiris
 		    col_descripcion,
 	     	col_precio_prov,
 			col_cod_provedor,
-			col_precio_hscmty,
-		    col_cod_hscmty,
+			col_precio_osiris,
+		    col_cod_osiris,
 		    col_descripcion_hsc			
 		}		
 		
@@ -836,7 +832,7 @@ namespace osiris
 					                "to_char(osiris_catalogo_productos_proveedores.precio_costo, '999999999.99') AS preciocosto,"+
 					                "to_char(osiris_catalogo_productos_proveedores.precio_costo_unitario, '999999999.99') AS preciocostouni,"+
 						            "to_char(osiris_catalogo_productos_proveedores.id_producto, '999999999999999') AS idproducto,"+
-               						"osiris_catalogo_productos_proveedores.codigo_producto_proveedor,osiris_catalogo_productos_proveedores.descripcion_producto_hsc,"+
+               						"osiris_catalogo_productos_proveedores.codigo_producto_proveedor,osiris_catalogo_productos_proveedores.descripcion_producto_osiris,"+
                						"to_char(osiris_catalogo_productos_proveedores.id_secuencia,'9999999999') AS idsecuencia "+
                						//"to_char(osiris_productos.costo_por_unidad,'999999999.99') AS costoproductounitario,"+
                						//"to_char(osiris_productos.costo_producto,'999999999.99') AS costoproducto "+
@@ -851,11 +847,13 @@ namespace osiris
 					                                     (string) lector["descripcion_producto"].ToString().Trim(),
 					                                     (string) lector["preciocosto"].ToString().Trim(),
 					                                     (string) lector["preciocostouni"].ToString().Trim(),
-					                                     (string) lector["codigo_producto_proveedor"].ToString().Trim(),"","",
+					                                     (string) lector["codigo_producto_proveedor"].ToString().Trim(),
+					                                     "",
+					                                     "",
 					                                    // (string) lector["costoproducto"],
 					                                     //(string) lector["costoproductounitario"],
 					                                     (string) lector["idproducto"].ToString().Trim(),
-					                                     (string) lector["descripcion_producto_hsc"].ToString().Trim(),
+					                                     (string) lector["descripcion_producto_osiris"].ToString().Trim(),
 					                                     (string) lector["idsecuencia"].ToString().Trim());
 													
 				}	
@@ -877,7 +875,7 @@ namespace osiris
 					                "to_char(osiris_catalogo_productos_proveedores.precio_costo, '999999999.99') AS preciocosto,"+
 					                "to_char(osiris_catalogo_productos_proveedores.precio_costo_unitario, '999999999.99') AS preciocostouni,"+
 						            "to_char(osiris_catalogo_productos_proveedores.id_producto, '999999999999999') AS idproducto,"+
-               						"osiris_catalogo_productos_proveedores.codigo_producto_proveedor,osiris_catalogo_productos_proveedores.descripcion_producto_hsc,"+
+               						"osiris_catalogo_productos_proveedores.codigo_producto_proveedor,osiris_catalogo_productos_proveedores.descripcion_producto_osiris,"+
                						"to_char(osiris_productos.costo_por_unidad,'999999999.99') AS costoproductounitario,"+
                						"to_char(osiris_productos.costo_producto,'999999999.99') AS costoproducto,"+
                						"to_char(osiris_catalogo_productos_proveedores.id_secuencia,'9999999999') AS idsecuencia "+
@@ -896,7 +894,7 @@ namespace osiris
 					                                     (string) lector1["costoproducto"].ToString().Trim(),
 					                                     (string) lector1["costoproductounitario"].ToString().Trim(),
 					                                     (string) lector1["idproducto"].ToString().Trim(),
-					                                     (string) lector1["descripcion_producto_hsc"].ToString().Trim(),
+					                                     (string) lector1["descripcion_producto_osiris"].ToString().Trim(),
 					                                     (string) lector1["idsecuencia"].ToString().Trim());
 													
 				}										
@@ -936,17 +934,15 @@ namespace osiris
 		}
 		
 		void on_button_guarda_clicked (object sender, EventArgs args)
-		{
-			
-			if(edita == true){
-				
-					NpgsqlConnection conexion3; 
-					conexion3 = new NpgsqlConnection (connectionString+nombrebd);
-					try{
-						conexion3.Open ();
-						NpgsqlCommand comando3; 
-						comando3 = conexion3.CreateCommand();
-						comando3.CommandText =  "UPDATE osiris_catalogo_productos_proveedores SET clave = '"+this.entry_clave.Text+"', "+
+		{			
+			if(edita == true){				
+				NpgsqlConnection conexion3; 
+				conexion3 = new NpgsqlConnection (connectionString+nombrebd);
+				try{
+					conexion3.Open ();
+					NpgsqlCommand comando3; 
+					comando3 = conexion3.CreateCommand();
+					comando3.CommandText =  "UPDATE osiris_catalogo_productos_proveedores SET clave = '"+this.entry_clave.Text+"', "+
 											    "descripcion_producto = '"+this.entry_producto.Text+"', "+
 											    "precio_costo = '"+this.entry_precio.Text+"', "+
 											    "cantidad_de_embalaje = '"+this.entry_embalaje.Text+"', "+
@@ -955,25 +951,24 @@ namespace osiris
 	                                            "tipo_unidad_producto = '"+tipounidadproducto.ToString().ToUpper()+"', "+
 	                                            "codigo_producto_proveedor 	 = '"+this.entry_codigo.Text.ToUpper()+"', "+
 												"historial_movimientos = historial_movimientos || '"+this.entry_precio.Text.Trim()+";"+this.entry_embalaje.Text.Trim()+";"+LoginEmpleado+";"+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"\n' "+
-										/*	    "fecha_asigno_hscmty = '"+DateTime.Now.ToString("yyyy-MM-dd")+"', "+
-								                "id_quien_asigno_hscmty = ' "+LoginEmpleado+" ' "+*/
+										/*	    "fecha_asigno_osiris = '"+DateTime.Now.ToString("yyyy-MM-dd")+"', "+
+								                "id_quien_asigno_osiris = ' "+LoginEmpleado+" ' "+*/
 							                    "WHERE id_secuencia = '"+this.secuencial+"' "+
 							                    "AND codigo_producto_proveedor = '"+this.entry_codigo.Text+"' ;"; 
-							                    Console.WriteLine("este"+comando3.CommandText.ToString());
+							                    //Console.WriteLine("este "+comando3.CommandText.ToString());
 
-						comando3.ExecuteNonQuery();
-						comando3.Dispose();
-						conexion3.Close();
-										
-					}catch (NpgsqlException ex){
-						MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+					comando3.ExecuteNonQuery();
+					comando3.Dispose();
+					conexion3.Close();
+					edita = false;
+				}catch (NpgsqlException ex){
+					MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
 						                                               MessageType.Error, 
 						                                               ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
-						msgBoxError.Run ();
-					}
-					conexion3.Close();				
-
+					msgBoxError.Run ();
 				}
+				conexion3.Close();
+			}
 				
 			TreeIter iterSelected;
 			//TreeModel model;
@@ -984,12 +979,9 @@ namespace osiris
 			ResponseType miResultado = (ResponseType)msgBox1.Run ();
 			msgBox1.Destroy();
 		 	if (miResultado == ResponseType.Yes){
-			
-				if(this.checkbutton_nuevo_producto.Active == false && this.checkbutton_aprobar.Active == true)
-				{
+				if(this.checkbutton_nuevo_producto.Active == false && this.checkbutton_aprobar.Active == true){
 					NpgsqlConnection conexion2; 
-					conexion2 = new NpgsqlConnection (connectionString+nombrebd);
-					
+					conexion2 = new NpgsqlConnection (connectionString+nombrebd);					
 					try{
 						conexion2.Open ();
 						NpgsqlCommand comando2; 
@@ -999,9 +991,9 @@ namespace osiris
 							if ((bool)lista_precios_proveedor.Model.GetValue (iterSelected,0) == true){		
 								
 								comando2.CommandText = "SELECT id_proveedor,codigo_producto_proveedor,codigo_de_barra FROM osiris_catalogo_productos_proveedores "+
-												"WHERE codigo_producto_proveedor = '"+(string) this.lista_precios_proveedor.Model.GetValue (iterSelected,3)+"' "+
+												"WHERE codigo_producto_proveedor = '"+(string) this.lista_precios_proveedor.Model.GetValue (iterSelected,4).ToString().Trim()+"' "+
 												"AND id_proveedor = '"+this.entry_id_proveedor.Text+"' ;";
-								//Console.WriteLine("GUARDA     "+comando2.CommandText.ToString());
+								Console.WriteLine("GUARDA     "+comando2.CommandText.ToString());
 								NpgsqlDataReader lector2 = comando2.ExecuteReader ();
 								
 								if(lector2.Read()){			
@@ -1011,12 +1003,14 @@ namespace osiris
 										conexion3.Open ();
 										NpgsqlCommand comando3; 
 										comando3 = conexion3.CreateCommand();
-										comando3.CommandText =  "UPDATE osiris_catalogo_productos_proveedores SET id_producto  = '"+(string) this.lista_precios_proveedor.Model.GetValue (iterSelected,4)+"', "+
-											                    "descripcion_producto_hsc = '"+(string) this.lista_precios_proveedor.Model.GetValue (iterSelected,5)+"', "+											                   
-											                    "fecha_asigno_hscmty = '"+DateTime.Now.ToString("yyyy-MM-dd")+"', "+
-												                "id_quien_asigno_hscmty = ' "+LoginEmpleado+" ' "+
-											                    "WHERE codigo_producto_proveedor = '"+(string) lista_precios_proveedor.Model.GetValue (iterSelected,3)+"' "+
+										comando3.CommandText =  "UPDATE osiris_catalogo_productos_proveedores SET "+
+																"id_producto  = '"+(string) this.lista_precios_proveedor.Model.GetValue (iterSelected,7)+"', "+
+											                    "descripcion_producto_osiris = '"+(string) this.lista_precios_proveedor.Model.GetValue (iterSelected,8)+"', "+ 
+											                    "fecha_asigno_osiris = '"+DateTime.Now.ToString("yyyy-MM-dd")+"', "+
+												                "id_quien_asigno_osiris = ' "+LoginEmpleado+" ' "+
+											                    "WHERE id_secuencia = '"+(string) lista_precios_proveedor.Model.GetValue (iterSelected,9)+"' "+
 							             					    "AND id_proveedor = '"+this.entry_id_proveedor.Text+"' ;";
+										Console.WriteLine(comando3.CommandText.ToString());
 										comando3.ExecuteNonQuery();
 										comando3.Dispose();
 										conexion3.Close();
@@ -1037,9 +1031,9 @@ namespace osiris
 						{							
 							if ((bool)lista_precios_proveedor.Model.GetValue (iterSelected,0) == true){
 								comando2.CommandText = "SELECT id_proveedor,codigo_producto_proveedor,codigo_de_barra FROM osiris_catalogo_productos_proveedores "+
-								                       "WHERE codigo_producto_proveedor = '"+(string) this.lista_precios_proveedor.Model.GetValue (iterSelected,3)+"' "+
+								                       "WHERE codigo_producto_proveedor = '"+(string) this.lista_precios_proveedor.Model.GetValue (iterSelected,4).ToString().Trim()+"' "+
 										               "AND id_proveedor = '"+this.entry_id_proveedor.Text+"' ;";
-								//Console.WriteLine(comando2.CommandText.ToString());
+								Console.WriteLine(comando2.CommandText.ToString());
 								NpgsqlDataReader lector2 = comando2.ExecuteReader ();
 								
 								if(lector2.Read()){			
@@ -1050,12 +1044,14 @@ namespace osiris
 										conexion3.Open ();
 										NpgsqlCommand comando3; 
 										comando3 = conexion3.CreateCommand();
-										comando3.CommandText =  "UPDATE osiris_catalogo_productos_proveedores SET id_producto  = '"+(string) this.lista_precios_proveedor.Model.GetValue (iterSelected,4)+"', "+
-											                    "descripcion_producto_hsc = '"+(string) this.lista_precios_proveedor.Model.GetValue (iterSelected,5)+"', "+											                   
-											                    "fecha_asigno_hscmty = '"+DateTime.Now.ToString("yyyy-MM-dd")+"', "+
-												                "id_quien_asigno_hscmty = ' "+LoginEmpleado+" ' "+
-											                    "WHERE codigo_producto_proveedor = '"+(string) lista_precios_proveedor.Model.GetValue (iterSelected,3)+"' "+
+										comando3.CommandText =  "UPDATE osiris_catalogo_productos_proveedores SET "+
+																"id_producto  = '"+(string) this.lista_precios_proveedor.Model.GetValue (iterSelected,7)+"', "+
+											                    "descripcion_producto_osiris = '"+(string) this.lista_precios_proveedor.Model.GetValue (iterSelected,8).ToString().Trim()+"', "+
+											                    "fecha_asigno_osiris = '"+DateTime.Now.ToString("yyyy-MM-dd")+"', "+
+												                "id_quien_asigno_osiris = ' "+LoginEmpleado+" ' "+
+											                    "WHERE id_secuencia = '"+(string) lista_precios_proveedor.Model.GetValue (iterSelected,9)+"' "+
 							             					    "AND id_proveedor = '"+this.entry_id_proveedor.Text+"' ;";
+										//Console.WriteLine(comando3.CommandText.ToString());
 										comando3.ExecuteNonQuery();
 										comando3.Dispose();
 										conexion3.Close();
@@ -1072,7 +1068,7 @@ namespace osiris
 						}
 						
 						MessageDialog msgBox = new MessageDialog (MyWin,DialogFlags.Modal,
-						                                          MessageType.Info,ButtonsType.Ok,"Los codigos del HSCMTY se Actualizaron ");
+						                                          MessageType.Info,ButtonsType.Ok,"Los codigos se Actualizaron ");
 						msgBox.Run ();
 						msgBox.Destroy();
 						
@@ -1182,8 +1178,8 @@ namespace osiris
 				entry_cod_barras.Text = "";
 				entry_clave.Text = "";
 			}else{
-				entry_id_proveedor.Text = "";
-				entry_nombre_proveedor.Text = "";
+				//entry_id_proveedor.Text = "";
+				//entry_nombre_proveedor.Text = "";
 				entry_producto.Text = "";
 				entry_precio.Text = "";
 				entry_embalaje.Text = "";
@@ -1214,7 +1210,7 @@ namespace osiris
 			TreeIter iter;
 			string codigo = "";
 			if (this.lista_precios_proveedor.Selection.GetSelected(out model, out iter)){
-				codigo = (string) model.GetValue(iter, 4);
+				codigo = (string) model.GetValue(iter, 9);
 				//jbuConsole.WriteLine(codigo);
 			}
 			
@@ -1237,7 +1233,7 @@ namespace osiris
 						
                						"osiris_catalogo_productos_proveedores.tipo_unidad_producto "+
                						"FROM osiris_catalogo_productos_proveedores "+
-               						"WHERE codigo_producto_proveedor = '"+codigo+"' "+
+               						"WHERE id_secuencia = '"+codigo+"' "+
                						"AND id_proveedor  = '"+this.entry_id_proveedor.Text+"' ;"; 
                						
 				//Console.WriteLine(comando.CommandText);
@@ -1245,13 +1241,13 @@ namespace osiris
 				NpgsqlDataReader lector = comando.ExecuteReader ();
 				if(lector.Read()){	
 										
-					this.secuencial = (string) lector["secuencia"].ToString().Trim();			
-					this.entry_producto.Text = (string) lector["descripcion_producto"].ToString().ToUpper().Trim();
-					this.entry_precio.Text = (string) lector["preciocosto"].ToString().Trim();
-					this.entry_embalaje.Text = (string) lector["cantidadembalaje"].ToString().Trim();
-					this.entry_codigo.Text = (string) lector["codigo_producto_proveedor"].ToString().ToUpper().Trim();
-					this.entry_cod_barras.Text = (string) lector["codigo_de_barra"].ToString().Trim();
-					this.entry_clave.Text = (string) lector["clave"].ToString().ToUpper().Trim();
+					this.secuencial = (string) lector["secuencia"];			
+					this.entry_producto.Text = (string) lector["descripcion_producto"].ToString().ToUpper();
+					this.entry_precio.Text = (string) lector["preciocosto"];
+					this.entry_embalaje.Text = (string) lector["cantidadembalaje"];
+					this.entry_codigo.Text = (string) lector["codigo_producto_proveedor"].ToString().ToUpper();
+					this.entry_cod_barras.Text = (string) lector["codigo_de_barra"];		
+					this.entry_clave.Text = (string) lector["clave"].ToString().ToUpper();	
 					//this.combobox_tipo_unidad = (string) lector["tipo_unidad_producto"];	
 					
 					llena_combo_tipounidad();
@@ -1274,6 +1270,8 @@ namespace osiris
 					store33.AppendValues ("CAJA");
 					store33.AppendValues ("PULGADA");
 					store33.AppendValues ("FRASCO");
+					store33.AppendValues ("BOTE");
+					store33.AppendValues ("GALON");
 	 				
 					TreeIter iter33;
 					if (store33.GetIterFirst(out iter33)){
@@ -1497,9 +1495,7 @@ namespace osiris
 				//Console.WriteLine(comando.CommandText);
 				NpgsqlDataReader lector = comando.ExecuteReader ();
 							
-				while (lector.Read()){
-			
-					 
+				while (lector.Read()){				 
 					treeViewEngineBusca2.AppendValues (
 									(string) lector["codProducto"] ,//0
 									(string) lector["nombre_articulo"],

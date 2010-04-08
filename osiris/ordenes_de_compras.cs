@@ -173,11 +173,11 @@ namespace osiris
 			 												"correo_electronico,"+
 			 												"rfc_proveedor,"+
 			 												"faxnextel_proveedor,"+
+															//"subtotal_orden_compra,"+
+															//"iva_orden_compra,"+
+															//"total_orden_compra,"+
 			 												"numero_orden_compra) "+
-															//"subtotal_orden_compra
-															//iva_orden_compra
-															//total_orden_compra
-			 												"VALUES ('"+
+															"VALUES ('"+
 			 												int.Parse((string) this.lista_productos_a_comprar.Model.GetValue(iterSelected,15))+"','"+//id_prod
 					 										DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"','"+//fechahora_creacion
 					 										DateTime.Now.ToString("yyyy-MM-dd")+"','"+//fechahora_solicitud
@@ -229,10 +229,6 @@ namespace osiris
 													    "comprado = 'true', "+
 													    "id_proveedor = '"+variable_paso_02+"', "+
 													    "numero_orden_compra = '"+this.ultimaorden.ToString()+"',"+
-														//"cantidad_comprada = '"+  +"',"+
-														//precio_proveedor_1 = '"+  +"',"+
-														//id_proveedor1 = '"+  +"',"+
-														//costo_producto = '"+  +"',"+
 														"precio_costo_prov_selec ='"+(string) this.lista_productos_a_comprar.Model.GetValue (iterSelected,10).ToString().Trim()+"',"+
 														"precio_unitario_prov_selec ='"+(string) this.lista_productos_a_comprar.Model.GetValue (iterSelected,11).ToString().Trim()+"' "+
 									                    "WHERE id_requisicion ='"+(string) this.lista_productos_a_comprar.Model.GetValue (iterSelected,2).ToString().Trim()+"' "+
@@ -279,6 +275,9 @@ namespace osiris
 			 												"correo_electronico,"+
 			 												"rfc_proveedor,"+
 			 												"faxnextel_proveedor,"+
+															//"subtotal_orden_compra,"+
+															//"iva_orden_compra,"+
+															//"total_orden_compra,"+
 			 												"numero_orden_compra) "+
 			 												"VALUES ('"+
 			 												int.Parse((string) this.lista_productos_a_comprar.Model.GetValue(iterSelected,15))+"','"+//id_prod
@@ -332,10 +331,6 @@ namespace osiris
 													    "comprado = 'true', "+
 													    "id_proveedor = '"+variable_paso_02+"', "+
 													    "numero_orden_compra = '"+this.ultimaorden.ToString()+"',"+
-														//"cantidad_comprada = '"+  +"',"+
-														//precio_proveedor_1 = '"+  +"',"+
-														//id_proveedor1 = '"+  +"',"+
-														//costo_producto = '"+  +"',"+
 														"precio_costo_prov_selec ='"+(string) this.lista_productos_a_comprar.Model.GetValue (iterSelected,10).ToString().Trim()+"',"+
 														"precio_unitario_prov_selec ='"+(string) this.lista_productos_a_comprar.Model.GetValue (iterSelected,11).ToString().Trim()+"' "+
 									                    "WHERE id_requisicion ='"+(string) this.lista_productos_a_comprar.Model.GetValue (iterSelected,2).ToString().Trim()+"' "+
@@ -362,7 +357,7 @@ namespace osiris
 				}
 			}else{
 					MessageDialog msgBoxError1 = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
-								                                               MessageType.Info,ButtonsType.Close, "ERROR usted no asigno ningun PROVEEDOR...");
+								                                               MessageType.Error,ButtonsType.Close, "ERROR usted no asigno ningun PROVEEDOR...");
 					msgBoxError1.Run ();			msgBoxError1.Destroy();
 			}
 		}
@@ -407,23 +402,22 @@ namespace osiris
                								"osiris_erp_proveedores.direccion_proveedor,osiris_erp_proveedores.telefono1_proveedor,"+
                								"osiris_erp_proveedores.contacto1_proveedor,osiris_erp_proveedores.mail_proveedor,"+
                								"osiris_erp_proveedores.rfc_proveedor,osiris_erp_proveedores.fax_proveedor "+
-               								"FROM osiris_catalogo_productos_proveedores,osiris_erp_proveedores "+
-               								"WHERE osiris_catalogo_productos_proveedores.id_producto = '"+(string) this.lista_productos_a_comprar.Model.GetValue (iter,6)+"' "+
-               								"AND osiris_catalogo_productos_proveedores.id_proveedor = '"+(string) this.entry_id_proveedor.Text+"' "+
+               								"FROM osiris_catalogo_productos_proveedores,osiris_erp_proveedores,osiris_productos "+
+               								"WHERE osiris_catalogo_productos_proveedores.id_producto = '"+(string) this.lista_productos_a_comprar.Model.GetValue (iter,6).ToString().Trim()+"' "+
+               								"AND osiris_catalogo_productos_proveedores.id_proveedor = '"+(string) this.entry_id_proveedor.Text.ToString().Trim()+"' "+
+											"AND osiris_catalogo_productos_proveedores.id_producto = osiris_productos.id_producto "+
                								"AND osiris_catalogo_productos_proveedores.id_proveedor = osiris_erp_proveedores.id_proveedor;";
-						//Console.WriteLine(comando.CommandText);
+						Console.WriteLine(comando.CommandText);
 						NpgsqlDataReader lector = comando.ExecuteReader ();
 						
-               			if (lector.Read()){
-							this.lista_productos_a_comprar.Model.SetValue(iter,0,true);
-							
+               			if (lector.Read()){						
+							this.lista_productos_a_comprar.Model.SetValue(iter,0,true);							
 							this.lista_productos_a_comprar.Model.SetValue(iter,10,(string) lector["preciocosto"]);					// precio prov
 							this.lista_productos_a_comprar.Model.SetValue(iter,11,(string) lector["preciocostounitario"]);			// precio unitario
 							this.lista_productos_a_comprar.Model.SetValue(iter,13,(string) lector["codigo_producto_proveedor"]);	// Codigo
 							this.lista_productos_a_comprar.Model.SetValue(iter,14,(string) lector["codigo_de_barra"]);				// Barras						
 							this.lista_productos_a_comprar.Model.SetValue(iter,12,(string) this.entry_nombre_proveedor.Text);		// Nombre Proveedor
-							this.lista_productos_a_comprar.Model.SetValue(iter,15,(string) this.entry_id_proveedor.Text);			// Id Proveedor
-							
+							this.lista_productos_a_comprar.Model.SetValue(iter,15,(string) this.entry_id_proveedor.Text);			// Id Proveedor							
 							this.lista_productos_a_comprar.Model.SetValue(iter,16,(string) lector["direccion_proveedor"]);					
 							this.lista_productos_a_comprar.Model.SetValue(iter,17,(string) lector["telefono1_proveedor"]);		
 							this.lista_productos_a_comprar.Model.SetValue(iter,18,(string) lector["contacto1_proveedor"]);	
@@ -432,6 +426,7 @@ namespace osiris
 							this.lista_productos_a_comprar.Model.SetValue(iter,21,(string) lector["fax_proveedor"]);
 							contador_prod_asignados += 1;
 						}else{
+							this.lista_productos_a_comprar.Model.SetValue(iter,0,false);
 							contador_prod_noasignad += 1;
 						}
 					}
@@ -448,9 +443,10 @@ namespace osiris
                								"osiris_erp_proveedores.direccion_proveedor,osiris_erp_proveedores.telefono1_proveedor,"+
                								"osiris_erp_proveedores.contacto1_proveedor,osiris_erp_proveedores.mail_proveedor,"+
                								"osiris_erp_proveedores.rfc_proveedor,osiris_erp_proveedores.fax_proveedor "+
-               								"FROM osiris_catalogo_productos_proveedores,osiris_erp_proveedores "+
-               								"WHERE osiris_catalogo_productos_proveedores.id_producto = '"+(string) this.lista_productos_a_comprar.Model.GetValue (iter,6)+"' "+
-               								"AND osiris_catalogo_productos_proveedores.id_proveedor = '"+(string) this.entry_id_proveedor.Text+"' "+
+               								"FROM osiris_catalogo_productos_proveedores,osiris_erp_proveedores,osiris_productos "+
+               								"WHERE osiris_catalogo_productos_proveedores.id_producto = '"+(string) this.lista_productos_a_comprar.Model.GetValue (iter,6).ToString().Trim()+"' "+
+               								"AND osiris_catalogo_productos_proveedores.id_proveedor = '"+(string) this.entry_id_proveedor.Text.ToString().Trim()+"' "+
+											"AND osiris_catalogo_productos_proveedores.id_producto = osiris_productos.id_producto "+
                								"AND osiris_catalogo_productos_proveedores.id_proveedor = osiris_erp_proveedores.id_proveedor;";
 							Console.WriteLine(comando.CommandText);
 							NpgsqlDataReader lector = comando.ExecuteReader ();						
@@ -461,8 +457,7 @@ namespace osiris
 								this.lista_productos_a_comprar.Model.SetValue(iter,13,(string) lector["codigo_producto_proveedor"]);	// Codigo
 								this.lista_productos_a_comprar.Model.SetValue(iter,14,(string) lector["codigo_de_barra"]);				// Barras
 								this.lista_productos_a_comprar.Model.SetValue(iter,12,(string) this.entry_nombre_proveedor.Text);		// actualiza treeview con el nombre del proveedor
-								this.lista_productos_a_comprar.Model.SetValue(iter,15,(string) this.entry_id_proveedor.Text);  			// almacena el id del proveedor
-							
+								this.lista_productos_a_comprar.Model.SetValue(iter,15,(string) this.entry_id_proveedor.Text);  			// almacena el id del proveedor							
 								this.lista_productos_a_comprar.Model.SetValue(iter,16,(string) lector["direccion_proveedor"]);					
 								this.lista_productos_a_comprar.Model.SetValue(iter,17,(string) lector["telefono1_proveedor"]);		
 								this.lista_productos_a_comprar.Model.SetValue(iter,18,(string) lector["contacto1_proveedor"]);	
@@ -471,10 +466,17 @@ namespace osiris
 								this.lista_productos_a_comprar.Model.SetValue(iter,21,(string) lector["fax_proveedor"]);	
 								contador_prod_asignados += 1;
 							}else{
+								this.lista_productos_a_comprar.Model.SetValue(iter,0,false);
 								contador_prod_noasignad += 1;
 							}				
 						}
 					}
+					
+					MessageDialog msgBox = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+										MessageType.Info,ButtonsType.Close,"Productos Asignados a Proveedor = "+contador_prod_asignados.ToString().Trim()+"\n"+
+					                                          "No Asigandos = "+contador_prod_noasignad.ToString().Trim());
+					msgBox.Run ();				msgBox.Destroy();
+					
 					Console.WriteLine("contador_prod_asignados = "+contador_prod_asignados.ToString());
 					Console.WriteLine("contador_prod_noasignad = "+contador_prod_noasignad.ToString());
 					

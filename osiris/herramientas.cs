@@ -180,10 +180,10 @@ namespace osiris
 				
 		void on_button_corrige_san_nicolas_clicked(object sender, EventArgs args)
 		{
-			if(LoginEmpleado == "DOLIVARES" ){
+			if(LoginEmpleado == "DOLIVARES" || LoginEmpleado == "ADMIN"){
 				
 				NpgsqlConnection conexion; 
-				conexion = new NpgsqlConnection (connectionString+"Database=osiris;");
+				conexion = new NpgsqlConnection (connectionString+nombrebd);
 	        	// Verifica que la base de datos este conectada
 				try{
 					conexion.Open ();
@@ -234,7 +234,7 @@ namespace osiris
 					}
 											
 					NpgsqlConnection conexion3; 
-					conexion3 = new NpgsqlConnection (connectionString+"Database=osiris;");
+					conexion3 = new NpgsqlConnection (connectionString+nombrebd);
 					try{
 						conexion3.Open ();
 						NpgsqlCommand comando3; 
@@ -267,16 +267,15 @@ namespace osiris
 		public string verifica_acceso()
 		{
 			string varpaso = "NO";
-			if(LoginEmpleado == "DOLIVARES" || LoginEmpleado == "JPENA" ){
-				varpaso = "SISTEMAS"; return varpaso;
+			if(LoginEmpleado == "DOLIVARES" || LoginEmpleado == "ADMIN" ){
+				varpaso = "SISTEMAS";
+				return varpaso;
 			}
-			if(LoginEmpleado == "N000194" || LoginEmpleado == "N000100" || LoginEmpleado == "N000134" || LoginEmpleado == "N000103" || LoginEmpleado =="N000315" 
-				|| LoginEmpleado == "N000101" || LoginEmpleado == "N000115" || LoginEmpleado == "N000105" || LoginEmpleado == "N000375" || 
-				LoginEmpleado == "N000421" || LoginEmpleado == "N000372" || LoginEmpleado == "N000401"){
+			if(LoginEmpleado == "DOLIVARES" || LoginEmpleado == "ADMIN" || LoginEmpleado == "SZALETAGONZALEZ"){
 			  varpaso = "MEDICOS";
 			  return varpaso;
 			}
-			if( LoginEmpleado == "N000098"  || LoginEmpleado == "N000122"){
+			if(LoginEmpleado == "DOLIVARES" || LoginEmpleado == "ADMIN" || LoginEmpleado == "SZALETAGONZALEZ"){
 				varpaso = "RH"; 
 				return varpaso;
 			}else{

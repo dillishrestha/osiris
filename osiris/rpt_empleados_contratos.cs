@@ -30,15 +30,11 @@ using Gtk;
 using Glade;
 using Gnome;
 using System.Collections;
-using GtkSharp;
-
 
 namespace osiris
-{
-	
+{	
 	public class reportes_empleados
-	{
-	
+	{	
 		[Widget] Gtk.Window reportes_de_empleados;
 		[Widget] Gtk.Button button_salir;
 		[Widget] Gtk.Button button_contrato;
@@ -68,56 +64,52 @@ namespace osiris
 	
 	
 	
-	public string connectionString = "Server=localhost;" +
-						"Port=5432;" +
-						 "User ID=admin;" +
-						"Password=1qaz2wsx;";
-						
-		public string nombrebd;
-		public string LoginEmpleado;
-    	public string NomEmpleado;
-    	public string AppEmpleado;
-    	public string ApmEmpleado;
-        public string fechamax;
-        public string fechamin;
-        public string fechamaxsql;
-        public string fechaminsql;
-        public string id_empleado;
-        public string var_fecha;
-        public string var_tipo;
-        public string var_id_empleado;
-        public string var_sueldo;
-        public string var_depto;
-        public string var_puesto;
-        public string var_tipofuncion;
-        public string var_horas;
-        public string var_tiempocomida;
-        public string var_tipopago;
-        public string var_jornada;
-        public string var_annos;
-        public string id_sel;
-        public string nombre_completo;
-        public string fechacontrato;
-        public int conteo_lineas = 0;
-        public bool leer = false;
-        public bool fecha_valida = false;
-        public string tiempo_de_contrato_short="";
+		string connectionString;						
+		string nombrebd;
+		string LoginEmpleado;
+    	string NomEmpleado;
+    	string AppEmpleado;
+    	string ApmEmpleado;
+        string fechamax;
+        string fechamin;
+        string fechamaxsql;
+        string fechaminsql;
+        string id_empleado;
+        string var_fecha;
+        string var_tipo;
+        string var_id_empleado;
+        string var_sueldo;
+        string var_depto;
+        string var_puesto;
+        string var_tipofuncion;
+        string var_horas;
+        string var_tiempocomida;
+        string var_tipopago;
+        string var_jornada;
+        string var_annos;
+        string id_sel;
+        string nombre_completo;
+        string fechacontrato;
+        int conteo_lineas = 0;
+        bool leer = false;
+        bool fecha_valida = false;
+        string tiempo_de_contrato_short="";
         
-        public string fechadebaja = "";
+        string fechadebaja = "";
         
-        public string contrato;
-        public string fechacontr;
-		public string tpcontrato;		
-		public string tipfun;		
-		public string depart;	
-		public string puest;	
-		public string jorn;	
-		public string suel;	
-		public string tippag;	
-		public string tpocomida;
-		public string annosemp;
+        string contrato;
+        string fechacontr;
+		string tpcontrato;		
+		string tipfun;		
+		string depart;	
+		string puest;	
+		string jorn;	
+		string suel;	
+		string tippag;	
+		string tpocomida;
+		string annosemp;
         
-        public string idempleadoseleccionado;		
+        string idempleadoseleccionado;		
 		
     	private TreeStore treeViewEngineBusca;
         private TreeStore treeViewEngineBuscabaja;    	
@@ -125,14 +117,16 @@ namespace osiris
     	protected Gtk.Window MyWinError;
 		protected Gtk.Window MyWin;
 		
-		public reportes_empleados(string LoginEmp_, string NomEmpleado_, string AppEmpleado_, string ApmEmpleado_, string _nombrebd_,string tipo_reporte_)
+		class_conexion conexion_a_DB = new class_conexion();
+		
+		public reportes_empleados(string LoginEmp_, string NomEmpleado_, string AppEmpleado_, string ApmEmpleado_, string nombrebd_,string tipo_reporte_)
 		{
 			LoginEmpleado = LoginEmp_;
     		NomEmpleado = NomEmpleado_;
     		AppEmpleado = AppEmpleado_;
     		ApmEmpleado = ApmEmpleado_;
-    		nombrebd = _nombrebd_; 
-    		
+    		connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
+			nombrebd = conexion_a_DB._nombrebd;	    		
     		
 			Glade.XML gxml = new Glade.XML (null, "recursos_humanos.glade", "reportes_de_empleados",null);
 			gxml.Autoconnect (this);

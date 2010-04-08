@@ -24,9 +24,11 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 // 
 //////////////////////////////////////////////////////////
-// Programa		: hscmty.cs
-// Proposito	: Impresion del procedimiento de cobranza 
-// Objeto		: rpt_proc_cobranza.cs
+// Programa		:
+// Proposito	: 
+// Objeto		:
+/// //////////////////////////////////////////////////////
+
 using System;
 using Gtk;
 using Gnome;
@@ -222,10 +224,8 @@ namespace osiris
 						//"to_char(osiris_erp_cobros_deta.precio_por_cantidad,'999999.99') AS ppcantidad, "+
 						"to_char(osiris_erp_cobros_deta.cantidad_aplicada * osiris_erp_cobros_deta.precio_producto,'99999999.99') AS ppcantidad,"+
 						"to_char(osiris_productos.precio_producto_publico,'999999999.99999') AS preciopublico "+
-						"FROM "+ 
-						"osiris_erp_cobros_deta,osiris_his_tipo_admisiones,osiris_productos,osiris_grupo_producto "+
-						"WHERE "+
-						"osiris_erp_cobros_deta.id_tipo_admisiones = osiris_his_tipo_admisiones.id_tipo_admisiones "+
+						"FROM osiris_erp_cobros_deta,osiris_his_tipo_admisiones,osiris_productos,osiris_grupo_producto "+
+						"WHERE osiris_erp_cobros_deta.id_tipo_admisiones = osiris_his_tipo_admisiones.id_tipo_admisiones "+
 						"AND osiris_erp_cobros_deta.id_producto = osiris_productos.id_producto  "+ 
 						"AND osiris_productos.id_grupo_producto = osiris_grupo_producto.id_grupo_producto "+
 						"AND osiris_erp_cobros_deta.folio_de_servicio = '"+folioservicio.ToString()+"' "+
@@ -462,7 +462,7 @@ namespace osiris
         			ContextoImp.MoveTo(514.7, filas);			ContextoImp.Show(totaladm.ToString("C").PadLeft(10));
         			ContextoImp.MoveTo(515, filas);				ContextoImp.Show(totaladm.ToString("C").PadLeft(10));
         			
-        			ContextoImp.MoveTo(110, 475);				ContextoImp.Show(classpublic.ConvertirCadena(apagar.ToString("F"),"Peso"));
+        			//ContextoImp.MoveTo(110, 475);				ContextoImp.Show(classpublic.ConvertirCadena(apagar.ToString("F"),"Peso"));
         			ContextoImp.MoveTo(90.5, 515);				ContextoImp.Show("Total descuento");
         			ContextoImp.MoveTo(515.7, 515);				ContextoImp.Show(totaldesc.ToString("C").PadLeft(10)+" -");
 		       		

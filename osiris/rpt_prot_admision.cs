@@ -461,9 +461,9 @@ namespace osiris
 			fontSize = 8.0;		layout = null;							layout = context.CreatePangoLayout ();
 			desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;
 			layout.FontDescription.Weight = Weight.Bold;
-			cr.MoveTo(001,10*escala_en_linux_windows);					layout.SetText("Sistema Hospitalario OSIRIS");		Pango.CairoHelper.ShowLayout (cr, layout);
-			cr.MoveTo(001,20*escala_en_linux_windows);					layout.SetText("Direccion: Monterrey - Mexico");	Pango.CairoHelper.ShowLayout (cr, layout);
-			cr.MoveTo(001,30*escala_en_linux_windows);					layout.SetText("Telefono: (01)(81) 1158-5166");		Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(001,10*escala_en_linux_windows);					layout.SetText("MEDICA NORESTE ION");		Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(001,20*escala_en_linux_windows);					layout.SetText("Jose Angel Conchello 2880, Col. Victoria");	Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(001,30*escala_en_linux_windows);					layout.SetText("Telefono: (01)(81) 8351-3610");		Pango.CairoHelper.ShowLayout (cr, layout);
 			cr.MoveTo(001,40*escala_en_linux_windows);					layout.SetText("Sistema Hospitalario OSIRIS");		Pango.CairoHelper.ShowLayout (cr, layout);
 			// Cambiando el tamaño de la fuente			
 			fontSize = 12.0;											layout = context.CreatePangoLayout ();		

@@ -102,11 +102,11 @@ namespace osiris
 		}
 		
 		void on_button_reportes_clicked (object sender, EventArgs args){
-			//new osiris.reportes_empleados(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,"Contrato");
+			new osiris.reportes_empleados(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,"Contrato");
 		}
 		
 		void on_button_reportes_bajas_clicked (object sender, EventArgs args){
-			//new osiris.reportes_empleados(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,"Bajas");
+			new osiris.reportes_empleados(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,"Bajas");
 		}
 		
 		void on_button_servicios_clicked (object sender, EventArgs args)

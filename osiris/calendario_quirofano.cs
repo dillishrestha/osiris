@@ -2,7 +2,9 @@
 // User: mgaspar at 12:48 p 14/07/2008
 //
 // To change standard headers go to Edit->Preferences->Coding->Standard Headers
-//
+/// <summary>
+/// 
+/// </summary>
 
 using System;
 using Npgsql;
@@ -2213,7 +2215,7 @@ namespace osiris
 			if (sender == null) {	return;	}
 			TreeIter iter;
 			if (combobox_sala_1.GetActiveIter (out iter)) {
-				sala_1 = (int) this.combobox_sala_1.Model.GetValue(iter,1);							
+				this.sala_1 = (int) this.combobox_sala_1.Model.GetValue(iter,1);							
 			}
 		}
 	 

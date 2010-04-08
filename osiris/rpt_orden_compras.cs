@@ -11,12 +11,15 @@ using Gtk;
 using Glade;
 using Gnome;
 using System.Collections;
-using GtkSharp;
 
 namespace osiris
 {
 	public class rpt_orden_compras
 	{
+		//private static int pangoScale = 1024;
+		//private PrintOperation print;
+		//private double fontSize = 8.0;
+		
 		string connectionString;						
 		string nombrebd;
 		string LoginEmpleado;
@@ -51,9 +54,8 @@ namespace osiris
         	Gnome.PrintDialog dialogo   = new Gnome.PrintDialog(trabajo, "ORDEN DE COMPRAS", 0);
         	
         	int respuesta = dialogo.Run ();
-        	
-        	if (respuesta == (int) PrintButtons.Cancel) 
-			{
+		        	
+        	if (respuesta == (int) PrintButtons.Cancel){
 				dialogo.Hide (); 
 				dialogo.Dispose (); 
 				return;
@@ -61,8 +63,7 @@ namespace osiris
 			Gnome.PrintContext ctx = trabajo.Context;
         	ComponerPagina(ctx, trabajo); 
 			trabajo.Close();
-            switch (respuesta)
-        	{
+            switch (respuesta){
 				case (int) PrintButtons.Print:   
                 	trabajo.Print (); 
                 	break;
@@ -71,6 +72,12 @@ namespace osiris
                 	break;
         	}
 			dialogo.Hide (); dialogo.Dispose ();		
+			
+			//print = new PrintOperation ();			
+			//print.BeginPrint += new BeginPrintHandler (OnBeginPrint);
+			//print.DrawPage += new DrawPageHandler (OnDrawPage);
+			//print.EndPrint += new EndPrintHandler (OnEndPrint);
+			//print.Run (PrintOperationAction.PrintDialog, null);			
 		}
 		void ComponerPagina (Gnome.PrintContext ContextoImp, Gnome.PrintJob trabajoImpresion)
 		{

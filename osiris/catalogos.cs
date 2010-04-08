@@ -104,6 +104,7 @@ namespace osiris
 		[Widget] Gtk.CheckButton checkbutton_diplomacursos;
 		[Widget] Gtk.CheckButton checkbutton_diploseminarios; 
 		[Widget] Gtk.CheckButton checkbutton_cedula_especialidad_medico;
+		[Widget] Gtk.Entry entry_id_especialidad = null;
 		
 		//[Widget] Gtk.TextView textview_notas;
 		[Widget] Gtk.Button button_notas;
@@ -233,6 +234,7 @@ namespace osiris
 		CellRendererText cellrt37;
 		
 		class_conexion conexion_a_DB = new class_conexion();
+		class_buscador classfind_data = new class_buscador();
 		
 		public catalogos_generales(string nomcatalogo_,string LoginEmp_, string NomEmpleado_, string AppEmpleado_, string ApmEmpleado_, string nombrebd_)
 		{					
@@ -1595,11 +1597,11 @@ namespace osiris
 			gxml.Autoconnect                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 (this);
 	        //Muestra ventana de Glade
 			catalogo_medico.Show();
-			entry_id_medico.IsEditable = false;
-			entry_fecha_ingreso.IsEditable = false;
-			entry_fecha_revision.IsEditable = false;
-			entry_empresa.IsEditable = false;
-			entry_especialidad.IsEditable = false;
+			entry_id_medico.Editable = false;
+			entry_fecha_ingreso.Editable = false;
+			entry_fecha_revision.Editable = false;
+			entry_empresa.Editable = false;
+			entry_especialidad.Editable = false;
 			button_buscar_medico.Clicked += new EventHandler(on_button_buscar_medico_clicked);
 			button_actualizar.Sensitive = false;
 			button_actualizar.Clicked += new EventHandler(on_button_actualizar_clicked);
@@ -1608,7 +1610,7 @@ namespace osiris
 			button_autorizacion_medico.Sensitive = false;
 			button_buscar_especialidad.Clicked += new EventHandler(on_button_buscar_especialidad_clicked);
 			button_buscar_empresa.Clicked += new EventHandler(on_button_buscar_empresa_clicked);
-			if(LoginEmpleado == "N000100") {button_autorizacion_medico.Sensitive = true; }
+			if(LoginEmpleado == "ADMIN") {button_autorizacion_medico.Sensitive = true; }
 			button_autorizacion_medico.Clicked += new EventHandler(on_button_autorizacion_medico_clicked);
 			//Desactivacion de las entradas
 			activacion_entrys(false);
@@ -1688,7 +1690,7 @@ namespace osiris
 											(string) entry_celular2_medico.Text.Trim().ToUpper()+"','"+//9
 											(string) entry_nextel_medico.Text.Trim().ToUpper()+"','"+//10
 											(string) entry_beeper_medico.Text.Trim().ToUpper()+"','"+//11
-											(int) id_esp_medico+"','"+//12
+											int.Parse((string) this.entry_id_especialidad.Text.Trim())+"','"+//12
 											(int) id_emp_medico+"','"+//13
 											(string) DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"','"+//14
 											(string) entry_direccion_casa_medico.Text.Trim().ToUpper()+"','"+//15
@@ -1756,7 +1758,7 @@ namespace osiris
 									"celular2_medico = '"+(string) entry_celular2_medico.Text.Trim().ToUpper()+"',"+//9
 									"nextel_medico = '"+(string) entry_nextel_medico.Text.Trim().ToUpper()+"',"+//10
 									"beeper_medico = '"+(string) entry_beeper_medico.Text.Trim().ToUpper()+"',"+//11
-									"id_especialidad = '"+(int) id_esp_medico+"',"+//12
+									"id_especialidad = '"+int.Parse((string) this.entry_id_especialidad.Text.Trim())+"',"+//12
 									"id_empresa_medico = '"+(int) id_emp_medico+"',"+//13
 									"direccion_medico = '"+(string) entry_direccion_casa_medico.Text.Trim().ToUpper()+"',"+//15
 									"direccion_consultorio_medico = '"+(string) entry_direccion_consultorio_medico.Text.Trim().ToUpper()+"',"+//16
@@ -1994,7 +1996,7 @@ namespace osiris
 						{
 							comando.CommandText = "SELECT id_medico, "+
 										"to_char(id_empresa,'999999') AS idempresa, "+
-										"to_char(osiris_his_tipo_especialidad.id_especialidad,999999) AS idespecialidad, "+
+										"to_char(osiris_his_tipo_especialidad.id_especialidad,'999999') AS idespecialidad, "+
 										"nombre_medico,descripcion_empresa,descripcion_especialidad,centro_medico, "+
 										"nombre1_medico,nombre2_medico,apellido_paterno_medico,apellido_materno_medico, "+
 										"telefono1_medico,cedula_medico,telefono2_medico,celular1_medico,celular2_medico, "+
@@ -2014,7 +2016,7 @@ namespace osiris
 						}else{
 							comando.CommandText = "SELECT id_medico, "+
 										"to_char(id_empresa,'999999') AS idempresa, "+
-										"to_char(osiris_his_tipo_especialidad.id_especialidad,999999) AS idespecialidad, "+
+										"to_char(osiris_his_tipo_especialidad.id_especialidad,'999999') AS idespecialidad, "+
 										"nombre_medico,descripcion_empresa,descripcion_especialidad,centro_medico, "+
 										"nombre1_medico,nombre2_medico,apellido_paterno_medico,apellido_materno_medico, "+
 										"telefono1_medico,cedula_medico,telefono2_medico,celular1_medico,celular2_medico, "+
@@ -2214,96 +2216,18 @@ namespace osiris
 		
 		void on_button_buscar_especialidad_clicked(object sender, EventArgs args)
 		{
-			busqueda = "especialidad";
-			Glade.XML gxml = new Glade.XML (null, "catalogos.glade", "buscador", null);
-			gxml.Autoconnect                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 (this);
-	        entry_expresion.KeyPressEvent += onKeyPressEvent_enter;
-			button_buscar_busqueda.Clicked += new EventHandler(on_llena_lista_especialidad);
-			button_selecciona.Clicked += new EventHandler(on_selecciona_especialidad);
-	        button_salir.Clicked +=  new EventHandler(on_cierraventanas_clicked);
-			
-			treeViewEngineEspecialidad = new TreeStore( typeof(int),typeof(string));
-								
-			lista_de_busqueda.Model = treeViewEngineEspecialidad;
-			lista_de_busqueda.RulesHint = true;
-				
-			lista_de_busqueda.RowActivated += on_selecciona_especialidad;  // Doble click selecciono paciente*/
-				
-			TreeViewColumn col_idespecialidad = new TreeViewColumn();
-			cellr0 = new CellRendererText();
-			col_idespecialidad.Title = "ID Especialidad"; // titulo de la cabecera de la columna, si está visible
-			col_idespecialidad.PackStart(cellr0, true);
-			col_idespecialidad.AddAttribute (cellr0, "text", 0);
-			col_idespecialidad.SortColumnId = (int) Column_especialidad.col_idespecialidad;   
-			
-			TreeViewColumn col_especialidad = new TreeViewColumn();
-			CellRendererText cellr1 = new CellRendererText();
-			col_especialidad.Title = "Especialidad";
-			col_especialidad.PackStart(cellr1,true);
-			col_especialidad.AddAttribute(cellr1, "text", 1);
-			col_especialidad.SortColumnId = (int) Column_especialidad.col_especialidad;
-			
-			lista_de_busqueda.AppendColumn(col_idespecialidad);
-			lista_de_busqueda.AppendColumn(col_especialidad);
-		}
+			// Los parametros de del SQL siempre es primero cuando busca todo y la otra por expresion
+			// la clase recibe tambien el orden del query
+			// es importante definir que tipo de busqueda es para que los objetos caigan ahi mismo
+			object[] parametros_objetos = {entry_id_especialidad,entry_especialidad};
+			string[] parametros_sql = {"SELECT id_especialidad,descripcion_especialidad "+
+										"FROM osiris_his_tipo_especialidad ",				
+								 		"SELECT id_especialidad,descripcion_especialidad "+
+										"FROM osiris_his_tipo_especialidad "+
+										"WHERE descripcion_especialidad  LIKE '%"};			
+			classfind_data.buscandor(parametros_objetos,parametros_sql,"find_especialidad"," ORDER BY descripcion_especialidad;","%' ");
+		}	
 		
-		enum Column_especialidad {	col_idespecialidad,	col_especialidad	}
-		
-		void on_llena_lista_especialidad(object sender, EventArgs args)
-		{
-			llenando_lista_de_especialidad();
-		}
-		
-		void llenando_lista_de_especialidad()
-		{
-			//TreeIter iter;
-			treeViewEngineEspecialidad.Clear(); // Limpia el treeview cuando realiza una nueva busqueda
-			NpgsqlConnection conexion; 
-			conexion = new NpgsqlConnection (connectionString+nombrebd);
-            // Verifica que la base de datos este conectada
-			try{
-				conexion.Open ();
-				NpgsqlCommand comando; 
-				comando = conexion.CreateCommand ();
-				if ((string) entry_expresion.Text.ToUpper().Trim() == "")
-				{
-					comando.CommandText = "SELECT id_especialidad,descripcion_especialidad "+
-										" FROM osiris_his_tipo_especialidad "+
-										"ORDER BY id_especialidad;";
-				}else{
-					comando.CommandText = "SELECT id_especialidad,descripcion_especialidad "+
-										" FROM osiris_his_tipo_especialidad "+
-										"WHERE descripcion_especialidad LIKE '"+entry_expresion.Text.ToUpper().Trim()+"%' ;"+
-										"ORDER BY id_especialidad;";
-				}						
-					
-				NpgsqlDataReader lector = comando.ExecuteReader ();
-				while (lector.Read())
-				{
-					treeViewEngineEspecialidad.AppendValues ((int) lector["id_especialidad"],(string) lector["descripcion_especialidad"]);
-				}
-			}catch (NpgsqlException ex){
-	   			Console.WriteLine ("PostgresSQL error: {0}",ex.Message);
-	   			MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
-				MessageType.Error,ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
-				msgBoxError.Run ();			msgBoxError.Destroy();
-			}
-			conexion.Close ();
-		}
-		
-		void on_selecciona_especialidad (object sender, EventArgs args)
-		{
-			TreeModel model;
-			TreeIter iterSelected;
-			if (lista_de_busqueda.Selection.GetSelected(out model, out iterSelected)) 
- 			{
- 				id_esp_medico  = (int) model.GetValue(iterSelected, 0);
- 				entry_especialidad.Text = (string) model.GetValue(iterSelected, 1);
-				Widget win = (Widget) sender;
-				win.Toplevel.Destroy();
-			}
-		}
-
 /*---------------------------------------------------------------------*/
 ////////////////////   ESTADOS Y MUNICIPIOS /////////////////////
 /*---------------------------------------------------------------------*/
@@ -3133,7 +3057,6 @@ namespace osiris
 				args.RetVal = true;		
 				if(busqueda == "medicos") { llenando_lista_de_medicos(); }
 				if(busqueda == "clientes") { llenando_lista_de_clientes(); }
-				if(busqueda == "especialidad") {llenando_lista_de_especialidad();}
 				if(busqueda == "empresa") {llenando_lista_de_empresa();}
 				if(busqueda == "proveedores") {llenando_lista_de_proveedores();}							
 			}

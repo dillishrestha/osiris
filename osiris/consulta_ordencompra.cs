@@ -148,7 +148,7 @@ namespace osiris
 				comando = conexion.CreateCommand ();
  				comando.CommandText = "SELECT numero_orden_compra,"+
 											"to_char(fechahora_creacion,'yyyy-MM-dd') AS fechahoracreacion,descripcion_proveedor "+
-											" FROM osiris_erp_ordenes_compras_enca;";
+											" FROM osiris_erp_ordenes_compras_enca ORDER BY fechahora_creacion DESC;";
 				Console.WriteLine(comando.CommandText);
 				comando.ExecuteNonQuery();    comando.Dispose();
 				NpgsqlDataReader lector = comando.ExecuteReader ();

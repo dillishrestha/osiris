@@ -107,15 +107,9 @@ namespace osiris
 		Gtk.Entry entry_nombre_proveedor = null;
 		Gtk.Entry entry_formapago = null;
 		
-		// Busqueda de cirugias
-		Gtk.Entry entry_id_cirugia = null;
-		Gtk.Entry entry_cirugia = null;
-		Gtk.CheckButton checkbutton_paquete_sino = null;
-		
-		// Busqueda de Especialidad
-		Gtk.Entry entry_id_especialidad = null; 
-		Gtk.Entry entry_descripcion_especialidad = null;
-		
+		// Busqueda de Especialidades Medicas
+		Gtk.Entry entry_id_especialidad = null;
+		Gtk.Entry entry_especialidad = null;
 		
 		class_conexion conexion_a_DB = new class_conexion();
 		
@@ -128,8 +122,6 @@ namespace osiris
 		//declaracion de columnas y celdas de treeview de busqueda
 		TreeViewColumn col_idlista;		CellRendererText cellrt0;
 		TreeViewColumn col_descripcion;	CellRendererText cellrt1;
-		TreeViewColumn col_bool;		CellRendererToggle cellrt2;
-		TreeViewColumn col_colum03;		CellRendererText cellrt3;
 			
 		//Declaracion de ventana de error y mensaje
 		protected Gtk.Window MyWinError;
@@ -138,11 +130,9 @@ namespace osiris
 		{
 			Glade.XML gxml = new Glade.XML (null, "osiris.glade", "buscador", null);
 			gxml.Autoconnect(this);
-			//Muestra ventana de Glade
-			buscador.Title = "Buscador";
+	        //Muestra ventana de Glade
 			buscador.Show();
-			buscador.SetPosition(WindowPosition.Center);	// centra la ventana en la pantalla
-			crea_treeview_busqueda();						
+						
 			//Console.WriteLine("nº de argumentos: {0}", args.Length);
 			//for (int i = 0; i < args.Length; i++)
         	//Console.WriteLine("args[{0}] = {1} {2}", i, args[i],@args[i]);  
@@ -151,6 +141,7 @@ namespace osiris
 					entry_id_cliente = (object) args[0] as Gtk.Entry;
 					entry_nombre_cliente = (object) args[1] as Gtk.Entry;				
 				break;			
+			
 				case "find_estado_region":
 					entry_id_estado = (object) args[0] as Gtk.Entry;
 					entry_estado = (object) args[1] as Gtk.Entry;
@@ -161,12 +152,14 @@ namespace osiris
 					entry_municipio = (object) args[6] as Gtk.Entry;
 					entry_id_municipio = (object) args[7] as Gtk.Entry;
 				break;			
+			
 				case "find_municipio":
 					entry_id_municipio = (object) args[0] as Gtk.Entry;
 					entry_municipio = (object) args[1] as Gtk.Entry;
 					togglebutton_editar_municipio = (object) args[2] as Gtk.ToggleButton;
 					button_guardar_municipio = (object) args[3] as Gtk.Button;
-				break;				
+				break;
+				
 				case "find_grupo_producto":
 					entry_id_grupo = (object) args[0] as Gtk.Entry;
 					entry_descripcion_grupo = (object) args[1] as Gtk.Entry;
@@ -177,52 +170,50 @@ namespace osiris
 					entry_id_centrocosto = (object) args[6] as Gtk.Entry;
 					entry_descripcion_centrocosto = (object) args[7] as Gtk.Entry;
 					button_buscar_centrocosto  = (object) args[8] as Gtk.Button;
-				break;				
+				break;
+				
 				case "find_grupo1_producto":
 					entry_id_grupo1 = (object) args[0] as Gtk.Entry;
 					entry_descripcion_grupo1 = (object) args[1] as Gtk.Entry;
 					togglebutton_editar_grupo1 = (object) args[2] as Gtk.ToggleButton;
 					button_guardar_grupo1 = (object) args[3] as Gtk.Button;
 					checkbutton_activar_grupo1  = (object) args[4] as Gtk.CheckButton;				
-				break;				
+				break;
+				
 				case "find_grupo2_producto":
 					entry_id_grupo2 = (object) args[0] as Gtk.Entry;
 					entry_descripcion_grupo2 = (object) args[1] as Gtk.Entry;
 					togglebutton_editar_grupo2 = (object) args[2] as Gtk.ToggleButton;
 					button_guardar_grupo2 = (object) args[3] as Gtk.Button;
 					checkbutton_activar_grupo2  = (object) args[4] as Gtk.CheckButton;				
-				break;				
+				break;
+				
 				case "find_centrodecosto":
 					entry_id_centrocosto = (object) args[0] as Gtk.Entry;
 					entry_descripcion_centrocosto = (object) args[1] as Gtk.Entry;
-				break;							
+				break;
+							
 				case "find_marca_producto":
 					entry_idmarca_producto = (object) args[0] as Gtk.Entry;
 					entry_descripcion_marca_producto = (object) args[1] as Gtk.Entry;
-				break;				
+				break;
+				
 				case "find_proveedores":
 					entry_id_proveedor = (object) args[0] as Gtk.Entry;
 					entry_nombre_proveedor = (object) args[1] as Gtk.Entry;
 					entry_formapago = (object) args[2] as Gtk.Entry;
-				break;				
+				break;
+				
 				case "find_proveedores_catalogo_producto":
 					entry_id_proveedor = (object) args[0] as Gtk.Entry;
 					entry_nombre_proveedor = (object) args[1] as Gtk.Entry;
-				break;				
-				case "find_cirugia_paquetes":
-					entry_id_cirugia = (object) args[0] as Gtk.Entry;
-					entry_cirugia = (object) args[1] as Gtk.Entry;
-					checkbutton_paquete_sino = (object) args[2] as Gtk.CheckButton;
-					col_bool.Title = "Es Paquete";
-					col_colum03.Title = "Precio Paquete";
-					cellrt1.Width = 450;
-					lista_de_busqueda.AppendColumn(col_bool);
-					lista_de_busqueda.AppendColumn(col_colum03);
 				break;
-				case "find_especialidad_medica":
-					entry_id_especialidad =  (object) args[0] as Gtk.Entry;
-					entry_descripcion_especialidad =  (object) args[1] as Gtk.Entry;
+				
+				case "find_especialidad":
+					entry_id_especialidad = (object) args[0] as Gtk.Entry;
+					entry_especialidad = (object) args[1] as Gtk.Entry;
 				break;
+				
 			}			
 			consulta_sql1 = (string) args_sql[0];
 			consulta_sql2 =	(string) args_sql[1];
@@ -232,7 +223,6 @@ namespace osiris
 			button_buscar_busqueda.Clicked += new EventHandler(on_llena_lista);
 			entry_expresion.KeyPressEvent += onKeyPressEvent_enter;
 	  		button_selecciona.Clicked += new EventHandler(on_selecciona_busqueda);
-			button_salir.Clicked +=  new EventHandler(on_cierraventanas_clicked);
 			radiobutton1.Hide();
 			radiobutton2.Hide();
 			radiobutton3.Hide();
@@ -240,7 +230,9 @@ namespace osiris
 			labelbusqueda1.Hide();
 			labelbusqueda2.Hide();
 			labelcantidad.Hide();
-			entry_cantidad_producto.Hide();	       	
+			entry_cantidad_producto.Hide();
+	       	crea_treeview_busqueda();
+			button_salir.Clicked +=  new EventHandler(on_cierraventanas_clicked);
 		}
 		
 		void crea_treeview_busqueda()
@@ -274,7 +266,7 @@ namespace osiris
 			cellrt0 = new CellRendererText();
 			col_idlista.Title = "ID"; // titulo de la cabecera de la columna, si está visible
 			col_idlista.PackStart(cellrt0, true);
-			col_idlista.AddAttribute (cellrt0, "text", 0);
+			col_idlista.AddAttribute (cellrt0, "text", 0);    // la siguiente columna será 1
 			//col_idcliente.SetCellDataFunc(cellr0, new Gtk.TreeCellDataFunc(cambia_colores_cliente));
 			col_idlista.SortColumnId = (int) col_treview.col_idlista;
 			col_idlista.Resizable = true;
@@ -283,37 +275,19 @@ namespace osiris
 			cellrt1 = new CellRendererText();
 			col_descripcion.Title = "Descripcion";
 			col_descripcion.PackStart(cellrt1, true);
-			col_descripcion.AddAttribute (cellrt1, "text", 1);
+			col_descripcion.AddAttribute (cellrt1, "text", 1); // la siguiente columna será 2
 			//col_descripcion.SetCellDataFunc(cellrt1, new Gtk.TreeCellDataFunc(cambia_colores_cliente));
 			col_descripcion.SortColumnId = (int) col_treview.col_descripcion;
 			col_descripcion.Resizable = true;
-			
-			col_bool = new TreeViewColumn();
-			cellrt2 = new CellRendererToggle();
-			col_bool.Title = ""; // titulo de la cabecera de la columna, si está visible
-			col_bool.PackStart(cellrt2, true);
-			col_bool.AddAttribute (cellrt2, "active", 2);
-			col_bool.SortColumnId = (int) col_treview.col_bool;
-			
-			col_colum03 = new TreeViewColumn();
-			cellrt3 = new CellRendererText();
-			col_colum03.Title = "Descripcion";
-			col_colum03.PackStart(cellrt3, true);
-			col_colum03.AddAttribute (cellrt3, "text", 3);
-			//col_descripcion.SetCellDataFunc(cellrt1, new Gtk.TreeCellDataFunc(cambia_colores_cliente));
-			col_descripcion.SortColumnId = (int) col_treview.col_colum03;
-			col_colum03.Resizable = true;
-						        
+				            
 			lista_de_busqueda.AppendColumn(col_idlista);
-			lista_de_busqueda.AppendColumn(col_descripcion);
+			lista_de_busqueda.AppendColumn(col_descripcion);			
 		}
 		
 		enum col_treview
 		{
 			col_idlista,
-			col_descripcion,
-			col_bool,
-			col_colum03
+			col_descripcion			
 		}
 		
 		void cambia_colores_fila(Gtk.TreeViewColumn column, Gtk.CellRenderer cell, Gtk.TreeModel model, Gtk.TreeIter iter)
@@ -359,15 +333,18 @@ namespace osiris
 							case "find_client":
 								treeViewEngineBuscador.AppendValues ((int) lector["id_cliente"],//0
 													(string) lector["descripcion_cliente"]);
-							break;			
+							break;		
+			
 							case "find_estado_region":
 								treeViewEngineBuscador.AppendValues ((int) lector["id_estado"],//0
 													(string) lector["descripcion_estado"]);//1
-							break;			
+							break;
+			
 							case "find_municipio":
 								treeViewEngineBuscador.AppendValues( (int) lector["id_municipio"],
 														(string) lector["descripcion_municipio"]);
-							break;							
+							break;
+							
 							case "find_grupo_producto":
 								treeViewEngineBuscador.AppendValues( (int) lector["id_grupo_producto"],
 														(string) lector["descripcion_grupo_producto"],
@@ -378,7 +355,8 @@ namespace osiris
 							
 								col_idlista.SetCellDataFunc(cellrt0, new Gtk.TreeCellDataFunc(cambia_colores_fila));
 								col_descripcion.SetCellDataFunc(cellrt1, new Gtk.TreeCellDataFunc(cambia_colores_fila));
-							break;							
+							break;
+							
 							case "find_grupo1_producto":
 								treeViewEngineBuscador.AppendValues( (int) lector["id_grupo1_producto"],
 														(string) lector["descripcion_grupo1_producto"],
@@ -386,7 +364,8 @@ namespace osiris
 							
 								col_idlista.SetCellDataFunc(cellrt0, new Gtk.TreeCellDataFunc(cambia_colores_fila));
 								col_descripcion.SetCellDataFunc(cellrt1, new Gtk.TreeCellDataFunc(cambia_colores_fila));
-							break;							
+							break;
+							
 							case "find_grupo2_producto":
 								treeViewEngineBuscador.AppendValues( (int) lector["id_grupo2_producto"],
 														(string) lector["descripcion_grupo2_producto"],
@@ -394,16 +373,19 @@ namespace osiris
 							
 								col_idlista.SetCellDataFunc(cellrt0, new Gtk.TreeCellDataFunc(cambia_colores_fila));
 								col_descripcion.SetCellDataFunc(cellrt1, new Gtk.TreeCellDataFunc(cambia_colores_fila));
-							break;							
+							break;
+							
 							case "find_centrodecosto":
 								treeViewEngineBuscador.AppendValues( (int) lector["id_centro_de_costos"],
 														(string) lector["descripcion_centro_de_costo"]);
 							
-							break;							
+							break;
+							
 							case "find_marca_producto":
 								treeViewEngineBuscador.AppendValues ((int) lector["id_marca_producto"], //0
 													(string) lector["descripcion"]);//1
-							break;							
+							break;
+							
 							case "find_proveedores":
 								treeViewEngineBuscador.AppendValues ((int) lector["id_proveedor"],//0
 													(string) lector["descripcion_proveedor"],//1
@@ -419,7 +401,8 @@ namespace osiris
 													(string) lector["descripcion_forma_de_pago"]);//11
 													//(string) lector["fax_proveedor"], //12
 							                        //(int) lector["id_forma_de_pago"]);//13
-							break;							
+							break;
+							
 							case "find_proveedores_catalogo_producto":
 								treeViewEngineBuscador.AppendValues ((int) lector["id_proveedor"],//0
 													(string) lector["descripcion_proveedor"],//1
@@ -435,18 +418,13 @@ namespace osiris
 													(string) lector["descripcion_forma_de_pago"]);//11
 													//(string) lector["fax_proveedor"], //12
 							                        //(int) lector["id_forma_de_pago"]);//13
-							break;							
-							case "find_cirugia_paquetes":
-								treeViewEngineBuscador.AppendValues((int) lector["id_tipo_cirugia"],
-													(string) lector["descripcion_cirugia"],
-													(bool) lector["tiene_paquete"],
-													(string) lector["valorpaquete"].ToString().Trim());
-							
 							break;
-							case "find_especialidad_medica":							
-								treeViewEngineBuscador.AppendValues((int) lector["id_especialidad"],
-													(string) lector["descripcion_especialidad"]);
-							break;							
+							
+							case "find_especialidad":
+								treeViewEngineBuscador.AppendValues ((int) lector["id_especialidad"],	// 0
+													(string) lector["descripcion_especialidad"]);		// 1
+								
+							break;
 						}
 					}
 				}catch (NpgsqlException ex){
@@ -546,16 +524,11 @@ namespace osiris
 						entry_id_proveedor.Text = tomaid.ToString();
 						entry_nombre_proveedor.Text = (string) model.GetValue(iterSelected, 1);
 					break;
-					case "find_cirugia_paquetes":
-						entry_id_cirugia.Text = tomaid.ToString();
-						entry_cirugia.Text = (string) model.GetValue(iterSelected, 1);
-						checkbutton_paquete_sino.Active = (bool) model.GetValue(iterSelected, 2);
-					break;
-					case "find_especialidad_medica":
+					case "find_especialidad":
 						entry_id_especialidad.Text = tomaid.ToString();
-						entry_descripcion_especialidad.Text = (string) model.GetValue(iterSelected, 1);
+						entry_especialidad.Text = (string) model.GetValue(iterSelected, 1);
 					break;
-				}
+				}				
 			}
 			Widget win = (Widget) sender;
 			win.Toplevel.Destroy();			

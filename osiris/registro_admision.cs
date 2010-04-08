@@ -2308,7 +2308,7 @@ namespace osiris
 	        		        
 			// Creacion de Liststore
 			treeViewEngine = new TreeStore(typeof (string),typeof (string),typeof (string), typeof (string), 
-							typeof (string),typeof (string),typeof (string), typeof (string), typeof (string),typeof (string));
+							typeof (string),typeof (string),typeof (string), typeof (string), typeof (string),typeof (string),typeof (bool));
 	        							   
 			treeview_servicios.Model = treeViewEngine;
 			treeViewEngine.SetSortColumnId (0, Gtk.SortType.Ascending);
@@ -2317,62 +2317,69 @@ namespace osiris
 			CellRendererText cellrt1 = new CellRendererText();  // aplica a todas la columnas
 			col_fecha.Title = "Fecha-Hora"; // titulo de la cabecera de la columna, si está visible
 			col_fecha.PackStart(cellrt1, true);
-			col_fecha.AddAttribute (cellrt1, "text", 0);    // columna 0
+			col_fecha.AddAttribute (cellrt1, "text", 0);
 			col_fecha.SortColumnId = (int) Column_serv.col_fecha;
              
 			TreeViewColumn col_servicio = new TreeViewColumn();
 			col_servicio.Title = "Servicio";
 			col_servicio.PackStart(cellrt1, true);
-			col_servicio.AddAttribute (cellrt1, "text", 1); // columna 1
+			col_servicio.AddAttribute (cellrt1, "text", 1);
 			col_servicio.SortColumnId = (int) Column_serv.col_servicio ;
       
 			TreeViewColumn col_desc_servicio = new TreeViewColumn();
 			col_desc_servicio.Title = "Diagnostico Admision";
 			col_desc_servicio.PackStart(cellrt1, true);
-			col_desc_servicio.AddAttribute (cellrt1, "text", 2);  // columna 2
+			col_desc_servicio.AddAttribute (cellrt1, "text", 2);
 			col_desc_servicio.SortColumnId = (int) Column_serv.col_desc_servicio;
             
 			TreeViewColumn col_valor = new TreeViewColumn();
 			col_valor.Title = "Tipo de Cirugia";
 			col_valor.PackStart(cellrt1, true);
-			col_valor.AddAttribute (cellrt1, "text", 3);    // columna 3 
+			col_valor.AddAttribute (cellrt1, "text", 3);
 			col_valor.SortColumnId = (int) Column_serv.col_valor;
             
 			TreeViewColumn col_folio_ingreso = new TreeViewColumn();
 			col_folio_ingreso.Title = "Folio Ingreso";
 			col_folio_ingreso.PackStart(cellrt1, true);
-			col_folio_ingreso.AddAttribute (cellrt1, "text", 4);    // columna 4
+			col_folio_ingreso.AddAttribute (cellrt1, "text", 4);
 			col_folio_ingreso.SortColumnId = (int) Column_serv.col_folio_ingreso;
 			
 			TreeViewColumn col_num_factura = new TreeViewColumn();
 			col_num_factura.Title = "N. Factura";
 			col_num_factura.PackStart(cellrt1, true);
-			col_num_factura.AddAttribute (cellrt1, "text", 5);    // columna 5
+			col_num_factura.AddAttribute (cellrt1, "text", 5);
 			col_num_factura.SortColumnId = (int) Column_serv.col_num_factura;			
             
 			TreeViewColumn col_folio_ingreso_dep = new TreeViewColumn();
 			col_folio_ingreso_dep.Title = "Folio Departamento";
 			col_folio_ingreso_dep.PackStart(cellrt1, true);
-			col_folio_ingreso_dep.AddAttribute (cellrt1, "text", 6);    // columna 6
+			col_folio_ingreso_dep.AddAttribute (cellrt1, "text", 6);
 			col_folio_ingreso_dep.SortColumnId = (int) Column_serv.col_folio_ingreso_dep;
 			
 			TreeViewColumn col_tipo_paciente = new TreeViewColumn();
 			col_tipo_paciente.Title = "Tipo de Paciente";
 			col_tipo_paciente.PackStart(cellrt1, true);
-			col_tipo_paciente.AddAttribute (cellrt1, "text", 7);    // columna 7
+			col_tipo_paciente.AddAttribute (cellrt1, "text", 7);
 			col_tipo_paciente.SortColumnId = (int) Column_serv.col_tipo_paciente;
 			
 			TreeViewColumn col_empresaasegu = new TreeViewColumn();
 			col_empresaasegu.Title = "Empresa/Aseguradora";
 			col_empresaasegu.PackStart(cellrt1, true);
-			col_empresaasegu.AddAttribute (cellrt1, "text", 8);    // columna 8
+			col_empresaasegu.AddAttribute (cellrt1, "text", 8);
 			col_empresaasegu.SortColumnId = (int) Column_serv.col_empresaasegu;
-            
+						 
 			TreeViewColumn col_admitio = new TreeViewColumn();
 			col_admitio.Title = "Admitio";
 			col_admitio.PackStart(cellrt1, true);
-			col_admitio.AddAttribute (cellrt1, "text", 9);    // columna 9
-			col_admitio.SortColumnId = (int) Column_serv.col_admitio; 
+			col_admitio.AddAttribute (cellrt1, "text", 9);
+			col_admitio.SortColumnId = (int) Column_serv.col_admitio;
+			
+			TreeViewColumn col_separacion = new TreeViewColumn();
+			CellRendererToggle cellrtogg = new  CellRendererToggle();
+			col_separacion.Title = "Separacion PQ.";
+			col_separacion.PackStart(cellrtogg, true);
+			col_separacion.AddAttribute (cellrtogg, "active", 10);
+			col_separacion.SortColumnId = (int) Column_serv.col_separacion;
                         
 			treeview_servicios.AppendColumn(col_fecha);
 			treeview_servicios.AppendColumn(col_servicio);
@@ -2384,6 +2391,7 @@ namespace osiris
 			treeview_servicios.AppendColumn(col_tipo_paciente);
 			treeview_servicios.AppendColumn(col_empresaasegu);
 			treeview_servicios.AppendColumn(col_admitio);
+		 	treeview_servicios.AppendColumn(col_separacion);
 			
 			//Llena treview de servicio realizados
 			// _tipo_ es una variable publica esta al inicio del programa
@@ -2409,7 +2417,8 @@ namespace osiris
 			col_folio_ingreso_dep,
 			col_tipo_paciente,
 			col_empresaasegu,
-			col_admitio
+			col_admitio,
+			col_separacion
 		}
 		
 		void llena_servicios_realizados()
@@ -2451,6 +2460,7 @@ namespace osiris
 				NpgsqlDataReader lector = comando.ExecuteReader ();
 				string diagnostico_cirugia = "";
 				string aseguradora_empresa = "";
+				string foliosseparados = "";
 				bool folioreservado = false;
 				while (lector.Read()){
 					
@@ -2472,15 +2482,17 @@ namespace osiris
 															(string) lector["folioservdep"],
 															(string) lector["descripcion_tipo_paciente"],
 															aseguradora_empresa,
-															(string) lector["id_empleado_admision"]);
+															(string) lector["id_empleado_admision"],
+						                             		(bool) lector["reservacion"]);
 					}
 					if (folioreservado == false && (bool) lector["reservacion"] == true){
 						folioreservado = true;
+						foliosseparados += (string) lector["folioserv"].ToString().Trim()+ " - ";
 					}
 				}
 				if (folioreservado == true){
 					MessageDialog msgBox = new MessageDialog (MyWin,DialogFlags.Modal,
-								MessageType.Info,ButtonsType.Ok,"El paciente tiene separado un folio para un paquete quirurgico");
+								MessageType.Info,ButtonsType.Ok,"El paciente tiene separado un folio para un paquete quirurgico N Folio: "+foliosseparados);
 					msgBox.Run ();			msgBox.Destroy();
 				
 				}

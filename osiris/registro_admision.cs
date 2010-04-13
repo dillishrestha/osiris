@@ -2106,7 +2106,7 @@ namespace osiris
 									"to_char(to_number(to_char(age('"+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"',osiris_his_paciente.fecha_nacimiento_paciente),'yyyy') ,'9999'),'9999') AS edad, "+
 									"to_char(to_number(to_char(age('"+DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss")+"',osiris_his_paciente.fecha_nacimiento_paciente),'MM'),'99'),'99') AS mesesedad,"+
 									"to_char(fechahora_registro_paciente,'dd-MM-yyyy HH:mi:ss') AS fech_creacion "+
-									"FROM osiris_his_paciente WHERE pid_paciente  LIKE '"+entry_expresion.Text.ToUpper()+"%' "+
+									"FROM osiris_his_paciente WHERE pid_paciente  = '"+entry_expresion.Text.ToUpper()+"' "+
 									"AND activo = 'true'  ORDER BY pid_paciente;";					
 					}
 				}

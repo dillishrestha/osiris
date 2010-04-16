@@ -20,15 +20,23 @@ namespace osiris
 		// Todas la ventanas en glade este boton debe estra declarado identico
 		[Widget] Gtk.Button button_salir;
 		
-		// Para todas las busquedas este es el nombre asignado
-		// se declara una vez
+		// Ventana Principal //
+		[Widget] Gtk.Window agenda_calendario_medico = null;
+		[Widget] Gtk.Calendar calendar1 = null;
+		[Widget] Gtk.Calendar calendar2 = null;
+		[Widget] Gtk.Entry entry_fecha_seleccionada = null;
+		[Widget] Gtk.Entry entry_fecha_cita = null;
+		[Widget] Gtk.Notebook notebook1 = null;
+		[Widget] Gtk.Entry entry_numero_citapaciente  = null;
+		[Widget] Gtk.Entry entry_numero_citaquirofano = null;
+		
+		/*
+		
 		[Widget] Gtk.Entry entry_expresion;
 		[Widget] Gtk.Button button_selecciona;
 		[Widget] Gtk.Button button_buscar_busqueda;
+			
 		
-		// Ventana Principal //
-		[Widget] Gtk.Window agenda_calendario_medico;
-		//[Widget] Gtk.Window window1;
 		[Widget] Gtk.Button button_buscar_medico;
 		[Widget] Gtk.CheckButton checkbutton_nueva_cirugia;
 		[Widget] Gtk.Entry entry_medico;
@@ -136,6 +144,7 @@ namespace osiris
 		[Widget]Gtk.Entry entry_notas;
 		[Widget]Gtk.Entry entry_tipo_anestecia;
 		[Widget]Gtk.Calendar calandario_quirofano;
+		*/
 		
 		string LoginEmpleado;
 		string NomEmpleado;
@@ -158,13 +167,32 @@ namespace osiris
 			Glade.XML gxml = new Glade.XML (null, "quirofano.glade", "agenda_calendario_medico", null);
 			gxml.Autoconnect (this);        
 			
-			////// Muestra ventana de Glade
+			// show the window
 			agenda_calendario_medico.Show();
+			
+			// show opcion the calendar
+			calendar1.DisplayOptions = CalendarDisplayOptions.ShowHeading|CalendarDisplayOptions.ShowDayNames;
+			calendar1.MarkDay(uint.Parse(DateTime.Now.ToString("dd")));
+			//calendar1.Year = int.Parse(DateTime.Now.ToString("yyyy"));
+			//calendar1.Month = int.Parse(DateTime.Now.ToString("MM"));
+			calendar2.DisplayOptions = CalendarDisplayOptions.ShowHeading|CalendarDisplayOptions.ShowDayNames;
+			calendar2.MarkDay(uint.Parse(DateTime.Now.ToString("dd")));
 						
-			////// Sale de la ventana
+			calendar1.DaySelected += new EventHandler (on_dayselected_clicked);
+			calendar2.DaySelected += new EventHandler (on_dayselected_clicked);
+			
+			// Sale de la ventana
 			button_salir.Clicked += new EventHandler(on_cierraventanas_clicked);
 			
-			/*checkbutton_asignar_folio.Sensitive = false;
+			entry_numero_citapaciente.ModifyBase(StateType.Normal, new Gdk.Color(255,243,169));		// cambia el fondo del entry
+			entry_numero_citaquirofano.ModifyBase(StateType.Normal, new Gdk.Color(252,95,91));		// cambia el fondo del entry
+			
+			Pango.FontDescription fontdesc = new Pango.FontDescription(); //Pango.FontDescription.FromString ("Arial 10");
+			fontdesc.Weight = Pango.Weight.Bold; // letra a negrita
+			entry_numero_citapaciente.ModifyFont(fontdesc);	// Cambia el tipo de letra del Entry
+			entry_numero_citaquirofano.ModifyFont(fontdesc);	// Cambia el tipo de letra del Entry
+			
+			/*checkbutton_asignar_folio.Sensitive = false
 			entry_circulante1.Sensitive = false;
 			entry_circulante2.Sensitive= false;
 			entry_internista.Sensitive= false;
@@ -210,11 +238,25 @@ namespace osiris
 			activa_desactiva_entry(false);*/
 		}
 		
+		void on_dayselected_clicked (object obj, EventArgs args)
+		{
+			Gtk.Calendar activatedCalendar = (Gtk.Calendar) obj;
+			if(activatedCalendar.Name.ToString() == "calendar1"){
+				entry_fecha_seleccionada.Text = activatedCalendar.GetDate().ToString ("yyyy/MM/dd");	
+			}
+			if(activatedCalendar.Name.ToString() == "calendar2"){
+				entry_fecha_cita.Text = activatedCalendar.GetDate().ToString ("yyyy/MM/dd");	
+			}
+			//Console.WriteLine (activatedCalendar.Name.ToString());
+			//Console.WriteLine (activatedCalendar.GetDate ().ToString ("yyyy/MM/dd"));
+			
+		}
+		
 		void on_cierraventanas_clicked (object sender, EventArgs args)
 		{
 			Widget win = (Widget) sender;
 			win.Toplevel.Destroy();
-		}
+		}		
 	}
 }
 

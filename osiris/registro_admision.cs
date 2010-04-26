@@ -725,6 +725,12 @@ namespace osiris
 										grabainternamiento =  false;
 										graba_admision("ODO-",930);
 										entry_folio_paciente.Text = folioservicio.ToString();}
+									if (idtipointernamiento == 940){//OFTALMOLOGIA
+										this.button_admision.Sensitive = false;
+										this.button_grabar.Sensitive = false;
+										grabainternamiento =  false;
+										graba_admision("OFT-",940);
+										entry_folio_paciente.Text = folioservicio.ToString();}
 				        		}
 							}//if de checkeo de internamiento
 							llena_servicios_realizados();
@@ -1883,16 +1889,16 @@ namespace osiris
                 					"sexo_paciente,municipio_paciente,estado_paciente,ocupacion_paciente,"+
                 					"id_quienlocreo_paciente,pid_paciente,id_empresa,activo) VALUES ('"+
                 					DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"','"+
-                					entry_nombre_1.Text.Trim()+"','"+
-                					entry_nombre_2.Text.Trim()+"','"+
-                					entry_apellido_paterno.Text.Trim()+"','"+
-                					entry_apellido_materno.Text.Trim()+"','"+
+                					entry_nombre_1.Text.ToUpper().Trim()+"','"+
+                					entry_nombre_2.Text.ToUpper().Trim()+"','"+
+                					entry_apellido_paterno.Text.ToUpper().Trim()+"','"+
+                					entry_apellido_materno.Text.ToUpper().Trim()+"','"+
                 					entry_ano_nacimiento.Text+"-"+entry_mes_nacimiento.Text+"-"+entry_dia_nacimiento.Text+"','"+
                 					entry_rfc.Text.Trim()+"','"+
                 					entry_curp.Text.Trim()+"','"+
-                					entry_calle.Text.Trim()+"','"+
+                					entry_calle.Text.ToUpper().Trim()+"','"+
                 					entry_numero.Text+"','"+
-                					entry_colonia.Text.Trim()+"','"+
+                					entry_colonia.Text.ToUpper().Trim()+"','"+
                 					entry_CP.Text+"','"+
                 					entry_telcasa.Text+"','"+
                 					entry_teloficina.Text+"','"+
@@ -1902,7 +1908,7 @@ namespace osiris
                 					sexopaciente+"','"+
                 					municipios+"','"+
                 					estado+"','"+
-                					entry_ocupacion.Text+"','"+
+                					entry_ocupacion.Text.ToUpper().Trim()+"','"+
                 					LoginEmpleado+"','"+
                 					PidPaciente+"','"+
                 					idempresa_paciente+"','"+
@@ -1959,7 +1965,7 @@ namespace osiris
 								idcirugia+"','"+
 								"','"+
 								decirugia+"','"+
-								diagnostico+"');";
+								diagnostico.ToUpper().Trim()+"');";
 					//Console.WriteLine("Grabando el Detalle");	
 					comando.ExecuteNonQuery();					comando.Dispose();
 				}
@@ -2022,21 +2028,21 @@ namespace osiris
 							PidPaciente+"','"+
 							DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"','"+
 							LoginEmpleado+"','"+
-							nombr_respo+"','"+
+							nombr_respo.ToUpper().Trim()+"','"+
 							telef_respo+"','"+
-							direc_respo+"','"+
-							empre_respo+"','"+
-							ocupa_respo+"','"+
+							direc_respo.ToUpper().Trim()+"','"+
+							empre_respo.ToUpper().Trim()+"','"+
+							ocupa_respo.ToUpper().Trim()+"','"+
 							idaseguradora+"','"+
 							boolaseguradora+"','"+
-							poliz_respo+"','"+
-							certif_respo+"','"+
-							direc_empre_respo+"','"+
-							telef_empre_respo+"','"+
+							poliz_respo.Trim()+"','"+
+							certif_respo.Trim()+"','"+
+							direc_empre_respo.ToUpper().Trim()+"','"+
+							telef_empre_respo.ToUpper().Trim()+"','"+
 							parentezcoresponsable+"','"+
 							idmedico+"','"+
 							idempresa_paciente+"','"+
-							nombmedico+"','"+
+							nombmedico.ToUpper().Trim()+"','"+
 							cerrar_folio+"','"+
 							facturacion_folio+"','"+
 							this.entry_empresa.Text.ToUpper()+"');";

@@ -243,7 +243,7 @@ namespace osiris
 				
 				TreeViewColumn col_tipo_sangre = new TreeViewColumn();
 				CellRendererText cellrt7 = new CellRendererText();
-				col_tipo_sangre.Title = "Tipo de Sangre";
+				col_tipo_sangre.Title = "Sexo";
 				col_tipo_sangre.PackStart(cellrt7, true);
 				col_tipo_sangre.AddAttribute (cellrt7, "text", 7); // la siguiente columna será 8 en vez de 7
 				col_tipo_sangre.SortColumnId = (int) Column.col_tipo_sangre;
@@ -373,7 +373,7 @@ namespace osiris
 									"ocupacion_paciente,id_empresa,municipio_paciente,activo,observaciones "+
 									"FROM osiris_his_paciente "+
 									"WHERE osiris_his_paciente.activo = true "+
-									"AND pid_paciente LIKE '"+entry_expresion.Text.ToUpper()+"%' "+
+									"AND pid_paciente ='"+entry_expresion.Text.ToUpper()+"' "+
 									"ORDER BY id_linea;";
 					}
 				}
@@ -600,12 +600,12 @@ namespace osiris
 				comando = conexion.CreateCommand ();
 				comando.CommandText = "UPDATE osiris_his_paciente "+
 									"SET activo = 'true', "+
-									"nombre1_paciente = '"+this.entry_nombre1.Text.Trim()+"',"+
-									"nombre2_paciente = '"+this.entry_nombre2.Text.Trim()+"',"+
-									"apellido_paterno_paciente = '"+this.entry_apellido_paterno.Text.Trim()+"',"+
-									"apellido_materno_paciente = '"+this.entry_apellido_materno.Text.Trim()+"',"+
-									"grupo_sanguineo_paciente = '"+this.entry_tipo_sangre.Text.Trim()+"',"+
-									"direccion_paciente = '"+this.entry_calle.Text.Trim()+"',"+
+									"nombre1_paciente = '"+this.entry_nombre1.Text.ToUpper().Trim()+"',"+
+									"nombre2_paciente = '"+this.entry_nombre2.Text.ToUpper().Trim()+"',"+
+									"apellido_paterno_paciente = '"+this.entry_apellido_paterno.Text.ToUpper().Trim()+"',"+
+									"apellido_materno_paciente = '"+this.entry_apellido_materno.Text.ToUpper().Trim()+"',"+
+									"grupo_sanguineo_paciente = '"+this.entry_tipo_sangre.Text.ToUpper().Trim()+"',"+
+									"direccion_paciente = '"+this.entry_calle.Text.ToUpper().Trim()+"',"+
 									"numero_casa_paciente = '"+this.entry_numeroext.Text.Trim()+"',"+
 									"numero_departamento_paciente = '"+this.entry_numeroint.Text.Trim()+"',"+
 									"codigo_postal_paciente = '"+this.entry_cp.Text.Trim()+"',"+
@@ -618,11 +618,11 @@ namespace osiris
 									"fax_paciente = '"+this.entry_fax.Text.Trim()+"',"+
 									"email_paciente = '"+this.entry_correo.Text.Trim()+"', "+
 									"estado_civil_paciente = '"+this.entry_estado_civil.Text.Trim()+"',"+
-									"sexo_paciente = '"+this.entry_sexo.Text.Trim()+"',"+
-									"titulo_paciente = '"+this.entry_titulopac.Text.Trim()+"',"+
-									"curp_paciente = '"+this.entry_curp.Text.Trim()+"',"+
-									"rfc_paciente = '"+this.entry_rfc.Text.Trim()+"',"+
-									"colonia_paciente = '"+this.entry_colonia.Text.Trim()+"',"+
+									"sexo_paciente = '"+this.entry_sexo.Text.ToUpper().Trim()+"',"+
+									"titulo_paciente = '"+this.entry_titulopac.Text.ToUpper().Trim()+"',"+
+									"curp_paciente = '"+this.entry_curp.Text.ToUpper().Trim()+"',"+
+									"rfc_paciente = '"+this.entry_rfc.Text.ToUpper().Trim()+"',"+
+									"colonia_paciente = '"+this.entry_colonia.Text.ToUpper().Trim()+"',"+
 									"estado_paciente = '"+estado.ToString().ToUpper()+"',"+
 									//+this.estados.Text.Trim()+"',"+
 									"fecha_muerte_paciente = '"+this.entry_fecha_defuncion.Text.Trim()+"',"+
@@ -630,8 +630,8 @@ namespace osiris
 									"fecha_nacimiento_paciente = '"+this.entry_fechanac.Text+"',"+
 									"fechahora_registro_paciente = '"+this.entry_fechahora_registro.Text+"',"+
 									"municipio_paciente = '"+(string) municipios.ToString().ToUpper()+"',"+//+this.municipio.Text.Trim()+"',"+
-									"ocupacion_paciente = '"+this.entry_ocupacion.Text.Trim()+"',"+
-									"observaciones = '"+this.entry_observaciones.Text.Trim()+"',"+
+									"ocupacion_paciente = '"+this.entry_ocupacion.Text.ToUpper().Trim()+"',"+
+									"observaciones = '"+this.entry_observaciones.Text.ToUpper().Trim()+"',"+
 									"historia_movimientos_paciente = historia_movimientos_paciente || '"+LoginEmpleado+" "+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"\n' "+
 									"WHERE  pid_paciente = '"+this.entry_pid_paciente.Text+"';";
 						comando.ExecuteNonQuery();

@@ -1732,11 +1732,12 @@ namespace osiris
 		       			}
 	       				conexion.Close ();
 	       			}
-				}else{///si el checkbutton esta desactivado hace esto:
+				}else{
 					MessageDialog msgBox = new MessageDialog (MyWin,DialogFlags.Modal,MessageType.Question,
 									ButtonsType.YesNo,"¿ Desea Actualizar esta infomacion ?");
 					ResponseType miResultado = (ResponseType)
-					msgBox.Run ();							msgBox.Destroy();
+					msgBox.Run ();					msgBox.Destroy();
+					Console.WriteLine(id_emp_medico.ToString());
 					if (miResultado == ResponseType.Yes){
 						NpgsqlConnection conexion; 
 						conexion = new NpgsqlConnection (connectionString+nombrebd);
@@ -1746,6 +1747,7 @@ namespace osiris
 							NpgsqlCommand comando; 
 							comando = conexion.CreateCommand ();
 	 						//TreeIter iter;
+							
 	 						comando.CommandText = "UPDATE osiris_his_medicos SET "+
 	 								"nombre1_medico = '"+(string) entry_nombre1_medico.Text.Trim().ToUpper()+"',"+//1
 									"nombre2_medico = '"+(string) entry_nombre2_medico.Text.Trim().ToUpper()+"',"+//2
@@ -1758,8 +1760,8 @@ namespace osiris
 									"celular2_medico = '"+(string) entry_celular2_medico.Text.Trim().ToUpper()+"',"+//9
 									"nextel_medico = '"+(string) entry_nextel_medico.Text.Trim().ToUpper()+"',"+//10
 									"beeper_medico = '"+(string) entry_beeper_medico.Text.Trim().ToUpper()+"',"+//11
-									"id_especialidad = '"+int.Parse((string) this.entry_id_especialidad.Text.Trim())+"',"+//12
-									"id_empresa_medico = '"+(int) id_emp_medico+"',"+//13
+									"id_especialidad = '"+int.Parse((string) this.entry_id_especialidad.Text.Trim()).ToString().Trim()+"',"+//12
+									"id_empresa_medico = '"+id_emp_medico.ToString().Trim()+"',"+//13
 									"direccion_medico = '"+(string) entry_direccion_casa_medico.Text.Trim().ToUpper()+"',"+//15
 									"direccion_consultorio_medico = '"+(string) entry_direccion_consultorio_medico.Text.Trim().ToUpper()+"',"+//16
 									"titulo_profesional_medico = '"+(bool) checkbutton_tituloprof_medico.Active+"',"+//17
@@ -1781,7 +1783,8 @@ namespace osiris
 									"nombre_medico = '"+(string) entry_nombre1_medico.Text.Trim().ToUpper()+" "+(string) entry_nombre2_medico.Text.Trim().ToUpper()+" "+
 											(string) entry_apellido_paterno_medico.Text.Trim().ToUpper()+" "+(string) entry_apellido_materno_medico.Text.Trim().ToUpper()+"', "+
 									"historial_de_revision = historial_de_revision || '"+LoginEmpleado+" "+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+" ACTUALIZACION \n' "+
-									"WHERE id_medico = '"+entry_id_medico.Text.Trim()+"' ;";							 						
+									"WHERE id_medico = '"+entry_id_medico.Text.Trim()+"' ;";
+							Console.WriteLine(comando.CommandText);
 	 						comando.ExecuteNonQuery();    	    	       	comando.Dispose();
 	    	    	       	checkbutton_nuevo_medico.Active = false;
 	    	    	       	MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
@@ -2173,7 +2176,7 @@ namespace osiris
 				entry_nombre2_medico.Text= (string) model.GetValue(iterSelected, 2);
 				entry_apellido_paterno_medico.Text = (string) model.GetValue(iterSelected, 3);
 				entry_apellido_materno_medico.Text = (string) model.GetValue(iterSelected, 4);
-			  	entry_especialidad.Text = (string) model.GetValue(iterSelected, 5);
+				entry_especialidad.Text = (string) model.GetValue(iterSelected, 5);
 				entry_cedula_profecional.Text = (string) model.GetValue(iterSelected, 6);
 				entry_telcasa_medico.Text = (string) model.GetValue(iterSelected, 7);
 				entry_teloficina_medico.Text = (string) model.GetValue(iterSelected,8);
@@ -2183,6 +2186,7 @@ namespace osiris
 				entry_beeper_medico.Text = (string) model.GetValue(iterSelected,12);
 				entry_empresa.Text = (string) model.GetValue(iterSelected,13);
 				id_esp_medico = int.Parse((string) model.GetValue(iterSelected,14));
+				entry_id_especialidad.Text = id_esp_medico.ToString().Trim();
 				id_emp_medico = int.Parse((string) model.GetValue(iterSelected,15));
 				if((string) model.GetValue(iterSelected,16) == "02-01-2000") { entry_fecha_ingreso.Text = "" ; }else{ entry_fecha_ingreso.Text = (string) model.GetValue(iterSelected,16);}
 				if((string) model.GetValue(iterSelected,17) == "02-01-2000") { entry_fecha_revision.Text = "" ; }else{ entry_fecha_revision.Text = (string) model.GetValue(iterSelected,17);}
@@ -2807,7 +2811,7 @@ namespace osiris
 				}else{
 					comando.CommandText = "SELECT id_empresa,descripcion_empresa "+
 										" FROM osiris_empresas "+
-										"WHERE descripcion_empresa LIKE '"+entry_expresion.Text.ToUpper().Trim()+"%' ;"+
+										"WHERE descripcion_empresa LIKE '"+entry_expresion.Text.ToUpper().Trim()+"%' "+
 										"ORDER BY id_empresa;";
 				}						
 					
@@ -2988,6 +2992,7 @@ namespace osiris
 			entry_fecha_ingreso.Sensitive = valor;
 			entry_fecha_revision.Sensitive = valor;
 			entry_id_medico.Sensitive = valor;
+			entry_id_especialidad.Sensitive = valor;
 		}
 		
 		void sensibilidad_checkbutton(bool valor)

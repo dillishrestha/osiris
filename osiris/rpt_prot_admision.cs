@@ -424,8 +424,8 @@ namespace osiris
 					//Pango.CairoHelper.ShowLayout (cr, layout);
 					cr.MoveTo(20*escala_en_linux_windows, 724*escala_en_linux_windows);						layout.SetText("____________________________________________________________________________________________________________________________");
 					Pango.CairoHelper.ShowLayout (cr, layout);
-					cr.MoveTo(480*escala_en_linux_windows, 760*escala_en_linux_windows) ;					layout.SetText("'Salud es fuerza de trabajo'");
-					Pango.CairoHelper.ShowLayout (cr, layout);
+					//cr.MoveTo(480*escala_en_linux_windows, 760*escala_en_linux_windows) ;					layout.SetText("'Salud es fuerza de trabajo'");
+					//Pango.CairoHelper.ShowLayout (cr, layout);
 					
 					/*string varpaso = (string) lector["descripcion_admisiones"];
 					while ((bool) lector.Read()){
@@ -455,15 +455,28 @@ namespace osiris
 			Console.WriteLine("entra en la impresion del encabezado");
 			Cairo.Context cr = context.CairoContext;
 			Pango.Layout layout = context.CreatePangoLayout ();
-			Pango.FontDescription desc = Pango.FontDescription.FromString ("Sans");									
+			
+			Gtk.Image image5 = new Gtk.Image();
+            image5.Name = "image5";
+			//image5.Pixbuf = new Gdk.Pixbuf(System.IO.Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, "seshat.jpg"));
+			image5.Pixbuf = new Gdk.Pixbuf("/opt/osiris/bin/OSIRISLogo.jpg");   // en Linux
+			//image5.Pixbuf.ScaleSimple(128, 128, Gdk.InterpType.Bilinear);
+			//Gdk.CairoHelper.SetSourcePixbuf(cr,image5.Pixbuf,1,-30);
+			Gdk.CairoHelper.SetSourcePixbuf(cr,image5.Pixbuf.ScaleSimple(145, 50, Gdk.InterpType.Bilinear),1,1);
+			cr.Fill();
+			//cr.Restore();	
+			cr.Paint();
+			cr.Restore();
+			
+			Pango.FontDescription desc = Pango.FontDescription.FromString ("Sans");								
 			// cr.Rotate(90)  Imprimir Orizontalmente rota la hoja cambian las posiciones de las lineas y columna					
-			fontSize = 8.0;		layout = null;							layout = context.CreatePangoLayout ();
+			fontSize = 6.0;		layout = null;							layout = context.CreatePangoLayout ();
 			desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;
 			layout.FontDescription.Weight = Weight.Bold;
-			cr.MoveTo(001,10*escala_en_linux_windows);					layout.SetText(classpublic.nombre_empresa);		Pango.CairoHelper.ShowLayout (cr, layout);
-			cr.MoveTo(001,20*escala_en_linux_windows);					layout.SetText(classpublic.direccion_empresa);	Pango.CairoHelper.ShowLayout (cr, layout);
-			cr.MoveTo(001,30*escala_en_linux_windows);					layout.SetText(classpublic.telefonofax_empresa);		Pango.CairoHelper.ShowLayout (cr, layout);
-			cr.MoveTo(001,40*escala_en_linux_windows);					layout.SetText("Sistema Hospitalario OSIRIS");		Pango.CairoHelper.ShowLayout (cr, layout);
+			//cr.MoveTo(20*escala_en_linux_windows,10*escala_en_linux_windows);					layout.SetText(classpublic.nombre_empresa);		Pango.CairoHelper.ShowLayout (cr, layout);
+			//cr.MoveTo(20*escala_en_linux_windows,20*escala_en_linux_windows);					layout.SetText(classpublic.direccion_empresa);	Pango.CairoHelper.ShowLayout (cr, layout);
+			//cr.MoveTo(20*escala_en_linux_windows,30*escala_en_linux_windows);					layout.SetText(classpublic.telefonofax_empresa);		Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(20*escala_en_linux_windows,70*escala_en_linux_windows);					layout.SetText("Sistema Hospitalario OSIRIS");		Pango.CairoHelper.ShowLayout (cr, layout);
 			// Cambiando el tamaño de la fuente			
 			fontSize = 12.0;											layout = context.CreatePangoLayout ();		
 			desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;

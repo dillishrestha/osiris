@@ -209,7 +209,7 @@ namespace osiris
 					entry_nombre_proveedor = (object) args[1] as Gtk.Entry;
 				break;
 				
-				case "find_especialidad":
+				case "find_especialidad_medica":
 					entry_id_especialidad = (object) args[0] as Gtk.Entry;
 					entry_especialidad = (object) args[1] as Gtk.Entry;
 				break;
@@ -420,7 +420,7 @@ namespace osiris
 							                        //(int) lector["id_forma_de_pago"]);//13
 							break;
 							
-							case "find_especialidad":
+							case "find_especialidad_medica":
 								treeViewEngineBuscador.AppendValues ((int) lector["id_especialidad"],	// 0
 													(string) lector["descripcion_especialidad"]);		// 1
 								
@@ -524,7 +524,7 @@ namespace osiris
 						entry_id_proveedor.Text = tomaid.ToString();
 						entry_nombre_proveedor.Text = (string) model.GetValue(iterSelected, 1);
 					break;
-					case "find_especialidad":
+					case "find_especialidad_medica":
 						entry_id_especialidad.Text = tomaid.ToString();
 						entry_especialidad.Text = (string) model.GetValue(iterSelected, 1);
 					break;

@@ -1412,7 +1412,7 @@ namespace osiris
 				idempresa_paciente = (int) model.GetValue(iterSelected, 0);
 				empre_respo = (string) model.GetValue(iterSelected, 1);
 				
-				entry_empresa.Text = empre_respo; 
+				entry_empresa.Text = empre_respo.Trim();
 				//entry_descrip_cirugia.Text = (string) model.GetValue(iterSelected, 1);
 				// cierra la ventana despues que almaceno la informacion en variables
 				Widget win = (Widget) sender;
@@ -1458,7 +1458,7 @@ namespace osiris
 					entry_ocupacion.Text = (string) lector["ocupacion_paciente"];
 					descripcion_empresa_paciente = (string) lector["descripcion_empresa"];
 					idempresa_paciente = (int) lector["idempresapaciente"];
-					entry_empresa.Text = (string) descripcion_empresa_paciente;
+					entry_empresa.Text = (string) descripcion_empresa_paciente.ToString().Trim();
 					empre_respo = descripcion_empresa_paciente;
 					
 					sexopaciente = (string) lector["sexo_paciente"];
@@ -1650,7 +1650,7 @@ namespace osiris
 			if ((string) entry_nombre_1.Text.Trim() == "" || (string) entry_apellido_paterno.Text.Trim() == "" ||	
 				(string) entry_apellido_materno.Text.Trim() == "" || (string) entry_dia_nacimiento.Text.Trim() == "" ||
 				(string) entry_mes_nacimiento.Text.Trim() == "" || (string) entry_ano_nacimiento.Text.Trim() == "" ||
-				(string) entry_rfc.Text.Trim() =="" || grabarespocuenta == false || id_tipopaciente == 0 || (string) this.entry_empresa.Text == ""){
+				(string) entry_rfc.Text.Trim() =="" || grabarespocuenta == false || id_tipopaciente == 0 || (string) this.entry_empresa.Text.ToString().Trim() == ""){
 				return false;
 			}else{
 				if (id_tipopaciente == 400)  // Aseguradora
@@ -1758,7 +1758,7 @@ namespace osiris
 			
 			TreeViewColumn col_PidPaciente = new TreeViewColumn();
 			CellRendererText cellr0 = new CellRendererText();
-			col_PidPaciente.Title = "PID Paciente"; // titulo de la cabecera de la columna, si está visible
+			col_PidPaciente.Title = "PID Expediente"; // titulo de la cabecera de la columna, si está visible
 			col_PidPaciente.PackStart(cellr0, true);
 			col_PidPaciente.AddAttribute (cellr0, "text", 0);    // la siguiente columna será 1 en vez de 1
 			col_PidPaciente.SortColumnId = (int) Column.col_PidPaciente;
@@ -1894,8 +1894,8 @@ namespace osiris
                 					entry_apellido_paterno.Text.ToUpper().Trim()+"','"+
                 					entry_apellido_materno.Text.ToUpper().Trim()+"','"+
                 					entry_ano_nacimiento.Text+"-"+entry_mes_nacimiento.Text+"-"+entry_dia_nacimiento.Text+"','"+
-                					entry_rfc.Text.Trim()+"','"+
-                					entry_curp.Text.Trim()+"','"+
+                					entry_rfc.Text.ToUpper().Trim()+"','"+
+                					entry_curp.Text.ToUpper().Trim()+"','"+
                 					entry_calle.Text.ToUpper().Trim()+"','"+
                 					entry_numero.Text+"','"+
                 					entry_colonia.Text.ToUpper().Trim()+"','"+
@@ -1943,6 +1943,7 @@ namespace osiris
 				comando.CommandText = "SELECT id_tipo_admisiones,folio_de_servicio_dep "+
 							"FROM osiris_erp_movcargos WHERE id_tipo_admisiones = '"+idtipoadmision.ToString()+"'"+
 							" ORDER BY folio_de_servicio_dep DESC LIMIT 1;";
+				Console.WriteLine(comando.CommandText);
 				NpgsqlDataReader lector1 = comando.ExecuteReader ();
 				if ((bool) lector1.Read()){
 					int foliointernodep = (int) lector1["folio_de_servicio_dep"] + 1;
@@ -1966,7 +1967,7 @@ namespace osiris
 								"','"+
 								decirugia+"','"+
 								diagnostico.ToUpper().Trim()+"');";
-					//Console.WriteLine("Grabando el Detalle");	
+					Console.WriteLine(comando.CommandText);	
 					comando.ExecuteNonQuery();					comando.Dispose();
 				}
 			}catch (NpgsqlException ex){
@@ -2045,7 +2046,7 @@ namespace osiris
 							nombmedico.ToUpper().Trim()+"','"+
 							cerrar_folio+"','"+
 							facturacion_folio+"','"+
-							this.entry_empresa.Text.ToUpper()+"');";
+							this.entry_empresa.Text.ToString().Trim().ToUpper()+"');";
 				//Console.WriteLine("Graba Encabezado");
 				comando.ExecuteNonQuery();			comando.Dispose();
 				return true;

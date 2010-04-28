@@ -209,23 +209,22 @@ namespace osiris
 				CellRendererText cellrt2 = new CellRendererText();
 				col_Nombre2_Paciente.Title = "Nombre 2";
 				col_Nombre2_Paciente.PackStart(cellrt2, true);
-				col_Nombre2_Paciente.AddAttribute (cellrt2, "text", 2); // la siguiente columna será 3 en vez de 2
+				col_Nombre2_Paciente.AddAttribute (cellrt2, "text", 2);
 				col_Nombre2_Paciente.SortColumnId = (int) Column.col_Nombre2_Paciente;
             
 				TreeViewColumn col_app_Paciente = new TreeViewColumn();
 				CellRendererText cellrt3 = new CellRendererText();
 				col_app_Paciente.Title = "Apellido Paterno";
 				col_app_Paciente.PackStart(cellrt3, true);
-				col_app_Paciente.AddAttribute (cellrt3, "text", 3); // la siguiente columna será 4 en vez de 3
+				col_app_Paciente.AddAttribute (cellrt3, "text", 3);
 				col_app_Paciente.SortColumnId = (int) Column.col_app_Paciente;
             
 				TreeViewColumn col_apm_Paciente = new TreeViewColumn();
 				CellRendererText cellrt4 = new CellRendererText();
 				col_apm_Paciente.Title = "Apellido Materno";
 				col_apm_Paciente.PackStart(cellrt4, true);
-				col_apm_Paciente.AddAttribute (cellrt4, "text", 4); // la siguiente columna será 5 en vez de 4
-				col_apm_Paciente.SortColumnId = (int) Column.col_apm_Paciente;
-      
+				col_apm_Paciente.AddAttribute (cellrt4, "text", 4);
+				col_apm_Paciente.SortColumnId = (int) Column.col_apm_Paciente;      
 				        
 				TreeViewColumn col_creacion_Paciente = new TreeViewColumn();
 				CellRendererText cellrt5 = new CellRendererText();
@@ -380,10 +379,10 @@ namespace osiris
 				NpgsqlDataReader lector = comando.ExecuteReader ();
 				while (lector.Read()){
 					treeViewEngineBusca.AppendValues ((int) lector["pid_paciente"],
-										(string) lector["nombre1_paciente"],
-										(string) lector["nombre2_paciente"],
-										(string) lector["apellido_paterno_paciente"],
-										(string) lector["apellido_materno_paciente"],
+										(string) lector["nombre1_paciente"].ToString().Trim(),
+										(string) lector["nombre2_paciente"].ToString().Trim(),
+										(string) lector["apellido_paterno_paciente"].ToString().Trim(),
+										(string) lector["apellido_materno_paciente"].ToString().Trim(),
 										(string) lector["fech_nacimiento"], 
 										(string) lector["edad"],
 										(string) lector["sexo_paciente"],

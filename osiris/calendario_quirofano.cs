@@ -88,6 +88,11 @@ namespace osiris
 		string nombrebd;
 		string connectionString;
 		
+		string tipopaciente;
+		int id_tipopaciente;
+		string tipointernamiento;
+		int id_tipointernamiento;
+		
 		TreeStore treeViewEngineListaCitas;
 		
 		//Declaracion de ventana de error
@@ -178,7 +183,134 @@ namespace osiris
 		
 		void crea_treeview_citas()
 		{
-			treeViewEngineListaCitas = new TreeStore(typeof(string));
+			treeViewEngineListaCitas = new TreeStore(typeof(string),typeof(string),typeof(string),typeof(string),
+			                                         typeof(string),typeof(string),typeof(string),typeof(string),
+			                                         typeof(string),typeof(string),typeof(string),typeof(string),
+			                                         typeof(string),typeof(string),typeof(string),typeof(string),
+			                                         typeof(string),typeof(string),typeof(string),typeof(string));
+			treeview_lista_agenda.Model = treeViewEngineListaCitas;
+			treeview_lista_agenda.RulesHint = true;
+			
+			TreeViewColumn col_agenda0 = new TreeViewColumn();
+			CellRendererText cellrt0 = new CellRendererText();
+			col_agenda0.Title = "Fecha";
+			col_agenda0.PackStart(cellrt0, true);
+			col_agenda0.AddAttribute (cellrt0, "text", 0);
+			//col_agenda0.SortColumnId = (int) Coldatos_agenda.col_agenda0;
+			
+			TreeViewColumn col_agenda1 = new TreeViewColumn();
+			CellRendererText cellrt1 = new CellRendererText();
+			col_agenda1.Title = "Hora";
+			col_agenda1.PackStart(cellrt1, true);
+			col_agenda1.AddAttribute (cellrt1, "text", 1);
+			//col_agenda1.SortColumnId = (int) Coldatos_agenda.col_agenda1;
+			
+			TreeViewColumn col_agenda2 = new TreeViewColumn();
+			CellRendererText cellrt2 = new CellRendererText();
+			col_agenda2.Title = "N° Cita";
+			col_agenda2.PackStart(cellrt2, true);
+			col_agenda2.AddAttribute (cellrt2, "text", 2);
+			//col_agenda2.SortColumnId = (int) Coldatos_agenda.col_agenda2;
+			
+			TreeViewColumn col_agenda3 = new TreeViewColumn();
+			CellRendererText cellrt3 = new CellRendererText();
+			col_agenda3.Title = "N° Expediente";
+			col_agenda3.PackStart(cellrt3, true);
+			col_agenda3.AddAttribute (cellrt3, "text", 3);
+			//col_agenda3.SortColumnId = (int) Coldatos_agenda.col_agenda3;
+			
+			TreeViewColumn col_agenda4 = new TreeViewColumn();
+			CellRendererText cellrt4 = new CellRendererText();
+			col_agenda4.Title = "Nombre 1";
+			col_agenda4.PackStart(cellrt1, true);
+			col_agenda4.AddAttribute (cellrt1, "text", 4);
+			//col_agenda4.SortColumnId = (int) Column.col_agenda4;
+            
+			TreeViewColumn col_agenda5 = new TreeViewColumn();
+			CellRendererText cellrt5 = new CellRendererText();
+			col_agenda5.Title = "Nombre 2";
+			col_agenda5.PackStart(cellrt5, true);
+			col_agenda5.AddAttribute (cellrt5, "text", 5);
+			//col_agenda5.SortColumnId = (int) Column.col_agenda5;
+            
+			TreeViewColumn col_agenda6 = new TreeViewColumn();
+			CellRendererText cellrt6 = new CellRendererText();
+			col_agenda6.Title = "Apellido Paterno";
+			col_agenda6.PackStart(cellrt6, true);
+			col_agenda6.AddAttribute (cellrt6, "text", 6);
+			//col_agenda6.SortColumnId = (int) Column.col_agenda5;
+            
+			TreeViewColumn col_agenda7 = new TreeViewColumn();
+			CellRendererText cellrt7 = new CellRendererText();
+			col_agenda7.Title = "Apellido Materno";
+			col_agenda7.PackStart(cellrt7, true);
+			col_agenda7.AddAttribute (cellrt7, "text", 7);
+			//col_agenda7.SortColumnId = (int) Column.col_agenda7;			
+			
+			TreeViewColumn col_agenda8 = new TreeViewColumn();
+			CellRendererText cellrt8 = new CellRendererText();
+			col_agenda8.Title = "Edad";
+			col_agenda8.PackStart(cellrt8, true);
+			col_agenda8.AddAttribute (cellrt8, "text", 8);
+			//col_agenda8.SortColumnId = (int) Coldatos_agenda.col_agenda8;
+			
+			TreeViewColumn col_agenda9 = new TreeViewColumn();
+			CellRendererText cellrt9 = new CellRendererText();
+			col_agenda9.Title = "Telefono";
+			col_agenda9.PackStart(cellrt9, true);
+			col_agenda9.AddAttribute (cellrt9, "text", 9);
+			//col_agenda9.SortColumnId = (int) Coldatos_agenda.col_agenda9;
+			
+			TreeViewColumn col_agenda10 = new TreeViewColumn();
+			CellRendererText cellrt10 = new CellRendererText();
+			col_agenda10.Title = "email";
+			col_agenda10.PackStart(cellrt10, true);
+			col_agenda10.AddAttribute (cellrt10, "text", 10);
+			//col_agenda10.SortColumnId = (int) Coldatos_agenda.col_agenda10;
+			
+			TreeViewColumn col_agenda11 = new TreeViewColumn();
+			CellRendererText cellrt11 = new CellRendererText();
+			col_agenda11.Title = "Tipo Paciente";
+			col_agenda11.PackStart(cellrt11, true);
+			col_agenda11.AddAttribute (cellrt11, "text", 11);
+			//col_agenda11.SortColumnId = (int) Coldatos_agenda.col_agenda11;
+			
+			TreeViewColumn col_agenda12 = new TreeViewColumn();
+			CellRendererText cellrt12 = new CellRendererText();
+			col_agenda12.Title = "Tipo Servicio";
+			col_agenda12.PackStart(cellrt12, true);
+			col_agenda12.AddAttribute (cellrt12, "text", 12);
+			//col_agenda12.SortColumnId = (int) Coldatos_agenda.col_agenda12;
+			
+			TreeViewColumn col_agenda13 = new TreeViewColumn();
+			CellRendererText cellrt13 = new CellRendererText();
+			col_agenda13.Title = "Tipo Paciente";
+			col_agenda13.PackStart(cellrt13, true);
+			col_agenda13.AddAttribute (cellrt13, "text", 13);
+			//col_agenda13.SortColumnId = (int) Coldatos_agenda.col_agenda13;
+			
+			TreeViewColumn col_agenda14 = new TreeViewColumn();
+			CellRendererText cellrt14 = new CellRendererText();
+			col_agenda14.Title = "Consultorio/QX.";
+			col_agenda14.PackStart(cellrt14, true);
+			col_agenda14.AddAttribute (cellrt14, "text", 14);
+			//col_agenda13.SortColumnId = (int) Coldatos_agenda.col_agenda13;
+			
+			treeview_lista_agenda.AppendColumn(col_agenda0);
+			treeview_lista_agenda.AppendColumn(col_agenda1);
+			treeview_lista_agenda.AppendColumn(col_agenda2);
+			treeview_lista_agenda.AppendColumn(col_agenda3);
+			treeview_lista_agenda.AppendColumn(col_agenda4);
+			treeview_lista_agenda.AppendColumn(col_agenda5);
+			treeview_lista_agenda.AppendColumn(col_agenda6);
+			treeview_lista_agenda.AppendColumn(col_agenda7);
+			treeview_lista_agenda.AppendColumn(col_agenda8);
+			treeview_lista_agenda.AppendColumn(col_agenda9);
+			treeview_lista_agenda.AppendColumn(col_agenda10);
+			treeview_lista_agenda.AppendColumn(col_agenda11);
+			treeview_lista_agenda.AppendColumn(col_agenda12);
+			treeview_lista_agenda.AppendColumn(col_agenda13);
+			treeview_lista_agenda.AppendColumn(col_agenda14);
 		}
 		
 		void on_dayselected_clicked (object obj, EventArgs args)
@@ -299,7 +431,20 @@ namespace osiris
 			if (store1.GetIterFirst(out iter1)){
 				combobox_tipo_paciente.SetActiveIter (iter1);
 			}
-			//combobox_tipo_paciente.Changed += new EventHandler (onComboBoxChanged_tipopaciente);
+			combobox_tipo_paciente.Changed += new EventHandler (onComboBoxChanged_tipopaciente);
+		}
+		
+		void onComboBoxChanged_tipopaciente(object sender, EventArgs args)
+		{
+			ComboBox combobox_tipo_paciente = sender as ComboBox;
+			if (sender == null){
+				return;
+			}
+			TreeIter iter;
+			if (combobox_tipo_paciente.GetActiveIter (out iter)){
+				tipopaciente = (string) combobox_tipo_paciente.Model.GetValue(iter,0);
+				id_tipopaciente = (int) combobox_tipo_paciente.Model.GetValue(iter,1);				
+			}	
 		}
 		
 		void llenado_tipo_servicio()
@@ -321,7 +466,7 @@ namespace osiris
 				NpgsqlCommand comando; 
 				comando = conexion.CreateCommand ();
                	comando.CommandText = "SELECT * FROM osiris_his_tipo_admisiones WHERE servicio_directo = 'false' "+
-	           							"AND cuenta_mayor = '4000' AND activo_admision = 'true' "+
+	           							"AND grupo = 'MED' AND activo_admision = 'true' "+
 	           							//"AND cuenta_mayor_ingreso = '4000' "+
 	           							//"AND grupo = 'MED' "+
 	               						"ORDER BY id_tipo_admisiones;";
@@ -344,7 +489,20 @@ namespace osiris
 				//Console.WriteLine(iter2);
 				combobox_tipo_admision.SetActiveIter (iter2);
 			}
-			//combobox_tipo_admision.Changed += new EventHandler (onComboBoxChanged_tipo_admision);
+			combobox_tipo_admision.Changed += new EventHandler (onComboBoxChanged_tipo_admision);
+		}
+		
+		void onComboBoxChanged_tipo_admision (object sender, EventArgs args)
+		{
+			ComboBox combobox_tipo_admision = sender as ComboBox;
+			if (sender == null){
+				return;
+			}
+			TreeIter iter;
+			if (combobox_tipo_admision.GetActiveIter (out iter)){
+				tipointernamiento = (string) combobox_tipo_admision.Model.GetValue(iter,0);//Console.WriteLine(tipointernamiento);
+				id_tipointernamiento = (int) combobox_tipo_admision.Model.GetValue(iter,1);//Console.WriteLine(idtipointernamiento);
+			}
 		}
 		
 		void on_cierraventanas_clicked (object sender, EventArgs args)

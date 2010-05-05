@@ -5,6 +5,8 @@
 // Monterrey - Mexico
 //
 // Autor    	: Juan Antonio Peña Gonzalez (Programacion) gjuanzz@gmail.com
+//				  Ing. Daniel Olivares C. cambio a GTKPrint con Pango y Cairo arcangeldoc@gmail.com
+//				  Israel Peña cambio de gnomeprint a formato a Pango y Cairo
 //				  
 // Licencia		: GLP
 //////////////////////////////////////////////////////////
@@ -43,7 +45,7 @@ namespace osiris
 		private static int pangoScale = 1024;
 		private PrintOperation print;
 		private double fontSize = 8.0;
-		int escala_en_linux_windows = 1;		// Linux = 1  Windows = 8
+		int escala_en_linux_windows;		// Linux = 1  Windows = 8
 				
 		int PidPaciente = 0;
 		int folioservicio = 0;
@@ -52,8 +54,7 @@ namespace osiris
 		//Declaracion de ventana de error
 		protected Gtk.Window MyWinError;
 		protected Gtk.Window MyWin;
-		//public System.Drawing.Image myimage;
-		
+				
 		class_conexion conexion_a_DB = new class_conexion();
 		class_public classpublic = new class_public();
 	
@@ -63,47 +64,25 @@ namespace osiris
 			folioservicio = folioservicio_;
 			connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
 			nombrebd = conexion_a_DB._nombrebd;
-			//medico_tratante = medico_tratante_;
-		
+			escala_en_linux_windows = classpublic.escala_linux_windows;
+					
 			print = new PrintOperation ();			
 			print.BeginPrint += new BeginPrintHandler (OnBeginPrint);
 			print.DrawPage += new DrawPageHandler (OnDrawPage);
 			print.EndPrint += new EndPrintHandler (OnEndPrint);
-			print.Run (PrintOperationAction.PrintDialog, null);
-		/*	//PrintJob trabajo   = new PrintJob (PrintConfig.Default());
-        	//PrintDialog dialogo   = new PrintDialog (trabajo, "PROTOCOLO DE ADMISION", 0);
-        	int         respuesta = dialogo.Run ();
-        
-			if (respuesta == (int) PrintButtons.Cancel) 
-			{
-				dialogo.Hide (); 
-				dialogo.Dispose (); 
-				return;
-			}
-
-        	PrintContext ctx = trabajo.Context;
-        
-        	ComponerPagina(ctx, trabajo); 
-
-        	trabajo.Close();
-             
-        	switch (respuesta)
-        	{
-                  case (int) PrintButtons.Print:   
-                  		trabajo.Print (); 
-                  		break;
-                  case (int) PrintButtons.Preview:
-                      	new PrintJobPreview(trabajo, "PROTOCOLO DE ADMISION").Show();
-                        break;
-        	}
-
-			dialogo.Hide (); dialogo.Dispose ();*/
+			print.Run(PrintOperationAction.PrintDialog, null);		
        }
 		
 		void OnBeginPrint (object obj, Gtk.BeginPrintArgs args)
 		{
 			PrintContext context = args.Context;											
 			print.NPages = 1; // crea cantidad de copias del reporte
+			print.JobName = "Protocolo de Admision";	// Name of the report
+			
+			// para imprimir horizontalmente el reporte
+			//print.PrintSettings.Orientation = PageOrientation.Landscape;
+			//print.DefaultPageSetup.Orientation = PageOrientation.Landscape;
+			//Console.WriteLine(print.PrintSettings.Orientation.ToString());
 		}
 		
 		void OnDrawPage (object obj, Gtk.DrawPageArgs args)
@@ -424,8 +403,8 @@ namespace osiris
 					//Pango.CairoHelper.ShowLayout (cr, layout);
 					cr.MoveTo(20*escala_en_linux_windows, 724*escala_en_linux_windows);						layout.SetText("____________________________________________________________________________________________________________________________");
 					Pango.CairoHelper.ShowLayout (cr, layout);
-					//cr.MoveTo(480*escala_en_linux_windows, 760*escala_en_linux_windows) ;					layout.SetText("'Salud es fuerza de trabajo'");
-					//Pango.CairoHelper.ShowLayout (cr, layout);
+					cr.MoveTo(480*escala_en_linux_windows, 760*escala_en_linux_windows) ;					layout.SetText("Sistema Hospitalario OSIRIS");
+					Pango.CairoHelper.ShowLayout (cr, layout);
 					
 					/*string varpaso = (string) lector["descripcion_admisiones"];
 					while ((bool) lector.Read()){
@@ -458,7 +437,7 @@ namespace osiris
 			
 			Gtk.Image image5 = new Gtk.Image();
             image5.Name = "image5";
-			//image5.Pixbuf = new Gdk.Pixbuf(System.IO.Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, "seshat.jpg"));
+			//image5.Pixbuf = new Gdk.Pixbuf(System.IO.Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, "osiris.jpg"));
 			image5.Pixbuf = new Gdk.Pixbuf("/opt/osiris/bin/OSIRISLogo.jpg");   // en Linux
 			//image5.Pixbuf.ScaleSimple(128, 128, Gdk.InterpType.Bilinear);
 			//Gdk.CairoHelper.SetSourcePixbuf(cr,image5.Pixbuf,1,-30);
@@ -476,7 +455,7 @@ namespace osiris
 			//cr.MoveTo(20*escala_en_linux_windows,10*escala_en_linux_windows);					layout.SetText(classpublic.nombre_empresa);		Pango.CairoHelper.ShowLayout (cr, layout);
 			//cr.MoveTo(20*escala_en_linux_windows,20*escala_en_linux_windows);					layout.SetText(classpublic.direccion_empresa);	Pango.CairoHelper.ShowLayout (cr, layout);
 			//cr.MoveTo(20*escala_en_linux_windows,30*escala_en_linux_windows);					layout.SetText(classpublic.telefonofax_empresa);		Pango.CairoHelper.ShowLayout (cr, layout);
-			cr.MoveTo(20*escala_en_linux_windows,70*escala_en_linux_windows);					layout.SetText("Sistema Hospitalario OSIRIS");		Pango.CairoHelper.ShowLayout (cr, layout);
+			//cr.MoveTo(20*escala_en_linux_windows,70*escala_en_linux_windows);					layout.SetText("Sistema Hospitalario OSIRIS");		Pango.CairoHelper.ShowLayout (cr, layout);
 			// Cambiando el tamaño de la fuente			
 			fontSize = 12.0;											layout = context.CreatePangoLayout ();		
 			desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;
@@ -491,362 +470,5 @@ namespace osiris
 		{	
 				
 		}
-		
-    	 /*
-		void ComponerPagina (Gnome.PrintContext cr, Gnome.PrintJob trabajoImpresion)
-		{
-			NpgsqlConnection conexion; 
-        	conexion = new NpgsqlConnection (connectionString+nombrebd);
-            
-        	// Verifica que la base de datos este conectada
-        	try
-        	{
-        		conexion.Open ();
-        		NpgsqlCommand comando; 
-        		comando = conexion.CreateCommand (); 
-             	comando.CommandText ="SELECT "+
-									"osiris_erp_cobros_enca.folio_de_servicio,osiris_erp_cobros_enca.pid_paciente, osiris_erp_cobros_enca.id_empleado_admision,osiris_erp_cobros_enca.nombre_medico_encabezado,osiris_erp_cobros_enca.id_medico,"+
-									"osiris_his_paciente.nombre1_paciente,osiris_his_paciente.nombre2_paciente,osiris_his_paciente.apellido_paterno_paciente,osiris_his_paciente.apellido_materno_paciente, "+
-									"to_char(fecha_nacimiento_paciente, 'dd-MM-yyyy') AS fecha_nac_pa,osiris_his_paciente.sexo_paciente,osiris_his_paciente.direccion_paciente,osiris_his_paciente.numero_casa_paciente, "+
-									"osiris_his_paciente.numero_departamento_paciente,osiris_his_paciente.colonia_paciente,osiris_his_paciente.municipio_paciente,osiris_his_paciente.codigo_postal_paciente,osiris_his_paciente.estado_paciente, "+
-									"osiris_his_paciente.estado_civil_paciente,osiris_his_paciente.ocupacion_paciente,osiris_his_paciente.telefono_particular1_paciente, "+
-									"to_char(to_number(to_char(age('"+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"',fecha_nacimiento_paciente),'yyyy') ,'9999'),'9999') AS edad, "+
-									"to_char(to_number(to_char(age('"+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"',osiris_his_paciente.fecha_nacimiento_paciente),'MM'),'99'),'99') AS mesesedad,"+
-									"osiris_empresas.descripcion_empresa,osiris_empresas.direccion_empresa,osiris_empresas.telefono1_empresa,osiris_empresas.numero_direccion_empresa,osiris_empresas.colonia_empresa,osiris_his_tipo_pacientes.descripcion_tipo_paciente, "+
-									"osiris_erp_cobros_enca.responsable_cuenta,osiris_erp_cobros_enca.direccion_responsable_cuenta,osiris_erp_cobros_enca.telefono1_responsable_cuenta, "+
-									"osiris_erp_cobros_enca.ocupacion_responsable,osiris_erp_cobros_enca.parentezco,osiris_erp_cobros_enca.empresa_labora_responsable, "+
-									"osiris_erp_cobros_enca.direccion_emp_responsable,osiris_erp_cobros_enca.telefono_emp_responsable,osiris_erp_cobros_enca.paciente_asegurado, "+
-									"osiris_erp_cobros_enca.numero_poliza,osiris_his_medicos.nombre_medico,osiris_his_medicos.id_especialidad,osiris_his_tipo_especialidad.descripcion_especialidad, osiris_his_medicos.cedula_medico, "+
-									"osiris_erp_movcargos.folio_de_servicio,to_char(fechahora_admision_registro,'dd-MM-yyyy') AS fecha_reg_adm, "+
-									"osiris_erp_cobros_enca.nombre_medico_tratante,"+
-									"to_char(fechahora_admision_registro,'HH24:mi:ss') AS hora_reg_adm,osiris_his_tipo_admisiones.descripcion_admisiones, "+
-									"osiris_his_tipo_cirugias.descripcion_cirugia,osiris_his_tipo_diagnosticos.id_diagnostico, "+
-									"osiris_his_tipo_diagnosticos.descripcion_diagnostico,descripcion_diagnostico_movcargos,descripcion_aseguradora,"+
-									"osiris_erp_cobros_enca.nombre_empresa_encabezado, "+
-									"osiris_erp_cobros_enca.id_empresa AS idempresa_enca "+
-									"FROM osiris_erp_cobros_enca,osiris_his_medicos,osiris_empresas,osiris_erp_movcargos,osiris_his_paciente,osiris_his_tipo_pacientes,osiris_his_tipo_cirugias,osiris_his_tipo_diagnosticos,osiris_his_tipo_admisiones,osiris_his_tipo_especialidad,osiris_aseguradoras "+
-									"WHERE osiris_erp_cobros_enca.id_medico = osiris_his_medicos.id_medico "+
-									"AND osiris_erp_cobros_enca.folio_de_servicio = osiris_erp_movcargos.folio_de_servicio "+
-									"AND osiris_erp_cobros_enca.pid_paciente = osiris_erp_movcargos.pid_paciente "+
-									"AND osiris_erp_movcargos.pid_paciente = osiris_his_paciente.pid_paciente "+
-									"AND osiris_his_tipo_cirugias.id_tipo_cirugia = osiris_erp_movcargos.id_tipo_cirugia "+
-									"AND osiris_his_tipo_diagnosticos.id_diagnostico = osiris_erp_movcargos.id_diagnostico "+
-									"AND osiris_empresas.id_empresa = osiris_erp_cobros_enca.id_empresa "+
-									"AND osiris_his_medicos.id_especialidad = osiris_his_tipo_especialidad.id_especialidad "+
-									"AND osiris_his_tipo_pacientes.id_tipo_paciente = osiris_erp_movcargos.id_tipo_paciente "+
-									"AND osiris_erp_movcargos.id_tipo_admisiones = osiris_his_tipo_admisiones.id_tipo_admisiones "+
-									"AND osiris_aseguradoras.id_aseguradora = osiris_erp_cobros_enca.id_aseguradora "+
-									"AND osiris_his_paciente.pid_paciente = '"+PidPaciente.ToString()+"' "+
-        							"AND osiris_erp_movcargos.folio_de_servicio = '"+folioservicio.ToString()+"'";
-        						
-				NpgsqlDataReader lector = comando.ExecuteReader ();		
-				cr.BeginPage("Pagina 1");
-				//NUEVO
-				// Crear una fuente de tipo Impact
-				Gnome.Font fuente = Gnome.Font.FindClosest("Bitstream Vera Sans", 6);
-				//Gnome.Font fuente1 = Gnome.Font.FindClosest("Bitstream Vera Sans", 8);
-				Gnome.Font fuente2 = Gnome.Font.FindClosest("Bitstream Vera Sans", 12);
-				
-				// Cambiar la fuente
-				Gnome.Print.Setfont (cr, fuente);
-				
-				cr.MoveTo(19.5, 770);
-		    	layout.SetText("Sistema Hospitalario OSIRIS");
-				cr.MoveTo(20, 770);
-		    	layout.SetText("Sistema Hospitalario OSIRIS");
-		    
-		    	cr.MoveTo(19.5, 760); 
-		    	layout.SetText("Dirección: Isaac Garza #200 Ote. Centro Monterrey, NL.");
-		    	cr.MoveTo(20, 760);
-		    	layout.SetText("Dirección: Isaac Garza #200 Ote. Centro Monterrey, NL.");
-			
-				cr.MoveTo(19.5, 750);
-		    	layout.SetText("Conmutador: ");
-				cr.MoveTo(20, 750);
-		    	layout.SetText("Conmutador: ");
-		    
-		    	//se cambia el tamaño de texto por ser titulo
-		    
-				Gnome.Print.Setfont (cr, fuente2);
-				//fin de titulo
-			
-				cr.MoveTo(229.5, 740);
-				layout.SetText("PROTOCOLO DE ADMISION");
-				cr.MoveTo(279.5, 727);
-		    	layout.SetText("REGISTRO");
-				cr.MoveTo(230, 740);
-				layout.SetText("PROTOCOLO DE ADMISION");
-				cr.MoveTo(280, 727);
-		    	layout.SetText("REGISTRO");
-				
-				if( (bool) lector.Read())
-				{
-					medico_tratante = (string) lector["nombre_medico_tratante"];
-					string edadpac = (string) lector["edad"];
-					string mesespac = (string) lector["mesesedad"];
-					//se tienen que crear las fuentes de nuevo debido a que es un while y por lo tanto es un ciclo
-					Gnome.Font fuente3 = Gnome.Font.FindClosest("Bitstream Vera Sans", 10);
-			    	Gnome.Font fuente4 = Gnome.Font.FindClosest("Bitstream Vera Sans", 8);
-			    	Gnome.Font fuente5 = Gnome.Font.FindClosest("Bitstream Vera Sans", 36);
-			    
-			    	Gnome.Print.Setfont (cr, fuente3);
-			    
-					cr.MoveTo(489.5, 750);					layout.SetText("Nº Expediente");
-					cr.MoveTo(509.5, 740);					layout.SetText(" "+PidPaciente.ToString());
-					cr.MoveTo(509.5, 730);					layout.SetText("PID");
-					cr.MoveTo(490, 750);
-					//layout.SetText("9999999");
-					layout.SetText("Nº Expediente");
-					cr.MoveTo(510, 740);					layout.SetText(" "+PidPaciente.ToString());
-					cr.MoveTo(510, 730);					layout.SetText("PID");
-				
-					Gnome.Print.Setfont (cr, fuente5);
-					cr.MoveTo(20, 720);      				layout.SetText("____________________________");
-		    	
-		    		Gnome.Print.Setfont (cr, fuente4);
-		    		cr.MoveTo(239.5, 700);		
-		    				    		layout.SetText("DATOS GENERALES DEL PACIENTE");
-		    		cr.MoveTo(240, 700);
-		    				    		layout.SetText("DATOS GENERALES DEL PACIENTE");
-				
-					cr.MoveTo(20, 680);					layout.SetText("Nombre: "+(string) lector["nombre1_paciente"]+" "+ 
-				                 									(string) lector["nombre2_paciente"]+" "+
-				                 									(string) lector["apellido_paterno_paciente"]+" "+
-				                 									(string) lector["apellido_materno_paciente"]);
-					cr.MoveTo(56, 680);					layout.SetText("_________________________________________________");
-				
-				
-					cr.MoveTo(290, 680);					layout.SetText("F. de Nac: "+(string) lector["fecha_nac_pa"]);
-					cr.MoveTo(329, 680);					layout.SetText("________________");
-					
-					cr.MoveTo(410, 680);					layout.SetText("Edad:  "+edadpac+" años "+mesespac+" Meses");
-					cr.MoveTo(430, 680);					layout.SetText("__________");
-				
-					cr.MoveTo(20, 665);					layout.SetText("Dirección: "+(string) lector["direccion_paciente"]+"  "+
-																	(string) lector["numero_casa_paciente"]+" "+(string) lector["numero_departamento_paciente"]+", Col. "+
-																	(string) lector["colonia_paciente"]+ ", CP. "+(string) lector["codigo_postal_paciente"]+", "+(string) lector["municipio_paciente"]+", "+(string) lector["estado_paciente"]);
-					cr.MoveTo(58, 665);					layout.SetText("________________________________________________________________________________________________");
-									
-					cr.MoveTo(20, 650);					layout.SetText("Ocupación: "+(string) lector["ocupacion_paciente"]);
-					cr.MoveTo(58, 650);					layout.SetText("________________________________");
-					
-					if((int) lector["idempresa_enca"] == 1){
-						cr.MoveTo(320, 650);					layout.SetText("Nombre de la Empresa:  "+(string) lector["nombre_empresa_encabezado"]);
-					}else{
-						cr.MoveTo(320, 650);					layout.SetText("Nombre de la Empresa:  "+(string) lector["descripcion_empresa"]);	
-					}
-					
-					cr.MoveTo(415, 650);					layout.SetText("___________________________________");
-				
-					cr.MoveTo(20, 635);					layout.SetText("Dirección Empresa:  "+(string) lector["direccion_empresa"]);
-					cr.MoveTo(90, 635);					layout.SetText("______________________________________");
-				
-					cr.MoveTo(310, 635);					layout.SetText("Tel. de la Empresa:  "+(string) lector["telefono1_empresa"]);
-					cr.MoveTo(380, 635);					layout.SetText("_________________________");
-				
-					cr.MoveTo(19.5, 620);					layout.SetText("Tipo de paciente:  "+(string) lector["descripcion_tipo_paciente"]);
-					cr.MoveTo(20, 620);					layout.SetText("Tipo de paciente:  "+(string) lector["descripcion_tipo_paciente"]);
-					cr.MoveTo(85, 619.85);					layout.SetText("______________________________");
-					cr.MoveTo(85, 620);					layout.SetText("______________________________");
-													
-					cr.MoveTo(310, 620);					layout.SetText("Estado Civil:"+" "+(string) lector["estado_civil_paciente"]);
-					cr.MoveTo(360, 620);					layout.SetText("_______________");
-					
-					string sexo_paciente = "";
-					if((string) lector["sexo_paciente"] == "H"){
-						sexo_paciente = "Masculino";
-					}else{
-						sexo_paciente = "Femenino";
-					}
-					
-					cr.MoveTo(500, 620);					layout.SetText("Sexo: "+sexo_paciente);//680
-					cr.MoveTo(521, 620);					layout.SetText("______");//680
-				
-					Gnome.Print.Setfont (cr, fuente5);
-					cr.MoveTo(20, 610);					layout.SetText("____________________________");
-					
-					Gnome.Print.Setfont (cr, fuente4);
-					cr.MoveTo(259.5, 590);		
-										layout.SetText("DATOS DEL RESPONSABLE");
-					cr.MoveTo(260, 590);
-										layout.SetText("DATOS DEL RESPONSABLE");
-				
-					cr.MoveTo(20, 575);					layout.SetText("Nombre de la persona responsable del paciente:  "+(string) lector["responsable_cuenta"]);
-					cr.MoveTo(190, 575);					layout.SetText("___________________________________________________________");
-				
-					cr.MoveTo(20, 560);					layout.SetText("Dirección:  "+(string) lector["direccion_responsable_cuenta"]);
-					cr.MoveTo(56, 560);					layout.SetText("___________________________________________________________________________________________");
-				
-					cr.MoveTo(490, 560);					layout.SetText("Tel:  "+(string) lector["telefono1_responsable_cuenta"]);
-					cr.MoveTo(507, 560);					layout.SetText("_________________");
-				
-					cr.MoveTo(20, 545);					layout.SetText("Ocupación del responsable:  "+(string) lector["ocupacion_responsable"]);
-					cr.MoveTo(120, 545);					layout.SetText("__________________________________");
-							
-					cr.MoveTo(350, 545);					layout.SetText("Parentesco:  "+(string) lector["parentezco"]);
-					cr.MoveTo(390, 545);					layout.SetText("________________________");
-				
-					cr.MoveTo(20, 530);					layout.SetText("Empresa donde labora:  "+(string) lector["empresa_labora_responsable"]);
-					cr.MoveTo(100, 530);					layout.SetText("_______________________________________");
-				
-					cr.MoveTo(345, 530);					layout.SetText("Tel. de Empresa:  "+(string) lector["telefono_emp_responsable"]);
-					cr.MoveTo(404, 530);					layout.SetText("________________________");
-					
-					cr.MoveTo(20, 500);					layout.SetText("Responsable de la cuenta(Aseguradora y/o membresia):  "+(string) lector["descripcion_aseguradora"]);
-					cr.MoveTo(220, 500);					layout.SetText("__________________________________________");
-				
-					cr.MoveTo(450, 500);					layout.SetText("Nº de poliza:  "+(string) lector["numero_poliza"]);
-					cr.MoveTo(495, 500);					layout.SetText("____________________");
-					
-					cr.MoveTo(20, 515);					layout.SetText("Dirección:  "+(string) lector["direccion_emp_responsable"]);
-					cr.MoveTo(60, 515);					layout.SetText("___________________________________________________________________________");
-							
-					Gnome.Print.Setfont (cr, fuente5);
-					cr.MoveTo(20, 490);					layout.SetText("____________________________");
-				
-					Gnome.Print.Setfont (cr, fuente4);
-					cr.MoveTo(269.5, 470);	
-											layout.SetText("DATOS DE ADMISION");
-					cr.MoveTo(270, 470);
-											layout.SetText("DATOS DE ADMISION");
-				
-					cr.MoveTo(19.5, 455);				    layout.SetText("Nº de Ingreso:  "+ folioservicio.ToString());
-					cr.MoveTo(20, 455);				    layout.SetText("Nº de Ingreso:  "+ folioservicio.ToString());
-					cr.MoveTo(70, 454.85);					layout.SetText("__________");
-					cr.MoveTo(70, 455);					layout.SetText("__________");
-				
-					cr.MoveTo(140, 455);			    	layout.SetText("Nº de habitacion:  ");
-			    	cr.MoveTo(200, 455);					layout.SetText("__________");
-					
-					cr.MoveTo(280, 455);			    	layout.SetText("Fecha de Admision:  "+ (string) lector["fecha_reg_adm"]);
-			    	cr.MoveTo(350, 455);					layout.SetText("_____________");
-			    	
-			    	cr.MoveTo(430, 455);			    	layout.SetText("Hora de admision:"+" "+ (string) lector["hora_reg_adm"]); //DateTime.Now.ToString("HH:mm"));
-			    	cr.MoveTo(495, 455);					layout.SetText("_______");
-					
-					if ((int) lector["id_medico"] > 1)
-					{
-						cr.MoveTo(20, 440);					layout.SetText("Medico 1º Diag.:  "+(string) lector["nombre_medico"]);
-						cr.MoveTo(100, 440);					layout.SetText("_____________________________________________");
-					}else{
-						cr.MoveTo(20, 440);					layout.SetText("Medico 1º Diag.:  "+(string) lector["nombre_medico_encabezado"]);
-						cr.MoveTo(100, 440);					layout.SetText("_____________________________________________");
-					}
-					
-					cr.MoveTo(350, 440);					layout.SetText("Especialidad:  "+(string) lector["descripcion_especialidad"]);
-					cr.MoveTo(400, 440);					layout.SetText("____________________________________");
-				
-					cr.MoveTo(20, 425);					layout.SetText("Firma:");
-					cr.MoveTo(45, 425);					layout.SetText("_______________________");
-				
-					cr.MoveTo(383, 425);					layout.SetText("Ced. Prof.:  "+(string) lector["cedula_medico"]);
-					cr.MoveTo(424, 425);					layout.SetText("______________________________");
-				
-					cr.MoveTo(20, 395);					layout.SetText("Cirugia: "+(string) lector["descripcion_cirugia"]);
-					cr.MoveTo(50, 395);					layout.SetText("___________________________________________________________________________________________________");
-					
-					cr.MoveTo(370, 410);					layout.SetText("Ingresado por: "+(string) lector["id_empleado_admision"]);
-					cr.MoveTo(425, 410);					layout.SetText("________________________________");
-					
-					Gnome.Print.Setfont (cr, fuente5);
-					cr.MoveTo(20, 385);					layout.SetText("____________________________");
-				
-					Gnome.Print.Setfont (cr, fuente4);
-					cr.MoveTo(219.5, 365);
-					layout.SetText("PARA SER LLENADO POR EL MEDICO TRATANTE");
-					cr.MoveTo(220, 365);
-					layout.SetText("PARA SER LLENADO POR EL MEDICO TRATANTE");
-					
-					cr.MoveTo(20, 352);					layout.SetText("Medico Tratante: "+medico_tratante);
-					cr.MoveTo(20.5, 352);					layout.SetText("Medico Tratante: "+medico_tratante);
-					
-					cr.MoveTo(20, 340);					layout.SetText("Diagnostico:  "+(string) lector["descripcion_diagnostico_movcargos"]);
-					cr.MoveTo(70, 340);					layout.SetText("__________________________________________________________________________________________________________");
-					
-					cr.MoveTo(20, 325);					layout.SetText("Observaciones: ");
-					cr.MoveTo(82, 325);					layout.SetText("_____________________________________________________");
-				
-					cr.MoveTo(20, 310);					layout.SetText("Diagnostico provisional (Para ser llenado dentro de las primeras 24 Hrs):");
-					cr.MoveTo(20, 295);					layout.SetText("____________________________________________________________________________________________________________________________");
-					cr.MoveTo(20, 280);					layout.SetText("____________________________________________________________________________________________________________________________");
-					cr.MoveTo(20, 265);					layout.SetText("____________________________________________________________________________________________________________________________");
-				
-					cr.MoveTo(20, 250);					layout.SetText("Diagnostico Final:");
-					cr.MoveTo(20, 235);					layout.SetText("____________________________________________________________________________________________________________________________");
-					cr.MoveTo(20, 220);					layout.SetText("____________________________________________________________________________________________________________________________");
-					cr.MoveTo(20, 205);					layout.SetText("____________________________________________________________________________________________________________________________");
-				
-					Gnome.Print.Setfont (cr, fuente5);
-					cr.MoveTo(20, 205);					layout.SetText("____________________________");
-				
-					Gnome.Print.Setfont (cr, fuente4);
-					cr.MoveTo(269.5, 185);
-					layout.SetText("CAUSA DE EGRESO");
-					cr.MoveTo(270, 185);
-					layout.SetText("CAUSA DE EGRESO");
-				
-					cr.MoveTo(20, 170);					layout.SetText("Por Mejoria:");
-					cr.MoveTo(60, 170);					layout.SetText("______________________");
-					
-					cr.MoveTo(20, 155);					layout.SetText("Evolucion:");
-					cr.MoveTo(60, 155);					layout.SetText("______________________");
-					
-					cr.MoveTo(20, 140);					layout.SetText("Por traslado:");
-					cr.MoveTo(60, 140);					layout.SetText("______________________");
-					
-					cr.MoveTo(200, 170);					layout.SetText("Alta Voluntaria:");
-					cr.MoveTo(261, 170);					layout.SetText("______________________");
-				
-					cr.MoveTo(200, 155);					layout.SetText("Por no Mejoria:");
-					cr.MoveTo(261, 155);					layout.SetText("______________________");
-					
-					cr.MoveTo(200, 140);					layout.SetText("Por Defunción:");
-					cr.MoveTo(261, 140);					layout.SetText("______________________");
-					
-					cr.MoveTo(440, 160);					layout.SetText("______________________________");
-					cr.MoveTo(455, 160);					layout.SetText(medico_tratante);
-					cr.MoveTo(450, 150);					layout.SetText("FIRMA DE MEDICO TRATANTE");
-					
-					cr.MoveTo(220, 90);
-							    		layout.SetText("____________________________________");
-		    		cr.MoveTo(220, 80);
-		    				    		layout.SetText("Nombre y Firma Paciente o responsable");
-		    		cr.MoveTo(250, 70);
-		    				    		layout.SetText("verificacion de datos");
-					
-					
-					cr.MoveTo(20, 50);
-					layout.SetText("____________________________________________________________________________________________________________________________");
-				
-					cr.MoveTo(480, 40) ;
-					layout.SetText("'Salud es fuerza de trabajo'");
-					string varpaso = (string) lector["descripcion_admisiones"];
-				
-					while ((bool) lector.Read())
-					{
-						varpaso = varpaso +", "+(string) lector["descripcion_admisiones"]; 
-					}
-					cr.MoveTo(20, 410);
-					layout.SetText("Admisión:  "+(string) varpaso);
-					cr.MoveTo(60, 410);
-					layout.SetText("__________________________________________________________________");
-				
-        		}
-        	
-				lector.Close (); 
-				conexion.Close ();
-			
-				layout.SetText(Page();
-			}
-			catch (NpgsqlException ex)
-			{
-				Console.WriteLine ("PostgresSQL error: {0}",ex.Message);
-				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,MessageType.Info,ButtonsType.Close, "PostgresSQL error: {0}",ex.Message);
-				msgBoxError.Run ();	msgBoxError.Destroy();
-				return; 
-			}
-			
-		}
-		*/
  	}    
  }

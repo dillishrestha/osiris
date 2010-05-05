@@ -1379,8 +1379,7 @@ namespace osiris
 				NpgsqlCommand comando; 
 				comando = conexion.CreateCommand ();
 				
-				if ((string) entry_expresion.Text.ToUpper() == "*")
-				{
+				if ((string) entry_expresion.Text.ToUpper() == "*")				{
 					comando.CommandText = "SELECT * FROM osiris_empresas "+
 								"ORDER BY descripcion_empresa;";
 				}else{
@@ -1389,8 +1388,7 @@ namespace osiris
 								"ORDER BY descripcion_empresa;";
 				}
 				NpgsqlDataReader lector = comando.ExecuteReader ();
-				while (lector.Read())
-				{
+				while (lector.Read())				{
 					treeViewEngineBuscaEmpresa.AppendValues ((int) lector["id_empresa"],//TreeIter iter = 
 											(string)lector["descripcion_empresa"]);
 				}					
@@ -2242,6 +2240,8 @@ namespace osiris
 			entry_ano_nacimiento.KeyPressEvent += onKeyPressEvent;
 			// Cierra Ventana
 			button_salir.Clicked += new EventHandler(on_cierraventanas_clicked);
+			// Disable Internar a Centro Medico
+			checkbutton_consulta.Sensitive = false;
 			
 			// llenado de comobobox
 			// Tipos de Paciente

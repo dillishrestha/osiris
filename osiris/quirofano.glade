@@ -3898,7 +3898,7 @@ Cita&lt;/b&gt;</property>
                                           </packing>
                                         </child>
                                         <child>
-                                          <widget class="GtkButton" id="button_busca_paciente">
+                                          <widget class="GtkButton" id="button_busca_paciente_cita">
                                             <property name="width_request">90</property>
                                             <property name="visible">True</property>
                                             <property name="can_focus">True</property>
@@ -4237,7 +4237,7 @@ Cita&lt;/b&gt;</property>
                                           </packing>
                                         </child>
                                         <child>
-                                          <widget class="GtkEntry" id="entry13">
+                                          <widget class="GtkEntry" id="entry_id_empaseg_cita">
                                             <property name="width_request">55</property>
                                             <property name="visible">True</property>
                                             <property name="can_focus">True</property>
@@ -4249,7 +4249,7 @@ Cita&lt;/b&gt;</property>
                                           </packing>
                                         </child>
                                         <child>
-                                          <widget class="GtkEntry" id="entry14">
+                                          <widget class="GtkEntry" id="entry_nombre_empaseg_cita">
                                             <property name="width_request">256</property>
                                             <property name="visible">True</property>
                                             <property name="can_focus">True</property>
@@ -4328,7 +4328,7 @@ Cita&lt;/b&gt;</property>
                                           </packing>
                                         </child>
                                         <child>
-                                          <widget class="GtkEntry" id="entry_pid_paciente1">
+                                          <widget class="GtkEntry" id="entry_id_doctor_cita">
                                             <property name="width_request">60</property>
                                             <property name="visible">True</property>
                                             <property name="can_focus">True</property>
@@ -4340,7 +4340,7 @@ Cita&lt;/b&gt;</property>
                                           </packing>
                                         </child>
                                         <child>
-                                          <widget class="GtkEntry" id="entry_nombre_paciente3">
+                                          <widget class="GtkEntry" id="entry_nombre_doctor_cita">
                                             <property name="width_request">330</property>
                                             <property name="visible">True</property>
                                             <property name="can_focus">True</property>
@@ -4419,7 +4419,7 @@ Cita&lt;/b&gt;</property>
                                           </packing>
                                         </child>
                                         <child>
-                                          <widget class="GtkEntry" id="entry_pid_paciente2">
+                                          <widget class="GtkEntry" id="entry_id_especialidad_cita">
                                             <property name="width_request">60</property>
                                             <property name="visible">True</property>
                                             <property name="can_focus">True</property>
@@ -4431,7 +4431,7 @@ Cita&lt;/b&gt;</property>
                                           </packing>
                                         </child>
                                         <child>
-                                          <widget class="GtkEntry" id="entry_nombre_paciente4">
+                                          <widget class="GtkEntry" id="entry_nombre_especialidad_cita">
                                             <property name="width_request">330</property>
                                             <property name="visible">True</property>
                                             <property name="can_focus">True</property>
@@ -4443,7 +4443,7 @@ Cita&lt;/b&gt;</property>
                                           </packing>
                                         </child>
                                         <child>
-                                          <widget class="GtkButton" id="button_especialidad_cita">
+                                          <widget class="GtkButton" id="button_busca_especialidad_cita">
                                             <property name="width_request">90</property>
                                             <property name="visible">True</property>
                                             <property name="can_focus">True</property>

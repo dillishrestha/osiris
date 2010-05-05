@@ -111,6 +111,18 @@ namespace osiris
 		Gtk.Entry entry_id_especialidad = null;
 		Gtk.Entry entry_especialidad = null;
 		
+		// Busqueda de Empresas-enlase por tipo de pacientes
+		Gtk.Entry entry_id_empaseg_cita = null;
+		Gtk.Entry entry_nombre_empaseg_cita = null;
+		
+		// Busqueda dosctor cita de paciente
+		Gtk.Entry entry_id_doctor_cita = null;
+		Gtk.Entry entry_nombre_doctor_cita = null;
+		
+		// Busqueda Especilidad en cita
+		Gtk.Entry entry_id_especialidad_cita = null;
+		Gtk.Entry entry_nombre_especialidad_cita = null;
+		
 		class_conexion conexion_a_DB = new class_conexion();
 		
 		string consulta_sql1 = "";
@@ -140,8 +152,7 @@ namespace osiris
 				case "find_client":
 					entry_id_cliente = (object) args[0] as Gtk.Entry;
 					entry_nombre_cliente = (object) args[1] as Gtk.Entry;				
-				break;			
-			
+				break;		
 				case "find_estado_region":
 					entry_id_estado = (object) args[0] as Gtk.Entry;
 					entry_estado = (object) args[1] as Gtk.Entry;
@@ -152,14 +163,12 @@ namespace osiris
 					entry_municipio = (object) args[6] as Gtk.Entry;
 					entry_id_municipio = (object) args[7] as Gtk.Entry;
 				break;			
-			
 				case "find_municipio":
 					entry_id_municipio = (object) args[0] as Gtk.Entry;
 					entry_municipio = (object) args[1] as Gtk.Entry;
 					togglebutton_editar_municipio = (object) args[2] as Gtk.ToggleButton;
 					button_guardar_municipio = (object) args[3] as Gtk.Button;
-				break;
-				
+				break;				
 				case "find_grupo_producto":
 					entry_id_grupo = (object) args[0] as Gtk.Entry;
 					entry_descripcion_grupo = (object) args[1] as Gtk.Entry;
@@ -170,50 +179,58 @@ namespace osiris
 					entry_id_centrocosto = (object) args[6] as Gtk.Entry;
 					entry_descripcion_centrocosto = (object) args[7] as Gtk.Entry;
 					button_buscar_centrocosto  = (object) args[8] as Gtk.Button;
-				break;
-				
+				break;				
 				case "find_grupo1_producto":
 					entry_id_grupo1 = (object) args[0] as Gtk.Entry;
 					entry_descripcion_grupo1 = (object) args[1] as Gtk.Entry;
 					togglebutton_editar_grupo1 = (object) args[2] as Gtk.ToggleButton;
 					button_guardar_grupo1 = (object) args[3] as Gtk.Button;
 					checkbutton_activar_grupo1  = (object) args[4] as Gtk.CheckButton;				
-				break;
-				
+				break;				
 				case "find_grupo2_producto":
 					entry_id_grupo2 = (object) args[0] as Gtk.Entry;
 					entry_descripcion_grupo2 = (object) args[1] as Gtk.Entry;
 					togglebutton_editar_grupo2 = (object) args[2] as Gtk.ToggleButton;
 					button_guardar_grupo2 = (object) args[3] as Gtk.Button;
 					checkbutton_activar_grupo2  = (object) args[4] as Gtk.CheckButton;				
-				break;
-				
+				break;				
 				case "find_centrodecosto":
 					entry_id_centrocosto = (object) args[0] as Gtk.Entry;
 					entry_descripcion_centrocosto = (object) args[1] as Gtk.Entry;
-				break;
-							
+				break;							
 				case "find_marca_producto":
 					entry_idmarca_producto = (object) args[0] as Gtk.Entry;
 					entry_descripcion_marca_producto = (object) args[1] as Gtk.Entry;
-				break;
-				
+				break;				
 				case "find_proveedores":
 					entry_id_proveedor = (object) args[0] as Gtk.Entry;
 					entry_nombre_proveedor = (object) args[1] as Gtk.Entry;
 					entry_formapago = (object) args[2] as Gtk.Entry;
-				break;
-				
+				break;				
 				case "find_proveedores_catalogo_producto":
 					entry_id_proveedor = (object) args[0] as Gtk.Entry;
 					entry_nombre_proveedor = (object) args[1] as Gtk.Entry;
-				break;
-				
+				break;				
 				case "find_especialidad_medica":
 					entry_id_especialidad = (object) args[0] as Gtk.Entry;
 					entry_especialidad = (object) args[1] as Gtk.Entry;
+				break;				
+				case "find_empresa_cita":
+					entry_id_empaseg_cita = (object) args[0] as Gtk.Entry;
+					entry_nombre_empaseg_cita = (object) args[1] as Gtk.Entry;
+				break;				
+				case "find_aseguradoras_cita":
+					entry_id_empaseg_cita = (object) args[0] as Gtk.Entry;
+					entry_nombre_empaseg_cita = (object) args[1] as Gtk.Entry;
 				break;
-				
+				case "find_medico_cita":
+					entry_id_doctor_cita = (object) args[0] as Gtk.Entry;
+					entry_nombre_doctor_cita = (object) args[1] as Gtk.Entry;
+				break;
+				case "find_especialidad_cita":
+					entry_id_especialidad_cita = (object) args[0] as Gtk.Entry;
+					entry_nombre_especialidad_cita = (object) args[1] as Gtk.Entry;					
+				break;
 			}			
 			consulta_sql1 = (string) args_sql[0];
 			consulta_sql2 =	(string) args_sql[1];
@@ -321,6 +338,9 @@ namespace osiris
 					conexion.Open ();
 					NpgsqlCommand comando; 
 					comando = conexion.CreateCommand ();
+					
+					// create string seek about combobox
+					
 					if ((string) entry_expresion.Text.ToUpper() == "*"){
 						comando.CommandText = consulta_sql1+order_sql;
 					}else{
@@ -333,18 +353,15 @@ namespace osiris
 							case "find_client":
 								treeViewEngineBuscador.AppendValues ((int) lector["id_cliente"],//0
 													(string) lector["descripcion_cliente"]);
-							break;		
-			
+							break;			
 							case "find_estado_region":
 								treeViewEngineBuscador.AppendValues ((int) lector["id_estado"],//0
 													(string) lector["descripcion_estado"]);//1
-							break;
-			
+							break;			
 							case "find_municipio":
 								treeViewEngineBuscador.AppendValues( (int) lector["id_municipio"],
 														(string) lector["descripcion_municipio"]);
-							break;
-							
+							break;							
 							case "find_grupo_producto":
 								treeViewEngineBuscador.AppendValues( (int) lector["id_grupo_producto"],
 														(string) lector["descripcion_grupo_producto"],
@@ -355,8 +372,7 @@ namespace osiris
 							
 								col_idlista.SetCellDataFunc(cellrt0, new Gtk.TreeCellDataFunc(cambia_colores_fila));
 								col_descripcion.SetCellDataFunc(cellrt1, new Gtk.TreeCellDataFunc(cambia_colores_fila));
-							break;
-							
+							break;							
 							case "find_grupo1_producto":
 								treeViewEngineBuscador.AppendValues( (int) lector["id_grupo1_producto"],
 														(string) lector["descripcion_grupo1_producto"],
@@ -364,8 +380,7 @@ namespace osiris
 							
 								col_idlista.SetCellDataFunc(cellrt0, new Gtk.TreeCellDataFunc(cambia_colores_fila));
 								col_descripcion.SetCellDataFunc(cellrt1, new Gtk.TreeCellDataFunc(cambia_colores_fila));
-							break;
-							
+							break;							
 							case "find_grupo2_producto":
 								treeViewEngineBuscador.AppendValues( (int) lector["id_grupo2_producto"],
 														(string) lector["descripcion_grupo2_producto"],
@@ -373,19 +388,16 @@ namespace osiris
 							
 								col_idlista.SetCellDataFunc(cellrt0, new Gtk.TreeCellDataFunc(cambia_colores_fila));
 								col_descripcion.SetCellDataFunc(cellrt1, new Gtk.TreeCellDataFunc(cambia_colores_fila));
-							break;
-							
+							break;							
 							case "find_centrodecosto":
 								treeViewEngineBuscador.AppendValues( (int) lector["id_centro_de_costos"],
 														(string) lector["descripcion_centro_de_costo"]);
 							
-							break;
-							
+							break;							
 							case "find_marca_producto":
 								treeViewEngineBuscador.AppendValues ((int) lector["id_marca_producto"], //0
 													(string) lector["descripcion"]);//1
-							break;
-							
+							break;							
 							case "find_proveedores":
 								treeViewEngineBuscador.AppendValues ((int) lector["id_proveedor"],//0
 													(string) lector["descripcion_proveedor"],//1
@@ -401,8 +413,7 @@ namespace osiris
 													(string) lector["descripcion_forma_de_pago"]);//11
 													//(string) lector["fax_proveedor"], //12
 							                        //(int) lector["id_forma_de_pago"]);//13
-							break;
-							
+							break;							
 							case "find_proveedores_catalogo_producto":
 								treeViewEngineBuscador.AppendValues ((int) lector["id_proveedor"],//0
 													(string) lector["descripcion_proveedor"],//1
@@ -418,12 +429,27 @@ namespace osiris
 													(string) lector["descripcion_forma_de_pago"]);//11
 													//(string) lector["fax_proveedor"], //12
 							                        //(int) lector["id_forma_de_pago"]);//13
-							break;
-							
+							break;							
 							case "find_especialidad_medica":
 								treeViewEngineBuscador.AppendValues ((int) lector["id_especialidad"],	// 0
 													(string) lector["descripcion_especialidad"]);		// 1
 								
+							break;
+							case "find_empresa_cita":
+								treeViewEngineBuscador.AppendValues ((int) lector["id_empresa"],	// 0
+													(string)lector["descripcion_empresa"]);		// 1
+							break;
+							case "find_aseguradoras_cita":
+								treeViewEngineBuscador.AppendValues ((int) lector["id_aseguradora"],	// 0
+													(string)lector["descripcion_aseguradora"]);		// 1
+							break;
+							case "find_medico_cita":
+								treeViewEngineBuscador.AppendValues ((int) lector["id_medico"],	// 0
+													(string)lector["nombre_medico"]);		// 1
+							break;
+							case "find_especialidad_cita":
+								treeViewEngineBuscador.AppendValues ((int) lector["id_especialidad"],	// 0
+													(string)lector["descripcion_especialidad"]);		// 1
 							break;
 						}
 					}
@@ -528,6 +554,18 @@ namespace osiris
 						entry_id_especialidad.Text = tomaid.ToString();
 						entry_especialidad.Text = (string) model.GetValue(iterSelected, 1);
 					break;
+					case "find_empresa_cita":
+						entry_id_empaseg_cita.Text = tomaid.ToString();
+						entry_nombre_empaseg_cita.Text = (string) model.GetValue(iterSelected, 1);
+					break;
+					case "find_aseguradoras_cita":
+						entry_id_empaseg_cita.Text = tomaid.ToString();
+						entry_nombre_empaseg_cita.Text = (string) model.GetValue(iterSelected, 1);
+					break;
+					case "find_medico_cita":
+						entry_id_doctor_cita.Text = tomaid.ToString();
+						entry_nombre_doctor_cita.Text = (string) model.GetValue(iterSelected, 1);
+					break;
 				}				
 			}
 			Widget win = (Widget) sender;
@@ -550,26 +588,6 @@ namespace osiris
 			win.Toplevel.Destroy();
 		}
 		
-		////////////////////
-		// Selecciona
-		/// <summary>
-		/// //
-		/// </summary>
-		/// <param name="args">
-		/// A <see cref="System.Object"/>
-		/// </param>
-		/// <param name="args_sql">
-		/// A <see cref="System.String"/>
-		/// </param>
-		/// <param name="type_find_">
-		/// A <see cref="System.String"/>
-		/// </param>
-		/// <param name="order_sql_">
-		/// A <see cref="System.String"/>
-		/// </param>
-		/// <param name="comodin_">
-		/// A <see cref="System.String"/>
-		/// </param>
 		public void selecciona(object[] args, string[] args_sql, string type_find_,string order_sql_,string comodin_)
 		{
 		

@@ -4243,6 +4243,7 @@ Cita&lt;/b&gt;</property>
                                             <property name="can_focus">True</property>
                                             <property name="editable">False</property>
                                             <property name="invisible_char">&#x25CF;</property>
+                                            <property name="text" translatable="yes">1</property>
                                           </widget>
                                           <packing>
                                             <property name="position">1</property>
@@ -4334,6 +4335,7 @@ Cita&lt;/b&gt;</property>
                                             <property name="can_focus">True</property>
                                             <property name="editable">False</property>
                                             <property name="invisible_char">&#x25CF;</property>
+                                            <property name="text" translatable="yes">1</property>
                                           </widget>
                                           <packing>
                                             <property name="position">1</property>
@@ -4425,6 +4427,7 @@ Cita&lt;/b&gt;</property>
                                             <property name="can_focus">True</property>
                                             <property name="editable">False</property>
                                             <property name="invisible_char">&#x25CF;</property>
+                                            <property name="text" translatable="yes">1</property>
                                           </widget>
                                           <packing>
                                             <property name="position">1</property>
@@ -4554,6 +4557,35 @@ Cita&lt;/b&gt;</property>
                                         <property name="position">11</property>
                                       </packing>
                                     </child>
+                                    <child>
+                                      <widget class="GtkHBox" id="hbox82">
+                                        <property name="visible">True</property>
+                                        <child>
+                                          <widget class="GtkLabel" id="label96">
+                                            <property name="width_request">1</property>
+                                            <property name="visible">True</property>
+                                            <property name="label" translatable="yes">Referido Por</property>
+                                          </widget>
+                                          <packing>
+                                            <property name="position">0</property>
+                                          </packing>
+                                        </child>
+                                        <child>
+                                          <widget class="GtkEntry" id="entry_referido_por">
+                                            <property name="width_request">380</property>
+                                            <property name="visible">True</property>
+                                            <property name="can_focus">True</property>
+                                            <property name="invisible_char">&#x25CF;</property>
+                                          </widget>
+                                          <packing>
+                                            <property name="position">1</property>
+                                          </packing>
+                                        </child>
+                                      </widget>
+                                      <packing>
+                                        <property name="position">12</property>
+                                      </packing>
+                                    </child>
                                   </widget>
                                 </child>
                               </widget>
@@ -4575,7 +4607,7 @@ Cita&lt;/b&gt;</property>
                         </child>
                         <child>
                           <widget class="GtkFixed" id="fixed11">
-                            <property name="height_request">180</property>
+                            <property name="height_request">160</property>
                             <property name="visible">True</property>
                           </widget>
                           <packing>
@@ -4906,7 +4938,7 @@ a Pacientes&lt;/b&gt;</property>
                                 <child>
                                   <widget class="GtkLabel" id="label50">
                                     <property name="visible">True</property>
-                                    <property name="label" translatable="yes">&lt;b&gt;Quirofano&lt;/b&gt;</property>
+                                    <property name="label" translatable="yes">&lt;b&gt;Quirofano Programado&lt;/b&gt;</property>
                                     <property name="use_markup">True</property>
                                   </widget>
                                   <packing>
@@ -5050,6 +5082,34 @@ a Pacientes&lt;/b&gt;</property>
                                             <property name="position">3</property>
                                           </packing>
                                         </child>
+                                        <child>
+                                          <widget class="GtkHBox" id="hbox83">
+                                            <property name="visible">True</property>
+                                            <child>
+                                              <widget class="GtkLabel" id="label97">
+                                                <property name="width_request">30</property>
+                                                <property name="visible">True</property>
+                                                <property name="label" translatable="yes">&lt;b&gt;QX. Utilizado&lt;/b&gt;</property>
+                                                <property name="use_markup">True</property>
+                                              </widget>
+                                              <packing>
+                                                <property name="position">0</property>
+                                              </packing>
+                                            </child>
+                                            <child>
+                                              <widget class="GtkComboBox" id="combobox3">
+                                                <property name="width_request">53</property>
+                                                <property name="visible">True</property>
+                                              </widget>
+                                              <packing>
+                                                <property name="position">1</property>
+                                              </packing>
+                                            </child>
+                                          </widget>
+                                          <packing>
+                                            <property name="position">4</property>
+                                          </packing>
+                                        </child>
                                       </widget>
                                     </child>
                                   </widget>
@@ -5071,7 +5131,7 @@ a Pacientes&lt;/b&gt;</property>
                             </child>
                             <child>
                               <widget class="GtkFixed" id="fixed12">
-                                <property name="height_request">90</property>
+                                <property name="height_request">70</property>
                                 <property name="visible">True</property>
                               </widget>
                               <packing>

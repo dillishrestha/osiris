@@ -803,7 +803,7 @@ namespace osiris
 								"FROM osiris_erp_proveedores, osiris_erp_forma_de_pago "+
 								"WHERE osiris_erp_proveedores.id_forma_de_pago = osiris_erp_forma_de_pago.id_forma_de_pago "+
 								"AND descripcion_proveedor LIKE '%"};			
-			classfind_data.buscandor(parametros_objetos,parametros_sql,"find_proveedores"," ORDER BY descripcion_proveedor;","%' ");
+			classfind_data.buscandor(parametros_objetos,parametros_sql,"find_proveedores"," ORDER BY descripcion_proveedor;","%' ",0);
 		}
 			
 		// Cuando seleccion campos para la autorizacion de compras  

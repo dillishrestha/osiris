@@ -517,7 +517,7 @@ namespace osiris
 										"to_char(precio_de_venta,'999999999.99') AS valorpaquete "+
 										"FROM osiris_his_tipo_cirugias "+
 										"WHERE descripcion_cirugia LIKE '%"};			
-			classfind_data.buscandor(parametros_objetos,parametros_sql,"find_cirugia_paquetes"," ORDER BY id_tipo_cirugia","%' ");
+			classfind_data.buscandor(parametros_objetos,parametros_sql,"find_cirugia_paquetes"," ORDER BY id_tipo_cirugia","%' ",0);
 		}
 		
 		void on_button_buscar_especialidad_clicked (object sender, EventArgs args)
@@ -529,7 +529,7 @@ namespace osiris
 			string[] parametros_sql = {"SELECT * FROM osiris_his_tipo_especialidad ",															
 										"SELECT * FROM osiris_his_tipo_especialidad "+
 										"WHERE descripcion_especialidad LIKE '%"};			
-			classfind_data.buscandor(parametros_objetos,parametros_sql,"find_especialidad_medica"," ORDER BY id_especialidad","%' ");
+			classfind_data.buscandor(parametros_objetos,parametros_sql,"find_especialidad_medica"," ORDER BY id_especialidad","%' ",0);
 		}
 				
 		void on_button_copia_procedimiento_clicked(object sender, EventArgs args)
@@ -769,23 +769,8 @@ namespace osiris
 				msgBoxError.Run ();				msgBoxError.Destroy();
 			}
 			conexion.Close ();
-			/*
-			// lleno de la tabla de his_tipo_de_admisiones
-			store2.AppendValues ("",10);
-			store2.AppendValues ("URGENCIAS",100);
-			store2.AppendValues ("HOSPITAL",500);
-			store2.AppendValues ("GINECOLOGIA-TOCOCIRUGIA",600);
-			store2.AppendValues ("Quirofano",700);
-			store2.AppendValues ("Terapia Adulto",810);
-			store2.AppendValues ("Terapia Pedriatrica",820);
-			store2.AppendValues ("Laboratorio",400);
-			store2.AppendValues ("Imagenologia-RX",300);
-			store2.AppendValues ("Rehabilitacion",200);
-			store2.AppendValues ("Otros Servicios",920);*/
-	        
 			TreeIter iter2;
-			if (store2.GetIterFirst(out iter2))
-			{
+			if (store2.GetIterFirst(out iter2)){
 				combobox_tipo_admision.SetActiveIter (iter2);
 			}
 			combobox_tipo_admision.Changed += new EventHandler (onComboBoxChanged_tipo_admision);

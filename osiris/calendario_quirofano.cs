@@ -75,6 +75,7 @@ namespace osiris
 		[Widget] Gtk.RadioButton radiobutton_mujer_cita = null;
 		[Widget] Gtk.Entry entry_motivoconsulta = null;
 		[Widget] Gtk.Entry entry_observaciones_cita = null;
+		[Widget] Gtk.Entry entry_referido_por = null;
 		[Widget] Gtk.ComboBox combobox_tipo_paciente = null;
 		[Widget] Gtk.ComboBox combobox_tipo_admision = null;
 		[Widget] Gtk.Entry entry_id_empaseg_cita = null;
@@ -140,7 +141,9 @@ namespace osiris
 			calendar2.DaySelected += new EventHandler (on_dayselected_clicked);
 			calendar3.DaySelected += new EventHandler (on_dayselected_clicked);
 			// Action the Click
+			button_guardar_cita.Clicked += new EventHandler(on_button_guardar_cita_clicked);
 			checkbutton_crea_cita.Clicked += new EventHandler(on_checkbutton_crea_cita_clicked);
+			button_busca_paciente_cita.Clicked += new EventHandler(on_button_busca_paciente_cita_clicked);
 			radiobutton_paciente_conexpe_cita.Clicked += new EventHandler(on_radiobutton_paciente_cita_clicked);
 			radiobutton_paciente_sinexpe_cita.Clicked += new EventHandler(on_radiobutton_paciente_cita_clicked);
 			button_busca_empresas_cita.Clicked += new EventHandler(on_button_busca_empresas_cita_clicked);
@@ -180,6 +183,7 @@ namespace osiris
 			button_busca_empresas_cita.Sensitive = false;			
 			entry_motivoconsulta.Sensitive = false;
 			entry_observaciones_cita.Sensitive = false;
+			entry_referido_por.Sensitive = false;
 			combobox_tipo_paciente.Sensitive = false;
 			combobox_tipo_admision.Sensitive = false;
 			
@@ -416,6 +420,7 @@ namespace osiris
 	 			if (miResultado == ResponseType.Yes){					
 	 				entry_motivoconsulta.Sensitive = true;
 					entry_observaciones_cita.Sensitive = true;
+					entry_referido_por.Sensitive = true;
 					entry_pid_paciente_cita.Sensitive = true;
 					entry_nombre_paciente_cita1.Sensitive = true;
 					button_busca_paciente_cita.Sensitive = true;
@@ -439,6 +444,7 @@ namespace osiris
 				checkbutton_crea_cita.Active = false;
 				entry_motivoconsulta.Sensitive = false;
 				entry_observaciones_cita.Sensitive = false;
+				entry_referido_por.Sensitive = false;
 				button_busca_paciente_cita.Sensitive = false;
 				radiobutton_paciente_conexpe_cita.Sensitive = false;
 				radiobutton_paciente_sinexpe_cita.Sensitive = false;
@@ -455,8 +461,7 @@ namespace osiris
 		{
 			Gtk.RadioButton radiobutton_paciente_cita = (Gtk.RadioButton) obj;
 			if(radiobutton_paciente_cita.Name.ToString() == "radiobutton_paciente_conexpe_cita"){
-				if (radiobutton_paciente_conexpe_cita.Active == true){
-					
+				if (radiobutton_paciente_conexpe_cita.Active == true){					
 					entry_pid_paciente_cita.Sensitive = true;
 					entry_nombre_paciente_cita1.Sensitive = true;
 					button_busca_paciente_cita.Sensitive = true;
@@ -638,6 +643,19 @@ namespace osiris
 			}
 		}
 		
+		void on_button_busca_paciente_cita_clicked(object sender, EventArgs args)
+		{
+			object[] parametros_objetos = {entry_pid_paciente_cita,entry_nombre_paciente_cita1};
+			string[] parametros_sql = {"SELECT * FROM osiris_his_paciente WHERE activo = 'true' ",															
+										"SELECT * FROM osiris_his_paciente WHERE activo = 'true' "+
+										"AND apellido_paterno_paciente LIKE '%",
+										"SELECT * FROM osiris_his_paciente WHERE activo = 'true' "+
+										"AND nombre1_paciente LIKE '%",
+										"SELECT * FROM osiris_his_paciente WHERE activo = 'true' "+
+										"AND pid_paciente = '"};			
+			classfind_data.buscandor(parametros_objetos,parametros_sql,"find_paciente_cita"," ORDER BY pid_paciente","%' ",1);
+		}
+		
 		void on_button_busca_empresas_cita_clicked(object sender, EventArgs args)
 		{
 			// diferenciar el tipo de busqueda empresa o aseguradora
@@ -654,14 +672,14 @@ namespace osiris
 				string[] parametros_sql = {"SELECT * FROM osiris_empresas WHERE id_tipo_paciente = '"+id_tipopaciente.ToString().Trim()+"' ",															
 										"SELECT * FROM osiris_empresas  WHERE id_tipo_paciente = '"+id_tipopaciente.ToString().Trim()+"' "+
 										"AND descripcion_empresa LIKE '%"};			
-				classfind_data.buscandor(parametros_objetos,parametros_sql,"find_empresa_cita"," ORDER BY descripcion_empresa","%' ");
+				classfind_data.buscandor(parametros_objetos,parametros_sql,"find_empresa_cita"," ORDER BY descripcion_empresa","%' ",0);
 			}else{
 				// Buscando aseguradora
 				object[] parametros_objetos = {entry_id_empaseg_cita,entry_nombre_empaseg_cita};
 				string[] parametros_sql = {"SELECT * FROM osiris_aseguradoras ",															
 										"SELECT * FROM osiris_aseguradoras "+
 										"WHERE descripcion_aseguradora LIKE '%"};			
-				classfind_data.buscandor(parametros_objetos,parametros_sql,"find_aseguradoras_cita"," ORDER BY descripcion_aseguradora","%' ");
+				classfind_data.buscandor(parametros_objetos,parametros_sql,"find_aseguradoras_cita"," ORDER BY descripcion_aseguradora","%' ",0);
 			}			
 		}
 		
@@ -671,7 +689,7 @@ namespace osiris
 			string[] parametros_sql = {"SELECT * FROM osiris_his_medicos WHERE medico_activo = 'true' ",															
 										"SELECT * FROM osiris_his_medicos WHERE medico_activo = 'true' "+
 										"AND nombre_medico LIKE '%"};			
-			classfind_data.buscandor(parametros_objetos,parametros_sql,"find_medico_cita"," ORDER BY nombre_medico","%' ");
+			classfind_data.buscandor(parametros_objetos,parametros_sql,"find_medico_cita"," ORDER BY nombre_medico","%' ",0);
 		}
 		
 		void on_button_busca_especialidad_cita_clicked(object sender, EventArgs args)
@@ -680,7 +698,20 @@ namespace osiris
 			string[] parametros_sql = {"SELECT * FROM osiris_his_tipo_especialidad ",															
 										"SELECT * FROM osiris_his_tipo_especialidad "+
 										"WHERE descripcion_especialidad LIKE '%"};			
-			classfind_data.buscandor(parametros_objetos,parametros_sql,"find_especialidad_cita"," ORDER BY descripcion_especialidad","%' ");
+			classfind_data.buscandor(parametros_objetos,parametros_sql,"find_especialidad_cita"," ORDER BY descripcion_especialidad","%' ",0);
+		}
+		
+		void on_button_guardar_cita_clicked(object sender, EventArgs args)
+		{
+			if(checkbutton_crea_cita.Active == true){ 
+				MessageDialog msgBox = new MessageDialog (MyWin,DialogFlags.Modal,
+						MessageType.Question,ButtonsType.YesNo,"¿ Esta seguro de Almacenar esta CITA ?");
+				ResponseType miResultado = (ResponseType)
+				msgBox.Run ();				msgBox.Destroy();
+	 			if (miResultado == ResponseType.Yes){
+					
+				}
+			}
 		}
 		
 		void on_cierraventanas_clicked (object sender, EventArgs args)

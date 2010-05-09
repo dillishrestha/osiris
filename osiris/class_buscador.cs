@@ -115,7 +115,7 @@ namespace osiris
 		Gtk.Entry entry_id_empaseg_cita = null;
 		Gtk.Entry entry_nombre_empaseg_cita = null;
 		
-		// Busqueda dosctor cita de paciente
+		// Busqueda doctor cita de paciente
 		Gtk.Entry entry_id_doctor_cita = null;
 		Gtk.Entry entry_nombre_doctor_cita = null;
 		
@@ -123,14 +123,18 @@ namespace osiris
 		Gtk.Entry entry_id_especialidad_cita = null;
 		Gtk.Entry entry_nombre_especialidad_cita = null;
 		
+		//Busqueda de paciente
+		Gtk.Entry entry_pid_paciente_cita = null;
+		Gtk.Entry entry_nombre_paciente_cita1 = null;
+		
 		class_conexion conexion_a_DB = new class_conexion();
 		
-		string consulta_sql1 = "";
-		string consulta_sql2 = "";
+		string[] args_sql;
 		string type_find = "";
 		string order_sql = "";
 		string comodin = "";
-		
+		int typeseek = 0;
+		string string_sql="";
 		//declaracion de columnas y celdas de treeview de busqueda
 		TreeViewColumn col_idlista;		CellRendererText cellrt0;
 		TreeViewColumn col_descripcion;	CellRendererText cellrt1;
@@ -138,12 +142,20 @@ namespace osiris
 		//Declaracion de ventana de error y mensaje
 		protected Gtk.Window MyWinError;
 		
-		public void buscandor(object[] args, string[] args_sql, string type_find_,string order_sql_,string comodin_)		
+		public void buscandor(object[] args, string[] args_sql_, string type_find_,string order_sql_,string comodin_,int typeseek_)		
 		{
 			Glade.XML gxml = new Glade.XML (null, "osiris.glade", "buscador", null);
 			gxml.Autoconnect(this);
 	        //Muestra ventana de Glade
 			buscador.Show();
+			radiobutton1.Hide();
+			radiobutton2.Hide();
+			radiobutton3.Hide();
+			combobox_busqueda.Hide();
+			labelbusqueda1.Hide();
+			labelbusqueda2.Hide();
+			labelcantidad.Hide();
+			entry_cantidad_producto.Hide();
 						
 			//Console.WriteLine("nº de argumentos: {0}", args.Length);
 			//for (int i = 0; i < args.Length; i++)
@@ -231,25 +243,54 @@ namespace osiris
 					entry_id_especialidad_cita = (object) args[0] as Gtk.Entry;
 					entry_nombre_especialidad_cita = (object) args[1] as Gtk.Entry;					
 				break;
-			}			
-			consulta_sql1 = (string) args_sql[0];
-			consulta_sql2 =	(string) args_sql[1];
+				case "find_paciente_cita":
+					entry_pid_paciente_cita = (object) args[0] as Gtk.Entry;
+					entry_nombre_paciente_cita1 = (object) args[1] as Gtk.Entry;
+					radiobutton1.Show();
+					radiobutton2.Show();
+					radiobutton3.Show();
+					labelbusqueda1.Show();
+					radiobutton1.Label = "por Ape. Paterno";
+					radiobutton2.Label = "por un Nombre";
+					radiobutton3.Label = "por Expediente";
+				break;
+			}
+			args_sql = args_sql_;
 			type_find = type_find_;
 			order_sql = order_sql_;
-			comodin = comodin_;						
+			comodin = comodin_;
+			string_sql = (string) args_sql[1];
 			button_buscar_busqueda.Clicked += new EventHandler(on_llena_lista);
 			entry_expresion.KeyPressEvent += onKeyPressEvent_enter;
 	  		button_selecciona.Clicked += new EventHandler(on_selecciona_busqueda);
-			radiobutton1.Hide();
-			radiobutton2.Hide();
-			radiobutton3.Hide();
-			combobox_busqueda.Hide();
-			labelbusqueda1.Hide();
-			labelbusqueda2.Hide();
-			labelcantidad.Hide();
-			entry_cantidad_producto.Hide();
-	       	crea_treeview_busqueda();
 			button_salir.Clicked +=  new EventHandler(on_cierraventanas_clicked);
+			radiobutton1.Clicked += new EventHandler(on_radiobutton_clicked);
+			radiobutton2.Clicked += new EventHandler(on_radiobutton_clicked);
+			radiobutton3.Clicked += new EventHandler(on_radiobutton_clicked);
+			crea_treeview_busqueda();
+		}
+		
+		void on_radiobutton_clicked(object sender, EventArgs args)
+		{
+			Gtk.RadioButton radiobutton_typeseek = (Gtk.RadioButton) sender;
+			if(radiobutton_typeseek.Name.ToString() == "radiobutton1"){
+				if(radiobutton1.Active == true){
+					string_sql = (string) args_sql[1];
+					comodin = "%' ";					
+				}
+			}
+			if(radiobutton_typeseek.Name.ToString() == "radiobutton2"){
+				if(radiobutton2.Active == true){
+					string_sql = (string) args_sql[2];
+					comodin = "%' ";
+				}
+			}
+			if(radiobutton_typeseek.Name.ToString() == "radiobutton3"){
+				if(radiobutton3.Active == true){
+					string_sql = (string) args_sql[3];
+					comodin = "' ";
+				}
+			}
 		}
 		
 		void crea_treeview_busqueda()
@@ -338,13 +379,15 @@ namespace osiris
 					conexion.Open ();
 					NpgsqlCommand comando; 
 					comando = conexion.CreateCommand ();
-					
-					// create string seek about combobox
-					
 					if ((string) entry_expresion.Text.ToUpper() == "*"){
-						comando.CommandText = consulta_sql1+order_sql;
+						comando.CommandText = (string) args_sql[0]+order_sql;
 					}else{
-						comando.CommandText = consulta_sql2+(string) entry_expresion.Text.ToUpper()+comodin+order_sql;
+						if(typeseek==0){
+							comando.CommandText = string_sql+(string) entry_expresion.Text.ToUpper()+comodin+order_sql;
+						}
+						if(typeseek==1){
+							comando.CommandText = string_sql+(string) entry_expresion.Text.ToUpper()+comodin+order_sql;
+						}
 					}
 					//Console.WriteLine(comando.CommandText);
 					NpgsqlDataReader lector = comando.ExecuteReader ();				
@@ -451,6 +494,14 @@ namespace osiris
 								treeViewEngineBuscador.AppendValues ((int) lector["id_especialidad"],	// 0
 													(string)lector["descripcion_especialidad"]);		// 1
 							break;
+							case "find_paciente_cita":
+								treeViewEngineBuscador.AppendValues ((int) lector["pid_paciente"],	// 0
+													(string)lector["nombre1_paciente"].ToString().Trim()+" "+
+							                        (string)lector["nombre2_paciente"].ToString().Trim()+" "+
+							                        (string)lector["apellido_paterno_paciente"].ToString().Trim()+" "+
+							                        (string)lector["apellido_materno_paciente"].ToString().Trim());		// 1
+							break;
+							
 						}
 					}
 				}catch (NpgsqlException ex){
@@ -565,6 +616,14 @@ namespace osiris
 					case "find_medico_cita":
 						entry_id_doctor_cita.Text = tomaid.ToString();
 						entry_nombre_doctor_cita.Text = (string) model.GetValue(iterSelected, 1);
+					break;
+					case "find_especialidad_cita":
+						entry_id_especialidad_cita.Text = tomaid.ToString();
+						entry_nombre_especialidad_cita.Text = (string) model.GetValue(iterSelected, 1);
+					break;	
+					case "find_paciente_cita":
+						entry_pid_paciente_cita.Text = tomaid.ToString();
+						entry_nombre_paciente_cita1.Text = (string) model.GetValue(iterSelected, 1);
 					break;
 				}				
 			}

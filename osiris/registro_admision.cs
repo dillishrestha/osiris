@@ -92,6 +92,7 @@ namespace osiris
 		[Widget] Gtk.Button button_responsable = null;
 		[Widget] Gtk.Button button_imprimir_protocolo = null;
 		[Widget] Gtk.Button button_cancelar_pid = null;
+		[Widget] Gtk.Button button_referido_observ = null;
 		
 		[Widget] Gtk.Button button_admision = null;
 		[Widget] Gtk.Button button_contrata_paquete = null;
@@ -358,6 +359,7 @@ namespace osiris
 	        	
 	        		// activa boton de grabacion de informacion
 				button_grabar.Clicked += new EventHandler(on_graba_informacion_clicked);
+				button_referido_observ.Clicked += new EventHandler(on_button_referido_observ_clicked);
 	        	
 				// Activa boton de responsable
 				button_responsable.Clicked += new EventHandler(on_button_responsable_clicked);
@@ -402,6 +404,11 @@ namespace osiris
 				radiobutton_femenino.Clicked += new EventHandler(on_cambioMH_clicked);
 	        		
 			//}
+		}
+		
+		void on_button_referido_observ_clicked(object sender, EventArgs args)
+		{
+			
 		}
 		
 		// Estado Civil
@@ -781,7 +788,7 @@ namespace osiris
 	    // Imprime protocolo de admision
 		void on_button_imprimir_protocolo_clicked (object sender, EventArgs args)
 		{
-			//new osiris.impr_doc_pacientes(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,entry_folio_paciente.Text,1);//,nombmedico);
+			new osiris.impr_doc_pacientes(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,entry_folio_paciente.Text,1);//,nombmedico);
 		}
 	    
 		// busco un paciente pantalla de ingreso de nuevo paciente
@@ -1632,11 +1639,12 @@ namespace osiris
 		[GLib.ConnectBefore ()]   	  // Esto es indispensable para que funcione    
 		public void onKeyPressEvent(object o, Gtk.KeyPressEventArgs args)
 		{
+			Console.WriteLine(args.Event.Key.ToString());
 			if (args.Event.Key == Gdk.Key.Return){
 				//Console.WriteLine("Presione Enter");
 			}
 			string misDigitos = ".0123456789ﾰﾱﾲﾳﾴﾵﾶﾷﾸﾹﾮ)(ｔｒｓｑ";
-			if (Array.IndexOf(misDigitos.ToCharArray(), Convert.ToChar(args.Event.Key)) == -1 && args.Event.Key != Gdk.Key.BackSpace)
+			if (Array.IndexOf(misDigitos.ToCharArray(), Convert.ToChar(args.Event.Key)) == -1 && args.Event.Key != Gdk.Key.BackSpace && args.Event.Key == Gdk.Key.Tab)
 			{
 				args.RetVal = true;
 			}
@@ -2157,7 +2165,7 @@ namespace osiris
 				button_admision.Sensitive = true;  // Activando Boton de Internamiento de Paciente
 				//Activa el boton para editar datos de paciente
 				checkbutton_modificar.Sensitive = false;
-				if(LoginEmpleado == "DOLIVARES" || LoginEmpleado == "JBUENTELLO" || LoginEmpleado == "HVARGAS") { 
+				if(LoginEmpleado == "DOLIVARES" || LoginEmpleado == "ADMIN") { 
 	           		checkbutton_modificar.Sensitive = true;
 	           		checkbutton_modificar.Clicked += new EventHandler(on_modifica_informacion_clicked);
 	           		button_cancelar_pid.Sensitive = true;
@@ -2182,6 +2190,8 @@ namespace osiris
 				// Contratacion de paquetes
 				button_contrata_paquete.Clicked += new EventHandler(on_button_contrata_paquete_clicked);
 				button_contrata_paquete.Sensitive = false;
+				
+				button_referido_observ.Clicked += new EventHandler(on_button_referido_observ_clicked);
 				
 				//Desactiva campos de PID y de FOLIO para que no se escriba en ellos
 	        	entry_pid_paciente.Sensitive = false;
@@ -2214,7 +2224,7 @@ namespace osiris
 			TreeIter iterSelected;
 			if (this.treeview_servicios.Selection.GetSelected(out model, out iterSelected)){
 				folioservicio = int.Parse((string) model.GetValue(iterSelected, 4));
-				//new osiris.reservacion_de_paquetes(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,folioservicio,true);
+				new osiris.reservacion_de_paquetes(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,folioservicio,true);
 			}	//treeViewEngine,descripcion_cirugia
 		}
 

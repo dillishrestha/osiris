@@ -400,8 +400,7 @@ namespace osiris
 	        	
 				// Sexo Paciente
 				radiobutton_masculino.Clicked += new EventHandler(on_cambioHM_clicked);
-				// Sexo Paciente
-				radiobutton_femenino.Clicked += new EventHandler(on_cambioMH_clicked);
+				radiobutton_femenino.Clicked += new EventHandler(on_cambioHM_clicked);
 	        		
 			//}
 		}
@@ -802,20 +801,23 @@ namespace osiris
 		void on_cambioHM_clicked (object sender, EventArgs args)
 		{
 			//Console.WriteLine(radiobutton_masculino.Active.ToString());
-			if (radiobutton_masculino.Active == true){
-				sexopaciente = "H";
-			}else{
-				sexopaciente = "M";}
+			Gtk.RadioButton radiobutton_paciente_cita = (Gtk.RadioButton) sender;
+			if(radiobutton_paciente_cita.Name.ToString() == "radiobutton_masculino"){
+				if (radiobutton_masculino.Active == true){
+					sexopaciente = "H";
+				}else{
+					sexopaciente = "M";}
+			}
+			if(radiobutton_paciente_cita.Name.ToString() == "radiobutton_femenino"){
+				if (radiobutton_femenino.Active == true){
+					sexopaciente = "M";
+				}else{
+					sexopaciente = "H";
+				}
+			}
+			Console.WriteLine(sexopaciente);
 		}
-		void on_cambioMH_clicked (object sender, EventArgs args)
-		{
-			//Console.WriteLine(radiobutton_masculino.Active.ToString());
-			if (radiobutton_femenino.Active == true){
-				sexopaciente = "M";
-			}else{
-				sexopaciente = "H";}
-		}
-	    		
+			    		
 		// Admite a paciente Urgencias y Hospital
 		// Internamiento de paciente
 		void on_button_admision_clicked (object sender, EventArgs args)

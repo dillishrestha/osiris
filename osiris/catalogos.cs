@@ -2229,7 +2229,7 @@ namespace osiris
 								 		"SELECT id_especialidad,descripcion_especialidad "+
 										"FROM osiris_his_tipo_especialidad "+
 										"WHERE descripcion_especialidad  LIKE '%"};			
-			classfind_data.buscandor(parametros_objetos,parametros_sql,"find_especialidad"," ORDER BY descripcion_especialidad;","%' ",0);
+			classfind_data.buscandor(parametros_objetos,parametros_sql,"find_especialidad_medica"," ORDER BY descripcion_especialidad;","%' ",0);
 		}	
 		
 /*---------------------------------------------------------------------*/

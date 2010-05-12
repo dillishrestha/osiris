@@ -60,6 +60,7 @@ namespace osiris
 		[Widget] Gtk.Button button_rpt_separacion_paquetes = null;
 		[Widget] Gtk.Button button_asignacion_habitacion = null;	
 		[Widget] Gtk.Button button_separa_folio = null;	
+		[Widget] Gtk.Button button_cita_paciente = null;
 				
 		//Ventana de cancelacion de folios
 		[Widget] Gtk.Window cancelador_folios = null;
@@ -107,6 +108,7 @@ namespace osiris
 			button_reportes_de_ocupacion.Clicked += new EventHandler(on_button_reportes_de_ocupacion_clicked);
 			button_rpt_pacientes_alta.Clicked += new EventHandler(on_button_rpt_pacientes_alta_clicked);
 			button_rpt_presupuestos.Clicked += new EventHandler(on_button_rpt_presupuestos_clicked);
+			button_cita_paciente.Clicked += new EventHandler(on_button_cita_paciente_clicked);
 			
 			button_rpt_separacion_paquetes.Clicked += new EventHandler(on_button_rpt_separacion_paquetes_clicked);
 			
@@ -136,6 +138,10 @@ namespace osiris
 		   new osiris.asignacion_de_habitacion(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,0);
 		}
 		
+		void on_button_cita_paciente_clicked(object sender, EventArgs a)
+		{
+			new osiris.calendario_citas(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,1);
+		}
 		public void on_button_reg_admision_clicked (object sender, EventArgs a)
 		{
 			//Glade.XML gxml = new Glade.XML (null, "hscmty.glade", "nuevo_paciente_si_no", null);

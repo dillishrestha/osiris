@@ -50,6 +50,9 @@ namespace osiris
 		public string ivaparaaplicar = "16.00";
 		
 		public int escala_linux_windows = 1;   // Linux = 1  Windows = 8
+		public int horario_cita_inicio = 7;		// 7 am
+		public int horario_cita_termino = 20;	// 8 pm
+		public int intervalo_minutos = 15;
 		
 		// variable para la conexion---> los valores estan en facturador.cs
 		string connectionString = "";

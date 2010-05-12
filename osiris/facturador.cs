@@ -342,7 +342,7 @@ namespace osiris
 					subtotales = 0;
 					
 					// Buscando el ultimo numero de factura
-		 			entry_numero_factura.Text = classpublic.lee_ultimonumero_registrado("osiris_erp_factura_enca","numero_factura","");
+		 			entry_numero_factura.Text = classpublic.lee_ultimonumero_registrado("osiris_his_calendario_citaQX","id_numero_citaQX"," WHERE id_tipocita = '1' ");
 					numerodefactura = entry_numero_factura.Text;
 					
 					treeViewEngineDetaFact.Clear();   // limpia treeview de factura

@@ -389,7 +389,7 @@ namespace osiris
 							comando.CommandText = string_sql+(string) entry_expresion.Text.ToUpper()+comodin+order_sql;
 						}
 					}
-					//Console.WriteLine(comando.CommandText);
+					Console.WriteLine(comando.CommandText);
 					NpgsqlDataReader lector = comando.ExecuteReader ();				
 					while (lector.Read()){
 						switch (type_find){	

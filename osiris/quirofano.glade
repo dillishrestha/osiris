@@ -10,13 +10,16 @@
     <child>
       <widget class="GtkVBox" id="vbox10">
         <property name="visible">True</property>
+        <property name="orientation">vertical</property>
         <child>
           <widget class="GtkVPaned" id="vpaned2">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
+            <property name="orientation">vertical</property>
             <child>
               <widget class="GtkVBox" id="vbox45">
                 <property name="visible">True</property>
+                <property name="orientation">vertical</property>
                 <child>
                   <widget class="GtkLabel" id="label4">
                     <property name="visible">True</property>
@@ -39,6 +42,7 @@ Busqueda de Paciente</property>
                         <child>
                           <widget class="GtkVBox" id="vbox11">
                             <property name="visible">True</property>
+                            <property name="orientation">vertical</property>
                             <child>
                               <widget class="GtkHBox" id="hbox13">
                                 <property name="visible">True</property>
@@ -126,6 +130,7 @@ Busqueda de Paciente</property>
                         <child>
                           <widget class="GtkVBox" id="vbox12">
                             <property name="visible">True</property>
+                            <property name="orientation">vertical</property>
                             <child>
                               <widget class="GtkButton" id="button_buscar_busqueda">
                                 <property name="label">gtk-find</property>
@@ -218,6 +223,16 @@ Busqueda de Paciente</property>
             <property name="position">0</property>
           </packing>
         </child>
+        <child>
+          <widget class="GtkStatusbar" id="statusbar1">
+            <property name="visible">True</property>
+            <property name="spacing">2</property>
+          </widget>
+          <packing>
+            <property name="expand">False</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
       </widget>
     </child>
   </widget>
@@ -228,12 +243,14 @@ Busqueda de Paciente</property>
     <child>
       <widget class="GtkVBox" id="vbox5">
         <property name="visible">True</property>
+        <property name="orientation">vertical</property>
         <child>
           <widget class="GtkHBox" id="hbox15">
             <property name="visible">True</property>
             <child>
               <widget class="GtkVBox" id="vbox6">
                 <property name="visible">True</property>
+                <property name="orientation">vertical</property>
                 <child>
                   <widget class="GtkFrame" id="frame9">
                     <property name="visible">True</property>
@@ -250,9 +267,11 @@ Busqueda de Paciente</property>
                             <child>
                               <widget class="GtkVBox" id="vbox33">
                                 <property name="visible">True</property>
+                                <property name="orientation">vertical</property>
                                 <child>
                                   <widget class="GtkVBox" id="vbox34">
                                     <property name="visible">True</property>
+                                    <property name="orientation">vertical</property>
                                     <child>
                                       <widget class="GtkHBox" id="hbox42">
                                         <property name="visible">True</property>
@@ -686,6 +705,7 @@ Busqueda de Paciente</property>
                                 <child>
                                   <widget class="GtkVBox" id="vbox7">
                                     <property name="visible">True</property>
+                                    <property name="orientation">vertical</property>
                                     <child>
                                       <widget class="GtkProgressBar" id="progressbar_status_llenado">
                                         <property name="width_request">1</property>
@@ -783,6 +803,7 @@ Busqueda de Paciente</property>
                             <child>
                               <widget class="GtkVBox" id="vbox37">
                                 <property name="visible">True</property>
+                                <property name="orientation">vertical</property>
                                 <child>
                                   <widget class="GtkScrolledWindow" id="scrolledwindow5">
                                     <property name="width_request">1</property>
@@ -926,6 +947,7 @@ Busqueda de Paciente</property>
             <child>
               <widget class="GtkVBox" id="vbox8">
                 <property name="visible">True</property>
+                <property name="orientation">vertical</property>
                 <child>
                   <widget class="GtkButton" id="button_graba_pago">
                     <property name="label">gtk-save</property>
@@ -1470,6 +1492,7 @@ cargados por usted</property>
     <child>
       <widget class="GtkVBox" id="vbox15">
         <property name="visible">True</property>
+        <property name="orientation">vertical</property>
         <child>
           <widget class="GtkLabel" id="label33">
             <property name="visible">True</property>
@@ -1487,6 +1510,7 @@ Busqueda de Productos</property>
           <widget class="GtkVPaned" id="vpaned1">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
+            <property name="orientation">vertical</property>
             <child>
               <widget class="GtkHBox" id="hbox19">
                 <property name="visible">True</property>
@@ -1499,6 +1523,7 @@ Busqueda de Productos</property>
                         <child>
                           <widget class="GtkVBox" id="vbox39">
                             <property name="visible">True</property>
+                            <property name="orientation">vertical</property>
                             <child>
                               <widget class="GtkLabel" id="label34">
                                 <property name="visible">True</property>
@@ -1554,6 +1579,7 @@ Busqueda de Productos</property>
                         <child>
                           <widget class="GtkVBox" id="vbox38">
                             <property name="visible">True</property>
+                            <property name="orientation">vertical</property>
                             <child>
                               <widget class="GtkEntry" id="entry_expresion">
                                 <property name="width_request">624</property>
@@ -1650,6 +1676,7 @@ Busqueda de Productos</property>
                 <child>
                   <widget class="GtkVBox" id="vbox17">
                     <property name="visible">True</property>
+                    <property name="orientation">vertical</property>
                     <child>
                       <widget class="GtkButton" id="button_buscar_busqueda">
                         <property name="label">gtk-find</property>
@@ -3684,12 +3711,21 @@ Medico&lt;/b&gt;</property>
                                           </packing>
                                         </child>
                                         <child>
-                                          <widget class="GtkComboBox" id="combobox12">
-                                            <property name="width_request">20</property>
+                                          <widget class="GtkComboBox" id="combobox_hora_cita">
+                                            <property name="width_request">15</property>
                                             <property name="visible">True</property>
                                           </widget>
                                           <packing>
                                             <property name="position">1</property>
+                                          </packing>
+                                        </child>
+                                        <child>
+                                          <widget class="GtkComboBox" id="combobox_minutos_cita">
+                                            <property name="width_request">15</property>
+                                            <property name="visible">True</property>
+                                          </widget>
+                                          <packing>
+                                            <property name="position">2</property>
                                           </packing>
                                         </child>
                                       </widget>
@@ -3880,6 +3916,7 @@ Cita&lt;/b&gt;</property>
                                             <property name="can_focus">True</property>
                                             <property name="editable">False</property>
                                             <property name="invisible_char">&#x25CF;</property>
+                                            <property name="text" translatable="yes">0</property>
                                           </widget>
                                           <packing>
                                             <property name="position">1</property>
@@ -4056,6 +4093,7 @@ Cita&lt;/b&gt;</property>
                                             <property name="width_request">33</property>
                                             <property name="visible">True</property>
                                             <property name="can_focus">True</property>
+                                            <property name="editable">False</property>
                                             <property name="max_length">3</property>
                                             <property name="invisible_char">&#x25CF;</property>
                                           </widget>

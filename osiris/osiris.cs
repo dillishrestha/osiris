@@ -258,11 +258,10 @@ namespace osiris
 			Glade.XML gxml = new Glade.XML (null, "osiris.glade", "menuprincipal", null);
 			gxml.Autoconnect (this);				 			
 			//hscmtylogo.Pixbuf = new Gdk.Pixbuf(System.IO.Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory,"OSIRISLogo.jpg"));   //en windows
-			//hscmtylogo.Pixbuf = new Gdk.Pixbuf("/opt/osiris/bin/OSIRISLogo.jpg");   // en Linux
+			hscmtylogo.Pixbuf = new Gdk.Pixbuf("/opt/osiris/bin/OSIRISLogo.jpg");   // en Linux
 			menuprincipal.Show();
 					 					 											
 			verificapermisos(accesoHIS,accesoERP,accesoGENERAL,autorizaHIS,autorizaERP,autorizaGENERAL);
-												 
 			// llamando a los eventos
 			button_registro_admision.Clicked += new EventHandler(on_button_registro_admision_clicked );
 			button_compras.Clicked += new EventHandler(on_button_compras_clicked);

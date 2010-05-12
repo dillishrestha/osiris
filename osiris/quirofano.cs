@@ -90,7 +90,7 @@ namespace osiris
 		
 		void on_button_programacion_cirugias_clicked(object sender, EventArgs args)
 		{
-			new osiris.calendario_citas(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
+			new osiris.calendario_citas(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,2);
 		}
 		
 		void on_button_requisicion_materiales_clicked(object sender, EventArgs args)

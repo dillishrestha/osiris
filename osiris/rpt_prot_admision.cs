@@ -453,7 +453,8 @@ namespace osiris
 			image5.Pixbuf = new Gdk.Pixbuf("/opt/osiris/bin/OSIRISLogo.jpg");   // en Linux
 			//image5.Pixbuf.ScaleSimple(128, 128, Gdk.InterpType.Bilinear);
 			//Gdk.CairoHelper.SetSourcePixbuf(cr,image5.Pixbuf,1,-30);
-			Gdk.CairoHelper.SetSourcePixbuf(cr,image5.Pixbuf.ScaleSimple(145, 50, Gdk.InterpType.Bilinear),1,1);
+			//Gdk.CairoHelper.SetSourcePixbuf(cr,image5.Pixbuf.ScaleSimple(145, 50, Gdk.InterpType.Bilinear),1,1);
+			Gdk.CairoHelper.SetSourcePixbuf(cr,image5.Pixbuf.ScaleSimple(180, 64, Gdk.InterpType.Hyper),1,1);
 			cr.Fill();
 			//cr.Restore();	
 			cr.Paint();

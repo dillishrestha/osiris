@@ -737,6 +737,12 @@ namespace osiris
 										grabainternamiento =  false;
 										graba_admision("OFT-",940);
 										entry_folio_paciente.Text = folioservicio.ToString();}
+									if (idtipointernamiento == 950){// CONSULTA MEDICA
+										this.button_admision.Sensitive = false;
+										this.button_grabar.Sensitive = false;
+										grabainternamiento =  false;
+										graba_admision("CON-",950);
+										entry_folio_paciente.Text = folioservicio.ToString();}
 				        		}
 							}//if de checkeo de internamiento
 							llena_servicios_realizados();

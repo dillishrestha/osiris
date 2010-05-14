@@ -181,7 +181,7 @@ namespace osiris
 			return Regex.Replace(sResultado,"  *"," ").Trim();
 		}		
 		
-		public string ConvertirCadena (double dNumero) {
+		private string ConvertirCadena_ (double dNumero) {
 			double dNumAux = 0;
 			char x;
 			string sAux;			

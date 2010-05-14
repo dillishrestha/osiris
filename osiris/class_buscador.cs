@@ -119,13 +119,19 @@ namespace osiris
 		Gtk.Entry entry_id_doctor_cita = null;
 		Gtk.Entry entry_nombre_doctor_cita = null;
 		
+		// Busqueda doctor cita de paciente
+		Gtk.Entry entry_id_doctor_consulta = null;
+		Gtk.Entry entry_nombre_doctor_consulta = null;
+		
 		// Busqueda Especilidad en cita
 		Gtk.Entry entry_id_especialidad_cita = null;
 		Gtk.Entry entry_nombre_especialidad_cita = null;
 		
-		//Busqueda de paciente
+		//Busqueda de paciente_cita
 		Gtk.Entry entry_pid_paciente_cita = null;
 		Gtk.Entry entry_nombre_paciente_cita1 = null;
+		Gtk.Entry entry_fecha_nac_cita = null;
+		Gtk.Entry entry_edad_paciente_cita = null;
 		
 		class_conexion conexion_a_DB = new class_conexion();
 		
@@ -146,6 +152,7 @@ namespace osiris
 		{
 			Glade.XML gxml = new Glade.XML (null, "osiris.glade", "buscador", null);
 			gxml.Autoconnect(this);
+			buscador.Title = "Buscador "+type_find_;
 	        //Muestra ventana de Glade
 			buscador.Show();
 			radiobutton1.Hide();
@@ -239,6 +246,10 @@ namespace osiris
 					entry_id_doctor_cita = (object) args[0] as Gtk.Entry;
 					entry_nombre_doctor_cita = (object) args[1] as Gtk.Entry;
 				break;
+				case "find_medico_consulta":
+					entry_id_doctor_consulta = (object) args[0] as Gtk.Entry;
+					entry_nombre_doctor_consulta = (object) args[1] as Gtk.Entry;
+				break;
 				case "find_especialidad_cita":
 					entry_id_especialidad_cita = (object) args[0] as Gtk.Entry;
 					entry_nombre_especialidad_cita = (object) args[1] as Gtk.Entry;					
@@ -246,6 +257,8 @@ namespace osiris
 				case "find_paciente_cita":
 					entry_pid_paciente_cita = (object) args[0] as Gtk.Entry;
 					entry_nombre_paciente_cita1 = (object) args[1] as Gtk.Entry;
+					entry_fecha_nac_cita = (object) args[2] as Gtk.Entry;
+					//entry_edad_paciente_cita = (object) args[3] as Gtk.Entry;
 					radiobutton1.Show();
 					radiobutton2.Show();
 					radiobutton3.Show();
@@ -490,18 +503,24 @@ namespace osiris
 								treeViewEngineBuscador.AppendValues ((int) lector["id_medico"],	// 0
 													(string)lector["nombre_medico"]);		// 1
 							break;
+							case "find_medico_consulta":
+								treeViewEngineBuscador.AppendValues ((int) lector["id_medico"],	// 0
+													(string)lector["nombre_medico"]);		// 1
+							break;
 							case "find_especialidad_cita":
 								treeViewEngineBuscador.AppendValues ((int) lector["id_especialidad"],	// 0
 													(string)lector["descripcion_especialidad"]);		// 1
 							break;
 							case "find_paciente_cita":
 								treeViewEngineBuscador.AppendValues ((int) lector["pid_paciente"],	// 0
-													(string)lector["nombre1_paciente"].ToString().Trim()+" "+
-							                        (string)lector["nombre2_paciente"].ToString().Trim()+" "+
-							                        (string)lector["apellido_paterno_paciente"].ToString().Trim()+" "+
-							                        (string)lector["apellido_materno_paciente"].ToString().Trim());		// 1
-							break;
-							
+													(string) lector["nombre1_paciente"].ToString().Trim()+" "+
+							                        (string) lector["nombre2_paciente"].ToString().Trim()+" "+
+							                        (string) lector["apellido_paterno_paciente"].ToString().Trim()+" "+
+							                        (string) lector["apellido_materno_paciente"].ToString().Trim(),
+							                        (bool) lector["activo"],
+							              			(string) lector["fech_nacimiento"],
+							              			(string) lector["edad"]);		// 1
+							break;							
 						}
 					}
 				}catch (NpgsqlException ex){
@@ -617,6 +636,10 @@ namespace osiris
 						entry_id_doctor_cita.Text = tomaid.ToString();
 						entry_nombre_doctor_cita.Text = (string) model.GetValue(iterSelected, 1);
 					break;
+					case "find_medico_consulta":
+						entry_id_doctor_consulta.Text = tomaid.ToString();
+						entry_nombre_doctor_consulta.Text = (string) model.GetValue(iterSelected, 1);
+					break;
 					case "find_especialidad_cita":
 						entry_id_especialidad_cita.Text = tomaid.ToString();
 						entry_nombre_especialidad_cita.Text = (string) model.GetValue(iterSelected, 1);
@@ -624,6 +647,8 @@ namespace osiris
 					case "find_paciente_cita":
 						entry_pid_paciente_cita.Text = tomaid.ToString();
 						entry_nombre_paciente_cita1.Text = (string) model.GetValue(iterSelected, 1);
+						entry_fecha_nac_cita.Text = (string) model.GetValue(iterSelected, 3);
+						//entry_edad_paciente_cita.Text = (string) model.GetValue(iterSelected, 4);
 					break;
 				}				
 			}

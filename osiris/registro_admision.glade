@@ -274,6 +274,15 @@ Busqueda de Paciente</property>
           <widget class="GtkHBox" id="hbox30">
             <property name="visible">True</property>
             <child>
+              <widget class="GtkFixed" id="fixed1">
+                <property name="width_request">100</property>
+                <property name="visible">True</property>
+              </widget>
+              <packing>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
               <widget class="GtkVBox" id="vbox15">
                 <property name="visible">True</property>
                 <property name="orientation">vertical</property>
@@ -1003,7 +1012,16 @@ Medicas a Pacientes</property>
                 </child>
               </widget>
               <packing>
-                <property name="position">0</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="GtkFixed" id="fixed2">
+                <property name="width_request">100</property>
+                <property name="visible">True</property>
+              </widget>
+              <packing>
+                <property name="position">2</property>
               </packing>
             </child>
           </widget>

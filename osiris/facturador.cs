@@ -1356,13 +1356,11 @@ namespace osiris
 		
 		void on_button_imprime_factura_clicked (object sender, EventArgs args)
 		{
-			/*
 			new osiris.imprime_formato_factura(entry_numero_factura.Text.Trim(),this.treeview_detalle_de_factura,this.entry_nombre_cliente.Text,this.entry_rfc_cliente.Text,this.entry_curp_cliente.Text,
 									this.entry_cp_cliente.Text,this.entry_direccion_cliente.Text,this.entry_colonia_cliente.Text,this.entry_municipio_cliente.Text,this.entry_estado_cliente.Text,
 									this.entry_telefono_cliente.Text,this.entry_fax_cliente.Text,this.entry_subtotal_15.Text,this.entry_subtotal_0.Text,this.entry_total_iva.Text,this.entry_subtotal.Text,this.entry_deducible_factura.Text,
 									this.entry_coaseguro_porcentage.Text,this.entry_coaseguro_factura.Text,this.entry_total_factura.Text,this.cantidad_en_letras,
-									this.treeViewEngineDetaFact,this.entry_fecha_factura.Text,LoginEmpleado,error_no_existe);
-			*/
+									this.treeViewEngineDetaFact,this.entry_fecha_factura.Text,LoginEmpleado,error_no_existe);			
 		}
 		
 		void crea_treeview_busqueda(string tipo_busqueda)

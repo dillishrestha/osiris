@@ -36,46 +36,45 @@ using Gtk;
 using Glade;
 using Gnome;
 using System.Collections;
-using GtkSharp;
 
 namespace osiris
 {
 	public class imprime_formato_factura
 	{
-		public string numerofactura = "";
-		public Gtk.TreeView treeview_detalle_de_factura;
-		public Gtk.TreeStore treeViewEngineDetaFact;
-		public string nombrecliente = "";
-		public string rfccliente = "";
-		public string curpcliente = "";
-		public string cpcliente = "";
-		public string direccioncliente = "";
-		public string coloniacliente = "";
-		public string municipiocliente = "";
-		public string estadocliente = "";
-		public string telefonocliente = "";
-		public string faxcliente = "";
-		public string subtotal_15 = "";
-		public string subtotal_0 = "";
-		public string totaliva = "";
-		public string subtotal = "";
-		public string deducible = "";
-		public string coaseguroporcentage = "";
-		public string totalcoaseguro = "";
-		public string totalfactura = "";
-		public string catidadenletras = "";
-		public string fechafactura = "";
-		public string LoginEmpleado = "";
+		string numerofactura = "";
+		Gtk.TreeView treeview_detalle_de_factura;
+		Gtk.TreeStore treeViewEngineDetaFact;
+		string nombrecliente = "";
+		string rfccliente = "";
+		string curpcliente = "";
+		string cpcliente = "";
+		string direccioncliente = "";
+		string coloniacliente = "";
+		string municipiocliente = "";
+		string estadocliente = "";
+		string telefonocliente = "";
+		string faxcliente = "";
+		string subtotal_15 = "";
+		string subtotal_0 = "";
+		string totaliva = "";
+		string subtotal = "";
+		string deducible = "";
+		string coaseguroporcentage = "";
+		string totalcoaseguro = "";
+		string totalfactura = "";
+		string catidadenletras = "";
+		string fechafactura = "";
+		string LoginEmpleado = "";
 		
 		// Declarando variable de fuente para la impresion
-		public Gnome.Font fuente6 = Gnome.Font.FindClosest("Luxi Sans", 6);
-		public Gnome.Font fuente7 = Gnome.Font.FindClosest("Luxi Sans", 7);
-		public Gnome.Font fuente8 = Gnome.Font.FindClosest("Luxi Sans", 8);//Bitstream Vera Sans
-		public Gnome.Font fuente9 = Gnome.Font.FindClosest("Luxi Sans", 9);
-		public Gnome.Font fuente10 = Gnome.Font.FindClosest("Luxi Sans", 10);
-		public Gnome.Font fuente11 = Gnome.Font.FindClosest("Luxi Sans", 11);
-		public Gnome.Font fuente12 = Gnome.Font.FindClosest("Luxi Sans", 12);
-		public Gnome.Font fuente36 = Gnome.Font.FindClosest("Luxi Sans", 36);
+		//Gnome.Font fuente6 = Gnome.Font.FindClosest("Luxi Sans", 6);
+		Gnome.Font fuente7 = Gnome.Font.FindClosest("Luxi Sans", 7);
+		Gnome.Font fuente8 = Gnome.Font.FindClosest("Luxi Sans", 8);//Bitstream Vera Sans
+		//Gnome.Font fuente9 = Gnome.Font.FindClosest("Luxi Sans", 9);
+		//Gnome.Font fuente10 = Gnome.Font.FindClosest("Luxi Sans", 10);
+		//Gnome.Font fuente11 = Gnome.Font.FindClosest("Luxi Sans", 11);
+		//Gnome.Font fuente12 = Gnome.Font.FindClosest("Luxi Sans", 12);
+		//Gnome.Font fuente36 = Gnome.Font.FindClosest("Luxi Sans", 36);
 		
 		protected Gtk.Window MyWin;
 		

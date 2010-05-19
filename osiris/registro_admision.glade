@@ -7213,12 +7213,14 @@ Sin Precio</property>
     <child>
       <widget class="GtkVBox" id="vbox57">
         <property name="visible">True</property>
+        <property name="orientation">vertical</property>
         <child>
           <widget class="GtkHBox" id="hbox100">
             <property name="visible">True</property>
             <child>
               <widget class="GtkVBox" id="vbox59">
                 <property name="visible">True</property>
+                <property name="orientation">vertical</property>
                 <child>
                   <widget class="GtkFrame" id="frame18">
                     <property name="visible">True</property>
@@ -7231,6 +7233,7 @@ Sin Precio</property>
                         <child>
                           <widget class="GtkVBox" id="vbox60">
                             <property name="visible">True</property>
+                            <property name="orientation">vertical</property>
                             <child>
                               <widget class="GtkHBox" id="hbox101">
                                 <property name="visible">True</property>
@@ -7534,6 +7537,7 @@ Sin Precio</property>
                                 <child>
                                   <widget class="GtkVBox" id="vbox61">
                                     <property name="visible">True</property>
+                                    <property name="orientation">vertical</property>
                                     <child>
                                       <widget class="GtkHBox" id="hbox110">
                                         <property name="visible">True</property>
@@ -7597,6 +7601,8 @@ Sin Precio</property>
                                           <widget class="GtkEntry" id="entry_titulopac">
                                             <property name="visible">True</property>
                                             <property name="can_focus">True</property>
+                                            <property name="tooltip" translatable="yes">Dr. Ing. Sr. Srta. Sra. CP. Lic.</property>
+                                            <property name="max_length">6</property>
                                             <property name="invisible_char">&#x25CF;</property>
                                           </widget>
                                           <packing>
@@ -7835,9 +7841,11 @@ Sin Precio</property>
                         <child>
                           <widget class="GtkVBox" id="vbox62">
                             <property name="visible">True</property>
+                            <property name="orientation">vertical</property>
                             <child>
                               <widget class="GtkVBox" id="vbox63">
                                 <property name="visible">True</property>
+                                <property name="orientation">vertical</property>
                                 <child>
                                   <widget class="GtkHBox" id="hbox115">
                                     <property name="visible">True</property>
@@ -8037,6 +8045,7 @@ Sin Precio</property>
                             <child>
                               <widget class="GtkVBox" id="vbox65">
                                 <property name="visible">True</property>
+                                <property name="orientation">vertical</property>
                                 <child>
                                   <widget class="GtkHBox" id="hbox118">
                                     <property name="visible">True</property>
@@ -8114,6 +8123,7 @@ Sin Precio</property>
                                 <child>
                                   <widget class="GtkVBox" id="vbox66">
                                     <property name="visible">True</property>
+                                    <property name="orientation">vertical</property>
                                     <child>
                                       <widget class="GtkHBox" id="hbox120">
                                         <property name="visible">True</property>
@@ -8316,6 +8326,7 @@ Sin Precio</property>
             <child>
               <widget class="GtkVBox" id="vbox58">
                 <property name="visible">True</property>
+                <property name="orientation">vertical</property>
                 <child>
                   <widget class="GtkButton" id="button_guardar">
                     <property name="visible">True</property>

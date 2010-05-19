@@ -55,6 +55,10 @@ namespace osiris
 		[Widget] Gtk.Button button_busca_medicos_consulta = null;
 		[Widget] Gtk.Entry entry_id_doctor_consulta = null;
 		[Widget] Gtk.Entry entry_nombre_doctor_consulta = null;
+		[Widget] Gtk.CheckButton checkbutton_filtro_doctor = null;
+		[Widget] Gtk.Button button_aplica_filtrodoctor = null;
+		[Widget] Gtk.Button button_imprimir_calendario = null;
+		[Widget] Gtk.Statusbar statusbar_citasqx = null;
 						
 		// Notebook2 Citas		
 		[Widget] Gtk.Calendar calendar2 = null;
@@ -115,14 +119,29 @@ namespace osiris
 		string estadocivil_cita = "";
 		string idempresa = "1";
 		string idaseguradora = "1";
-		string sql_calendario_citaqx = "SELECT to_char(fecha_programacion,'yyyy-MM-dd') AS fechaprogramacion,hora_programacion,id_numero_citaqx,"+
+		string sql_calendario_citaqx = "SELECT to_char(fecha_programacion,'yyyy-MM-dd') AS fechaprogramacion,hora_programacion,id_numero_citaqx,osiris_his_calendario_citaqx.id_secuencia AS idsecuencia,"+
 					"osiris_his_calendario_citaqx.pid_paciente AS pidpaciente,osiris_his_calendario_citaqx.nombre_paciente,"+
 					"osiris_his_paciente.nombre1_paciente,osiris_his_paciente.nombre2_paciente,osiris_his_paciente.apellido_paterno_paciente,osiris_his_paciente.apellido_materno_paciente,"+
+					"osiris_his_paciente.celular1_paciente,osiris_his_calendario_citaqx.celular1_paciente AS celular1paciente_cita,"+
+					"osiris_his_paciente.email_paciente,osiris_his_calendario_citaqx.email_paciente AS emailpaciente_cita,"+
+					"osiris_his_calendario_citaqx.id_tipo_paciente,descripcion_tipo_paciente,"+
+					"osiris_his_calendario_citaqx.id_tipo_admisiones,descripcion_admisiones,"+
+					"osiris_his_medicos.id_medico,osiris_his_medicos.nombre_medico AS nombremedico,"+
+					"osiris_his_tipo_especialidad.id_especialidad,osiris_his_tipo_especialidad.descripcion_especialidad AS descripcionespecialidad,"+
+					"motivo_consulta,osiris_his_calendario_citaqx.observaciones AS observaciones_citaqx,referido_por,osiris_his_calendario_citaqx.cancelado,"+
+					"id_quiencreo_cita,osiris_his_calendario_citaqx.fechahora_creacion AS fechahoracreacion,"+
 					"to_char(to_number(to_char(age('"+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"',osiris_his_calendario_citaqx.fecha_nacimiento_paciente),'yyyy') ,'9999'),'9999') AS edad,"+
-					"to_char(to_number(to_char(age('"+DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss")+"',osiris_his_calendario_citaqx.fecha_nacimiento_paciente),'MM'),'99'),'99') AS mesesedad"+
-					" FROM osiris_his_calendario_citaqx,osiris_his_paciente WHERE osiris_his_calendario_citaqx.pid_paciente = osiris_his_paciente.pid_paciente ";
+					"to_char(to_number(to_char(age('"+DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss")+"',osiris_his_calendario_citaqx.fecha_nacimiento_paciente),'MM'),'99'),'99') AS mesesedad "+
+					"FROM osiris_his_calendario_citaqx,osiris_his_paciente,osiris_his_tipo_pacientes,osiris_his_tipo_admisiones,osiris_his_medicos,osiris_his_tipo_especialidad "+
+					"WHERE osiris_his_calendario_citaqx.pid_paciente = osiris_his_paciente.pid_paciente "+
+					"AND osiris_his_tipo_pacientes.id_tipo_paciente = osiris_his_calendario_citaqx.id_tipo_paciente "+
+					"AND osiris_his_tipo_admisiones.id_tipo_admisiones = osiris_his_calendario_citaqx.id_tipo_admisiones "+
+					"AND osiris_his_medicos.id_medico = osiris_his_calendario_citaqx.id_medico "+
+					"AND osiris_his_tipo_especialidad.id_especialidad = osiris_his_calendario_citaqx.id_especialidad "+
+					"AND osiris_his_calendario_citaqx.cancelado = 'false' ";
 		string sql_fecha1 = "";
 		string sql_fecha2 = "";
+		string sql_doctor = "";
 		
 		TreeStore treeViewEngineListaCitas;
 		
@@ -159,14 +178,19 @@ namespace osiris
 			//calendar1.Month = int.Parse(DateTime.Now.ToString("MM"));
 			calendar2.DisplayOptions = CalendarDisplayOptions.ShowHeading|CalendarDisplayOptions.ShowDayNames;
 			calendar2.MarkDay(uint.Parse(DateTime.Now.ToString("dd")));
-						
+			
+			calendar3.DisplayOptions = CalendarDisplayOptions.ShowHeading|CalendarDisplayOptions.ShowDayNames;
+			calendar3.MarkDay(uint.Parse(DateTime.Now.ToString("dd")));
+			
 			calendar1.DaySelected += new EventHandler (on_dayselected_clicked);
 			calendar2.DaySelected += new EventHandler (on_dayselected_clicked);
 			calendar3.DaySelected += new EventHandler (on_dayselected_clicked);
 			
 			// Action de the Click Consulta
 			button_busca_medicos_consulta.Clicked += new EventHandler(on_button_busca_medicos_clicked);
-			
+			checkbutton_filtro_doctor.Clicked += new EventHandler(on_checkbutton_filtro_doctor_clicked);
+			button_aplica_filtrodoctor.Clicked += new EventHandler(on_button_aplica_filtrodoctor_clicked);
+			button_imprimir_calendario.Clicked += new EventHandler(on_button_imprimir_calendario_clicked);
 			
 			// Action the Click for Citas
 			button_guardar_cita.Clicked += new EventHandler(on_button_guardar_cita_clicked);
@@ -217,6 +241,10 @@ namespace osiris
 			entry_referido_por_cita.Sensitive = false;
 			combobox_tipo_paciente.Sensitive = false;
 			combobox_tipo_admision.Sensitive = false;
+			
+			statusbar_citasqx.Pop(0);
+			statusbar_citasqx.Push(1, "login: "+LoginEmpleado+"  |Usuario: "+NomEmpleado+" "+AppEmpleado+" "+ApmEmpleado);
+			statusbar_citasqx.HasResizeGrip = false; 
 			//notebook1.
 			
 			//object[] param_name_object = {entry_nombre_paciente,entry_fecha_nac_cita,entry_edad_paciente_cita,combobox_estado_civil};
@@ -342,7 +370,7 @@ namespace osiris
 			
 			TreeViewColumn col_agenda12 = new TreeViewColumn();
 			CellRendererText cellrt12 = new CellRendererText();
-			col_agenda12.Title = "Especialidad";
+			col_agenda12.Title = "Sub-Especialidad";
 			col_agenda12.PackStart(cellrt12, true);
 			col_agenda12.AddAttribute (cellrt12, "text", 12);
 			col_agenda12.Resizable = true;
@@ -416,13 +444,13 @@ namespace osiris
 			if(activatedCalendar.Name.ToString() == "calendar1"){
 				if((bool) checkbutton_fecha_final.Active == false){
 					entry_fecha_seleccionada.Text = activatedCalendar.GetDate().ToString ("yyyy-MM-dd");
-					sql_fecha1 = " AND to_char(fecha_programacion,'yyyy-MM-dd') = '"+entry_fecha_seleccionada.Text.ToString().Trim();
+					sql_fecha1 = " AND to_char(fecha_programacion,'yyyy-MM-dd') = '"+entry_fecha_seleccionada.Text.ToString().Trim()+"' ";
 					sql_fecha2 = "";
 				}else{
 					entry_fecha_final.Text = activatedCalendar.GetDate().ToString ("yyyy-MM-dd");
 					sql_fecha1 = "";
 					sql_fecha2 = " AND to_char(fecha_programacion,'yyyy-MM-dd') >= '"+entry_fecha_seleccionada.Text.ToString().Trim()+"' "+
-								" AND to_char(fecha_programacion,'yyyy-MM-dd') <= '"+entry_fecha_final.Text.ToString().Trim();
+								" AND to_char(fecha_programacion,'yyyy-MM-dd') <= '"+entry_fecha_final.Text.ToString().Trim()+"' ";
 				}
 				llenado_lista_citas("");				
 			}
@@ -446,7 +474,21 @@ namespace osiris
 						MessageType.Question,ButtonsType.YesNo,"¿ Esta seguro de querer crear una nueva CITA ?");
 				ResponseType miResultado = (ResponseType)
 				msgBox.Run ();				msgBox.Destroy();
-	 			if (miResultado == ResponseType.Yes){					
+	 			if (miResultado == ResponseType.Yes){
+					entry_id_doctor_cita.Text = "1";
+					entry_nombre_doctor_cita.Text = "";
+					entry_id_especialidad_cita.Text = "1";
+					entry_nombre_especialidad_cita.Text = "";
+					entry_id_empaseg_cita.Text = "1";
+					entry_nombre_empaseg_cita.Text = "";
+					entry_motivoconsulta.Text = "";
+					entry_observaciones_cita.Text = "";
+					entry_referido_por_cita.Text = "";
+					entry_fecha_nac_cita.Text = "";
+					entry_pid_paciente_cita.Text = "0";
+					entry_nombre_paciente_cita1.Text = "";
+					entry_nombre_paciente_cita2.Text = "";
+					entry_numero_citapaciente.Text ="0";
 	 				entry_motivoconsulta.Sensitive = true;
 					entry_observaciones_cita.Sensitive = true;
 					entry_referido_por_cita.Sensitive = true;
@@ -638,7 +680,7 @@ namespace osiris
 			if (combobox_tipo_paciente.GetActiveIter (out iter)){
 				tipopaciente = (string) combobox_tipo_paciente.Model.GetValue(iter,0);
 				id_tipopaciente = (int) combobox_tipo_paciente.Model.GetValue(iter,1);
-				entry_id_empaseg_cita.Text = "";
+				entry_id_empaseg_cita.Text = "1";
 				entry_nombre_empaseg_cita.Text = "";
 			}	
 		}
@@ -794,15 +836,17 @@ namespace osiris
 			// la clase recibe tambien el orden del query
 			// es importante definir que tipo de busqueda es para que los objetos caigan ahi mismo
 			if (id_tipopaciente != 400){
+				
+				Console.WriteLine("Empresas");
 				object[] parametros_objetos = {entry_id_empaseg_cita,entry_nombre_empaseg_cita};
 				string[] parametros_sql = {"SELECT * FROM osiris_empresas WHERE id_tipo_paciente = '"+id_tipopaciente.ToString().Trim()+"' ",															
 										"SELECT * FROM osiris_empresas  WHERE id_tipo_paciente = '"+id_tipopaciente.ToString().Trim()+"' "+
 										"AND descripcion_empresa LIKE '%"};			
 				classfind_data.buscandor(parametros_objetos,parametros_sql,"find_empresa_cita"," ORDER BY descripcion_empresa","%' ",0);
 				idempresa = entry_id_empaseg_cita.Text.ToString().Trim();
-				idaseguradora = "1";
-				
+				idaseguradora = "1";		
 			}else{
+				Console.WriteLine("Aseguradoras");
 				// Buscando aseguradora
 				object[] parametros_objetos = {entry_id_empaseg_cita,entry_nombre_empaseg_cita};
 				string[] parametros_sql = {"SELECT * FROM osiris_aseguradoras ",															
@@ -821,7 +865,7 @@ namespace osiris
 			Console.WriteLine(button_busca_medicos.Name.ToString());
 			if(button_busca_medicos.Name.ToString() == "button_busca_medicos_cita"){
 				object[] parametros_objetos = {entry_id_doctor_cita,entry_nombre_doctor_cita};
-				string[] parametros_sql = {"SELECT * FROM osiris_his_medicos WeHERE medico_activo = 'true' ",															
+				string[] parametros_sql = {"SELECT * FROM osiris_his_medicos WHERE medico_activo = 'true' ",															
 										"SELECT * FROM osiris_his_medicos WHERE medico_activo = 'true' "+
 										"AND nombre_medico LIKE '%"};			
 				classfind_data.buscandor(parametros_objetos,parametros_sql,"find_medico_cita"," ORDER BY nombre_medico","%' ",0);
@@ -838,16 +882,31 @@ namespace osiris
 		void on_button_busca_especialidad_cita_clicked(object sender, EventArgs args)
 		{
 			object[] parametros_objetos = {entry_id_especialidad_cita,entry_nombre_especialidad_cita};
-			string[] parametros_sql = {"SELECT * FROM osiris_his_tipo_especialidad ",															
-										"SELECT * FROM osiris_his_tipo_especialidad "+
-										"WHERE descripcion_especialidad LIKE '%"};			
+			string[] parametros_sql = {"SELECT * FROM osiris_his_tipo_especialidad WHERE sub_especialidad = 'true' ",															
+										"SELECT * FROM osiris_his_tipo_especialidad WHERE sub_especialidad = 'true' "+
+										"AND descripcion_especialidad LIKE '%"};			
 			classfind_data.buscandor(parametros_objetos,parametros_sql,"find_especialidad_cita"," ORDER BY descripcion_especialidad","%' ",0);
+		}
+		
+		void on_checkbutton_filtro_doctor_clicked(object sender, EventArgs args)
+		{
+			if(checkbutton_filtro_doctor.Active == true){
+				sql_doctor = " AND osiris_his_calendario_citaqx.id_medico = '"+entry_id_doctor_consulta.Text.ToString().Trim()+"' ";
+			}else{
+				sql_doctor = "";
+			}			
+		}
+		
+		void on_button_aplica_filtrodoctor_clicked(object sender, EventArgs args)
+		{
+			llenado_lista_citas("");
 		}
 		
 		void llenado_lista_citas(string type_consulta_sql)
 		{
 			string nombrepaciente;
 			string telefonopaciente;
+			string emailpaciente;
 			treeViewEngineListaCitas.Clear();
 			NpgsqlConnection conexion; 
 			conexion = new NpgsqlConnection (connectionString+nombrebd);
@@ -856,7 +915,7 @@ namespace osiris
 				conexion.Open ();
 				NpgsqlCommand comando; 
 				comando = conexion.CreateCommand ();
-				comando.CommandText = sql_calendario_citaqx+sql_fecha1+sql_fecha2+"' ORDER BY to_char(fecha_programacion,'yyyy-MM-dd') DESC;";
+				comando.CommandText = sql_calendario_citaqx+sql_fecha1+sql_fecha2+sql_doctor+" ORDER BY to_char(fecha_programacion,'yyyy-MM-dd'),hora_programacion DESC;";
 				
 				Console.WriteLine(comando.CommandText);
 				NpgsqlDataReader lector = comando.ExecuteReader ();				
@@ -864,18 +923,37 @@ namespace osiris
 					
 					if ((int) lector["pidpaciente"] == 0){
 						nombrepaciente = (string) lector["nombre_paciente"];
+						telefonopaciente = (string) lector["celular1paciente_cita"];
+						emailpaciente = (string) lector["emailpaciente_cita"];
 					}else{
 						nombrepaciente = (string) lector["nombre1_paciente"].ToString().Trim()+" "+
 							             (string) lector["nombre2_paciente"].ToString().Trim()+" "+
 							             (string) lector["apellido_paterno_paciente"].ToString().Trim()+" "+
 							             (string) lector["apellido_materno_paciente"].ToString().Trim();
+						telefonopaciente = (string) lector["celular1_paciente"];
+						emailpaciente = (string) lector["email_paciente"];
 					}
 					treeViewEngineListaCitas.AppendValues((string) lector["fechaprogramacion"],
 					                                      (string) lector["hora_programacion"],
 					                                      (string) lector["id_numero_citaqx"].ToString(),
 					                                      (string) lector["pidpaciente"].ToString(),
 					                					  nombrepaciente.Trim(),
-					                                      (string) lector["edad"]+" Años y "+(string) lector["mesesedad"]+" Meses");
+					                                      (string) lector["edad"]+" Años y "+(string) lector["mesesedad"]+" Meses",
+					                                      (string) telefonopaciente,
+					                                      (string) emailpaciente,
+					                                      (string) lector["descripcion_tipo_paciente"],
+					                                      (string) lector["descripcion_admisiones"],
+					                                      "",
+					                                      (string) lector["nombremedico"],
+					                                      (string) lector["descripcionespecialidad"],
+					                                      (string) lector["motivo_consulta"],
+					                                      (string) lector["observaciones_citaqx"],
+					                                      (string) lector["referido_por"],
+					                                      (string) lector["id_quiencreo_cita"],
+					                                      (string) lector["fechahoracreacion"].ToString(),
+					                                      (string) lector["idsecuencia"].ToString().Trim());
+					
+					//motivo_consulta,osiris_his_calendario_citaqx.observaciones AS observaciones_citaqx,referido_por,osiris_his_calendario_citaqx.cancelado,"+
 				}
 			}catch (NpgsqlException ex){
 	   				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
@@ -922,11 +1000,13 @@ namespace osiris
 							"id_aseguradora,"+
 							"id_empresa,"+
 							"id_medico,"+
+							"nombre_medico,"+
 							"id_especialidad,"+
 							"descripcion_especialidad,"+
 							"motivo_consulta,"+
 							"referido_por,"+
 							"observaciones,"+
+							"id_quiencreo_cita,"+
 							"fecha_programacion,"+
 							"hora_programacion "+
 							//"folio_de_servicio,"+
@@ -957,7 +1037,6 @@ namespace osiris
 							//"diagnostico,"+
 							//"cirugia,"+							
 							//"especialidad_cirugia,"+
-							//"nombre_medico,"+
 							//"tipo_anestecia,"+
 							//"id_cancelacion,"+
 							//"cancelado,"+							
@@ -982,23 +1061,29 @@ namespace osiris
 							idaseguradora+"','"+
 							idempresa+"','"+
 							entry_id_doctor_cita.Text.ToString().Trim()+"','"+
+							entry_nombre_doctor_cita.Text.ToString().Trim()+"','"+
 							entry_id_especialidad_cita.Text.ToString().Trim()+"','"+
 							entry_nombre_especialidad_cita.Text.ToString().Trim()+"','"+
 							entry_motivoconsulta.Text.ToString().Trim().ToUpper()+"','"+
 							entry_observaciones_cita.Text.ToString().Trim().ToUpper()+"','"+
 							entry_referido_por_cita.Text.ToString().Trim().ToUpper()+"','"+
+							LoginEmpleado+"','"+
 							entry_fecha_cita.Text+"','"+
 							hora_cita_qx+":"+minutos_cita_qx+						
-							"')";
-							Console.WriteLine(comando.CommandText);
+							"')";							
 							comando.ExecuteNonQuery();					comando.Dispose();
 							checkbutton_crea_cita.Active = false;
 							radiobutton_paciente_conexpe_cita.Active = true;
+																					
+							MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+												MessageType.Info, 
+												ButtonsType.Close, "Cita a Paciente Creada con EXITO..");
+							msgBoxError.Run ();						msgBoxError.Destroy();
+							
 						}catch (NpgsqlException ex){
 		   					MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
 											MessageType.Error, ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
-							msgBoxError.Run ();				msgBoxError.Destroy();
-					
+							msgBoxError.Run ();				msgBoxError.Destroy();					
 						}
 						conexion.Close ();
 					}
@@ -1014,7 +1099,8 @@ namespace osiris
 		bool validacion_informacion_cita()
 		{
 			bool response_validation;
-			if(id_tipointernamiento != 0 && id_tipopaciente != 0){
+			if(id_tipointernamiento != 0 && id_tipopaciente != 0 
+			   && entry_id_doctor_cita.Text.ToString().Trim() != "1" && entry_id_especialidad_cita.Text.ToString().Trim() != "1"){
 				response_validation = true;
 			}else{
 				response_validation = false;
@@ -1022,7 +1108,12 @@ namespace osiris
 			return response_validation;
 		}
 		
-		void on_cierraventanas_clicked (object sender, EventArgs args)
+		void on_button_imprimir_calendario_clicked(object sender, EventArgs args)
+		{
+			new osiris.rpt_reporte_citasqx(treeview_lista_agenda,treeViewEngineListaCitas);
+		}
+		
+		void on_cierraventanas_clicked(object sender, EventArgs args)
 		{
 			Widget win = (Widget) sender;
 			win.Toplevel.Destroy();

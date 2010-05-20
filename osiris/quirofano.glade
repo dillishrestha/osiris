@@ -3019,7 +3019,7 @@ Solicitud</property>
                                           <widget class="GtkHBox" id="hbox6">
                                             <property name="visible">True</property>
                                             <child>
-                                              <widget class="GtkCheckButton" id="checkbutton2">
+                                              <widget class="GtkCheckButton" id="checkbutton_filtro_especialidad">
                                                 <property name="label" translatable="yes">Especialidad </property>
                                                 <property name="width_request">100</property>
                                                 <property name="visible">True</property>
@@ -3032,7 +3032,7 @@ Solicitud</property>
                                               </packing>
                                             </child>
                                             <child>
-                                              <widget class="GtkEntry" id="entry3">
+                                              <widget class="GtkEntry" id="entry_id_especialidad_consulta">
                                                 <property name="width_request">60</property>
                                                 <property name="visible">True</property>
                                                 <property name="can_focus">True</property>
@@ -3043,7 +3043,7 @@ Solicitud</property>
                                               </packing>
                                             </child>
                                             <child>
-                                              <widget class="GtkEntry" id="entry4">
+                                              <widget class="GtkEntry" id="entry_nombre_especialidad_consulta">
                                                 <property name="width_request">200</property>
                                                 <property name="visible">True</property>
                                                 <property name="can_focus">True</property>

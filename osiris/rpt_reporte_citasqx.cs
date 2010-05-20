@@ -45,6 +45,9 @@ namespace osiris
 		private double fontSize = 8.0;
 		int escala_en_linux_windows;		// Linux = 1  Windows = 8
 		int separacionlineas = 12;
+		int comienzo_linea = 70;
+		int separacion_linea = 10;
+		int contador_numerocitas = 1;
 		
 		Gtk.TreeView treeview_lista_agenda = null;
 		TreeStore treeViewEngineListaCitas = null;
@@ -100,8 +103,7 @@ namespace osiris
 		void ejecutar_consulta_reporte(PrintContext context)
 		{
 			imprime_encabezado(context);
-			int comienzo_linea = 70;
-			int separacion_linea = 10;
+			string fechas_citas;
 			Cairo.Context cr = context.CairoContext;
 			Pango.Layout layout = context.CreatePangoLayout ();
 			Pango.FontDescription desc = Pango.FontDescription.FromString ("Sans");									
@@ -111,14 +113,14 @@ namespace osiris
 			
 			TreeIter iter;
 			if (treeViewEngineListaCitas.GetIterFirst (out iter)){
-				
+				contador_numerocitas += 1;
+				fechas_citas = (string) treeview_lista_agenda.Model.GetValue (iter,0);
 				//ContextoImp.Show();
 				layout.FontDescription.Weight = Weight.Bold;		// Letra negrita
-				cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText((string) treeview_lista_agenda.Model.GetValue (iter,0));			Pango.CairoHelper.ShowLayout (cr, layout);
-				layout.FontDescription.Weight = Weight.Normal;		// Letra normal
+				cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText("("+(string) treeview_lista_agenda.Model.GetValue (iter,0)+")");			Pango.CairoHelper.ShowLayout (cr, layout);
 				comienzo_linea += separacion_linea;
-				
 				cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText((string) treeview_lista_agenda.Model.GetValue (iter,1));			Pango.CairoHelper.ShowLayout (cr, layout);
+				layout.FontDescription.Weight = Weight.Normal;		// Letra normal
 				cr.MoveTo(34*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText((string) treeview_lista_agenda.Model.GetValue (iter,2));			Pango.CairoHelper.ShowLayout (cr, layout);
 				cr.MoveTo(74*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText((string) treeview_lista_agenda.Model.GetValue (iter,3));			Pango.CairoHelper.ShowLayout (cr, layout);
 				cr.MoveTo(114*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText((string) treeview_lista_agenda.Model.GetValue (iter,4));			Pango.CairoHelper.ShowLayout (cr, layout);
@@ -128,16 +130,32 @@ namespace osiris
 				cr.MoveTo(300*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText((string) treeview_lista_agenda.Model.GetValue (iter,8));			Pango.CairoHelper.ShowLayout (cr, layout);
 				cr.MoveTo(400*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText((string) treeview_lista_agenda.Model.GetValue (iter,9));			Pango.CairoHelper.ShowLayout (cr, layout);
 				cr.MoveTo(480*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText((string) treeview_lista_agenda.Model.GetValue (iter,12));			Pango.CairoHelper.ShowLayout (cr, layout);
-				cr.MoveTo(570*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText((string) treeview_lista_agenda.Model.GetValue (iter,4));			Pango.CairoHelper.ShowLayout (cr, layout);
+				cr.MoveTo(570*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText((string) treeview_lista_agenda.Model.GetValue (iter,11));			Pango.CairoHelper.ShowLayout (cr, layout);
 				comienzo_linea += separacion_linea;
 				cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText("Motivo Consulta :"+(string) treeview_lista_agenda.Model.GetValue (iter,13));			Pango.CairoHelper.ShowLayout (cr, layout);
 				cr.MoveTo(253*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText("Observaciones :"+(string) treeview_lista_agenda.Model.GetValue (iter,14));			Pango.CairoHelper.ShowLayout (cr, layout);
 				cr.MoveTo(501*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText("Referido por:"+(string) treeview_lista_agenda.Model.GetValue (iter,15));			Pango.CairoHelper.ShowLayout (cr, layout);
 				comienzo_linea += separacion_linea;
 				comienzo_linea += separacion_linea;
-				
+								
 				while (treeViewEngineListaCitas.IterNext(ref iter)){
+					contador_numerocitas += 1;
+					layout.FontDescription.Weight = Weight.Bold;		// Letra normal
+					if(fechas_citas != (string) treeview_lista_agenda.Model.GetValue (iter,0)){
+						// Creando el Cuadro de Titulos
+						cr.Rectangle (05*escala_en_linux_windows, comienzo_linea-5*escala_en_linux_windows, 750*escala_en_linux_windows, 1*escala_en_linux_windows);
+						cr.FillPreserve();  //. FillPreserve(); FillExtents()
+						cr.SetSourceRGB (0, 0, 0);
+						cr.LineWidth = 0.5;
+						cr.Stroke();
+						cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText("("+(string) treeview_lista_agenda.Model.GetValue (iter,0)+")");			Pango.CairoHelper.ShowLayout (cr, layout);
+						comienzo_linea += separacion_linea;
+						salto_de_pagina(context);
+						fechas_citas = (string) treeview_lista_agenda.Model.GetValue (iter,0);
+					}
+					
 					cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText((string) treeview_lista_agenda.Model.GetValue (iter,1));			Pango.CairoHelper.ShowLayout (cr, layout);
+					layout.FontDescription.Weight = Weight.Normal;		// Letra normal
 					cr.MoveTo(34*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText((string) treeview_lista_agenda.Model.GetValue (iter,2));			Pango.CairoHelper.ShowLayout (cr, layout);
 					cr.MoveTo(74*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText((string) treeview_lista_agenda.Model.GetValue (iter,3));			Pango.CairoHelper.ShowLayout (cr, layout);
 					cr.MoveTo(114*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText((string) treeview_lista_agenda.Model.GetValue (iter,4));			Pango.CairoHelper.ShowLayout (cr, layout);
@@ -147,15 +165,20 @@ namespace osiris
 					cr.MoveTo(300*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText((string) treeview_lista_agenda.Model.GetValue (iter,8));			Pango.CairoHelper.ShowLayout (cr, layout);
 					cr.MoveTo(400*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText((string) treeview_lista_agenda.Model.GetValue (iter,9));			Pango.CairoHelper.ShowLayout (cr, layout);
 					cr.MoveTo(480*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText((string) treeview_lista_agenda.Model.GetValue (iter,12));			Pango.CairoHelper.ShowLayout (cr, layout);
-					cr.MoveTo(570*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText((string) treeview_lista_agenda.Model.GetValue (iter,4));			Pango.CairoHelper.ShowLayout (cr, layout);
+					cr.MoveTo(570*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText((string) treeview_lista_agenda.Model.GetValue (iter,11));			Pango.CairoHelper.ShowLayout (cr, layout);
 					comienzo_linea += separacion_linea;
 					cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText("Mot.Consulta:"+(string) treeview_lista_agenda.Model.GetValue (iter,13));			Pango.CairoHelper.ShowLayout (cr, layout);
 					cr.MoveTo(253*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText("Obse.:"+(string) treeview_lista_agenda.Model.GetValue (iter,14));			Pango.CairoHelper.ShowLayout (cr, layout);
 					cr.MoveTo(501*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText("Ref. por:"+(string) treeview_lista_agenda.Model.GetValue (iter,15));			Pango.CairoHelper.ShowLayout (cr, layout);
 					comienzo_linea += separacion_linea;
+					salto_de_pagina(context);
 					comienzo_linea += separacion_linea;
+					salto_de_pagina(context);
 				}
+				cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText("Nro. de CITAS "+contador_numerocitas.ToString().Trim());			Pango.CairoHelper.ShowLayout (cr, layout);
 			}
+			Console.WriteLine(contador_numerocitas.ToString());
+			Console.WriteLine(comienzo_linea.ToString());
 		}
 		
 		void imprime_encabezado(PrintContext context)
@@ -186,15 +209,14 @@ namespace osiris
 			cr.MoveTo(05*escala_en_linux_windows,15*escala_en_linux_windows);			layout.SetText(classpublic.direccion_empresa);		Pango.CairoHelper.ShowLayout (cr, layout);
 			cr.MoveTo(05*escala_en_linux_windows,25*escala_en_linux_windows);			layout.SetText(classpublic.telefonofax_empresa);	Pango.CairoHelper.ShowLayout (cr, layout);
 			fontSize = 6.0;		layout = null;							layout = context.CreatePangoLayout ();
-			desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;cr.MoveTo(05*escala_en_linux_windows,35*escala_en_linux_windows);			layout.SetText("Sistema Hospitalario OSIRIS");		Pango.CairoHelper.ShowLayout (cr, layout);
+			desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;
+			cr.MoveTo(650*escala_en_linux_windows,05*escala_en_linux_windows);			layout.SetText("Fech.Rpt:"+(string) DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));		Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(05*escala_en_linux_windows,35*escala_en_linux_windows);			layout.SetText("Sistema Hospitalario OSIRIS");		Pango.CairoHelper.ShowLayout (cr, layout);
 			// Cambiando el tamaño de la fuente			
 			fontSize = 10.0;											layout = context.CreatePangoLayout ();		
 			desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;
-			cr.MoveTo(230*escala_en_linux_windows, 25*escala_en_linux_windows);			layout.SetText("CALENDARIO DE CITAS Y CIRUGIAS PROGRAMADAS");					Pango.CairoHelper.ShowLayout (cr, layout);
-			layout.FontDescription.Weight = Weight.Normal;		// Letra Normal
-			fontSize = 8.0;		layout = null;							layout = context.CreatePangoLayout ();
-			desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;
-			
+			cr.MoveTo(240*escala_en_linux_windows, 25*escala_en_linux_windows);			layout.SetText("CALENDARIO DE CITAS Y CIRUGIAS PROGRAMADAS");					Pango.CairoHelper.ShowLayout (cr, layout);
+						
 			// Creando el Cuadro de Titulos
 			cr.Rectangle (05*escala_en_linux_windows, 50*escala_en_linux_windows, 750*escala_en_linux_windows, 15*escala_en_linux_windows);
 			cr.FillExtents();  //. FillPreserve(); 
@@ -202,11 +224,34 @@ namespace osiris
 			cr.LineWidth = 0.5;
 			cr.Stroke();
 			
+			fontSize = 8.0;		layout = null;							layout = context.CreatePangoLayout ();
+			desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;
+			layout.FontDescription.Weight = Weight.Bold;		// Letra negrita
 			cr.MoveTo(09*escala_en_linux_windows,53*escala_en_linux_windows);			layout.SetText("Fech/Hora");			Pango.CairoHelper.ShowLayout (cr, layout);
 			cr.MoveTo(74*escala_en_linux_windows,53*escala_en_linux_windows);			layout.SetText("N° Exp.");				Pango.CairoHelper.ShowLayout (cr, layout);
 			cr.MoveTo(114*escala_en_linux_windows,53*escala_en_linux_windows);			layout.SetText("Nombre del Paciente");	Pango.CairoHelper.ShowLayout (cr, layout);
-
-		}		
+			cr.MoveTo(300*escala_en_linux_windows,53*escala_en_linux_windows);			layout.SetText("Tipo Paciente");	Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(400*escala_en_linux_windows,53*escala_en_linux_windows);			layout.SetText("Tipo Servicio");	Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(480*escala_en_linux_windows,53*escala_en_linux_windows);			layout.SetText("Especialidad ");	Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(570*escala_en_linux_windows,53*escala_en_linux_windows);			layout.SetText("Nombre del Doctor");	Pango.CairoHelper.ShowLayout (cr, layout);
+			layout.FontDescription.Weight = Weight.Normal;		// Letra Normal
+		}
+		
+		void salto_de_pagina(PrintContext context)			
+		{
+			Cairo.Context cr = context.CairoContext;
+			Pango.Layout layout = context.CreatePangoLayout ();
+			context.PageSetup.Orientation = PageOrientation.Landscape;
+			if(comienzo_linea >530){
+				cr.ShowPage();
+				layout = null;
+				layout = context.CreatePangoLayout ();
+				Pango.FontDescription desc = Pango.FontDescription.FromString ("Sans");								
+				fontSize = 8.0;		desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;
+				comienzo_linea = 70;
+				imprime_encabezado(context);
+			}
+		}
 			
 		private void OnEndPrint (object obj, Gtk.EndPrintArgs args)
 		{

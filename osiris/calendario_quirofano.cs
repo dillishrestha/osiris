@@ -52,11 +52,17 @@ namespace osiris
 		[Widget] Gtk.Entry entry_fecha_final = null;
 		[Widget] Gtk.TreeView treeview_lista_agenda = null;
 		[Widget] Gtk.CheckButton checkbutton_fecha_final = null;
-		[Widget] Gtk.Button button_busca_medicos_consulta = null;
+		
+		[Widget] Gtk.CheckButton checkbutton_filtro_doctor = null;
 		[Widget] Gtk.Entry entry_id_doctor_consulta = null;
 		[Widget] Gtk.Entry entry_nombre_doctor_consulta = null;
-		[Widget] Gtk.CheckButton checkbutton_filtro_doctor = null;
+		[Widget] Gtk.Button button_busca_medicos_consulta = null;
 		[Widget] Gtk.Button button_aplica_filtrodoctor = null;
+		
+		[Widget] Gtk.CheckButton checkbutton_filtro_especialidad = null;
+		[Widget] Gtk.Entry entry_id_especialidad_consulta = null;
+		[Widget] Gtk.Entry entry_nombre_especialidad_consulta = null;		
+		
 		[Widget] Gtk.Button button_imprimir_calendario = null;
 		[Widget] Gtk.Statusbar statusbar_citasqx = null;
 						
@@ -113,8 +119,8 @@ namespace osiris
 		int id_tipopaciente = 0;
 		string tipointernamiento;
 		int id_tipointernamiento = 0;
-		string hora_cita_qx;
-		string minutos_cita_qx;
+		string hora_cita_qx = "";
+		string minutos_cita_qx = "";
 		string sexopaciente_cita = "H";
 		string estadocivil_cita = "";
 		string idempresa = "1";
@@ -123,6 +129,7 @@ namespace osiris
 					"osiris_his_calendario_citaqx.pid_paciente AS pidpaciente,osiris_his_calendario_citaqx.nombre_paciente,"+
 					"osiris_his_paciente.nombre1_paciente,osiris_his_paciente.nombre2_paciente,osiris_his_paciente.apellido_paterno_paciente,osiris_his_paciente.apellido_materno_paciente,"+
 					"osiris_his_paciente.celular1_paciente,osiris_his_calendario_citaqx.celular1_paciente AS celular1paciente_cita,"+
+					"osiris_his_paciente.telefono_particular1_paciente AS telefonoparticular1_paciente,"+
 					"osiris_his_paciente.email_paciente,osiris_his_calendario_citaqx.email_paciente AS emailpaciente_cita,"+
 					"osiris_his_calendario_citaqx.id_tipo_paciente,descripcion_tipo_paciente,"+
 					"osiris_his_calendario_citaqx.id_tipo_admisiones,descripcion_admisiones,"+
@@ -130,14 +137,18 @@ namespace osiris
 					"osiris_his_tipo_especialidad.id_especialidad,osiris_his_tipo_especialidad.descripcion_especialidad AS descripcionespecialidad,"+
 					"motivo_consulta,osiris_his_calendario_citaqx.observaciones AS observaciones_citaqx,referido_por,osiris_his_calendario_citaqx.cancelado,"+
 					"id_quiencreo_cita,osiris_his_calendario_citaqx.fechahora_creacion AS fechahoracreacion,"+
+					"osiris_empresas.id_empresa AS idempresa,descripcion_empresa,"+
+					"osiris_aseguradoras.id_aseguradora AS idaseguradora,descripcion_aseguradora,"+
 					"to_char(to_number(to_char(age('"+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"',osiris_his_calendario_citaqx.fecha_nacimiento_paciente),'yyyy') ,'9999'),'9999') AS edad,"+
 					"to_char(to_number(to_char(age('"+DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss")+"',osiris_his_calendario_citaqx.fecha_nacimiento_paciente),'MM'),'99'),'99') AS mesesedad "+
-					"FROM osiris_his_calendario_citaqx,osiris_his_paciente,osiris_his_tipo_pacientes,osiris_his_tipo_admisiones,osiris_his_medicos,osiris_his_tipo_especialidad "+
+					"FROM osiris_his_calendario_citaqx,osiris_his_paciente,osiris_his_tipo_pacientes,osiris_his_tipo_admisiones,osiris_his_medicos,osiris_his_tipo_especialidad,osiris_empresas,osiris_aseguradoras "+
 					"WHERE osiris_his_calendario_citaqx.pid_paciente = osiris_his_paciente.pid_paciente "+
 					"AND osiris_his_tipo_pacientes.id_tipo_paciente = osiris_his_calendario_citaqx.id_tipo_paciente "+
 					"AND osiris_his_tipo_admisiones.id_tipo_admisiones = osiris_his_calendario_citaqx.id_tipo_admisiones "+
 					"AND osiris_his_medicos.id_medico = osiris_his_calendario_citaqx.id_medico "+
 					"AND osiris_his_tipo_especialidad.id_especialidad = osiris_his_calendario_citaqx.id_especialidad "+
+					"AND osiris_empresas.id_empresa = osiris_his_calendario_citaqx.id_empresa "+
+					"AND osiris_aseguradoras.id_aseguradora = osiris_his_calendario_citaqx.id_aseguradora "+
 					"AND osiris_his_calendario_citaqx.cancelado = 'false' ";
 		string sql_fecha1 = "";
 		string sql_fecha2 = "";
@@ -278,7 +289,7 @@ namespace osiris
 			col_agenda0.PackStart(cellrt0, true);
 			col_agenda0.AddAttribute (cellrt0, "text", 0);
 			col_agenda0.Resizable = true;
-			//col_agenda0.SortColumnId = (int) Coldatos_agenda.col_agenda0;
+			col_agenda0.SortColumnId = (int) Coldatos_agenda.col_agenda0;
 			
 			TreeViewColumn col_agenda1 = new TreeViewColumn();
 			CellRendererText cellrt1 = new CellRendererText();
@@ -286,7 +297,7 @@ namespace osiris
 			col_agenda1.PackStart(cellrt1, true);
 			col_agenda1.AddAttribute (cellrt1, "text", 1);
 			col_agenda1.Resizable = true;
-			//col_agenda1.SortColumnId = (int) Coldatos_agenda.col_agenda1;
+			col_agenda1.SortColumnId = (int) Coldatos_agenda.col_agenda1;
 			
 			TreeViewColumn col_agenda2 = new TreeViewColumn();
 			CellRendererText cellrt2 = new CellRendererText();
@@ -294,7 +305,7 @@ namespace osiris
 			col_agenda2.PackStart(cellrt2, true);
 			col_agenda2.AddAttribute (cellrt2, "text", 2);
 			col_agenda2.Resizable = true;
-			//col_agenda2.SortColumnId = (int) Coldatos_agenda.col_agenda2;
+			col_agenda2.SortColumnId = (int) Coldatos_agenda.col_agenda2;
 			
 			TreeViewColumn col_agenda3 = new TreeViewColumn();
 			CellRendererText cellrt3 = new CellRendererText();
@@ -302,7 +313,7 @@ namespace osiris
 			col_agenda3.PackStart(cellrt3, true);
 			col_agenda3.AddAttribute (cellrt3, "text", 3);
 			col_agenda3.Resizable = true;
-			//col_agenda3.SortColumnId = (int) Coldatos_agenda.col_agenda3;
+			col_agenda3.SortColumnId = (int) Coldatos_agenda.col_agenda3;
 			
 			TreeViewColumn col_agenda4 = new TreeViewColumn();
 			CellRendererText cellrt4 = new CellRendererText();
@@ -310,7 +321,7 @@ namespace osiris
 			col_agenda4.PackStart(cellrt1, true);
 			col_agenda4.AddAttribute (cellrt1, "text", 4);
 			col_agenda4.Resizable = true;
-			//col_agenda4.SortColumnId = (int) Column.col_agenda4;
+			col_agenda4.SortColumnId = (int) Coldatos_agenda.col_agenda4;
             
 			TreeViewColumn col_agenda5 = new TreeViewColumn();
 			CellRendererText cellrt5 = new CellRendererText();
@@ -318,15 +329,15 @@ namespace osiris
 			col_agenda5.PackStart(cellrt5, true);
 			col_agenda5.AddAttribute (cellrt5, "text", 5);
 			col_agenda5.Resizable = true;
-			//col_agenda5.SortColumnId = (int) Coldatos_agenda.col_agenda8;
+			col_agenda5.SortColumnId = (int) Coldatos_agenda.col_agenda5;
 			
 			TreeViewColumn col_agenda6 = new TreeViewColumn();
 			CellRendererText cellrt6 = new CellRendererText();
-			col_agenda6.Title = "Telefono";
+			col_agenda6.Title = "Telefonos";
 			col_agenda6.PackStart(cellrt6, true);
 			col_agenda6.AddAttribute (cellrt6, "text", 6);
 			col_agenda6.Resizable = true;
-			//col_agenda6.SortColumnId = (int) Coldatos_agenda.col_agenda9;
+			col_agenda6.SortColumnId = (int) Coldatos_agenda.col_agenda6;
 			
 			TreeViewColumn col_agenda7 = new TreeViewColumn();
 			CellRendererText cellrt7 = new CellRendererText();
@@ -334,7 +345,7 @@ namespace osiris
 			col_agenda7.PackStart(cellrt7, true);
 			col_agenda7.AddAttribute (cellrt7, "text", 7);
 			col_agenda7.Resizable = true;
-			//col_agenda7.SortColumnId = (int) Coldatos_agenda.col_agenda10;
+			col_agenda7.SortColumnId = (int) Coldatos_agenda.col_agenda7;
 			
 			TreeViewColumn col_agenda8 = new TreeViewColumn();
 			CellRendererText cellrt8 = new CellRendererText();
@@ -342,7 +353,7 @@ namespace osiris
 			col_agenda8.PackStart(cellrt8, true);
 			col_agenda8.AddAttribute (cellrt8, "text", 8);
 			col_agenda8.Resizable = true;
-			//col_agenda8.SortColumnId = (int) Coldatos_agenda.col_agenda11;
+			col_agenda8.SortColumnId = (int) Coldatos_agenda.col_agenda8;
 			
 			TreeViewColumn col_agenda9 = new TreeViewColumn();
 			CellRendererText cellrt9 = new CellRendererText();
@@ -350,7 +361,7 @@ namespace osiris
 			col_agenda9.PackStart(cellrt9, true);
 			col_agenda9.AddAttribute (cellrt9, "text", 9);
 			col_agenda9.Resizable = true;
-			//col_agenda9.SortColumnId = (int) Coldatos_agenda.col_agenda12;
+			col_agenda9.SortColumnId = (int) Coldatos_agenda.col_agenda9;
 			
 			TreeViewColumn col_agenda10 = new TreeViewColumn();
 			CellRendererText cellrt10 = new CellRendererText();
@@ -358,7 +369,7 @@ namespace osiris
 			col_agenda10.PackStart(cellrt10, true);
 			col_agenda10.AddAttribute (cellrt10, "text", 10);
 			col_agenda10.Resizable = true;
-			//col_agenda10.SortColumnId = (int) Coldatos_agenda.col_agenda13;
+			col_agenda10.SortColumnId = (int) Coldatos_agenda.col_agenda10;
 			
 			TreeViewColumn col_agenda11 = new TreeViewColumn();
 			CellRendererText cellrt11 = new CellRendererText();
@@ -366,7 +377,7 @@ namespace osiris
 			col_agenda11.PackStart(cellrt11, true);
 			col_agenda11.AddAttribute (cellrt11, "text", 11);
 			col_agenda11.Resizable = true;
-			//col_agenda11.SortColumnId = (int) Coldatos_agenda.col_agenda14;
+			col_agenda11.SortColumnId = (int) Coldatos_agenda.col_agenda11;
 			
 			TreeViewColumn col_agenda12 = new TreeViewColumn();
 			CellRendererText cellrt12 = new CellRendererText();
@@ -374,7 +385,7 @@ namespace osiris
 			col_agenda12.PackStart(cellrt12, true);
 			col_agenda12.AddAttribute (cellrt12, "text", 12);
 			col_agenda12.Resizable = true;
-			//col_agenda12.SortColumnId = (int) Coldatos_agenda.col_agenda15;
+			col_agenda12.SortColumnId = (int) Coldatos_agenda.col_agenda12;
 			
 			TreeViewColumn col_agenda13 = new TreeViewColumn();
 			CellRendererText cellrt13 = new CellRendererText();
@@ -382,7 +393,7 @@ namespace osiris
 			col_agenda13.PackStart(cellrt13, true);
 			col_agenda13.AddAttribute (cellrt13, "text", 13);
 			col_agenda13.Resizable = true;
-			//col_agenda13.SortColumnId = (int) Coldatos_agenda.col_agenda16;
+			col_agenda13.SortColumnId = (int) Coldatos_agenda.col_agenda13;
 						
 			TreeViewColumn col_agenda14 = new TreeViewColumn();
 			CellRendererText cellrt14 = new CellRendererText();
@@ -390,7 +401,7 @@ namespace osiris
 			col_agenda14.PackStart(cellrt14, true);
 			col_agenda14.AddAttribute (cellrt14, "text", 14);
 			col_agenda14.Resizable = true;
-			//col_agenda14.SortColumnId = (int) Coldatos_agenda.col_agenda17;
+			col_agenda14.SortColumnId = (int) Coldatos_agenda.col_agenda14;
 			
 			TreeViewColumn col_agenda15 = new TreeViewColumn();
 			CellRendererText cellrt15 = new CellRendererText();
@@ -398,23 +409,31 @@ namespace osiris
 			col_agenda15.PackStart(cellrt15, true);
 			col_agenda15.AddAttribute (cellrt15, "text", 15);
 			col_agenda15.Resizable = true;
-			//col_agenda15.SortColumnId = (int) Coldatos_agenda.col_agenda17;
+			col_agenda15.SortColumnId = (int) Coldatos_agenda.col_agenda15;
 			
 			TreeViewColumn col_agenda16 = new TreeViewColumn();
 			CellRendererText cellrt16 = new CellRendererText();
-			col_agenda16.Title = "Agendado por";
+			col_agenda16.Title = "Institu/Empre/Asegu";
 			col_agenda16.PackStart(cellrt16, true);
 			col_agenda16.AddAttribute (cellrt16, "text", 16);
 			col_agenda16.Resizable = true;
-			//col_agenda16.SortColumnId = (int) Coldatos_agenda.col_agenda18;
+			col_agenda16.SortColumnId = (int) Coldatos_agenda.col_agenda16;
 			
 			TreeViewColumn col_agenda17 = new TreeViewColumn();
 			CellRendererText cellrt17 = new CellRendererText();
-			col_agenda17.Title = "Fecha/Hora";
+			col_agenda17.Title = "Agendado por";
 			col_agenda17.PackStart(cellrt17, true);
 			col_agenda17.AddAttribute (cellrt17, "text", 17);
 			col_agenda17.Resizable = true;
-			//col_agenda17.SortColumnId = (int) Coldatos_agenda.col_agenda19;
+			col_agenda17.SortColumnId = (int) Coldatos_agenda.col_agenda17;
+			
+			TreeViewColumn col_agenda18 = new TreeViewColumn();
+			CellRendererText cellrt18 = new CellRendererText();
+			col_agenda18.Title = "Fecha/Hora";
+			col_agenda18.PackStart(cellrt18, true);
+			col_agenda18.AddAttribute (cellrt18, "text", 18);
+			col_agenda18.Resizable = true;
+			col_agenda18.SortColumnId = (int) Coldatos_agenda.col_agenda18;
 			
 			treeview_lista_agenda.AppendColumn(col_agenda0);
 			treeview_lista_agenda.AppendColumn(col_agenda1);
@@ -434,8 +453,15 @@ namespace osiris
 			treeview_lista_agenda.AppendColumn(col_agenda15);
 			treeview_lista_agenda.AppendColumn(col_agenda16);
 			treeview_lista_agenda.AppendColumn(col_agenda17);
-			//treeview_lista_agenda.AppendColumn(col_agenda18);
+			treeview_lista_agenda.AppendColumn(col_agenda18);
 			//treeview_lista_agenda.AppendColumn(col_agenda19);
+		}
+		
+		enum Coldatos_agenda
+		{
+			col_agenda0,col_agenda1,col_agenda2,col_agenda3,col_agenda4,col_agenda5,col_agenda6,col_agenda7,col_agenda8,
+			col_agenda9,col_agenda10,col_agenda11,col_agenda12,col_agenda13,col_agenda14,col_agenda15,col_agenda16,
+			col_agenda17,col_agenda18	
 		}
 		
 		void on_dayselected_clicked (object obj, EventArgs args)
@@ -882,16 +908,29 @@ namespace osiris
 		void on_button_busca_especialidad_cita_clicked(object sender, EventArgs args)
 		{
 			object[] parametros_objetos = {entry_id_especialidad_cita,entry_nombre_especialidad_cita};
-			string[] parametros_sql = {"SELECT * FROM osiris_his_tipo_especialidad WHERE sub_especialidad = 'true' ",															
-										"SELECT * FROM osiris_his_tipo_especialidad WHERE sub_especialidad = 'true' "+
-										"AND descripcion_especialidad LIKE '%"};			
+			string[] parametros_sql = {"SELECT * FROM osiris_his_tipo_especialidad ",															
+										"SELECT * FROM osiris_his_tipo_especialidad "+
+										"WHERE descripcion_especialidad LIKE '%"};			
 			classfind_data.buscandor(parametros_objetos,parametros_sql,"find_especialidad_cita"," ORDER BY descripcion_especialidad","%' ",0);
 		}
 		
 		void on_checkbutton_filtro_doctor_clicked(object sender, EventArgs args)
 		{
 			if(checkbutton_filtro_doctor.Active == true){
-				sql_doctor = " AND osiris_his_calendario_citaqx.id_medico = '"+entry_id_doctor_consulta.Text.ToString().Trim()+"' ";
+				if(entry_fecha_seleccionada.Text.ToString().Trim() != ""){
+					if (entry_id_doctor_consulta.Text.ToString().Trim() != ""){
+						sql_doctor = " AND osiris_his_calendario_citaqx.id_medico = '"+entry_id_doctor_consulta.Text.ToString().Trim()+"' ";
+					}else{
+						sql_doctor = "";	
+					}
+				}else{
+					MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+											MessageType.Error, 
+											ButtonsType.Close, "Debe seleccionar una fecha para aplicar el filtro...");
+					msgBoxError.Run ();						msgBoxError.Destroy();
+					checkbutton_filtro_doctor.Active = false;
+					sql_doctor = "";
+				}
 			}else{
 				sql_doctor = "";
 			}			
@@ -899,7 +938,15 @@ namespace osiris
 		
 		void on_button_aplica_filtrodoctor_clicked(object sender, EventArgs args)
 		{
-			llenado_lista_citas("");
+			if(entry_id_doctor_consulta.Text.ToString().Trim() != ""){
+				sql_doctor = " AND osiris_his_calendario_citaqx.id_medico = '"+entry_id_doctor_consulta.Text.ToString().Trim()+"' ";
+				llenado_lista_citas("");
+			}else{
+				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+												MessageType.Error, 
+												ButtonsType.Close, "Debe seleccionar un Doctor para aplicar el filtro...");
+				msgBoxError.Run ();						msgBoxError.Destroy();
+			}
 		}
 		
 		void llenado_lista_citas(string type_consulta_sql)
@@ -907,6 +954,7 @@ namespace osiris
 			string nombrepaciente;
 			string telefonopaciente;
 			string emailpaciente;
+			string emprinstitucion_aseguradora;
 			treeViewEngineListaCitas.Clear();
 			NpgsqlConnection conexion; 
 			conexion = new NpgsqlConnection (connectionString+nombrebd);
@@ -915,23 +963,27 @@ namespace osiris
 				conexion.Open ();
 				NpgsqlCommand comando; 
 				comando = conexion.CreateCommand ();
-				comando.CommandText = sql_calendario_citaqx+sql_fecha1+sql_fecha2+sql_doctor+" ORDER BY to_char(fecha_programacion,'yyyy-MM-dd'),hora_programacion DESC;";
+				comando.CommandText = sql_calendario_citaqx+sql_fecha1+sql_fecha2+sql_doctor+" ORDER BY to_char(fecha_programacion,'yyyy-MM-dd'),hora_programacion ASC;";
 				
 				Console.WriteLine(comando.CommandText);
 				NpgsqlDataReader lector = comando.ExecuteReader ();				
-				while (lector.Read()){
-					
+				while (lector.Read()){					
 					if ((int) lector["pidpaciente"] == 0){
-						nombrepaciente = (string) lector["nombre_paciente"];
-						telefonopaciente = (string) lector["celular1paciente_cita"];
-						emailpaciente = (string) lector["emailpaciente_cita"];
+						nombrepaciente = (string) lector["nombre_paciente"].ToString().Trim();
+						telefonopaciente = (string) lector["celular1paciente_cita"].ToString().Trim();
+						emailpaciente = (string) lector["emailpaciente_cita"].ToString().Trim();
 					}else{
 						nombrepaciente = (string) lector["nombre1_paciente"].ToString().Trim()+" "+
 							             (string) lector["nombre2_paciente"].ToString().Trim()+" "+
 							             (string) lector["apellido_paterno_paciente"].ToString().Trim()+" "+
 							             (string) lector["apellido_materno_paciente"].ToString().Trim();
-						telefonopaciente = (string) lector["celular1_paciente"];
-						emailpaciente = (string) lector["email_paciente"];
+						telefonopaciente = (string) lector["telefonoparticular1_paciente"].ToString().Trim()+"  "+(string) lector["celular1_paciente"].ToString().Trim();
+						emailpaciente = (string) lector["email_paciente"].ToString().Trim();
+					}
+					if((int) lector["idempresa"] >= 1){
+						emprinstitucion_aseguradora = (string) lector["descripcion_empresa"];
+					}else{
+						emprinstitucion_aseguradora = (string) lector["descripcion_aseguradora"];
 					}
 					treeViewEngineListaCitas.AppendValues((string) lector["fechaprogramacion"],
 					                                      (string) lector["hora_programacion"],
@@ -939,7 +991,7 @@ namespace osiris
 					                                      (string) lector["pidpaciente"].ToString(),
 					                					  nombrepaciente.Trim(),
 					                                      (string) lector["edad"]+" Años y "+(string) lector["mesesedad"]+" Meses",
-					                                      (string) telefonopaciente,
+					                                      (string) telefonopaciente.Trim(),
 					                                      (string) emailpaciente,
 					                                      (string) lector["descripcion_tipo_paciente"],
 					                                      (string) lector["descripcion_admisiones"],
@@ -949,6 +1001,7 @@ namespace osiris
 					                                      (string) lector["motivo_consulta"],
 					                                      (string) lector["observaciones_citaqx"],
 					                                      (string) lector["referido_por"],
+					                                      emprinstitucion_aseguradora,
 					                                      (string) lector["id_quiencreo_cita"],
 					                                      (string) lector["fechahoracreacion"].ToString(),
 					                                      (string) lector["idsecuencia"].ToString().Trim());
@@ -1004,8 +1057,8 @@ namespace osiris
 							"id_especialidad,"+
 							"descripcion_especialidad,"+
 							"motivo_consulta,"+
-							"referido_por,"+
 							"observaciones,"+
+							"referido_por,"+
 							"id_quiencreo_cita,"+
 							"fecha_programacion,"+
 							"hora_programacion "+
@@ -1087,25 +1140,61 @@ namespace osiris
 						}
 						conexion.Close ();
 					}
-				}else{
-					MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
-									MessageType.Info,ButtonsType.Close, 
-									"Verifique la informacion ya que no esta Completa, NO se creo la CITA");
-					msgBoxError.Run ();				msgBoxError.Destroy();
 				}
 			}
 		}
 		
 		bool validacion_informacion_cita()
 		{
-			bool response_validation;
-			if(id_tipointernamiento != 0 && id_tipopaciente != 0 
-			   && entry_id_doctor_cita.Text.ToString().Trim() != "1" && entry_id_especialidad_cita.Text.ToString().Trim() != "1"){
-				response_validation = true;
+			bool response_validation = false;
+			bool verificacitadoctor;
+			if(id_tipointernamiento != 0 && id_tipopaciente != 0 && entry_id_especialidad_cita.Text.ToString().Trim() != "1"
+			   && entry_fecha_cita.Text != "" && hora_cita_qx != "" && minutos_cita_qx != ""){
+				if((bool) verifica_cita_doctor() == true){
+					response_validation = true;
+				}else{
+					MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+									MessageType.Info,ButtonsType.Close, 
+									"El Doctor ya tiene un Paciente CITADO, Verifique...");
+					msgBoxError.Run ();				msgBoxError.Destroy();
+					response_validation = false;
+				}				
 			}else{
+				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+									MessageType.Info,ButtonsType.Close, 
+									"Verifique la informacion ya que no esta Completa, NO se creo la CITA");
+					msgBoxError.Run ();				msgBoxError.Destroy();
 				response_validation = false;
 			}
 			return response_validation;
+		}
+		
+		bool verifica_cita_doctor()
+		{
+			bool response_validation = true;
+			NpgsqlConnection conexion; 
+			conexion = new NpgsqlConnection (connectionString+nombrebd);
+            // Verifica que la base de datos este conectada
+			try{
+				conexion.Open ();
+				NpgsqlCommand comando; 
+				comando = conexion.CreateCommand ();
+				comando.CommandText = "SELECT * FROM osiris_his_calendario_citaqx WHERE fecha_programacion = '"+entry_fecha_cita.Text.ToString().Trim()+"' "+
+							"AND hora_programacion = '"+hora_cita_qx+":"+minutos_cita_qx+"' "+
+							"AND id_medico = '"+entry_id_doctor_cita.Text.ToString().Trim()+"';";
+				
+				Console.WriteLine(comando.CommandText);
+				NpgsqlDataReader lector = comando.ExecuteReader ();				
+				if (lector.Read()){
+					response_validation = false;
+				}
+			}catch (NpgsqlException ex){
+		   		MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+											MessageType.Error, ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
+				msgBoxError.Run ();				msgBoxError.Destroy();					
+			}
+			conexion.Close ();
+			return response_validation;	
 		}
 		
 		void on_button_imprimir_calendario_clicked(object sender, EventArgs args)

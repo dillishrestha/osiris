@@ -599,7 +599,7 @@ H I S
                   </packing>
                 </child>
                 <child>
-                  <widget class="GtkButton" id="button_inhaloterapia">
+                  <widget class="GtkButton" id="button_oftalmologia">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">False</property>
@@ -626,7 +626,7 @@ H I S
                             <child>
                               <widget class="GtkLabel" id="label49">
                                 <property name="visible">True</property>
-                                <property name="label" translatable="yes">Inhaloterapia</property>
+                                <property name="label" translatable="yes">Oftalmologia</property>
                                 <property name="use_underline">True</property>
                               </widget>
                               <packing>

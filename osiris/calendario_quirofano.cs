@@ -52,6 +52,7 @@ namespace osiris
 		[Widget] Gtk.Entry entry_fecha_final = null;
 		[Widget] Gtk.TreeView treeview_lista_agenda = null;
 		[Widget] Gtk.CheckButton checkbutton_fecha_final = null;
+		[Widget] Gtk.CheckButton checkbutton_canceladas = null;
 		
 		[Widget] Gtk.CheckButton checkbutton_filtro_doctor = null;
 		[Widget] Gtk.Entry entry_id_doctor_consulta = null;
@@ -61,8 +62,17 @@ namespace osiris
 		
 		[Widget] Gtk.CheckButton checkbutton_filtro_especialidad = null;
 		[Widget] Gtk.Entry entry_id_especialidad_consulta = null;
-		[Widget] Gtk.Entry entry_nombre_especialidad_consulta = null;		
+		[Widget] Gtk.Entry entry_nombre_especialidad_consulta = null;
+		[Widget] Gtk.Button button_busca_especialidad_consulta = null;
+		[Widget] Gtk.Button button_aplica_filtroespecialidad = null;
 		
+		[Widget] Gtk.CheckButton checkbutton_tipo_paciente_consulta = null;
+		[Widget] Gtk.ComboBox combobox_tipo_paciente_consulta = null;
+		[Widget] Gtk.CheckButton checkbutton_tipo_admision_consulta = null;
+		[Widget] Gtk.ComboBox combobox_tipo_admision_consulta = null;
+		
+		[Widget] Gtk.Entry entry_numero_citas = null;
+		[Widget] Gtk.Button button_cancela_cita = null;
 		[Widget] Gtk.Button button_imprimir_calendario = null;
 		[Widget] Gtk.Statusbar statusbar_citasqx = null;
 						
@@ -92,8 +102,8 @@ namespace osiris
 		[Widget] Gtk.Entry entry_motivoconsulta = null;
 		[Widget] Gtk.Entry entry_observaciones_cita = null;
 		[Widget] Gtk.Entry entry_referido_por_cita = null;
-		[Widget] Gtk.ComboBox combobox_tipo_paciente = null;
-		[Widget] Gtk.ComboBox combobox_tipo_admision = null;
+		[Widget] Gtk.ComboBox combobox_tipo_paciente_cita = null;
+		[Widget] Gtk.ComboBox combobox_tipo_admision_cita = null;
 		[Widget] Gtk.Entry entry_id_empaseg_cita = null;
 		[Widget] Gtk.Entry entry_nombre_empaseg_cita = null;
 		[Widget] Gtk.Entry entry_id_doctor_cita = null;
@@ -107,6 +117,13 @@ namespace osiris
 		[Widget] Gtk.Calendar calendar3 = null;
 		[Widget] Gtk.Entry entry_fecha_cita_qx = null;
 		[Widget] Gtk.Entry entry_numero_citaquirofano = null;
+		
+		//Ventana de cancelacion de folios
+		[Widget] Gtk.Window cancelador_folios = null;
+		[Widget] Gtk.Button button_cancelar = null;
+		[Widget] Gtk.Entry entry_folio = null;
+		[Widget] Gtk.Entry entry_motivo = null;
+		[Widget] Gtk.Label label247 = null;
 							
 		string LoginEmpleado;
 		string NomEmpleado;
@@ -125,6 +142,7 @@ namespace osiris
 		string estadocivil_cita = "";
 		string idempresa = "1";
 		string idaseguradora = "1";
+		int contador_numerocitas = 0;
 		string sql_calendario_citaqx = "SELECT to_char(fecha_programacion,'yyyy-MM-dd') AS fechaprogramacion,hora_programacion,id_numero_citaqx,osiris_his_calendario_citaqx.id_secuencia AS idsecuencia,"+
 					"osiris_his_calendario_citaqx.pid_paciente AS pidpaciente,osiris_his_calendario_citaqx.nombre_paciente,"+
 					"osiris_his_paciente.nombre1_paciente,osiris_his_paciente.nombre2_paciente,osiris_his_paciente.apellido_paterno_paciente,osiris_his_paciente.apellido_materno_paciente,"+
@@ -135,7 +153,7 @@ namespace osiris
 					"osiris_his_calendario_citaqx.id_tipo_admisiones,descripcion_admisiones,"+
 					"osiris_his_medicos.id_medico,osiris_his_medicos.nombre_medico AS nombremedico,"+
 					"osiris_his_tipo_especialidad.id_especialidad,osiris_his_tipo_especialidad.descripcion_especialidad AS descripcionespecialidad,"+
-					"motivo_consulta,osiris_his_calendario_citaqx.observaciones AS observaciones_citaqx,referido_por,osiris_his_calendario_citaqx.cancelado,"+
+					"motivo_consulta,osiris_his_calendario_citaqx.observaciones AS observaciones_citaqx,referido_por,osiris_his_calendario_citaqx.cancelado AS cancelacitaqx,"+
 					"id_quiencreo_cita,osiris_his_calendario_citaqx.fechahora_creacion AS fechahoracreacion,"+
 					"osiris_empresas.id_empresa AS idempresa,descripcion_empresa,"+
 					"osiris_aseguradoras.id_aseguradora AS idaseguradora,descripcion_aseguradora,"+
@@ -148,17 +166,40 @@ namespace osiris
 					"AND osiris_his_medicos.id_medico = osiris_his_calendario_citaqx.id_medico "+
 					"AND osiris_his_tipo_especialidad.id_especialidad = osiris_his_calendario_citaqx.id_especialidad "+
 					"AND osiris_empresas.id_empresa = osiris_his_calendario_citaqx.id_empresa "+
-					"AND osiris_aseguradoras.id_aseguradora = osiris_his_calendario_citaqx.id_aseguradora "+
-					"AND osiris_his_calendario_citaqx.cancelado = 'false' ";
+					"AND osiris_aseguradoras.id_aseguradora = osiris_his_calendario_citaqx.id_aseguradora ";
 		string sql_fecha1 = "";
 		string sql_fecha2 = "";
 		string sql_doctor = "";
+		string sql_especialidad = "";
+		string sql_tipo_paciente = "";
+		string sql_tipo_admision = "";
+		string sql_citas_canceladas = "AND osiris_his_calendario_citaqx.cancelado = 'false' ";
 		
 		TreeStore treeViewEngineListaCitas;
 		
 		//Declaracion de ventana de error
 		protected Gtk.Window MyWinError;
 		protected Gtk.Window MyWin;
+		
+		TreeViewColumn col_agenda0;		CellRendererText cellrt0;
+		TreeViewColumn col_agenda1;		CellRendererText cellrt1;
+		TreeViewColumn col_agenda2;		CellRendererText cellrt2;
+		TreeViewColumn col_agenda3;		CellRendererText cellrt3;
+		TreeViewColumn col_agenda4;		CellRendererText cellrt4;
+		TreeViewColumn col_agenda5;		CellRendererText cellrt5;
+		TreeViewColumn col_agenda6;		CellRendererText cellrt6;
+		TreeViewColumn col_agenda7;		CellRendererText cellrt7;
+		TreeViewColumn col_agenda8;		CellRendererText cellrt8;
+		TreeViewColumn col_agenda9;		CellRendererText cellrt9;
+		TreeViewColumn col_agenda10;	CellRendererText cellrt10;
+		TreeViewColumn col_agenda11;	CellRendererText cellrt11;
+		TreeViewColumn col_agenda12;	CellRendererText cellrt12;
+		TreeViewColumn col_agenda13;	CellRendererText cellrt13;
+		TreeViewColumn col_agenda14;	CellRendererText cellrt14;
+		TreeViewColumn col_agenda15;	CellRendererText cellrt15;
+		TreeViewColumn col_agenda16;	CellRendererText cellrt16;
+		TreeViewColumn col_agenda17;	CellRendererText cellrt17;
+		TreeViewColumn col_agenda18;	CellRendererText cellrt18;
 		
 		class_conexion conexion_a_DB = new class_conexion();
 		class_buscador classfind_data = new class_buscador();
@@ -196,13 +237,20 @@ namespace osiris
 			calendar1.DaySelected += new EventHandler (on_dayselected_clicked);
 			calendar2.DaySelected += new EventHandler (on_dayselected_clicked);
 			calendar3.DaySelected += new EventHandler (on_dayselected_clicked);
-			
+						
 			// Action de the Click Consulta
+			checkbutton_canceladas.Clicked += new EventHandler(on_checkbutton_canceladas_clicked);
 			button_busca_medicos_consulta.Clicked += new EventHandler(on_button_busca_medicos_clicked);
 			checkbutton_filtro_doctor.Clicked += new EventHandler(on_checkbutton_filtro_doctor_clicked);
 			button_aplica_filtrodoctor.Clicked += new EventHandler(on_button_aplica_filtrodoctor_clicked);
-			button_imprimir_calendario.Clicked += new EventHandler(on_button_imprimir_calendario_clicked);
 			
+			checkbutton_filtro_especialidad.Clicked += new EventHandler(on_checkbutton_filtro_especialidad_clicked);
+			button_busca_especialidad_consulta.Clicked += new EventHandler(on_button_busca_especialidad_clicked);
+			button_aplica_filtroespecialidad.Clicked += new EventHandler(on_button_aplica_filtroespecialidad_clicked);
+				
+			button_cancela_cita.Clicked += new EventHandler(on_button_cancela_cita_clicked);
+			button_imprimir_calendario.Clicked += new EventHandler(on_button_imprimir_calendario_clicked);
+					
 			// Action the Click for Citas
 			button_guardar_cita.Clicked += new EventHandler(on_button_guardar_cita_clicked);
 			checkbutton_crea_cita.Clicked += new EventHandler(on_checkbutton_crea_cita_clicked);
@@ -214,10 +262,13 @@ namespace osiris
 			
 			button_busca_empresas_cita.Clicked += new EventHandler(on_button_busca_empresas_cita_clicked);
 			button_busca_medicos_cita.Clicked += new EventHandler(on_button_busca_medicos_clicked);
-			button_busca_especialidad_cita.Clicked += new EventHandler(on_button_busca_especialidad_cita_clicked);
+			button_busca_especialidad_cita.Clicked += new EventHandler(on_button_busca_especialidad_clicked);
+			llenado_tipo_paciente("","",combobox_tipo_paciente_consulta);
+			llenado_tipo_servicio("","",combobox_tipo_admision_consulta);
 			// Sale de la ventana
 			button_salir.Clicked += new EventHandler(on_cierraventanas_clicked);
 			
+			entry_numero_citas.ModifyBase(StateType.Normal, new Gdk.Color(244,231,86));		// cambia el fondo del entry
 			entry_numero_citapaciente.ModifyBase(StateType.Normal, new Gdk.Color(255,243,169));		// cambia el fondo del entry
 			entry_numero_citaquirofano.ModifyBase(StateType.Normal, new Gdk.Color(252,95,91));		// cambia el fondo del entry
 			
@@ -225,6 +276,7 @@ namespace osiris
 			fontdesc.Weight = Pango.Weight.Bold; // letra a negrita
 			entry_numero_citapaciente.ModifyFont(fontdesc);	// Cambia el tipo de letra del Entry
 			entry_numero_citaquirofano.ModifyFont(fontdesc);	// Cambia el tipo de letra del Entry
+			entry_numero_citas.ModifyFont(fontdesc);
 			
 			radiobutton_paciente_conexpe_cita.Sensitive = false;
 			radiobutton_paciente_sinexpe_cita.Sensitive = false;
@@ -250,8 +302,8 @@ namespace osiris
 			entry_motivoconsulta.Sensitive = false;
 			entry_observaciones_cita.Sensitive = false;
 			entry_referido_por_cita.Sensitive = false;
-			combobox_tipo_paciente.Sensitive = false;
-			combobox_tipo_admision.Sensitive = false;
+			combobox_tipo_paciente_cita.Sensitive = false;
+			combobox_tipo_admision_cita.Sensitive = false;
 			
 			statusbar_citasqx.Pop(0);
 			statusbar_citasqx.Push(1, "login: "+LoginEmpleado+"  |Usuario: "+NomEmpleado+" "+AppEmpleado+" "+ApmEmpleado);
@@ -279,156 +331,138 @@ namespace osiris
 			                                         typeof(string),typeof(string),typeof(string),typeof(string),
 			                                         typeof(string),typeof(string),typeof(string),typeof(string),
 			                                         typeof(string),typeof(string),typeof(string),typeof(string),
-			                                         typeof(string),typeof(string),typeof(string),typeof(string));
+			                                         typeof(string),typeof(string),typeof(string),typeof(string),typeof(bool));
 			treeview_lista_agenda.Model = treeViewEngineListaCitas;
 			treeview_lista_agenda.RulesHint = true;
 			
-			TreeViewColumn col_agenda0 = new TreeViewColumn();
-			CellRendererText cellrt0 = new CellRendererText();
+			col_agenda0 = new TreeViewColumn();		cellrt0 = new CellRendererText();
 			col_agenda0.Title = "Fecha";
 			col_agenda0.PackStart(cellrt0, true);
 			col_agenda0.AddAttribute (cellrt0, "text", 0);
 			col_agenda0.Resizable = true;
 			col_agenda0.SortColumnId = (int) Coldatos_agenda.col_agenda0;
 			
-			TreeViewColumn col_agenda1 = new TreeViewColumn();
-			CellRendererText cellrt1 = new CellRendererText();
+			col_agenda1 = new TreeViewColumn();		cellrt1 = new CellRendererText();
 			col_agenda1.Title = "Hora";
 			col_agenda1.PackStart(cellrt1, true);
 			col_agenda1.AddAttribute (cellrt1, "text", 1);
 			col_agenda1.Resizable = true;
 			col_agenda1.SortColumnId = (int) Coldatos_agenda.col_agenda1;
 			
-			TreeViewColumn col_agenda2 = new TreeViewColumn();
-			CellRendererText cellrt2 = new CellRendererText();
+			col_agenda2 = new TreeViewColumn();		cellrt2 = new CellRendererText();
 			col_agenda2.Title = "N° Cita";
 			col_agenda2.PackStart(cellrt2, true);
 			col_agenda2.AddAttribute (cellrt2, "text", 2);
 			col_agenda2.Resizable = true;
 			col_agenda2.SortColumnId = (int) Coldatos_agenda.col_agenda2;
 			
-			TreeViewColumn col_agenda3 = new TreeViewColumn();
-			CellRendererText cellrt3 = new CellRendererText();
+			col_agenda3 = new TreeViewColumn();		cellrt3 = new CellRendererText();
 			col_agenda3.Title = "N° Expediente";
 			col_agenda3.PackStart(cellrt3, true);
 			col_agenda3.AddAttribute (cellrt3, "text", 3);
 			col_agenda3.Resizable = true;
 			col_agenda3.SortColumnId = (int) Coldatos_agenda.col_agenda3;
 			
-			TreeViewColumn col_agenda4 = new TreeViewColumn();
-			CellRendererText cellrt4 = new CellRendererText();
+			col_agenda4 = new TreeViewColumn();		cellrt4 = new CellRendererText();
 			col_agenda4.Title = "Paciente";
 			col_agenda4.PackStart(cellrt1, true);
 			col_agenda4.AddAttribute (cellrt1, "text", 4);
 			col_agenda4.Resizable = true;
 			col_agenda4.SortColumnId = (int) Coldatos_agenda.col_agenda4;
             
-			TreeViewColumn col_agenda5 = new TreeViewColumn();
-			CellRendererText cellrt5 = new CellRendererText();
+			col_agenda5 = new TreeViewColumn();		cellrt5 = new CellRendererText();
 			col_agenda5.Title = "Edad";
 			col_agenda5.PackStart(cellrt5, true);
 			col_agenda5.AddAttribute (cellrt5, "text", 5);
 			col_agenda5.Resizable = true;
 			col_agenda5.SortColumnId = (int) Coldatos_agenda.col_agenda5;
 			
-			TreeViewColumn col_agenda6 = new TreeViewColumn();
-			CellRendererText cellrt6 = new CellRendererText();
+			col_agenda6 = new TreeViewColumn();		cellrt6 = new CellRendererText();
 			col_agenda6.Title = "Telefonos";
 			col_agenda6.PackStart(cellrt6, true);
 			col_agenda6.AddAttribute (cellrt6, "text", 6);
 			col_agenda6.Resizable = true;
 			col_agenda6.SortColumnId = (int) Coldatos_agenda.col_agenda6;
 			
-			TreeViewColumn col_agenda7 = new TreeViewColumn();
-			CellRendererText cellrt7 = new CellRendererText();
+			col_agenda7 = new TreeViewColumn();		cellrt7 = new CellRendererText();
 			col_agenda7.Title = "email";
 			col_agenda7.PackStart(cellrt7, true);
 			col_agenda7.AddAttribute (cellrt7, "text", 7);
 			col_agenda7.Resizable = true;
 			col_agenda7.SortColumnId = (int) Coldatos_agenda.col_agenda7;
 			
-			TreeViewColumn col_agenda8 = new TreeViewColumn();
-			CellRendererText cellrt8 = new CellRendererText();
+			col_agenda8 = new TreeViewColumn();		cellrt8 = new CellRendererText();
 			col_agenda8.Title = "Tipo Paciente";
 			col_agenda8.PackStart(cellrt8, true);
 			col_agenda8.AddAttribute (cellrt8, "text", 8);
 			col_agenda8.Resizable = true;
 			col_agenda8.SortColumnId = (int) Coldatos_agenda.col_agenda8;
 			
-			TreeViewColumn col_agenda9 = new TreeViewColumn();
-			CellRendererText cellrt9 = new CellRendererText();
+			col_agenda9 = new TreeViewColumn();		cellrt9 = new CellRendererText();
 			col_agenda9.Title = "Tipo Servicio";
 			col_agenda9.PackStart(cellrt9, true);
 			col_agenda9.AddAttribute (cellrt9, "text", 9);
 			col_agenda9.Resizable = true;
 			col_agenda9.SortColumnId = (int) Coldatos_agenda.col_agenda9;
 			
-			TreeViewColumn col_agenda10 = new TreeViewColumn();
-			CellRendererText cellrt10 = new CellRendererText();
+			col_agenda10 = new TreeViewColumn();	cellrt10 = new CellRendererText();
 			col_agenda10.Title = "Consultorio/QX.";
 			col_agenda10.PackStart(cellrt10, true);
 			col_agenda10.AddAttribute (cellrt10, "text", 10);
 			col_agenda10.Resizable = true;
 			col_agenda10.SortColumnId = (int) Coldatos_agenda.col_agenda10;
 			
-			TreeViewColumn col_agenda11 = new TreeViewColumn();
-			CellRendererText cellrt11 = new CellRendererText();
+			col_agenda11 = new TreeViewColumn();	cellrt11 = new CellRendererText();
 			col_agenda11.Title = "Doctor";
 			col_agenda11.PackStart(cellrt11, true);
 			col_agenda11.AddAttribute (cellrt11, "text", 11);
 			col_agenda11.Resizable = true;
 			col_agenda11.SortColumnId = (int) Coldatos_agenda.col_agenda11;
 			
-			TreeViewColumn col_agenda12 = new TreeViewColumn();
-			CellRendererText cellrt12 = new CellRendererText();
+			col_agenda12 = new TreeViewColumn();	cellrt12 = new CellRendererText();
 			col_agenda12.Title = "Sub-Especialidad";
 			col_agenda12.PackStart(cellrt12, true);
 			col_agenda12.AddAttribute (cellrt12, "text", 12);
 			col_agenda12.Resizable = true;
 			col_agenda12.SortColumnId = (int) Coldatos_agenda.col_agenda12;
 			
-			TreeViewColumn col_agenda13 = new TreeViewColumn();
-			CellRendererText cellrt13 = new CellRendererText();
+			col_agenda13 = new TreeViewColumn();	cellrt13 = new CellRendererText();
 			col_agenda13.Title = "Motivo de Consulta";
 			col_agenda13.PackStart(cellrt13, true);
 			col_agenda13.AddAttribute (cellrt13, "text", 13);
 			col_agenda13.Resizable = true;
 			col_agenda13.SortColumnId = (int) Coldatos_agenda.col_agenda13;
 						
-			TreeViewColumn col_agenda14 = new TreeViewColumn();
-			CellRendererText cellrt14 = new CellRendererText();
+			col_agenda14 = new TreeViewColumn();	cellrt14 = new CellRendererText();
 			col_agenda14.Title = "Observaciones";
 			col_agenda14.PackStart(cellrt14, true);
 			col_agenda14.AddAttribute (cellrt14, "text", 14);
 			col_agenda14.Resizable = true;
 			col_agenda14.SortColumnId = (int) Coldatos_agenda.col_agenda14;
 			
-			TreeViewColumn col_agenda15 = new TreeViewColumn();
-			CellRendererText cellrt15 = new CellRendererText();
+			col_agenda15 = new TreeViewColumn();	cellrt15 = new CellRendererText();
 			col_agenda15.Title = "Referido Por";
 			col_agenda15.PackStart(cellrt15, true);
 			col_agenda15.AddAttribute (cellrt15, "text", 15);
 			col_agenda15.Resizable = true;
 			col_agenda15.SortColumnId = (int) Coldatos_agenda.col_agenda15;
 			
-			TreeViewColumn col_agenda16 = new TreeViewColumn();
-			CellRendererText cellrt16 = new CellRendererText();
+			col_agenda16 = new TreeViewColumn();	cellrt16 = new CellRendererText();
 			col_agenda16.Title = "Institu/Empre/Asegu";
 			col_agenda16.PackStart(cellrt16, true);
 			col_agenda16.AddAttribute (cellrt16, "text", 16);
 			col_agenda16.Resizable = true;
 			col_agenda16.SortColumnId = (int) Coldatos_agenda.col_agenda16;
 			
-			TreeViewColumn col_agenda17 = new TreeViewColumn();
-			CellRendererText cellrt17 = new CellRendererText();
+			col_agenda17 = new TreeViewColumn();	cellrt17 = new CellRendererText();
 			col_agenda17.Title = "Agendado por";
 			col_agenda17.PackStart(cellrt17, true);
 			col_agenda17.AddAttribute (cellrt17, "text", 17);
 			col_agenda17.Resizable = true;
 			col_agenda17.SortColumnId = (int) Coldatos_agenda.col_agenda17;
 			
-			TreeViewColumn col_agenda18 = new TreeViewColumn();
-			CellRendererText cellrt18 = new CellRendererText();
+			col_agenda18 = new TreeViewColumn();
+			cellrt18 = new CellRendererText();
 			col_agenda18.Title = "Fecha/Hora";
 			col_agenda18.PackStart(cellrt18, true);
 			col_agenda18.AddAttribute (cellrt18, "text", 18);
@@ -488,9 +522,7 @@ namespace osiris
 			}
 			//Console.WriteLine (activatedCalendar.Name.ToString());
 			//Console.WriteLine (activatedCalendar.GetDate ().ToString ("yyyy/MM/dd"));			
-		}
-		
-		
+		}		
 		
 		// Creation the cita patiente 
 		void on_checkbutton_crea_cita_clicked(object obj, EventArgs args)
@@ -524,14 +556,14 @@ namespace osiris
 					radiobutton_paciente_conexpe_cita.Sensitive = true;
 					radiobutton_paciente_sinexpe_cita.Sensitive = true;
 					button_guardar_cita.Sensitive = true;
-					combobox_tipo_paciente.Sensitive = true;
-					combobox_tipo_admision.Sensitive = true;
+					combobox_tipo_paciente_cita.Sensitive = true;
+					combobox_tipo_admision_cita.Sensitive = true;
 					button_busca_medicos_cita.Sensitive = true;
 					button_busca_especialidad_cita.Sensitive = true;
 					button_busca_empresas_cita.Sensitive = true;
 					llenado_estadocivil("","");
-					llenado_tipo_paciente("","");
-					llenado_tipo_servicio("","");
+					llenado_tipo_paciente("","",combobox_tipo_paciente_cita);
+					llenado_tipo_servicio("","",combobox_tipo_admision_cita);
 					llena_horas_citas();
 				}else{
 					checkbutton_crea_cita.Active = false;
@@ -547,8 +579,8 @@ namespace osiris
 				radiobutton_paciente_conexpe_cita.Sensitive = false;
 				radiobutton_paciente_sinexpe_cita.Sensitive = false;
 				button_guardar_cita.Sensitive = false;
-				combobox_tipo_paciente.Sensitive = false;
-				combobox_tipo_admision.Sensitive = false;
+				combobox_tipo_paciente_cita.Sensitive = false;
+				combobox_tipo_admision_cita.Sensitive = false;
 				button_busca_medicos_cita.Sensitive = false;
 				button_busca_especialidad_cita.Sensitive = false;
 				button_busca_empresas_cita.Sensitive = false;
@@ -612,7 +644,6 @@ namespace osiris
 					sexopaciente_cita = "H";
 				}
 			}
-			Console.WriteLine(sexopaciente_cita);
 		}
 		
 		// Estado Civil		
@@ -654,9 +685,10 @@ namespace osiris
 				estadocivil_cita = (string) combobox_estado_civil.Model.GetValue(iter,0);
 			}
 		}
-		void llenado_tipo_paciente(string tipo_, string descripcion_)
+		void llenado_tipo_paciente(string tipo_, string descripcion_, object sender)
 		{
 			// Tipos de Paciente
+			ComboBox combobox_tipo_paciente = sender as ComboBox;
 			combobox_tipo_paciente.Clear();
 			CellRendererText cell1 = new CellRendererText();
 			combobox_tipo_paciente.PackStart(cell1, true);
@@ -693,27 +725,40 @@ namespace osiris
 			if (store1.GetIterFirst(out iter1)){
 				combobox_tipo_paciente.SetActiveIter (iter1);
 			}
-			combobox_tipo_paciente.Changed += new EventHandler (onComboBoxChanged_tipopaciente);
+			combobox_tipo_paciente.Changed += new EventHandler (onComboBoxChanged_tipopaciente);			
 		}
 		
 		void onComboBoxChanged_tipopaciente(object obj, EventArgs args)
-		{
+		{			
 			ComboBox combobox_tipo_paciente = obj as ComboBox;
+			Console.WriteLine(combobox_tipo_paciente.Name.ToString());
 			if (obj == null){
 				return;
 			}
 			TreeIter iter;
 			if (combobox_tipo_paciente.GetActiveIter (out iter)){
-				tipopaciente = (string) combobox_tipo_paciente.Model.GetValue(iter,0);
-				id_tipopaciente = (int) combobox_tipo_paciente.Model.GetValue(iter,1);
-				entry_id_empaseg_cita.Text = "1";
-				entry_nombre_empaseg_cita.Text = "";
-			}	
+				if(combobox_tipo_paciente.Name.ToString() == "combobox_tipo_paciente_cita"){				
+					tipopaciente = (string) combobox_tipo_paciente.Model.GetValue(iter,0);
+					id_tipopaciente = (int) combobox_tipo_paciente.Model.GetValue(iter,1);
+					entry_id_empaseg_cita.Text = "1";
+					entry_nombre_empaseg_cita.Text = "";
+				}
+				if(combobox_tipo_paciente.Name.ToString() == "combobox_tipo_paciente_consulta"){
+					if(checkbutton_tipo_paciente_consulta.Active == true){
+						sql_tipo_paciente = " AND osiris_his_tipo_pacientes.id_tipo_paciente = '"+combobox_tipo_paciente.Model.GetValue(iter,1).ToString()+"' ";
+						llenado_lista_citas("");
+					}else{
+						sql_tipo_paciente = "";
+						llenado_lista_citas("");
+					}
+				}
+			}
 		}
 		
-		void llenado_tipo_servicio(string tipo_, string descripcion_)
+		void llenado_tipo_servicio(string tipo_, string descripcion_, object sender)
 		{
 			// Llenado de combobox con los tipos de Admisiones y centros de costos
+			ComboBox combobox_tipo_admision = sender as ComboBox;
 			combobox_tipo_admision.Clear();
 			CellRendererText cell2 = new CellRendererText();
 			combobox_tipo_admision.PackStart(cell2, true);
@@ -763,13 +808,25 @@ namespace osiris
 		void onComboBoxChanged_tipo_admision (object obj, EventArgs args)
 		{
 			ComboBox combobox_tipo_admision = obj as ComboBox;
+			Console.WriteLine(combobox_tipo_admision.Name.ToString());
 			if (obj == null){
 				return;
 			}
 			TreeIter iter;
 			if (combobox_tipo_admision.GetActiveIter (out iter)){
-				tipointernamiento = (string) combobox_tipo_admision.Model.GetValue(iter,0);//Console.WriteLine(tipointernamiento);
-				id_tipointernamiento = (int) combobox_tipo_admision.Model.GetValue(iter,1);//Console.WriteLine(idtipointernamiento);
+				if(combobox_tipo_admision.Name.ToString() == "combobox_tipo_admision_cita"){
+					tipointernamiento = (string) combobox_tipo_admision.Model.GetValue(iter,0);//Console.WriteLine(tipointernamiento);
+					id_tipointernamiento = (int) combobox_tipo_admision.Model.GetValue(iter,1);//Console.WriteLine(idtipointernamiento);
+				}
+				if(combobox_tipo_admision.Name.ToString() == "combobox_tipo_admision_consulta"){
+					if(checkbutton_tipo_admision_consulta.Active == true){
+						sql_tipo_admision = " AND osiris_his_tipo_admisiones.id_tipo_admisiones = '"+combobox_tipo_admision.Model.GetValue(iter,1).ToString()+"' ";
+						llenado_lista_citas("");
+					}else{
+						sql_tipo_admision = "";
+						llenado_lista_citas("");
+					}
+				}
 			}
 		}
 		
@@ -861,8 +918,7 @@ namespace osiris
 			// Los parametros de del SQL siempre es primero cuando busca todo y la otra por expresion
 			// la clase recibe tambien el orden del query
 			// es importante definir que tipo de busqueda es para que los objetos caigan ahi mismo
-			if (id_tipopaciente != 400){
-				
+			if (id_tipopaciente != 400){				
 				Console.WriteLine("Empresas");
 				object[] parametros_objetos = {entry_id_empaseg_cita,entry_nombre_empaseg_cita};
 				string[] parametros_sql = {"SELECT * FROM osiris_empresas WHERE id_tipo_paciente = '"+id_tipopaciente.ToString().Trim()+"' ",															
@@ -888,7 +944,7 @@ namespace osiris
 		{
 			//Gtk.ComboBox hora_minutos_cita = (Gtk.ComboBox) sender;
 			Gtk.Button button_busca_medicos = sender as Gtk.Button;
-			Console.WriteLine(button_busca_medicos.Name.ToString());
+			//Console.WriteLine(button_busca_medicos.Name.ToString());
 			if(button_busca_medicos.Name.ToString() == "button_busca_medicos_cita"){
 				object[] parametros_objetos = {entry_id_doctor_cita,entry_nombre_doctor_cita};
 				string[] parametros_sql = {"SELECT * FROM osiris_his_medicos WHERE medico_activo = 'true' ",															
@@ -905,13 +961,24 @@ namespace osiris
 			}
 		}
 		
-		void on_button_busca_especialidad_cita_clicked(object sender, EventArgs args)
+		void on_button_busca_especialidad_clicked(object sender, EventArgs args)
 		{
-			object[] parametros_objetos = {entry_id_especialidad_cita,entry_nombre_especialidad_cita};
-			string[] parametros_sql = {"SELECT * FROM osiris_his_tipo_especialidad ",															
+			Gtk.Button button_busca_especialidad = sender as Gtk.Button;
+			if(button_busca_especialidad.Name.ToString()== "button_busca_especialidad_cita"){
+				object[] parametros_objetos = {entry_id_especialidad_cita,entry_nombre_especialidad_cita};
+				string[] parametros_sql = {"SELECT * FROM osiris_his_tipo_especialidad ",															
 										"SELECT * FROM osiris_his_tipo_especialidad "+
 										"WHERE descripcion_especialidad LIKE '%"};			
-			classfind_data.buscandor(parametros_objetos,parametros_sql,"find_especialidad_cita"," ORDER BY descripcion_especialidad","%' ",0);
+				classfind_data.buscandor(parametros_objetos,parametros_sql,"find_especialidad_cita"," ORDER BY descripcion_especialidad","%' ",0);
+			}
+			if(button_busca_especialidad.Name.ToString()== "button_busca_especialidad_consulta"){
+				object[] parametros_objetos = {entry_id_especialidad_consulta,entry_nombre_especialidad_consulta};
+				string[] parametros_sql = {"SELECT * FROM osiris_his_tipo_especialidad ",															
+										"SELECT * FROM osiris_his_tipo_especialidad "+
+										"WHERE descripcion_especialidad LIKE '%"};			
+				classfind_data.buscandor(parametros_objetos,parametros_sql,"find_especialidad_consulta"," ORDER BY descripcion_especialidad","%' ",0);
+			}
+			
 		}
 		
 		void on_checkbutton_filtro_doctor_clicked(object sender, EventArgs args)
@@ -920,8 +987,10 @@ namespace osiris
 				if(entry_fecha_seleccionada.Text.ToString().Trim() != ""){
 					if (entry_id_doctor_consulta.Text.ToString().Trim() != ""){
 						sql_doctor = " AND osiris_his_calendario_citaqx.id_medico = '"+entry_id_doctor_consulta.Text.ToString().Trim()+"' ";
+						llenado_lista_citas("");
 					}else{
-						sql_doctor = "";	
+						sql_doctor = "";
+						llenado_lista_citas("");
 					}
 				}else{
 					MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
@@ -933,21 +1002,71 @@ namespace osiris
 				}
 			}else{
 				sql_doctor = "";
+				llenado_lista_citas("");
 			}			
 		}
 		
 		void on_button_aplica_filtrodoctor_clicked(object sender, EventArgs args)
 		{
-			if(entry_id_doctor_consulta.Text.ToString().Trim() != ""){
-				sql_doctor = " AND osiris_his_calendario_citaqx.id_medico = '"+entry_id_doctor_consulta.Text.ToString().Trim()+"' ";
-				llenado_lista_citas("");
+			if(checkbutton_filtro_doctor.Active == true){
+				if(entry_id_doctor_consulta.Text.ToString().Trim() != ""){
+					sql_doctor = " AND osiris_his_calendario_citaqx.id_medico = '"+entry_id_doctor_consulta.Text.ToString().Trim()+"' ";
+					llenado_lista_citas("");
+				}else{
+					MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+													MessageType.Error, 
+													ButtonsType.Close, "Debe seleccionar un Doctor para aplicar el filtro...");
+					msgBoxError.Run ();						msgBoxError.Destroy();
+				}
 			}else{
-				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
-												MessageType.Error, 
-												ButtonsType.Close, "Debe seleccionar un Doctor para aplicar el filtro...");
-				msgBoxError.Run ();						msgBoxError.Destroy();
+				sql_doctor = "";
+				llenado_lista_citas("");
 			}
 		}
+		
+		void on_checkbutton_filtro_especialidad_clicked(object sender, EventArgs args)
+		{
+			if(checkbutton_filtro_especialidad.Active == true){
+				if(entry_fecha_seleccionada.Text.ToString().Trim() != ""){
+					if (entry_id_especialidad_consulta.Text.ToString().Trim() != ""){
+						sql_especialidad = " AND osiris_his_tipo_especialidad.id_especialidad = '"+entry_id_especialidad_consulta.Text.ToString().Trim()+"' ";
+						llenado_lista_citas("");
+					}else{
+						sql_especialidad = "";
+						llenado_lista_citas("");
+					}
+				}else{
+					MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+											MessageType.Error, 
+											ButtonsType.Close, "Debe seleccionar una fecha para aplicar el filtro...");
+					msgBoxError.Run ();						msgBoxError.Destroy();
+					checkbutton_filtro_doctor.Active = false;
+					sql_especialidad = "";
+				}
+			}else{
+				sql_especialidad = "";
+				llenado_lista_citas("");
+			}
+		}
+		
+		void on_button_aplica_filtroespecialidad_clicked(object sender, EventArgs args)
+		{
+			if(checkbutton_filtro_especialidad.Active == true){
+				if(entry_id_especialidad_consulta.Text.ToString().Trim() != ""){
+					sql_especialidad = " AND osiris_his_tipo_especialidad.id_especialidad = '"+entry_id_especialidad_consulta.Text.ToString().Trim()+"' ";
+					llenado_lista_citas("");
+				}else{
+					MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+													MessageType.Error, 
+													ButtonsType.Close, "Debe seleccionar una Especialidad para aplicar el filtro...");
+					msgBoxError.Run ();						msgBoxError.Destroy();
+				}
+			}else{
+				sql_especialidad = "";
+				llenado_lista_citas("");
+			}
+		}
+		
 		
 		void llenado_lista_citas(string type_consulta_sql)
 		{
@@ -955,6 +1074,7 @@ namespace osiris
 			string telefonopaciente;
 			string emailpaciente;
 			string emprinstitucion_aseguradora;
+			contador_numerocitas = 0;
 			treeViewEngineListaCitas.Clear();
 			NpgsqlConnection conexion; 
 			conexion = new NpgsqlConnection (connectionString+nombrebd);
@@ -963,11 +1083,13 @@ namespace osiris
 				conexion.Open ();
 				NpgsqlCommand comando; 
 				comando = conexion.CreateCommand ();
-				comando.CommandText = sql_calendario_citaqx+sql_fecha1+sql_fecha2+sql_doctor+" ORDER BY to_char(fecha_programacion,'yyyy-MM-dd'),hora_programacion ASC;";
+				comando.CommandText = sql_calendario_citaqx+sql_fecha1+sql_fecha2+sql_doctor+sql_tipo_paciente+sql_tipo_admision+sql_especialidad+
+									sql_citas_canceladas+" ORDER BY to_char(fecha_programacion,'yyyy-MM-dd'),hora_programacion ASC;";
 				
-				Console.WriteLine(comando.CommandText);
+				//Console.WriteLine(comando.CommandText);
 				NpgsqlDataReader lector = comando.ExecuteReader ();				
-				while (lector.Read()){					
+				while (lector.Read()){
+					contador_numerocitas += 1;
 					if ((int) lector["pidpaciente"] == 0){
 						nombrepaciente = (string) lector["nombre_paciente"].ToString().Trim();
 						telefonopaciente = (string) lector["celular1paciente_cita"].ToString().Trim();
@@ -1004,9 +1126,10 @@ namespace osiris
 					                                      emprinstitucion_aseguradora,
 					                                      (string) lector["id_quiencreo_cita"],
 					                                      (string) lector["fechahoracreacion"].ToString(),
-					                                      (string) lector["idsecuencia"].ToString().Trim());
-					
-					//motivo_consulta,osiris_his_calendario_citaqx.observaciones AS observaciones_citaqx,referido_por,osiris_his_calendario_citaqx.cancelado,"+
+					                                      (string) lector["idsecuencia"].ToString().Trim(),
+					                                      (bool) lector["cancelacitaqx"]);
+					col_agenda0.SetCellDataFunc(cellrt0, new Gtk.TreeCellDataFunc(cambia_colores_fila));
+					col_agenda1.SetCellDataFunc(cellrt1, new Gtk.TreeCellDataFunc(cambia_colores_fila));
 				}
 			}catch (NpgsqlException ex){
 	   				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
@@ -1014,6 +1137,16 @@ namespace osiris
 					msgBoxError.Run ();			msgBoxError.Destroy();
 			}
 			conexion.Close ();
+			entry_numero_citas.Text = contador_numerocitas.ToString().Trim();
+		}
+		
+		void cambia_colores_fila(Gtk.TreeViewColumn column, Gtk.CellRenderer cell, Gtk.TreeModel model, Gtk.TreeIter iter)
+		{
+			if ((bool) treeview_lista_agenda.Model.GetValue (iter,20) == false) { 
+				(cell as Gtk.CellRendererText).Foreground = "black";
+			}else{
+				(cell as Gtk.CellRendererText).Foreground = "red";
+			}
 		}
 		
 		void on_button_guardar_cita_clicked(object sender, EventArgs args)
@@ -1181,7 +1314,8 @@ namespace osiris
 				comando = conexion.CreateCommand ();
 				comando.CommandText = "SELECT * FROM osiris_his_calendario_citaqx WHERE fecha_programacion = '"+entry_fecha_cita.Text.ToString().Trim()+"' "+
 							"AND hora_programacion = '"+hora_cita_qx+":"+minutos_cita_qx+"' "+
-							"AND id_medico = '"+entry_id_doctor_cita.Text.ToString().Trim()+"';";
+							"AND id_medico = '"+entry_id_doctor_cita.Text.ToString().Trim()+"' "+
+							"AND osiris_his_calendario_citaqx.cancelado = 'false';";
 				
 				Console.WriteLine(comando.CommandText);
 				NpgsqlDataReader lector = comando.ExecuteReader ();				
@@ -1195,6 +1329,72 @@ namespace osiris
 			}
 			conexion.Close ();
 			return response_validation;	
+		}
+		
+		void on_button_cancela_cita_clicked(object sender, EventArgs args)
+		{
+			Glade.XML gxml = new Glade.XML (null, "registro_admision.glade", "cancelador_folios", null);
+			gxml.Autoconnect (this);
+			cancelador_folios.Show();
+			cancelador_folios.Title = "CANCELACION DE CITAS";			
+			entry_folio.IsEditable = false;
+			label247.Text = "Numero de Cita";
+			button_cancelar.Clicked += new EventHandler(on_button_cancelar_clicked);
+			button_salir.Clicked += new EventHandler(on_cierraventanas_clicked);
+			TreeIter iter;
+ 			TreeModel model;
+ 			if (treeview_lista_agenda.Selection.GetSelected (out model, out iter)){
+				entry_folio.Text = (string) treeview_lista_agenda.Model.GetValue(iter,2);
+			}
+		}
+		
+		void on_button_cancelar_clicked(object sender, EventArgs args)
+		{
+			TreeIter iter;
+ 			TreeModel model;
+ 			if (treeview_lista_agenda.Selection.GetSelected (out model, out iter)){
+				MessageDialog msgBox = new MessageDialog (MyWin,DialogFlags.Modal,
+					MessageType.Question,ButtonsType.YesNo,"¿ Esta seguro de querer CANCELAR esta CITA ?");
+				ResponseType miResultado = (ResponseType)
+				msgBox.Run ();				msgBox.Destroy();
+	 			if (miResultado == ResponseType.Yes){
+					NpgsqlConnection conexion; 
+					conexion = new NpgsqlConnection (connectionString+nombrebd );
+				
+					// Verifica que la base de datos este conectada
+					try{
+						conexion.Open ();
+						NpgsqlCommand comando; 
+						comando = conexion.CreateCommand ();
+						comando.CommandText = "UPDATE osiris_his_calendario_citaqx "+
+										"SET cancelado = 'true' , "+
+										"fechahora_cancelacion = '"+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"', "+
+										"id_quien_cancelo = '"+LoginEmpleado+"', "+		
+										"motivo_cancelacion_citaqx = '"+entry_motivo.Text.ToString().Trim()+"' "+
+				 						"WHERE id_secuencia =  '"+(string) treeview_lista_agenda.Model.GetValue (iter,19)+"';";
+						comando.ExecuteNonQuery();					comando.Dispose();
+						contador_numerocitas += -1;
+						entry_numero_citas.Text = contador_numerocitas.ToString().Trim();
+						treeViewEngineListaCitas.Remove (ref iter);
+						cancelador_folios.Destroy();						
+					}catch (NpgsqlException ex){
+		   				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+											MessageType.Error, ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
+						msgBoxError.Run ();				msgBoxError.Destroy();					
+					}
+					conexion.Close ();
+				}
+			}
+		}
+		
+		void on_checkbutton_canceladas_clicked(object sender, EventArgs args)
+		{
+			if(checkbutton_canceladas.Active == true){
+				sql_citas_canceladas = "";
+			}else{
+				sql_citas_canceladas = "AND osiris_his_calendario_citaqx.cancelado = 'false' ";
+			}
+			llenado_lista_citas("");
 		}
 		
 		void on_button_imprimir_calendario_clicked(object sender, EventArgs args)

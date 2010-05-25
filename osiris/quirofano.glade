@@ -2801,6 +2801,18 @@ Solicitud</property>
                                                 <property name="position">2</property>
                                               </packing>
                                             </child>
+                                            <child>
+                                              <widget class="GtkCheckButton" id="checkbutton_canceladas">
+                                                <property name="label" translatable="yes">Incluir citas Canceladas</property>
+                                                <property name="visible">True</property>
+                                                <property name="can_focus">True</property>
+                                                <property name="receives_default">False</property>
+                                                <property name="draw_indicator">True</property>
+                                              </widget>
+                                              <packing>
+                                                <property name="position">3</property>
+                                              </packing>
+                                            </child>
                                           </widget>
                                           <packing>
                                             <property name="position">0</property>
@@ -2812,7 +2824,7 @@ Solicitud</property>
                                             <child>
                                               <widget class="GtkLabel" id="label192">
                                                 <property name="visible">True</property>
-                                                <property name="label" translatable="yes">&lt;b&gt;VISTA        &lt;/b&gt;</property>
+                                                <property name="label" translatable="yes">&lt;b&gt;F I L T R O S &lt;/b&gt;</property>
                                                 <property name="use_markup">True</property>
                                               </widget>
                                               <packing>
@@ -2822,51 +2834,11 @@ Solicitud</property>
                                               </packing>
                                             </child>
                                             <child>
-                                              <widget class="GtkRadioButton" id="radiobutton3">
-                                                <property name="label" translatable="yes">Dia</property>
+                                              <widget class="GtkFixed" id="fixed1">
                                                 <property name="visible">True</property>
-                                                <property name="can_focus">True</property>
-                                                <property name="receives_default">False</property>
-                                                <property name="use_underline">True</property>
-                                                <property name="active">True</property>
-                                                <property name="draw_indicator">True</property>
                                               </widget>
                                               <packing>
-                                                <property name="expand">False</property>
-                                                <property name="fill">False</property>
                                                 <property name="position">1</property>
-                                              </packing>
-                                            </child>
-                                            <child>
-                                              <widget class="GtkRadioButton" id="radiobutton4">
-                                                <property name="label" translatable="yes">Semana</property>
-                                                <property name="visible">True</property>
-                                                <property name="can_focus">True</property>
-                                                <property name="receives_default">False</property>
-                                                <property name="use_underline">True</property>
-                                                <property name="draw_indicator">True</property>
-                                                <property name="group">radiobutton3</property>
-                                              </widget>
-                                              <packing>
-                                                <property name="expand">False</property>
-                                                <property name="fill">False</property>
-                                                <property name="position">2</property>
-                                              </packing>
-                                            </child>
-                                            <child>
-                                              <widget class="GtkRadioButton" id="radiobutton5">
-                                                <property name="label" translatable="yes">Mes</property>
-                                                <property name="visible">True</property>
-                                                <property name="can_focus">True</property>
-                                                <property name="receives_default">False</property>
-                                                <property name="use_underline">True</property>
-                                                <property name="draw_indicator">True</property>
-                                                <property name="group">radiobutton3</property>
-                                              </widget>
-                                              <packing>
-                                                <property name="expand">False</property>
-                                                <property name="fill">False</property>
-                                                <property name="position">3</property>
                                               </packing>
                                             </child>
                                           </widget>
@@ -3054,7 +3026,7 @@ Solicitud</property>
                                               </packing>
                                             </child>
                                             <child>
-                                              <widget class="GtkButton" id="button_salir3">
+                                              <widget class="GtkButton" id="button_busca_especialidad_consulta">
                                                 <property name="width_request">90</property>
                                                 <property name="visible">True</property>
                                                 <property name="can_focus">True</property>
@@ -3103,7 +3075,7 @@ Solicitud</property>
                                               </packing>
                                             </child>
                                             <child>
-                                              <widget class="GtkButton" id="button_salir4">
+                                              <widget class="GtkButton" id="button_aplica_filtroespecialidad">
                                                 <property name="width_request">95</property>
                                                 <property name="visible">True</property>
                                                 <property name="can_focus">True</property>
@@ -3301,9 +3273,9 @@ Solicitud</property>
                                           <widget class="GtkHBox" id="hbox12">
                                             <property name="visible">True</property>
                                             <child>
-                                              <widget class="GtkCheckButton" id="checkbutton4">
+                                              <widget class="GtkCheckButton" id="checkbutton_tipo_paciente_consulta">
                                                 <property name="label" translatable="yes">Tipo de Paciente</property>
-                                                <property name="width_request">70</property>
+                                                <property name="width_request">90</property>
                                                 <property name="visible">True</property>
                                                 <property name="can_focus">True</property>
                                                 <property name="receives_default">False</property>
@@ -3314,7 +3286,7 @@ Solicitud</property>
                                               </packing>
                                             </child>
                                             <child>
-                                              <widget class="GtkComboBox" id="combobox1">
+                                              <widget class="GtkComboBox" id="combobox_tipo_paciente_consulta">
                                                 <property name="width_request">180</property>
                                                 <property name="visible">True</property>
                                               </widget>
@@ -3323,12 +3295,33 @@ Solicitud</property>
                                               </packing>
                                             </child>
                                             <child>
-                                              <widget class="GtkFixed" id="fixed1">
-                                                <property name="width_request">180</property>
+                                              <widget class="GtkLabel" id="label99">
                                                 <property name="visible">True</property>
+                                                <property name="label" translatable="yes">Numero de Citas :</property>
                                               </widget>
                                               <packing>
                                                 <property name="position">2</property>
+                                              </packing>
+                                            </child>
+                                            <child>
+                                              <widget class="GtkEntry" id="entry_numero_citas">
+                                                <property name="width_request">45</property>
+                                                <property name="visible">True</property>
+                                                <property name="can_focus">True</property>
+                                                <property name="editable">False</property>
+                                                <property name="invisible_char">&#x25CF;</property>
+                                              </widget>
+                                              <packing>
+                                                <property name="position">3</property>
+                                              </packing>
+                                            </child>
+                                            <child>
+                                              <widget class="GtkFixed" id="fixed8">
+                                                <property name="width_request">20</property>
+                                                <property name="visible">True</property>
+                                              </widget>
+                                              <packing>
+                                                <property name="position">4</property>
                                               </packing>
                                             </child>
                                           </widget>
@@ -3340,9 +3333,9 @@ Solicitud</property>
                                           <widget class="GtkHBox" id="hbox13">
                                             <property name="visible">True</property>
                                             <child>
-                                              <widget class="GtkCheckButton" id="checkbutton5">
+                                              <widget class="GtkCheckButton" id="checkbutton_tipo_admision_consulta">
                                                 <property name="label" translatable="yes">Tipo de Servicio</property>
-                                                <property name="width_request">70</property>
+                                                <property name="width_request">90</property>
                                                 <property name="visible">True</property>
                                                 <property name="can_focus">True</property>
                                                 <property name="receives_default">False</property>
@@ -3353,7 +3346,7 @@ Solicitud</property>
                                               </packing>
                                             </child>
                                             <child>
-                                              <widget class="GtkComboBox" id="combobox2">
+                                              <widget class="GtkComboBox" id="combobox_tipo_admision_consulta">
                                                 <property name="width_request">180</property>
                                                 <property name="visible">True</property>
                                               </widget>
@@ -3368,6 +3361,22 @@ Solicitud</property>
                                               </widget>
                                               <packing>
                                                 <property name="position">2</property>
+                                              </packing>
+                                            </child>
+                                            <child>
+                                              <widget class="GtkFixed" id="fixed17">
+                                                <property name="visible">True</property>
+                                              </widget>
+                                              <packing>
+                                                <property name="position">3</property>
+                                              </packing>
+                                            </child>
+                                            <child>
+                                              <widget class="GtkFixed" id="fixed18">
+                                                <property name="visible">True</property>
+                                              </widget>
+                                              <packing>
+                                                <property name="position">4</property>
                                               </packing>
                                             </child>
                                           </widget>
@@ -4311,7 +4320,7 @@ Cita&lt;/b&gt;</property>
                                           </packing>
                                         </child>
                                         <child>
-                                          <widget class="GtkComboBox" id="combobox_tipo_paciente">
+                                          <widget class="GtkComboBox" id="combobox_tipo_paciente_cita">
                                             <property name="width_request">110</property>
                                             <property name="visible">True</property>
                                           </widget>
@@ -4330,7 +4339,7 @@ Cita&lt;/b&gt;</property>
                                           </packing>
                                         </child>
                                         <child>
-                                          <widget class="GtkComboBox" id="combobox_tipo_admision">
+                                          <widget class="GtkComboBox" id="combobox_tipo_admision_cita">
                                             <property name="width_request">110</property>
                                             <property name="visible">True</property>
                                           </widget>

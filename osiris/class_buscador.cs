@@ -127,6 +127,10 @@ namespace osiris
 		Gtk.Entry entry_id_especialidad_cita = null;
 		Gtk.Entry entry_nombre_especialidad_cita = null;
 		
+		// Busqueda Especilidad en cita
+		Gtk.Entry entry_id_especialidad_consulta = null;
+		Gtk.Entry entry_nombre_especialidad_consulta = null;
+		
 		//Busqueda de paciente_cita
 		Gtk.Entry entry_pid_paciente_cita = null;
 		Gtk.Entry entry_nombre_paciente_cita1 = null;
@@ -142,8 +146,12 @@ namespace osiris
 		int typeseek = 0;
 		string string_sql="";
 		//declaracion de columnas y celdas de treeview de busqueda
-		TreeViewColumn col_idlista;		CellRendererText cellrt0;
-		TreeViewColumn col_descripcion;	CellRendererText cellrt1;
+		TreeViewColumn col_buscador0;	CellRendererText cellrt0;
+		TreeViewColumn col_buscador1;	CellRendererText cellrt1;
+		TreeViewColumn col_buscador2; 	CellRendererToggle cellrt2;
+		TreeViewColumn col_buscador3;	CellRendererText cellrt3;
+		TreeViewColumn col_buscador4;	CellRendererText cellrt4;
+		TreeViewColumn col_buscador5;	CellRendererText cellrt5;
 			
 		//Declaracion de ventana de error y mensaje
 		protected Gtk.Window MyWinError;
@@ -163,6 +171,7 @@ namespace osiris
 			labelbusqueda2.Hide();
 			labelcantidad.Hide();
 			entry_cantidad_producto.Hide();
+			crea_treeview_busqueda();
 						
 			//Console.WriteLine("nº de argumentos: {0}", args.Length);
 			//for (int i = 0; i < args.Length; i++)
@@ -254,6 +263,10 @@ namespace osiris
 					entry_id_especialidad_cita = (object) args[0] as Gtk.Entry;
 					entry_nombre_especialidad_cita = (object) args[1] as Gtk.Entry;					
 				break;
+				case "find_especialidad_consulta":
+					entry_id_especialidad_consulta = (object) args[0] as Gtk.Entry;
+					entry_nombre_especialidad_consulta = (object) args[1] as Gtk.Entry;					
+				break;
 				case "find_paciente_cita":
 					entry_pid_paciente_cita = (object) args[0] as Gtk.Entry;
 					entry_nombre_paciente_cita1 = (object) args[1] as Gtk.Entry;
@@ -266,6 +279,13 @@ namespace osiris
 					radiobutton1.Label = "por Ape. Paterno";
 					radiobutton2.Label = "por un Nombre";
 					radiobutton3.Label = "por Expediente";
+					col_buscador1.Title = "Primer Nombre";
+					col_buscador3.Title = "Segundo Nombre";
+					col_buscador4.Title = "Apellido Paterno";
+					col_buscador5.Title = "Apellido Materno";
+					lista_de_busqueda.AppendColumn(col_buscador3);
+					lista_de_busqueda.AppendColumn(col_buscador4);
+					lista_de_busqueda.AppendColumn(col_buscador5);
 				break;
 			}
 			args_sql = args_sql_;
@@ -279,8 +299,7 @@ namespace osiris
 			button_salir.Clicked +=  new EventHandler(on_cierraventanas_clicked);
 			radiobutton1.Clicked += new EventHandler(on_radiobutton_clicked);
 			radiobutton2.Clicked += new EventHandler(on_radiobutton_clicked);
-			radiobutton3.Clicked += new EventHandler(on_radiobutton_clicked);
-			crea_treeview_busqueda();
+			radiobutton3.Clicked += new EventHandler(on_radiobutton_clicked);			
 		}
 		
 		void on_radiobutton_clicked(object sender, EventArgs args)
@@ -333,32 +352,67 @@ namespace osiris
 			lista_de_busqueda.RulesHint = true;
 							
 			lista_de_busqueda.RowActivated += on_selecciona_busqueda;  // Doble click selecciono cliente*/
-			col_idlista = new TreeViewColumn();
+			col_buscador0 = new TreeViewColumn();
 			cellrt0 = new CellRendererText();
-			col_idlista.Title = "ID"; // titulo de la cabecera de la columna, si está visible
-			col_idlista.PackStart(cellrt0, true);
-			col_idlista.AddAttribute (cellrt0, "text", 0);    // la siguiente columna será 1
+			col_buscador0.Title = "ID"; // titulo de la cabecera de la columna, si está visible
+			col_buscador0.PackStart(cellrt0, true);
+			col_buscador0.AddAttribute (cellrt0, "text", 0);
 			//col_idcliente.SetCellDataFunc(cellr0, new Gtk.TreeCellDataFunc(cambia_colores_cliente));
-			col_idlista.SortColumnId = (int) col_treview.col_idlista;
-			col_idlista.Resizable = true;
+			col_buscador0.SortColumnId = (int) col_treview.col_buscador0;
+			col_buscador0.Resizable = true;
 			
-			col_descripcion = new TreeViewColumn();
+			col_buscador1 = new TreeViewColumn();
 			cellrt1 = new CellRendererText();
-			col_descripcion.Title = "Descripcion";
-			col_descripcion.PackStart(cellrt1, true);
-			col_descripcion.AddAttribute (cellrt1, "text", 1); // la siguiente columna será 2
+			col_buscador1.Title = "Descripcion";
+			col_buscador1.PackStart(cellrt1, true);
+			col_buscador1.AddAttribute (cellrt1, "text", 1);
 			//col_descripcion.SetCellDataFunc(cellrt1, new Gtk.TreeCellDataFunc(cambia_colores_cliente));
-			col_descripcion.SortColumnId = (int) col_treview.col_descripcion;
-			col_descripcion.Resizable = true;
+			col_buscador1.SortColumnId = (int) col_treview.col_buscador1;
+			col_buscador1.Resizable = true;
+			
+			col_buscador2 = new TreeViewColumn();
+			cellrt2 = new CellRendererToggle();
+			col_buscador2.Title = "Descripcion";
+			col_buscador2.PackStart(cellrt2, true);
+			col_buscador2.AddAttribute (cellrt2, "active", 2);
+			//col_descripcion.SetCellDataFunc(cellrt1, new Gtk.TreeCellDataFunc(cambia_colores_cliente));
+			col_buscador2.SortColumnId = (int) col_treview.col_buscador2;
+			col_buscador2.Resizable = true;
+			
+			col_buscador3 = new TreeViewColumn();
+			cellrt3 = new CellRendererText();
+			col_buscador3.Title = "";
+			col_buscador3.PackStart(cellrt3, true);
+			col_buscador3.AddAttribute (cellrt3, "text", 3);
+			//col_descripcion.SetCellDataFunc(cellrt1, new Gtk.TreeCellDataFunc(cambia_colores_cliente));
+			col_buscador3.SortColumnId = (int) col_treview.col_buscador3;
+			col_buscador3.Resizable = true;
+			
+			col_buscador4 = new TreeViewColumn();
+			cellrt4 = new CellRendererText();
+			col_buscador4.Title = "";
+			col_buscador4.PackStart(cellrt4, true);
+			col_buscador4.AddAttribute (cellrt4, "text", 4);
+			//col_descripcion.SetCellDataFunc(cellrt1, new Gtk.TreeCellDataFunc(cambia_colores_cliente));
+			col_buscador4.SortColumnId = (int) col_treview.col_buscador4;
+			col_buscador4.Resizable = true;
+			
+			col_buscador5 = new TreeViewColumn();
+			cellrt5 = new CellRendererText();
+			col_buscador5.Title = "";
+			col_buscador5.PackStart(cellrt5, true);
+			col_buscador5.AddAttribute (cellrt5, "text", 5);
+			//col_descripcion.SetCellDataFunc(cellrt1, new Gtk.TreeCellDataFunc(cambia_colores_cliente));
+			col_buscador5.SortColumnId = (int) col_treview.col_buscador5;
+			col_buscador5.Resizable = true;
 				            
-			lista_de_busqueda.AppendColumn(col_idlista);
-			lista_de_busqueda.AppendColumn(col_descripcion);			
+			lista_de_busqueda.AppendColumn(col_buscador0);
+			lista_de_busqueda.AppendColumn(col_buscador1);			
 		}
 		
 		enum col_treview
 		{
-			col_idlista,
-			col_descripcion			
+			col_buscador0,col_buscador1,col_buscador2,col_buscador3,col_buscador4,col_buscador5
 		}
 		
 		void cambia_colores_fila(Gtk.TreeViewColumn column, Gtk.CellRenderer cell, Gtk.TreeModel model, Gtk.TreeIter iter)
@@ -426,24 +480,24 @@ namespace osiris
 							                            (string) Convert.ToString(lector["idcentrodecosto"]),
 							                            (string) lector["descripcion_centro_de_costo"]);
 							
-								col_idlista.SetCellDataFunc(cellrt0, new Gtk.TreeCellDataFunc(cambia_colores_fila));
-								col_descripcion.SetCellDataFunc(cellrt1, new Gtk.TreeCellDataFunc(cambia_colores_fila));
+								col_buscador0.SetCellDataFunc(cellrt0, new Gtk.TreeCellDataFunc(cambia_colores_fila));
+								col_buscador1.SetCellDataFunc(cellrt1, new Gtk.TreeCellDataFunc(cambia_colores_fila));
 							break;							
 							case "find_grupo1_producto":
 								treeViewEngineBuscador.AppendValues( (int) lector["id_grupo1_producto"],
 														(string) lector["descripcion_grupo1_producto"],
 							                            (bool) lector["activo"]);
 							
-								col_idlista.SetCellDataFunc(cellrt0, new Gtk.TreeCellDataFunc(cambia_colores_fila));
-								col_descripcion.SetCellDataFunc(cellrt1, new Gtk.TreeCellDataFunc(cambia_colores_fila));
+								col_buscador0.SetCellDataFunc(cellrt0, new Gtk.TreeCellDataFunc(cambia_colores_fila));
+								col_buscador1.SetCellDataFunc(cellrt1, new Gtk.TreeCellDataFunc(cambia_colores_fila));
 							break;							
 							case "find_grupo2_producto":
 								treeViewEngineBuscador.AppendValues( (int) lector["id_grupo2_producto"],
 														(string) lector["descripcion_grupo2_producto"],
 							                            (bool) lector["activo"]);
 							
-								col_idlista.SetCellDataFunc(cellrt0, new Gtk.TreeCellDataFunc(cambia_colores_fila));
-								col_descripcion.SetCellDataFunc(cellrt1, new Gtk.TreeCellDataFunc(cambia_colores_fila));
+								col_buscador0.SetCellDataFunc(cellrt0, new Gtk.TreeCellDataFunc(cambia_colores_fila));
+								col_buscador1.SetCellDataFunc(cellrt1, new Gtk.TreeCellDataFunc(cambia_colores_fila));
 							break;							
 							case "find_centrodecosto":
 								treeViewEngineBuscador.AppendValues( (int) lector["id_centro_de_costos"],
@@ -511,15 +565,19 @@ namespace osiris
 								treeViewEngineBuscador.AppendValues ((int) lector["id_especialidad"],	// 0
 													(string)lector["descripcion_especialidad"]);		// 1
 							break;
+							case "find_especialidad_consulta":
+								treeViewEngineBuscador.AppendValues ((int) lector["id_especialidad"],	// 0
+													(string)lector["descripcion_especialidad"]);		// 1
+							break;
 							case "find_paciente_cita":
 								treeViewEngineBuscador.AppendValues ((int) lector["pid_paciente"],	// 0
-													(string) lector["nombre1_paciente"].ToString().Trim()+" "+
-							                        (string) lector["nombre2_paciente"].ToString().Trim()+" "+
-							                        (string) lector["apellido_paterno_paciente"].ToString().Trim()+" "+
-							                        (string) lector["apellido_materno_paciente"].ToString().Trim(),
+													(string) lector["nombre1_paciente"].ToString().Trim(),
 							                        (bool) lector["activo"],
-							              			(string) lector["fech_nacimiento"],
-							              			(string) lector["edad"]);		// 1
+							                        (string) lector["nombre2_paciente"].ToString().Trim(),
+							                        (string) lector["apellido_paterno_paciente"].ToString().Trim(),
+							                        (string) lector["apellido_materno_paciente"].ToString().Trim(),
+							                        (string) lector["fech_nacimiento"],
+							              			(string) lector["edad"]);
 							break;							
 						}
 					}
@@ -643,11 +701,18 @@ namespace osiris
 					case "find_especialidad_cita":
 						entry_id_especialidad_cita.Text = tomaid.ToString();
 						entry_nombre_especialidad_cita.Text = (string) model.GetValue(iterSelected, 1);
-					break;	
+					break;
+					case "find_especialidad_consulta":
+						entry_id_especialidad_consulta.Text = tomaid.ToString();
+						entry_nombre_especialidad_consulta.Text = (string) model.GetValue(iterSelected, 1);
+					break;
 					case "find_paciente_cita":
 						entry_pid_paciente_cita.Text = tomaid.ToString();
-						entry_nombre_paciente_cita1.Text = (string) model.GetValue(iterSelected, 1);
-						entry_fecha_nac_cita.Text = (string) model.GetValue(iterSelected, 3);
+						entry_nombre_paciente_cita1.Text = (string) model.GetValue(iterSelected, 1)+" "+
+															(string) model.GetValue(iterSelected, 3)+" "+
+															(string) model.GetValue(iterSelected, 4)+" "+
+															(string) model.GetValue(iterSelected, 5);
+						entry_fecha_nac_cita.Text = (string) model.GetValue(iterSelected, 6);
 						//entry_edad_paciente_cita.Text = (string) model.GetValue(iterSelected, 4);
 					break;
 				}				

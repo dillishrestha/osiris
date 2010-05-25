@@ -57,7 +57,7 @@ namespace osiris
 		[Widget] Gtk.Button button_ginecologia = null;
 		[Widget] Gtk.Button button_laboratorio = null;
 		[Widget] Gtk.Button button_imagenologia = null;
-		[Widget] Gtk.Button button_inhaloterapia = null;
+		[Widget] Gtk.Button button_oftalmologia = null;
 		[Widget] Gtk.Button button_nutricion = null;
 		[Widget] Gtk.Button button_hemodialisis = null;
 		
@@ -301,8 +301,8 @@ namespace osiris
 			//button_farmacia.Hide();
 			button_nutricion.Hide();
 			button_afiliados.Hide();
-			//button_proveedores.Hide();
-			button_inhaloterapia.Hide();
+			button_proveedores.Hide();
+			//button_oftalmologia.Hide();
 			button_hemodialisis.Hide();
 				
 			// Actulizando statusbar
@@ -478,7 +478,7 @@ namespace osiris
 			button_ginecologia.Sensitive = false;
 			button_laboratorio.Sensitive = false;
 			button_imagenologia.Sensitive = false;
-			button_inhaloterapia.Sensitive = false;
+			button_oftalmologia.Sensitive = false;
 			
 			// ERP
 			button_registro_admision.Sensitive = false;
@@ -529,7 +529,7 @@ namespace osiris
 					button_imagenologia.Sensitive = true;
 				}				
 				if ((string) accesoHIS.Substring(10,1) == "1"){
-					button_inhaloterapia.Sensitive = true;
+					button_oftalmologia.Sensitive = true;
 				}
 			}
 			if((bool) autorizaERP == true){

@@ -991,7 +991,7 @@ namespace osiris
 						entry_fecha_admision.Text,entry_fechahora_alta.Text,entry_nombre_paciente.Text,
 						entry_telefono_paciente.Text,entry_doctor.Text,entry_tipo_paciente.Text,
 						entry_aseguradora.Text,entry_edad.Text,entry_fecha_nacimiento.Text,dir_pac,
-						entry_cirugia.Text,entry_aseguradora.Text,id_tipopaciente,"Hospitalizacion",NomEmpleado,
+						entry_cirugia.Text,entry_aseguradora.Text,id_tipopaciente,descripinternamiento,NomEmpleado,
 						AppEmpleado,ApmEmpleado,LoginEmpleado,"");
 		}
 		

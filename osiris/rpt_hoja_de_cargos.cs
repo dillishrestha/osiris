@@ -3,6 +3,8 @@
 // Monterrey - Mexico
 //
 // Autor    	: Juan Antonio Peña Gonzalez (Programacion) gjuanzz@gmail.com
+// 
+//  25/05/2010   Ing. Daniel Olivares Cuevas (Programacion y Traspasado a GTKPrint) arcangeldoc@gmail.com
 // 				  
 // Licencia		: GLP
 //////////////////////////////////////////////////////////
@@ -66,6 +68,7 @@ namespace osiris
 		string NomEmpleado;
 		string AppEmpleado;
 		string ApmEmpleado;
+		string entry_id_habitacion;
 				
 		int idadmision_ = 0;
 		int idproducto = 0;
@@ -78,17 +81,6 @@ namespace osiris
 		int contadorprod = 0;
 		int numpage = 1;		
 				
-		// Declarando variable de fuente para la impresion
-		// Declaracion de fuentes tipo Bitstream Vera sans
-		Gnome.Font fuente6 = Gnome.Font.FindClosest("Bitstream Vera Sans", 6);
-		Gnome.Font fuente7 = Gnome.Font.FindClosest("Bitstream Vera Sans", 7);
-		Gnome.Font fuente8 = Gnome.Font.FindClosest("Bitstream Vera Sans", 8);
-		Gnome.Font fuente9 = Gnome.Font.FindClosest("Bitstream Vera Sans", 9);
-		Gnome.Font fuente10 = Gnome.Font.FindClosest("Bitstream Vera Sans", 10);
-		//Gnome.Font fuente11 = Gnome.Font.FindClosest("Bitstream Vera Sans", 11);
-		Gnome.Font fuente12 = Gnome.Font.FindClosest("Bitstream Vera Sans", 12);
-		Gnome.Font fuente36 = Gnome.Font.FindClosest("Bitstream Vera Sans", 36);
-		
 		//Declaracion de ventana de error
 		protected Gtk.Window MyWinError;
 		
@@ -99,7 +91,7 @@ namespace osiris
 						string entry_nombre_paciente_,string entry_telefono_paciente_,string entry_doctor_,
 						string entry_tipo_paciente_,string entry_aseguradora_,string edadpac_,string fecha_nacimiento_,string dir_pac_,
 						string cirugia_,string empresapac_,int idtipopaciente_,string area_,string NomEmpleado_,string AppEmpleado_,
-						string ApmEmpleado_,string LoginEmpleado_, string query_, int tipointernamiento_)
+						string ApmEmpleado_,string LoginEmpleado_, string query_, int tipointernamiento_,string entry_id_habitacion_)
 		{
 			LoginEmpleado = LoginEmpleado_;
 			NomEmpleado = NomEmpleado_;
@@ -125,15 +117,23 @@ namespace osiris
 			query_rango = query_;
 			tipointernamiento = tipointernamiento_;
 			area = area_;							// Recibe el parametro del modulo que manda a imprimir (UCIA, Hospital, Urgencia, etc)
+			entry_id_habitacion = entry_id_habitacion_;
 			connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
 			nombrebd = conexion_a_DB._nombrebd;
 					
-			print = new PrintOperation ();
-						
-			print.BeginPrint += new BeginPrintHandler (OnBeginPrint);
-			print.DrawPage += new DrawPageHandler (OnDrawPage);
-			print.EndPrint += new EndPrintHandler (OnEndPrint);
-			print.Run (PrintOperationAction.PrintDialog, null);
+			if((bool) valida_impresion_enfermera() == true){			
+				print = new PrintOperation ();						
+				print.BeginPrint += new BeginPrintHandler (OnBeginPrint);
+				print.DrawPage += new DrawPageHandler (OnDrawPage);
+				print.EndPrint += new EndPrintHandler (OnEndPrint);
+				print.Run (PrintOperationAction.PrintDialog, null);
+			}else{
+				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+				MessageType.Error, 
+				ButtonsType.Close, "Este folio no contiene productos aplicados \n"+
+							"por usted el dia de HOY para que la hoja de cargos se muestre \n");
+				msgBoxError.Run ();			msgBoxError.Destroy();
+			}
 			
 		}
 		
@@ -211,19 +211,45 @@ namespace osiris
 			fontSize = 10.0;											layout = context.CreatePangoLayout ();		
 			desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;
 			layout.FontDescription.Weight = Weight.Bold;		// Letra negrita
-			cr.MoveTo(225*escala_en_linux_windows, 25*escala_en_linux_windows);			layout.SetText("HOJA REGISTROS DE "+area);					Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(225*escala_en_linux_windows, 25*escala_en_linux_windows);			layout.SetText("HOJA REGISTROS DE "+area);				Pango.CairoHelper.ShowLayout (cr, layout);
 			fontSize = 8.0;											layout = context.CreatePangoLayout ();		
 			desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;
 			layout.FontDescription.Weight = Weight.Bold;		// Letra negrita
-			cr.MoveTo(220*escala_en_linux_windows,45*escala_en_linux_windows);			layout.SetText("DATOS GENERALES DEL PACIENTE");				Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(220*escala_en_linux_windows,45*escala_en_linux_windows);			layout.SetText("DATOS GENERALES DEL PACIENTE");			Pango.CairoHelper.ShowLayout (cr, layout);
 			fontSize = 7.0;											layout = context.CreatePangoLayout ();		
 			desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;
 			layout.FontDescription.Weight = Weight.Normal;		// Letra negrita
-			
+			cr.MoveTo(05*escala_en_linux_windows,55*escala_en_linux_windows);			layout.SetText("INGRESO:"+fecha_admision.Trim());	Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(465*escala_en_linux_windows,55*escala_en_linux_windows);			layout.SetText("EGRESO:"+fechahora_alta.Trim());	Pango.CairoHelper.ShowLayout (cr, layout);
+			layout.FontDescription.Weight = Weight.Bold;		// Letra negrita
+			cr.MoveTo(05*escala_en_linux_windows,65*escala_en_linux_windows);			layout.SetText("EXP.: "+PidPaciente.ToString()+"	Nombre Paciente:"+nombre_paciente.ToString());	Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(340*escala_en_linux_windows,65*escala_en_linux_windows);			layout.SetText("Fecha de Nacimiento: "+fecha_nacimiento.ToString());	Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(500*escala_en_linux_windows,65*escala_en_linux_windows);			layout.SetText("Edad: "+edadpac.ToString());							Pango.CairoHelper.ShowLayout (cr, layout);
+			layout.FontDescription.Weight = Weight.Normal;		// Letra normal
+			cr.MoveTo(05*escala_en_linux_windows,75*escala_en_linux_windows);			layout.SetText("Direccion: "+dir_pac.ToString());							Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(05*escala_en_linux_windows,85*escala_en_linux_windows);			layout.SetText("Tel. Pac.: "+telefono_paciente.ToString());					Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(400*escala_en_linux_windows,85*escala_en_linux_windows);			layout.SetText("Nº Hab/Sala: "+entry_id_habitacion.Trim());					Pango.CairoHelper.ShowLayout (cr, layout);
+			layout.FontDescription.Weight = Weight.Bold;		// Letra negrita
+			if((string) aseguradora == "Asegurado"){
+				cr.MoveTo(05*escala_en_linux_windows,95*escala_en_linux_windows);			layout.SetText("Tipo de paciente: "+tipo_paciente.ToString()+"	Aseguradora: "+aseguradora.ToString()+"	Poliza: ");					Pango.CairoHelper.ShowLayout (cr, layout);
+			}else{
+				cr.MoveTo(05*escala_en_linux_windows,95*escala_en_linux_windows);			layout.SetText("Tipo de paciente: "+tipo_paciente.ToString()+"	Empresa: "+empresapac.ToString());					Pango.CairoHelper.ShowLayout (cr, layout);
+			}
+			layout.FontDescription.Weight = Weight.Normal;		// Letra normal
+			if(doctor.ToString() == " " || doctor.ToString() == ""){
+				cr.MoveTo(05*escala_en_linux_windows,105*escala_en_linux_windows);			layout.SetText("Medico: ");					Pango.CairoHelper.ShowLayout (cr, layout);
+			}else{
+				
+			}
 		}
 		
 		private void OnEndPrint (object obj, Gtk.EndPrintArgs args)
 		{
+		}
+		
+		bool valida_impresion_enfermera()
+		{
+			return true;
 		}
 		
 		/*
@@ -232,13 +258,10 @@ namespace osiris
       									
 			ContextoImp.MoveTo(445, 720);			ContextoImp.Show("Pagina "+numpage.ToString());
 					
-			ContextoImp.MoveTo(460, 710);			ContextoImp.Show("EGRESO: "+ fechahora_alta.ToString());
-			
-			Gnome.Print.Setfont (ContextoImp, fuente8);
-			ContextoImp.MoveTo(19.5, 700);			ContextoImp.Show("PID: "+PidPaciente.ToString()+"    Nombre: "+ nombre_paciente.ToString());
 						
+			Gnome.Print.Setfont (ContextoImp, fuente8);
+			ContextoImp.MoveTo(19.5, 700);			ContextoImp.Show("PID: "+PidPaciente.ToString()+"    Nombre: "+ nombre_paciente.ToString());						
 			ContextoImp.MoveTo(349.5, 700);			ContextoImp.Show("F. de Nac: "+fecha_nacimiento.ToString());
-			Cont
 			ContextoImp.MoveTo(471, 700);			ContextoImp.Show("Edad: "+edadpac.ToString());
 			
 			ContextoImp.MoveTo(20, 690);			ContextoImp.Show("Direccion: "+dir_pac.ToString());
@@ -248,20 +271,20 @@ namespace osiris
 			
 			if((string) aseguradora == "Asegurado")
 			{				
-				ContextoImp.MoveTo(19.5, 680);		ContextoImp.Show("Tipo de paciente:  "+tipo_paciente.ToString()+"      	Aseguradora: "+aseguradora.ToString()+"      Poliza: ");
+				ContextoImp.MoveTo(19.5, 680);		ContextoImp.Show("Tipo de paciente: "+tipo_paciente.ToString()+"      	Aseguradora: "+aseguradora.ToString()+"      Poliza: ");
 				
 			}else{
-				ContextoImp.MoveTo(19.5, 680);		ContextoImp.Show("Tipo de paciente:  "+tipo_paciente.ToString()+"              Empresa: "+empresapac.ToString());
-				C
+				ContextoImp.MoveTo(19.5, 680);		ContextoImp.Show("Tipo de paciente: "+tipo_paciente.ToString()+"       Empresa: "+empresapac.ToString());
+				
 		 	}
 		 	
 			if(doctor.ToString() == " " || doctor.ToString() == "")
 			{
 				ContextoImp.MoveTo(20, 660);			ContextoImp.Show("Medico: ");
-				ContextoImp.MoveTo(250, 660);			ContextoImp.Show("Especialidad:");
+				ContextoImp.MoveTo(250,660);			ContextoImp.Show("Especialidad:");
 				ContextoImp.MoveTo(20, 650);			ContextoImp.Show("Cirugia/Diagnostico : "+cirugia.ToString());
 			}else{
-				ContextoImp.MoveTo(20, 660);			ContextoImp.Show("Medico: "+doctor.ToString()+"           Especialidad:  ");
+				ContextoImp.MoveTo(20, 660);			ContextoImp.Show("Medico: "+doctor.ToString()+"  Especialidad:  ");
 				ContextoImp.MoveTo(20, 650);			ContextoImp.Show("Cirugia/Diagnostico: "+cirugia.ToString());
 			}
 	  }
@@ -337,7 +360,7 @@ namespace osiris
 					"AND osiris_erp_cobros_deta.id_producto = osiris_productos.id_producto  "+ 
 					"AND osiris_productos.id_grupo_producto = osiris_grupo_producto.id_grupo_producto "+
 					"AND osiris_erp_cobros_deta.folio_de_servicio = '"+folioservicio.ToString()+"' "+
-		        	//"AND id_empleado = '"+LoginEmpleado+"' "+
+		        	"AND id_empleado = '"+LoginEmpleado+"' "+
 		        	"AND osiris_erp_cobros_deta.eliminado = 'false' ";
 		try{
  			conexion.Open ();

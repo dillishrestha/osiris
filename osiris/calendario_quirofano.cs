@@ -808,7 +808,7 @@ namespace osiris
 		void onComboBoxChanged_tipo_admision (object obj, EventArgs args)
 		{
 			ComboBox combobox_tipo_admision = obj as ComboBox;
-			Console.WriteLine(combobox_tipo_admision.Name.ToString());
+			//Console.WriteLine(combobox_tipo_admision.Name.ToString());
 			if (obj == null){
 				return;
 			}
@@ -919,7 +919,7 @@ namespace osiris
 			// la clase recibe tambien el orden del query
 			// es importante definir que tipo de busqueda es para que los objetos caigan ahi mismo
 			if (id_tipopaciente != 400){				
-				Console.WriteLine("Empresas");
+				//Console.WriteLine("Empresas");
 				object[] parametros_objetos = {entry_id_empaseg_cita,entry_nombre_empaseg_cita};
 				string[] parametros_sql = {"SELECT * FROM osiris_empresas WHERE id_tipo_paciente = '"+id_tipopaciente.ToString().Trim()+"' ",															
 										"SELECT * FROM osiris_empresas  WHERE id_tipo_paciente = '"+id_tipopaciente.ToString().Trim()+"' "+
@@ -928,7 +928,7 @@ namespace osiris
 				idempresa = entry_id_empaseg_cita.Text.ToString().Trim();
 				idaseguradora = "1";		
 			}else{
-				Console.WriteLine("Aseguradoras");
+				//Console.WriteLine("Aseguradoras");
 				// Buscando aseguradora
 				object[] parametros_objetos = {entry_id_empaseg_cita,entry_nombre_empaseg_cita};
 				string[] parametros_sql = {"SELECT * FROM osiris_aseguradoras ",															
@@ -1317,7 +1317,7 @@ namespace osiris
 							"AND id_medico = '"+entry_id_doctor_cita.Text.ToString().Trim()+"' "+
 							"AND osiris_his_calendario_citaqx.cancelado = 'false';";
 				
-				Console.WriteLine(comando.CommandText);
+				//Console.WriteLine(comando.CommandText);
 				NpgsqlDataReader lector = comando.ExecuteReader ();				
 				if (lector.Read()){
 					response_validation = false;

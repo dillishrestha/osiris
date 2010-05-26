@@ -979,7 +979,7 @@ namespace osiris
 						entry_telefono_paciente.Text,entry_doctor.Text,entry_tipo_paciente.Text,
 						entry_aseguradora.Text,entry_edad.Text,entry_fecha_nacimiento.Text,dir_pac,
 						entry_cirugia.Text,entry_aseguradora.Text,id_tipopaciente,descripinternamiento,NomEmpleado,
-						AppEmpleado,ApmEmpleado,LoginEmpleado,query,idtipointernamiento);   // rpt_hoja_de_cargos.cs
+						AppEmpleado,ApmEmpleado,LoginEmpleado,query,idtipointernamiento,entry_id_habitacion.Text);   // rpt_hoja_de_cargos.cs
 			rango_de_fecha.Destroy();
 		}
 		

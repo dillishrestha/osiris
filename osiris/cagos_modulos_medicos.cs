@@ -182,8 +182,8 @@ namespace osiris
 		//**************/
 		
 		// Variables publicas para le rango de fecha procedimiento
-		string fecha_rango_1;
-		string fecha_rango_2;
+		string fecha_rango_1 = "";
+		string fecha_rango_2 = "";
 		
 		// Sumas Totales para los calculos
 		float subtotal_al_IVA;
@@ -937,19 +937,22 @@ namespace osiris
 	        
 				// Muestra ventana de Glade
 				rango_de_fecha.Show();
-				entry_dia1.Text = fecha_rango_2.Substring(0,2);
-				entry_dia1.KeyPressEvent += onKeyPressEvent;				
-				entry_dia2.Text = fecha_rango_2.Substring(0,2);
-				entry_dia2.KeyPressEvent += onKeyPressEvent;
 				
-				entry_mes1.Text = fecha_rango_2.Substring(3,2);
-				entry_mes1.KeyPressEvent += onKeyPressEvent;				
-				entry_mes2.Text = fecha_rango_2.Substring(3,2);
-				entry_mes2.KeyPressEvent += onKeyPressEvent;
-				
-				entry_ano1.Text = fecha_rango_2.Substring(6,4);
-				entry_ano1.KeyPressEvent += onKeyPressEvent;
-				entry_ano2.Text = fecha_rango_2.Substring(6,4);
+				if(fecha_rango_2 != ""){
+					entry_dia1.Text = fecha_rango_2.Substring(0,2);
+					entry_dia1.KeyPressEvent += onKeyPressEvent;				
+					entry_dia2.Text = fecha_rango_2.Substring(0,2);
+					entry_dia2.KeyPressEvent += onKeyPressEvent;
+					
+					entry_mes1.Text = fecha_rango_2.Substring(3,2);
+					entry_mes1.KeyPressEvent += onKeyPressEvent;				
+					entry_mes2.Text = fecha_rango_2.Substring(3,2);
+					entry_mes2.KeyPressEvent += onKeyPressEvent;
+					
+					entry_ano1.Text = fecha_rango_2.Substring(6,4);
+					entry_ano1.KeyPressEvent += onKeyPressEvent;
+					entry_ano2.Text = fecha_rango_2.Substring(6,4);
+				}
 				entry_ano2.KeyPressEvent += onKeyPressEvent;
 				
 				entry_referencia_inicial.Text = fecha_rango_1;
@@ -965,7 +968,7 @@ namespace osiris
 			string query;
 			if (checkbutton_impr_todo_proce.Active == true){
 				query = " ";
-			}else {
+			}else{
 				query = "AND to_char(osiris_erp_cobros_deta.fechahora_creacion,'yyyy') >= '"+entry_ano1.Text+"' "+
 						"AND to_char(osiris_erp_cobros_deta.fechahora_creacion,'yyyy') <= '"+entry_ano2.Text+"' "+
 						"AND to_char(osiris_erp_cobros_deta.fechahora_creacion,'MM') >= '"+entry_mes1.Text+"' "+
@@ -979,7 +982,7 @@ namespace osiris
 						entry_telefono_paciente.Text,entry_doctor.Text,entry_tipo_paciente.Text,
 						entry_aseguradora.Text,entry_edad.Text,entry_fecha_nacimiento.Text,dir_pac,
 						entry_cirugia.Text,entry_aseguradora.Text,id_tipopaciente,descripinternamiento,NomEmpleado,
-						AppEmpleado,ApmEmpleado,LoginEmpleado,query,idtipointernamiento,entry_id_habitacion.Text);   // rpt_hoja_de_cargos.cs
+						AppEmpleado,ApmEmpleado,LoginEmpleado,query,idtipointernamiento,entry_id_habitacion.Text,entry_especialidad.Text);   // rpt_hoja_de_cargos.cs
 			rango_de_fecha.Destroy();
 		}
 		
@@ -1774,7 +1777,7 @@ namespace osiris
 			// Boton que agrega cargos extras
 			//button_agrega_extra.Clicked += new EventHandler(on_button_agrega_extra_clicked);
 			
-			button_salir.Clicked += new EventHandler(on_cierraventanas_clicked); // esta sub-clase esta en hscmty.cs
+			button_salir.Clicked += new EventHandler(on_cierraventanas_clicked);
 			entry_expresion.KeyPressEvent += onKeyPressEvent_entry_expresion;
 			// Validando que sen solo numeros
 			entry_cantidad_aplicada.KeyPressEvent += onKeyPressEvent;

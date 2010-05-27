@@ -34,7 +34,6 @@ using Npgsql;
 using System.Data;
 using Gtk;
 using Glade;
-using Gnome;
 
 namespace osiris
 {
@@ -82,17 +81,6 @@ namespace osiris
 		//private TreeStore treeViewEngineBusca;
 		private TreeStore treeViewEngineBusca2;
 		private ListStore treeViewEngineSolicitud;
-		
-		//imprimir
-		//public Gnome.Font fuente5 = Gnome.Font.FindClosest("Luxi Sans", 5);
-		Gnome.Font fuente6 = Gnome.Font.FindClosest("Luxi Sans", 6);
-		//public Gnome.Font fuente7 = Gnome.Font.FindClosest("Luxi Sans", 7);
-		Gnome.Font fuente8 = Gnome.Font.FindClosest("Luxi Sans", 8);//Bitstream Vera Sans
-		//public Gnome.Font fuente9 = Gnome.Font.FindClosest("Luxi Sans", 9);
-		//public Gnome.Font fuente10 = Gnome.Font.FindClosest("Luxi Sans", 10);
-		//public Gnome.Font fuente11 = Gnome.Font.FindClosest("Luxi Sans", 11);
-		//public Gnome.Font fuente12 = Gnome.Font.FindClosest("Luxi Sans", 12);
-		//public Gnome.Font fuente36 = Gnome.Font.FindClosest("Luxi Sans", 36);
 		
 		//private ArrayList arraysolicitudmat;		
 		string LoginEmpleado;
@@ -175,227 +163,6 @@ namespace osiris
 			crea_treeview_solicitud();
 		}
 
-		void on_button_imprime_solicitud_clicked(object sender, EventArgs args)
-		{
-		
-			Gnome.PrintJob    trabajo = new Gnome.PrintJob(Gnome.PrintConfig.Default());
-        	Gnome.PrintDialog dialogo = new Gnome.PrintDialog(trabajo, "Envio Materiales Almacen", 0);
-        	
-        	int         respuesta = dialogo.Run ();
-        	
-        	if (respuesta == (int) PrintButtons.Cancel){
-				dialogo.Hide (); 
-				dialogo.Dispose (); 
-				return;
-			}
-			Gnome.PrintContext ctx = trabajo.Context;
-        	ComponerPagina(ctx, trabajo); 
-			trabajo.Close();
-            switch (respuesta)
-        	{
-				case (int) PrintButtons.Print:   
-                trabajo.Print (); 
-                break;
-                case (int) PrintButtons.Preview:
-                new PrintJobPreview(trabajo, "Envio Materiales Almacen").Show();
-                break;
-        	}
-			dialogo.Hide (); dialogo.Dispose ();
-		}			
-			
-		void ComponerPagina (Gnome.PrintContext ContextoImp, Gnome.PrintJob trabajoImpresion)
-		{   
-			//int filas=690;
-			string numerodesolicutud = "";
-			numerodesolicutud = entry_numero_solicitud.Text;
-				
-			NpgsqlConnection conexion; 
-        	conexion = new NpgsqlConnection (connectionString+nombrebd);
-        	// Verifica que la base de dato s este conectada
-        	try{
-	 			conexion.Open ();
-	        	NpgsqlCommand comando; 
-	        	comando = conexion.CreateCommand (); 
-
-	        	comando.CommandText = "SELECT to_char(osiris_his_solicitudes_deta.folio_de_solicitud,'999999999') AS foliosol,"+
-	        		       			"to_char(osiris_his_solicitudes_deta.id_producto,'999999999999') AS idproductos,"+
-               						"to_char(cantidad_solicitada,'999999.999') AS cantidadsolicitada,"+
-               						"to_char(osiris_his_solicitudes_deta.precio_producto_publico,'99999999.99') AS precioproductopublico,"+
-               						"to_char(osiris_his_solicitudes_deta.costo_por_unidad,'99999999.99') AS costoporunidad,"+
-               						"to_char(cantidad_autorizada,'999999.999') AS cantidadautorizada,id_quien_autorizo, "+
-               						"to_char(fechahora_solicitud,'dd-MM-yyyy') AS fechahorasolicitud,"+
-               						"to_char(fechahora_autorizado,'dd-MM-yyyy') AS fechahoraautorizado,"+
-               						"osiris_his_solicitudes_deta.id_quien_solicito,"+
-               						"status,surtido,osiris_productos.descripcion_producto,"+
-               						"to_char(osiris_his_solicitudes_deta.id_secuencia,'9999999999') AS idsecuencia,"+
-               						"osiris_almacenes.descripcion_almacen,"+
-               						"osiris_his_solicitudes_deta.sin_stock,"+	
-									"osiris_his_solicitudes_deta.solicitado_erroneo,"+
-									"osiris_his_solicitudes_deta.surtido,"+
-									"descripcion_grupo_producto,descripcion_grupo1_producto,descripcion_grupo2_producto,"+
-               						"osiris_empleado.nombre1_empleado || ' ' || "+"osiris_empleado.nombre2_empleado || ' ' || "+"osiris_empleado.apellido_paterno_empleado || ' ' || "+ 
-									"osiris_empleado.apellido_materno_empleado AS nombreempl "+
-               						"FROM osiris_his_solicitudes_deta,osiris_almacenes,osiris_productos,osiris_grupo_producto,osiris_grupo1_producto,osiris_grupo2_producto,osiris_empleado "+
-               						"WHERE osiris_his_solicitudes_deta.folio_de_solicitud = '"+numerodesolicutud+"' "+
-               						"AND eliminado = 'false' "+
-               						"AND osiris_his_solicitudes_deta.id_producto = osiris_productos.id_producto "+
-               						"AND osiris_empleado.login_empleado = osiris_his_solicitudes_deta.id_quien_solicito "+
-               						"AND osiris_productos.id_grupo_producto = osiris_grupo_producto.id_grupo_producto "+
-									"AND osiris_productos.id_grupo1_producto = osiris_grupo1_producto.id_grupo1_producto "+
-									"AND osiris_productos.id_grupo2_producto = osiris_grupo2_producto.id_grupo2_producto "+
-									"AND osiris_his_solicitudes_deta.id_almacen = osiris_almacenes.id_almacen "+
-									"AND osiris_almacenes.id_almacen = '"+this.idalmacen.ToString().Trim()+"' "+
-									"ORDER BY osiris_his_solicitudes_deta.id_secuencia;";
-				//Console.WriteLine(comando.CommandText);
-				NpgsqlDataReader lector = comando.ExecuteReader ();
-				ContextoImp.BeginPage("Pagina 1");
-				contador=1;
-	        	filas=690;
-				imprime_encabezado(ContextoImp,trabajoImpresion);
-									string toma_descrip_prod;
-				if (lector.Read()){		        		
-	        		Gnome.Print.Setfont (ContextoImp, fuente8);
-	        		ContextoImp.MoveTo(400, 740);		 ContextoImp.Show((string) lector["descripcion_almacen"]);
-		        	ContextoImp.MoveTo(300, 740);		 ContextoImp.Show((string) lector["foliosol"]);
-		        	ContextoImp.MoveTo(250, 740);		 ContextoImp.Show("No. SOLICITUD:");
-					ContextoImp.MoveTo(220, 720);		 ContextoImp.Show((string) lector["nombreempl"]);
-	        		Gnome.Print.Setfont (ContextoImp, fuente6);
-					ContextoImp.MoveTo(20, 720);		 ContextoImp.Show("Solicito:");
-					ContextoImp.MoveTo(70, 720);		 ContextoImp.Show((string) lector["id_quien_solicito"]);
-					ContextoImp.MoveTo(165, 720);		 ContextoImp.Show("Nom.Solicitante:");
-					ContextoImp.MoveTo(390, -50);		 ContextoImp.Show("Pagina "+numpage.ToString()+"  fecha "+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
-					
-					contador+=1;
-   					salto_pagina(ContextoImp,trabajoImpresion,contador);
-		
-			        if((bool) lector["surtido"] == true){
-			        	toma_descrip_prod = (string) lector["descripcion_producto"];
-			        		
-						if(toma_descrip_prod.Length > 90){
-							toma_descrip_prod = toma_descrip_prod.Substring(0,89);
-						}  			
-						ContextoImp.MoveTo(80, filas);		ContextoImp.Show(toma_descrip_prod);
-			        	ContextoImp.MoveTo(20, filas);			 ContextoImp.Show((string) lector["idproductos"]);
-						ContextoImp.MoveTo(350, filas);			 ContextoImp.Show((string) lector["cantidadsolicitada"]);
-						ContextoImp.MoveTo(400, filas);			 ContextoImp.Show((string) lector["fechahorasolicitud"]);
-			       		ContextoImp.MoveTo(450, filas);			 ContextoImp.Show((string) lector["cantidadautorizada"]);
-			       		ContextoImp.MoveTo(500,filas);	  		ContextoImp.Show((string) lector["fechahoraautorizado"]);
-			   
-					}else{
-						Gnome.Print.Setrgbcolor(ContextoImp, 000,0,1);  //cambio color de impresion 
-						toma_descrip_prod = (string) lector["descripcion_producto"];
-						if(toma_descrip_prod.Length > 90){
-							toma_descrip_prod = toma_descrip_prod.Substring(0,89);
-						}  			
-						ContextoImp.MoveTo(80, filas);		ContextoImp.Show(toma_descrip_prod);
-						ContextoImp.MoveTo(20, filas);			 ContextoImp.Show((string) lector["idproductos"]);
-						ContextoImp.MoveTo(350, filas);			 ContextoImp.Show((string) lector["cantidadsolicitada"]);
-						ContextoImp.MoveTo(400, filas);			 ContextoImp.Show((string) lector["fechahorasolicitud"]);
-		        		ContextoImp.MoveTo(450, filas);			 ContextoImp.Show((string) lector["cantidadautorizada"]);			 				
-						
-						if((bool) lector["sin_stock"] == true){
-							ContextoImp.MoveTo(500,filas);	 ContextoImp.Show("sin stock");
-						}
-						if((bool) lector["solicitado_erroneo"] == true){
-							ContextoImp.MoveTo(500,filas);	 ContextoImp.Show("Pedido Erroneo");
-						}
-						if(float.Parse((string) lector["cantidadautorizada"]) == 0 && (bool) lector["sin_stock"] == false && (bool) lector["solicitado_erroneo"] == false && (bool) lector["surtido"] == false){
-							ContextoImp.MoveTo(500,filas);	 ContextoImp.Show("No surtido");
-						}
-						Gnome.Print.Setrgbcolor(ContextoImp, 0,0,0);   //cierra el cambio de color de impresion 
-					}
-			        	
-			        filas-=10;
-					contador+=1;
-					salto_pagina(ContextoImp,trabajoImpresion,contador);
-				}
-					
-				while (lector.Read()){
-			       	if((bool) lector["surtido"] == true){
-			       		toma_descrip_prod = (string) lector["descripcion_producto"];
-						if(toma_descrip_prod.Length > 90){
-							toma_descrip_prod = toma_descrip_prod.Substring(0,89);
-						}  			
-						ContextoImp.MoveTo(80, filas);		ContextoImp.Show(toma_descrip_prod);
-			        	ContextoImp.MoveTo(20, filas);			 ContextoImp.Show((string) lector["idproductos"]);
-						ContextoImp.MoveTo(350, filas);			 ContextoImp.Show((string) lector["cantidadsolicitada"]);
-						ContextoImp.MoveTo(400, filas);			 ContextoImp.Show((string) lector["fechahorasolicitud"]);
-			        	ContextoImp.MoveTo(450, filas);			 ContextoImp.Show((string) lector["cantidadautorizada"]);
-			       		ContextoImp.MoveTo(500,filas);	  		ContextoImp.Show((string) lector["fechahoraautorizado"]);
-
-					}else{
-						Gnome.Print.Setrgbcolor(ContextoImp, 000,0,1);  //cambio color
-						toma_descrip_prod = (string) lector["descripcion_producto"];
-						if(toma_descrip_prod.Length > 90){
-							toma_descrip_prod = toma_descrip_prod.Substring(0,89);
-						}  	
-							
-						ContextoImp.MoveTo(80, filas);		ContextoImp.Show(toma_descrip_prod);
-						ContextoImp.MoveTo(20, filas);			 ContextoImp.Show((string) lector["idproductos"]);
-						ContextoImp.MoveTo(350, filas);			 ContextoImp.Show((string) lector["cantidadsolicitada"]);
-						ContextoImp.MoveTo(400, filas);			 ContextoImp.Show((string) lector["fechahorasolicitud"]);
-		        		ContextoImp.MoveTo(450, filas);			 ContextoImp.Show((string) lector["cantidadautorizada"]);			 				
-							
-						if((bool) lector["sin_stock"] == true){
-							ContextoImp.MoveTo(500,filas);	 ContextoImp.Show("sin stock");
-						}
-						if((bool) lector["solicitado_erroneo"] == true){
-							ContextoImp.MoveTo(500,filas);	 ContextoImp.Show("Pedido Erroneo");
-						}
-						if(float.Parse((string) lector["cantidadautorizada"]) == 0 && (bool) lector["sin_stock"] == false && (bool) lector["solicitado_erroneo"] == false && (bool) lector["surtido"] == false){
-							ContextoImp.MoveTo(500,filas);	 ContextoImp.Show("No surtido");
-						}
-						Gnome.Print.Setrgbcolor(ContextoImp, 0,0,0);   //cierra el cambio de color 
-					}
-			        	
-			        filas-=10;
-					contador+=1;
-					salto_pagina(ContextoImp,trabajoImpresion,contador);
-				}
-								
-				ContextoImp.ShowPage();       		
-	       	}catch (NpgsqlException ex){
-					MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
-					MessageType.Warning, ButtonsType.Ok, "PostgresSQL error: {0}",ex.Message);
-					msgBoxError.Run ();
-					msgBoxError.Destroy();
-			}
-		}	
-			
-		void salto_pagina(Gnome.PrintContext ContextoImp, Gnome.PrintJob trabajoImpresion,int contador_)
-		{
-			if (contador_ > 60){
-	        	filas=690;
-	        	numpage +=1;
-	        	ContextoImp.ShowPage();
-	        	contador=1;
-				ContextoImp.BeginPage("Pagina "+numpage.ToString());
-				imprime_encabezado(ContextoImp,trabajoImpresion);
-	     		Gnome.Print.Setfont (ContextoImp, fuente6);
-	        }
-		}
-		
-		void imprime_encabezado(Gnome.PrintContext ContextoImp, Gnome.PrintJob trabajoImpresion)
-		{        		
-      		// Cambiar la fuente
-			Gnome.Print.Setfont (ContextoImp, fuente6);
-			ContextoImp.MoveTo(19.7, 770);			ContextoImp.Show("Sistema Hospitalario OSIRIS");
-			ContextoImp.MoveTo(20, 770);			ContextoImp.Show("Sistema Hospitalario OSIRIS");
-			ContextoImp.MoveTo(19.7, 760);			ContextoImp.Show("Direccion: ");
-			ContextoImp.MoveTo(20, 760);			ContextoImp.Show("Direccion: ");
-			ContextoImp.MoveTo(19.7, 750);			ContextoImp.Show("Conmutador: ");
-			ContextoImp.MoveTo(20, 750);			ContextoImp.Show("Conmutador: ");
-			
-			ContextoImp.MoveTo(20, 700);			ContextoImp.Show("Folio Producto");
-			ContextoImp.MoveTo(80, 700);			ContextoImp.Show("Descripcion");
-			ContextoImp.MoveTo(350, 700);			ContextoImp.Show("Cant. Surtida");
-			ContextoImp.MoveTo(400, 700);			ContextoImp.Show("Fecha Surtida");
-			ContextoImp.MoveTo(450, 700);			ContextoImp.Show("Cant Autorizada");
-			ContextoImp.MoveTo(500, 700);			ContextoImp.Show("Fecha Autorizada");
-			
-			Gnome.Print.Setfont (ContextoImp, fuente8);
-		}
-		
 		void on_button_busca_producto_clicked(object sender, EventArgs args)
 		{
 			Glade.XML gxml = new Glade.XML (null, "hospitalizacion.glade", "busca_producto", null);
@@ -414,15 +181,16 @@ namespace osiris
 	    
 	    void on_checkbutton_nueva_solicitud_clicked(object sender, EventArgs args)
 	    {
-	    	if (checkbutton_nueva_solicitud.Active == true){
+	    	string ultimasolicitud;
+			if (checkbutton_nueva_solicitud.Active == true){
 				MessageDialog msgBox = new MessageDialog (MyWin,DialogFlags.Modal,
 									MessageType.Question,ButtonsType.YesNo,"¿ Esta seguro de CREAR una Nueva SOLICITUD ?");
 				ResponseType miResultado = (ResponseType)msgBox.Run ();
 				msgBox.Destroy();
 		 		if (miResultado == ResponseType.Yes){
-	    			ultimasolicitud = ultima_solicitud();
-	    			this.entry_fecha_solicitud.Text = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
-	    			this.entry_numero_solicitud.Text = ultimasolicitud.ToString().Trim();
+	    			ultimasolicitud = classpublic.lee_ultimonumero_registrado("osiris_his_solicitudes_deta","folio_de_solicitud","WHERE id_almacen = '"+idalmacen.ToString().Trim()+"' ");
+					this.entry_numero_solicitud.Text = ultimasolicitud.ToString().Trim();
+					this.entry_fecha_solicitud.Text = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");	    			
 	    			this.treeViewEngineSolicitud.Clear(); // Limpia el treeview
 	    			button_guardar_solicitud.Sensitive = true;
 					button_quitar_productos.Sensitive = true;
@@ -518,7 +286,12 @@ namespace osiris
 		 
 		 void almacena_productos_solicitados()
 		 {
+			string ultimasolicitud;			
 			TreeIter iter;
+			if(editar == true){
+				ultimasolicitud = classpublic.lee_ultimonumero_registrado("osiris_his_solicitudes_deta","folio_de_solicitud","WHERE id_almacen = '"+idalmacen.ToString().Trim()+"' ");
+				entry_numero_solicitud.Text = ultimasolicitud.ToString().Trim();
+			}
 			if (this.treeViewEngineSolicitud.GetIterFirst (out iter)){
 				button_envio_solicitud.Sensitive = true;				
 				if ((bool) this.lista_produc_solicitados.Model.GetValue (iter,8) == false){
@@ -1015,37 +788,6 @@ namespace osiris
 			}
 		}
 		
-		int ultima_solicitud()
-		{
-			NpgsqlConnection conexion; 
-			conexion = new NpgsqlConnection (connectionString+nombrebd);
-            
-			// Verifica que la base de datos este conectada
-			try{
-				conexion.Open ();
-				NpgsqlCommand comando; 
-				comando = conexion.CreateCommand ();
-               	
-				comando.CommandText = "SELECT folio_de_solicitud "+
-										"FROM osiris_his_solicitudes_deta "+
-										"WHERE 	id_almacen = '"+idalmacen.ToString().Trim()+"' "+
-										"ORDER BY folio_de_solicitud DESC LIMIT 1";
-				//Console.WriteLine(comando.CommandText);
-				NpgsqlDataReader lector = comando.ExecuteReader ();
-				
-				if(lector.Read()){
-					ultimasolicitud = (int) lector["folio_de_solicitud"] + 1;
-				}else{
-					ultimasolicitud = 1;
-				}
-			}catch (NpgsqlException ex){
-				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
-										MessageType.Error,ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
-				msgBoxError.Run ();				msgBoxError.Destroy();
-			}
-			return (ultimasolicitud);
-		}
-		
 		//ACCION QUE CAMBIA EL COLOR DEL TEXTO PARA CUANDO SE GUARDA EN LA BASE DE DATOS 
 		void cambia_colores_fila(Gtk.TreeViewColumn column, Gtk.CellRenderer cell, Gtk.TreeModel model, Gtk.TreeIter iter)
 		{
@@ -1057,8 +799,7 @@ namespace osiris
 				}
 			}else{				
 				(cell as Gtk.CellRendererText).Foreground = "red";
-			}
-			
+			}			
 		}
 				
 		void on_cierraventanas_clicked (object sender, EventArgs args)
@@ -1066,5 +807,14 @@ namespace osiris
 			Widget win = (Widget) sender;
 			win.Toplevel.Destroy();
 		}
+		
+		void on_button_imprime_solicitud_clicked(object sender, EventArgs args)
+		{
+		
+			string query_in_num = " AND osiris_his_solicitudes_deta.folio_de_solicitud = '"+entry_numero_solicitud.Text+"' ";
+			string query_in_almacen = " AND osiris_almacenes.id_almacen = '"+this.idalmacen.ToString().Trim()+"' ";
+			string query_fechas = "";
+			new osiris.rpt_solicitud_subalmacenes(idalmacen,query_in_num,query_in_almacen,query_fechas);
+		}		
 	}
 }

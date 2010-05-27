@@ -22,18 +22,16 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 // 
 //////////////////////////////////////////////////////////
-// Programa		: hscmty.cs
-// Proposito	: Impresion del procedimiento de cobranza 
-// Objeto		: rpt_proc_cobranza.cs
+// Programa		: 
+// Proposito	: 
+// Objeto		: 
 //////////////////////////////////////////////////////
 using System;
 using Gtk;
-using Gnome;
 using Npgsql;
 using System.Data;
 using Glade;
 using System.Collections;
-using GtkSharp;
 
 namespace osiris
 {
@@ -61,6 +59,7 @@ namespace osiris
 		string query_fechas = " ";
 		string rango1 = "";
 		string rango2 = "";
+		string query_general = "";
 		string nombrebd;
 		int idsubalmacen;
 		int filas=690;
@@ -72,18 +71,6 @@ namespace osiris
 		//Declaracion de ventana de error
 		protected Gtk.Window MyWinError;
 		protected Gtk.Window MyWin;
-		
-		// Declarando variable de fuente para la impresion
-		// Declaracion de fuentes tipo Bitstream Vera sans
-		//Gnome.Font fuente5 = Gnome.Font.FindClosest("Luxi Sans", 5);
-		Gnome.Font fuente6 = Gnome.Font.FindClosest("Luxi Sans", 6);
-		Gnome.Font fuente7 = Gnome.Font.FindClosest("Luxi Sans", 7);
-		Gnome.Font fuente8 = Gnome.Font.FindClosest("Luxi Sans", 8);//Bitstream Vera Sans
-		Gnome.Font fuente9 = Gnome.Font.FindClosest("Luxi Sans", 9);
-		//Gnome.Font fuente10 = Gnome.Font.FindClosest("Luxi Sans", 10);
-		//Gnome.Font fuente11 = Gnome.Font.FindClosest("Luxi Sans", 11);
-		//Gnome.Font fuente12 = Gnome.Font.FindClosest("Luxi Sans", 12);
-		//Gnome.Font fuente36 = Gnome.Font.FindClosest("Luxi Sans", 36);
 		
 		string connectionString;
 		
@@ -197,8 +184,7 @@ namespace osiris
 				//Console.WriteLine(comando.CommandText);
 				NpgsqlDataReader lector = comando.ExecuteReader ();
 
-				while (lector.Read())
-				{							
+				while (lector.Read()){							
 					treeViewEnginesolicitud.AppendValues (false, //0
 													(string) lector["foliodesolicitud"],//1
 													(string) lector["descripcionalmacen"], // 2
@@ -263,6 +249,14 @@ namespace osiris
 			
 		void on_button_rep_clicked(object sender, EventArgs args)
 		{
+			string numeros_seleccionado = "";
+			string almacenes_seleccionados = ""; 
+			string variable_paso_03 = "";
+			string variable_paso_04 = "";
+			int variable_paso_02_1 = 0;
+			string query_in_num = "";
+ 			string query_in_almacen = ""; 
+			
 			if (this.checkbutton_todos_envios.Active == true) { 
 				query_fechas = " ";	 
 				rango1 = "";
@@ -273,46 +267,9 @@ namespace osiris
 				query_fechas = " AND to_char(osiris_his_solicitudes_deta.fecha_envio_almacen,'yyyy-MM-dd') >= '"+rango1+"' "+
 								"AND to_char(osiris_his_solicitudes_deta.fecha_envio_almacen,'yyyy-MM-dd') <= '"+rango2+"' ";
 			}
-			
-			Gnome.PrintJob    trabajo = new Gnome.PrintJob(Gnome.PrintConfig.Default());
-        	Gnome.PrintDialog dialogo = new Gnome.PrintDialog(trabajo, "Envio Materiales Almacen", 0);
-        	
-        	int         respuesta = dialogo.Run ();
-        	
-        	if (respuesta == (int) PrintButtons.Cancel) 
-			{
-				dialogo.Hide (); 
-				dialogo.Dispose (); 
-				return;
-			}
-			Gnome.PrintContext ctx = trabajo.Context;
-        	ComponerPagina(ctx, trabajo); 
-			trabajo.Close();
-            switch (respuesta)
-        	{
-				case (int) PrintButtons.Print:   
-                trabajo.Print (); 
-                break;
-                case (int) PrintButtons.Preview:
-                new PrintJobPreview(trabajo, "Envio Materiales Almacen").Show();
-                break;
-        	}
-			dialogo.Hide (); dialogo.Dispose ();
-		}	
-			
-		void ComponerPagina (Gnome.PrintContext ContextoImp, Gnome.PrintJob trabajoImpresion)
-		{   
-			TreeIter iter;	
-			filas=690;
-			
-			string numeros_seleccionado = "";
-			string almacenes_seleccionados = ""; 
-			string variable_paso_03 = "";
-			string variable_paso_04 = "";
-			int variable_paso_02_1 = 0;
-			string fechaautorizacion = "";
-			
+						
 			//poder elegir una fila del treeview
+			TreeIter iter;
 			if (treeViewEnginesolicitud.GetIterFirst (out iter)){
 			
  				if ((bool) lista_almacenes.Model.GetValue (iter,0) == true){
@@ -335,262 +292,15 @@ namespace osiris
  					}
  				}
  			}
- 			string query_in_num = "";
- 			string query_in_almacen = ""; 
- 			
+ 						
  			if (variable_paso_02_1 > 0){
 	 			query_in_num = " AND osiris_his_solicitudes_deta.folio_de_solicitud IN ('"+numeros_seleccionado+"') ";
 				query_in_almacen = " AND osiris_his_solicitudes_deta.id_almacen IN ('"+almacenes_seleccionados+"') ";
 			}
-			NpgsqlConnection conexion; 
-        	conexion = new NpgsqlConnection (connectionString+nombrebd);
-        	// Verifica que la base de dato s este conectada
-        	try{
-	 			conexion.Open ();
-	        	NpgsqlCommand comando; 
-	        	comando = conexion.CreateCommand (); 
-
-	        	comando.CommandText = "SELECT DISTINCT (osiris_his_solicitudes_deta.folio_de_solicitud), "+
-	        		       		"to_char(osiris_his_solicitudes_deta.fecha_envio_almacen,'dd-MM-yyyy'),"+
-								"to_char(osiris_his_solicitudes_deta.folio_de_solicitud,'999999999') AS foliosol,"+
-								"to_char(osiris_his_solicitudes_deta.fechahora_solicitud,'dd-MM-yyyy HH24:mi') AS fecha_sol,"+
-								"to_char(osiris_his_solicitudes_deta.fechahora_autorizado,'dd-MM-yyyy') AS fecha_autorizado,"+
-								"to_char(osiris_his_solicitudes_deta.fecha_envio_almacen,'dd-MM-yyyy HH24:mi') AS fecha_envio,"+								
-								"osiris_his_solicitudes_deta.id_quien_solicito,"+
-								"to_char(osiris_productos.id_producto,'999999999999') AS idproducto,"+
-								"osiris_his_solicitudes_deta.id_producto,"+
-								"osiris_his_solicitudes_deta.sin_stock,"+	
-								"osiris_his_solicitudes_deta.solicitado_erroneo,"+
-								"osiris_his_solicitudes_deta.surtido,"+
-								"osiris_empleado.id_empleado,"+	
-								"osiris_productos.descripcion_producto,"+
-								"to_char(osiris_his_solicitudes_deta.cantidad_solicitada,'9999999.99') AS cantsol,"+
-								"to_char(osiris_his_solicitudes_deta.cantidad_autorizada,'9999999.99') AS cantaut,"+
-								"osiris_his_solicitudes_deta.id_almacen AS idalmacen,osiris_almacenes.descripcion_almacen,osiris_almacenes.id_almacen,"+
-								"osiris_empleado.nombre1_empleado || ' ' || "+"osiris_empleado.nombre2_empleado || ' ' || "+"osiris_empleado.apellido_paterno_empleado || ' ' || "+ 
-								"osiris_empleado.apellido_materno_empleado AS nombreempl "+
-								"FROM osiris_his_solicitudes_deta,osiris_almacenes,osiris_productos,osiris_empleado "+
-								"WHERE osiris_his_solicitudes_deta.id_almacen = osiris_almacenes.id_almacen "+
-								"AND osiris_empleado.login_empleado = osiris_his_solicitudes_deta.id_empleado "+
-								"AND osiris_his_solicitudes_deta.folio_de_solicitud > 0 "+
-								"AND osiris_productos.cobro_activo = 'true' "+
-								"AND osiris_his_solicitudes_deta.id_producto = osiris_productos.id_producto "+
-								"AND osiris_his_solicitudes_deta.eliminado = 'false' "+
-								query_in_num+
-								query_in_almacen+
-								query_fechas+" ORDER BY osiris_his_solicitudes_deta.id_almacen,osiris_his_solicitudes_deta.folio_de_solicitud;";
-								
-		        	Console.WriteLine(comando.CommandText);
-		        	NpgsqlDataReader lector = comando.ExecuteReader ();
-		        	ContextoImp.BeginPage("Pagina 1");
-		        	imprime_encabezado(ContextoImp,trabajoImpresion);
-		        	Gnome.Print.Setfont (ContextoImp, fuente6);
-		        	
-		        	int grupo = 0;
-		        	int numero_almacen = 0;
-		        		
-		        	string toma_descrip_prod;
-		        	if (lector.Read()){
-		        		
-		        		Gnome.Print.Setfont (ContextoImp, fuente8);
-			        	ContextoImp.MoveTo(300, 740);		 ContextoImp.Show((string) lector["foliosol"]);
-			        	ContextoImp.MoveTo(250, 740);		 ContextoImp.Show("No. SOLICITUD:");
-			        	ContextoImp.MoveTo(380, 740);		 ContextoImp.Show("Envio:");
-						ContextoImp.MoveTo(405, 740);		 ContextoImp.Show((string) lector["fecha_envio"]);
-						ContextoImp.MoveTo(220, 720);		 ContextoImp.Show((string) lector["nombreempl"]);
-		        		Gnome.Print.Setfont (ContextoImp, fuente6);
-						ContextoImp.MoveTo(20, 720);		 ContextoImp.Show("Solicito:");
-						ContextoImp.MoveTo(70, 720);		 ContextoImp.Show((string) lector["id_quien_solicito"]);
-						ContextoImp.MoveTo(20, 730);		 ContextoImp.Show("Area Solicitud:");
-						ContextoImp.MoveTo(70, 730);		 ContextoImp.Show((string) lector["descripcion_almacen"]);
-						ContextoImp.MoveTo(165, 720);		 ContextoImp.Show("Nom.Solicitante:");
-						
-						contador+=1;
-        				salto_pagina(ContextoImp,trabajoImpresion,contador);
-        				
-		        		grupo = (int) lector["folio_de_solicitud"];
-		        		numero_almacen = (int) lector["idalmacen"];
-						
-				
-						//comprueba las notas de los resultado en el reporte
-						if((bool) lector["sin_stock"] == true){
-							ContextoImp.MoveTo(530,filas);	 ContextoImp.Show("sin stock");
-						}
-						if((bool) lector["solicitado_erroneo"] == true){
-							ContextoImp.MoveTo(530,filas);	 ContextoImp.Show("Pedido Erroneo");
-						}
-						
-						if((bool) lector["surtido"] == true){
-							ContextoImp.MoveTo(530,filas);	 ContextoImp.Show("surtido");
-						}
-						if(float.Parse((string) lector["cantaut"]) == 0 && (bool) lector["sin_stock"] == false && (bool) lector["solicitado_erroneo"] == false && (bool) lector["surtido"] == false){
-							ContextoImp.MoveTo(530,filas);	 ContextoImp.Show("No surtido");
-						}
-						
-						toma_descrip_prod = (string) lector["descripcion_producto"];
-						if(toma_descrip_prod.Length > 70){
-								toma_descrip_prod = toma_descrip_prod.Substring(0,69);
-						}  			
-						ContextoImp.MoveTo(120, filas);		ContextoImp.Show(toma_descrip_prod);
-
-			        	ContextoImp.MoveTo(65,filas);	 ContextoImp.Show((string) lector["idproducto"]);
-			        	
-			        	ContextoImp.MoveTo(15,filas);	 ContextoImp.Show((string) lector["cantsol"]);
-			        	ContextoImp.MoveTo(400,filas);	 ContextoImp.Show((string) lector["cantaut"]);    	
-			        	
-			        	if( (string) lector["fecha_autorizado"] == "02-01-2000"){
-							fechaautorizacion = "";
-						}else{
-							fechaautorizacion = (string) lector["fecha_autorizado"];
-						}
-						ContextoImp.MoveTo(465,filas);	 ContextoImp.Show(fechaautorizacion);
-			        	
-			        	filas-=10;
-						contador+=1;
-						salto_pagina(ContextoImp,trabajoImpresion,contador);
-					}
-					
-		        	while (lector.Read()){
-		        		
-			        	if((bool) lector["sin_stock"] == true){
-							ContextoImp.MoveTo(530,filas);	 ContextoImp.Show("sin stock");
-						}
-						if((bool) lector["solicitado_erroneo"] == true){
-							ContextoImp.MoveTo(530,filas);	 ContextoImp.Show("Pedido Erroneo");
-						}
-						if((bool) lector["surtido"] == true){
-							ContextoImp.MoveTo(530,filas);	 ContextoImp.Show("surtido");
-						}
-						if(float.Parse((string) lector["cantaut"]) == 0 && (bool) lector["sin_stock"] == false && (bool) lector["solicitado_erroneo"] == false && (bool) lector["surtido"] == false){
-							ContextoImp.MoveTo(530,filas);	 ContextoImp.Show("No surtido");
-						}
-						toma_descrip_prod = (string) lector["descripcion_producto"];
-						
-						if(toma_descrip_prod.Length > 70){
-							toma_descrip_prod = toma_descrip_prod.Substring(0,69);
-						}  			
-						ContextoImp.MoveTo(65,filas);	 ContextoImp.Show((string) lector["idproducto"]);
-						ContextoImp.MoveTo(120, filas);		ContextoImp.Show(toma_descrip_prod);
-			        	//ContextoImp.MoveTo(75,filas);	 ContextoImp.Show((string) lector["descripcion_producto"]);
-			        	ContextoImp.MoveTo(15,filas);	 ContextoImp.Show((string) lector["cantsol"]);
-			        	ContextoImp.MoveTo(400,filas);	 ContextoImp.Show((string) lector["cantaut"]);
-			        	
-			        	if( (string) lector["fecha_autorizado"] == "02-01-2000"){
-							fechaautorizacion = "";
-						}else{
-							fechaautorizacion = (string) lector["fecha_autorizado"];
-						}
-						ContextoImp.MoveTo(465,filas);	 ContextoImp.Show(fechaautorizacion);
-			        	
-			        	filas-=10;
-						contador+=1;
-						salto_pagina(ContextoImp,trabajoImpresion,contador);
-		        	
-		        	if(grupo != (int) lector["folio_de_solicitud"] || numero_almacen != (int) lector["idalmacen"]){
-							Gnome.Print.Setfont (ContextoImp, fuente9);
-							ContextoImp.MoveTo(30, 70);			ContextoImp.Show("      Persona Recibe:  ");
-							ContextoImp.MoveTo(30, 75); 		ContextoImp.Show("-------------------------------");
-							ContextoImp.MoveTo(30, 35);			ContextoImp.Show("          Firma   ");
-							ContextoImp.MoveTo(30, 40);			ContextoImp.Show("----------------------------");
-							ContextoImp.MoveTo(250,	70);		ContextoImp.Show("      Persona Entrega:  ");
-							ContextoImp.MoveTo(250, 75);		ContextoImp.Show("-------------------------------");
-							ContextoImp.MoveTo(250, 35);		ContextoImp.Show("         Firma   ");
-							ContextoImp.MoveTo(250, 40);		ContextoImp.Show("----------------------------");
-							Gnome.Print.Setfont (ContextoImp, fuente9);
-
-							contador=1;
-				        	numpage +=1;
-			        		ContextoImp.ShowPage();
-							ContextoImp.BeginPage("Pagina "+numpage.ToString());
-							Gnome.Print.Setfont (ContextoImp, fuente6);
-							imprime_encabezado(ContextoImp,trabajoImpresion);
-							
-		        			Gnome.Print.Setfont (ContextoImp, fuente8);
-				        	ContextoImp.MoveTo(300, 740);		 ContextoImp.Show((string) lector["foliosol"]);
-				        	ContextoImp.MoveTo(250, 740);		 ContextoImp.Show("No. SOLICITUD:");
-				        	ContextoImp.MoveTo(380, 740);		 ContextoImp.Show("Envio:");
-							ContextoImp.MoveTo(405, 740);		 ContextoImp.Show((string) lector["fecha_envio"]);
-							ContextoImp.MoveTo(220, 720);		 ContextoImp.Show((string) lector["nombreempl"]);
-			        		Gnome.Print.Setfont (ContextoImp, fuente6);
-							ContextoImp.MoveTo(20, 720);		 ContextoImp.Show("Solicito:");
-							ContextoImp.MoveTo(70, 720);		 ContextoImp.Show((string) lector["id_quien_solicito"]);
-							ContextoImp.MoveTo(20, 730);		 ContextoImp.Show("Area Solicitud:");
-							ContextoImp.MoveTo(70, 730);		 ContextoImp.Show((string) lector["descripcion_almacen"]);
-							ContextoImp.MoveTo(165, 720);		 ContextoImp.Show("Nom.Solicitante:");
-							
-							contador+=1;
-        					salto_pagina(ContextoImp,trabajoImpresion,contador);
-        					
-		        			grupo = (int) lector["folio_de_solicitud"];
-		        			numero_almacen = (int) lector["idalmacen"];
-							
-		        		}
-		        	}
-		        	
-					Gnome.Print.Setfont (ContextoImp, fuente9);
-					ContextoImp.MoveTo(30, 70);			ContextoImp.Show("      Persona Recibe:  ");
-					ContextoImp.MoveTo(30, 75);			ContextoImp.Show("-------------------------------");
-					ContextoImp.MoveTo(30, 35);			ContextoImp.Show("          Firma   ");
-					ContextoImp.MoveTo(30, 40);			ContextoImp.Show("----------------------------");
-					ContextoImp.MoveTo(250, 70);		ContextoImp.Show("      Persona Entrega:  ");
-					ContextoImp.MoveTo(250, 75);		ContextoImp.Show("-------------------------------");
-					ContextoImp.MoveTo(250, 35);		ContextoImp.Show("         Firma   ");
-					ContextoImp.MoveTo(250, 40);		ContextoImp.Show("----------------------------");
-					Gnome.Print.Setfont (ContextoImp, fuente9);
-
-		        	ContextoImp.ShowPage();
-		        	
-			}catch (NpgsqlException ex){
-					MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
-					MessageType.Warning, ButtonsType.Ok, "PostgresSQL error: {0}",ex.Message);
-					msgBoxError.Run ();
-					msgBoxError.Destroy();
-			}
-		}
-		
-		void salto_pagina(Gnome.PrintContext ContextoImp, Gnome.PrintJob trabajoImpresion,int contador)
-		{
-		Console.WriteLine("afuera"+contador);
-	        if (contador > 60)
-	        {	
-	        Console.WriteLine("entra"+contador);
-	        	filas=690;
-
-	        	numpage += 1;
-	           	
-	        	ContextoImp.ShowPage();
-	        	contador=1;
-				ContextoImp.BeginPage("Pagina "+numpage.ToString());
-				
-				imprime_encabezado(ContextoImp,trabajoImpresion);
-				
-	     		Gnome.Print.Setfont (ContextoImp, fuente6);	        	
-	        }
+			
+			new osiris.rpt_solicitud_subalmacenes(idsubalmacen,query_in_num,query_in_almacen,query_fechas);
 		}
 			
-		void imprime_encabezado(Gnome.PrintContext ContextoImp, Gnome.PrintJob trabajoImpresion)
-		{        		
-      		// Cambiar la fuente
-			Gnome.Print.Setfont (ContextoImp, fuente6);
-			ContextoImp.MoveTo(19.7, 770);			ContextoImp.Show("Sistema Hospitalario OSIRIS");
-			ContextoImp.MoveTo(20, 770);			ContextoImp.Show("Sistema Hospitalario OSIRIS");
-			ContextoImp.MoveTo(19.7, 760);			ContextoImp.Show("Direccion:");
-			ContextoImp.MoveTo(20, 760);			ContextoImp.Show("Direccion:");
-			ContextoImp.MoveTo(19.7, 750);			ContextoImp.Show("Conmutador:");
-			ContextoImp.MoveTo(20, 750);			ContextoImp.Show("Conmutador:");
-
-			Gnome.Print.Setfont (ContextoImp, fuente7);
-			ContextoImp.MoveTo(20, 700);			ContextoImp.Show("Cantidad");										
-			ContextoImp.MoveTo(70, 700);			ContextoImp.Show("Folio");										
-			ContextoImp.MoveTo(150, 700);			ContextoImp.Show("Descripcion");
-			ContextoImp.MoveTo(400, 700);			ContextoImp.Show("Cant. Surtida");
-			ContextoImp.MoveTo(460, 700);			ContextoImp.Show("Fecha autorizado");
-			ContextoImp.MoveTo(530, 700);			ContextoImp.Show("Nota");
-
-			filas=690;
-			contador=1;
-		}
-		
 		void on_cierraventanas_clicked (object sender, EventArgs args)
 		{
 			Widget win = (Widget) sender;

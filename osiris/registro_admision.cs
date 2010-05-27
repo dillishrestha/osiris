@@ -249,7 +249,7 @@ namespace osiris
 		string certif_respo = "";
 		string direc_empre_respo = "";
 		string telef_empre_respo = "";
-		string parentezcoresponsable = "Sin Parentezco";
+		string parentezcoresponsable = "Sin Parentesco";
 		
 		// Variables publicas para grabar el encargado de la cuenta
 		string _tipo_="";   // que tipo de entrada es nuevo o esta buscando
@@ -2605,7 +2605,7 @@ namespace osiris
 			ListStore store3 = new ListStore( typeof (string));
 			combobox_parent_responsable.Model = store3;
 	        		
-			store3.AppendValues ("Sin Parentezco");
+			store3.AppendValues ("Sin Parentesco");
 			store3.AppendValues ("Esposo(a)");
 			store3.AppendValues ("Papa");
 			store3.AppendValues ("Mama");

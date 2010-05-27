@@ -44,7 +44,6 @@ namespace osiris
 		private PrintOperation print;
 		private double fontSize = 8.0;
 		int escala_en_linux_windows;		// Linux = 1  Windows = 8
-		int separacionlineas = 12;
 		int comienzo_linea = 70;
 		int separacion_linea = 10;
 		int contador_numerocitas = 1;

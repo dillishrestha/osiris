@@ -87,6 +87,7 @@ namespace osiris
 		[Widget] Gtk.Button button_resultados_lab = null;
 		[Widget] Gtk.Button button_asignacion_habitacion = null;
 		[Widget] Gtk.Button button_historiaclinica = null;
+		[Widget] Gtk.Button button_notas_evolucion = null;
 		
 		//Declarando la barra de estado
 		[Widget] Gtk.Statusbar statusbar_caja = null;
@@ -309,7 +310,8 @@ namespace osiris
 			button_actualizar.Clicked += new EventHandler(on_button_actualizar_clicked);
 			// Resultados de Laboratorio
 			button_resultados_lab.Clicked += new EventHandler(on_button_resultados_lab_clicked);
-			
+			// notas de evolucion medica
+			button_notas_evolucion.Clicked += new EventHandler(on_button_notas_evolucion_clicked);
 			// Asignacion de Camas
 			button_asignacion_habitacion.Clicked += new EventHandler(on_button_asignacion_habitacion_clicked);
 			// Historia Clinica del paciente
@@ -1756,14 +1758,14 @@ namespace osiris
 		
 		// busco un paciente pantalla de ingreso de nuevo paciente
 		void on_button_buscar_paciente_clicked(object sender, EventArgs args)
-	    	{
+	    {
 			Glade.XML gxml = new Glade.XML (null, "hospitalizacion.glade", "busca_paciente", null);
 			gxml.Autoconnect (this);
 			crea_treeview_busqueda("paciente");
 			button_buscar_busqueda.Clicked += new EventHandler(on_buscar_paciente_clicked);
 			button_selecciona.Clicked += new EventHandler(on_selecciona_paciente_clicked);
 			button_nuevo_paciente.Sensitive = false;
-			button_salir.Clicked += new EventHandler(on_cierraventanas_clicked); // esta sub-clase esta en hscmty.cs
+			button_salir.Clicked += new EventHandler(on_cierraventanas_clicked);
 		}
 	    
 		void on_button_busca_producto_clicked (object sender, EventArgs args)
@@ -2638,6 +2640,11 @@ namespace osiris
  			
  			treeViewEngineExtras.SetValue (iter, (int) Colum_cargos_extras.col_valor_desc,valor_descuento.ToString("F"));
  			treeViewEngineExtras.SetValue (iter, (int) Colum_cargos_extras.col_total,precio_con_desc.ToString("F"));
+		}
+		
+		void on_button_notas_evolucion_clicked(object sender, EventArgs args)
+		{
+			new osiris.notas_medicas();
 		}
 		
 		// cierra ventanas emergentes

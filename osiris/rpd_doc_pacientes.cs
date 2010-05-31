@@ -4,8 +4,10 @@
 // Monterrey - Mexico
 //
 // Autor   Ing. Juan Antonio Peña Gzz.(Programation & Glade's window)
-// 	ayuda: Ing. Erick Eduardo Gonzalez Reyes (Programation & Glade's window)
-//         Ing. R. Israel Peña Gonzalez	(Programation & Glade's window)			  
+// ayuda:  Ing. Erick Eduardo Gonzalez Reyes (Programation & Glade's window)
+//         Ing. R. Israel Peña Gonzalez	(Programation & Glade's window)
+// mejoras Ing. Daniel Olivares Cuevas 28/05/2010 arcangeldoc@gmail.com (Programation & Glade's window)
+//
 // Licencia		: GLP
 //////////////////////////////////////////////////////////
 //
@@ -24,9 +26,9 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 // 
 //////////////////////////////////////////////////////////
-// Programa		: hscmty.cs
-// Proposito	: Impresion de documentos de paciente
-// Objeto		: rpt_doc_pacientes.cs
+// Programa		: 
+// Proposito	: 
+// Objeto		: 
 //////////////////////////////////////////////////////////	
 using System;
 using Npgsql;
@@ -67,14 +69,17 @@ namespace osiris
 		[Widget] Gtk.Entry entry_especialidad;
 		[Widget] Gtk.Entry entry_tipo_paciente;
 		[Widget] Gtk.Entry entry_aseguradora;
-		[Widget] Gtk.Entry entry_poliza;
-		[Widget] Gtk.Entry entry_cirugia;
-		[Widget] Gtk.Button button_buscar_paciente;
-		[Widget] Gtk.Button button_selec_folio;
-		[Widget] Gtk.Button button_imprimir_protocolo;
-		[Widget] Gtk.Button button_cons_informado;
-		[Widget] Gtk.Button button_contrato_prest;
-		[Widget] Gtk.Button button_historia_clinica;		
+		[Widget] Gtk.Entry entry_poliza = null;
+		[Widget] Gtk.Entry entry_cirugia = null;
+		[Widget] Gtk.Button button_buscar_paciente = null;
+		[Widget] Gtk.Button button_selec_folio = null;
+		[Widget] Gtk.Button button_imprimir_protocolo = null;
+		[Widget] Gtk.Button button_cons_informado = null;
+		[Widget] Gtk.Button button_contrato_prest = null;
+		[Widget] Gtk.Button button_historia_clinica = null;
+		[Widget] Gtk.RadioButton radiobutton_tipo_cirugia  = null;
+		[Widget] Gtk.Entry entry_alergia_paciente = null;
+		[Widget] Gtk.CheckButton checkbutton_camb_dats;
 				
 		//Declarando la barra de estado
 		[Widget] Gtk.Statusbar statusbar_caja;
@@ -103,7 +108,7 @@ namespace osiris
 		[Widget] Gtk.Entry entry_med_trat;
 		[Widget] Gtk.Entry entry_diag;
 		[Widget] Gtk.Entry entry_docimp_cirugia;
-		[Widget] Gtk.CheckButton checkbutton_camb_dats;
+		
 		
 		// busqueda de Medicos
 		[Widget] Gtk.Window buscador_medicos;
@@ -123,6 +128,7 @@ namespace osiris
 		[Widget] Gtk.RadioButton radiobutton_cirugia;
 		[Widget] Gtk.RadioButton radiobutton_diag_cie10;
 		[Widget] Gtk.RadioButton radiobutton_diag_final;
+		[Widget] Gtk.RadioButton radiobutton_alergico;
 
 		//nuevos:
 		//[Widget] Gtk.RadioButton radiobutton_diag_cie_10;
@@ -220,6 +226,9 @@ namespace osiris
 			radiobutton_diag_cie10.Sensitive = false;
 		    radiobutton_diag_final.Sensitive = false;
 			radiobutton_cirugia.Sensitive= false;
+			radiobutton_tipo_cirugia.Sensitive= false;
+			radiobutton_alergico.Sensitive= false;
+			entry_alergia_paciente.Sensitive= false;
 			
 			if( control == 1){
 				entry_folio_servicio.Sensitive = false;
@@ -269,6 +278,8 @@ namespace osiris
 			radiobutton_diag_final.Clicked += new EventHandler(on_radio_clicked);
 			
 			radiobutton_cirugia.Clicked += new EventHandler(on_radio_clicked);
+			
+			radiobutton_alergico.Clicked += new EventHandler(on_radio_clicked);
 	    	
 			statusbar_caja.Pop(0);
 			statusbar_caja.Push(1, "login: "+LoginEmpleado+"  |Usuario: "+NomEmpleado+" "+AppEmpleado+" "+ApmEmpleado);
@@ -277,7 +288,7 @@ namespace osiris
 		
 		void on_button_historia_clinica_clicked(object sender, EventArgs args)
 		{
-			//new osiris.historia_clinica(entry_nombre_paciente.Text,entry_pid_paciente.Text,entry_edad.Text,LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,entry_fecha_admision.Text,entry_fecha_nacimiento.Text);
+			//new osiris.historia_clinica(entry_nombre_paciente.Text,entry_pid_paciente.Text,"",LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,entry_fecha_admision.Text,entry_fecha_nacimiento.Text);
 		}
 		
 		void on_radio_clicked (object sender, EventArgs args)
@@ -287,54 +298,71 @@ namespace osiris
 		
 		void verifica_radiobutton()
 		{
-			if (radiobutton_med.Active == true ){
-			    button_busc_medic_diag.Sensitive = true;
-				this.entry_diag.Sensitive = false;
-			    button_busc_medic_trat.Sensitive =false;
-			    button_busc_diag.Sensitive = false;
-				button_diag_final.Sensitive = false;
-			    button_busc_cirugia.Sensitive = false; 
-			}
-			if (radiobutton_med_trat.Active == true){
-				button_busc_medic_trat.Sensitive =true;
-				this.entry_diag.Sensitive = false;
-				button_busc_medic_diag.Sensitive = false;
-				button_busc_diag.Sensitive = false;
-				button_diag_final.Sensitive = false;
-				button_busc_cirugia.Sensitive = false;
-			}
-			if (radiobutton_diag.Active == true){
-				button_busc_diag.Sensitive = false;
-				button_diag_final.Sensitive = false;
-				this.entry_diag.Sensitive = true;
-				button_busc_cirugia.Sensitive = false;
-				button_busc_medic_diag.Sensitive = false;
-				button_busc_medic_trat.Sensitive =false;
-			}					    
-			if (radiobutton_cirugia.Active == true){
-				button_busc_cirugia.Sensitive = true;
-				button_busc_medic_trat.Sensitive =false;
-				this.entry_diag.Sensitive = false;
-				button_busc_medic_diag.Sensitive = false;
-				button_busc_diag.Sensitive = false;
-				button_diag_final.Sensitive = false;
-			}
-			if (radiobutton_diag_cie10.Active == true){
-				this.button_busc_diag.Sensitive = true;
-				button_diag_final.Sensitive = true;
-				button_busc_medic_trat.Sensitive =false;
-				button_busc_medic_diag.Sensitive = false;
-				//button_busc_diag.Sensitive = false;
-				button_diag_final.Sensitive = false;
-				button_busc_cirugia.Sensitive = false;
-			}
-            if (radiobutton_diag_final.Active == true){
-				button_busc_medic_trat.Sensitive = false;
-				this.button_diag_final.Sensitive = true;
-				button_busc_medic_diag.Sensitive = false;
-				button_busc_diag.Sensitive = false;
-				button_busc_cirugia.Sensitive = false;
-				this.button_busc_diag.Sensitive = false;
+			if (checkbutton_camb_dats.Active == true){
+				if (radiobutton_med.Active == true ){
+				    button_busc_medic_diag.Sensitive = true;
+					this.entry_diag.Sensitive = false;
+				    button_busc_medic_trat.Sensitive =false;
+				    button_busc_diag.Sensitive = false;
+					button_diag_final.Sensitive = false;
+				    button_busc_cirugia.Sensitive = false;
+					entry_alergia_paciente.Sensitive= false;
+				}
+				if (radiobutton_med_trat.Active == true){
+					button_busc_medic_trat.Sensitive =true;
+					this.entry_diag.Sensitive = false;
+					button_busc_medic_diag.Sensitive = false;
+					button_busc_diag.Sensitive = false;
+					button_diag_final.Sensitive = false;
+					button_busc_cirugia.Sensitive = false;
+					entry_alergia_paciente.Sensitive= false;
+				}
+				if (radiobutton_diag.Active == true){
+					button_busc_diag.Sensitive = false;
+					button_diag_final.Sensitive = false;
+					this.entry_diag.Sensitive = true;
+					button_busc_cirugia.Sensitive = false;
+					button_busc_medic_diag.Sensitive = false;
+					button_busc_medic_trat.Sensitive =false;
+					entry_alergia_paciente.Sensitive= false;
+				}					    
+				if (radiobutton_cirugia.Active == true){
+					button_busc_cirugia.Sensitive = true;
+					button_busc_medic_trat.Sensitive =false;
+					this.entry_diag.Sensitive = false;
+					button_busc_medic_diag.Sensitive = false;
+					button_busc_diag.Sensitive = false;
+					button_diag_final.Sensitive = false;
+					entry_alergia_paciente.Sensitive= false;
+				}
+				if (radiobutton_diag_cie10.Active == true){
+					this.button_busc_diag.Sensitive = true;
+					button_diag_final.Sensitive = true;
+					button_busc_medic_trat.Sensitive =false;
+					button_busc_medic_diag.Sensitive = false;
+					//button_busc_diag.Sensitive = false;
+					button_diag_final.Sensitive = false;
+					button_busc_cirugia.Sensitive = false;
+					entry_alergia_paciente.Sensitive= false;
+				}
+	            if (radiobutton_diag_final.Active == true){
+					button_busc_medic_trat.Sensitive = false;
+					button_diag_final.Sensitive = true;
+					button_busc_medic_diag.Sensitive = false;
+					button_busc_diag.Sensitive = false;
+					button_busc_cirugia.Sensitive = false;
+					button_busc_diag.Sensitive = false;
+					entry_alergia_paciente.Sensitive= false;
+				}
+				if(radiobutton_alergico.Active == true){
+					entry_alergia_paciente.Sensitive= true;
+					button_busc_medic_trat.Sensitive = false;
+					button_diag_final.Sensitive = false;
+					button_busc_medic_diag.Sensitive = false;
+					button_busc_diag.Sensitive = false;
+					button_busc_cirugia.Sensitive = false;
+					button_busc_diag.Sensitive = false;
+				}				
 			}
 		}
 		
@@ -348,8 +376,11 @@ namespace osiris
 				radiobutton_diag_cie10.Sensitive= true;
 		        radiobutton_diag_final.Sensitive= true;
 				radiobutton_cirugia.Sensitive= true;
+				radiobutton_tipo_cirugia.Sensitive= true;
+				radiobutton_alergico.Sensitive= true;
                 button_busc_medic_diag.Sensitive = true;
 				button_guardar.Sensitive = true;
+				entry_alergia_paciente.Sensitive= true;				
 		      }else{	       
 		      	radiobutton_med.Sensitive= false;
 				radiobutton_med_trat.Sensitive= false;
@@ -357,6 +388,9 @@ namespace osiris
 				radiobutton_diag_cie10.Sensitive = false;
 		        radiobutton_diag_final.Sensitive = false;
 				radiobutton_cirugia.Sensitive= false;
+				radiobutton_tipo_cirugia.Sensitive= false;
+				radiobutton_alergico.Sensitive= false;
+				entry_alergia_paciente.Sensitive= false;
 				button_busc_medic_diag.Sensitive = false;
 				button_busc_medic_trat.Sensitive = false;
 				button_busc_diag.Sensitive = false;

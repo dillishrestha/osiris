@@ -1,11 +1,8 @@
 
 using System;
 using Npgsql;
-using System.Data;
 using Gtk;
 using Glade;
-using System.Collections;
-using System.IO;
 using Gdk;
 
 namespace osiris
@@ -16,43 +13,88 @@ namespace osiris
 		// Todas la ventanas en glade este boton debe estra declarado identico
 		[Widget] Gtk.Button button_salir = null;
 		
-		[Widget] Gtk.Window window_demo = null;
+		[Widget] Gtk.Window notas_medicas_enfermeria = null;
 		[Widget] Gtk.TextView textview1 = null;
+		[Widget] Gtk.TextView textview2 = null;
+		
+		[Widget] Gtk.Entry entry_pid_paciente = null;
+		[Widget] Gtk.Entry entry_nombre_paciente = null;
+		[Widget] Gtk.Entry entry_edad_paciente = null;		
+		[Widget] Gtk.Entry entry_numerotencion = null;
+		[Widget] Gtk.Entry entry_doctor = null;
+		[Widget] Gtk.Button button_guardar = null;
+		//[Widget] Gtk.Entry entry_doctor = null;
 		
 		string connectionString;
 		string nombrebd;
+		string LoginEmpleado;
+		string NomEmpleado;
+		string AppEmpleado;
+		string ApmEmpleado;
+		string name_field;
+		string pidpaciente;
+		string folioservicio;
+		string nombredoctor;
 		
-		const int gray50_width = 2;
-		const int gray50_height = 2;
-		const string gray50_bits = "\x02\x01";
-		
+		string sql_general = "SELECT notas_de_enfermeria,notas_de_evolucion,indicaciones_medicas,nombre1_paciente,nombre2_paciente,apellido_paterno_paciente,apellido_materno_paciente,"+
+							"to_char(to_number(to_char(age('"+DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss")+"',osiris_his_paciente.fecha_nacimiento_paciente),'yyyy') ,'9999'),'9999') AS edad," +
+							"to_char(fecha_anotacion,'yyyy-MM-dd') AS fechaanotacion "+
+							""+
+							"FROM osiris_his_informacion_medica,osiris_his_paciente "+
+									"WHERE osiris_his_informacion_medica.pid_paciente = osiris_his_paciente.pid_paciente ";
+		string sql_pidpaciente;
+		string sql_folioservicio;
+		string sql_filtronotasblanco;
+			
 		class_conexion conexion_a_DB = new class_conexion();
 		class_public classpublic = new class_public();
 		
 		//Declaracion de ventana de error
 		protected Gtk.Window MyWinError;
 		
-		public notas_medicas ()
+		public notas_medicas (string LoginEmp, string NomEmpleado_, string AppEmpleado_, string ApmEmpleado_,
+		                      string title_window, string name_field_,string pidpaciente_,string folioservicio_,string nombredoctor_)
 		{
 			connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
 			nombrebd = conexion_a_DB._nombrebd;
+			LoginEmpleado = LoginEmp;
+			NomEmpleado = NomEmpleado_;
+			AppEmpleado = AppEmpleado_;
+			ApmEmpleado = ApmEmpleado_;
+			name_field = name_field_;
+			pidpaciente = pidpaciente_;
+			folioservicio = folioservicio_;
+			nombredoctor = nombredoctor_;
 			
-			Glade.XML gxml = new Glade.XML (null, "hospitalizacion.glade", "window_demo", null);
+			sql_pidpaciente = " AND osiris_his_informacion_medica.pid_paciente = '"+pidpaciente+"' ";
+			sql_folioservicio = " AND osiris_his_informacion_medica.folio_de_servicio = '"+folioservicio+"' ";
+			sql_filtronotasblanco = " AND "+name_field+" <> '' ";
+			
+			Glade.XML gxml = new Glade.XML (null, "hospitalizacion.glade", "notas_medicas_enfermeria", null);
 			gxml.Autoconnect (this);
-			window_demo.Show();
-			window_demo.SetPosition(WindowPosition.Center);	// centra la ventana en la pantalla
+			notas_medicas_enfermeria.Show();
+			notas_medicas_enfermeria.SetPosition(WindowPosition.Center);	// centra la ventana en la pantalla
+			notas_medicas_enfermeria.Title = title_window;
 			button_salir.Clicked += new EventHandler(on_cierraventanas_clicked);
-			textview1.ModifyBase(StateType.Normal, new Gdk.Color(255,243,169)); // Color Amarillo
-			cadena_de_textos();
+			button_guardar.Clicked += new EventHandler(on_button_guardar_clicked);
+			switch (name_field){	
+				case "notas_de_evolucion":
+					textview1.ModifyBase(StateType.Normal, new Gdk.Color(255,243,169)); // Color Amarillo
+				break;
+				case "notas_de_enfermeria":
+					textview1.ModifyBase(StateType.Normal, new Gdk.Color(237,191,235)); // Color Rosa
+				break;
+			}			
+			llenando_informacion();
 		}
 		
-		void cadena_de_textos()
+		void llenando_informacion()
 		{
 			TextBuffer buffer = new TextBuffer (null);
 			buffer = textview1.Buffer;			
 			TextIter insertIter = buffer.StartIter;
-			CreateTags (buffer);
-			
+			classpublic.CreateTags(buffer);
+						
 			string texto_hitoria_clinica = "";
 			
 			NpgsqlConnection conexion; 
@@ -65,14 +107,34 @@ namespace osiris
 				comando = conexion.CreateCommand ();
                	
 				// asigna el numero de folio de ingreso de paciente (FOLIO)
-				comando.CommandText = "SELECT * FROM osiris_his_informacion_medica;";
+				comando.CommandText = sql_general+sql_pidpaciente+sql_folioservicio+sql_filtronotasblanco+";";
+				Console.WriteLine(comando.CommandText);					
 				NpgsqlDataReader lector = comando.ExecuteReader ();
 				
 				if(lector.Read()){
-					texto_hitoria_clinica = (string) lector["notas_de_enfermeria"];
+					entry_pid_paciente.Text = pidpaciente;
+										entry_nombre_paciente.Text = (string) lector["nombre1_paciente"].ToString().Trim()+" "+
+											(string) lector["nombre2_paciente"].ToString().Trim()+" "+
+											(string) lector["apellido_paterno_paciente"].ToString().Trim()+" "+
+											(string) lector["apellido_materno_paciente"].ToString().Trim();
+					entry_edad_paciente.Text = (string) lector["edad"].ToString();
+					entry_numerotencion.Text = folioservicio.Trim();
+					entry_doctor.Text = nombredoctor;
+					if((string) lector[name_field].ToString() != ""){
+						buffer.InsertWithTagsByName (ref insertIter, "Fecha de Nota: "+(string) lector["fechaanotacion"].ToString().Trim()+"\n", "bold");
+						buffer.InsertWithTagsByName (ref insertIter, "Hora de Nota : \n\n", "bold");
+						buffer.Insert (ref insertIter, (string) lector[name_field].ToString()+"\n\n\n");
+					}
+					while(lector.Read()){
+						if((string) lector[name_field].ToString() != ""){
+							buffer.InsertWithTagsByName (ref insertIter, "Fecha de Nota: "+(string) lector["fechaanotacion"].ToString().Trim()+"\n", "bold");
+							buffer.InsertWithTagsByName (ref insertIter, "Hora de Nota : \n\n", "bold");
+							buffer.Insert (ref insertIter, (string) lector[name_field].ToString()+"\n\n\n");
+						}
+					}
 				}
 			}catch (NpgsqlException ex){
-				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.Modal,
 						MessageType.Error, 
 						ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
 				msgBoxError.Run ();
@@ -80,159 +142,24 @@ namespace osiris
 	   			
 	       	}
        		conexion.Close ();
-			// Insertando texto al TextView
-			buffer.Insert (ref insertIter, "Ejemplo de insertar un texto en un TextView.\n\n");
-			// Cambia la letra a negrita en el Textview
-			buffer.InsertWithTagsByName (ref insertIter, texto_hitoria_clinica+"\n", "bold");
-			buffer.Insert (ref insertIter, texto_hitoria_clinica );
-			buffer.InsertWithTagsByName (ref insertIter, "\nThis line has center justification.\n", "center");			
+			//buffer.InsertWithTagsByName (ref insertIter, "\nThis line has center justification.\n", "center");			
 		}
 		
-		private void CreateTags (TextBuffer buffer)
+		void on_button_guardar_clicked(object sender, EventArgs args)
 		{
-			// Create a bunch of tags. Note that it's also possible to
-			// create tags with gtk_text_tag_new() then add them to the
-			// tag table for the buffer, gtk_text_buffer_create_tag() is
-			// just a convenience function. Also note that you don't have
-			// to give tags a name; pass NULL for the name to create an
-			// anonymous tag.
-			//
-			// In any real app, another useful optimization would be to create
-			// a GtkTextTagTable in advance, and reuse the same tag table for
-			// all the buffers with the same tag set, instead of creating
-			// new copies of the same tags for every buffer.
-			//
-			// Tags are assigned default priorities in order of addition to the
-			// tag table.	 That is, tags created later that affect the same text
-			// property affected by an earlier tag will override the earlier
-			// tag.  You can modify tag priorities with
-			// gtk_text_tag_set_priority().
-
-			TextTag tag  = new TextTag ("heading");
-			tag.Weight = Pango.Weight.Bold;
-			tag.Size = (int) Pango.Scale.PangoScale * 15;
-			buffer.TagTable.Add (tag);
-
-			tag  = new TextTag ("italic");
-			tag.Style = Pango.Style.Italic;
-			buffer.TagTable.Add (tag);
-
-			tag  = new TextTag ("bold");
-			tag.Weight = Pango.Weight.Bold;
-			buffer.TagTable.Add (tag);
-
-			tag  = new TextTag ("big");
-			tag.Size = (int) Pango.Scale.PangoScale * 20;
-			buffer.TagTable.Add (tag);
-
-			tag  = new TextTag ("xx-small");
-			tag.Scale = Pango.Scale.XXSmall;
-			buffer.TagTable.Add (tag);
-
-			tag  = new TextTag ("x-large");
-			tag.Scale = Pango.Scale.XLarge;
-			buffer.TagTable.Add (tag);
-
-			tag  = new TextTag ("monospace");
-			tag.Family = "monospace";
-			buffer.TagTable.Add (tag);
-
-			tag  = new TextTag ("blue_foreground");
-			tag.Foreground = "blue";
-			buffer.TagTable.Add (tag);
-
-			tag  = new TextTag ("red_background");
-			tag.Background = "red";
-			buffer.TagTable.Add (tag);
-
-			// The C gtk-demo passes NULL for the drawable param, which isn't
-			// multi-head safe, so it seems bad to allow it in the C# API.
-			// But the Window isn't realized at this point, so we can't get
-			// an actual Drawable from it. So we kludge for now.
-			Pixmap stipple = Pixmap.CreateBitmapFromData (Gdk.Screen.Default.RootWindow, gray50_bits, gray50_width, gray50_height);
-
-			tag  = new TextTag ("background_stipple");
-			tag.BackgroundStipple = stipple;
-			buffer.TagTable.Add (tag);
-
-			tag  = new TextTag ("foreground_stipple");
-			tag.ForegroundStipple = stipple;
-			buffer.TagTable.Add (tag);
-
-			tag  = new TextTag ("big_gap_before_line");
-			tag.PixelsAboveLines = 30;
-			buffer.TagTable.Add (tag);
-
-			tag  = new TextTag ("big_gap_after_line");
-			tag.PixelsBelowLines = 30;
-			buffer.TagTable.Add (tag);
-
-			tag  = new TextTag ("double_spaced_line");
-			tag.PixelsInsideWrap = 10;
-			buffer.TagTable.Add (tag);
-
-			tag  = new TextTag ("not_editable");
-			tag.Editable = false;
-			buffer.TagTable.Add (tag);
-
-			tag  = new TextTag ("word_wrap");
-			tag.WrapMode = WrapMode.Word;
-			buffer.TagTable.Add (tag);
-
-			tag  = new TextTag ("char_wrap");
-			tag.WrapMode = WrapMode.Char;
-			buffer.TagTable.Add (tag);
-
-			tag  = new TextTag ("no_wrap");
-			tag.WrapMode = WrapMode.None;
-			buffer.TagTable.Add (tag);
-
-			tag  = new TextTag ("center");
-			tag.Justification = Justification.Center;
-			buffer.TagTable.Add (tag);
-
-			tag  = new TextTag ("right_justify");
-			tag.Justification = Justification.Right;
-			buffer.TagTable.Add (tag);
-
-			tag  = new TextTag ("wide_margins");
-			tag.LeftMargin = 50;
-			tag.RightMargin = 50;
-			buffer.TagTable.Add (tag);
-
-			tag  = new TextTag ("strikethrough");
-			tag.Strikethrough = true;
-			buffer.TagTable.Add (tag);
-
-			tag  = new TextTag ("underline");
-			tag.Underline = Pango.Underline.Single;
-			buffer.TagTable.Add (tag);
-
-			tag  = new TextTag ("double_underline");
-			tag.Underline = Pango.Underline.Double;
-			buffer.TagTable.Add (tag);
-
-			tag  = new TextTag ("superscript");
-			tag.Rise = (int) Pango.Scale.PangoScale * 10;
-			tag.Size = (int) Pango.Scale.PangoScale * 8;
-			buffer.TagTable.Add (tag);
-
-			tag  = new TextTag ("subscript");
-			tag.Rise = (int) Pango.Scale.PangoScale * -10;
-			tag.Size = (int) Pango.Scale.PangoScale * 8;
-			buffer.TagTable.Add (tag);
-
-			tag  = new TextTag ("rtl_quote");
-			tag.WrapMode = WrapMode.Word;
-			tag.Direction = TextDirection.Rtl;
-			tag.Indent = 30;
-			tag.LeftMargin = 20;
-			tag.RightMargin = 20;
-			buffer.TagTable.Add (tag);
+			if(textview2.Buffer.Text.ToString()!=""){
+				
+			}else{
+				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.Modal,
+								MessageType.Error,ButtonsType.Close,"La nota no contiene informacion, verifique...");
+				msgBoxError.Run ();
+				msgBoxError.Destroy();
+			}			
+			Console.WriteLine(textview2.Buffer.Text.ToString());
 		}
 		
 		// cierra ventanas emergentes
-		void on_cierraventanas_clicked (object sender, EventArgs args)
+		void on_cierraventanas_clicked(object sender, EventArgs args)
 		{
 			Widget win = (Widget) sender;
 			win.Toplevel.Destroy();

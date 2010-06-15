@@ -25,13 +25,11 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 // 
 //////////////////////////////////////////////////////////
-// Programa		: hscmty.cs
+// Programa		: 
 // Proposito	: Impresion del procedimiento de cobranza 
-// Objeto		: rpt_proc_cobranza.cs
-using Gtk;
-using Gdk;
+// Objeto		: 
 using System;
-using Glade;
+using Gtk;
 using Npgsql;
 using Cairo;
 using Pango;
@@ -108,7 +106,7 @@ namespace osiris
 		decimal totabono = 0;
 		decimal totpago = 0;
 		decimal honorarios = 0;
-		decimal PorcentIVA = 15;
+		decimal PorcentIVA;
 		
 		//Declaracion de ventana de error
 		protected Gtk.Window MyWinError;
@@ -127,6 +125,7 @@ namespace osiris
 			connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
 			nombrebd = conexion_a_DB._nombrebd;
 			escala_en_linux_windows = classpublic.escala_linux_windows;
+			PorcentIVA = decimal.Parse(classpublic.ivaparaaplicar);
 			
 			//nombrebd = _nombrebd_;//
 			fecha_admision = entry_fecha_admision_;//
@@ -145,7 +144,7 @@ namespace osiris
 			query_rango_fechas = query;
 			
 			print = new PrintOperation ();
-						
+			print.JobName = "Procedimiento de Cobranza";	// Name of the report			
 			print.BeginPrint += new BeginPrintHandler (OnBeginPrint);
 			print.DrawPage += new DrawPageHandler (OnDrawPage);
 			print.EndPrint += new EndPrintHandler (OnEndPrint);
@@ -154,7 +153,6 @@ namespace osiris
 		
 		private void OnBeginPrint (object obj, Gtk.BeginPrintArgs args)
 		{
-			PrintContext context = args.Context;											
 			print.NPages = 1;  // crea cantidad de copias del reporte			
 			// para imprimir horizontalmente el reporte
 			//print.PrintSettings.Orientation = PageOrientation.Landscape;
@@ -163,29 +161,15 @@ namespace osiris
 		
 		private void OnDrawPage (object obj, Gtk.DrawPageArgs args)
 		{			
-			PrintContext context = args.Context;
-			
-			ejecutar_consulta_reporte(context);
-			
-			// crea una pagina nueva
-			/*
-			Cairo.Context cr = context.CairoContext;
-			Pango.Layout layout = context.CreatePangoLayout ();
-			Pango.FontDescription desc = Pango.FontDescription.FromString ("Sans");
-			
-			cr.ShowPage();
-			layout = null;
-			layout = context.CreatePangoLayout ();
-			desc.Size = (int)(fontSize * pangoScale);
-			layout.FontDescription = desc;
-			cr.MoveTo(100,100);	layout.SetText("Prueba de Impresion--------------------------------");		Pango.CairoHelper.ShowLayout (cr, layout);
-			
-			cr.ShowPage();
-			cr.MoveTo(100,100);	layout.SetText("Prueba de Impresion--------------------------------");		Pango.CairoHelper.ShowLayout (cr, layout);*/
+			PrintContext context = args.Context;			
+			ejecutar_consulta_reporte(context);			
 		}		
 				
 		void ejecutar_consulta_reporte(PrintContext context)
 		{
+			Cairo.Context cr = context.CairoContext;
+			Pango.Layout layout = context.CreatePangoLayout ();
+			
 			NpgsqlConnection conexion; 
         	conexion = new NpgsqlConnection (connectionString+nombrebd);
 			// Verifica que la base de datos este conectada
@@ -221,13 +205,9 @@ namespace osiris
 		        	"AND osiris_erp_cobros_deta.eliminado = 'false' ";
 			try{
 				//if (numpage == 1){
-					Cairo.Context cr = context.CairoContext;
-					Pango.Layout layout = context.CreatePangoLayout ();
 					Pango.FontDescription desc = Pango.FontDescription.FromString ("Sans");									
 					// cr.Rotate(90)  Imprimir Orizontalmente rota la hoja cambian las posiciones de las lineas y columna					
 					fontSize = 8.0;
-					layout = null;
-					layout = context.CreatePangoLayout ();
 					desc.Size = (int)(fontSize * pangoScale);
 					layout.FontDescription = desc;
  					conexion.Open ();
@@ -285,18 +265,18 @@ namespace osiris
 					subtotaldelmov +=total;
 					fcreacion = (string) lector["fechcreacion"];
 					//este void crea el encabezado que aparecera en cada pagina
-					imprime_encabezado(context);
+					imprime_encabezado(cr,layout);
 					
 					///imprime el titulo de cada tipo de admision y sus cargos
-					imprime_titulo(context,(string) lector["descripcion_admisiones"],fcreacion);
+					imprime_titulo(cr,layout,(string) lector["descripcion_admisiones"],fcreacion);
 					contador+=1;
-					salto_pagina(context,contador);
-					imprime_subtitulo(context,(string) lector["descripcion_grupo_producto"]);
+					salto_pagina(cr,layout,contador);
+					imprime_subtitulo(cr,layout,(string) lector["descripcion_grupo_producto"]);
 					contador+=1;
-					salto_pagina(context,contador);
-					imprime_linea_producto(context,(string) lector["idproducto"],(string) lector["cantidadaplicada"],datos,(string) lector["preciounitario"],subtotal,ivaprod,total);
+					salto_pagina(cr,layout,contador);
+					imprime_linea_producto(cr,layout,(string) lector["idproducto"],(string) lector["cantidadaplicada"],datos,(string) lector["preciounitario"],subtotal,ivaprod,total);
 					contador+=1;
-					salto_pagina(context,contador);				
+					salto_pagina(cr,layout,contador);				
 					idadmision_ = (int) lector["idadmisiones"];
 					idproducto = (int) lector["id_grupo_producto"];		
 					
@@ -348,7 +328,7 @@ namespace osiris
 						
 						//imprime_linea_producto(context,(string) lector["idproducto"],(string) lector["cantidadaplicada"],datos,(string) lector["preciounitario"],subtotal,ivaprod,total);
 						contador+=1;
-						salto_pagina(context,contador);
+						salto_pagina(cr,layout,contador);
 ///////////////////////////////// SI LA ADMISION SIGUE SIENDO LA MISMA HACE ESTO://////////////////////////////////////////						
 						if(idadmision_ == (int) lector["idadmisiones"] && fcreacion == (string) lector["fechcreacion"]) { //}else{
 							//Console.WriteLine("sigue en: "+(string) lector["descripcion_admisiones"]);
@@ -371,37 +351,34 @@ namespace osiris
 							if (apl_desc == false){
 								totaldesc = 0;
 							}
-							totaladm +=total;
-							subtotaldelmov +=total;
+							//totaladm +=total;
+							//subtotaldelmov +=total;
 							//Console.WriteLine("fecha no cambio = sumadesc"+sumadesc.ToString()+" totaladm"+totaladm.ToString());
 							//DATOS TABLA
 							if (idproducto != (int) lector["id_grupo_producto"]){
 								idproducto = (int) lector["id_grupo_producto"];
-								imprime_subtitulo(context,(string) lector["descripcion_grupo_producto"]);
+								imprime_subtitulo(cr,layout,(string) lector["descripcion_grupo_producto"]);
         			   			contador+=1;
-								salto_pagina(context,contador);
+								salto_pagina(cr,layout,contador);
 							}        			 
 						}else{ //if (idadmision_ != (int) lector["idadmisiones"]) {					
 ///////////////////////////////// SI LA ADMISION CAMBIA HACE ESTO://////////////////////////////////////////
 							fontSize = 7.0;
-							layout = null;
-							layout = context.CreatePangoLayout ();
-							desc.Size = (int)(fontSize * pangoScale);
-							layout.FontDescription = desc;
+							desc.Size = (int)(fontSize * pangoScale);							layout.FontDescription = desc;
 							fcreacion = (string) lector["fechcreacion"];
 							//Console.WriteLine("cambio de admision"+" "+(string) lector["descripcion_admisiones"]);
 							//Console.WriteLine("antes de totales = sumadesc"+sumadesc.ToString()+" totaladm"+totaladm.ToString());
 							///IMPRESION DE LOS TOTALES DE AREA
 							comienzo_linea += separacion_linea;
 							cr.MoveTo(470*escala_en_linux_windows, comienzo_linea);			layout.SetText("Total de Desc.");												Pango.CairoHelper.ShowLayout (cr, layout);
-							cr.MoveTo(530*escala_en_linux_windows,comienzo_linea);			layout.SetText(sumadesc.ToString("C").PadLeft(10)+" -");	Pango.CairoHelper.ShowLayout (cr, layout);
+							cr.MoveTo(530*escala_en_linux_windows,comienzo_linea);			layout.SetText(sumadesc.ToString("N").PadLeft(10)+" -");	Pango.CairoHelper.ShowLayout (cr, layout);
 							contador+=1;
-							salto_pagina(context,contador);
+							salto_pagina(cr,layout,contador);
 							comienzo_linea += separacion_linea;
 							cr.MoveTo(470*escala_en_linux_windows,comienzo_linea);			layout.SetText("Total de Area");											Pango.CairoHelper.ShowLayout (cr, layout);
-							cr.MoveTo(530*escala_en_linux_windows, comienzo_linea);			layout.SetText(totaladm.ToString("C").PadLeft(10));		Pango.CairoHelper.ShowLayout (cr, layout);
+							cr.MoveTo(530*escala_en_linux_windows, comienzo_linea);			layout.SetText(totaladm.ToString("N").PadLeft(10));		Pango.CairoHelper.ShowLayout (cr, layout);
 							contador+=1;
-							salto_pagina(context,contador);
+							salto_pagina(cr,layout,contador);
         				
         					////VARIABLES
 							datos = (string) lector["descripcion_producto"];
@@ -421,12 +398,12 @@ namespace osiris
 							}
 							sumadesc +=descuento;
         				
-							//totaladm = 0;
+							totaladm = 0;
 							totaldesc +=descuento;
 							if (apl_desc == false){
 								totaldesc = 0;
 							}											
-							totaladm +=total;
+							totaladm += total;
 							subtotaldelmov +=total;
 							if(fcreacion != (string) lector["fechcreacion"]) {
 								fcreacion = (string) lector["fechcreacion"];
@@ -434,30 +411,30 @@ namespace osiris
 							
 							//DATOS TABLA
 							///imprime el titulo de cada tipo de admision y sus cargos
-							imprime_titulo(context,(string) lector["descripcion_admisiones"],fcreacion);
+							imprime_titulo(cr,layout,(string) lector["descripcion_admisiones"],fcreacion);
 							contador+=1;
-							salto_pagina(context,contador);							
+							salto_pagina(cr,layout,contador);							
 							idadmision_ = (int) lector["idadmisiones"];        			    
 							
 							if (idproducto != (int) lector["id_grupo_producto"]){
 								idproducto = (int) lector["id_grupo_producto"];
-								imprime_subtitulo(context,(string) lector["descripcion_grupo_producto"]);
+								imprime_subtitulo(cr,layout,(string) lector["descripcion_grupo_producto"]);
 								contador+=1;
-								salto_pagina(context,contador);
+								salto_pagina(cr,layout,contador);
 							}												
 						}
-						imprime_linea_producto(context,(string) lector["idproducto"],(string) lector["cantidadaplicada"],datos,(string) lector["preciounitario"],subtotal,ivaprod,total);
+						imprime_linea_producto(cr,layout,(string) lector["idproducto"],(string) lector["cantidadaplicada"],datos,(string) lector["preciounitario"],subtotal,ivaprod,total);
 					}// Fin del ciclo While
 					comienzo_linea += separacion_linea;
 					cr.MoveTo(470*escala_en_linux_windows, comienzo_linea);			layout.SetText("Total de Desc.");												Pango.CairoHelper.ShowLayout (cr, layout);
-					cr.MoveTo(530*escala_en_linux_windows,comienzo_linea);			layout.SetText(sumadesc.ToString("C").PadLeft(10)+" -");	Pango.CairoHelper.ShowLayout (cr, layout);
+					cr.MoveTo(530*escala_en_linux_windows,comienzo_linea);			layout.SetText(sumadesc.ToString("N").PadLeft(10)+" -");	Pango.CairoHelper.ShowLayout (cr, layout);
 					contador+=1;
-					salto_pagina(context,contador);
+					salto_pagina(cr,layout,contador);
 					comienzo_linea += separacion_linea;
 					cr.MoveTo(470*escala_en_linux_windows,comienzo_linea);			layout.SetText("Total de Area");											Pango.CairoHelper.ShowLayout (cr, layout);
-					cr.MoveTo(530*escala_en_linux_windows, comienzo_linea);			layout.SetText(totaladm.ToString("C").PadLeft(10));		Pango.CairoHelper.ShowLayout (cr, layout);
+					cr.MoveTo(530*escala_en_linux_windows, comienzo_linea);			layout.SetText(totaladm.ToString("N").PadLeft(10));		Pango.CairoHelper.ShowLayout (cr, layout);
 					contador+=1;
-					salto_pagina(context,contador);
+					salto_pagina(cr,layout,contador);
 					
 					// Console.WriteLine("contador antes de los totales: "+contador.ToString());
 					// TOTAL QUE SE LE COBRARA AL PACIENTE O AL RESPONSABLE DEL PACIENTE
@@ -465,71 +442,71 @@ namespace osiris
 					
 					comienzo_linea += separacion_linea;		    	
 					cr.MoveTo(382*escala_en_linux_windows,comienzo_linea);			layout.SetText("SUBTOTAL AL "+PorcentIVA.ToString()+"%");		Pango.CairoHelper.ShowLayout (cr, layout);	
-					cr.MoveTo(530*escala_en_linux_windows,comienzo_linea);			layout.SetText(subt15.ToString("C").PadLeft(10)); 						Pango.CairoHelper.ShowLayout (cr, layout);
+					cr.MoveTo(530*escala_en_linux_windows,comienzo_linea);			layout.SetText(subt15.ToString("N").PadLeft(10)); 						Pango.CairoHelper.ShowLayout (cr, layout);
 					contador+=1;
-					salto_pagina(context,contador);
+					salto_pagina(cr,layout,contador);
 					
 					comienzo_linea += separacion_linea;
 					cr.MoveTo(382*escala_en_linux_windows,comienzo_linea);			layout.SetText("SUBTOTAL AL 0%");	Pango.CairoHelper.ShowLayout (cr, layout);
-					cr.MoveTo(530*escala_en_linux_windows,comienzo_linea);			layout.SetText(subt0.ToString("C").PadLeft(10));Pango.CairoHelper.ShowLayout (cr, layout);
+					cr.MoveTo(530*escala_en_linux_windows,comienzo_linea);			layout.SetText(subt0.ToString("N").PadLeft(10));Pango.CairoHelper.ShowLayout (cr, layout);
 					contador+=1;
-					salto_pagina(context,contador);
+					salto_pagina(cr,layout,contador);
 		
 					comienzo_linea += separacion_linea;
 					cr.MoveTo(382*escala_en_linux_windows,comienzo_linea);			layout.SetText("IVA AL "+PorcentIVA.ToString()+"%");	Pango.CairoHelper.ShowLayout (cr, layout);
-					cr.MoveTo(530*escala_en_linux_windows,comienzo_linea);			layout.SetText(sumaiva.ToString("C").PadLeft(10)); Pango.CairoHelper.ShowLayout (cr, layout);
+					cr.MoveTo(530*escala_en_linux_windows,comienzo_linea);			layout.SetText(sumaiva.ToString("N").PadLeft(10)); Pango.CairoHelper.ShowLayout (cr, layout);
 					contador+=1;
-					salto_pagina(context,contador);
+					salto_pagina(cr,layout,contador);
 				
 					comienzo_linea += separacion_linea;
 					cr.MoveTo(382*escala_en_linux_windows,comienzo_linea);			layout.SetText("SUB-TOTAL");	Pango.CairoHelper.ShowLayout (cr, layout);
-					cr.MoveTo(530*escala_en_linux_windows,comienzo_linea);			layout.SetText(subtotaldelmov.ToString("C").PadLeft(10));Pango.CairoHelper.ShowLayout (cr, layout);
+					cr.MoveTo(530*escala_en_linux_windows,comienzo_linea);			layout.SetText(subtotaldelmov.ToString("N").PadLeft(10));Pango.CairoHelper.ShowLayout (cr, layout);
 					contador+=1;
-					salto_pagina(context,contador);
+					salto_pagina(cr,layout,contador);
 			
 					comienzo_linea += separacion_linea;
 					cr.MoveTo(382*escala_en_linux_windows,comienzo_linea);			layout.SetText("MENOS DEDUCIBLE");	Pango.CairoHelper.ShowLayout (cr, layout);
-					cr.MoveTo(530*escala_en_linux_windows,comienzo_linea);			layout.SetText(deducible.ToString("C").PadLeft(10)+" -"); Pango.CairoHelper.ShowLayout (cr, layout);
+					cr.MoveTo(530*escala_en_linux_windows,comienzo_linea);			layout.SetText(deducible.ToString("N").PadLeft(10)+" -"); Pango.CairoHelper.ShowLayout (cr, layout);
 					contador+=1;
-					salto_pagina(context,contador);
+					salto_pagina(cr,layout,contador);
 				
 					comienzo_linea += separacion_linea;
 					cr.MoveTo(382*escala_en_linux_windows,comienzo_linea);			layout.SetText("MENOS COASEGURO");	Pango.CairoHelper.ShowLayout (cr, layout);
-					cr.MoveTo(530*escala_en_linux_windows,comienzo_linea);			layout.SetText(coaseguro.ToString("C").PadLeft(10)+" -");Pango.CairoHelper.ShowLayout (cr, layout);
+					cr.MoveTo(530*escala_en_linux_windows,comienzo_linea);			layout.SetText(coaseguro.ToString("N").PadLeft(10)+" -");Pango.CairoHelper.ShowLayout (cr, layout);
 					contador+=1;
-					salto_pagina(context,contador);
+					salto_pagina(cr,layout,contador);
 				
 					comienzo_linea += separacion_linea;
 					cr.MoveTo(382*escala_en_linux_windows,comienzo_linea);			layout.SetText("MENOS DESCUENTO");	Pango.CairoHelper.ShowLayout (cr, layout);
-					cr.MoveTo(530*escala_en_linux_windows,comienzo_linea);			layout.SetText(totaldesc.ToString("C").PadLeft(10)+" -"); Pango.CairoHelper.ShowLayout (cr, layout);
+					cr.MoveTo(530*escala_en_linux_windows,comienzo_linea);			layout.SetText(totaldesc.ToString("N").PadLeft(10)+" -"); Pango.CairoHelper.ShowLayout (cr, layout);
 					contador+=1;
-					salto_pagina(context,contador);
+					salto_pagina(cr,layout,contador);
 				
 					comienzo_linea += separacion_linea;
 					cr.MoveTo(382*escala_en_linux_windows,comienzo_linea);			layout.SetText("TOTAL PAGO");Pango.CairoHelper.ShowLayout (cr, layout);
-					cr.MoveTo(530*escala_en_linux_windows,comienzo_linea);			layout.SetText(totabono.ToString("C").PadLeft(10)+" -"); Pango.CairoHelper.ShowLayout (cr, layout);
+					cr.MoveTo(530*escala_en_linux_windows,comienzo_linea);			layout.SetText(totabono.ToString("N").PadLeft(10)+" -"); Pango.CairoHelper.ShowLayout (cr, layout);
 					contador+=1;
-					salto_pagina(context,contador);
+					salto_pagina(cr,layout,contador);
 					
 					comienzo_linea += separacion_linea;
 					cr.MoveTo(382*escala_en_linux_windows,comienzo_linea);			layout.SetText("TOTAL ABONO");Pango.CairoHelper.ShowLayout (cr, layout);
-					cr.MoveTo(530*escala_en_linux_windows,comienzo_linea);			layout.SetText(totpago.ToString("C").PadLeft(10)+" -"); Pango.CairoHelper.ShowLayout (cr, layout);
+					cr.MoveTo(530*escala_en_linux_windows,comienzo_linea);			layout.SetText(totpago.ToString("N").PadLeft(10)+" -"); Pango.CairoHelper.ShowLayout (cr, layout);
 					contador+=1;
-					salto_pagina(context,contador);
+					salto_pagina(cr,layout,contador);
 									
 					comienzo_linea += separacion_linea;
 					cr.MoveTo(382*escala_en_linux_windows,comienzo_linea);			layout.SetText("HONORARIO MEDICO");Pango.CairoHelper.ShowLayout (cr, layout);
-					cr.MoveTo(530*escala_en_linux_windows,comienzo_linea);			layout.SetText(honorarios.ToString("C").PadLeft(10)+" +"); Pango.CairoHelper.ShowLayout (cr, layout);
+					cr.MoveTo(530*escala_en_linux_windows,comienzo_linea);			layout.SetText(honorarios.ToString("N").PadLeft(10)+" +"); Pango.CairoHelper.ShowLayout (cr, layout);
 					contador+=1;
-					salto_pagina(context,contador);
+					salto_pagina(cr,layout,contador);
 								
 					comienzo_linea += separacion_linea;
 					cr.MoveTo(382*escala_en_linux_windows,comienzo_linea);			layout.SetText("TOTAL");	Pango.CairoHelper.ShowLayout (cr, layout);
-					cr.MoveTo(530*escala_en_linux_windows,comienzo_linea);			layout.SetText(totaldelmov.ToString("C").PadLeft(10)); Pango.CairoHelper.ShowLayout (cr, layout);
+					cr.MoveTo(530*escala_en_linux_windows,comienzo_linea);			layout.SetText(totaldelmov.ToString("N").PadLeft(10)); Pango.CairoHelper.ShowLayout (cr, layout);
 					contador+=1;
-					salto_pagina(context,contador);
+					salto_pagina(cr,layout,contador);
 				
-					cr.ShowPage();
+					//cr.ShowPage();
 				}
 			}catch (NpgsqlException ex){
 				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
@@ -541,15 +518,11 @@ namespace osiris
 			}
 		}
 		
-		void imprime_encabezado(PrintContext context)
+		void imprime_encabezado(Cairo.Context cr,Pango.Layout layout)
 		{
-			Cairo.Context cr = context.CairoContext;
-			Pango.Layout layout = context.CreatePangoLayout ();
 			Pango.FontDescription desc = Pango.FontDescription.FromString ("Sans");									
 			// cr.Rotate(90)  Imprimir Orizontalmente rota la hoja cambian las posiciones de las lineas y columna					
 			fontSize = 8.0;
-			layout = null;
-			layout = context.CreatePangoLayout ();
 			desc.Size = (int)(fontSize * pangoScale);
 			layout.FontDescription = desc;
 						
@@ -565,7 +538,6 @@ namespace osiris
 			cr.MoveTo(001,comienzo_linea);					layout.SetText("Sistema Hospitalario OSIRIS");		Pango.CairoHelper.ShowLayout (cr, layout);
 			// Cambiando el tamaño de la fuente			
 			fontSize = 12.0;
-			layout = context.CreatePangoLayout ();
 			desc.Size = (int)(fontSize * pangoScale);
 			layout.FontDescription = desc;
 			cr.MoveTo(210*escala_en_linux_windows,comienzo_linea);					layout.SetText("PROCEDIMIENTO DE COBRANZA");	Pango.CairoHelper.ShowLayout (cr, layout);
@@ -576,15 +548,12 @@ namespace osiris
 			comienzo_linea += separacion_linea;			
 			// Cambiando el tamaño de la fuente
 			fontSize = 10.0;
-			layout = context.CreatePangoLayout ();
 			desc.Size = (int)(fontSize * pangoScale);
 			layout.FontDescription = desc;			
 			cr.MoveTo(224*escala_en_linux_windows,comienzo_linea);				layout.SetText("DATOS GENERALES DEL PACIENTE");	Pango.CairoHelper.ShowLayout (cr, layout);
 			comienzo_linea += separacion_linea;							
 			// Cambiando el tamaño de la fuente
 			fontSize = 7.0;
-			layout = null;
-			layout = context.CreatePangoLayout ();
 			desc.Size = (int)(fontSize * pangoScale);
 			layout.FontDescription = desc;
 			cr.MoveTo(001,comienzo_linea);			layout.SetText("INGRESO: "+ fecha_admision.ToString());	Pango.CairoHelper.ShowLayout (cr, layout);
@@ -621,15 +590,11 @@ namespace osiris
 			cr.MoveTo(230*escala_en_linux_windows, 730*escala_en_linux_windows);		layout.SetText("Pagina "+numpage.ToString()+"  fecha "+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));	Pango.CairoHelper.ShowLayout (cr, layout);
 		}
 			
-		void imprime_titulo(PrintContext context, string descrp_admin,string fech)
+		void imprime_titulo(Cairo.Context cr,Pango.Layout layout, string descrp_admin,string fech)
 		{
-			Cairo.Context cr = context.CairoContext;
-			Pango.Layout layout = context.CreatePangoLayout ();
 			Pango.FontDescription desc = Pango.FontDescription.FromString ("Sans");
 			//LUGAR DE CARGO
 			fontSize = 7.0;
-			layout = null;
-			layout = context.CreatePangoLayout ();
 			desc.Size = (int)(fontSize * pangoScale);
 			layout.FontDescription = desc;
 			comienzo_linea += separacion_linea;
@@ -638,15 +603,11 @@ namespace osiris
 			layout.FontDescription.Weight = Weight.Normal;   // Letra Normal
 		}
 		
-		void imprime_subtitulo(PrintContext context, string tipoproducto)
+		void imprime_subtitulo(Cairo.Context cr,Pango.Layout layout, string tipoproducto)
 		{
-			Cairo.Context cr = context.CairoContext;
-			Pango.Layout layout = context.CreatePangoLayout ();
 			Pango.FontDescription desc = Pango.FontDescription.FromString ("Sans");
 			//LUGAR DE CARGO
 			fontSize = 7.0;
-			layout = null;
-			layout = context.CreatePangoLayout ();
 			desc.Size = (int)(fontSize * pangoScale);
 			layout.FontDescription = desc;
 			layout.FontDescription.Weight = Weight.Bold;   // Letra Negrita
@@ -661,15 +622,11 @@ namespace osiris
 			layout.FontDescription.Weight = Weight.Normal;   // Letra Normal
 		}
 		
-		void imprime_linea_producto(PrintContext context,string idproducto_,string cantidadaplicada_,string datos_,string preciounitario_,decimal subtotal_,decimal ivaprod_,decimal total_)
+		void imprime_linea_producto(Cairo.Context cr,Pango.Layout layout,string idproducto_,string cantidadaplicada_,string datos_,string preciounitario_,decimal subtotal_,decimal ivaprod_,decimal total_)
 		{
-			Cairo.Context cr = context.CairoContext;
-			Pango.Layout layout = context.CreatePangoLayout ();
 			Pango.FontDescription desc = Pango.FontDescription.FromString ("Sans");
 			//LUGAR DE CARGO
 			fontSize = 7.0;
-			layout = null;
-			layout = context.CreatePangoLayout ();
 			desc.Size = (int)(fontSize * pangoScale);
 			layout.FontDescription = desc;
 			comienzo_linea += separacion_linea;
@@ -681,21 +638,20 @@ namespace osiris
 				cr.MoveTo(110*escala_en_linux_windows,comienzo_linea);		layout.SetText((string) datos_);							Pango.CairoHelper.ShowLayout (cr, layout);
 			} 
 			cr.MoveTo(380*escala_en_linux_windows,comienzo_linea);			layout.SetText(preciounitario_);Pango.CairoHelper.ShowLayout (cr, layout);
-			cr.MoveTo(430*escala_en_linux_windows,comienzo_linea);			layout.SetText(subtotal_.ToString("C").PadLeft(10));		Pango.CairoHelper.ShowLayout (cr, layout);
-			cr.MoveTo(480*escala_en_linux_windows,comienzo_linea);			layout.SetText(ivaprod_.ToString("C").PadLeft(10));		Pango.CairoHelper.ShowLayout (cr, layout);
-			cr.MoveTo(530*escala_en_linux_windows,comienzo_linea);			layout.SetText(total_.ToString("C").PadLeft(10));			Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(430*escala_en_linux_windows,comienzo_linea);			layout.SetText(subtotal_.ToString("N").PadLeft(10));		Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(480*escala_en_linux_windows,comienzo_linea);			layout.SetText(ivaprod_.ToString("N").PadLeft(10));		Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(530*escala_en_linux_windows,comienzo_linea);			layout.SetText(total_.ToString("N").PadLeft(10));			Pango.CairoHelper.ShowLayout (cr, layout);
 		}
 		
-		void salto_pagina(PrintContext context,int contador_)
+		void salto_pagina(Cairo.Context cr,Pango.Layout layout,int contador_)
 		{			
 			if (contador_ > 57 ){
-				Cairo.Context cr = context.CairoContext;
 				cr.ShowPage();				
 				numpage +=1;
 				comienzo_linea = 0;
 				separacion_linea = 10;
 				contador = 1;
-				imprime_encabezado(context);
+				imprime_encabezado(cr,layout);
 			}
 		}
 				

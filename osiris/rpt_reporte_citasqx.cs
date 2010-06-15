@@ -60,7 +60,7 @@ namespace osiris
 			treeViewEngineListaCitas = _treeViewEngineListaCitas_ as Gtk.TreeStore;
 			
 			print = new PrintOperation ();
-						
+			print.JobName = "Reporte de Citas";	// Name of the report			
 			print.BeginPrint += new BeginPrintHandler (OnBeginPrint);
 			print.DrawPage += new DrawPageHandler (OnDrawPage);
 			print.EndPrint += new EndPrintHandler (OnEndPrint);
@@ -69,7 +69,6 @@ namespace osiris
 		
 		private void OnBeginPrint (object obj, Gtk.BeginPrintArgs args)
 		{
-			PrintContext context = args.Context;											
 			print.NPages = 1;  // crea cantidad de copias del reporte			
 			// para imprimir horizontalmente el reporte
 			print.PrintSettings.Orientation = PageOrientation.Landscape;
@@ -78,33 +77,16 @@ namespace osiris
 		
 		private void OnDrawPage (object obj, Gtk.DrawPageArgs args)
 		{			
-			PrintContext context = args.Context;
-			
+			PrintContext context = args.Context;			
 			ejecutar_consulta_reporte(context);
-			
-			// crea una pagina nueva
-			/*
-			Cairo.Context cr = context.CairoContext;
-			Pango.Layout layout = context.CreatePangoLayout ();
-			Pango.FontDescription desc = Pango.FontDescription.FromString ("Sans");
-			
-			cr.ShowPage();
-			layout = null;
-			layout = context.CreatePangoLayout ();
-			desc.Size = (int)(fontSize * pangoScale);
-			layout.FontDescription = desc;
-			cr.MoveTo(100,100);	layout.SetText("Prueba de Impresion--------------------------------");		Pango.CairoHelper.ShowLayout (cr, layout);
-			
-			cr.ShowPage();
-			cr.MoveTo(100,100);	layout.SetText("Prueba de Impresion--------------------------------");		Pango.CairoHelper.ShowLayout (cr, layout);*/
 		}
 		
 		void ejecutar_consulta_reporte(PrintContext context)
 		{
-			imprime_encabezado(context);
 			string fechas_citas;
 			Cairo.Context cr = context.CairoContext;
 			Pango.Layout layout = context.CreatePangoLayout ();
+			imprime_encabezado(cr,layout);
 			Pango.FontDescription desc = Pango.FontDescription.FromString ("Sans");									
 			// cr.Rotate(90)  Imprimir Orizontalmente rota la hoja cambian las posiciones de las lineas y columna					
 			fontSize = 8.0;			layout = null;			layout = context.CreatePangoLayout ();
@@ -139,7 +121,7 @@ namespace osiris
 								
 				while (treeViewEngineListaCitas.IterNext(ref iter)){
 					contador_numerocitas += 1;
-					layout.FontDescription.Weight = Weight.Bold;		// Letra normal
+					layout.FontDescription.Weight = Weight.Bold;		// Letra negrita
 					if(fechas_citas != (string) treeview_lista_agenda.Model.GetValue (iter,0)){
 						// Creando el Cuadro de Titulos
 						cr.Rectangle (05*escala_en_linux_windows, comienzo_linea-5*escala_en_linux_windows, 750*escala_en_linux_windows, 1*escala_en_linux_windows);
@@ -149,7 +131,7 @@ namespace osiris
 						cr.Stroke();
 						cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText("("+(string) treeview_lista_agenda.Model.GetValue (iter,0)+")");			Pango.CairoHelper.ShowLayout (cr, layout);
 						comienzo_linea += separacion_linea;
-						salto_de_pagina(context);
+						salto_de_pagina(cr,layout);
 						fechas_citas = (string) treeview_lista_agenda.Model.GetValue (iter,0);
 					}
 					
@@ -170,23 +152,18 @@ namespace osiris
 					cr.MoveTo(253*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText("Obse.:"+(string) treeview_lista_agenda.Model.GetValue (iter,14));			Pango.CairoHelper.ShowLayout (cr, layout);
 					cr.MoveTo(501*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText("Ref. por:"+(string) treeview_lista_agenda.Model.GetValue (iter,15));			Pango.CairoHelper.ShowLayout (cr, layout);
 					comienzo_linea += separacion_linea;
-					salto_de_pagina(context);
+					salto_de_pagina(cr,layout);
 					comienzo_linea += separacion_linea;
-					salto_de_pagina(context);
+					salto_de_pagina(cr,layout);
 				}
 				cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText("Nro. de CITAS "+contador_numerocitas.ToString().Trim());			Pango.CairoHelper.ShowLayout (cr, layout);
 			}
-			Console.WriteLine(contador_numerocitas.ToString());
-			Console.WriteLine(comienzo_linea.ToString());
+			//Console.WriteLine(contador_numerocitas.ToString());
+			//Console.WriteLine(comienzo_linea.ToString());
 		}
 		
-		void imprime_encabezado(PrintContext context)
+		void imprime_encabezado(Cairo.Context cr,Pango.Layout layout)
 		{
-			//Console.WriteLine("entra en la impresion del encabezado");
-			Cairo.Context cr = context.CairoContext;
-			Pango.Layout layout = context.CreatePangoLayout ();
-			context.PageSetup.Orientation = PageOrientation.Landscape;
-			
 			//Gtk.Image image5 = new Gtk.Image();
             //image5.Name = "image5";
 			//image5.Pixbuf = new Gdk.Pixbuf(System.IO.Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, "osiris.jpg"));
@@ -201,18 +178,18 @@ namespace osiris
 								
 			Pango.FontDescription desc = Pango.FontDescription.FromString ("Sans");								
 			//cr.Rotate(90);  //Imprimir Orizontalmente rota la hoja cambian las posiciones de las lineas y columna					
-			fontSize = 8.0;		layout = null;							layout = context.CreatePangoLayout ();
+			fontSize = 8.0;
 			desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;
 			layout.FontDescription.Weight = Weight.Bold;		// Letra negrita
 			cr.MoveTo(05*escala_en_linux_windows,05*escala_en_linux_windows);			layout.SetText(classpublic.nombre_empresa);			Pango.CairoHelper.ShowLayout (cr, layout);
 			cr.MoveTo(05*escala_en_linux_windows,15*escala_en_linux_windows);			layout.SetText(classpublic.direccion_empresa);		Pango.CairoHelper.ShowLayout (cr, layout);
 			cr.MoveTo(05*escala_en_linux_windows,25*escala_en_linux_windows);			layout.SetText(classpublic.telefonofax_empresa);	Pango.CairoHelper.ShowLayout (cr, layout);
-			fontSize = 6.0;		layout = null;							layout = context.CreatePangoLayout ();
+			fontSize = 6.0;
 			desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;
 			cr.MoveTo(650*escala_en_linux_windows,05*escala_en_linux_windows);			layout.SetText("Fech.Rpt:"+(string) DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));		Pango.CairoHelper.ShowLayout (cr, layout);
 			cr.MoveTo(05*escala_en_linux_windows,35*escala_en_linux_windows);			layout.SetText("Sistema Hospitalario OSIRIS");		Pango.CairoHelper.ShowLayout (cr, layout);
 			// Cambiando el tamaño de la fuente			
-			fontSize = 10.0;											layout = context.CreatePangoLayout ();		
+			fontSize = 10.0;
 			desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;
 			cr.MoveTo(240*escala_en_linux_windows, 25*escala_en_linux_windows);			layout.SetText("CALENDARIO DE CITAS Y CIRUGIAS PROGRAMADAS");					Pango.CairoHelper.ShowLayout (cr, layout);
 						
@@ -223,7 +200,7 @@ namespace osiris
 			cr.LineWidth = 0.5;
 			cr.Stroke();
 			
-			fontSize = 8.0;		layout = null;							layout = context.CreatePangoLayout ();
+			fontSize = 8.0;
 			desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;
 			layout.FontDescription.Weight = Weight.Bold;		// Letra negrita
 			cr.MoveTo(09*escala_en_linux_windows,53*escala_en_linux_windows);			layout.SetText("Fech/Hora");			Pango.CairoHelper.ShowLayout (cr, layout);
@@ -236,19 +213,14 @@ namespace osiris
 			layout.FontDescription.Weight = Weight.Normal;		// Letra Normal
 		}
 		
-		void salto_de_pagina(PrintContext context)			
+		void salto_de_pagina(Cairo.Context cr,Pango.Layout layout)			
 		{
-			Cairo.Context cr = context.CairoContext;
-			Pango.Layout layout = context.CreatePangoLayout ();
-			context.PageSetup.Orientation = PageOrientation.Landscape;
 			if(comienzo_linea >530){
 				cr.ShowPage();
-				layout = null;
-				layout = context.CreatePangoLayout ();
 				Pango.FontDescription desc = Pango.FontDescription.FromString ("Sans");								
 				fontSize = 8.0;		desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;
 				comienzo_linea = 70;
-				imprime_encabezado(context);
+				imprime_encabezado(cr,layout);
 			}
 		}
 			

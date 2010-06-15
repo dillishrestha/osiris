@@ -329,7 +329,7 @@ namespace osiris
 		
 		void on_button_asignacion_habitacion_clicked(object sender, EventArgs args)
 		{
-		   //new osiris.asignacion_de_habitacion(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,0);
+		   new osiris.asignacion_de_habitacion(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,0);
 		}
 		
 		void on_button_nuevo_paciente_clicked(object sender, EventArgs args)
@@ -919,7 +919,8 @@ namespace osiris
 		{
 	    	ComboBox combobox_tipo_cirugia = sender as ComboBox;
 			if (sender == null)	{	return;	}
-			TreeIter iter;			int numbusqueda = 0;
+			TreeIter iter;			
+			int numbusqueda = 0;
 			if (combobox_tipo_cirugia.GetActiveIter (out iter)){
 				decirugia = (string) combobox_tipo_cirugia.Model.GetValue(iter,0);
 			}

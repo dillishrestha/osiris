@@ -30,7 +30,6 @@
 //////////////////////////////////////////////////////////	
 using System;
 using Npgsql;
-using System.Data;
 using Gtk;
 using Glade;
 using System.Collections;

@@ -91,16 +91,16 @@ namespace osiris
 								query_subalmacen+
 								query_fechas+" ORDER BY osiris_his_solicitudes_deta.id_almacen,osiris_his_solicitudes_deta.folio_de_solicitud;";
 			
-			print = new PrintOperation ();						
+			print = new PrintOperation ();
+			print.JobName = "Solicitudes Sub-Almacenes";
 			print.BeginPrint += new BeginPrintHandler (OnBeginPrint);
 			print.DrawPage += new DrawPageHandler (OnDrawPage);
 			print.EndPrint += new EndPrintHandler (OnEndPrint);
-			print.Run (PrintOperationAction.PrintDialog, null);
+			print.Run (PrintOperationAction.PrintDialog, null);			
 		}
 		
 		private void OnBeginPrint (object obj, Gtk.BeginPrintArgs args)
 		{
-			PrintContext context = args.Context;											
 			print.NPages = 1;  // crea cantidad de copias del reporte			
 			// para imprimir horizontalmente el reporte
 			//print.PrintSettings.Orientation = PageOrientation.Landscape;
@@ -154,7 +154,7 @@ namespace osiris
 					if(float.Parse((string) lector["cantaut"]) == 0 && (bool) lector["sin_stock"] == false && (bool) lector["solicitado_erroneo"] == false && (bool) lector["surtido"] == false){
 						comentario = "No surtido";
 					}
-					imprime_encabezado(context,(string) lector["descripcion_almacen"],(string) lector["foliosol"],(string) lector["fecha_envio"],(string) lector["id_quien_solicito"],(string) lector["nombreempl"]);
+					imprime_encabezado(cr,layout,(string) lector["descripcion_almacen"],(string) lector["foliosol"],(string) lector["fecha_envio"],(string) lector["id_quien_solicito"],(string) lector["nombreempl"]);
 								
 					cr.MoveTo(15*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);			layout.SetText((string) lector["cantsol"]);				Pango.CairoHelper.ShowLayout (cr, layout);
 					cr.MoveTo(60*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);			layout.SetText((string) lector["idproducto"]);			Pango.CairoHelper.ShowLayout (cr, layout);
@@ -168,7 +168,7 @@ namespace osiris
 							numero_solicitud = (int) lector["folio_de_solicitud"];
 							numero_almacen = (int) lector["idalmacen"];
 							cr.ShowPage();
-							imprime_encabezado(context,(string) lector["descripcion_almacen"],(string) lector["foliosol"],(string) lector["fecha_envio"],(string) lector["id_quien_solicito"],(string) lector["nombreempl"]);
+							imprime_encabezado(cr,layout,(string) lector["descripcion_almacen"],(string) lector["foliosol"],(string) lector["fecha_envio"],(string) lector["id_quien_solicito"],(string) lector["nombreempl"]);
 							comienzo_linea = 95;
 						}
 						toma_descrip_prod = (string) lector["descripcion_producto"];
@@ -192,7 +192,7 @@ namespace osiris
 						cr.MoveTo(465*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);			layout.SetText(fechaautorizacion);				Pango.CairoHelper.ShowLayout (cr, layout);
 						cr.MoveTo(530*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);			layout.SetText(comentario);				Pango.CairoHelper.ShowLayout (cr, layout);
 						comienzo_linea += separacion_linea;
-						salto_de_pagina(context,(string) lector["descripcion_almacen"],(string) lector["foliosol"],(string) lector["fecha_envio"],(string) lector["id_quien_solicito"],(string) lector["nombreempl"]);						
+						salto_de_pagina(cr,layout,(string) lector["descripcion_almacen"],(string) lector["foliosol"],(string) lector["fecha_envio"],(string) lector["id_quien_solicito"],(string) lector["nombreempl"]);						
 					}
 				}
 			}catch (NpgsqlException ex){
@@ -203,13 +203,10 @@ namespace osiris
 				Console.WriteLine ("PostgresSQL error: {0}",ex.Message);				
 			}
 		}
-		void imprime_encabezado(PrintContext context,string descripcion_almacen,string numerosolicitud,string fechaenvio,string idusuario,string nombreusr)
+		
+		void imprime_encabezado(Cairo.Context cr,Pango.Layout layout,string descripcion_almacen,string numerosolicitud,string fechaenvio,string idusuario,string nombreusr)
 		{
-			//Console.WriteLine("entra en la impresion del encabezado");
-			Cairo.Context cr = context.CairoContext;
-			Pango.Layout layout = context.CreatePangoLayout ();
-			//context.PageSetup.Orientation = PageOrientation.Landscape;
-			
+			//Console.WriteLine("entra en la impresion del encabezado");					
 			//Gtk.Image image5 = new Gtk.Image();
             //image5.Name = "image5";
 			//image5.Pixbuf = new Gdk.Pixbuf(System.IO.Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, "osiris.jpg"));
@@ -224,23 +221,23 @@ namespace osiris
 								
 			Pango.FontDescription desc = Pango.FontDescription.FromString ("Sans");								
 			//cr.Rotate(90);  //Imprimir Orizontalmente rota la hoja cambian las posiciones de las lineas y columna					
-			fontSize = 8.0;		layout = null;							layout = context.CreatePangoLayout ();
+			fontSize = 8.0;
 			desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;
 			layout.FontDescription.Weight = Weight.Bold;		// Letra negrita
 			cr.MoveTo(05*escala_en_linux_windows,05*escala_en_linux_windows);			layout.SetText(classpublic.nombre_empresa);			Pango.CairoHelper.ShowLayout (cr, layout);
 			cr.MoveTo(05*escala_en_linux_windows,15*escala_en_linux_windows);			layout.SetText(classpublic.direccion_empresa);		Pango.CairoHelper.ShowLayout (cr, layout);
 			cr.MoveTo(05*escala_en_linux_windows,25*escala_en_linux_windows);			layout.SetText(classpublic.telefonofax_empresa);	Pango.CairoHelper.ShowLayout (cr, layout);
-			fontSize = 6.0;		layout = null;							layout = context.CreatePangoLayout ();
+			fontSize = 6.0;
 			desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;
 			cr.MoveTo(479*escala_en_linux_windows,05*escala_en_linux_windows);			layout.SetText("Fech.Rpt:"+(string) DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));		Pango.CairoHelper.ShowLayout (cr, layout);
 			cr.MoveTo(05*escala_en_linux_windows,35*escala_en_linux_windows);			layout.SetText("Sistema Hospitalario OSIRIS");		Pango.CairoHelper.ShowLayout (cr, layout);
 			// Cambiando el tamaño de la fuente			
-			fontSize = 10.0;											layout = context.CreatePangoLayout ();		
+			fontSize = 10.0;		
 			desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;
 			layout.FontDescription.Weight = Weight.Bold;		// Letra negrita
 			cr.MoveTo(225*escala_en_linux_windows, 25*escala_en_linux_windows);			layout.SetText("PEDIDOS DE SUB-ALMACENES");				Pango.CairoHelper.ShowLayout (cr, layout);
 			
-			fontSize = 8.0;											layout = context.CreatePangoLayout ();		
+			fontSize = 8.0;
 			desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;
 			layout.FontDescription.Weight = Weight.Normal;		// Letra normal
 			cr.MoveTo(05*escala_en_linux_windows, 55*escala_en_linux_windows);		layout.SetText("Area quien Solicito: "+descripcion_almacen);	Pango.CairoHelper.ShowLayout (cr, layout);
@@ -249,7 +246,7 @@ namespace osiris
 			cr.MoveTo(05*escala_en_linux_windows,65*escala_en_linux_windows);		layout.SetText("Usuario: "+idusuario);							Pango.CairoHelper.ShowLayout (cr, layout);
 			cr.MoveTo(200*escala_en_linux_windows,65*escala_en_linux_windows);		layout.SetText("Nom. Solicitante: "+nombreusr);					Pango.CairoHelper.ShowLayout (cr, layout);
 			
-			fontSize = 7.0;											layout = context.CreatePangoLayout ();		
+			fontSize = 7.0;
 			desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;
 			layout.FontDescription.Weight = Weight.Normal;		// Letra normal
 			// Creando el Cuadro de Titulos para colocar el nombre del usuario
@@ -268,19 +265,15 @@ namespace osiris
 			layout.FontDescription.Weight = Weight.Normal;		// Letra normal		
 		}
 		
-		void salto_de_pagina(PrintContext context,string descripcion_almacen,string numerosolicitud,string fechaenvio,string idusuario,string nombreusr)			
+		void salto_de_pagina(Cairo.Context cr,Pango.Layout layout,string descripcion_almacen,string numerosolicitud,string fechaenvio,string idusuario,string nombreusr)			
 		{
-			Cairo.Context cr = context.CairoContext;
-			Pango.Layout layout = context.CreatePangoLayout ();
 			//context.PageSetup.Orientation = PageOrientation.Landscape;
 			if(comienzo_linea > 660){
 				cr.ShowPage();
-				layout = null;
-				layout = context.CreatePangoLayout ();
 				Pango.FontDescription desc = Pango.FontDescription.FromString ("Sans");								
 				fontSize = 8.0;		desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;
 				comienzo_linea = 95;
-				imprime_encabezado(context,descripcion_almacen,numerosolicitud,fechaenvio,idusuario,nombreusr);
+				imprime_encabezado(cr,layout,descripcion_almacen,numerosolicitud,fechaenvio,idusuario,nombreusr);
 			}
 		}
 		

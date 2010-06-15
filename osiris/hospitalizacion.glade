@@ -1465,7 +1465,7 @@ Evoluci&#xF3;n</property>
                   </packing>
                 </child>
                 <child>
-                  <widget class="GtkButton" id="button_historiaclinica2">
+                  <widget class="GtkButton" id="button_notas_enfermeria">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
@@ -4293,6 +4293,7 @@ Traspaso</property>
     <child>
       <widget class="GtkVBox" id="vbox47">
         <property name="visible">True</property>
+        <property name="orientation">vertical</property>
         <child>
           <widget class="GtkHBox" id="hbox73">
             <property name="visible">True</property>
@@ -4303,12 +4304,14 @@ Traspaso</property>
                   <widget class="GtkVPaned" id="vpaned3">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
+                    <property name="orientation">vertical</property>
                     <child>
                       <widget class="GtkEventBox" id="eventbox1">
                         <property name="visible">True</property>
                         <child>
                           <widget class="GtkVBox" id="vbox50">
                             <property name="visible">True</property>
+                            <property name="orientation">vertical</property>
                             <child>
                               <widget class="GtkHBox" id="hbox77">
                                 <property name="visible">True</property>
@@ -4705,6 +4708,7 @@ Traspaso</property>
                             <child>
                               <widget class="GtkVBox" id="vbox51">
                                 <property name="visible">True</property>
+                                <property name="orientation">vertical</property>
                                 <child>
                                   <widget class="GtkScrolledWindow" id="scrolledwindow7">
                                     <property name="visible">True</property>
@@ -4831,6 +4835,7 @@ Traspaso</property>
             <child>
               <widget class="GtkVBox" id="vbox48">
                 <property name="visible">True</property>
+                <property name="orientation">vertical</property>
                 <child>
                   <widget class="GtkButton" id="button_autorizacion">
                     <property name="visible">True</property>
@@ -4931,12 +4936,14 @@ Medicamento</property>
                 <child>
                   <widget class="GtkVBox" id="vbox52">
                     <property name="visible">True</property>
+                    <property name="orientation">vertical</property>
                     <child>
                       <widget class="GtkVBox" id="vbox59">
                         <property name="visible">True</property>
                         <child>
                           <widget class="GtkVBox" id="vbox60">
                             <property name="visible">True</property>
+                            <property name="orientation">vertical</property>
                             <child>
                               <widget class="GtkFixed" id="fixed80">
                                 <property name="visible">True</property>
@@ -6032,7 +6039,7 @@ Medicamento</property>
       </widget>
     </child>
   </widget>
-  <widget class="GtkWindow" id="window_demo">
+  <widget class="GtkWindow" id="notas_medicas_enfermeria">
     <child>
       <widget class="GtkVBox" id="vbox1">
         <property name="visible">True</property>
@@ -6062,7 +6069,7 @@ Medicamento</property>
                           </packing>
                         </child>
                         <child>
-                          <widget class="GtkEntry" id="entry1">
+                          <widget class="GtkEntry" id="entry_pid_paciente">
                             <property name="width_request">30</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
@@ -6073,7 +6080,7 @@ Medicamento</property>
                           </packing>
                         </child>
                         <child>
-                          <widget class="GtkEntry" id="entry2">
+                          <widget class="GtkEntry" id="entry_nombre_paciente">
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="invisible_char">&#x25CF;</property>
@@ -6092,7 +6099,7 @@ Medicamento</property>
                           </packing>
                         </child>
                         <child>
-                          <widget class="GtkEntry" id="entry3">
+                          <widget class="GtkEntry" id="entry_edad_paciente">
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="invisible_char">&#x25CF;</property>
@@ -6123,7 +6130,7 @@ Medicamento</property>
                           </packing>
                         </child>
                         <child>
-                          <widget class="GtkEntry" id="entry4">
+                          <widget class="GtkEntry" id="entry_numerotencion">
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="invisible_char">&#x25CF;</property>
@@ -6142,7 +6149,7 @@ Medicamento</property>
                           </packing>
                         </child>
                         <child>
-                          <widget class="GtkEntry" id="entry5">
+                          <widget class="GtkEntry" id="entry_doctor">
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="invisible_char">&#x25CF;</property>
@@ -6214,6 +6221,7 @@ Medicamento</property>
                                       <widget class="GtkTextView" id="textview1">
                                         <property name="visible">True</property>
                                         <property name="can_focus">True</property>
+                                        <property name="editable">False</property>
                                         <property name="right_margin">30</property>
                                       </widget>
                                     </child>
@@ -6430,7 +6438,7 @@ para Imprimir&lt;/b&gt;</property>
                           </packing>
                         </child>
                         <child>
-                          <widget class="GtkButton" id="button_salir1">
+                          <widget class="GtkButton" id="button_guardar">
                             <property name="width_request">90</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>

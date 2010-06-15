@@ -88,6 +88,7 @@ namespace osiris
 		[Widget] Gtk.Button button_asignacion_habitacion = null;
 		[Widget] Gtk.Button button_historiaclinica = null;
 		[Widget] Gtk.Button button_notas_evolucion = null;
+		[Widget] Gtk.Button button_notas_enfermeria = null;
 		
 		//Declarando la barra de estado
 		[Widget] Gtk.Statusbar statusbar_caja = null;
@@ -312,6 +313,8 @@ namespace osiris
 			button_resultados_lab.Clicked += new EventHandler(on_button_resultados_lab_clicked);
 			// notas de evolucion medica
 			button_notas_evolucion.Clicked += new EventHandler(on_button_notas_evolucion_clicked);
+			// notas de enfermeria
+			button_notas_enfermeria.Clicked += new EventHandler(on_button_notas_enfermeria_clicked);
 			// Asignacion de Camas
 			button_asignacion_habitacion.Clicked += new EventHandler(on_button_asignacion_habitacion_clicked);
 			// Historia Clinica del paciente
@@ -2644,7 +2647,14 @@ namespace osiris
 		
 		void on_button_notas_evolucion_clicked(object sender, EventArgs args)
 		{
-			new osiris.notas_medicas();
+			new osiris.notas_medicas(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,"Notas de Evolucion","notas_de_evolucion",
+			                         PidPaciente.ToString(),(string) entry_folio_servicio.Text, (string) entry_doctor.Text);
+		}
+		
+		void on_button_notas_enfermeria_clicked(object sender, EventArgs args)
+		{
+			new osiris.notas_medicas(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,"Notas de Enfermeria","notas_de_enfermeria",
+			                         PidPaciente.ToString(),(string) entry_folio_servicio.Text, (string) entry_doctor.Text);
 		}
 		
 		// cierra ventanas emergentes

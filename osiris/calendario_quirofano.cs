@@ -146,8 +146,10 @@ namespace osiris
 		string sql_calendario_citaqx = "SELECT to_char(fecha_programacion,'yyyy-MM-dd') AS fechaprogramacion,hora_programacion,id_numero_citaqx,osiris_his_calendario_citaqx.id_secuencia AS idsecuencia,"+
 					"osiris_his_calendario_citaqx.pid_paciente AS pidpaciente,osiris_his_calendario_citaqx.nombre_paciente,"+
 					"osiris_his_paciente.nombre1_paciente,osiris_his_paciente.nombre2_paciente,osiris_his_paciente.apellido_paterno_paciente,osiris_his_paciente.apellido_materno_paciente,"+
-					"osiris_his_paciente.celular1_paciente,osiris_his_calendario_citaqx.celular1_paciente AS celular1paciente_cita,"+
+					"osiris_his_paciente.celular1_paciente," +
 					"osiris_his_paciente.telefono_particular1_paciente AS telefonoparticular1_paciente,"+
+					"osiris_his_calendario_citaqx.celular1_paciente AS celular1paciente_cita,"+
+					"osiris_his_calendario_citaqx.telefono_paciente AS telefonopaciente_cita,"+
 					"osiris_his_paciente.email_paciente,osiris_his_calendario_citaqx.email_paciente AS emailpaciente_cita,"+
 					"osiris_his_calendario_citaqx.id_tipo_paciente,descripcion_tipo_paciente,"+
 					"osiris_his_calendario_citaqx.id_tipo_admisiones,descripcion_admisiones,"+
@@ -547,6 +549,10 @@ namespace osiris
 					entry_nombre_paciente_cita1.Text = "";
 					entry_nombre_paciente_cita2.Text = "";
 					entry_numero_citapaciente.Text ="0";
+					hora_cita_qx = "";
+					minutos_cita_qx = "";
+					//id_tipointernamiento = 0;
+					//id_tipopaciente = 0;
 	 				entry_motivoconsulta.Sensitive = true;
 					entry_observaciones_cita.Sensitive = true;
 					entry_referido_por_cita.Sensitive = true;
@@ -1092,7 +1098,7 @@ namespace osiris
 					contador_numerocitas += 1;
 					if ((int) lector["pidpaciente"] == 0){
 						nombrepaciente = (string) lector["nombre_paciente"].ToString().Trim();
-						telefonopaciente = (string) lector["celular1paciente_cita"].ToString().Trim();
+						telefonopaciente = (string) lector["telefonopaciente_cita"]+"  "+(string) lector["celular1paciente_cita"].ToString().Trim();
 						emailpaciente = (string) lector["emailpaciente_cita"].ToString().Trim();
 					}else{
 						nombrepaciente = (string) lector["nombre1_paciente"].ToString().Trim()+" "+
@@ -1130,6 +1136,9 @@ namespace osiris
 					                                      (bool) lector["cancelacitaqx"]);
 					col_agenda0.SetCellDataFunc(cellrt0, new Gtk.TreeCellDataFunc(cambia_colores_fila));
 					col_agenda1.SetCellDataFunc(cellrt1, new Gtk.TreeCellDataFunc(cambia_colores_fila));
+					col_agenda2.SetCellDataFunc(cellrt2, new Gtk.TreeCellDataFunc(cambia_colores_fila));
+					col_agenda3.SetCellDataFunc(cellrt3, new Gtk.TreeCellDataFunc(cambia_colores_fila));
+					col_agenda4.SetCellDataFunc(cellrt4, new Gtk.TreeCellDataFunc(cambia_colores_fila));					
 				}
 			}catch (NpgsqlException ex){
 	   				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
@@ -1144,8 +1153,10 @@ namespace osiris
 		{
 			if ((bool) treeview_lista_agenda.Model.GetValue (iter,20) == false) { 
 				(cell as Gtk.CellRendererText).Foreground = "black";
+				//(cell as Gtk.CellRendererText).CellBackgroundGdk = new Gdk.Color(0,0,0);
 			}else{
 				(cell as Gtk.CellRendererText).Foreground = "red";
+				//(cell as Gtk.CellRendererText).CellBackgroundGdk = new Gdk.Color(12,23,67);
 			}
 		}
 		

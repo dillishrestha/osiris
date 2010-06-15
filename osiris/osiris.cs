@@ -440,6 +440,7 @@ namespace osiris
 			Glade.XML gxml = new Glade.XML (null, "osiris.glade", "password", null);
 			gxml.Autoconnect (this);
 			password.Show();
+			// llamando a los eventos
 			this.entry_nueva_contraseña2.KeyPressEvent += onKeyPressEvent_enter_pass;
 			this.button_graba_password.Clicked += new EventHandler (on_button_graba_password_clicked);
 			this.button_salir.Clicked += new EventHandler (on_cierraventanas_clicked);

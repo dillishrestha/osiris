@@ -1,10 +1,38 @@
+// created on 07/02/2008 at 09:34 a
+// Sistema Hospitalario OSIRIS
+// Monterrey - Mexico
+//
+// Autor    	: Ing. Daniel Olivares C. (Adecuaciones y mejoras) arcangeldoc@gmail.com 03/06/2010
+//				  Traspaso a GTKprint y la creacion de la clase
+// Licencia		: GLP
+//////////////////////////////////////////////////////////
+//
+// proyect osiris is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 2 of the License, or
+// (at your option) any later version.
+// 
+// proyect osiris is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// 
+// You should have received a copy of the GNU General Public License
+// along with Foobar; if not, write to the Free Software
+// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+// 
+//////////////////////////////////////////////////////////
+// Programa		: 
+// Proposito	: 
+// Objeto		: 
+//////////////////////////////////////////////////////
+
 using System;
 using Gtk;
 using Npgsql;
-using System.Data;
 using Glade;
-using System.Collections;
-using Gnome;
+using Cairo;
+using Pango;
 
 namespace osiris
 {
@@ -22,10 +50,11 @@ namespace osiris
 		[Widget] Gtk.Entry entry_dia_final = null;
 		[Widget] Gtk.Entry entry_mes_final = null;
 		[Widget] Gtk.Entry entry_ano_final = null;
-		[Widget] Gtk.Entry entry_empresa = null;
-		[Widget] Gtk.Entry entry_doctor = null;
-		[Widget] Gtk.Entry entry_aseguradora = null;
-		
+		[Widget] Gtk.Entry entry_id_empaseg_cita = null;
+		[Widget] Gtk.Entry entry_nombre_empaseg_cita = null;
+		[Widget] Gtk.Entry entry_id_doctor_consulta = null;
+		[Widget] Gtk.Entry entry_nombre_doctor_consulta = null;
+						
 		//ComboBox
 		[Widget] Gtk.ComboBox combobox_tipo_admision = null;
 		[Widget] Gtk.ComboBox combobox_tipo_paciente = null;
@@ -36,8 +65,7 @@ namespace osiris
 		[Widget] Gtk.CheckButton checkbutton_todos_paciente = null;
 		[Widget] Gtk.CheckButton checkbutton_todas_empresas = null;
 		[Widget] Gtk.CheckButton checkbutton_todos_doctores = null;
-		[Widget] Gtk.CheckButton checkbutton_todas_aseguradoras = null;
-				
+						
 		//radio buttons
 		[Widget] Gtk.RadioButton radiobutton_masculino = null;
 		[Widget] Gtk.RadioButton radiobutton_femenino = null;
@@ -54,7 +82,6 @@ namespace osiris
 		//botones
 		[Widget] Gtk.Button button_busca_empresa = null;
 		[Widget] Gtk.Button button_busca_doctores = null;
-		[Widget] Gtk.Button button_busca_aseguradoras = null;
 		[Widget] Gtk.Button button_imprimir = null;
 		
 		// Para todas las busquedas este es el nombre asignado
@@ -77,65 +104,25 @@ namespace osiris
 		
 		protected Gtk.Window MyWinError;
 		
+		private static int pangoScale = 1024;
+		private PrintOperation print;
+		private double fontSize = 8.0;
+		int escala_en_linux_windows;		// Linux = 1  Windows = 8
+		int comienzo_linea = 95;
+		int separacion_linea = 10;
+		int numerpage = 1;
+		int contador = 0;
 		string connectionString;
         string nombrebd;
 	    string tipointernamiento = "CENTRO MEDICO";
    		int idtipointernamiento = 10;
    	    string tipopaciente = "Membresias"; 
 		int id_tipopaciente = 100;
-		int idmedico = 1;
-		int idempresa = 1;
-		int idaseguradora = 1;
 		string motivo = "";
 		string tipobusqueda = "AND osiris_his_medicos.nombre1_medico LIKE '";
 		string busqueda = "";
-		int 	filas = 684;
-		int numpage = 1;
-		int contador = 1;
-		
-    	string query_reporte = "";
-    	string query_tipo_admision  = "AND osiris_erp_movcargos.id_tipo_admisiones = '0' ";
-		string query_tipo_paciente = "AND osiris_erp_movcargos.id_tipo_paciente = '200' ";
-    	string query_rango_fechas = "AND to_char(osiris_erp_movcargos.fechahora_admision_registro,'yyyy-MM-dd') >= '"+DateTime.Now.ToString("yyyy")+"-"+DateTime.Now.ToString("MM")+"-"+DateTime.Now.ToString("dd")+"' "+
-										"AND to_char(osiris_erp_movcargos.fechahora_admision_registro,'yyyy-MM-dd') <= '"+DateTime.Now.ToString("yyyy")+"-"+DateTime.Now.ToString("MM")+"-"+DateTime.Now.ToString("dd")+"' "; 
-    	/*query_rango_fechas = "AND to_number(to_char(osiris_erp_movcargos.fechahora_admision_registro,'yyyy'),9999) >= '"+DateTime.Now.ToString("yyyy")+"' AND to_number(to_char(osiris_erp_movcargos.fechahora_admision_registro,'yyyy'),9999) <= '"+DateTime.Now.ToString("yyyy")+"' "+  
-    									"AND to_number(to_char(osiris_erp_movcargos.fechahora_admision_registro,'MM'),99) >= '"+DateTime.Now.ToString("MM")+"' AND to_number(to_char(osiris_erp_movcargos.fechahora_admision_registro,'MM'),99) <= '"+DateTime.Now.ToString("MM")+"' "+
-    									"AND to_number(to_char(osiris_erp_movcargos.fechahora_admision_registro,'dd'),99) >= '"+DateTime.Now.ToString("dd")+"'  AND to_number(to_char(osiris_erp_movcargos.fechahora_admision_registro,'dd'),99) <= '"+DateTime.Now.ToString("dd")+"' " ;
-		*/
-		string query_sexo = " "; 
-    	string query_empresa = " "; //"AND osiris_erp_cobros_enca.id_empresa = 3 "; 
-    	string query_aseguradora = " ";
-    	string query_tipo_reporte = " ";
-    	string query_medico = " ";
-    	string query_orden =  "ORDER BY osiris_erp_movcargos.folio_de_servicio;";
-    		
-		// Declarando variable de fuente para la impresion
-		// Declaracion de fuentes tipo Bitstream Vera sans
-		//Gnome.Font fuente5 = Gnome.Font.FindClosest("Luxi Sans", 5);
-		Gnome.Font fuente6 = Gnome.Font.FindClosest("Luxi Sans", 6);
-		Gnome.Font fuente7 = Gnome.Font.FindClosest("Luxi Sans", 7);
-		//Gnome.Font fuente8 = Gnome.Font.FindClosest("Luxi Sans", 8);//Bitstream Vera Sans
-		Gnome.Font fuente9 = Gnome.Font.FindClosest("Luxi Sans", 9);
-		//Gnome.Font fuente10 = Gnome.Font.FindClosest("Luxi Sans", 10);
-		//Gnome.Font fuente11 = Gnome.Font.FindClosest("Luxi Sans", 11);
-		Gnome.Font fuente12 = Gnome.Font.FindClosest("Luxi Sans", 12);
-		//Gnome.Font fuente36 = Gnome.Font.FindClosest("Luxi Sans", 36);
-		
-		
-		class_conexion conexion_a_DB = new class_conexion();
-                               
-		//////PARTE PRINCIPAL (MAIN) DEL PROGRAMA/////////                       	          
-		public rptAdmision (string nombrebd_)
-		{
-			connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
-			nombrebd = conexion_a_DB._nombrebd;
-			//crea la ventana de glade
-			Glade.XML gxml = new Glade.XML (null, "reportes.glade", "rango_rep_adm", null);
-			gxml.Autoconnect (this);
-			//muestra la ventana de reportes
-			rango_rep_adm.Show();
-		
-			query_reporte = "SELECT "+
+				
+    	string query_reporte = "SELECT "+
 				"osiris_erp_movcargos.id_tipo_admisiones,osiris_his_tipo_admisiones.descripcion_admisiones, "+
 				"osiris_erp_movcargos.folio_de_servicio,osiris_erp_movcargos.folio_de_servicio_dep,osiris_erp_cobros_enca.cancelado, "+
 				"to_char(fechahora_admision_registro,'dd-MM-yyyy') AS fech_reg_adm, "+ 
@@ -174,7 +161,40 @@ namespace osiris
 				//"AND osiris_empresas.id_empresa = 3 "+//se aactiva para cuando se quiera ver san nicolas
 				"AND osiris_erp_movcargos.id_tipo_cirugia = osiris_his_tipo_cirugias.id_tipo_cirugia "+
 				"AND osiris_erp_cobros_enca.id_medico = osiris_his_medicos.id_medico ";
-       		
+    	string query_tipo_admision  = "AND osiris_erp_movcargos.id_tipo_admisiones = '0' ";
+		string query_tipo_paciente = "AND osiris_erp_movcargos.id_tipo_paciente = '200' ";
+    	string query_rango_fechas = "AND to_char(osiris_erp_movcargos.fechahora_admision_registro,'yyyy-MM-dd') >= '"+DateTime.Now.ToString("yyyy")+"-"+DateTime.Now.ToString("MM")+"-"+DateTime.Now.ToString("dd")+"' "+
+										"AND to_char(osiris_erp_movcargos.fechahora_admision_registro,'yyyy-MM-dd') <= '"+DateTime.Now.ToString("yyyy")+"-"+DateTime.Now.ToString("MM")+"-"+DateTime.Now.ToString("dd")+"' "; 
+    	/*query_rango_fechas = "AND to_number(to_char(osiris_erp_movcargos.fechahora_admision_registro,'yyyy'),9999) >= '"+DateTime.Now.ToString("yyyy")+"' AND to_number(to_char(osiris_erp_movcargos.fechahora_admision_registro,'yyyy'),9999) <= '"+DateTime.Now.ToString("yyyy")+"' "+  
+    									"AND to_number(to_char(osiris_erp_movcargos.fechahora_admision_registro,'MM'),99) >= '"+DateTime.Now.ToString("MM")+"' AND to_number(to_char(osiris_erp_movcargos.fechahora_admision_registro,'MM'),99) <= '"+DateTime.Now.ToString("MM")+"' "+
+    									"AND to_number(to_char(osiris_erp_movcargos.fechahora_admision_registro,'dd'),99) >= '"+DateTime.Now.ToString("dd")+"'  AND to_number(to_char(osiris_erp_movcargos.fechahora_admision_registro,'dd'),99) <= '"+DateTime.Now.ToString("dd")+"' " ;
+		*/
+		string query_sexo = " "; 
+    	string query_empresa = " "; //"AND osiris_erp_cobros_enca.id_empresa = 3 "; 
+    	string query_aseguradora = " ";
+    	string query_tipo_reporte = " ";
+    	string query_medico = " ";
+    	string query_orden =  "ORDER BY osiris_erp_movcargos.folio_de_servicio;";
+		
+		string idempresa = "1";
+		string idaseguradora = "1";
+		string idmedico = "1";
+    		
+		class_conexion conexion_a_DB = new class_conexion();
+		class_buscador classfind_data = new class_buscador();
+		class_public classpublic = new class_public();
+                               
+		//////PARTE PRINCIPAL (MAIN) DEL PROGRAMA/////////                       	          
+		public rptAdmision (string nombrebd_)
+		{
+			connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
+			nombrebd = conexion_a_DB._nombrebd;
+			escala_en_linux_windows = classpublic.escala_linux_windows;
+			//crea la ventana de glade
+			Glade.XML gxml = new Glade.XML (null, "reportes.glade", "rango_rep_adm", null);
+			gxml.Autoconnect (this);
+			//muestra la ventana de reportes
+			rango_rep_adm.Show();
 			entry_dia_inicial.Text = DateTime.Now.ToString("dd");
 			entry_mes_inicial.Text = DateTime.Now.ToString("MM");
 			entry_ano_inicial.Text = DateTime.Now.ToString("yyyy");
@@ -186,9 +206,33 @@ namespace osiris
 			button_imprimir.Clicked += new EventHandler(on_button_imprimir_clicked);
 			button_busca_doctores.Clicked += new EventHandler(on_button_busca_doctores_clicked);
 			button_busca_empresa.Clicked += new EventHandler(on_button_busca_empresa_clicked);
-			button_busca_aseguradoras.Clicked += new EventHandler(button_busca_aseguradoras_clicked);
 			
-			// Llenado de combobox
+			//Activo los valores por default de busqueda;
+	    	radiobutton_ambos_sexos.Active = true;
+	    	radiobutton_folio_servicio.Active = true;
+	    	radiobutton_reporte_general.Active = true;
+	    	
+	    	//acciones al dar click en los botones
+	    	checkbutton_todos_admision.Clicked += new EventHandler(on_checkbutton_todos_admision_clicked);
+	    	checkbutton_todos_paciente.Clicked += new EventHandler(on_checkbutton_todos_paciente_clicked);
+	    	checkbutton_todas_fechas.Clicked += new EventHandler(on_checkbutton_todas_fechas_clicked);
+	    	checkbutton_todas_empresas.Clicked += new EventHandler(on_checkbutton_todas_empresas_clicked);
+	    	checkbutton_todos_doctores.Clicked += new EventHandler(on_checkbutton_todos_doctores_clicked);
+	    	    	   		    	
+		    // Desactivando Combobox en la entrada para que el usuario lo pueda elegir o activar
+		    combobox_tipo_admision.Sensitive = false;
+		    combobox_tipo_paciente.Sensitive = false;
+		    //Activando los check buttons paa que se inicialicen activos
+		    checkbutton_todos_admision.Active = true;
+		    checkbutton_todos_paciente.Active = true;
+		   		    
+		    // Salir de la ventana
+			button_salir.Clicked += new EventHandler(on_cierraventanas_clicked);
+			llenado_combobox();
+		}
+		
+		void llenado_combobox()
+		{
 			combobox_tipo_admision.Clear();
 			CellRendererText cell2 = new CellRendererText();
 			combobox_tipo_admision.PackStart(cell2, true);
@@ -211,8 +255,7 @@ namespace osiris
 				
 				NpgsqlDataReader lector = comando.ExecuteReader ();
 				store2.AppendValues ("", 0);
-               	while (lector.Read())
-				{
+               	while (lector.Read()){
 					store2.AppendValues ((string) lector["descripcion_admisiones"], (int) lector["id_tipo_admisiones"]);
 				}
 			}catch (NpgsqlException ex){
@@ -223,8 +266,7 @@ namespace osiris
 			conexion.Close ();
 						
 			TreeIter iter2;
-			if (store2.GetIterFirst(out iter2))
-			{
+			if (store2.GetIterFirst(out iter2)){
 				//Console.WriteLine(iter2);
 				combobox_tipo_admision.SetActiveIter (iter2);
 			}
@@ -252,8 +294,7 @@ namespace osiris
 				
 				NpgsqlDataReader lector = comando.ExecuteReader ();
 				//store1.AppendValues ("", 0);
-               	while (lector.Read())
-				{
+               	while (lector.Read()){
 					store1.AppendValues ((string) lector["descripcion_tipo_paciente"], (int) lector["id_tipo_paciente"]);
 				}
 			}catch (NpgsqlException ex){
@@ -269,45 +310,14 @@ namespace osiris
 		       	combobox_tipo_paciente.SetActiveIter (iter1);
 	    	}
 	    	combobox_tipo_paciente.Changed += new EventHandler (onComboBoxChanged_tipopaciente);
-	    	
-	    	//Activo los valores por default de busqueda;
-	    	radiobutton_ambos_sexos.Active = true;
-	    	radiobutton_folio_servicio.Active = true;
-	    	radiobutton_reporte_general.Active = true;
-	    	
-	    	//acciones al dar click en los botones
-	    	checkbutton_todos_admision.Clicked += new EventHandler(on_checkbutton_todos_admision_clicked);
-	    	checkbutton_todos_paciente.Clicked += new EventHandler(on_checkbutton_todos_paciente_clicked);
-	    	checkbutton_todas_fechas.Clicked += new EventHandler(on_checkbutton_todas_fechas_clicked);
-	    	checkbutton_todas_empresas.Clicked += new EventHandler(on_checkbutton_todas_empresas_clicked);
-	    	checkbutton_todos_doctores.Clicked += new EventHandler(on_checkbutton_todos_doctores_clicked);
-	    	checkbutton_todas_aseguradoras.Clicked += new EventHandler(on_checkbutton_todas_aseguradoras_clicked);
-	    	
-	    	checkbutton_todas_aseguradoras.ChildVisible = false;
-	    	button_busca_aseguradoras.ChildVisible = false;
-	    	entry_aseguradora.ChildVisible = false;
-	    	
-		    // Desactivando Combobox en la entrada para que el usuario lo pueda elegir o activar
-		    combobox_tipo_admision.Sensitive = false;
-		    combobox_tipo_paciente.Sensitive = false;
-		    //Activando los check buttons paa que se inicialicen activos
-		    checkbutton_todos_admision.Active = true;
-		    checkbutton_todos_paciente.Active = true;
-		    checkbutton_todas_empresas.Active = true;
-		    checkbutton_todos_doctores.Active = true;
-		    
-		    // Salir de la ventana
-			button_salir.Clicked += new EventHandler(on_cierraventanas_clicked); 
 		}
-		///////////////////TERMINA PARTE PRINCIPAL DE PROGRAMA//////////////
-		
+				
 		void onComboBoxChanged_tipo_admision (object sender, EventArgs args)
 		{
 	  		ComboBox combobox_tipo_admision = sender as ComboBox;
 	  		if (sender == null) { return; }
 			TreeIter iter;
-			if (combobox_tipo_admision.GetActiveIter (out iter))
-	   		{
+			if (combobox_tipo_admision.GetActiveIter (out iter)){
 	   			tipointernamiento = (string) combobox_tipo_admision.Model.GetValue(iter,0);
 	   			idtipointernamiento = (int) combobox_tipo_admision.Model.GetValue(iter,1);
 	   			query_tipo_admision = "AND osiris_erp_movcargos.id_tipo_admisiones = '"+idtipointernamiento.ToString()+"' ";
@@ -320,451 +330,65 @@ namespace osiris
 	 		ComboBox combobox_tipo_paciente = sender as ComboBox;
 	   		if (sender == null) { return; }
 			TreeIter iter;
-			if (combobox_tipo_paciente.GetActiveIter (out iter))
-		  	{
+			if (combobox_tipo_paciente.GetActiveIter (out iter)){
 		   		tipopaciente = (string) combobox_tipo_paciente.Model.GetValue(iter,0);
 		   		id_tipopaciente = (int) combobox_tipo_paciente.Model.GetValue(iter,1);
-		   		
-	   			if(id_tipopaciente == 400) {
-	   				checkbutton_todas_aseguradoras.ChildVisible = true;
-	   				button_busca_aseguradoras.ChildVisible = true;
-			    	entry_aseguradora.ChildVisible = true;
-			    	checkbutton_todas_aseguradoras.Active = false;
-	   			}else{
-	   				checkbutton_todas_aseguradoras.ChildVisible = false;
-			    	button_busca_aseguradoras.ChildVisible = false;
-			    	entry_aseguradora.ChildVisible = false;
-	   			}
 		   		query_tipo_paciente = "AND osiris_erp_movcargos.id_tipo_paciente = '"+id_tipopaciente.ToString()+"' ";
 		    }
 		}
 		
-		void button_busca_aseguradoras_clicked(object sender, EventArgs args)
-		{
-			busqueda = "aseguradora";
-			Glade.XML gxml = new Glade.XML (null, "reportes.glade", "busca_empresas", null);
-			gxml.Autoconnect (this);
-	        
-	        // Muestra ventana de Glade
-			//busca_empresas.Show();
-			
-			// Activa la salida de la ventana
-			entry_expresion.KeyPressEvent += onKeyPressEvent_busqueda; 
-			button_salir.Clicked += new EventHandler(on_cierraventanas_clicked);
-			// Activa la seleccion de Medico
-			button_selecciona.Clicked += new EventHandler(on_selecciona_aseguradora_clicked);
-			// Llena treeview 
-			button_busca_empresas.Clicked += new EventHandler(on_button_llena_aseguradoras_clicked);
-			
-			treeViewEngineAseguradora = new ListStore( typeof(int), typeof(string));
-			lista_de_empresas.Model = treeViewEngineAseguradora;
-			lista_de_empresas.RulesHint = true;
-			
-			lista_de_empresas.RowActivated += on_selecciona_aseguradora_clicked;  // Doble click selecciono empresa*/
-			
-			TreeViewColumn col_idempresa = new TreeViewColumn();
-			CellRendererText cellr0 = new CellRendererText();
-			col_idempresa.Title = "ID Aseguradora"; // titulo de la cabecera de la columna, si está visible
-			col_idempresa.PackStart(cellr0, true);
-			col_idempresa.AddAttribute (cellr0, "text", 0);    // la siguiente columna será 1
-            
-			TreeViewColumn col_nombrempresa = new TreeViewColumn();
-			CellRendererText cellrt1 = new CellRendererText();
-			col_nombrempresa.Title = "Nombre Aseguradora";
-			col_nombrempresa.PackStart(cellrt1, true);
-			col_nombrempresa.AddAttribute (cellrt1, "text", 1); // la siguiente columna será 2
-			
-			lista_de_empresas.AppendColumn(col_idempresa);
-			lista_de_empresas.AppendColumn(col_nombrempresa);
-		}
-		
-		void on_button_llena_aseguradoras_clicked(object sender, EventArgs args)
-		{
-			llenando_lista_aseguradoras();
-		}
-		
-		void llenando_lista_aseguradoras()
-		{
-			treeViewEngineAseguradora.Clear(); // Limpia el treeview cuando realiza una nueva busqueda
-			
-			NpgsqlConnection conexion; 
-			conexion = new NpgsqlConnection (connectionString+nombrebd );
-            
-			// Verifica que la base de datos este conectada
-			try{
-				conexion.Open ();
-				NpgsqlCommand comando; 
-				comando = conexion.CreateCommand ();
-				
-				if ((string) entry_expresion.Text.Trim().ToUpper() == " ")
-				{
-					comando.CommandText = "SELECT * FROM osiris_aseguradoras ORDER BY descripcion_aseguradora;";
-				}else{
-					comando.CommandText = "SELECT * FROM osiris_aseguradoras "+
-								"WHERE descripcion_aseguradora LIKE '%"+(string) entry_expresion.Text.ToUpper()+"%' "+
-								"ORDER BY descripcion_aseguradora;";
-				}
-				NpgsqlDataReader lector = comando.ExecuteReader ();
-				while (lector.Read())
-				{
-					treeViewEngineAseguradora.AppendValues ((int) lector["id_aseguradora"],(string)lector["descripcion_aseguradora"]);
-				}					
-            }catch (NpgsqlException ex){
-	   			MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
-										MessageType.Error,ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
-				msgBoxError.Run ();			msgBoxError.Destroy();
-			}
-        	conexion.Close ();
-		}
-		
-		void on_selecciona_aseguradora_clicked (object sender, EventArgs args)
-		{
-			TreeModel model;
-			TreeIter iterSelected;
-			if (lista_de_empresas.Selection.GetSelected(out model, out iterSelected)) {
-				idaseguradora = (int) model.GetValue(iterSelected, 0);
-				query_aseguradora = "AND osiris_erp_cobros_enca.id_aseguradora = '"+idaseguradora.ToString()+"' ";
-				entry_aseguradora.Text = (string) model.GetValue(iterSelected, 1);
-				// cierra la ventana despues que almaceno la informacion en variables
-				Widget win = (Widget) sender;		win.Toplevel.Destroy();
-			}
-		}
-		
 		void on_button_busca_doctores_clicked(object sender, EventArgs args)
 		{
-			busqueda = "medicos";
-			Glade.XML gxml = new Glade.XML (null, "catalogos.glade", "buscador_medicos", null);
-			gxml.Autoconnect                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          (this);
-	        llenado_cmbox_tipo_busqueda();
-	        entry_expresion.KeyPressEvent += onKeyPressEvent_busqueda;
-			button_buscar_busqueda.Clicked += new EventHandler(on_button_llena_medicos_clicked);
-			button_selecciona.Clicked += new EventHandler(on_selecciona_medico_clicked);
-	        button_salir.Clicked +=  new EventHandler(on_cierraventanas_clicked);
-			
-			treeViewEngineMedicos = new TreeStore( typeof(int),typeof(string),typeof(string),typeof(string),
-													typeof(string),typeof(string));
-			lista_de_medicos.Model = treeViewEngineMedicos;
-			lista_de_medicos.RulesHint = true;
-				
-			lista_de_medicos.RowActivated += on_selecciona_medico_clicked;  // Doble click selecciono paciente
-				
-			TreeViewColumn col_idmedico = new TreeViewColumn();
-			CellRendererText cellr0 = new CellRendererText();
-			col_idmedico.Title = "ID Medico"; // titulo de la cabecera de la columna, si está visible
-			col_idmedico.PackStart(cellr0, true);
-			col_idmedico.AddAttribute (cellr0, "text", 0);
-			col_idmedico.SortColumnId = (int) Coldatos_medicos.col_idmedico;    
-            
-			TreeViewColumn col_nomb1medico = new TreeViewColumn();
-			CellRendererText cellrt1 = new CellRendererText();
-			col_nomb1medico.Title = "1º Nombre";
-			col_nomb1medico.PackStart(cellrt1, true);
-			col_nomb1medico.AddAttribute (cellrt1, "text", 1);
-			col_nomb1medico.SortColumnId = (int) Coldatos_medicos.col_nomb1medico; 
-            
-            TreeViewColumn col_nomb2medico = new TreeViewColumn();
-			CellRendererText cellrt2 = new CellRendererText();
-			col_nomb2medico.Title = "2º Nombre";
-			col_nomb2medico.PackStart(cellrt2, true);
-			col_nomb2medico.AddAttribute (cellrt2, "text", 2);
-			col_nomb2medico.SortColumnId = (int) Coldatos_medicos.col_nomb2medico; 
-			
-			TreeViewColumn col_appmedico = new TreeViewColumn();
-			CellRendererText cellrt3 = new CellRendererText();
-			col_appmedico.Title = "Apellido Paterno";
-			col_appmedico.PackStart(cellrt3, true);
-			col_appmedico.AddAttribute (cellrt3, "text", 3);
-			col_appmedico.SortColumnId = (int) Coldatos_medicos.col_appmedico;
-			
-			TreeViewColumn col_apmmedico = new TreeViewColumn();
-			CellRendererText cellrt4 = new CellRendererText();
-			col_apmmedico.Title = "Apellido Materno";
-			col_apmmedico.PackStart(cellrt4, true);
-			col_apmmedico.AddAttribute (cellrt4, "text", 4);
-			col_apmmedico.SortColumnId = (int) Coldatos_medicos.col_apmmedico;
-            
-			TreeViewColumn col_espemedico = new TreeViewColumn();
-			CellRendererText cellrt5 = new CellRendererText();
-			col_espemedico.Title = "Especialidad";
-			col_espemedico.PackStart(cellrt5, true);
-			col_espemedico.AddAttribute (cellrt5, "text", 5);
-			col_espemedico.SortColumnId = (int) Coldatos_medicos.col_espemedico;
-                                  
-			lista_de_medicos.AppendColumn(col_idmedico);
-			lista_de_medicos.AppendColumn(col_nomb1medico);
-			lista_de_medicos.AppendColumn(col_nomb2medico);
-			lista_de_medicos.AppendColumn(col_appmedico);
-			lista_de_medicos.AppendColumn(col_apmmedico);
-			lista_de_medicos.AppendColumn(col_espemedico);
-		}
-		
-		enum Coldatos_medicos
-		{
-			col_idmedico,
-			col_nomb1medico,
-			col_nomb2medico,
-			col_appmedico,
-			col_apmmedico,
-			col_espemedico,
-		}
-		
-		void llenado_cmbox_tipo_busqueda()
-		{
-			combobox_tipo_busqueda.Clear();
-			CellRendererText cell1 = new CellRendererText();
-			combobox_tipo_busqueda.PackStart(cell1, true);
-			combobox_tipo_busqueda.AddAttribute(cell1,"text",0);
-	        ListStore store1 = new ListStore( typeof (string),typeof (int));
-			combobox_tipo_busqueda.Model = store1;
-	        
-			//store1.AppendValues ("",0);
-			store1.AppendValues ("PRIMER NOMBRE",1);
-			store1.AppendValues ("SEGUNDO NOMBRE",2);
-			store1.AppendValues ("APELLIDO PATERNO",3);
-			store1.AppendValues ("APELLIDO MATERNO",4);
-			store1.AppendValues ("CEDULA MEDICA",5);
-			store1.AppendValues ("ESPECIALIDAD",6);
-			store1.AppendValues ("ID_MEDICO",7);
-				              
-			TreeIter iter1;
-			if (store1.GetIterFirst(out iter1)){
-				combobox_tipo_busqueda.SetActiveIter (iter1);
-			}
-			combobox_tipo_busqueda.Changed += new EventHandler (onComboBoxChanged_tipo_busqueda);
-		}
-		
-		void onComboBoxChanged_tipo_busqueda (object sender, EventArgs args)
-		{
-	    	ComboBox combobox_tipo_busqueda = sender as ComboBox;
-			if (sender == null)	{	return;	}
-			TreeIter iter;		
-			int numbusqueda = 0;
-			if (combobox_tipo_busqueda.GetActiveIter (out iter))
-			{
-				numbusqueda = (int) combobox_tipo_busqueda.Model.GetValue(iter,1);
-				tipo_de_busqueda_de_medico(numbusqueda);
-				llenando_lista_de_medicos();
-			}
-		}
-		
-		void tipo_de_busqueda_de_medico(int numbusqueda)
-		{
-			if(numbusqueda == 1)  { tipobusqueda = "AND osiris_his_medicos.nombre1_medico LIKE '";	}//Console.WriteLine(tipobusqueda); }
-			if(numbusqueda == 2)  { tipobusqueda = "AND osiris_his_medicos.nombre2_medico LIKE '";	}//Console.WriteLine(tipobusqueda); }
-			if(numbusqueda == 3)  { tipobusqueda = "AND osiris_his_medicos.apellido_paterno_medico LIKE '";	}//Console.WriteLine(tipobusqueda); }
-			if(numbusqueda == 4)  { tipobusqueda = "AND osiris_his_medicos.apellido_materno_medico LIKE '";	}//Console.WriteLine(tipobusqueda); }
-			if(numbusqueda == 5)  { tipobusqueda = "AND osiris_his_medicos.cedula_medico LIKE '";	}//Console.WriteLine(tipobusqueda); }
-			if(numbusqueda == 6)  { tipobusqueda = "AND osiris_his_tipo_especialidad.descripcion_especialidad LIKE '";	}//Console.WriteLine(tipobusqueda); }
-			if(numbusqueda == 7)  { tipobusqueda = "AND osiris_his_medicos.id_medico LIKE '"; }//Console.WriteLine(tipobusqueda); }
-		}		
-		
-		void on_selecciona_medico_clicked (object sender, EventArgs args)
-		{
-			TreeModel model;
-			TreeIter iterSelected;
-			if (lista_de_medicos.Selection.GetSelected(out model, out iterSelected)) 
- 			{
-				idmedico =(int) model.GetValue(iterSelected, 0);
-				query_medico = "AND osiris_his_medicos.id_medico = '"+idmedico.ToString()+"' ";
- 				entry_doctor.Text = (string) model.GetValue(iterSelected, 1)+" "+(string) model.GetValue(iterSelected, 2)+" "+
- 							(string) model.GetValue(iterSelected, 3)+" "+(string) model.GetValue(iterSelected, 4);
- 				// cierra la ventana despues que almaceno la informacion en variables
-				Widget win = (Widget) sender;
-				win.Toplevel.Destroy();
-			}
-		}
-		
-		void on_button_llena_medicos_clicked (object sender, EventArgs args)
-		{
-			llenando_lista_de_medicos();
-		}
-		
-		void llenando_lista_de_medicos()
-		{
-			TreeIter iter;
-			if (combobox_tipo_busqueda.GetActiveIter(out iter))
-			{
-				if((int) combobox_tipo_busqueda.Model.GetValue(iter,1) > 0) {
-					treeViewEngineMedicos.Clear(); // Limpia el treeview cuando realiza una nueva busqueda
-					NpgsqlConnection conexion; 
-					conexion = new NpgsqlConnection (connectionString+nombrebd);
-		            // Verifica que la base de datos este conectada
-					try{
-						conexion.Open ();
-						NpgsqlCommand comando; 
-						comando = conexion.CreateCommand ();
-						if ((string) entry_expresion.Text.ToUpper().Trim() == "")
-						{
-							comando.CommandText = "SELECT id_medico, "+
-										"to_char(id_empresa,'999999') AS idempresa, "+
-										"to_char(osiris_his_tipo_especialidad.id_especialidad,'999999') AS idespecialidad, "+
-										"nombre_medico,descripcion_empresa,descripcion_especialidad,centro_medico, "+
-										"nombre1_medico,nombre2_medico,apellido_paterno_medico,apellido_materno_medico, "+
-										"telefono1_medico,cedula_medico,telefono2_medico,celular1_medico,celular2_medico, "+
-										"nextel_medico,beeper_medico,cedula_medico,direccion_medico,direccion_consultorio_medico, "+
-										"to_char(fecha_ingreso_medico,'dd-MM-yyyy') AS fecha_ingreso, "+
-										"to_char(fecha_revision_medico,'dd-MM-yyyy') AS fecha_revision, "+
-										"titulo_profesional_medico,cedula_profecional_medico,diploma_especialidad_medico, "+
-										"diploma_subespecialidad_medico,copia_identificacion_oficial_medico,copia_cedula_rfc_medico, "+
-										"diploma_cursos_adiestramiento_medico,certificacion_recertificacion_consejo_subespecialidad_medico, "+
-										"copia_comprobante_domicilio_medico,diploma_seminarios_medico,diploma_cursos_medico, "+
-										"diplomas_extranjeros_medico,constancia_congresos_medico,cedula_especialidad_medico, "+
-										"medico_activo,autorizado "+
-										"FROM osiris_his_medicos,osiris_his_tipo_especialidad,osiris_empresas "+
-										"WHERE osiris_his_medicos.id_especialidad = osiris_his_tipo_especialidad.id_especialidad "+
-										"AND osiris_his_medicos.id_empresa_medico = osiris_empresas.id_empresa "+
-										"AND medico_activo = 'true' "+
-										"ORDER BY id_medico;";
-						}else{
-							comando.CommandText = "SELECT id_medico, "+
-										"to_char(id_empresa,'999999') AS idempresa, "+
-										"to_char(osiris_his_tipo_especialidad.id_especialidad,'999999') AS idespecialidad, "+
-										"nombre_medico,descripcion_empresa,descripcion_especialidad,centro_medico, "+
-										"nombre1_medico,nombre2_medico,apellido_paterno_medico,apellido_materno_medico, "+
-										"telefono1_medico,cedula_medico,telefono2_medico,celular1_medico,celular2_medico, "+
-										"nextel_medico,beeper_medico,cedula_medico,direccion_medico,direccion_consultorio_medico, "+
-										"to_char(fecha_ingreso_medico,'dd-MM-yyyy') AS fecha_ingreso, "+
-										"to_char(fecha_revision_medico,'dd-MM-yyyy') AS fecha_revision, "+
-										"titulo_profesional_medico,cedula_profecional_medico,diploma_especialidad_medico, "+
-										"diploma_subespecialidad_medico,copia_identificacion_oficial_medico,copia_cedula_rfc_medico, "+
-										"diploma_cursos_adiestramiento_medico,certificacion_recertificacion_consejo_subespecialidad_medico, "+
-										"copia_comprobante_domicilio_medico,diploma_seminarios_medico,diploma_cursos_medico, "+
-										"diplomas_extranjeros_medico,constancia_congresos_medico,cedula_especialidad_medico, "+
-										"medico_activo,autorizado "+
-										"FROM osiris_his_medicos,osiris_his_tipo_especialidad,osiris_empresas "+
-										"WHERE osiris_his_medicos.id_especialidad = osiris_his_tipo_especialidad.id_especialidad "+
-										"AND osiris_his_medicos.id_empresa_medico = osiris_empresas.id_empresa "+
-								  		"AND medico_activo = 'true' "+
-								  		tipobusqueda+(string) entry_expresion.Text.Trim().ToUpper()+"%' "+
-										"ORDER BY id_medico;";
-						}
-						//Console.WriteLine("query de busqueda de medicos"+comando.CommandText);
-						NpgsqlDataReader lector = comando.ExecuteReader ();
-						
-						while (lector.Read())
-						{
-							treeViewEngineMedicos.AppendValues ((int) lector["id_medico"],//0
-										(string) lector["nombre1_medico"],//1
-										(string) lector["nombre2_medico"],//2
-										(string) lector["apellido_paterno_medico"],//3
-										(string) lector["apellido_materno_medico"],//4
-										(string) lector["descripcion_especialidad"]//5
-										);
-						}
-					}catch (NpgsqlException ex){
-			   			Console.WriteLine ("PostgresSQL error: {0}",ex.Message);
-			   			MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
-						MessageType.Error,ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
-						msgBoxError.Run ();			msgBoxError.Destroy();
-					}
-					conexion.Close ();
-				}else{	
-					MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
-					MessageType.Info,ButtonsType.Close, " selecione un tipo de busqueda ");
-					msgBoxError.Run ();			msgBoxError.Destroy();
-				}
-			}
+			object[] parametros_objetos = {entry_id_doctor_consulta,entry_nombre_doctor_consulta};
+			string[] parametros_sql = {"SELECT * FROM osiris_his_medicos WHERE medico_activo = 'true' ",															
+										"SELECT * FROM osiris_his_medicos WHERE medico_activo = 'true' "+
+										"AND nombre_medico LIKE '%"};			
+			classfind_data.buscandor(parametros_objetos,parametros_sql,"find_medico_consulta"," ORDER BY nombre_medico","%' ",0);
+			idmedico = entry_id_doctor_consulta.Text.ToString().Trim();
 		}
 		
 			
-		/////////////////////////////////////////////////////////777777
 		void on_button_busca_empresa_clicked(object sender, EventArgs args)
 		{
-			busqueda = "empresa";
-			Glade.XML gxml = new Glade.XML (null, "reportes.glade", "busca_empresas", null);
-			gxml.Autoconnect (this);
-	        
-	        // Muestra ventana de Glade
-			//busca_empresas.Show();
-			
-			// Activa la salida de la ventana
-			entry_expresion.KeyPressEvent += onKeyPressEvent_busqueda; 
-			button_salir.Clicked += new EventHandler(on_cierraventanas_clicked);
-			// Activa la seleccion de Medico
-			button_selecciona.Clicked += new EventHandler(on_selecciona_empresa_clicked);
-			// Llena treeview 
-			button_busca_empresas.Clicked += new EventHandler(on_button_llena_empresas_clicked);
-			
-			treeViewEngineEmpresa = new ListStore( typeof(int), typeof(string));
-			lista_de_empresas.Model = treeViewEngineEmpresa;
-			lista_de_empresas.RulesHint = true;
-			
-			lista_de_empresas.RowActivated += on_selecciona_empresa_clicked;  // Doble click selecciono empresa*/
-			
-			TreeViewColumn col_idempresa = new TreeViewColumn();
-			CellRendererText cellr0 = new CellRendererText();
-			col_idempresa.Title = "ID Empresa"; // titulo de la cabecera de la columna, si está visible
-			col_idempresa.PackStart(cellr0, true);
-			col_idempresa.AddAttribute (cellr0, "text", 0);    // la siguiente columna será 1
-            
-			TreeViewColumn col_nombrempresa = new TreeViewColumn();
-			CellRendererText cellrt1 = new CellRendererText();
-			col_nombrempresa.Title = "Nombre Empresa";
-			col_nombrempresa.PackStart(cellrt1, true);
-			col_nombrempresa.AddAttribute (cellrt1, "text", 1); // la siguiente columna será 2
-			
-			lista_de_empresas.AppendColumn(col_idempresa);
-			lista_de_empresas.AppendColumn(col_nombrempresa);
-		}
-		
-		void on_button_llena_empresas_clicked(object sender, EventArgs args)
-		{
-			llenando_lista_empresas();
-		}
-		
-		void llenando_lista_empresas()
-		{
-			treeViewEngineEmpresa.Clear(); // Limpia el treeview cuando realiza una nueva busqueda
-			
-			NpgsqlConnection conexion; 
-			conexion = new NpgsqlConnection (connectionString+nombrebd );
-            
-			// Verifica que la base de datos este conectada
-			try{
-				conexion.Open ();
-				NpgsqlCommand comando; 
-				comando = conexion.CreateCommand ();
-				
-				if ((string) entry_expresion.Text.Trim().ToUpper() == " ")
-				{
-					comando.CommandText = "SELECT * FROM osiris_empresas ORDER BY descripcion_empresa;";
+			//query_empresa = "AND hscmty_empresas.id_empresa = '"+idempresa.ToString()+"' ";
+			// diferenciar el tipo de busqueda empresa o aseguradora
+			//id_tipopaciente = 400 asegurados
+			//id_tipopaciente = 102 empresas
+			//id_tipopaciente = 500 municipio
+			//id_tipopaciente = 100 DIF
+			//id_tipopaciente = 600 Sindicato
+			// Los parametros de del SQL siempre es primero cuando busca todo y la otra por expresion
+			// la clase recibe tambien el orden del query
+			// es importante definir que tipo de busqueda es para que los objetos caigan ahi mismo
+			Console.WriteLine(id_tipopaciente.ToString());
+			if(checkbutton_todos_paciente.Active == false){
+				if (id_tipopaciente != 400){				
+					//Console.WriteLine("Empresas");
+					object[] parametros_objetos = {entry_id_empaseg_cita,entry_nombre_empaseg_cita};
+					string[] parametros_sql = {"SELECT * FROM osiris_empresas WHERE id_tipo_paciente = '"+id_tipopaciente.ToString().Trim()+"' ",															
+											"SELECT * FROM osiris_empresas  WHERE id_tipo_paciente = '"+id_tipopaciente.ToString().Trim()+"' "+
+											"AND descripcion_empresa LIKE '%"};			
+					classfind_data.buscandor(parametros_objetos,parametros_sql,"find_empresa_cita"," ORDER BY descripcion_empresa","%' ",0);
+					idempresa = entry_id_empaseg_cita.Text.ToString().Trim();					
+					idaseguradora = "1";		
 				}else{
-					comando.CommandText = "SELECT * FROM osiris_empresas "+
-								"WHERE descripcion_empresa LIKE '%"+(string) entry_expresion.Text.ToUpper()+"%' "+
-								"ORDER BY descripcion_empresa;";
+					//Console.WriteLine("Aseguradoras");
+					// Buscando aseguradora
+					object[] parametros_objetos = {entry_id_empaseg_cita,entry_nombre_empaseg_cita};
+					string[] parametros_sql = {"SELECT * FROM osiris_aseguradoras ",															
+											"SELECT * FROM osiris_aseguradoras "+
+											"WHERE descripcion_aseguradora LIKE '%"};			
+					classfind_data.buscandor(parametros_objetos,parametros_sql,"find_aseguradoras_cita"," ORDER BY descripcion_aseguradora","%' ",0);
+					idaseguradora = entry_id_empaseg_cita.Text.ToString().Trim();
+					idempresa = "1";					
 				}
-				NpgsqlDataReader lector = comando.ExecuteReader ();
-				while (lector.Read())
-				{
-					treeViewEngineEmpresa.AppendValues ((int) lector["id_empresa"],(string)lector["descripcion_empresa"]);
-				}					
-            }catch (NpgsqlException ex){
-	   			MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
-										MessageType.Error,ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
-				msgBoxError.Run ();			msgBoxError.Destroy();
-			}
-        	conexion.Close ();
-		}
-		
-		void on_selecciona_empresa_clicked (object sender, EventArgs args)
-		{
-			TreeModel model;
-			TreeIter iterSelected;
-			if (lista_de_empresas.Selection.GetSelected(out model, out iterSelected)) {
-				idempresa = (int) model.GetValue(iterSelected, 0);
-				query_empresa = "AND osiris_empresas.id_empresa = '"+idempresa.ToString()+"' ";
-				//Console.WriteLine("seleccion "+query_empresa);
-				entry_empresa.Text = (string) model.GetValue(iterSelected, 1);
-				// cierra la ventana despues que almaceno la informacion en variables
-				Widget win = (Widget) sender;		win.Toplevel.Destroy();
 			}
 		}
 		
 		/////////////////Acciones del boton todas las admisiones
 		void on_checkbutton_todos_admision_clicked(object sender, EventArgs args)
 		{
-			if (checkbutton_todos_admision.Active == true)
-			{
+			if (checkbutton_todos_admision.Active == true){
 				combobox_tipo_admision.Sensitive = false;
 				query_tipo_admision = " ";			
 			}else{
@@ -775,8 +399,7 @@ namespace osiris
 		/////////////////Acciones del boton todos los tipos de pacientes
 		void on_checkbutton_todos_paciente_clicked(object sender, EventArgs args)
 		{
-			if (checkbutton_todos_paciente.Active == true)
-			{
+			if (checkbutton_todos_paciente.Active == true){
 				query_tipo_paciente= " ";
 				combobox_tipo_paciente.Sensitive = false;
 			}else{
@@ -787,45 +410,35 @@ namespace osiris
 		
 		void on_checkbutton_todas_empresas_clicked(object sender, EventArgs args)
 		{
-			if (checkbutton_todas_empresas.Active == true)
-			{
-				button_busca_empresa.Sensitive = false;
-				query_empresa = " ";			
-			}else{
-				//query_empresa = "AND osiris_empresas.id_empresa = '"+idempresa.ToString()+"' ";
+			if (checkbutton_todas_empresas.Active == false){
 				button_busca_empresa.Sensitive = true;
+				query_empresa = " ";
+				query_aseguradora = " ";
+			}else{
+				if (id_tipopaciente != 400){
+					query_empresa = "AND osiris_empresas.id_empresa = '"+entry_id_empaseg_cita.Text.ToString()+"' ";
+				}else{
+					query_aseguradora = "AND hscmty_erp_cobros_enca.id_aseguradora = '"+entry_id_empaseg_cita.Text.ToString()+"' ";
+				}
+				button_busca_empresa.Sensitive = false;
 			}
 		}
 		
 		void on_checkbutton_todos_doctores_clicked(object sender, EventArgs args)
 		{
-			if (checkbutton_todos_doctores.Active == true)
-			{
-				button_busca_doctores.Sensitive = false;
+			if (checkbutton_todos_doctores.Active == false){
+				button_busca_doctores.Sensitive = true;
 				query_medico = " ";			
 			}else{
-				//query_medico = "AND osiris_his_medicos.id_medico = '"+idmedico.ToString()+"' ";
-				button_busca_doctores.Sensitive = true;
+				query_medico = "AND osiris_his_medicos.id_medico = '"+entry_id_doctor_consulta.Text.ToString()+"' ";
+				button_busca_doctores.Sensitive = false;
 			}
 		}
-		
-		void on_checkbutton_todas_aseguradoras_clicked(object sender, EventArgs args)
-		{
-			if (checkbutton_todas_aseguradoras.Active == true)
-			{
-				button_busca_aseguradoras.Sensitive = false;
-				query_aseguradora = " ";			
-			}else{
-				//query_medico = "AND osiris_his_medicos.id_medico = '"+idmedico.ToString()+"' ";
-				button_busca_aseguradoras.Sensitive = true;
-			}
-		} 
 		
 		/////////////////Acciones del boton todas las fechas
 		void on_checkbutton_todas_fechas_clicked(object sender, EventArgs args)
 		{
-			if (checkbutton_todas_fechas.Active == true)
-			{
+			if (checkbutton_todas_fechas.Active == true){
 				query_rango_fechas= " ";
 				entry_dia_inicial.Sensitive = false;
 				entry_mes_inicial.Sensitive = false;
@@ -833,8 +446,7 @@ namespace osiris
 				entry_dia_final.Sensitive = false;
 				entry_mes_final.Sensitive = false;
 				entry_ano_final.Sensitive = false;
-			}else
-			{	
+			}else{	
 				query_rango_fechas = "AND to_char(osiris_erp_movcargos.fechahora_admision_registro,'yyyy-MM-dd') >= '"+(string) entry_ano_inicial.Text.ToString()+"-"+(string) entry_mes_inicial.Text.ToString()+"-"+(string) entry_dia_inicial.Text.ToString()+"' "+
 									"AND to_char(osiris_erp_movcargos.fechahora_admision_registro,'yyyy-MM-dd') <= '"+(string) entry_ano_final.Text.ToString()+"-"+(string) entry_mes_final.Text.ToString()+"-"+(string) entry_dia_final.Text.ToString()+"' ";
 				entry_dia_inicial.Sensitive = true;
@@ -851,17 +463,6 @@ namespace osiris
 		{
 			Widget win = (Widget) sender;
 			win.Toplevel.Destroy();
-		}
-		
-		[GLib.ConnectBefore ()]   	  // Esto es indispensable para que funcione    
-		public void onKeyPressEvent_busqueda(object o, Gtk.KeyPressEventArgs args)
-		{
-			//Console.WriteLine(args.Event.Key);
-			if (args.Event.Key == Gdk.Key.Return || args.Event.Key == Gdk.Key.KP_Enter){
-				args.RetVal = true;
-				if(busqueda == "medicos") { llenando_lista_de_medicos(); } 		
-				if(busqueda == "empresa") { this.llenando_lista_empresas(); }
-			}
 		}
 		
 		void tipo_de_reporte_a_mostrar(object sender, EventArgs args)
@@ -889,105 +490,238 @@ namespace osiris
 ////////////////////////////////////VOID PARA IMPRESION DE PAGINA/////////////////////////////	
 		void on_button_imprimir_clicked(object sender, EventArgs a)
 		{		
-			numpage = 1;
-			filas = 684;
-			contador = 1;
 			tipo_de_reporte_a_mostrar(sender, a);
 	    	tipo_de_sexo(sender, a);
 			tipo_orden_query(sender, a);
-			
-			Gnome.PrintJob trabajoImpresion  = new Gnome.PrintJob();
-       		Gnome.PrintDialog dialogoimpresion   = new Gnome.PrintDialog (trabajoImpresion, "REPORTE DE ADMISION", 0);
-       		 int respuesta = dialogoimpresion.Run ();
-          	if (respuesta == (int) Gnome.PrintButtons.Cancel) 
-			{
-				dialogoimpresion.Hide (); 
-				dialogoimpresion.Dispose (); 
-				return;
-			}
+			genera_reporte_admision();
+		}
 		
-			Gnome.PrintContext contextoImprimir = trabajoImpresion.Context;
-			ComponerPagina (contextoImprimir, trabajoImpresion);
-       	 	trabajoImpresion.Close (); 
-        
-        	switch (respuesta)
-        	{
-				case (int) Gnome.PrintButtons.Print:   
-					trabajoImpresion.Print (); 
-         	   		break;
-         	    case (int) Gnome.PrintButtons.Preview:
-         	     	Gnome.PrintJobPreview vistaprevia = new Gnome.PrintJobPreview(trabajoImpresion, "REPORTE DE ADMISION");
-         	       	vistaprevia.Show();
-         	    break;
-        	}
-
-			dialogoimpresion.Hide (); dialogoimpresion.Dispose ();
-       	 
-		}   	
-    	
-////////////////////////////////////VOID PARA FORMATO DE PAGINA/////////////////////////////
-    	
-		void imprime_encabezado(Gnome.PrintContext ContextoImp, Gnome.PrintJob trabajoImpresion)
-		{
-			// Cambiar la fuente
-			//Console.WriteLine("imprimo encabezado");
-			Gnome.Print.Setfont (ContextoImp, fuente6);
-			ContextoImp.MoveTo(19.5, 770);		    			ContextoImp.Show("Sistema Hospitalario OSIRIS");
-			ContextoImp.MoveTo(20, 770);		    			ContextoImp.Show("Sistema Hospitalario OSIRIS");
-			ContextoImp.MoveTo(19.5, 760);		    			ContextoImp.Show("Direccion:");
-			ContextoImp.MoveTo(20, 760);		    			ContextoImp.Show("Direccion:");
-			ContextoImp.MoveTo(19.5, 750);		    			ContextoImp.Show("Conmutador: ");
-			ContextoImp.MoveTo(20, 750);		    			ContextoImp.Show("Conmutador: ");
-			//ContextoImp.MoveTo(464.5, 760);		   			ContextoImp.Show("Fecha de reporte: "+DateTime.Now.ToString("dd-MM-yyyy"));
-			//ContextoImp.MoveTo(465, 760);		    			ContextoImp.Show("Fecha de reporte: "+DateTime.Now.ToString("dd-MM-yyyy"));
-			
-			Gnome.Print.Setfont (ContextoImp, fuente12);
-			ContextoImp.MoveTo(189.5, 740);						ContextoImp.Show("REPORTE DE ADMISIONES Y REGISTRO ");
-			ContextoImp.MoveTo(190, 740);						ContextoImp.Show("REPORTE DE ADMISIONES Y REGISTRO ");	
-
-    		Gnome.Print.Setfont (ContextoImp, fuente9);
-    		ContextoImp.MoveTo(59.5, 710);						ContextoImp.Show("PID");
-    		ContextoImp.MoveTo(60, 710);						ContextoImp.Show("PID");
-			
-			Gnome.Print.Setfont (ContextoImp, fuente6);
-			ContextoImp.MoveTo(19.5, 720);						ContextoImp.Show("FOLIO");
-			ContextoImp.MoveTo(20, 720);						ContextoImp.Show("FOLIO");
-			ContextoImp.MoveTo(19.5, 710);						ContextoImp.Show("SERVICIO");
-			ContextoImp.MoveTo(20, 710);						ContextoImp.Show("SERVICIO");
-   		
-   			Gnome.Print.Setfont (ContextoImp, fuente6);
-			ContextoImp.MoveTo(99.5, 720);		    			ContextoImp.Show("FECHA");
-			ContextoImp.MoveTo(100, 720);		    			ContextoImp.Show("FECHA");
-			ContextoImp.MoveTo(99.5, 710);		    			ContextoImp.Show("ADMISION");
-			ContextoImp.MoveTo(100, 710);		    			ContextoImp.Show("ADMISION");
-			
-			Gnome.Print.Setfont (ContextoImp, fuente9);
-			ContextoImp.MoveTo(154.5,710);		    			ContextoImp.Show("NOMBRE DEL PACIENTE");
-			ContextoImp.MoveTo(155,710);		    			ContextoImp.Show("NOMBRE DEL PACIENTE");
-			ContextoImp.MoveTo(319.5, 710);						ContextoImp.Show("TIPO PACIENTE");
-			ContextoImp.MoveTo(320, 710);						ContextoImp.Show("TIPO PACIENTE");
-	
-			ContextoImp.MoveTo(464.5, 710);						ContextoImp.Show("TIPOS DE ADMISIONES");
-			ContextoImp.MoveTo(465, 710);						ContextoImp.Show("TIPOS DE ADMISIONES");
-			
-			Gnome.Print.Setfont (ContextoImp, fuente7);
-			ContextoImp.MoveTo(230.7, 50);						ContextoImp.Show("Pagina "+numpage.ToString()+"  fecha de reporte "+DateTime.Now.ToString("dd-MM-yyyy HH:mm:ss"));
-			ContextoImp.MoveTo(230, 50);						ContextoImp.Show("Pagina "+numpage.ToString()+"  fecha de reporte "+DateTime.Now.ToString("dd-MM-yyyy HH:mm:ss"));
+		void genera_reporte_admision()
+		{			
+			print = new PrintOperation ();
+			print.JobName = "Reporte Admisiones";
+			print.BeginPrint += new BeginPrintHandler (OnBeginPrint);
+			print.DrawPage += new DrawPageHandler (OnDrawPage);
+			print.EndPrint += new EndPrintHandler (OnEndPrint);
+			print.Run (PrintOperationAction.PrintDialog, null);			
 		}
-    	
-    	void salto_pagina(Gnome.PrintContext ContextoImp, Gnome.PrintJob trabajoImpresion)
+		
+		private void OnBeginPrint (object obj, Gtk.BeginPrintArgs args)
 		{
-			if (contador > 62)
-			{
-				numpage +=1;
-				//Console.WriteLine("pagina "+numpage.ToString());
-				ContextoImp.ShowPage();
-				ContextoImp.BeginPage("Pagina "+numpage.ToString());
-				imprime_encabezado(ContextoImp,trabajoImpresion);
-				filas = 684;
-				contador = 1;
+			print.NPages = 1;  // crea cantidad de copias del reporte			
+			// para imprimir horizontalmente el reporte
+			//print.PrintSettings.Orientation = PageOrientation.Landscape;
+			//Console.WriteLine(print.PrintSettings.Orientation.ToString());
+		}
+		
+		private void OnDrawPage (object obj, Gtk.DrawPageArgs args)
+		{			
+			PrintContext context = args.Context;
+			//imprime_encabezado(cr,layou);
+			ejecutar_consulta_reporte(context);			
+		}
+		
+		void ejecutar_consulta_reporte(PrintContext context)
+		{
+			string fechas_registros = "";
+			string edad;
+			Cairo.Context cr = context.CairoContext;
+			Pango.Layout layout = context.CreatePangoLayout ();
+			Pango.FontDescription desc = Pango.FontDescription.FromString ("Sans");			
+			fontSize = 7.0;											layout = context.CreatePangoLayout ();		
+			desc.Size = (int)(fontSize * pangoScale);				layout.FontDescription = desc;
+			
+			comienzo_linea = 85;
+			NpgsqlConnection conexion; 
+        	conexion = new NpgsqlConnection (connectionString+nombrebd);
+        	    
+        	// Verifica que la base de datos este conectada
+        	try{
+        		conexion.Open ();
+        		NpgsqlCommand comando; 
+        		comando = conexion.CreateCommand (); 
+             	
+             	if (checkbutton_todas_fechas.Active == true){
+					query_rango_fechas= " ";
+					entry_dia_inicial.Sensitive = false;
+					entry_mes_inicial.Sensitive = false;
+					entry_ano_inicial.Sensitive = false;
+					entry_dia_final.Sensitive = false;
+					entry_mes_final.Sensitive = false;
+					entry_ano_final.Sensitive = false;
+				}else{	
+					query_rango_fechas = "AND to_char(osiris_erp_movcargos.fechahora_admision_registro,'yyyy-MM-dd') >= '"+(string) entry_ano_inicial.Text.ToString()+"-"+(string) entry_mes_inicial.Text.ToString()+"-"+(string) entry_dia_inicial.Text.ToString()+"'  "+
+									"AND to_char(osiris_erp_movcargos.fechahora_admision_registro,'yyyy-MM-dd') <= '"+(string) entry_ano_final.Text.ToString()+"-"+(string) entry_mes_final.Text.ToString()+"-"+(string) entry_dia_final.Text.ToString()+"' ";
+				}
+			 	
+				comando.CommandText = query_reporte + query_tipo_admision + query_tipo_paciente + query_sexo + 
+									query_empresa + query_aseguradora + query_tipo_reporte + query_medico +
+									query_rango_fechas + query_orden;
+				Console.WriteLine(comando.CommandText.ToString());
+ 				NpgsqlDataReader lector = comando.ExecuteReader ();
+				
+				if(lector.Read()){
+					if((bool) lector["cancelado"]){
+						
+					}
+					if(int.Parse((string) lector["edad"]) > 0){
+						edad = (string) lector["edad"]+" Años"; 
+					}else{
+						edad = (string) lector["mesesedad"]+" Meses";
+					}
+					fechas_registros = (string) lector["fech_reg_adm"].ToString();
+					imprime_encabezado(cr,layout);
+					layout.FontDescription.Weight = Weight.Bold;		// Letra negrita
+					cr.MoveTo(05*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);			layout.SetText("-->"+(string) lector["fech_reg_adm"].ToString()+"<--");			Pango.CairoHelper.ShowLayout (cr, layout);
+					comienzo_linea += separacion_linea;// Letra negrita
+					cr.MoveTo(05*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);			layout.SetText((string) lector["folio_de_servicio"].ToString());			Pango.CairoHelper.ShowLayout (cr, layout);
+					layout.FontDescription.Weight = Weight.Normal;
+					cr.MoveTo(50*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);			layout.SetText((string) lector["pid_paciente"].ToString());			Pango.CairoHelper.ShowLayout (cr, layout);
+					cr.MoveTo(90*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);			layout.SetText((string) lector["hora_reg_adm"].ToString());			Pango.CairoHelper.ShowLayout (cr, layout);
+					cr.MoveTo(115*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);			layout.SetText(((string) lector["nombre1_paciente"].ToString().Trim()+" "+ 
+				            	     																						(string) lector["nombre2_paciente"].ToString().Trim()+" "+
+				        	         																						(string) lector["apellido_paterno_paciente"].ToString().Trim()+" "+
+				    	             																						(string) lector["apellido_materno_paciente"].ToString().Trim()));			Pango.CairoHelper.ShowLayout (cr, layout);
+					cr.MoveTo(320*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);			layout.SetText(edad);			Pango.CairoHelper.ShowLayout (cr, layout);
+					cr.MoveTo(365*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);			layout.SetText((string) lector["descripcion_tipo_paciente"].ToString());			Pango.CairoHelper.ShowLayout (cr, layout);
+					cr.MoveTo(475*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);			layout.SetText((string) lector["descripcion_admisiones"].ToString());			Pango.CairoHelper.ShowLayout (cr, layout);
+					comienzo_linea += separacion_linea;
+					cr.MoveTo(05*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);			layout.SetText("Medico: "+(string) lector["nombre_medico_tratante"]);			Pango.CairoHelper.ShowLayout (cr, layout);
+					cr.MoveTo(280*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);			layout.SetText("Diag.Admision: "+(string) lector["descripcion_diagnostico_movcargos"]);			Pango.CairoHelper.ShowLayout (cr, layout);
+					//cr.Rectangle (05*escala_en_linux_windows, (comienzo_linea-separacion_linea)*escala_en_linux_windows, 565*escala_en_linux_windows, 0*escala_en_linux_windows);
+					//cr.FillExtents();  //. FillPreserve(); 
+					//cr.SetSourceRGB (0, 0, 0);
+					//cr.LineWidth = 0.2;
+					//cr.Stroke();
+					comienzo_linea += separacion_linea;
+					while (lector.Read()){
+						if((bool) lector["cancelado"]){
+						
+						}
+						if(int.Parse((string) lector["edad"]) > 0){
+							edad = (string) lector["edad"]+" Años"; 
+						}else{
+							edad = (string) lector["mesesedad"]+" Meses";
+						}
+						if(fechas_registros != (string) lector["fech_reg_adm"].ToString()){
+							comienzo_linea += separacion_linea;
+							cr.Rectangle (05*escala_en_linux_windows, comienzo_linea-5*escala_en_linux_windows, 565*escala_en_linux_windows, 1*escala_en_linux_windows);
+							cr.FillPreserve();  //. FillPreserve(); FillExtents()
+							cr.SetSourceRGB (0, 0, 0);
+							cr.LineWidth = 0.5;
+							cr.Stroke();
+							layout.FontDescription.Weight = Weight.Bold;		// Letra negrita
+							cr.MoveTo(05*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);			layout.SetText("-->"+(string) lector["fech_reg_adm"].ToString()+"<--");			Pango.CairoHelper.ShowLayout (cr, layout);
+							comienzo_linea += separacion_linea;
+							salto_de_pagina(cr,layout);
+							fechas_registros = (string) lector["fech_reg_adm"].ToString();
+						}
+						layout.FontDescription.Weight = Weight.Bold;		// Letra negrita
+						cr.MoveTo(05*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);			layout.SetText((string) lector["folio_de_servicio"].ToString());			Pango.CairoHelper.ShowLayout (cr, layout);
+						layout.FontDescription.Weight = Weight.Normal;
+						cr.MoveTo(50*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);			layout.SetText((string) lector["pid_paciente"].ToString());			Pango.CairoHelper.ShowLayout (cr, layout);
+						cr.MoveTo(90*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);			layout.SetText((string) lector["hora_reg_adm"].ToString());			Pango.CairoHelper.ShowLayout (cr, layout);
+						cr.MoveTo(115*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);			layout.SetText(((string) lector["nombre1_paciente"].ToString().Trim()+" "+ 
+				            	     																						(string) lector["nombre2_paciente"].ToString().Trim()+" "+
+				        	         																						(string) lector["apellido_paterno_paciente"].ToString().Trim()+" "+
+				    	             																						(string) lector["apellido_materno_paciente"].ToString().Trim()));			Pango.CairoHelper.ShowLayout (cr, layout);
+						
+						cr.MoveTo(320*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);			layout.SetText(edad);			Pango.CairoHelper.ShowLayout (cr, layout);
+						cr.MoveTo(365*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);			layout.SetText((string) lector["descripcion_tipo_paciente"].ToString());			Pango.CairoHelper.ShowLayout (cr, layout);
+						cr.MoveTo(475*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);			layout.SetText((string) lector["descripcion_admisiones"].ToString());			Pango.CairoHelper.ShowLayout (cr, layout);
+						comienzo_linea += separacion_linea;
+						salto_de_pagina(cr,layout);
+						cr.MoveTo(05*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);			layout.SetText("Medico: "+(string) lector["nombre_medico_tratante"]);			Pango.CairoHelper.ShowLayout (cr, layout);
+						cr.MoveTo(280*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);			layout.SetText("Diag.Admision: "+(string) lector["descripcion_diagnostico_movcargos"]);			Pango.CairoHelper.ShowLayout (cr, layout);
+						//cr.Rectangle (05*escala_en_linux_windows, (comienzo_linea-separacion_linea)*escala_en_linux_windows, 565*escala_en_linux_windows, 0*escala_en_linux_windows);
+						//cr.FillExtents();  //. FillPreserve(); 
+						//cr.SetSourceRGB (0, 0, 0);
+						//cr.LineWidth = 0.2;
+						//cr.Stroke();																
+						comienzo_linea += separacion_linea;
+						salto_de_pagina(cr,layout);
+					}
+				}else{
+					
+				}
+			}catch (NpgsqlException ex){
+				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+										MessageType.Error, 
+										ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
+				msgBoxError.Run ();
+				msgBoxError.Destroy();
+				return; 
+			}		
+		}
+		
+		void imprime_encabezado(Cairo.Context cr,Pango.Layout layout)
+		{
+			//Console.WriteLine("entra en la impresion del encabezado");
+			//Gtk.Image image5 = new Gtk.Image();
+            //image5.Name = "image5";
+			//image5.Pixbuf = new Gdk.Pixbuf(System.IO.Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, "osiris.jpg"));
+			//image5.Pixbuf = new Gdk.Pixbuf("/opt/osiris/bin/OSIRISLogo.jpg");   // en Linux
+			//image5.Pixbuf.ScaleSimple(128, 128, Gdk.InterpType.Bilinear);
+			//Gdk.CairoHelper.SetSourcePixbuf(cr,image5.Pixbuf,1,-30);
+			//Gdk.CairoHelper.SetSourcePixbuf(cr,image5.Pixbuf.ScaleSimple(145, 50, Gdk.InterpType.Bilinear),1,1);
+			//Gdk.CairoHelper.SetSourcePixbuf(cr,image5.Pixbuf.ScaleSimple(180, 64, Gdk.InterpType.Hyper),1,1);
+			//cr.Fill();
+			//cr.Paint();
+			//cr.Restore();
+								
+			Pango.FontDescription desc = Pango.FontDescription.FromString ("Sans");								
+			//cr.Rotate(90);  //Imprimir Orizontalmente rota la hoja cambian las posiciones de las lineas y columna					
+			fontSize = 8.0;
+			desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;
+			layout.FontDescription.Weight = Weight.Bold;		// Letra negrita
+			cr.MoveTo(05*escala_en_linux_windows,05*escala_en_linux_windows);			layout.SetText(classpublic.nombre_empresa);			Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(05*escala_en_linux_windows,15*escala_en_linux_windows);			layout.SetText(classpublic.direccion_empresa);		Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(05*escala_en_linux_windows,25*escala_en_linux_windows);			layout.SetText(classpublic.telefonofax_empresa);	Pango.CairoHelper.ShowLayout (cr, layout);
+			fontSize = 6.0;
+			desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;
+			cr.MoveTo(479*escala_en_linux_windows,05*escala_en_linux_windows);			layout.SetText("Fech.Rpt:"+(string) DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));		Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(479*escala_en_linux_windows,15*escala_en_linux_windows);			layout.SetText("N° Page :"+numerpage.ToString());		Pango.CairoHelper.ShowLayout (cr, layout);
+
+			cr.MoveTo(05*escala_en_linux_windows,35*escala_en_linux_windows);			layout.SetText("Sistema Hospitalario OSIRIS");		Pango.CairoHelper.ShowLayout (cr, layout);
+			// Cambiando el tamaño de la fuente			
+			fontSize = 10.0;	
+			desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;
+			layout.FontDescription.Weight = Weight.Bold;		// Letra negrita
+			cr.MoveTo(225*escala_en_linux_windows, 25*escala_en_linux_windows);			layout.SetText("REPORTE REGISTRO DE PACIENTES");				Pango.CairoHelper.ShowLayout (cr, layout);
+			// Creando el Cuadro de Titulos para colocar el nombre del usuario
+			cr.Rectangle (05*escala_en_linux_windows, 55*escala_en_linux_windows, 565*escala_en_linux_windows, 25*escala_en_linux_windows);
+			cr.FillExtents();  //. FillPreserve(); 
+			cr.SetSourceRGB (0, 0, 0);
+			cr.LineWidth = 0.5;
+			cr.Stroke();
+			fontSize = 7.0;
+			desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;
+			layout.FontDescription.Weight = Weight.Normal;		// Letra normal
+			cr.MoveTo(20*escala_en_linux_windows,58*escala_en_linux_windows);			layout.SetText("Fecha");	Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(07*escala_en_linux_windows,68*escala_en_linux_windows);			layout.SetText("N° Atte.");	Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(55*escala_en_linux_windows,68*escala_en_linux_windows);			layout.SetText("PID");	Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(92*escala_en_linux_windows,68*escala_en_linux_windows);			layout.SetText("Hora");	Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(125*escala_en_linux_windows,68*escala_en_linux_windows);			layout.SetText("Nombre Paciente");	Pango.CairoHelper.ShowLayout (cr, layout);
+		}
+		
+		void salto_de_pagina(Cairo.Context cr,Pango.Layout layout)			
+		{
+			//context.PageSetup.Orientation = PageOrientation.Landscape;
+			if(comienzo_linea > 700){
+				cr.ShowPage();
+				Pango.FontDescription desc = Pango.FontDescription.FromString ("Sans");								
+				fontSize = 7.0;		desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;
+				comienzo_linea = 85;
+				imprime_encabezado(cr,layout);
 			}
 		}
+		
+		private void OnEndPrint (object obj, Gtk.EndPrintArgs args)
+		{
+			
+		}
+		
+    	/*
     	
 		void ComponerPagina (Gnome.PrintContext ContextoImp, Gnome.PrintJob trabajoImpresion)
 		{
@@ -996,8 +730,7 @@ namespace osiris
         	conexion = new NpgsqlConnection (connectionString+nombrebd);
         	    
         	// Verifica que la base de datos este conectada
-        	try
-        	{
+        	try{
         		conexion.Open ();
         		NpgsqlCommand comando; 
         		comando = conexion.CreateCommand (); 
@@ -1026,8 +759,7 @@ namespace osiris
         		string edad = "";
         		//int columnas=20;
         		
-				while (lector.Read())
-				{
+				while (lector.Read()){
 					//Console.WriteLine("contador inicial "+contador.ToString());
 					if(contador == 1 ) { imprime_encabezado(ContextoImp, trabajoImpresion); }
 					
@@ -1041,7 +773,7 @@ namespace osiris
 				    	             (string) lector["apellido_materno_paciente"];
 					
 					if(int.Parse((string) lector["edad"]) > 0) { edad = (string) lector["edad"]+" Años "; 
-					} else { edad = (string) lector["mesesedad"]+" Meses ";
+					}else{ edad = (string) lector["mesesedad"]+" Meses ";
 					}   
 					
 					ContextoImp.MoveTo(19.5, filas+8);
@@ -1060,10 +792,8 @@ namespace osiris
 					salto_pagina(ContextoImp, trabajoImpresion);
 					
 					////////SEGUNDA FILA DE DATOS///////////////////////////
-					if((int) lector["id_aseguradora"] > 1)
-					{
-						if((int) lector["id_empresa"] > 1)
-						{
+					if((int) lector["id_aseguradora"] > 1){
+						if((int) lector["id_empresa"] > 1){
 							string segundalinea = "Usuario: "+(string) lector["id_empleado_admision"]+"   Hora: "+(string) lector["hora_reg_adm"]+"   Edad: "+edad+"   Aseguradora: "+(string) lector["descripcion_aseguradora"]+"   Empresa: "+(string) lector["descripcion_empresa"];
 							if(segundalinea.Length > 350) { segundalinea = segundalinea.Substring(0,350); }
 							ContextoImp.MoveTo(20, filas);		ContextoImp.Show(segundalinea);
@@ -1190,5 +920,6 @@ namespace osiris
 				return; 
 			}
 		}
+		*/
 	}
 }

@@ -67,7 +67,8 @@ namespace osiris
 			nombrebd = conexion_a_DB._nombrebd;
 			escala_en_linux_windows = classpublic.escala_linux_windows;
 					
-			print = new PrintOperation ();			
+			print = new PrintOperation ();
+			print.JobName = "Protocolo de Admision";	// Name of the report
 			print.BeginPrint += new BeginPrintHandler (OnBeginPrint);
 			print.DrawPage += new DrawPageHandler (OnDrawPage);
 			print.EndPrint += new EndPrintHandler (OnEndPrint);
@@ -76,10 +77,8 @@ namespace osiris
 		
 		void OnBeginPrint (object obj, Gtk.BeginPrintArgs args)
 		{
-			PrintContext context = args.Context;											
 			print.NPages = 1; // crea cantidad de copias del reporte
-			print.JobName = "Protocolo de Admision";	// Name of the report
-			
+					
 			// para imprimir horizontalmente el reporte
 			//print.PrintSettings.Orientation = PageOrientation.Landscape;
 			//print.DefaultPageSetup.Orientation = PageOrientation.Landscape;
@@ -98,7 +97,7 @@ namespace osiris
 			Pango.Layout layout = context.CreatePangoLayout ();
 			Pango.FontDescription desc = Pango.FontDescription.FromString ("Sans");									
 			// cr.Rotate(90)  Imprimir Orizontalmente rota la hoja cambian las posiciones de las lineas y columna					
-			fontSize = 8.0;			layout = null;			layout = context.CreatePangoLayout ();
+			fontSize = 8.0;
 			desc.Size = (int)(fontSize * pangoScale);		layout.FontDescription = desc;
 			
 			NpgsqlConnection conexion; 
@@ -153,7 +152,9 @@ namespace osiris
 					string edadpac = (string) lector["edad"];
 					string mesespac = (string) lector["mesesedad"];
 					//string varpaso = (string) lector["descripcion_admisiones"];
-					imprime_encabezado(context);
+					imprime_encabezado(cr,layout);
+					fontSize = 8.0;
+					desc.Size = (int)(fontSize * pangoScale);		layout.FontDescription = desc;
 					/////////COMIENZA IMPRESION DE CUERPO DE DOCUMENTO//////////////////
 					layout.FontDescription.Weight = Weight.Bold;   // Letra Negrita
 					cr.MoveTo(489.5*escala_en_linux_windows, 20*escala_en_linux_windows);					layout.SetText("Nº Expediente");
@@ -164,8 +165,7 @@ namespace osiris
 					cr.MoveTo(240*escala_en_linux_windows, 100*escala_en_linux_windows);		    		layout.SetText("DATOS GENERALES DEL PACIENTE");
 					Pango.CairoHelper.ShowLayout (cr, layout);
 					layout.FontDescription.Weight = Weight.Normal;   // Letra Normal
-					int numero_linea = 120;
-					
+					int numero_linea = 120;					
 					cr.MoveTo(20*escala_en_linux_windows, numero_linea*escala_en_linux_windows);						layout.SetText("Nombre: "+(string) lector["nombre1_paciente"].ToString().Trim()+" "+ 
 																		                 									(string) lector["nombre2_paciente"].ToString().Trim()+" "+
 																		                 									(string) lector["apellido_paterno_paciente"].ToString().Trim()+" "+
@@ -441,12 +441,8 @@ namespace osiris
 			
 		}
 		
-		void imprime_encabezado(PrintContext context)
+		void imprime_encabezado(Cairo.Context cr,Pango.Layout layout)
 		{
-			Console.WriteLine("entra en la impresion del encabezado");
-			Cairo.Context cr = context.CairoContext;
-			Pango.Layout layout = context.CreatePangoLayout ();
-			
 			Gtk.Image image5 = new Gtk.Image();
             image5.Name = "image5";
 			//image5.Pixbuf = new Gdk.Pixbuf(System.IO.Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, "osiris.jpg"));
@@ -462,7 +458,7 @@ namespace osiris
 			
 			Pango.FontDescription desc = Pango.FontDescription.FromString ("Sans");								
 			// cr.Rotate(90)  Imprimir Orizontalmente rota la hoja cambian las posiciones de las lineas y columna					
-			fontSize = 6.0;		layout = null;							layout = context.CreatePangoLayout ();
+			fontSize = 6.0;
 			desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;
 			layout.FontDescription.Weight = Weight.Bold;
 			//cr.MoveTo(20*escala_en_linux_windows,10*escala_en_linux_windows);					layout.SetText(classpublic.nombre_empresa);		Pango.CairoHelper.ShowLayout (cr, layout);
@@ -470,13 +466,15 @@ namespace osiris
 			//cr.MoveTo(20*escala_en_linux_windows,30*escala_en_linux_windows);					layout.SetText(classpublic.telefonofax_empresa);		Pango.CairoHelper.ShowLayout (cr, layout);
 			//cr.MoveTo(20*escala_en_linux_windows,70*escala_en_linux_windows);					layout.SetText("Sistema Hospitalario OSIRIS");		Pango.CairoHelper.ShowLayout (cr, layout);
 			// Cambiando el tamaño de la fuente			
-			fontSize = 12.0;											layout = context.CreatePangoLayout ();		
+			fontSize = 12.0;
 			desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;
 			cr.MoveTo(230*escala_en_linux_windows, 55*escala_en_linux_windows);										layout.SetText("PROTOCOLO DE ADMISION");
 			Pango.CairoHelper.ShowLayout (cr, layout);
 			cr.MoveTo(280*escala_en_linux_windows, 65*escala_en_linux_windows);	    								layout.SetText("REGISTRO");	
 			Pango.CairoHelper.ShowLayout (cr, layout); 
 			layout.FontDescription.Weight = Weight.Normal;		// Letra Normal
+			fontSize = 8.0;
+			desc.Size = (int)(fontSize * pangoScale);		layout.FontDescription = desc;
 		}
 			
 		void OnEndPrint (object obj, Gtk.EndPrintArgs args)

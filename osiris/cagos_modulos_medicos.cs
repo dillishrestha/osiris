@@ -89,6 +89,7 @@ namespace osiris
 		[Widget] Gtk.Button button_historiaclinica = null;
 		[Widget] Gtk.Button button_notas_evolucion = null;
 		[Widget] Gtk.Button button_notas_enfermeria = null;
+		[Widget] Gtk.Button button_indicacionesmedicas = null;
 		
 		//Declarando la barra de estado
 		[Widget] Gtk.Statusbar statusbar_caja = null;
@@ -318,7 +319,9 @@ namespace osiris
 			// Asignacion de Camas
 			button_asignacion_habitacion.Clicked += new EventHandler(on_button_asignacion_habitacion_clicked);
 			// Historia Clinica del paciente
-			button_historiaclinica.Clicked += new EventHandler(on_button_historiaclinica_clicked);			
+			button_historiaclinica.Clicked += new EventHandler(on_button_historiaclinica_clicked);
+			// Indicaciones Medicas
+			button_indicacionesmedicas.Clicked += new EventHandler(on_button_indicacionesmedicas_clicked);
 			
 			// Desactivando Botones de operacion se activa cuando selecciona una atencion
 			button_busca_producto.Sensitive = false;
@@ -2654,6 +2657,12 @@ namespace osiris
 		void on_button_notas_enfermeria_clicked(object sender, EventArgs args)
 		{
 			new osiris.notas_medicas(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,"Notas de Enfermeria","notas_de_enfermeria",
+			                         PidPaciente.ToString(),(string) entry_folio_servicio.Text, (string) entry_doctor.Text);
+		}
+		
+		void on_button_indicacionesmedicas_clicked(object sender, EventArgs args)
+		{
+			new osiris.notas_medicas(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,"Indicaciones Medicas","indicaciones_medicas",
 			                         PidPaciente.ToString(),(string) entry_folio_servicio.Text, (string) entry_doctor.Text);
 		}
 		

@@ -525,6 +525,7 @@ namespace osiris
 		{
 			string fechas_registros = "";
 			string edad;
+			int contador = 0;
 			Cairo.Context cr = context.CairoContext;
 			Pango.Layout layout = context.CreatePangoLayout ();
 			Pango.FontDescription desc = Pango.FontDescription.FromString ("Sans");			
@@ -561,9 +562,6 @@ namespace osiris
  				NpgsqlDataReader lector = comando.ExecuteReader ();
 				
 				if(lector.Read()){
-					if((bool) lector["cancelado"]){
-						
-					}
 					if(int.Parse((string) lector["edad"]) > 0){
 						edad = (string) lector["edad"]+" Años"; 
 					}else{
@@ -586,18 +584,27 @@ namespace osiris
 					cr.MoveTo(365*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);			layout.SetText((string) lector["descripcion_tipo_paciente"].ToString());			Pango.CairoHelper.ShowLayout (cr, layout);
 					cr.MoveTo(475*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);			layout.SetText((string) lector["descripcion_admisiones"].ToString());			Pango.CairoHelper.ShowLayout (cr, layout);
 					comienzo_linea += separacion_linea;
-					cr.MoveTo(05*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);			layout.SetText("Medico: "+(string) lector["nombre_medico_tratante"]);			Pango.CairoHelper.ShowLayout (cr, layout);
+					cr.MoveTo(05*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);			layout.SetText("Medico: "+(string) lector["nombre_medico_encabezado"]);			Pango.CairoHelper.ShowLayout (cr, layout);
 					cr.MoveTo(280*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);			layout.SetText("Diag.Admision: "+(string) lector["descripcion_diagnostico_movcargos"]);			Pango.CairoHelper.ShowLayout (cr, layout);
-					//cr.Rectangle (05*escala_en_linux_windows, (comienzo_linea-separacion_linea)*escala_en_linux_windows, 565*escala_en_linux_windows, 0*escala_en_linux_windows);
-					//cr.FillExtents();  //. FillPreserve(); 
-					//cr.SetSourceRGB (0, 0, 0);
-					//cr.LineWidth = 0.2;
-					//cr.Stroke();
 					comienzo_linea += separacion_linea;
+					cr.MoveTo(05*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);			layout.SetText("Tipo Cirugia: "+(string) lector["tipo_cirugia"]);			Pango.CairoHelper.ShowLayout (cr, layout);
+					cr.MoveTo(460*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);			layout.SetText("Usuario: "+(string) lector["id_empleado_admision"]);			Pango.CairoHelper.ShowLayout (cr, layout);
+					comienzo_linea += separacion_linea;
+					if((bool) lector["cancelado"]){
+						layout.FontDescription.Weight = Weight.Bold;		// Letra negrita
+						cr.MoveTo(05*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);			layout.SetText("C A N C E L A D O");			Pango.CairoHelper.ShowLayout (cr, layout);
+						cr.MoveTo(100*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);			layout.SetText("Motivo :"+(string) lector ["motivo_cancelacion"].ToString().Trim());			Pango.CairoHelper.ShowLayout (cr, layout);
+						layout.FontDescription.Weight = Weight.Normal;		// Letra normal
+						comienzo_linea += separacion_linea;
+						salto_de_pagina(cr,layout);
+					}
+					contador += 1;
 					while (lector.Read()){
-						if((bool) lector["cancelado"]){
-						
-						}
+						cr.Rectangle (05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows, 565*escala_en_linux_windows, 0*escala_en_linux_windows);
+						cr.FillExtents();  //. FillPreserve(); 
+						cr.SetSourceRGB (0, 0, 0);
+						cr.LineWidth = 0.2;
+						cr.Stroke();
 						if(int.Parse((string) lector["edad"]) > 0){
 							edad = (string) lector["edad"]+" Años"; 
 						}else{
@@ -631,16 +638,28 @@ namespace osiris
 						cr.MoveTo(475*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);			layout.SetText((string) lector["descripcion_admisiones"].ToString());			Pango.CairoHelper.ShowLayout (cr, layout);
 						comienzo_linea += separacion_linea;
 						salto_de_pagina(cr,layout);
-						cr.MoveTo(05*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);			layout.SetText("Medico: "+(string) lector["nombre_medico_tratante"]);			Pango.CairoHelper.ShowLayout (cr, layout);
+						cr.MoveTo(05*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);			layout.SetText("Medico: "+(string) lector["nombre_medico_encabezado"]);			Pango.CairoHelper.ShowLayout (cr, layout);
 						cr.MoveTo(280*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);			layout.SetText("Diag.Admision: "+(string) lector["descripcion_diagnostico_movcargos"]);			Pango.CairoHelper.ShowLayout (cr, layout);
-						//cr.Rectangle (05*escala_en_linux_windows, (comienzo_linea-separacion_linea)*escala_en_linux_windows, 565*escala_en_linux_windows, 0*escala_en_linux_windows);
-						//cr.FillExtents();  //. FillPreserve(); 
-						//cr.SetSourceRGB (0, 0, 0);
-						//cr.LineWidth = 0.2;
-						//cr.Stroke();																
+						comienzo_linea += separacion_linea;
+						cr.MoveTo(05*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);			layout.SetText("Tipo Cirugia: "+(string) lector["tipo_cirugia"]);			Pango.CairoHelper.ShowLayout (cr, layout);
+						cr.MoveTo(460*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);			layout.SetText("Usuario: "+(string) lector["id_empleado_admision"]);			Pango.CairoHelper.ShowLayout (cr, layout);
 						comienzo_linea += separacion_linea;
 						salto_de_pagina(cr,layout);
+						if((bool) lector["cancelado"]){
+							layout.FontDescription.Weight = Weight.Bold;		// Letra negrita
+							cr.MoveTo(05*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);			layout.SetText("C A N C E L A D O");			Pango.CairoHelper.ShowLayout (cr, layout);
+							cr.MoveTo(100*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);			layout.SetText("Motivo :"+(string) lector ["motivo_cancelacion"].ToString().Trim());			Pango.CairoHelper.ShowLayout (cr, layout);
+							layout.FontDescription.Weight = Weight.Normal;		// Letra normal
+							comienzo_linea += separacion_linea;
+							salto_de_pagina(cr,layout);
+						}
+						contador += 1;						
 					}
+					comienzo_linea += separacion_linea;
+					salto_de_pagina(cr,layout);
+					layout.FontDescription.Weight = Weight.Bold;		// Letra negrita
+					cr.MoveTo(05*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);			layout.SetText("Total de Admisiones: "+contador.ToString());			Pango.CairoHelper.ShowLayout (cr, layout);
+					layout.FontDescription.Weight = Weight.Normal;		// Letra normal
 				}else{
 					
 				}
@@ -720,206 +739,5 @@ namespace osiris
 		{
 			
 		}
-		
-    	/*
-    	
-		void ComponerPagina (Gnome.PrintContext ContextoImp, Gnome.PrintJob trabajoImpresion)
-		{
-			
-			NpgsqlConnection conexion; 
-        	conexion = new NpgsqlConnection (connectionString+nombrebd);
-        	    
-        	// Verifica que la base de datos este conectada
-        	try{
-        		conexion.Open ();
-        		NpgsqlCommand comando; 
-        		comando = conexion.CreateCommand (); 
-             	
-             	if (checkbutton_todas_fechas.Active == true){
-					query_rango_fechas= " ";
-					entry_dia_inicial.Sensitive = false;
-					entry_mes_inicial.Sensitive = false;
-					entry_ano_inicial.Sensitive = false;
-					entry_dia_final.Sensitive = false;
-					entry_mes_final.Sensitive = false;
-					entry_ano_final.Sensitive = false;
-				}else{	
-					query_rango_fechas = "AND to_char(osiris_erp_movcargos.fechahora_admision_registro,'yyyy-MM-dd') >= '"+(string) entry_ano_inicial.Text.ToString()+"-"+(string) entry_mes_inicial.Text.ToString()+"-"+(string) entry_dia_inicial.Text.ToString()+"'  "+
-									"AND to_char(osiris_erp_movcargos.fechahora_admision_registro,'yyyy-MM-dd') <= '"+(string) entry_ano_final.Text.ToString()+"-"+(string) entry_mes_final.Text.ToString()+"-"+(string) entry_dia_final.Text.ToString()+"' ";
-				}
-			 	
-				comando.CommandText = query_reporte + query_tipo_admision + query_tipo_paciente + query_sexo + 
-									query_empresa + query_aseguradora + query_tipo_reporte + query_medico +
-									query_rango_fechas + query_orden;
-				Console.WriteLine(comando.CommandText.ToString());
- 				NpgsqlDataReader lector = comando.ExecuteReader ();
-		
-				ContextoImp.BeginPage("Pagina1");
-				int total = 0;
-        		string edad = "";
-        		//int columnas=20;
-        		
-				while (lector.Read()){
-					//Console.WriteLine("contador inicial "+contador.ToString());
-					if(contador == 1 ) { imprime_encabezado(ContextoImp, trabajoImpresion); }
-					
-					Gnome.Print.Setfont (ContextoImp, fuente7);
-			
-					int pidpaciente = (int) lector["pid_paciente"];//se transforma el pid de integer (numerico) a string (cadena de caracteres) para poder ser leido
-					int folioregist = (int) lector["folio_de_servicio"];
-					string nom_paciente = (string) lector["nombre1_paciente"]+" "+ 
-				            	     (string) lector["nombre2_paciente"]+" "+
-				        	         (string) lector["apellido_paterno_paciente"]+" "+
-				    	             (string) lector["apellido_materno_paciente"];
-					
-					if(int.Parse((string) lector["edad"]) > 0) { edad = (string) lector["edad"]+" Años "; 
-					}else{ edad = (string) lector["mesesedad"]+" Meses ";
-					}   
-					
-					ContextoImp.MoveTo(19.5, filas+8);
-					ContextoImp.Show("______________________________________________________________________________________________________________________________________________");
-					
-					ContextoImp.MoveTo(19.5, filas);					ContextoImp.Show(folioregist.ToString());
-					ContextoImp.MoveTo(20, filas);						ContextoImp.Show(folioregist.ToString());
-					ContextoImp.MoveTo(60, filas);						ContextoImp.Show(pidpaciente.ToString());
-					ContextoImp.MoveTo(100, filas);			        	ContextoImp.Show((string) lector["fech_reg_adm"]);
-		        	ContextoImp.MoveTo(150,filas);		    	    	ContextoImp.Show(nom_paciente);
-				    ContextoImp.MoveTo(320, filas);         			ContextoImp.Show((string) lector["descripcion_tipo_paciente"]);
-					ContextoImp.MoveTo(465, filas);						ContextoImp.Show((string) lector["descripcion_admisiones"]);
-					filas -= 10;
-					contador += 1;
-					//Console.WriteLine("primera linea "+contador.ToString());
-					salto_pagina(ContextoImp, trabajoImpresion);
-					
-					////////SEGUNDA FILA DE DATOS///////////////////////////
-					if((int) lector["id_aseguradora"] > 1){
-						if((int) lector["id_empresa"] > 1){
-							string segundalinea = "Usuario: "+(string) lector["id_empleado_admision"]+"   Hora: "+(string) lector["hora_reg_adm"]+"   Edad: "+edad+"   Aseguradora: "+(string) lector["descripcion_aseguradora"]+"   Empresa: "+(string) lector["descripcion_empresa"];
-							if(segundalinea.Length > 350) { segundalinea = segundalinea.Substring(0,350); }
-							ContextoImp.MoveTo(20, filas);		ContextoImp.Show(segundalinea);
-						}else{
-							ContextoImp.MoveTo(20, filas);
-							ContextoImp.Show("Usuario: "+(string) lector["id_empleado_admision"]+"   Hora: "+(string) lector["hora_reg_adm"]+"   Edad: "+edad+"   Aseguradora: "+(string) lector["descripcion_aseguradora"] );	
-						}
-					}else{
-						if((int) lector["id_empresa"] > 1){
-							ContextoImp.MoveTo(20, filas);
-							ContextoImp.Show("Usuario: "+(string) lector["id_empleado_admision"]+"   Hora: "+(string) lector["hora_reg_adm"]+"   Edad: "+edad+"   Empresa: "+(string) lector["descripcion_empresa"]);
-						}else{
-							ContextoImp.MoveTo(20, filas);
-							ContextoImp.Show("Usuario: "+(string) lector["id_empleado_admision"]+"   Hora: "+(string) lector["hora_reg_adm"]+"   Edad: "+edad);
-						}
-						//if((int) lector["id_tipo_paciente"
-					}
-					filas -= 10;
-					contador += 1;
-					//Console.WriteLine("segunda linea "+contador.ToString());
-					salto_pagina(ContextoImp, trabajoImpresion);
-					
-					
-					//////////TERCERA FILA (OPCIONAL)//////////////////////
-					if((bool) lector["cancelado"])
-					{
-						//filas -= 10;
-						//contador += 1;
-						//salto_pagina(ContextoImp, trabajoImpresion);
-						motivo = (string) lector ["motivo_cancelacion"];
-						ContextoImp.MoveTo(19.5, filas);				ContextoImp.Show("CANCELADO CANCELADO CANCELADO CANCELADO CANCELADO CANCELADO CANCELADO CANCELADO CANCELADO");
-						ContextoImp.MoveTo(20, filas);					ContextoImp.Show("CANCELADO CANCELADO CANCELADO CANCELADO CANCELADO CANCELADO CANCELADO CANCELADO CANCELADO");
-						//Console.WriteLine(folioregist.ToString()+" motivo: "+motivo.ToString());
-						filas -= 10;
-						contador += 1;
-						//Console.WriteLine("primera linea cancelado "+contador.ToString());
-						salto_pagina(ContextoImp, trabajoImpresion);
-						if(motivo.Length > 300) { motivo = motivo.Substring(0,300); }
-						ContextoImp.MoveTo(20, filas);		ContextoImp.Show("Motivo cancelacion:  " +motivo.ToString());
-						contador += 1;
-						filas -= 10;
-						//Console.WriteLine("segunda linea cancelado "+contador.ToString());
-						salto_pagina(ContextoImp, trabajoImpresion);
-					}else{
-						if((int) lector["id_tipo_admisiones"] == 100 || (int) lector["id_tipo_admisiones"] == 500 || (int) lector["id_tipo_admisiones"] == 600
-							|| (int) lector["id_tipo_admisiones"] == 810 || (int) lector["id_tipo_admisiones"] == 820 || (int) lector["id_tipo_admisiones"] == 830
-							|| (int) lector["id_tipo_admisiones"] == 700 || (int) lector["id_tipo_admisiones"] == 710 || (int) lector["id_tipo_admisiones"] == 930)
-						{
-							
-							//filas -= 10;
-							//contador += 1;
-							//salto_pagina(ContextoImp, trabajoImpresion);
-							ContextoImp.MoveTo(20, filas);
-																
-							ContextoImp.Show("Medico: "+(string) lector["nombre_medico_tratante"]+"   Diag. Admision: "+(string) lector["descripcion_diagnostico_movcargos"]);
-								
-							filas -= 10;
-							contador += 1;
-							salto_pagina(ContextoImp, trabajoImpresion);
-							ContextoImp.MoveTo(20, filas);				ContextoImp.Show("Tipo Cirugia: "+(string) lector["tipo_cirugia"] + " Cirugia:"+(string) lector["descripcion_cirugia"]);
-							filas -= 10;
-							contador += 1;
-							salto_pagina(ContextoImp, trabajoImpresion);							
-						}else{
-							//contador += 1;
-							//salto_pagina(ContextoImp, trabajoImpresion);
-							//filas -= 10;
-						}
-					}					
-					
-					////////FILA DE DATOS EXTRAS/////////////////
-					if((int) pidpaciente == 255 || (int) pidpaciente == 605)     //MUNICIPIO SAN NICOLAS DE LOS GARZA NUEVO LEON
-					{
-						ContextoImp.MoveTo(20, filas);
-						ContextoImp.Show("Datos de trabajador: "+(string) lector["responsable_cuenta"]);
-						filas -= 10;
-						contador += 1;
-						salto_pagina(ContextoImp, trabajoImpresion);
-					}
-					
-					total +=1;
-					
-					//if (contador >= 62)
-					//{
-					//	ContextoImp.ShowPage();
-					//	ContextoImp.BeginPage("Pagina N");
-					//	filas = 684;
-					//	contador = 1;
-					//	salto_pagina(ContextoImp, trabajoImpresion);
-					//}
-					//Console.WriteLine("folio de registro "+folioregist.ToString());
-				}	
-				if(total == 0){
-					ContextoImp.MoveTo(190.5, filas);
-					ContextoImp.Show("NO EXISTEN ADMISIONES DE ESE TIPO");
-					ContextoImp.MoveTo(191, filas);
-					ContextoImp.Show("NO EXISTEN ADMISIONES DE ESE TIPO");
-					filas-=10;
-					ContextoImp.MoveTo(220.5, filas);
-					ContextoImp.Show("Total de Admisiones: "+(string) total.ToString());
-					ContextoImp.MoveTo(221, filas);
-					ContextoImp.Show("Total de Admisiones: "+(string) total.ToString());
-				}else{
-					filas -= 10;
-					ContextoImp.MoveTo(19.5, filas);
-					ContextoImp.Show("Total de Admisiones: "+(string) total.ToString());
-					ContextoImp.MoveTo(20, filas);
-					ContextoImp.Show("Total de Admisiones: "+(string) total.ToString());
-				}
-        		lector.Close (); 
-				conexion.Close ();
-			
-				//ContextoImp.SetLineWidth(10);
-				ContextoImp.ShowPage();
-			
-			}
-			catch (NpgsqlException ex)
-			{
-				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
-										MessageType.Error, 
-										ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
-				msgBoxError.Run ();
-				msgBoxError.Destroy();
-				return; 
-			}
-		}
-		*/
 	}
 }

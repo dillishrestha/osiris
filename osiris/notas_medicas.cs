@@ -24,6 +24,7 @@ namespace osiris
 		[Widget] Gtk.Entry entry_doctor = null;
 		[Widget] Gtk.Button button_guardar = null;
 		//[Widget] Gtk.Entry entry_doctor = null;
+		[Widget] Gtk.Entry entry_fechanotas = null;
 		
 		string connectionString;
 		string nombrebd;
@@ -77,15 +78,19 @@ namespace osiris
 			notas_medicas_enfermeria.Title = title_window;
 			button_salir.Clicked += new EventHandler(on_cierraventanas_clicked);
 			button_guardar.Clicked += new EventHandler(on_button_guardar_clicked);
+			entry_fechanotas.Text = (string) DateTime.Now.ToString("yyyy-MM-dd");
 			switch (name_field){	
 				case "notas_de_evolucion":
 					textview1.ModifyBase(StateType.Normal, new Gdk.Color(255,243,169)); // Color Amarillo
 				break;
 				case "notas_de_enfermeria":
-					textview1.ModifyBase(StateType.Normal, new Gdk.Color(237,191,235)); // Color Rosa
+					textview1.ModifyBase(StateType.Normal, new Gdk.Color(255,179,235)); // Color Rosa
+				break;
+				case "indicaciones_medicas":
+					textview1.ModifyBase(StateType.Normal, new Gdk.Color(152,255,255)); // Color Rosa
 				break;
 			}			
-			llenando_informacion();
+			llenando_informacion();			
 		}
 		
 		void llenando_informacion()

@@ -137,6 +137,17 @@ namespace osiris
 		Gtk.Entry entry_fecha_nac_cita = null;
 		Gtk.Entry entry_edad_paciente_cita = null;
 		
+		// Busqueda de Cirugia y/o Paquete quirirugico
+		Gtk.Entry entry_id_cirugia = null;
+		Gtk.Entry entry_cirugia = null;
+		Gtk.CheckButton checkbutton_paquete_sino = null;		
+		
+		// Busqueda de Pacientes con numero de Atencion o Evolucion
+		Gtk.Entry entry_folio_servicio = null;
+		Gtk.Entry entry_pid_paciente = null;
+		Gtk.Entry entry_nombre_paciente = null;
+		
+		
 		class_conexion conexion_a_DB = new class_conexion();
 		
 		string[] args_sql;
@@ -152,6 +163,7 @@ namespace osiris
 		TreeViewColumn col_buscador3;	CellRendererText cellrt3;
 		TreeViewColumn col_buscador4;	CellRendererText cellrt4;
 		TreeViewColumn col_buscador5;	CellRendererText cellrt5;
+		TreeViewColumn col_buscador6;	CellRendererText cellrt6;
 			
 		//Declaracion de ventana de error y mensaje
 		protected Gtk.Window MyWinError;
@@ -287,6 +299,35 @@ namespace osiris
 					lista_de_busqueda.AppendColumn(col_buscador4);
 					lista_de_busqueda.AppendColumn(col_buscador5);
 				break;
+				case "find_cirugia_paquetes":
+					entry_id_cirugia = (object) args[0] as Gtk.Entry;
+					entry_cirugia = (object) args[1] as Gtk.Entry;					
+					checkbutton_paquete_sino  = (object) args[2] as Gtk.CheckButton;
+					col_buscador2.Title = "Paquete";
+					lista_de_busqueda.AppendColumn(col_buscador2);
+				break;
+				case "find_paciente":
+					entry_folio_servicio = (object) args[0] as Gtk.Entry;
+					entry_pid_paciente = (object) args[1] as Gtk.Entry;
+					entry_nombre_paciente = (object) args[2] as Gtk.Entry;
+					radiobutton1.Show();
+					radiobutton2.Show();
+					radiobutton3.Show();
+					labelbusqueda1.Show();
+					radiobutton1.Label = "por Ape. Paterno";
+					radiobutton2.Label = "por un Nombre";
+					radiobutton3.Label = "por Expediente";
+					col_buscador0.Title = "N° Atencion";
+					col_buscador1.Title = "N° Expediente";
+					col_buscador3.Title = "Primer Nombre";
+					col_buscador4.Title = "Segundo Nombre";
+					col_buscador5.Title = "Apellido Paterno";
+					col_buscador6.Title = "Apellido Materno";
+					lista_de_busqueda.AppendColumn(col_buscador3);
+					lista_de_busqueda.AppendColumn(col_buscador4);
+					lista_de_busqueda.AppendColumn(col_buscador5);
+					lista_de_busqueda.AppendColumn(col_buscador6);
+				break;
 			}
 			args_sql = args_sql_;
 			type_find = type_find_;
@@ -405,6 +446,15 @@ namespace osiris
 			//col_descripcion.SetCellDataFunc(cellrt1, new Gtk.TreeCellDataFunc(cambia_colores_cliente));
 			col_buscador5.SortColumnId = (int) col_treview.col_buscador5;
 			col_buscador5.Resizable = true;
+			
+			col_buscador6 = new TreeViewColumn();
+			cellrt6 = new CellRendererText();
+			col_buscador6.Title = "";
+			col_buscador6.PackStart(cellrt6, true);
+			col_buscador6.AddAttribute (cellrt6, "text", 6);
+			//col_descripcion.SetCellDataFunc(cellrt1, new Gtk.TreeCellDataFunc(cambia_colores_cliente));
+			col_buscador6.SortColumnId = (int) col_treview.col_buscador6;
+			col_buscador6.Resizable = true;
 				            
 			lista_de_busqueda.AppendColumn(col_buscador0);
 			lista_de_busqueda.AppendColumn(col_buscador1);			
@@ -412,7 +462,7 @@ namespace osiris
 		
 		enum col_treview
 		{
-			col_buscador0,col_buscador1,col_buscador2,col_buscador3,col_buscador4,col_buscador5
+			col_buscador0,col_buscador1,col_buscador2,col_buscador3,col_buscador4,col_buscador5,col_buscador6
 		}
 		
 		void cambia_colores_fila(Gtk.TreeViewColumn column, Gtk.CellRenderer cell, Gtk.TreeModel model, Gtk.TreeIter iter)
@@ -578,7 +628,23 @@ namespace osiris
 							                        (string) lector["apellido_materno_paciente"].ToString().Trim(),
 							                        (string) lector["fech_nacimiento"],
 							              			(string) lector["edad"]);
-							break;							
+							break;
+							case "find_cirugia_paquetes":
+								treeViewEngineBuscador.AppendValues ((int) lector["id_tipo_cirugia"],
+							                                   	(string) lector["descripcion_cirugia"],
+							                                     (bool) lector["tiene_paquete"]);
+							break;
+							case "find_paciente":
+								treeViewEngineBuscador.AppendValues ((int) lector["folio_de_servicio"],	// 0
+													(string) lector["pidpaciente"].ToString().Trim(),
+							                        (bool) lector["activo"],
+							                        (string) lector["nombre1_paciente"].ToString().Trim(),
+							                        (string) lector["nombre2_paciente"].ToString().Trim(),
+							                        (string) lector["apellido_paterno_paciente"].ToString().Trim(),
+							                        (string) lector["apellido_materno_paciente"].ToString().Trim(),
+							                        (string) lector["fech_nacimiento"],
+							              			(string) lector["edad"]);
+							break;
 						}
 					}
 				}catch (NpgsqlException ex){
@@ -715,6 +781,19 @@ namespace osiris
 						entry_fecha_nac_cita.Text = (string) model.GetValue(iterSelected, 6);
 						//entry_edad_paciente_cita.Text = (string) model.GetValue(iterSelected, 4);
 					break;
+					case "find_cirugia_paquetes":
+						entry_id_cirugia.Text = tomaid.ToString();
+						entry_cirugia.Text = (string) model.GetValue(iterSelected, 1);
+						checkbutton_paquete_sino.Active = (bool) model.GetValue(iterSelected, 2);
+					break;
+					case "find_paciente":
+						entry_folio_servicio.Text = tomaid.ToString();
+						entry_pid_paciente.Text = (string) model.GetValue(iterSelected, 1);
+						entry_nombre_paciente.Text = (string) model.GetValue(iterSelected, 3)+" "+
+															(string) model.GetValue(iterSelected, 4)+" "+
+															(string) model.GetValue(iterSelected, 5)+" "+
+															(string) model.GetValue(iterSelected, 6);
+					break;
 				}				
 			}
 			Widget win = (Widget) sender;
@@ -726,7 +805,7 @@ namespace osiris
 		{
 			if (args.Event.Key == Gdk.Key.Return || args.Event.Key == Gdk.Key.KP_Enter){
 				args.RetVal = true;				
-				 llenando_lista_de_lista();
+				llenando_lista_de_lista();
 			}
 		}
 		

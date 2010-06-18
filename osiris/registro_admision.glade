@@ -4315,12 +4315,14 @@ Terapia Intensiva Ni&#xF1;os</property>
     <child>
       <widget class="GtkVBox" id="vbox5">
         <property name="visible">True</property>
+        <property name="orientation">vertical</property>
         <child>
           <widget class="GtkHBox" id="hbox15">
             <property name="visible">True</property>
             <child>
               <widget class="GtkVBox" id="vbox6">
                 <property name="visible">True</property>
+                <property name="orientation">vertical</property>
                 <child>
                   <widget class="GtkFrame" id="frame9">
                     <property name="visible">True</property>
@@ -4340,6 +4342,7 @@ Terapia Intensiva Ni&#xF1;os</property>
                                 <child>
                                   <widget class="GtkVBox" id="vbox34">
                                     <property name="visible">True</property>
+                                    <property name="orientation">vertical</property>
                                     <child>
                                       <widget class="GtkHBox" id="hbox42">
                                         <property name="visible">True</property>
@@ -4882,6 +4885,7 @@ Terapia Intensiva Ni&#xF1;os</property>
                                 <child>
                                   <widget class="GtkVBox" id="vbox7">
                                     <property name="visible">True</property>
+                                    <property name="orientation">vertical</property>
                                     <child>
                                       <widget class="GtkProgressBar" id="progressbar_status_llenado">
                                         <property name="width_request">1</property>
@@ -5211,6 +5215,7 @@ productos</property>
             <child>
               <widget class="GtkVBox" id="vbox8">
                 <property name="visible">True</property>
+                <property name="orientation">vertical</property>
                 <child>
                   <widget class="GtkButton" id="button_graba_paquete">
                     <property name="width_request">90</property>

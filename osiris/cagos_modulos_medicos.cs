@@ -220,6 +220,7 @@ namespace osiris
 		
 		class_conexion conexion_a_DB = new class_conexion();
 		class_public classpublic = new class_public();
+		class_buscador classfind_data = new class_buscador();
 		
 		//int idtipointernamiento = 100;
 		//string descripinternamiento = "URGENCIAS";
@@ -596,7 +597,9 @@ namespace osiris
 		
 		void on_button_graba_pago_clicked(object sender, EventArgs args)
 		{
-			bool verifica_stock = true;
+			bool verifica_stock = false;
+			bool error_de_inventario = false;
+			Item foo;
 			if ((bool) aplico_cargos){
 				MessageDialog msgBox = new MessageDialog (MyWin,DialogFlags.Modal,MessageType.Question,ButtonsType.YesNo,"¿ Desea grabar esta infomacion ?");
 
@@ -631,18 +634,18 @@ namespace osiris
 													"WHERE osiris_catalogo_almacenes.id_almacen = '"+this.idsubalmacen.ToString().Trim()+"' "+
 													"AND osiris_catalogo_almacenes.id_producto = '"+double.Parse((string) lista_de_servicios.Model.GetValue(iter,2))+"'; ";
 						
-										//Console.WriteLine(comando.CommandText.ToString());
+										Console.WriteLine(comando.CommandText.ToString());
 										NpgsqlDataReader lector2 = comando2.ExecuteReader ();
 										
 										if(lector2.Read()){
-											if ( decimal.Parse((string) lector2["stock_subalmacen"]) > 0){
+											if ( float.Parse((string) lector2["stock_subalmacen"]) >= (float) lista_de_servicios.Model.GetValue(iter,1)){
 												verifica_stock = true;
+											}else{
+												error_de_inventario = true;	
 											}
 										}
-										conexion2.Close();
-																				
-										if (verifica_stock == true){
-								
+										conexion2.Close();																				
+										if (verifica_stock == true){								
 											comando.CommandText = "INSERT INTO osiris_erp_cobros_deta("+
  												"id_producto,"+
  												"folio_de_servicio,"+
@@ -713,6 +716,7 @@ namespace osiris
 									
     	    	       			}	
     	    	       			while (treeViewEngineServicio.IterNext(ref iter)){
+									verifica_stock = false;
     	    	       				if ((bool)lista_de_servicios.Model.GetValue (iter,14) == false){
     	    	       					// Verificando 
 										NpgsqlConnection conexion2; 
@@ -729,11 +733,13 @@ namespace osiris
 														"WHERE osiris_catalogo_almacenes.id_almacen = '"+this.idsubalmacen.ToString().Trim()+"' "+
 														"AND osiris_catalogo_almacenes.id_producto = '"+double.Parse((string) lista_de_servicios.Model.GetValue(iter,2))+"'; ";
 							
-											//Console.WriteLine(comando.CommandText.ToString());
+											Console.WriteLine(comando.CommandText.ToString());
 											NpgsqlDataReader lector2 = comando2.ExecuteReader ();
 											if(lector2.Read()){
-												if ( decimal.Parse((string) lector2["stock_subalmacen"]) > 0){
+												if ( float.Parse((string) lector2["stock_subalmacen"]) >= (float) lista_de_servicios.Model.GetValue(iter,1)){
 													verifica_stock = true;
+												}else{
+													error_de_inventario = true;	
 												}
 											}
 											conexion2.Close();
@@ -821,9 +827,18 @@ namespace osiris
 					}catch (NpgsqlException ex){
 	   					Console.WriteLine ("PostgresSQL error: {0}",ex.Message);
 	       			}
-       				conexion.Close ();
-       				if (verifica_stock == false){
-       					this.treeViewEngineExtras.Clear();
+					conexion.Close ();
+					llenado_de_productos_aplicados( (string) entry_folio_servicio.Text );
+       				if (error_de_inventario == true){
+						MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+											MessageType.Error, 
+											ButtonsType.Close, "Existen productos que no se cargaron por no tener existencia verifique...");
+							msgBoxError.Run ();
+							msgBoxError.Destroy();
+						
+						
+       					/*
+						this.treeViewEngineExtras.Clear();
        					TreeIter iter;
 						if (treeViewEngineServicio.GetIterFirst (out iter)){
 							if ((bool)lista_de_servicios.Model.GetValue (iter,14)==false){
@@ -847,9 +862,10 @@ namespace osiris
 									NpgsqlDataReader lector2 = comando2.ExecuteReader ();
 										
 									if(lector2.Read()){
-										if ( decimal.Parse((string) lector2["stock_subalmacen"]) < 0){
-											this.treeViewEngineExtras.AppendValues (true,0,
-														(string) lista_de_servicios.Model.GetValue(iter,1));
+										if ( float.Parse((string) lector2["stock_subalmacen"]) <= (float) lista_de_servicios.Model.GetValue(iter,1)){
+											foo = new Item (true);//costotprodu.ToString("F").PadLeft(10));
+											arraycargosextras.Add(foo);
+											treeViewEngineExtras.AppendValues (true);
 										}
 									}
 								}catch (NpgsqlException ex){
@@ -880,9 +896,12 @@ namespace osiris
 										NpgsqlDataReader lector2 = comando2.ExecuteReader ();
 											
 										if(lector2.Read()){
-											if ( decimal.Parse((string) lector2["stock_subalmacen"]) < 0){
-												this.treeViewEngineExtras.AppendValues (true,0,
-															(string) lista_de_servicios.Model.GetValue(iter,1));
+											if ( float.Parse((string) lector2["stock_subalmacen"]) <= (float) lista_de_servicios.Model.GetValue(iter,1)){
+												foo = new Item (true);//costotprodu.ToString("F").PadLeft(10));
+								
+												arraycargosextras.Add(foo);
+																						
+												treeViewEngineExtras.AppendValues (true);
 											}
 										}
 									}catch (NpgsqlException ex){
@@ -893,12 +912,9 @@ namespace osiris
 										conexion2.Close();		
 									}
     	    	       			}
-    	    	       		}
-							
-						}
-					}
-					this.treeViewEngineExtras.Clear();       					
-					llenado_de_productos_aplicados( (string) entry_folio_servicio.Text );
+    	    	       		}							
+						}*/
+					}					
  				}
  			}else{
  				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
@@ -1258,7 +1274,7 @@ namespace osiris
 					//toma_a_pagar = sub_total - totaldescuento;
 					
  				}else{
- 					if (LoginEmpleado =="DOLIVARES" || LoginEmpleado =="HVARGAS" || LoginEmpleado =="JBUENTELLO" || LoginEmpleado == "N000426"){
+ 					if (LoginEmpleado =="DOLIVARES" || LoginEmpleado =="ADMIN"){
  						MessageDialog msgBox = new MessageDialog (MyWin,DialogFlags.Modal,
 						MessageType.Question,ButtonsType.YesNo,"¿ Desea DEVOLVER este producto ?");
 						ResponseType miResultado = (ResponseType)msgBox.Run ();
@@ -1332,7 +1348,8 @@ namespace osiris
 					        							"WHERE id_secuencia =  '"+(string) lista_de_servicios.Model.GetValue (iter,18)+"';";
 					        	//Console.WriteLine(comando.CommandText.ToString());
 					        	comando.ExecuteNonQuery();        			comando.Dispose();
-					        				
+					        	
+								// acualizando devolucion en el inventario
 						        comando.CommandText = "UPDATE osiris_catalogo_almacenes "+
 																	"SET stock = stock + '"+(float) lista_de_servicios.Model.GetValue(iter,1)+"' "+
 																	"WHERE id_almacen = '"+this.idsubalmacen.ToString()+"' "+
@@ -1765,13 +1782,59 @@ namespace osiris
 		// busco un paciente pantalla de ingreso de nuevo paciente
 		void on_button_buscar_paciente_clicked(object sender, EventArgs args)
 	    {
-			Glade.XML gxml = new Glade.XML (null, "hospitalizacion.glade", "busca_paciente", null);
-			gxml.Autoconnect (this);
-			crea_treeview_busqueda("paciente");
-			button_buscar_busqueda.Clicked += new EventHandler(on_buscar_paciente_clicked);
-			button_selecciona.Clicked += new EventHandler(on_selecciona_paciente_clicked);
-			button_nuevo_paciente.Sensitive = false;
-			button_salir.Clicked += new EventHandler(on_cierraventanas_clicked);
+			object[] parametros_objetos = {entry_folio_servicio,entry_pid_paciente,entry_nombre_paciente};
+			string[] parametros_sql = {"SELECT osiris_erp_cobros_enca.folio_de_servicio,osiris_his_paciente.pid_paciente AS pidpaciente,nombre1_paciente,nombre2_paciente, apellido_paterno_paciente,id_quienlocreo_paciente,"+
+									"apellido_materno_paciente, to_char(fecha_nacimiento_paciente,'yyyy-MM-dd') AS fech_nacimiento,sexo_paciente,"+
+									"to_char(to_number(to_char(age('"+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"',osiris_his_paciente.fecha_nacimiento_paciente),'yyyy') ,'9999'),'9999') AS edad,"+
+									"to_char(to_number(to_char(age('"+DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss")+"',osiris_his_paciente.fecha_nacimiento_paciente),'MM'),'99'),'99') AS mesesedad,"+
+									"to_char(fechahora_registro_paciente,'dd-MM-yyyy HH:mi:ss') AS fech_creacion,activo FROM osiris_his_paciente,osiris_erp_cobros_enca WHERE activo = 'true' "+
+										"AND osiris_his_paciente.pid_paciente = osiris_erp_cobros_enca.pid_paciente "+
+										"AND osiris_erp_cobros_enca.alta_paciente = false "+
+										"AND osiris_erp_cobros_enca.cancelado = false "+
+										"AND osiris_erp_cobros_enca.alta_paciente = 'false' "+
+										"AND osiris_erp_cobros_enca.pagado = 'false' "+
+										"AND osiris_erp_cobros_enca.cerrado = 'false' "+
+										"AND osiris_erp_cobros_enca.reservacion = 'false' ",															
+									"SELECT osiris_erp_cobros_enca.folio_de_servicio,osiris_his_paciente.pid_paciente AS pidpaciente,nombre1_paciente,nombre2_paciente, apellido_paterno_paciente,id_quienlocreo_paciente,"+
+									"apellido_materno_paciente, to_char(fecha_nacimiento_paciente,'yyyy-MM-dd') AS fech_nacimiento,sexo_paciente,"+
+									"to_char(to_number(to_char(age('"+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"',osiris_his_paciente.fecha_nacimiento_paciente),'yyyy') ,'9999'),'9999') AS edad,"+
+									"to_char(to_number(to_char(age('"+DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss")+"',osiris_his_paciente.fecha_nacimiento_paciente),'MM'),'99'),'99') AS mesesedad,"+
+									"to_char(fechahora_registro_paciente,'dd-MM-yyyy HH:mi:ss') AS fech_creacion,activo FROM osiris_his_paciente,osiris_erp_cobros_enca WHERE activo = 'true' "+
+										"AND osiris_his_paciente.pid_paciente = osiris_erp_cobros_enca.pid_paciente "+
+										"AND osiris_erp_cobros_enca.alta_paciente = false "+
+										"AND osiris_erp_cobros_enca.cancelado = false "+
+										"AND osiris_erp_cobros_enca.alta_paciente = 'false' "+
+										"AND osiris_erp_cobros_enca.pagado = 'false' "+
+										"AND osiris_erp_cobros_enca.cerrado = 'false' "+
+										"AND osiris_erp_cobros_enca.reservacion = 'false' "+
+										"AND apellido_paterno_paciente LIKE '%",
+									"SELECT osiris_erp_cobros_enca.folio_de_servicio,osiris_his_paciente.pid_paciente AS pidpaciente,nombre1_paciente,nombre2_paciente, apellido_paterno_paciente,id_quienlocreo_paciente,"+
+									"apellido_materno_paciente, to_char(fecha_nacimiento_paciente,'yyyy-MM-dd') AS fech_nacimiento,sexo_paciente,"+
+									"to_char(to_number(to_char(age('"+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"',osiris_his_paciente.fecha_nacimiento_paciente),'yyyy') ,'9999'),'9999') AS edad,"+
+									"to_char(to_number(to_char(age('"+DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss")+"',osiris_his_paciente.fecha_nacimiento_paciente),'MM'),'99'),'99') AS mesesedad,"+
+									"to_char(fechahora_registro_paciente,'dd-MM-yyyy HH:mi:ss') AS fech_creacion,activo FROM osiris_his_paciente,osiris_erp_cobros_enca WHERE activo = 'true' "+
+										"AND osiris_his_paciente.pid_paciente = osiris_erp_cobros_enca.pid_paciente "+
+										"AND osiris_erp_cobros_enca.alta_paciente = false "+
+										"AND osiris_erp_cobros_enca.cancelado = false "+
+										"AND osiris_erp_cobros_enca.alta_paciente = 'false' "+
+										"AND osiris_erp_cobros_enca.pagado = 'false' "+
+										"AND osiris_erp_cobros_enca.cerrado = 'false' "+
+										"AND osiris_erp_cobros_enca.reservacion = 'false' "+
+										"AND nombre1_paciente LIKE '%",
+									"SELECT osiris_erp_cobros_enca.folio_de_servicio,osiris_his_paciente.pid_paciente AS pidpaciente,nombre1_paciente,nombre2_paciente, apellido_paterno_paciente,id_quienlocreo_paciente,"+
+									"apellido_materno_paciente, to_char(fecha_nacimiento_paciente,'yyyy-MM-dd') AS fech_nacimiento,sexo_paciente,"+
+									"to_char(to_number(to_char(age('"+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"',osiris_his_paciente.fecha_nacimiento_paciente),'yyyy') ,'9999'),'9999') AS edad,"+
+									"to_char(to_number(to_char(age('"+DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss")+"',osiris_his_paciente.fecha_nacimiento_paciente),'MM'),'99'),'99') AS mesesedad,"+
+									"to_char(fechahora_registro_paciente,'dd-MM-yyyy HH:mi:ss') AS fech_creacion,activo FROM osiris_his_paciente,osiris_erp_cobros_enca WHERE activo = 'true' "+
+										"AND osiris_his_paciente.pid_paciente = osiris_erp_cobros_enca.pid_paciente "+
+										"AND osiris_erp_cobros_enca.alta_paciente = false "+
+										"AND osiris_erp_cobros_enca.cancelado = false "+
+										"AND osiris_erp_cobros_enca.alta_paciente = 'false' "+
+										"AND osiris_erp_cobros_enca.pagado = 'false' "+
+										"AND osiris_erp_cobros_enca.cerrado = 'false' "+
+										"AND osiris_erp_cobros_enca.reservacion = 'false' "+
+										"AND osiris_his_paciente.pid_paciente = '"};			
+			classfind_data.buscandor(parametros_objetos,parametros_sql,"find_paciente"," ORDER BY osiris_his_paciente.pid_paciente","%' ",1);
 		}
 	    
 		void on_button_busca_producto_clicked (object sender, EventArgs args)
@@ -1793,109 +1856,7 @@ namespace osiris
 
 		void crea_treeview_busqueda(string tipo_busqueda)
 		{
-			if (tipo_busqueda == "paciente")
-			{
-				treeViewEngineBusca = new TreeStore(typeof(int),
-													typeof(int),
-													typeof(string),
-													typeof(string),
-													typeof(string),
-													typeof(string),
-													typeof(string),
-													typeof(string),
-													typeof(string),
-													typeof(string));
-													
-				lista_de_Pacientes.Model = treeViewEngineBusca;
-			
-				lista_de_Pacientes.RulesHint = true;
-			
-				lista_de_Pacientes.RowActivated += on_selecciona_paciente_clicked;  // Doble click selecciono paciente*/
-
-				TreeViewColumn col_foliodeatencion = new TreeViewColumn();
-				CellRendererText cellr0 = new CellRendererText();
-				col_foliodeatencion.Title = "Folio de Antencion"; // titulo de la cabecera de la columna, si está visible
-				col_foliodeatencion.PackStart(cellr0, true);
-				col_foliodeatencion.AddAttribute (cellr0, "text", 0);    // la siguiente columna será 1 en vez de 1
-				col_foliodeatencion.SortColumnId = (int) Column.col_foliodeatencion;
-			
-				TreeViewColumn col_PidPaciente = new TreeViewColumn();
-				CellRendererText cellr1 = new CellRendererText();
-				col_PidPaciente.Title = "PID Paciente"; // titulo de la cabecera de la columna, si está visible
-				col_PidPaciente.PackStart(cellr1, true);
-				col_PidPaciente.AddAttribute (cellr1, "text", 1);    // la siguiente columna será 1 en vez de 1
-				col_PidPaciente.SortColumnId = (int) Column.col_PidPaciente;
-				//cellr0.Editable = true;   // Permite edita este campo
-            
-				TreeViewColumn col_Nombre1_Paciente = new TreeViewColumn();
-				CellRendererText cellrt2 = new CellRendererText();
-				col_Nombre1_Paciente.Title = "Nombre 1";
-				col_Nombre1_Paciente.PackStart(cellrt2, true);
-				col_Nombre1_Paciente.AddAttribute (cellrt2, "text", 2); // la siguiente columna será 1 en vez de 2
-				col_Nombre1_Paciente.SortColumnId = (int) Column.col_Nombre1_Paciente;
-            
-				TreeViewColumn col_Nombre2_Paciente = new TreeViewColumn();
-				CellRendererText cellrt3 = new CellRendererText();
-				col_Nombre2_Paciente.Title = "Nombre 2";
-				col_Nombre2_Paciente.PackStart(cellrt3, true);
-				col_Nombre2_Paciente.AddAttribute (cellrt3, "text", 3); // la siguiente columna será 2 en vez de 3
-				col_Nombre2_Paciente.SortColumnId = (int) Column.col_Nombre2_Paciente;
-            
-				TreeViewColumn col_app_Paciente = new TreeViewColumn();
-				CellRendererText cellrt4 = new CellRendererText();
-				col_app_Paciente.Title = "Apellido Paterno";
-				col_app_Paciente.PackStart(cellrt4, true);
-				col_app_Paciente.AddAttribute (cellrt4, "text", 4); // la siguiente columna será 3 en vez de 4
-				col_app_Paciente.SortColumnId = (int) Column.col_app_Paciente;
-            
-				TreeViewColumn col_apm_Paciente = new TreeViewColumn();
-				CellRendererText cellrt5 = new CellRendererText();
-				col_apm_Paciente.Title = "Apellido Materno";
-				col_apm_Paciente.PackStart(cellrt5, true);
-				col_apm_Paciente.AddAttribute (cellrt5, "text", 5); // la siguiente columna será 5 en vez de 6
-				col_apm_Paciente.SortColumnId = (int) Column.col_apm_Paciente;
-      
-				TreeViewColumn col_fechanacimiento_Paciente = new TreeViewColumn();
-				CellRendererText cellrt6 = new CellRendererText();
-				col_fechanacimiento_Paciente.Title = "Fecha Nacimiento";
-				col_fechanacimiento_Paciente.PackStart(cellrt6, true);
-				col_fechanacimiento_Paciente.AddAttribute (cellrt6, "text", 6);     // la siguiente columna será 6 en vez de 7
-				col_fechanacimiento_Paciente.SortColumnId = (int) Column.col_fechanacimiento_Paciente;
-            
-				TreeViewColumn col_edad_Paciente = new TreeViewColumn();
-				CellRendererText cellrt7 = new CellRendererText();
-				col_edad_Paciente.Title = "Edad";
-				col_edad_Paciente.PackStart(cellrt7, true);
-				col_edad_Paciente.AddAttribute (cellrt7, "text", 7); // la siguiente columna será 7 en vez de 8
-				col_edad_Paciente.SortColumnId = (int) Column.col_edad_Paciente;
-            
-				TreeViewColumn col_sexo_Paciente = new TreeViewColumn();
-				CellRendererText cellrt8 = new CellRendererText();
-				col_sexo_Paciente.Title = "Sexo";
-				col_sexo_Paciente.PackStart(cellrt8, true);
-				col_sexo_Paciente.AddAttribute (cellrt8, "text", 8); // la siguiente columna será 8 en vez de 9
-				col_sexo_Paciente.SortColumnId = (int) Column.col_sexo_Paciente;
-                        
-				TreeViewColumn col_creacion_Paciente = new TreeViewColumn();
-				CellRendererText cellrt9 = new CellRendererText();
-				col_creacion_Paciente.Title = "Fecha creacion";
-				col_creacion_Paciente.PackStart(cellrt9, true);
-				col_creacion_Paciente.AddAttribute (cellrt9, "text", 9); // la siguiente columna será 8 en vez de 9
-				col_creacion_Paciente.SortColumnId = (int) Column.col_creacion_Paciente;
-
-				lista_de_Pacientes.AppendColumn(col_foliodeatencion);
-				lista_de_Pacientes.AppendColumn(col_PidPaciente);
-				lista_de_Pacientes.AppendColumn(col_Nombre1_Paciente);
-				lista_de_Pacientes.AppendColumn(col_Nombre2_Paciente);
-				lista_de_Pacientes.AppendColumn(col_app_Paciente);
-				lista_de_Pacientes.AppendColumn(col_apm_Paciente);
-				lista_de_Pacientes.AppendColumn(col_fechanacimiento_Paciente);
-				lista_de_Pacientes.AppendColumn(col_edad_Paciente);
-				lista_de_Pacientes.AppendColumn(col_sexo_Paciente);
-				lista_de_Pacientes.AppendColumn(col_creacion_Paciente);
-			}
-			if (tipo_busqueda == "producto")
-			{
+			if (tipo_busqueda == "producto"){
 				treeViewEngineBusca2 = new TreeStore(typeof(string),
 													typeof(string),
 													typeof(string),
@@ -1969,20 +1930,6 @@ namespace osiris
 			}
 		}
 			
-		enum Column
-		{
-			col_foliodeatencion,
-			col_PidPaciente,
-			col_Nombre1_Paciente,
-			col_Nombre2_Paciente,
-			col_app_Paciente,
-			col_apm_Paciente,
-			col_fechanacimiento_Paciente,
-			col_edad_Paciente,
-			col_sexo_Paciente,
-			col_creacion_Paciente
-		}
-		
 		enum Column_prod
 		{
 			col_idproducto,
@@ -2014,123 +1961,7 @@ namespace osiris
 			col_costoproducto
 		}
 		
-		// activa busqueda con boton busqueda de paciente
-		// y llena la lista con los pacientes
-		
-		void on_buscar_paciente_clicked (object sender, EventArgs args)
-		{
-			treeViewEngineBusca.Clear(); // Limpia el treeview cuando realiza una nueva busqueda
-			
-			NpgsqlConnection conexion; 
-			conexion = new NpgsqlConnection (connectionString+nombrebd);
-            
-			// Verifica que la base de datos este conectada
-			try{
-				conexion.Open ();
-				NpgsqlCommand comando; 
-				comando = conexion.CreateCommand ();
-               	               	
-				if ((string) entry_expresion.Text.ToString() == ""){
-					comando.CommandText = "SELECT osiris_erp_cobros_enca.folio_de_servicio,osiris_erp_cobros_enca.pid_paciente, "+
-							" nombre1_paciente,nombre2_paciente, apellido_paterno_paciente, "+
-							"apellido_materno_paciente, to_char(fecha_nacimiento_paciente,'yyyy-MM-dd') AS fech_nacimiento,"+
-							"to_char(to_number(to_char(age('"+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"',fecha_nacimiento_paciente),'yyyy') ,'9999'),'9999') AS edad, "+
-							"sexo_paciente,to_char(fechahora_registro_paciente,'dd-MM-yyyy HH:mi:ss') AS fech_creacion "+
-							"FROM osiris_his_paciente,osiris_erp_cobros_enca "+
-							"WHERE alta_paciente = 'false' "+
-							"AND pagado = 'false' "+
-							"AND cerrado = 'false' "+
-							"AND reservacion = 'false' "+
-							"AND osiris_his_paciente.pid_paciente = osiris_erp_cobros_enca.pid_paciente "+
-							"AND osiris_erp_cobros_enca.alta_paciente = false "+
-							"AND osiris_erp_cobros_enca.cancelado = false "+
-							"ORDER BY folio_de_servicio;";
-				}else{              	
-					if (radiobutton_busca_apellido.Active == true){
-						comando.CommandText = "SELECT osiris_erp_cobros_enca.folio_de_servicio,osiris_erp_cobros_enca.pid_paciente, "+
-							" nombre1_paciente,nombre2_paciente, apellido_paterno_paciente, "+
-							"apellido_materno_paciente, to_char(fecha_nacimiento_paciente,'yyyy-MM-dd') AS fech_nacimiento,"+
-							"to_char(to_number(to_char(age('"+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"',fecha_nacimiento_paciente),'yyyy') ,'9999'),'9999') AS edad, "+
-							"sexo_paciente,to_char(fechahora_registro_paciente,'dd-MM-yyyy HH:mi:ss') AS fech_creacion "+
-							"FROM osiris_his_paciente,osiris_erp_cobros_enca "+
-							"WHERE alta_paciente = 'false' "+
-							"AND pagado = 'false' "+
-							"AND cerrado = 'false' "+
-							"AND reservacion = 'false' "+
-							"AND osiris_his_paciente.pid_paciente = osiris_erp_cobros_enca.pid_paciente "+
-							"AND osiris_erp_cobros_enca.alta_paciente = false "+
-							"AND osiris_erp_cobros_enca.cancelado = false "+
-							"AND apellido_paterno_paciente LIKE '"+entry_expresion.Text.ToUpper()+"%' ORDER BY folio_de_servicio;";
-					}
-					if (radiobutton_busca_nombre.Active == true){
-						comando.CommandText =  "SELECT osiris_erp_cobros_enca.folio_de_servicio,osiris_erp_cobros_enca.pid_paciente, "+
-							" nombre1_paciente,nombre2_paciente, apellido_paterno_paciente, "+
-							"apellido_materno_paciente, to_char(fecha_nacimiento_paciente,'yyyy-MM-dd') AS fech_nacimiento,"+
-							"to_char(to_number(to_char(age('"+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"',fecha_nacimiento_paciente),'yyyy') ,'9999'),'9999') AS edad, "+
-							"sexo_paciente,to_char(fechahora_registro_paciente,'dd-MM-yyyy HH:mi:ss') AS fech_creacion "+
-							"FROM osiris_his_paciente,osiris_erp_cobros_enca "+
-							"WHERE alta_paciente = 'false' "+
-							"AND pagado = 'false' "+
-							"AND cerrado = 'false' "+
-							"AND reservacion = 'false' "+
-							"AND osiris_his_paciente.pid_paciente = osiris_erp_cobros_enca.pid_paciente "+
-							"AND osiris_erp_cobros_enca.alta_paciente = false "+
-							"AND osiris_erp_cobros_enca.cancelado = false "+
-							"AND nombre1_paciente LIKE '"+entry_expresion.Text.ToUpper()+"%' ORDER BY folio_de_servicio;";
-					}
-					if (radiobutton_busca_expediente.Active == true){
-						comando.CommandText = "SELECT osiris_erp_cobros_enca.folio_de_servicio,osiris_erp_cobros_enca.pid_paciente, "+
-							" nombre1_paciente,nombre2_paciente, apellido_paterno_paciente, "+
-							"apellido_materno_paciente, to_char(fecha_nacimiento_paciente,'yyyy-MM-dd') AS fech_nacimiento,"+
-							"to_char(to_number(to_char(age('"+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"',fecha_nacimiento_paciente),'yyyy') ,'9999'),'9999') AS edad, "+
-							"sexo_paciente,to_char(fechahora_registro_paciente,'dd-MM-yyyy HH:mi:ss') AS fech_creacion "+
-							"FROM osiris_his_paciente,osiris_erp_cobros_enca "+
-							"WHERE alta_paciente = 'false' "+
-							"AND pagado = 'false' "+
-							"AND cerrado = 'false' "+
-							"AND reservacion = 'false' "+
-							"AND osiris_his_paciente.pid_paciente = osiris_erp_cobros_enca.pid_paciente "+
-							"AND osiris_erp_cobros_enca.alta_paciente = false "+
-							"AND osiris_erp_cobros_enca.cancelado = false "+
-							"AND osiris_his_paciente.pid_paciente = '"+entry_expresion.Text+"' ORDER BY folio_de_servicio;";			
-					}
-				}
-				NpgsqlDataReader lector = comando.ExecuteReader ();
-				while (lector.Read()){
-					treeViewEngineBusca.AppendValues ((int) lector["folio_de_servicio"],//TreeIter iter =
-										(int) lector["pid_paciente"],
-										(string) lector["nombre1_paciente"],(string) lector["nombre2_paciente"],
-										(string) lector["apellido_paterno_paciente"], (string) lector["apellido_materno_paciente"],
-										(string) lector["fech_nacimiento"], (string) lector["edad"],
-										(string) lector["sexo_paciente"],
-										(string) lector["fech_creacion"]);
-				}				
-			}catch (NpgsqlException ex){
-	   			MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
-										MessageType.Error, 
-										ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
-				msgBoxError.Run ();
-				msgBoxError.Destroy();
-			}
-			conexion.Close ();
-		}
-		
-		void on_selecciona_paciente_clicked(object sender, EventArgs args)
-		{
-			TreeModel model;
-			TreeIter iterSelected;
-
- 			if (lista_de_Pacientes.Selection.GetSelected(out model, out iterSelected)){
- 				 folioservicio = (int) model.GetValue(iterSelected, 0);
- 				 entry_folio_servicio.Text = folioservicio.ToString();
- 				 llenado_de_productos_aplicados(folioservicio.ToString());
- 			}
- 			// cierra la ventana despues que almaceno la informacion en variables
-			Widget win = (Widget) sender;
-			win.Toplevel.Destroy();
- 		}
- 		
- 		// llena la lista de productos
+		// llena la lista de productos
  		void on_llena_lista_producto_clicked (object sender, EventArgs args)
  		{
  			llenando_lista_de_productos();

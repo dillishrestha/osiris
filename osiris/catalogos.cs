@@ -1593,7 +1593,7 @@ namespace osiris
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		void catalogo_medicos()
 		{
-				Glade.XML gxml = new Glade.XML (null, "catalogos.glade", "catalogo_medico", null);
+			Glade.XML gxml = new Glade.XML (null, "catalogos.glade", "catalogo_medico", null);
 			gxml.Autoconnect                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 (this);
 	        //Muestra ventana de Glade
 			catalogo_medico.Show();
@@ -1610,7 +1610,9 @@ namespace osiris
 			button_autorizacion_medico.Sensitive = false;
 			button_buscar_especialidad.Clicked += new EventHandler(on_button_buscar_especialidad_clicked);
 			button_buscar_empresa.Clicked += new EventHandler(on_button_buscar_empresa_clicked);
-			if(LoginEmpleado == "ADMIN") {button_autorizacion_medico.Sensitive = true; }
+			if(LoginEmpleado == "ADMIN" || LoginEmpleado == "DOLIVARES") {
+				button_autorizacion_medico.Sensitive = true;
+			}
 			button_autorizacion_medico.Clicked += new EventHandler(on_button_autorizacion_medico_clicked);
 			//Desactivacion de las entradas
 			activacion_entrys(false);

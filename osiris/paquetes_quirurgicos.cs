@@ -217,7 +217,7 @@ namespace osiris
 			button_copia_procedimiento.Sensitive = false;
 			checkbutton_copia_productos.Sensitive = false;
 			//checkbutton_nueva_cirugia.Sensitive = false;
-			entry_id_cirugia.IsEditable = false;
+			//entry_id_cirugia.IsEditable = false;
 			lista_de_servicios.Sensitive = false;
 			entry_id_cirugia.Text = "0";
 			
@@ -1514,14 +1514,15 @@ namespace osiris
 		[GLib.ConnectBefore ()]   	  // Esto es indispensable para que funcione    
 		public void onKeyPressEvent_enter_id(object o, Gtk.KeyPressEventArgs args)
 		{
-			//Console.WriteLine(args.Event.Key);
+			string misDigitos = ".0123456789ﾰﾱﾲﾳﾴﾵﾶﾷﾸﾹﾮｔｒｓｑ（";
+			//Console.WriteLine(args.Event.Key.ToString());
+			//Console.WriteLine(Convert.ToChar(args.Event.Key));
+			//Console.WriteLine(Array.IndexOf(misDigitos.ToCharArray(), Convert.ToChar(args.Event.Key)));
 			if (args.Event.Key == Gdk.Key.Return || args.Event.Key == Gdk.Key.KP_Enter){
 				args.RetVal = true;
 				llenado_de_cirugia( entry_id_cirugia.Text );			
 			}
-			string misDigitos = ".0123456789ﾰﾱﾲﾳﾴﾵﾶﾷﾸﾹﾮｔｒｓｑ（";
-			if (Array.IndexOf(misDigitos.ToCharArray(), Convert.ToChar(args.Event.Key)) == -1 && args.Event.Key != Gdk.Key.BackSpace)
-			{
+			if (Array.IndexOf(misDigitos.ToCharArray(), Convert.ToChar(args.Event.Key)) == -1){
 				//Console.WriteLine(Convert.ToChar(args.Event.Key));
 				args.RetVal = true;
 			}

@@ -217,7 +217,7 @@ namespace osiris
 		
 		void on_button_cancela_folios_clicked(object sender, EventArgs args)
 		{
-			if (LoginEmpleado =="DOLIVARES" || LoginEmpleado =="ADMIN"){
+			if (LoginEmpleado =="DOLIVARES" || LoginEmpleado =="ADMIN" || LoginEmpleado =="RIOSGARCIA"){
 				menu_admision.Destroy();
 				Glade.XML gxml = new Glade.XML (null, "registro_admision.glade", "cancelador_folios", null);
 				gxml.Autoconnect (this);

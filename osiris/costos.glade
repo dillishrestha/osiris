@@ -612,6 +612,7 @@
                 <child>
                   <widget class="GtkVBox" id="vbox8">
                     <property name="visible">True</property>
+                    <property name="orientation">vertical</property>
                     <child>
                       <widget class="GtkScrolledWindow" id="scrolledwindow5">
                         <property name="height_request">250</property>
@@ -630,7 +631,6 @@
                     <child>
                       <widget class="GtkHBox" id="hbox7">
                         <property name="visible">True</property>
-                        <property name="orientation">vertical</property>
                         <child>
                           <widget class="GtkButton" id="button_imprimir_costos">
                             <property name="visible">True</property>
@@ -2122,18 +2122,6 @@ Busqueda de Empresas</property>
                                     <property name="expand">False</property>
                                     <property name="fill">False</property>
                                     <property name="position">0</property>
-                                  </packing>
-                                </child>
-                                <child>
-                                  <widget class="GtkLabel">
-                                    <property name="visible">True</property>
-                                    <property name="label" translatable="yes">_Buscar</property>
-                                    <property name="use_underline">True</property>
-                                  </widget>
-                                  <packing>
-                                    <property name="expand">False</property>
-                                    <property name="fill">False</property>
-                                    <property name="position">1</property>
                                   </packing>
                                 </child>
                               </widget>

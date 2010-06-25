@@ -110,7 +110,8 @@ namespace osiris
 														typeof(string),
 														typeof(string),
 														typeof(string),
-														typeof(string));//5
+														typeof(string),
+			                                        	typeof(string),typeof(string),typeof(string));
 				
 			lista_almacenes.Model = treeViewEnginesolicitud;
 			//lista_almacenes.RulesHint = true;
@@ -151,11 +152,35 @@ namespace osiris
 			col_id_sol.AddAttribute (cellr4, "text", 4);
 			cellr4.Foreground = "darkblue";
 			
+			TreeViewColumn col_numeroatencion = new TreeViewColumn();
+			CellRendererText cellr6 = new CellRendererText();
+			col_numeroatencion.Title = "N° Atencion"; // titulo de la cabecera de la columna, si está visible
+			col_numeroatencion.PackStart(cellr6, true);
+			col_numeroatencion.AddAttribute (cellr6, "text", 6);
+			cellr6.Foreground = "darkblue";
+			
+			TreeViewColumn col_pidpaciente = new TreeViewColumn();
+			CellRendererText cellr7 = new CellRendererText();
+			col_pidpaciente.Title = "PID"; // titulo de la cabecera de la columna, si está visible
+			col_pidpaciente.PackStart(cellr7, true);
+			col_pidpaciente.AddAttribute (cellr7, "text", 7);
+			cellr7.Foreground = "darkblue";
+			
+			TreeViewColumn col_nombrepaciente = new TreeViewColumn();
+			CellRendererText cellr8 = new CellRendererText();
+			col_nombrepaciente.Title = "Nombre Paciente"; // titulo de la cabecera de la columna, si está visible
+			col_nombrepaciente.PackStart(cellr8, true);
+			col_nombrepaciente.AddAttribute (cellr8, "text", 8);
+			cellr8.Foreground = "darkblue";
+			
 			lista_almacenes.AppendColumn(col_seleccion);
 			lista_almacenes.AppendColumn(col_solicito);
 			lista_almacenes.AppendColumn(col_sub);
 			lista_almacenes.AppendColumn(col_fecha_envio);
 			lista_almacenes.AppendColumn(col_id_sol);
+			lista_almacenes.AppendColumn(col_numeroatencion);
+			lista_almacenes.AppendColumn(col_pidpaciente);
+			lista_almacenes.AppendColumn(col_nombrepaciente);
 		}
 		
 		void llenando_lista_de_solicitudes()
@@ -172,16 +197,22 @@ namespace osiris
 				
 					comando.CommandText = "SELECT COUNT(osiris_his_solicitudes_deta.folio_de_solicitud) AS cantidad_solicitud,to_char(folio_de_solicitud,'9999999999') AS foliodesolicitud,"+
 								"to_char(osiris_his_solicitudes_deta.id_almacen,'999999999') AS idalmacen,osiris_almacenes.descripcion_almacen AS descripcionalmacen,"+
-								"to_char(osiris_his_solicitudes_deta.fecha_envio_almacen,'dd-MM-yyyy HH24:mi') AS fecha_envio,osiris_his_solicitudes_deta.id_empleado "+
-								"FROM osiris_his_solicitudes_deta,osiris_almacenes "+								
+								"to_char(osiris_his_solicitudes_deta.fecha_envio_almacen,'dd-MM-yyyy HH24:mi') AS fecha_envio,osiris_his_solicitudes_deta.id_empleado,"+
+								"osiris_his_solicitudes_deta.folio_de_servicio AS foliodeatencion,"+
+								"osiris_his_solicitudes_deta.pid_paciente AS pidpaciente,"+
+								"nombre1_paciente,nombre2_paciente,apellido_paterno_paciente,apellido_materno_paciente "+
+								"FROM osiris_his_solicitudes_deta,osiris_almacenes,osiris_his_paciente "+								
 								"WHERE osiris_his_solicitudes_deta.id_almacen = osiris_almacenes.id_almacen "+
 								"AND osiris_his_solicitudes_deta.folio_de_solicitud > 0 "+
-								"AND status = 'true' "+								
+								"AND status = 'true' "+
+								"AND osiris_his_paciente.pid_paciente = osiris_his_solicitudes_deta.pid_paciente "+
 								""+query_fechas+" "+
 								"GROUP BY osiris_his_solicitudes_deta.folio_de_solicitud,osiris_his_solicitudes_deta.id_almacen,"+
-								"osiris_almacenes.descripcion_almacen,to_char(osiris_his_solicitudes_deta.fecha_envio_almacen,'dd-MM-yyyy HH24:mi'),osiris_his_solicitudes_deta.id_empleado "+
+								"osiris_almacenes.descripcion_almacen,to_char(osiris_his_solicitudes_deta.fecha_envio_almacen,'dd-MM-yyyy HH24:mi'),osiris_his_solicitudes_deta.id_empleado,"+
+								"osiris_his_solicitudes_deta.folio_de_servicio,"+
+								"osiris_his_solicitudes_deta.pid_paciente,nombre1_paciente,nombre2_paciente,apellido_paterno_paciente,apellido_materno_paciente "+
 								"ORDER BY osiris_his_solicitudes_deta.id_almacen,osiris_his_solicitudes_deta.folio_de_solicitud;";
-				//Console.WriteLine(comando.CommandText);
+				Console.WriteLine(comando.CommandText);
 				NpgsqlDataReader lector = comando.ExecuteReader ();
 
 				while (lector.Read()){							
@@ -190,7 +221,13 @@ namespace osiris
 													(string) lector["descripcionalmacen"], // 2
 													(string) lector["fecha_envio"],//3
 													(string) lector["id_empleado"],//4
-													(string) lector["idalmacen"]);
+													(string) lector["idalmacen"],
+					                                (string) lector["foliodeatencion"].ToString().Trim(),
+					                                (string) lector["pidpaciente"].ToString().Trim(),
+					                                (string) lector["nombre1_paciente"].ToString().Trim()+" "+
+													(string) lector["nombre2_paciente"].ToString().Trim()+" "+
+													(string) lector["apellido_paterno_paciente"].ToString().Trim()+" "+
+													(string) lector["apellido_materno_paciente"].ToString().Trim());
 				}
 			}catch (NpgsqlException ex){
 	   			MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
@@ -273,13 +310,13 @@ namespace osiris
 			if (treeViewEnginesolicitud.GetIterFirst (out iter)){
 			
  				if ((bool) lista_almacenes.Model.GetValue (iter,0) == true){
- 					numeros_seleccionado = (string) lista_almacenes.Model.GetValue (iter,1);
+					numeros_seleccionado = (string) lista_almacenes.Model.GetValue (iter,1);
  					almacenes_seleccionados = (string) lista_almacenes.Model.GetValue (iter,5);
  					variable_paso_02_1 += 1;		
  				}
  				while (treeViewEnginesolicitud.IterNext(ref iter)){
  					if ((bool) lista_almacenes.Model.GetValue (iter,0) == true){
- 				    	if (variable_paso_02_1 == 0){ 				    	
+						if (variable_paso_02_1 == 0){ 				    	
  							numeros_seleccionado = (string) lista_almacenes.Model.GetValue (iter,1);
  							almacenes_seleccionados = (string) lista_almacenes.Model.GetValue (iter,5);
  							variable_paso_02_1 += 1;
@@ -297,8 +334,11 @@ namespace osiris
 	 			query_in_num = " AND osiris_his_solicitudes_deta.folio_de_solicitud IN ('"+numeros_seleccionado+"') ";
 				query_in_almacen = " AND osiris_his_solicitudes_deta.id_almacen IN ('"+almacenes_seleccionados+"') ";
 			}
-			
-			new osiris.rpt_solicitud_subalmacenes(idsubalmacen,query_in_num,query_in_almacen,query_fechas);
+			if (treeViewEnginesolicitud.GetIterFirst (out iter)){
+				if (variable_paso_02_1 > 0){
+					new osiris.rpt_solicitud_subalmacenes(idsubalmacen,query_in_num,query_in_almacen,query_fechas);
+				}
+			}
 		}
 			
 		void on_cierraventanas_clicked (object sender, EventArgs args)

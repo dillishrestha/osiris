@@ -52,6 +52,7 @@ namespace osiris
 		[Widget] Gtk.Button button_captura_fact_orden_comp = null;
 		[Widget] Gtk.Button button_autorizacion_medicamento = null;
 		[Widget] Gtk.Button button_productos_aplicados = null;
+		[Widget] Gtk.Button button_productos_enviados = null;
 		[Widget] Gtk.Button button_traspaso_subalmacenes = null;
 		//[Widget] Gtk.Button button_soli_material;
 		
@@ -88,6 +89,7 @@ namespace osiris
 			button_autorizacion_medicamento.Clicked += new EventHandler(on_button_autorizacion_medicamento_clicked);
 			// Productos aplicados a procemientos y pacientes por centro de costo
 			button_productos_aplicados.Clicked += new EventHandler(on_button_productos_aplicados_clicked);
+			button_productos_enviados.Clicked += new EventHandler(on_button_productos_enviados_clicked);
 			button_traspaso_subalmacenes.Clicked += new EventHandler(on_button_traspaso_subalmacenes_clicked);
 		}
 		
@@ -108,10 +110,10 @@ namespace osiris
 			 new osiris.orden_compra_urgencias(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,0,"",0,"");
 		}
 		
-		/*void on_button_soli_material_clicked(object sender, EventArgs args)
-		{
-			new osiris.solicitud_material(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,2);
-		}*/
+		//void on_button_soli_material_clicked(object sender, EventArgs args)
+		//{
+		//	new osiris.solicitud_material(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,2);
+		//}
 
 		void on_button_inv_subalmacen_clicked(object sender, EventArgs args)
 		{
@@ -127,12 +129,17 @@ namespace osiris
 		
 		void on_button_productos_aplicados_clicked(object sender, EventArgs args)
 		{
-			new movimientos_productos_paciente(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,0);
+			new osiris.movimientos_productos_paciente(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,0);
 		}
 		
 		void on_button_envios_subalmacenes_clicked(object sender, EventArgs args)
 		{
 			new osiris.envio_de_materiales_subalmacenes(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
+		}
+		
+		void on_button_productos_enviados_clicked(object sender, EventArgs args)
+		{
+			
 		}
 		
 		void on_button_traspaso_subalmacenes_clicked(object sender, EventArgs args)

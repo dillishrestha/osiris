@@ -147,7 +147,6 @@ namespace osiris
 		Gtk.Entry entry_pid_paciente = null;
 		Gtk.Entry entry_nombre_paciente = null;
 		
-		
 		class_conexion conexion_a_DB = new class_conexion();
 		
 		string[] args_sql;
@@ -327,6 +326,25 @@ namespace osiris
 					lista_de_busqueda.AppendColumn(col_buscador4);
 					lista_de_busqueda.AppendColumn(col_buscador5);
 					lista_de_busqueda.AppendColumn(col_buscador6);
+				break;
+				case "find_paciente1":
+					entry_pid_paciente = (object) args[0] as Gtk.Entry;
+					entry_nombre_paciente = (object) args[1] as Gtk.Entry;
+					//entry_edad_paciente_cita = (object) args[3] as Gtk.Entry;
+					radiobutton1.Show();
+					radiobutton2.Show();
+					radiobutton3.Show();
+					labelbusqueda1.Show();
+					radiobutton1.Label = "por Ape. Paterno";
+					radiobutton2.Label = "por un Nombre";
+					radiobutton3.Label = "por Expediente";
+					col_buscador1.Title = "Primer Nombre";
+					col_buscador3.Title = "Segundo Nombre";
+					col_buscador4.Title = "Apellido Paterno";
+					col_buscador5.Title = "Apellido Materno";
+					lista_de_busqueda.AppendColumn(col_buscador3);
+					lista_de_busqueda.AppendColumn(col_buscador4);
+					lista_de_busqueda.AppendColumn(col_buscador5);
 				break;
 			}
 			args_sql = args_sql_;
@@ -645,6 +663,16 @@ namespace osiris
 							                        (string) lector["fech_nacimiento"],
 							              			(string) lector["edad"]);
 							break;
+							case "find_paciente1":
+								treeViewEngineBuscador.AppendValues ((int) lector["pid_paciente"],	// 0
+													(string) lector["nombre1_paciente"].ToString().Trim(),
+							                        (bool) lector["activo"],
+							                        (string) lector["nombre2_paciente"].ToString().Trim(),
+							                        (string) lector["apellido_paterno_paciente"].ToString().Trim(),
+							                        (string) lector["apellido_materno_paciente"].ToString().Trim(),
+							                        (string) lector["fech_nacimiento"],
+							              			(string) lector["edad"]);
+							break;
 						}
 					}
 				}catch (NpgsqlException ex){
@@ -793,6 +821,14 @@ namespace osiris
 															(string) model.GetValue(iterSelected, 4)+" "+
 															(string) model.GetValue(iterSelected, 5)+" "+
 															(string) model.GetValue(iterSelected, 6);
+					break;
+					case "find_paciente1":
+						entry_pid_paciente.Text = tomaid.ToString();
+						entry_nombre_paciente.Text = (string) model.GetValue(iterSelected, 1)+" "+
+															(string) model.GetValue(iterSelected, 3)+" "+
+															(string) model.GetValue(iterSelected, 4)+" "+
+															(string) model.GetValue(iterSelected, 5);
+						//entry_edad_paciente_cita.Text = (string) model.GetValue(iterSelected, 4);
 					break;
 				}				
 			}

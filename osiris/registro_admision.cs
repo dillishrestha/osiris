@@ -269,7 +269,7 @@ namespace osiris
 		
 		class_conexion conexion_a_DB = new class_conexion();
 		
-		public registro_paciente_busca(string _tipo, string LoginEmp, string NomEmpleado_, string AppEmpleado_, string ApmEmpleado_, string nombrebd_) 
+		public registro_paciente_busca(string _tipo, string LoginEmp, string NomEmpleado_, string AppEmpleado_, string ApmEmpleado_, string nombrebd_,string pidpaciente_) 
 		{
 			LoginEmpleado = LoginEmp;
 			NomEmp_ = NomEmpleado+" "+AppEmpleado+" "+ApmEmpleado;
@@ -280,7 +280,11 @@ namespace osiris
 			nombrebd = conexion_a_DB._nombrebd;
 			_tipo_ = _tipo;
 			ventana_principal = true;
-			busca_pacientes();
+			if(_tipo == "selecciona"){
+				llena_datos_del_paciente("seleccion_no_admision",pidpaciente_);
+			}else{
+				busca_pacientes();
+			}
 		}
 		
 		void busca_pacientes()
@@ -355,7 +359,7 @@ namespace osiris
 		        	// Muestra ventana de Glade
 				registro.Show();
 					        	
-				llena_Ventana_de_datos();
+				llena_Ventana_de_datos(PidPaciente.ToString().Trim());
 	        	
 	        		// activa boton de grabacion de informacion
 				button_grabar.Clicked += new EventHandler(on_graba_informacion_clicked);
@@ -745,7 +749,7 @@ namespace osiris
 										entry_folio_paciente.Text = folioservicio.ToString();}
 				        		}
 							}//if de checkeo de internamiento
-							llena_servicios_realizados();
+							llena_servicios_realizados(PidPaciente.ToString().Trim());
 							button_asignacion_habitacion.Clicked += new EventHandler(on_button_asignacion_habitacion_clicked);
 							
 						}else{
@@ -1435,7 +1439,7 @@ namespace osiris
 		}
 	    
 		// Procedimiento para el llenado de los datos del paciente
-		void llena_inf_de_paciente()
+		public void llena_inf_de_paciente(string pidpaciente_)
 		{
 			NpgsqlConnection conexion; 
 			conexion = new NpgsqlConnection (connectionString+nombrebd );
@@ -1455,7 +1459,7 @@ namespace osiris
 							"telefono_trabajo1_paciente, celular1_paciente, municipio_paciente, estado_paciente, "+
 							"osiris_his_paciente.id_empresa AS idempresapaciente, osiris_empresas.descripcion_empresa "+
 							"FROM osiris_his_paciente, osiris_empresas WHERE osiris_his_paciente.id_empresa=osiris_empresas.id_empresa "+
-							"AND pid_paciente = '"+PidPaciente.ToString()+"'"+
+							"AND pid_paciente = '"+pidpaciente_.ToString()+"'"+
 							"AND activo = 'true' "+
 							" ORDER BY pid_paciente;";
 				NpgsqlDataReader lector = comando.ExecuteReader ();
@@ -2152,78 +2156,99 @@ namespace osiris
             }
             conexion.Close ();
 		}
-		
+				
 		void on_selecciona_paciente_clicked(object sender, EventArgs a)
 		{
-			TreeModel model;
-			TreeIter iterSelected;
-			if (lista_de_Pacientes.Selection.GetSelected(out model, out iterSelected)) {
-				if(ventana_principal == false) { registro.Destroy(); }
-				PidPaciente = (int) model.GetValue(iterSelected, 0);
-				//llena_valores_entry();		
+			llena_datos_del_paciente("seleccion_admision","");
+			// destruye la ventana de busqueda
+	 		Widget win = (Widget) sender;
+			win.Toplevel.Destroy();	
+		}
+		
+		void llena_datos_del_paciente(string opcion_,string pidpaciente_)
+		{
+			if(opcion_ == "seleccion_admision"){
+				TreeModel model;
+				TreeIter iterSelected;
+				if (lista_de_Pacientes.Selection.GetSelected(out model, out iterSelected)) {
+					if(ventana_principal == false) { registro.Destroy(); }
+					PidPaciente = (int) model.GetValue(iterSelected, 0);
+					//llena_valores_entry();		
+					Glade.XML gxml = new Glade.XML (null, "registro_admision.glade", "registro", null);
+					gxml.Autoconnect (this);
+		        		        
+					// Muestra ventana de Glade
+					registro.Show();
+					
+					llena_Ventana_de_datos(PidPaciente.ToString().Trim());
+					llena_inf_de_paciente(PidPaciente.ToString().Trim());
+					activa_los_entry(false);
+									
+					button_admision.Sensitive = true;  // Activando Boton de Internamiento de Paciente
+					//Activa el boton para editar datos de paciente
+					checkbutton_modificar.Sensitive = false;
+					if(LoginEmpleado == "DOLIVARES" || LoginEmpleado == "ADMIN") { 
+		           		checkbutton_modificar.Sensitive = true;
+		           		checkbutton_modificar.Clicked += new EventHandler(on_modifica_informacion_clicked);
+		           		button_cancelar_pid.Sensitive = true;
+		           		button_cancelar_pid.Clicked += new EventHandler(on_button_cancelar_pid_clicked);
+		           	}
+					// activa boton de grabacion de informacion
+					button_grabar.Clicked += new EventHandler(on_graba_informacion_clicked);
+					
+					// Activa boton de responsable
+					button_responsable.Clicked += new EventHandler(on_button_responsable_clicked);
+					// Activa boton de admision Urgenacias/Hospital/Quirofano
+					button_admision.Clicked += new EventHandler(on_button_admision_clicked);
+		        	// Activacion de boton de busqueda
+					button_buscar_paciente.Clicked += new EventHandler(on_button_buscar_paciente_clicked);
+					// Centro Medico
+					entry_medico_cm.Sensitive = false;
+					button_busca_medicos.Sensitive = false;
+					entry_esp_med_cm.Sensitive = false;
+					checkbutton_consulta.Clicked += new EventHandler(on_checkbutton_consulta_clicked);
+		        	
+					//Activa boton para imprimir el protocolo
+					button_imprimir_protocolo.Clicked += new EventHandler(on_button_imprimir_protocolo_clicked);
+					button_imprimir_protocolo.Sensitive = false;
+		        	
+					// Contratacion de paquetes
+					button_contrata_paquete.Clicked += new EventHandler(on_button_contrata_paquete_clicked);
+					button_contrata_paquete.Sensitive = false;
+					
+					button_referido_observ.Clicked += new EventHandler(on_button_referido_observ_clicked);
+					
+					//Desactiva campos de PID y de FOLIO para que no se escriba en ellos
+		        	entry_pid_paciente.Sensitive = false;
+		        	entry_folio_paciente.Sensitive = false;
+		        	entry_folio_interno_dep.Sensitive = false;
+		        	
+		        	// Asugnacion de Cuarto o Cubiculo
+		        	button_asignacion_habitacion.Clicked += new EventHandler(on_button_asignacion_habitacion_clicked);
+		        	
+		        	//Lista a las empresas con convenio
+		        	button_lista_empresas.Clicked += new EventHandler(on_button_lista_empresas_clicked);
+		        	
+		        	// este entry se activa cuando el paciente solicita otros servicios
+		       	    //entry_observacion.Sensitive = false;
+		       	    
+		       	    button_separa_folio.Clicked += new EventHandler(on_button_separa_folio_clicked);
+		        	
+					entry_pid_paciente.Text = PidPaciente.ToString();
+					
+	 			}
+			}
+			if(opcion_ == "seleccion_no_admision"){
 				Glade.XML gxml = new Glade.XML (null, "registro_admision.glade", "registro", null);
 				gxml.Autoconnect (this);
-	        		        
+		        		        
 				// Muestra ventana de Glade
 				registro.Show();
-				
-				llena_Ventana_de_datos();
-				llena_inf_de_paciente();
+					
+				llena_Ventana_de_datos(pidpaciente_.ToString().Trim());
+				llena_inf_de_paciente(pidpaciente_.ToString().Trim());
 				activa_los_entry(false);
-								
-				button_admision.Sensitive = true;  // Activando Boton de Internamiento de Paciente
-				//Activa el boton para editar datos de paciente
-				checkbutton_modificar.Sensitive = false;
-				if(LoginEmpleado == "DOLIVARES" || LoginEmpleado == "ADMIN") { 
-	           		checkbutton_modificar.Sensitive = true;
-	           		checkbutton_modificar.Clicked += new EventHandler(on_modifica_informacion_clicked);
-	           		button_cancelar_pid.Sensitive = true;
-	           		button_cancelar_pid.Clicked += new EventHandler(on_button_cancelar_pid_clicked);
-	           	}
-				// activa boton de grabacion de informacion
-				button_grabar.Clicked += new EventHandler(on_graba_informacion_clicked);
-				
-				// Activa boton de responsable
-				button_responsable.Clicked += new EventHandler(on_button_responsable_clicked);
-	        	
-				// Centro Medico
-				entry_medico_cm.Sensitive = false;
-				button_busca_medicos.Sensitive = false;
-				entry_esp_med_cm.Sensitive = false;
-				checkbutton_consulta.Clicked += new EventHandler(on_checkbutton_consulta_clicked);
-	        	
-				//Activa boton para imprimir el protocolo
-				button_imprimir_protocolo.Clicked += new EventHandler(on_button_imprimir_protocolo_clicked);
-				button_imprimir_protocolo.Sensitive = false;
-	        	
-				// Contratacion de paquetes
-				button_contrata_paquete.Clicked += new EventHandler(on_button_contrata_paquete_clicked);
-				button_contrata_paquete.Sensitive = false;
-				
-				button_referido_observ.Clicked += new EventHandler(on_button_referido_observ_clicked);
-				
-				//Desactiva campos de PID y de FOLIO para que no se escriba en ellos
-	        	entry_pid_paciente.Sensitive = false;
-	        	entry_folio_paciente.Sensitive = false;
-	        	entry_folio_interno_dep.Sensitive = false;
-	        	
-	        	// Asugnacion de Cuarto o Cubiculo
-	        	button_asignacion_habitacion.Clicked += new EventHandler(on_button_asignacion_habitacion_clicked);
-	        	
-	        	//Lista a las empresas con convenio
-	        	button_lista_empresas.Clicked += new EventHandler(on_button_lista_empresas_clicked);
-	        	
-	        	// este entry se activa cuando el paciente solicita otros servicios
-	       	    //entry_observacion.Sensitive = false;
-	       	    
-	       	    button_separa_folio.Clicked += new EventHandler(on_button_separa_folio_clicked);
-	        	
-				entry_pid_paciente.Text = PidPaciente.ToString();
-				
-				// destruye la ventana de busqueda
- 				Widget win = (Widget) sender;
-				win.Toplevel.Destroy();				
- 			}
+			}
 		}
 		
 		void on_button_separa_folio_clicked(object sender, EventArgs a)
@@ -2238,30 +2263,22 @@ namespace osiris
 		}
 
 		// Cuando el paciente no es nuevo viene a este 
-		void llena_Ventana_de_datos()
+		void llena_Ventana_de_datos(string pidpaciente_)
 		{
+			// Cierra Ventana
+			button_salir.Clicked += new EventHandler(on_cierraventanas_clicked);
 			button_cancelar_pid.Sensitive = false;
-			// Activacion de boton de busqueda
-			button_buscar_paciente.Clicked += new EventHandler(on_button_buscar_paciente_clicked);
-	        
-			// Activa boton de admision Urgenacias/Hospital/Quirofano
-			button_admision.Clicked += new EventHandler(on_button_admision_clicked);
-	        
 			// desactiva botton de intermaniento de paciente
 			button_admision.Sensitive = true;
-	        
-			//Entrada de Fecha de Nacimiento valida solo numeros
+	        //Entrada de Fecha de Nacimiento valida solo numeros
 			//Dia
 			entry_dia_nacimiento.KeyPressEvent += onKeyPressEvent;
 			//Mes
 			entry_mes_nacimiento.KeyPressEvent += onKeyPressEvent;
 			//Ano
 			entry_ano_nacimiento.KeyPressEvent += onKeyPressEvent;
-			// Cierra Ventana
-			button_salir.Clicked += new EventHandler(on_cierraventanas_clicked);
 			// Disable Internar a Centro Medico
 			checkbutton_consulta.Sensitive = false;
-			
 			// llenado de comobobox
 			// Tipos de Paciente
 			combobox_tipo_paciente.Clear();
@@ -2422,8 +2439,11 @@ namespace osiris
 			//Llena treview de servicio realizados
 			// _tipo_ es una variable publica esta al inicio del programa
 			if (_tipo_=="busca1"){
-  				llena_servicios_realizados();
+  				llena_servicios_realizados(pidpaciente_);
 				//Console.WriteLine("llenando informacion");
+			}
+			if(_tipo_ == "selecciona"){
+				llena_servicios_realizados(pidpaciente_);
 			}
 
 			// Actulizando statusbar
@@ -2447,7 +2467,7 @@ namespace osiris
 			col_separacion
 		}
 		
-		void llena_servicios_realizados()
+		void llena_servicios_realizados(string pidpaciente_)
 		{
 			//Console.WriteLine("llenando informacion "+PidPaciente.ToString());
 			treeViewEngine.Clear();
@@ -2478,7 +2498,7 @@ namespace osiris
 									"AND osiris_erp_movcargos.id_tipo_cirugia = osiris_his_tipo_cirugias.id_tipo_cirugia "+
 									"AND osiris_erp_movcargos.id_tipo_paciente = osiris_his_tipo_pacientes.id_tipo_paciente "+
 									"AND osiris_erp_movcargos.id_tipo_admisiones = osiris_his_tipo_admisiones.id_tipo_admisiones "+
-									"AND osiris_erp_cobros_enca.pid_paciente = '"+ PidPaciente.ToString() +"' "+
+									"AND osiris_erp_cobros_enca.pid_paciente = '"+pidpaciente_.ToString() +"' "+
 									"AND osiris_erp_cobros_enca.id_aseguradora = osiris_aseguradoras.id_aseguradora "+
 									"AND osiris_erp_cobros_enca.id_empresa = osiris_empresas.id_empresa "+  
 									"ORDER BY to_char(osiris_erp_cobros_enca.fechahora_creacion,'yyyy-MM-dd HH24:mm') ;";

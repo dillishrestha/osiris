@@ -150,7 +150,7 @@ namespace osiris
 			//button_respuesta_no.Clicked   += new EventHandler(on_button_respuesta_no_clicked);
 			//button_respuesta_si.Clicked   += new EventHandler(on_button_respuesta_si_clicked);
 			//button_salir_pregunta.Clicked += new EventHandler(on_cierraventanas_clicked);
-			new osiris.registro_paciente_busca("busca1",LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
+			new osiris.registro_paciente_busca("busca1",LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,"");
 		}
 		
 		/*

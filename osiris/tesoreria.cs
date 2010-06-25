@@ -205,7 +205,7 @@ namespace osiris
 			gxml.Autoconnect (this);  
 			rango_de_fecha.Show();
 			checkbutton_impr_todo_proce.Label = "Imprime TODO";
-			entry_referencia_inicial.Editable = false;
+			entry_referencia_inicial.IsEditable = false;
 			entry_referencia_inicial.Text = DateTime.Now.ToString("dd-MM-yyyy");
 			checkbutton_todos_los_clientes.Active = true;
 			entry_cliente.Sensitive = false;
@@ -269,7 +269,7 @@ namespace osiris
 			gxml.Autoconnect (this);  
 			rango_de_fecha.Show();
 			checkbutton_impr_todo_proce.Label = "Imprime TODO";
-			entry_referencia_inicial.Editable = false;
+			entry_referencia_inicial.IsEditable = false;
 			entry_referencia_inicial.Text = DateTime.Now.ToString("dd-MM-yyyy");
 			
 			checkbutton_todos_los_clientes.Active = true;
@@ -306,7 +306,7 @@ namespace osiris
 			radiobutton_fecha.ChildVisible = false;
 		
 			checkbutton_impr_todo_proce.Label = "Imprime TODO";
-			entry_referencia_inicial.Editable = false;
+			entry_referencia_inicial.IsEditable = false;
 			entry_referencia_inicial.Text = DateTime.Now.ToString("dd-MM-yyyy");
 			label_nom_cliente.ChildVisible = false;
 			entry_cliente.ChildVisible = false;
@@ -340,7 +340,7 @@ namespace osiris
 			radiobutton_fecha.ChildVisible = false;
 		
 			checkbutton_impr_todo_proce.Label = "Imprime TODO";
-			entry_referencia_inicial.Editable = false;
+			entry_referencia_inicial.IsEditable = false;
 			entry_referencia_inicial.Text = DateTime.Now.ToString("dd-MM-yyyy");
 			label_nom_cliente.ChildVisible = false;
 			entry_cliente.ChildVisible = false;

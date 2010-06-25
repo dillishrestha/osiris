@@ -218,7 +218,7 @@ namespace osiris
 					button_busca_producto.Sensitive = true;
 					this.button_selecciona_solicitud.Sensitive = false;
 					this.button_buscar_solicitudes.Sensitive = false;
-					this.entry_numero_solicitud.Editable = false;	
+					this.entry_numero_solicitud.IsEditable = false;	
 					entry_status_solicitud.Text = "";
 	     		}else{
 	     			this.checkbutton_nueva_solicitud.Active = false;
@@ -230,7 +230,7 @@ namespace osiris
 				this.button_busca_producto.Sensitive = false;
 				this.button_selecciona_solicitud.Sensitive = true;
 				this.button_buscar_solicitudes.Sensitive = true;
-				this.entry_numero_solicitud.Editable = true;
+				this.entry_numero_solicitud.IsEditable = true;
 		 	}
 	    }
 		
@@ -366,92 +366,98 @@ namespace osiris
 		 {
 			string ultimasolicitud;			
 			TreeIter iter;
-			if(editar == true){
-				ultimasolicitud = classpublic.lee_ultimonumero_registrado("osiris_his_solicitudes_deta","folio_de_solicitud","WHERE id_almacen = '"+idalmacen.ToString().Trim()+"' ");
-				entry_numero_solicitud.Text = ultimasolicitud.ToString().Trim();
-			}
-			if (this.treeViewEngineSolicitud.GetIterFirst (out iter)){
-				button_envio_solicitud.Sensitive = true;				
-				if ((bool) this.lista_produc_solicitados.Model.GetValue (iter,8) == false){
-					// Verifica que la base de datos este conectada
-					NpgsqlConnection conexion; 
-					conexion = new NpgsqlConnection (connectionString+nombrebd);
-					try{
-						conexion.Open ();
-						NpgsqlCommand comando; 
-						comando = conexion.CreateCommand ();
-						comando.CommandText = "INSERT INTO osiris_his_solicitudes_deta("+
-																	"folio_de_solicitud,"+
-																	"id_producto,"+
-																	"precio_producto_publico,"+
-																	"costo_por_unidad,"+
-																	"cantidad_solicitada,"+
-																	"fechahora_solicitud,"+
-																	"id_quien_solicito,"+
-																	"id_almacen,folio_de_servicio,pid_paciente) "+
-																	"VALUES ('"+
-																	this.entry_numero_solicitud.Text+"','"+
-																	(string) this.lista_produc_solicitados.Model.GetValue(iter,1)+"','"+
-																	(string) this.lista_produc_solicitados.Model.GetValue(iter,7)+"','"+
-																	(string) this.lista_produc_solicitados.Model.GetValue(iter,6)+"','"+
-																	(string) this.lista_produc_solicitados.Model.GetValue(iter,2)+"','"+
-																	DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"','"+
-																	LoginEmpleado+"','"+
-																	this.idalmacen.ToString()+"','"+
-																	(string) entry_folio_servicio.Text.ToString().Trim()+"','"+
-																	(string) entry_pid_paciente.Text.ToString().Trim()+"');";
-																
-						//Console.WriteLine(comando.CommandText);
-						comando.ExecuteNonQuery();
-						comando.Dispose();
-					}catch (NpgsqlException ex){
-						MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
-													MessageType.Error,ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
-						msgBoxError.Run ();				msgBoxError.Destroy();
-					}
+			if(int.Parse((string) entry_folio_servicio.Text.ToString().Trim()) != 0){
+				if(editar == true){
+					ultimasolicitud = classpublic.lee_ultimonumero_registrado("osiris_his_solicitudes_deta","folio_de_solicitud","WHERE id_almacen = '"+idalmacen.ToString().Trim()+"' ");
+					entry_numero_solicitud.Text = ultimasolicitud.ToString().Trim();
 				}
-				while (this.treeViewEngineSolicitud.IterNext(ref iter)){
-					NpgsqlConnection conexion; 
-					conexion = new NpgsqlConnection (connectionString+nombrebd);
-					try{
-						conexion.Open ();
-						NpgsqlCommand comando; 
-						comando = conexion.CreateCommand ();
-						if ((bool) this.lista_produc_solicitados.Model.GetValue (iter,8) == false){
+				if (this.treeViewEngineSolicitud.GetIterFirst (out iter)){
+					button_envio_solicitud.Sensitive = true;				
+					if ((bool) this.lista_produc_solicitados.Model.GetValue (iter,8) == false){
+						// Verifica que la base de datos este conectada
+						NpgsqlConnection conexion; 
+						conexion = new NpgsqlConnection (connectionString+nombrebd);
+						try{
+							conexion.Open ();
+							NpgsqlCommand comando; 
+							comando = conexion.CreateCommand ();
 							comando.CommandText = "INSERT INTO osiris_his_solicitudes_deta("+
-																	"folio_de_solicitud,"+
-																	"id_producto,"+
-																	"precio_producto_publico,"+
-																	"costo_por_unidad,"+
-																	"cantidad_solicitada,"+
-																	"fechahora_solicitud,"+
-																	"id_quien_solicito,"+
-																	"id_almacen,folio_de_servicio,pid_paciente) "+
-																	"VALUES ('"+
-																	this.entry_numero_solicitud.Text+"','"+
-																	(string) this.lista_produc_solicitados.Model.GetValue(iter,1)+"','"+
-																	(string) this.lista_produc_solicitados.Model.GetValue(iter,7)+"','"+
-																	(string) this.lista_produc_solicitados.Model.GetValue(iter,6)+"','"+
-																	(string) this.lista_produc_solicitados.Model.GetValue(iter,2)+"','"+
-																	DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"','"+
-																	LoginEmpleado+"','"+
-																	this.idalmacen.ToString()+"','"+
-																	(string) entry_folio_servicio.Text.ToString().Trim()+"','"+
-																	(string) entry_pid_paciente.Text.ToString().Trim()+"');";
-																
-						//Console.WriteLine(comando.CommandText);
+																		"folio_de_solicitud,"+
+																		"id_producto,"+
+																		"precio_producto_publico,"+
+																		"costo_por_unidad,"+
+																		"cantidad_solicitada,"+
+																		"fechahora_solicitud,"+
+																		"id_quien_solicito,"+
+																		"id_almacen,folio_de_servicio,pid_paciente) "+
+																		"VALUES ('"+
+																		this.entry_numero_solicitud.Text+"','"+
+																		(string) this.lista_produc_solicitados.Model.GetValue(iter,1)+"','"+
+																		(string) this.lista_produc_solicitados.Model.GetValue(iter,7)+"','"+
+																		(string) this.lista_produc_solicitados.Model.GetValue(iter,6)+"','"+
+																		(string) this.lista_produc_solicitados.Model.GetValue(iter,2)+"','"+
+																		DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"','"+
+																		LoginEmpleado+"','"+
+																		this.idalmacen.ToString()+"','"+
+																		(string) entry_folio_servicio.Text.ToString().Trim()+"','"+
+																		(string) entry_pid_paciente.Text.ToString().Trim()+"');";
+																	
+							//Console.WriteLine(comando.CommandText);
 							comando.ExecuteNonQuery();
 							comando.Dispose();
+						}catch (NpgsqlException ex){
+							MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+														MessageType.Error,ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
+							msgBoxError.Run ();				msgBoxError.Destroy();
 						}
-					}catch (NpgsqlException ex){
-						MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
-													MessageType.Error,ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
-						msgBoxError.Run ();				msgBoxError.Destroy();
 					}
+					while (this.treeViewEngineSolicitud.IterNext(ref iter)){
+						NpgsqlConnection conexion; 
+						conexion = new NpgsqlConnection (connectionString+nombrebd);
+						try{
+							conexion.Open ();
+							NpgsqlCommand comando; 
+							comando = conexion.CreateCommand ();
+							if ((bool) this.lista_produc_solicitados.Model.GetValue (iter,8) == false){
+								comando.CommandText = "INSERT INTO osiris_his_solicitudes_deta("+
+																		"folio_de_solicitud,"+
+																		"id_producto,"+
+																		"precio_producto_publico,"+
+																		"costo_por_unidad,"+
+																		"cantidad_solicitada,"+
+																		"fechahora_solicitud,"+
+																		"id_quien_solicito,"+
+																		"id_almacen,folio_de_servicio,pid_paciente) "+
+																		"VALUES ('"+
+																		this.entry_numero_solicitud.Text+"','"+
+																		(string) this.lista_produc_solicitados.Model.GetValue(iter,1)+"','"+
+																		(string) this.lista_produc_solicitados.Model.GetValue(iter,7)+"','"+
+																		(string) this.lista_produc_solicitados.Model.GetValue(iter,6)+"','"+
+																		(string) this.lista_produc_solicitados.Model.GetValue(iter,2)+"','"+
+																		DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"','"+
+																		LoginEmpleado+"','"+
+																		this.idalmacen.ToString()+"','"+
+																		(string) entry_folio_servicio.Text.ToString().Trim()+"','"+
+																		(string) entry_pid_paciente.Text.ToString().Trim()+"');";
+																	
+							//Console.WriteLine(comando.CommandText);
+								comando.ExecuteNonQuery();
+								comando.Dispose();
+							}
+						}catch (NpgsqlException ex){
+							MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+														MessageType.Error,ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
+							msgBoxError.Run ();				msgBoxError.Destroy();
+						}
+					}
+					this.checkbutton_nueva_solicitud.Active = false;
+					llena_solicitud_material(entry_numero_solicitud.Text);				
 				}
-				this.checkbutton_nueva_solicitud.Active = false;
-				llena_solicitud_material(entry_numero_solicitud.Text);				
-			}			
+			}else{
+				MessageDialog msgBox = new MessageDialog (MyWin,DialogFlags.Modal,
+									MessageType.Error,ButtonsType.Ok,"Debe elegir un paciente para realizar la solicitud, verifique...");
+				msgBox.Run (); 	msgBox.Destroy();
+			}
 	    }
 	    
 	    void on_button_envio_solicitud_clicked(object sender, EventArgs args)

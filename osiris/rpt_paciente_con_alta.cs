@@ -98,7 +98,7 @@ namespace osiris
 			gxml.Autoconnect  (this);	
 			rang_fech_pac_sin_alta.Show();
 			checkbutton_impr_todo_proce.Label = "Imprime TODO";
-			entry_referencia_inicial.Editable = false;
+			entry_referencia_inicial.IsEditable = false;
 			entry_referencia_inicial.Text = DateTime.Now.ToString("dd-MM-yyyy");
 			entry_dia1.KeyPressEvent += onKeyPressEvent;
 			entry_mes1.KeyPressEvent += onKeyPressEvent;

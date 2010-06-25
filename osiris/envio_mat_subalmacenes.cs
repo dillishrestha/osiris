@@ -55,6 +55,12 @@ namespace osiris
 		[Widget] Gtk.TreeView lista_de_materiales_solicitados;
 		[Widget] Gtk.ComboBox combobox_sub_almacenes;
 		[Widget] Gtk.ComboBox combobox_almacen_origen;
+		[Widget] Gtk.CheckButton checkbutton_stock_almacen = null;
+		[Widget] Gtk.CheckButton checkbutton_stock_paciente = null;
+		[Widget] Gtk.Entry entry_folio_servicio = null;
+		[Widget] Gtk.Entry entry_pid_paciente = null;
+		[Widget] Gtk.Entry entry_nombre_paciente = null;
+		[Widget] Gtk.Button button_busca_paciente = null;
 		[Widget] Gtk.Button button_surtir_materiales;
 		[Widget] Gtk.Button button_sin_stock;
 		[Widget] Gtk.Button button_pedido_erroneo;
@@ -71,8 +77,7 @@ namespace osiris
 		string LoginEmpleado;
 		string NomEmpleado;
 		string AppEmpleado;
-		string ApmEmpleado;
-		
+		string ApmEmpleado;		
 		
 		// Variables publica
 		float valoriva;
@@ -131,7 +136,12 @@ namespace osiris
 			entry_desc_producto.Sensitive = false;
 			button_busca_producto.Sensitive = false;
 			button_quitar_productos.Sensitive = false;
-			
+			checkbutton_stock_almacen.Sensitive = false;
+			checkbutton_stock_paciente.Sensitive = false;
+			entry_folio_servicio.Sensitive = false;
+			entry_pid_paciente.Sensitive = false;
+			entry_nombre_paciente.Sensitive = false;
+			button_busca_paciente.Sensitive = false;
 			// Llenado de combobox1 
 			combobox_sub_almacenes.Clear();
 			combobox_almacen_origen.Clear();
@@ -390,11 +400,7 @@ namespace osiris
 												msgBoxError.Run ();
 												msgBoxError.Destroy();
 											}
-											conexion1.Close();	
-											
-																								
-																																					
-																																																															
+											conexion1.Close();																																															
 										}
 										
 										if (this.checkbutton_envio_directo.Active == false){
@@ -808,7 +814,13 @@ namespace osiris
 					button_busca_producto.Sensitive = true;
 					button_quitar_productos.Sensitive = true;
 					button_pedido_erroneo.Sensitive = false;
-					button_sin_stock.Sensitive = false;	 		
+					button_sin_stock.Sensitive = false;
+					checkbutton_stock_almacen.Sensitive = true;
+					checkbutton_stock_paciente.Sensitive = true;
+					entry_folio_servicio.Sensitive = true;
+					entry_pid_paciente.Sensitive = true;
+					entry_nombre_paciente.Sensitive = true;
+					button_busca_paciente.Sensitive = true;
 		 		}else{
 		 			checkbutton_envio_directo.Active = false;		 			
 		 		}
@@ -818,6 +830,12 @@ namespace osiris
 				button_quitar_productos.Sensitive = false;
 				button_pedido_erroneo.Sensitive = true;
 				button_sin_stock.Sensitive = true;
+				checkbutton_stock_almacen.Sensitive = false;
+				checkbutton_stock_paciente.Sensitive = false;
+				entry_folio_servicio.Sensitive = false;
+				entry_pid_paciente.Sensitive = false;
+				entry_nombre_paciente.Sensitive = false;
+				button_busca_paciente.Sensitive = false;
 		 	}
 		}
 		
@@ -844,11 +862,15 @@ namespace osiris
                						"to_char(osiris_his_solicitudes_deta.id_secuencia,'9999999999') AS idsecuencia,"+
                						"to_char(folio_de_solicitud,'9999999999') AS foliodesolicitud,"+
                						"osiris_his_solicitudes_deta.eliminado,"+
-									"descripcion_grupo_producto,descripcion_grupo1_producto "+
+									"descripcion_grupo_producto,descripcion_grupo1_producto,"+
+									"osiris_his_solicitudes_deta.folio_de_servicio AS foliodeatencion,"+
+									"osiris_his_solicitudes_deta.pid_paciente AS pidpaciente,"+
+									"nombre1_paciente,nombre2_paciente,apellido_paterno_paciente,apellido_materno_paciente "+
 									//",descripcion_grupo2_producto "+
-               						"FROM osiris_his_solicitudes_deta,osiris_productos,osiris_grupo_producto,osiris_grupo1_producto "+
+               						"FROM osiris_his_solicitudes_deta,osiris_his_paciente,osiris_productos,osiris_grupo_producto,osiris_grupo1_producto "+
                						//",osiris_grupo2_producto "+
                						"WHERE id_almacen = '"+idsubalmacen.ToString().Trim()+"' "+
+									"AND osiris_his_paciente.pid_paciente = osiris_his_solicitudes_deta.pid_paciente "+
                						"AND osiris_his_solicitudes_deta.id_producto = osiris_productos.id_producto "+
                						"AND osiris_productos.id_grupo_producto = osiris_grupo_producto.id_grupo_producto "+
 									"AND osiris_productos.id_grupo1_producto = osiris_grupo1_producto.id_grupo1_producto "+
@@ -872,7 +894,13 @@ namespace osiris
 													(string) lector["fechahorasolicitud"],
 													(string) lector["idsecuencia"],
 													"0",
-													"0");
+													"0",
+					                                (string) lector["foliodeatencion"].ToString().Trim(),
+					                                (string) lector["pidpaciente"].ToString().Trim(),
+					                                (string) lector["nombre1_paciente"].ToString().Trim()+" "+
+													(string) lector["nombre2_paciente"].ToString().Trim()+" "+
+													(string) lector["apellido_paterno_paciente"].ToString().Trim()+" "+
+													(string) lector["apellido_materno_paciente"].ToString().Trim() );
 				}				
 			}catch (NpgsqlException ex){
 		   		Console.WriteLine ("PostgresSQL error: {0}",ex.Message);
@@ -894,7 +922,11 @@ namespace osiris
 													typeof(string),		// 6													
 													typeof(string),		// 7 Almacena la secuencia de la tabla de datos
 													typeof(string),		// 8 se ocupa para cuando es envio sin solicitud Costo por unidad
-													typeof(string)		// 9 se ocupa para cuando es envio sin solicitud precio publico
+													typeof(string),		// 9 se ocupa para cuando es envio sin solicitud precio publico
+			                                        typeof(string),		// 10 Foliio de Atencion
+			                                        typeof(string),		// 11 Pid del paciente
+			                                        typeof(string)		// 12 nombre del paciente
+			                                         
 													);
 												
 			lista_de_materiales_solicitados.Model = treeViewEngineSolicitado;
@@ -955,14 +987,38 @@ namespace osiris
 			col_fecha_solicitado.PackStart(cel_fecha_solicitado, true);
 			col_fecha_solicitado.AddAttribute (cel_fecha_solicitado, "text", 6);
 			col_fecha_solicitado.SortColumnId = (int) Column_solicitudes.col_fecha_solicitado;
+			
+			TreeViewColumn col_folioatencion = new TreeViewColumn();
+			CellRendererText cel_folioatencion = new CellRendererText();
+			col_folioatencion.Title = "N° Atencion"; // titulo de la cabecera de la columna, si está visible
+			col_folioatencion.PackStart(cel_folioatencion, true);
+			col_folioatencion.AddAttribute (cel_folioatencion, "text", 10);
+			col_folioatencion.SortColumnId = (int) Column_solicitudes.col_folioatencion;
+			
+			TreeViewColumn col_pidpaciente = new TreeViewColumn();
+			CellRendererText cel_pidpaciente = new CellRendererText();
+			col_pidpaciente.Title = "PID"; // titulo de la cabecera de la columna, si está visible
+			col_pidpaciente.PackStart(cel_pidpaciente, true);
+			col_pidpaciente.AddAttribute (cel_pidpaciente, "text", 11);
+			col_pidpaciente.SortColumnId = (int) Column_solicitudes.col_pidpaciente;
+			
+			TreeViewColumn col_nombrepaciente = new TreeViewColumn();
+			CellRendererText cel_nombrepaciente = new CellRendererText();
+			col_nombrepaciente.Title = "Nombre Paciente"; // titulo de la cabecera de la columna, si está visible
+			col_nombrepaciente.PackStart(cel_nombrepaciente, true);
+			col_nombrepaciente.AddAttribute (cel_nombrepaciente, "text", 12);
+			col_nombrepaciente.SortColumnId = (int) Column_solicitudes.col_nombrepaciente;
 						
-			this.lista_de_materiales_solicitados.AppendColumn(col_surtir);
-			this.lista_de_materiales_solicitados.AppendColumn(col_cant_solicitado);
-			this.lista_de_materiales_solicitados.AppendColumn(col_autorizado);
-			this.lista_de_materiales_solicitados.AppendColumn(col_nro_solicitud);
-			this.lista_de_materiales_solicitados.AppendColumn(col_desc_producto);
-			this.lista_de_materiales_solicitados.AppendColumn(col_idproducto);
-			this.lista_de_materiales_solicitados.AppendColumn(col_fecha_solicitado);									
+			lista_de_materiales_solicitados.AppendColumn(col_surtir);
+			lista_de_materiales_solicitados.AppendColumn(col_cant_solicitado);
+			lista_de_materiales_solicitados.AppendColumn(col_autorizado);
+			lista_de_materiales_solicitados.AppendColumn(col_nro_solicitud);
+			lista_de_materiales_solicitados.AppendColumn(col_desc_producto);
+			lista_de_materiales_solicitados.AppendColumn(col_idproducto);
+			lista_de_materiales_solicitados.AppendColumn(col_fecha_solicitado);
+			lista_de_materiales_solicitados.AppendColumn(col_folioatencion);
+			lista_de_materiales_solicitados.AppendColumn(col_pidpaciente);
+			lista_de_materiales_solicitados.AppendColumn(col_nombrepaciente);
 		}
 		
 		enum Column_solicitudes
@@ -973,7 +1029,7 @@ namespace osiris
 			col_nro_solicitud,
 			col_desc_producto,
 			col_idproducto,
-			col_fecha_solicitado
+			col_fecha_solicitado,col_folioatencion,col_pidpaciente,col_nombrepaciente
 		}
 		
 		// Cuando seleccion el treeview de cargos extras para cargar los productos  

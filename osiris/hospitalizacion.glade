@@ -2683,14 +2683,39 @@ Sub-Almacen</property>
                       </packing>
                     </child>
                     <child>
-                      <widget class="GtkFixed" id="fixed48">
-                        <property name="width_request">448</property>
+                      <widget class="GtkCheckButton" id="checkbutton1">
+                        <property name="label" translatable="yes">Solicitud para Stock</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="receives_default">False</property>
+                        <property name="tooltip" translatable="yes">Haga click, para crear un solicitud y llenar el Stock del Sub-Almacen, esperar que almacen surta estos materiales</property>
+                        <property name="draw_indicator">True</property>
+                      </widget>
+                      <packing>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <widget class="GtkCheckButton" id="checkbutton2">
+                        <property name="label" translatable="yes">Solicitud Temporal
+para Quirofano</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="receives_default">False</property>
+                        <property name="tooltip" translatable="yes">Haga click aqui para solicitar productos de una cirugia programada, debe validar este pedido cuando ingrese el Paciente</property>
+                        <property name="draw_indicator">True</property>
+                      </widget>
+                      <packing>
+                        <property name="position">2</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <widget class="GtkFixed" id="fixed1">
+                        <property name="width_request">100</property>
                         <property name="visible">True</property>
                       </widget>
                       <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">False</property>
-                        <property name="position">1</property>
+                        <property name="position">3</property>
                       </packing>
                     </child>
                     <child>
@@ -2701,7 +2726,7 @@ Sub-Almacen</property>
                       <packing>
                         <property name="expand">False</property>
                         <property name="fill">False</property>
-                        <property name="position">2</property>
+                        <property name="position">4</property>
                       </packing>
                     </child>
                     <child>
@@ -2712,7 +2737,7 @@ Sub-Almacen</property>
                         <property name="invisible_char">&#x25CF;</property>
                       </widget>
                       <packing>
-                        <property name="position">3</property>
+                        <property name="position">5</property>
                       </packing>
                     </child>
                   </widget>
@@ -2864,7 +2889,7 @@ Sub-Almacen</property>
                     <child>
                       <widget class="GtkLabel" id="label205">
                         <property name="visible">True</property>
-                        <property name="label" translatable="yes">N&#xBA; de Atencion Paciente </property>
+                        <property name="label" translatable="yes">N&#xBA; de Aten. Paciente </property>
                       </widget>
                       <packing>
                         <property name="expand">False</property>

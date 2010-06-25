@@ -91,7 +91,7 @@ namespace osiris
 			this.entry_del_mes.Sensitive = false;
 			this.entry_del_anno.Sensitive = false; 
 			
-            this.entry_buscar.Editable =false;			
+            this.entry_buscar.IsEditable =false;			
             
 			this.button_facturas_enviadas.Sensitive =false;
             this.check_todas_fechas.Sensitive = false;			

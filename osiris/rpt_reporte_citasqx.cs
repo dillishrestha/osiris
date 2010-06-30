@@ -117,8 +117,10 @@ namespace osiris
 				cr.MoveTo(253*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText("Observaciones :"+(string) treeview_lista_agenda.Model.GetValue (iter,14));			Pango.CairoHelper.ShowLayout (cr, layout);
 				cr.MoveTo(501*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText("Referido por:"+(string) treeview_lista_agenda.Model.GetValue (iter,15));			Pango.CairoHelper.ShowLayout (cr, layout);
 				comienzo_linea += separacion_linea;
+				cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText("Telefonos :"+(string) treeview_lista_agenda.Model.GetValue (iter,6));			Pango.CairoHelper.ShowLayout (cr, layout);
+				salto_de_pagina(cr,layout);
 				comienzo_linea += separacion_linea;
-								
+				comienzo_linea += separacion_linea;
 				while (treeViewEngineListaCitas.IterNext(ref iter)){
 					contador_numerocitas += 1;
 					layout.FontDescription.Weight = Weight.Bold;		// Letra negrita
@@ -151,6 +153,9 @@ namespace osiris
 					cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText("Mot.Consulta:"+(string) treeview_lista_agenda.Model.GetValue (iter,13));			Pango.CairoHelper.ShowLayout (cr, layout);
 					cr.MoveTo(253*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText("Obse.:"+(string) treeview_lista_agenda.Model.GetValue (iter,14));			Pango.CairoHelper.ShowLayout (cr, layout);
 					cr.MoveTo(501*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText("Ref. por:"+(string) treeview_lista_agenda.Model.GetValue (iter,15));			Pango.CairoHelper.ShowLayout (cr, layout);
+					comienzo_linea += separacion_linea;
+					cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText("Telefonos :"+(string) treeview_lista_agenda.Model.GetValue (iter,6));			Pango.CairoHelper.ShowLayout (cr, layout);
+					salto_de_pagina(cr,layout);
 					comienzo_linea += separacion_linea;
 					salto_de_pagina(cr,layout);
 					comienzo_linea += separacion_linea;

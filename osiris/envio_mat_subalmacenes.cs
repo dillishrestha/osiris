@@ -70,8 +70,8 @@ namespace osiris
 		[Widget] Gtk.Button button_quitar_productos;
 		[Widget] Gtk.Button button_rpt_surtido;
 		
-		[Widget] Gtk.CheckButton checkbutton_envio_directo;		
-		
+		[Widget] Gtk.CheckButton checkbutton_envio_directo;
+				
 		string connectionString;
 		string nombrebd;				
 		string LoginEmpleado;
@@ -81,7 +81,7 @@ namespace osiris
 		
 		// Variables publica
 		float valoriva;
-		int idsubalmacen = 1;
+		int idsubalmacen = 0;
 		string descsubalmacen = "";
 		int idalmacenorigen = 0;
 		
@@ -95,11 +95,14 @@ namespace osiris
 		private TreeStore treeViewEngineBusca2;
 		private ListStore treeViewEngineSolicitado;
 		
+		TreeViewColumn col_envios00;		CellRendererToggle cellrt00;
+		
 		//Declaracion de ventana de error
 		protected Gtk.Window MyWinError;
 		protected Gtk.Window MyWin;
 		
 		class_conexion conexion_a_DB = new class_conexion();
+		class_buscador classfind_data = new class_buscador();
 		class_public classpublic = new class_public();
 		
 		public envio_de_materiales_subalmacenes(string LoginEmp_, string NomEmpleado_, string AppEmpleado_, string ApmEmpleado_, string nombrebd_) 
@@ -126,7 +129,10 @@ namespace osiris
 			// Quitar productos editar tiene que estar en true
 			button_quitar_productos.Clicked += new EventHandler(on_button_quitar_productos_clicked);
 			button_rpt_surtido.Clicked += new EventHandler(on_button_rpt_surtido_clicked);
-			
+			checkbutton_stock_paciente.Clicked += new EventHandler(on_checkbutton_stock_paciente_clicked);
+			checkbutton_stock_almacen.Clicked += new EventHandler(on_checkbutton_stock_almacen_clicked);
+			//buscar pacientes
+			button_busca_paciente.Clicked += new EventHandler(on_button_busca_paciente_clicked);
 			////// Sale de la ventana
 			button_salir.Clicked += new EventHandler(on_cierraventanas_clicked);
 			
@@ -256,18 +262,16 @@ namespace osiris
 			TreeIter iterSelected;
  			if (treeViewEngineSolicitado.GetIterFirst (out iterSelected)){
  				if (idsubalmacen != 0){
-		 			if (idalmacenorigen	!= 0){		 			
+		 			if (idalmacenorigen	!= 0){
 		 				MessageDialog msgBox = new MessageDialog (MyWin,DialogFlags.Modal,
 						MessageType.Question,ButtonsType.YesNo,"¿ Esta seguro de el traspasar los Materiales Seleccionados?");
 						ResponseType miResultado = (ResponseType)msgBox.Run ();
 						msgBox.Destroy();
 						if (miResultado == ResponseType.Yes){
-							
 		 					if ((bool) lista_de_materiales_solicitados.Model.GetValue (iterSelected,0) == true){
+								// que la cantidad sea mayor a cero validando lo autorizado
 			 					if (decimal.Parse((string) lista_de_materiales_solicitados.Model.GetValue (iterSelected,2)) > 0 ){
-					 				
-					 				
-					 										Console.WriteLine("akkaaa");
+					 				//Console.WriteLine("akkaaa");
 					 				NpgsqlConnection conexion;
 									conexion = new NpgsqlConnection (connectionString+nombrebd);
 					 				try{
@@ -281,7 +285,7 @@ namespace osiris
 										//Console.WriteLine(comando.CommandText);
 										NpgsqlDataReader lector = comando.ExecuteReader ();
 										if(lector.Read()){
-										Console.WriteLine("if ");
+											//Console.WriteLine("if ");
 											NpgsqlConnection conexion1; 
 											conexion1 = new NpgsqlConnection (connectionString+nombrebd);
 					 						try{
@@ -307,7 +311,6 @@ namespace osiris
 											conexion1.Close();	
 											Console.WriteLine(idsubalmacen+"  "+idalmacenorigen);
 											if(this.checkbutton_envio_directo.Active == true && idsubalmacen != idalmacenorigen){
-
 												NpgsqlConnection conexion2;
                                             	conexion2 = new NpgsqlConnection (connectionString+nombrebd);
                                              	try{
@@ -336,7 +339,7 @@ namespace osiris
 	
 											
 										}else{
-										Console.WriteLine("else"+idalmacenorigen);
+											//Console.WriteLine("else"+idalmacenorigen);
 											NpgsqlConnection conexion1; 
 											conexion1 = new NpgsqlConnection (connectionString+nombrebd);
 					 						try{
@@ -387,11 +390,7 @@ namespace osiris
 	                                                msgBoxError.Run ();
 	                                            }
 	                                            conexion2.Close();    
-                                            }
-	
-												
-												
-												
+                                            }												
 												
 											}catch (NpgsqlException ex){
 									   			MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
@@ -403,7 +402,7 @@ namespace osiris
 											conexion1.Close();																																															
 										}
 										
-										if (this.checkbutton_envio_directo.Active == false){
+										if (checkbutton_envio_directo.Active == false){
 											comando.CommandText = "UPDATE osiris_his_solicitudes_deta SET cantidad_autorizada = '"+(string) lista_de_materiales_solicitados.Model.GetValue (iterSelected,2)+"',"+
 															"fechahora_autorizado = '"+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"',"+
 															"id_quien_autorizo = '"+this.LoginEmpleado+"',"+
@@ -411,14 +410,14 @@ namespace osiris
 															"id_almacen_origen = '"+idalmacenorigen.ToString().Trim()+"',"+
 															"surtido = 'true' "+
 															"WHERE id_secuencia =  '"+(string) lista_de_materiales_solicitados.Model.GetValue (iterSelected,7)+"';";
-										//Console.WriteLine(comando.CommandText);
+											//Console.WriteLine(comando.CommandText);
 											comando.ExecuteNonQuery();
 											comando.Dispose();
 										}
 																				
 										// VERIFICA CUANDO ES ENVIO DIRECTO DESDE UN ALAMCEN
 										// Actualiza la tabla de soliciudes
-										if (this.checkbutton_envio_directo.Active == true){
+										if (checkbutton_envio_directo.Active == true){
 											NpgsqlConnection conexion4; 
 											conexion4 = new NpgsqlConnection (connectionString+nombrebd);
 											try{
@@ -679,8 +678,7 @@ namespace osiris
 									}
 								}				
 				 			}
-				 			llenado_de_material_solicitado();
-				 			
+				 			llenado_de_material_solicitado();				 			
 				 			checkbutton_envio_directo.Active = false;
 					 		entry_desc_producto.Sensitive = false;
 							button_busca_producto.Sensitive = false;
@@ -817,11 +815,7 @@ namespace osiris
 					button_sin_stock.Sensitive = false;
 					checkbutton_stock_almacen.Sensitive = true;
 					checkbutton_stock_paciente.Sensitive = true;
-					entry_folio_servicio.Sensitive = true;
-					entry_pid_paciente.Sensitive = true;
-					entry_nombre_paciente.Sensitive = true;
-					button_busca_paciente.Sensitive = true;
-		 		}else{
+				}else{
 		 			checkbutton_envio_directo.Active = false;		 			
 		 		}
 		 	}else{
@@ -831,27 +825,101 @@ namespace osiris
 				button_pedido_erroneo.Sensitive = true;
 				button_sin_stock.Sensitive = true;
 				checkbutton_stock_almacen.Sensitive = false;
-				checkbutton_stock_paciente.Sensitive = false;
+				checkbutton_stock_paciente.Sensitive = false;				
+		 	}
+		}
+		
+		void on_checkbutton_stock_paciente_clicked(object sender, EventArgs args)
+		{
+			if((bool) checkbutton_stock_paciente.Active == true){
+				entry_folio_servicio.Sensitive = true;
+				entry_pid_paciente.Sensitive = true;
+				entry_nombre_paciente.Sensitive = true;
+				button_busca_paciente.Sensitive = true;
+				checkbutton_stock_almacen.Active = false;
+			}else{
 				entry_folio_servicio.Sensitive = false;
 				entry_pid_paciente.Sensitive = false;
 				entry_nombre_paciente.Sensitive = false;
 				button_busca_paciente.Sensitive = false;
-		 	}
+				entry_folio_servicio.Text = "0";
+				entry_pid_paciente.Text = "0";
+				entry_nombre_paciente.Text = "";
+			}
 		}
 		
+		void on_checkbutton_stock_almacen_clicked(object sender, EventArgs args)
+		{
+			if((bool)checkbutton_stock_almacen.Active == true){
+				entry_folio_servicio.Sensitive = false;
+				entry_pid_paciente.Sensitive = false;
+				entry_nombre_paciente.Sensitive = false;
+				button_busca_paciente.Sensitive = false;
+				checkbutton_stock_paciente.Active = false;
+			}
+		}
+		
+		void on_button_busca_paciente_clicked(object sender, EventArgs args)
+		{
+			object[] parametros_objetos = {entry_folio_servicio,entry_pid_paciente,entry_nombre_paciente};
+			string[] parametros_sql = {"SELECT osiris_erp_cobros_enca.folio_de_servicio,osiris_his_paciente.pid_paciente AS pidpaciente,nombre1_paciente,nombre2_paciente, apellido_paterno_paciente,id_quienlocreo_paciente,"+
+									"apellido_materno_paciente, to_char(fecha_nacimiento_paciente,'yyyy-MM-dd') AS fech_nacimiento,sexo_paciente,"+
+									"to_char(to_number(to_char(age('"+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"',osiris_his_paciente.fecha_nacimiento_paciente),'yyyy') ,'9999'),'9999') AS edad,"+
+									"to_char(to_number(to_char(age('"+DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss")+"',osiris_his_paciente.fecha_nacimiento_paciente),'MM'),'99'),'99') AS mesesedad,"+
+									"to_char(fechahora_registro_paciente,'dd-MM-yyyy HH:mi:ss') AS fech_creacion,activo FROM osiris_his_paciente,osiris_erp_cobros_enca WHERE activo = 'true' "+
+										"AND osiris_his_paciente.pid_paciente = osiris_erp_cobros_enca.pid_paciente "+
+										"AND osiris_erp_cobros_enca.alta_paciente = false "+
+										"AND osiris_erp_cobros_enca.cancelado = false "+
+										"AND osiris_erp_cobros_enca.alta_paciente = 'false' "+
+										"AND osiris_erp_cobros_enca.pagado = 'false' "+
+										"AND osiris_erp_cobros_enca.cerrado = 'false' "+
+										"AND osiris_erp_cobros_enca.reservacion = 'false' ",															
+									"SELECT osiris_erp_cobros_enca.folio_de_servicio,osiris_his_paciente.pid_paciente AS pidpaciente,nombre1_paciente,nombre2_paciente, apellido_paterno_paciente,id_quienlocreo_paciente,"+
+									"apellido_materno_paciente, to_char(fecha_nacimiento_paciente,'yyyy-MM-dd') AS fech_nacimiento,sexo_paciente,"+
+									"to_char(to_number(to_char(age('"+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"',osiris_his_paciente.fecha_nacimiento_paciente),'yyyy') ,'9999'),'9999') AS edad,"+
+									"to_char(to_number(to_char(age('"+DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss")+"',osiris_his_paciente.fecha_nacimiento_paciente),'MM'),'99'),'99') AS mesesedad,"+
+									"to_char(fechahora_registro_paciente,'dd-MM-yyyy HH:mi:ss') AS fech_creacion,activo FROM osiris_his_paciente,osiris_erp_cobros_enca WHERE activo = 'true' "+
+										"AND osiris_his_paciente.pid_paciente = osiris_erp_cobros_enca.pid_paciente "+
+										"AND osiris_erp_cobros_enca.alta_paciente = false "+
+										"AND osiris_erp_cobros_enca.cancelado = false "+
+										"AND osiris_erp_cobros_enca.alta_paciente = 'false' "+
+										"AND osiris_erp_cobros_enca.pagado = 'false' "+
+										"AND osiris_erp_cobros_enca.cerrado = 'false' "+
+										"AND osiris_erp_cobros_enca.reservacion = 'false' "+
+										"AND apellido_paterno_paciente LIKE '%",
+									"SELECT osiris_erp_cobros_enca.folio_de_servicio,osiris_his_paciente.pid_paciente AS pidpaciente,nombre1_paciente,nombre2_paciente, apellido_paterno_paciente,id_quienlocreo_paciente,"+
+									"apellido_materno_paciente, to_char(fecha_nacimiento_paciente,'yyyy-MM-dd') AS fech_nacimiento,sexo_paciente,"+
+									"to_char(to_number(to_char(age('"+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"',osiris_his_paciente.fecha_nacimiento_paciente),'yyyy') ,'9999'),'9999') AS edad,"+
+									"to_char(to_number(to_char(age('"+DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss")+"',osiris_his_paciente.fecha_nacimiento_paciente),'MM'),'99'),'99') AS mesesedad,"+
+									"to_char(fechahora_registro_paciente,'dd-MM-yyyy HH:mi:ss') AS fech_creacion,activo FROM osiris_his_paciente,osiris_erp_cobros_enca WHERE activo = 'true' "+
+										"AND osiris_his_paciente.pid_paciente = osiris_erp_cobros_enca.pid_paciente "+
+										"AND osiris_erp_cobros_enca.alta_paciente = false "+
+										"AND osiris_erp_cobros_enca.cancelado = false "+
+										"AND osiris_erp_cobros_enca.alta_paciente = 'false' "+
+										"AND osiris_erp_cobros_enca.pagado = 'false' "+
+										"AND osiris_erp_cobros_enca.cerrado = 'false' "+
+										"AND osiris_erp_cobros_enca.reservacion = 'false' "+
+										"AND nombre1_paciente LIKE '%",
+									"SELECT osiris_erp_cobros_enca.folio_de_servicio,osiris_his_paciente.pid_paciente AS pidpaciente,nombre1_paciente,nombre2_paciente, apellido_paterno_paciente,id_quienlocreo_paciente,"+
+									"apellido_materno_paciente, to_char(fecha_nacimiento_paciente,'yyyy-MM-dd') AS fech_nacimiento,sexo_paciente,"+
+									"to_char(to_number(to_char(age('"+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"',osiris_his_paciente.fecha_nacimiento_paciente),'yyyy') ,'9999'),'9999') AS edad,"+
+									"to_char(to_number(to_char(age('"+DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss")+"',osiris_his_paciente.fecha_nacimiento_paciente),'MM'),'99'),'99') AS mesesedad,"+
+									"to_char(fechahora_registro_paciente,'dd-MM-yyyy HH:mi:ss') AS fech_creacion,activo FROM osiris_his_paciente,osiris_erp_cobros_enca WHERE activo = 'true' "+
+										"AND osiris_his_paciente.pid_paciente = osiris_erp_cobros_enca.pid_paciente "+
+										"AND osiris_erp_cobros_enca.alta_paciente = false "+
+										"AND osiris_erp_cobros_enca.cancelado = false "+
+										"AND osiris_erp_cobros_enca.alta_paciente = 'false' "+
+										"AND osiris_erp_cobros_enca.pagado = 'false' "+
+										"AND osiris_erp_cobros_enca.cerrado = 'false' "+
+										"AND osiris_erp_cobros_enca.reservacion = 'false' "+
+										"AND osiris_his_paciente.pid_paciente = '"};			
+			classfind_data.buscandor(parametros_objetos,parametros_sql,"find_paciente"," ORDER BY osiris_his_paciente.pid_paciente","%' ",1);
+		}
+			
 		void llenado_de_material_solicitado()
 		{
 			this.treeViewEngineSolicitado.Clear(); // Limpia el treeview cuando realiza una nueva busqueda
-			
-			NpgsqlConnection conexion; 
-			conexion = new NpgsqlConnection (connectionString+nombrebd);
-            
-			// Verifica que la base de datos este conectada
-			try{
-				conexion.Open ();
-				NpgsqlCommand comando; 
-				comando = conexion.CreateCommand ();
-               	comando.CommandText = "SELECT osiris_his_solicitudes_deta.folio_de_solicitud,to_char(osiris_his_solicitudes_deta.id_producto,'999999999999') AS idproductos,"+
+			string sql_envio_subalmacenes = "SELECT osiris_his_solicitudes_deta.folio_de_solicitud,to_char(osiris_his_solicitudes_deta.id_producto,'999999999999') AS idproductos,"+
                						"to_char(cantidad_solicitada,'99999999.999') AS cantidadsolicitada,"+
                						"to_char(osiris_his_solicitudes_deta.precio_producto_publico,'999999999.99') AS precioproductopublico,"+
                						"to_char(osiris_his_solicitudes_deta.costo_por_unidad,'999999999.99') AS costoporunidad,"+
@@ -865,6 +933,7 @@ namespace osiris
 									"descripcion_grupo_producto,descripcion_grupo1_producto,"+
 									"osiris_his_solicitudes_deta.folio_de_servicio AS foliodeatencion,"+
 									"osiris_his_solicitudes_deta.pid_paciente AS pidpaciente,"+
+									"solicitud_stock,pre_solicitud,nombre_paciente,procedimiento_qx,diagnostico_qx,"+
 									"nombre1_paciente,nombre2_paciente,apellido_paterno_paciente,apellido_materno_paciente "+
 									//",descripcion_grupo2_producto "+
                						"FROM osiris_his_solicitudes_deta,osiris_his_paciente,osiris_productos,osiris_grupo_producto,osiris_grupo1_producto "+
@@ -880,11 +949,29 @@ namespace osiris
 									"AND sin_stock = 'false' "+
 									"AND solicitado_erroneo = 'false' "+
 									"AND envio_directo = 'false' "+
-									"AND osiris_his_solicitudes_deta.eliminado = 'false' "+
+									"AND osiris_his_solicitudes_deta.eliminado = 'false' ";
+			string nombrepaciente;
+			NpgsqlConnection conexion; 
+			conexion = new NpgsqlConnection (connectionString+nombrebd);
+            
+			// Verifica que la base de datos este conectada
+			try{
+				conexion.Open ();
+				NpgsqlCommand comando; 
+				comando = conexion.CreateCommand ();
+               	comando.CommandText = sql_envio_subalmacenes+
 									"ORDER BY osiris_his_solicitudes_deta.id_secuencia;";
 				//Console.WriteLine(comando.CommandText);
 				NpgsqlDataReader lector = comando.ExecuteReader ();
-				while(lector.Read()){			
+				while(lector.Read()){
+					if((bool) lector["pre_solicitud"] == true){
+						nombrepaciente = (string) lector["nombre_paciente"].ToString().Trim();
+					}else{
+						nombrepaciente = (string) lector["nombre1_paciente"].ToString().Trim()+" "+
+							             (string) lector["nombre2_paciente"].ToString().Trim()+" "+
+							             (string) lector["apellido_paterno_paciente"].ToString().Trim()+" "+
+							             (string) lector["apellido_materno_paciente"].ToString().Trim();	
+					}
 					this.treeViewEngineSolicitado.AppendValues(false,
 													(string) lector["cantidadsolicitada"],
 													"0",
@@ -897,10 +984,10 @@ namespace osiris
 													"0",
 					                                (string) lector["foliodeatencion"].ToString().Trim(),
 					                                (string) lector["pidpaciente"].ToString().Trim(),
-					                                (string) lector["nombre1_paciente"].ToString().Trim()+" "+
-													(string) lector["nombre2_paciente"].ToString().Trim()+" "+
-													(string) lector["apellido_paterno_paciente"].ToString().Trim()+" "+
-													(string) lector["apellido_materno_paciente"].ToString().Trim() );
+					                               	nombrepaciente,
+					                                (bool) lector["solicitud_stock"],
+					                                (bool) lector["pre_solicitud"]);
+					//col_agenda0.SetCellDataFunc(cellrt0, new Gtk.TreeCellDataFunc(cambia_colores_fila));
 				}				
 			}catch (NpgsqlException ex){
 		   		Console.WriteLine ("PostgresSQL error: {0}",ex.Message);
@@ -923,24 +1010,26 @@ namespace osiris
 													typeof(string),		// 7 Almacena la secuencia de la tabla de datos
 													typeof(string),		// 8 se ocupa para cuando es envio sin solicitud Costo por unidad
 													typeof(string),		// 9 se ocupa para cuando es envio sin solicitud precio publico
-			                                        typeof(string),		// 10 Foliio de Atencion
+			                                        typeof(string),		// 10 Folio de Atencion
 			                                        typeof(string),		// 11 Pid del paciente
-			                                        typeof(string)		// 12 nombre del paciente
-			                                         
-													);
+			                                        typeof(string),		// 12 nombre del paciente
+			                                        typeof(bool),		// 13 Solicitud para Stock
+			                                        typeof(bool),		// 14 Pre-Solicitud de Quirofano
+													typeof(string),		// 15 Procedimiento
+			                                        typeof(string));	// 
 												
 			lista_de_materiales_solicitados.Model = treeViewEngineSolicitado;
 			
 			lista_de_materiales_solicitados.RulesHint = true;
 			
-			TreeViewColumn col_surtir = new TreeViewColumn();
-			CellRendererToggle cel_surtir = new CellRendererToggle();
-			col_surtir.Title = "Surtir"; // titulo de la cabecera de la columna, si está visible
-			col_surtir.PackStart(cel_surtir, true);
-			col_surtir.AddAttribute (cel_surtir, "active", 0);
-			cel_surtir.Activatable = true;
-			cel_surtir.Toggled += selecciona_fila;
-			col_surtir.SortColumnId = (int) Column_solicitudes.col_surtir;
+			col_envios00 = new TreeViewColumn();
+			cellrt00 = new CellRendererToggle();
+			col_envios00.Title = "Surtir"; // titulo de la cabecera de la columna, si está visible
+			col_envios00.PackStart(cellrt00, true);
+			col_envios00.AddAttribute (cellrt00, "active", 0);
+			cellrt00.Activatable = true;
+			cellrt00.Toggled += selecciona_fila;
+			col_envios00.SortColumnId = (int) Column_solicitudes.col_envios00;
 			
 			TreeViewColumn col_cant_solicitado = new TreeViewColumn();
 			CellRendererText cel_cant_solicitado = new CellRendererText();
@@ -1008,8 +1097,22 @@ namespace osiris
 			col_nombrepaciente.PackStart(cel_nombrepaciente, true);
 			col_nombrepaciente.AddAttribute (cel_nombrepaciente, "text", 12);
 			col_nombrepaciente.SortColumnId = (int) Column_solicitudes.col_nombrepaciente;
+			
+			TreeViewColumn col_envios13 = new TreeViewColumn();
+			CellRendererToggle cellrt13 = new CellRendererToggle();
+			col_envios13.Title = "Para Stock"; // titulo de la cabecera de la columna, si está visible
+			col_envios13.PackStart(cellrt13, true);
+			col_envios13.AddAttribute (cellrt13, "active", 13);
+			//col_envios13.SortColumnId = (int) Column_solicitudes.col_surtir;
+			
+			TreeViewColumn col_envios14 = new TreeViewColumn();
+			CellRendererToggle cellrt14 = new CellRendererToggle();
+			col_envios14.Title = "Pre-Solicitud"; // titulo de la cabecera de la columna, si está visible
+			col_envios14.PackStart(cellrt14, true);
+			col_envios14.AddAttribute (cellrt14, "active", 14);
+			//col_envios13.SortColumnId = (int) Column_solicitudes.col_surtir;
 						
-			lista_de_materiales_solicitados.AppendColumn(col_surtir);
+			lista_de_materiales_solicitados.AppendColumn(col_envios00);
 			lista_de_materiales_solicitados.AppendColumn(col_cant_solicitado);
 			lista_de_materiales_solicitados.AppendColumn(col_autorizado);
 			lista_de_materiales_solicitados.AppendColumn(col_nro_solicitud);
@@ -1019,11 +1122,13 @@ namespace osiris
 			lista_de_materiales_solicitados.AppendColumn(col_folioatencion);
 			lista_de_materiales_solicitados.AppendColumn(col_pidpaciente);
 			lista_de_materiales_solicitados.AppendColumn(col_nombrepaciente);
+			lista_de_materiales_solicitados.AppendColumn(col_envios13);
+			lista_de_materiales_solicitados.AppendColumn(col_envios14);
 		}
 		
 		enum Column_solicitudes
 		{
-			col_surtir,
+			col_envios00,
 			col_cant_solicitado,
 			col_autorizado,
 			col_nro_solicitud,
@@ -1128,7 +1233,7 @@ namespace osiris
 			col_grupo2prod
 		}
 		
-		void on_selecciona_producto_clicked (object sender, EventArgs args)
+		void on_selecciona_producto_clicked(object sender, EventArgs args)
 		{
 			TreeModel model;
 			TreeIter iterSelected;

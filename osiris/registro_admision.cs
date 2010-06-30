@@ -2268,6 +2268,7 @@ namespace osiris
 			// Cierra Ventana
 			button_salir.Clicked += new EventHandler(on_cierraventanas_clicked);
 			button_cancelar_pid.Sensitive = false;
+			button_admision.Clicked += new EventHandler(on_button_admision_clicked);
 			// desactiva botton de intermaniento de paciente
 			button_admision.Sensitive = true;
 	        //Entrada de Fecha de Nacimiento valida solo numeros
@@ -2312,15 +2313,6 @@ namespace osiris
 			}
 			conexion.Close ();
 			
-			
-			//store1.AppendValues ("Particular-Privado",200);
-			//store1.AppendValues ("Aseguradora",400);
-			//store1.AppendValues ("Membresias",100);
-			//store1.AppendValues ("Tarjeta de Descuento",101);
-			//store1.AppendValues ("Empresas",102);
-			//store1.AppendValues ("Sistema Hospitalario OSIRIS",300);
-			//store1.AppendValues ("Municipios",500);
-	        	              
 			TreeIter iter1;
 			if (store1.GetIterFirst(out iter1)){
 				combobox_tipo_paciente.SetActiveIter (iter1);

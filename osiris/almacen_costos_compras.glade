@@ -4720,9 +4720,8 @@ Ordenes de Compra</property>
                   <widget class="GtkHBox" id="hbox154">
                     <property name="visible">True</property>
                     <child>
-                      <widget class="GtkRadioButton" id="radiobutton1">
-                        <property name="label" translatable="yes">Solicitudes a
-Pacientes</property>
+                      <widget class="GtkRadioButton" id="radiobutton_todas_solici">
+                        <property name="label" translatable="yes">Todas</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">False</property>
@@ -4734,42 +4733,57 @@ Pacientes</property>
                       </packing>
                     </child>
                     <child>
-                      <widget class="GtkRadioButton" id="radiobutton2">
-                        <property name="label" translatable="yes">Solicitudes para
-Stock de Sub-Almacenes</property>
+                      <widget class="GtkRadioButton" id="radiobutton_solic_paciente">
+                        <property name="label" translatable="yes">Solictudes a
+Pacientes</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">False</property>
                         <property name="active">True</property>
                         <property name="draw_indicator">True</property>
-                        <property name="group">radiobutton1</property>
+                        <property name="group">radiobutton_todas_solici</property>
                       </widget>
                       <packing>
                         <property name="position">1</property>
                       </packing>
                     </child>
                     <child>
-                      <widget class="GtkRadioButton" id="radiobutton3">
-                        <property name="label" translatable="yes">Pre-Solicitudes</property>
+                      <widget class="GtkRadioButton" id="radiobutton_solic_stock">
+                        <property name="label" translatable="yes">Solicitudes para
+Stock de Sub-Alamcenes</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">False</property>
                         <property name="tooltip" translatable="yes">Estas pre-solicitudes se ocupan en quirofano para que almacen tenga todos los producctos necesarios cuando se realice la cirugia</property>
                         <property name="active">True</property>
                         <property name="draw_indicator">True</property>
-                        <property name="group">radiobutton1</property>
+                        <property name="group">radiobutton_todas_solici</property>
                       </widget>
                       <packing>
                         <property name="position">2</property>
                       </packing>
                     </child>
                     <child>
-                      <widget class="GtkFixed" id="fixed1">
-                        <property name="width_request">272</property>
+                      <widget class="GtkRadioButton" id="radiobutton_pre_solic">
+                        <property name="label" translatable="yes">Pre-Solicitudes</property>
                         <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="receives_default">False</property>
+                        <property name="active">True</property>
+                        <property name="draw_indicator">True</property>
+                        <property name="group">radiobutton_todas_solici</property>
                       </widget>
                       <packing>
                         <property name="position">3</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <widget class="GtkFixed" id="fixed1">
+                        <property name="width_request">200</property>
+                        <property name="visible">True</property>
+                      </widget>
+                      <packing>
+                        <property name="position">4</property>
                       </packing>
                     </child>
                   </widget>

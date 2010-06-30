@@ -2683,7 +2683,7 @@ Sub-Almacen</property>
                       </packing>
                     </child>
                     <child>
-                      <widget class="GtkCheckButton" id="checkbutton1">
+                      <widget class="GtkCheckButton" id="checkbutton_sol_parastock">
                         <property name="label" translatable="yes">Solicitud para Stock</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
@@ -2696,9 +2696,9 @@ Sub-Almacen</property>
                       </packing>
                     </child>
                     <child>
-                      <widget class="GtkCheckButton" id="checkbutton2">
-                        <property name="label" translatable="yes">Solicitud Temporal
-para Quirofano</property>
+                      <widget class="GtkCheckButton" id="checkbutton_presolicitud">
+                        <property name="label" translatable="yes">Pre-Solicitud
+para Almacen</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">False</property>
@@ -2998,18 +2998,69 @@ para Quirofano</property>
                   </packing>
                 </child>
                 <child>
+                  <widget class="GtkHBox" id="hbox4">
+                    <property name="visible">True</property>
+                    <child>
+                      <widget class="GtkLabel" id="label3">
+                        <property name="width_request">60</property>
+                        <property name="visible">True</property>
+                        <property name="label" translatable="yes">Procedimiento</property>
+                      </widget>
+                      <packing>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <widget class="GtkEntry" id="entry_procedimiento">
+                        <property name="width_request">230</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="invisible_char">&#x25CF;</property>
+                      </widget>
+                      <packing>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <widget class="GtkLabel" id="label4">
+                        <property name="width_request">60</property>
+                        <property name="visible">True</property>
+                        <property name="label" translatable="yes">Diagnostico</property>
+                      </widget>
+                      <packing>
+                        <property name="position">2</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <widget class="GtkEntry" id="entry_diagnostico">
+                        <property name="width_request">230</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="invisible_char">&#x25CF;</property>
+                      </widget>
+                      <packing>
+                        <property name="position">3</property>
+                      </packing>
+                    </child>
+                  </widget>
+                  <packing>
+                    <property name="position">3</property>
+                  </packing>
+                </child>
+                <child>
                   <widget class="GtkHBox" id="hbox58">
                     <property name="visible">True</property>
                     <child>
                       <widget class="GtkScrolledWindow" id="scrolledwindow6">
                         <property name="visible">True</property>
-                        <property name="can_focus">False</property>
+                        <property name="can_focus">True</property>
                         <property name="hscrollbar_policy">automatic</property>
                         <property name="vscrollbar_policy">automatic</property>
                         <child>
                           <widget class="GtkTreeView" id="lista_produc_solicitados">
                             <property name="width_request">765</property>
                             <property name="visible">True</property>
+                            <property name="can_focus">True</property>
                           </widget>
                         </child>
                       </widget>
@@ -3023,7 +3074,7 @@ para Quirofano</property>
                         <property name="orientation">vertical</property>
                         <child>
                           <widget class="GtkFixed" id="fixed31">
-                            <property name="height_request">184</property>
+                            <property name="height_request">140</property>
                             <property name="visible">True</property>
                           </widget>
                           <packing>
@@ -3128,7 +3179,7 @@ para Quirofano</property>
                         </child>
                         <child>
                           <widget class="GtkFixed" id="fixed82">
-                            <property name="height_request">244</property>
+                            <property name="height_request">240</property>
                             <property name="visible">True</property>
                           </widget>
                           <packing>
@@ -3142,11 +3193,11 @@ para Quirofano</property>
                     </child>
                   </widget>
                   <packing>
-                    <property name="position">3</property>
+                    <property name="position">4</property>
                   </packing>
                 </child>
                 <child>
-                  <widget class="GtkHBox" id="hbox55">
+                  <widget class="GtkHBox" id="hbox1">
                     <property name="visible">True</property>
                     <child>
                       <widget class="GtkLabel" id="label122">
@@ -3172,12 +3223,45 @@ para Quirofano</property>
                     </child>
                     <child>
                       <widget class="GtkButton" id="button_busca_producto">
-                        <property name="label">gtk-find</property>
-                        <property name="width_request">75</property>
                         <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="receives_default">False</property>
-                        <property name="use_stock">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="receives_default">True</property>
+                        <child>
+                          <widget class="GtkAlignment" id="alignment1">
+                            <property name="visible">True</property>
+                            <property name="xscale">0</property>
+                            <property name="yscale">0</property>
+                            <child>
+                              <widget class="GtkHBox" id="hbox2">
+                                <property name="visible">True</property>
+                                <property name="spacing">2</property>
+                                <child>
+                                  <widget class="GtkImage" id="image1">
+                                    <property name="visible">True</property>
+                                    <property name="stock">gtk-find</property>
+                                  </widget>
+                                  <packing>
+                                    <property name="expand">False</property>
+                                    <property name="fill">False</property>
+                                    <property name="position">0</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <widget class="GtkLabel" id="label1">
+                                    <property name="visible">True</property>
+                                    <property name="label" translatable="yes">Buscar</property>
+                                    <property name="use_underline">True</property>
+                                  </widget>
+                                  <packing>
+                                    <property name="expand">False</property>
+                                    <property name="fill">False</property>
+                                    <property name="position">1</property>
+                                  </packing>
+                                </child>
+                              </widget>
+                            </child>
+                          </widget>
+                        </child>
                       </widget>
                       <packing>
                         <property name="expand">False</property>
@@ -3187,13 +3271,45 @@ para Quirofano</property>
                     </child>
                     <child>
                       <widget class="GtkButton" id="button_quitar_productos">
-                        <property name="label">gtk-remove</property>
-                        <property name="width_request">75</property>
                         <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="receives_default">False</property>
-                        <property name="tooltip" translatable="yes">Quita elemento de la lista de cargos extras</property>
-                        <property name="use_stock">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="receives_default">True</property>
+                        <child>
+                          <widget class="GtkAlignment" id="alignment2">
+                            <property name="visible">True</property>
+                            <property name="xscale">0</property>
+                            <property name="yscale">0</property>
+                            <child>
+                              <widget class="GtkHBox" id="hbox3">
+                                <property name="visible">True</property>
+                                <property name="spacing">2</property>
+                                <child>
+                                  <widget class="GtkImage" id="image2">
+                                    <property name="visible">True</property>
+                                    <property name="stock">gtk-remove</property>
+                                  </widget>
+                                  <packing>
+                                    <property name="expand">False</property>
+                                    <property name="fill">False</property>
+                                    <property name="position">0</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <widget class="GtkLabel" id="label2">
+                                    <property name="visible">True</property>
+                                    <property name="label" translatable="yes">Buscar</property>
+                                    <property name="use_underline">True</property>
+                                  </widget>
+                                  <packing>
+                                    <property name="expand">False</property>
+                                    <property name="fill">False</property>
+                                    <property name="position">1</property>
+                                  </packing>
+                                </child>
+                              </widget>
+                            </child>
+                          </widget>
+                        </child>
                       </widget>
                       <packing>
                         <property name="expand">False</property>
@@ -3203,7 +3319,7 @@ para Quirofano</property>
                     </child>
                   </widget>
                   <packing>
-                    <property name="position">4</property>
+                    <property name="position">5</property>
                   </packing>
                 </child>
               </widget>

@@ -67,6 +67,10 @@ namespace osiris
 		[Widget] Gtk.Entry entry_nombre_paciente = null;
 		[Widget] Gtk.Button button_busca_paciente = null;
 		[Widget] Gtk.CheckButton checkbutton_nueva_solicitud;
+		[Widget] Gtk.CheckButton checkbutton_sol_parastock = null;
+		[Widget] Gtk.CheckButton checkbutton_presolicitud = null;
+		[Widget] Gtk.Entry entry_procedimiento = null;
+		[Widget] Gtk.Entry entry_diagnostico = null;
 		[Widget] Gtk.TreeView lista_produc_solicitados;
 		
 		[Widget] Gtk.Entry entry_rojo;
@@ -110,7 +114,7 @@ namespace osiris
 		
 		class_conexion conexion_a_DB = new class_conexion();
 		class_buscador classfind_data = new class_buscador();
-		class_public classpublic = new class_public();		
+		class_public classpublic = new class_public();	
 		
 		public solicitud_material(string LoginEmp_, string NomEmpleado_, string AppEmpleado_, string ApmEmpleado_, string nombrebd_,int idalmacen_) 
 		{
@@ -142,9 +146,10 @@ namespace osiris
 			//Button Seleccion una Solicitud
 			button_selecciona_solicitud.Clicked += new EventHandler(on_button_selecciona_solicitud_clicked);
 			//Button envio de solicitud para alamcen
-			this.button_envio_solicitud.Clicked += new EventHandler(on_button_envio_solicitud_clicked);
+			button_envio_solicitud.Clicked += new EventHandler(on_button_envio_solicitud_clicked);
 			//button_buscar_solicitudes.Clicked += new EventHandler(on_button_buscar_solicitudes_clicked);
-			
+			checkbutton_sol_parastock.Clicked += new EventHandler(on_checkbutton_sol_parastock_clicked);
+			checkbutton_presolicitud.Clicked += new EventHandler(on_checkbutton_presolicitud_clicked);
 			//buscar pacientes
 			button_busca_paciente.Clicked += new EventHandler(on_button_busca_paciente_clicked);
 			
@@ -154,7 +159,11 @@ namespace osiris
 			button_envio_solicitud.Sensitive = false;
 			button_quitar_productos.Sensitive = false;
 			button_busca_producto.Sensitive = false;
-			button_imprime_solicitud.Sensitive = true;				
+			button_imprime_solicitud.Sensitive = true;
+			entry_procedimiento.Sensitive = false;
+			entry_diagnostico.Sensitive = false;
+			checkbutton_presolicitud.Sensitive = false;
+			checkbutton_sol_parastock.Sensitive = false;
 			
 			entry_quien_solicita.Text = NomEmpleado+" "+AppEmpleado+" "+ApmEmpleado;
 			////// Sale de la ventana
@@ -162,30 +171,24 @@ namespace osiris
 			// Colores de los cuadros		
 			entry_rojo.ModifyBase(StateType.Normal, new Gdk.Color(255,0,0));
 			entry_azul.ModifyBase(StateType.Normal, new Gdk.Color(0,0,255));
-			entry_verde.ModifyBase(StateType.Normal, new Gdk.Color(0,255,0));
-			
+			entry_verde.ModifyBase(StateType.Normal, new Gdk.Color(0,255,0));			
 			statusbar_hospital.Pop(0);
 			statusbar_hospital.Push(1, "login: "+LoginEmpleado+"  |Usuario: "+NomEmpleado+" "+AppEmpleado+" "+ApmEmpleado);
-			statusbar_hospital.HasResizeGrip = false;
-			
-			//entry_folio_servicio.Text = "ejemplo";
-			
+			statusbar_hospital.HasResizeGrip = false;			
+			//entry_folio_servicio.Text = "ejemplo";			
 			crea_treeview_solicitud();
 		}
 
 		void on_button_busca_producto_clicked(object sender, EventArgs args)
 		{
 			Glade.XML gxml = new Glade.XML (null, "hospitalizacion.glade", "busca_producto", null);
-			gxml.Autoconnect (this);
-			
-			crea_treeview_busqueda("producto");
-			
+			gxml.Autoconnect (this);			
+			crea_treeview_busqueda("producto");			
 			button_buscar_busqueda.Clicked += new EventHandler(on_llena_lista_producto_clicked);
 			button_selecciona.Clicked += new EventHandler(on_selecciona_producto_clicked);
 			button_salir.Clicked += new EventHandler(on_cierraventanas_clicked); // esta sub-clase esta en hscmty.cs
 			label_titulo_cantidad.Text = "Cantidad Solicitada";	
-			entry_expresion.KeyPressEvent += onKeyPressEvent_entry_expresion;
-			
+			entry_expresion.KeyPressEvent += onKeyPressEvent_entry_expresion;			
 			// Validando que sen solo numeros
 			entry_cantidad_aplicada.KeyPressEvent += onKeyPressEvent;
 	    }
@@ -210,27 +213,34 @@ namespace osiris
 				msgBox.Destroy();
 		 		if (miResultado == ResponseType.Yes){
 	    			ultimasolicitud = classpublic.lee_ultimonumero_registrado("osiris_his_solicitudes_deta","folio_de_solicitud","WHERE id_almacen = '"+idalmacen.ToString().Trim()+"' ");
-					this.entry_numero_solicitud.Text = ultimasolicitud.ToString().Trim();
-					this.entry_fecha_solicitud.Text = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");	    			
-	    			this.treeViewEngineSolicitud.Clear(); // Limpia el treeview
+					entry_numero_solicitud.Text = ultimasolicitud.ToString().Trim();
+					entry_fecha_solicitud.Text = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");	    			
+	    			treeViewEngineSolicitud.Clear(); // Limpia el treeview
 	    			button_guardar_solicitud.Sensitive = true;
 					button_quitar_productos.Sensitive = true;
 					button_busca_producto.Sensitive = true;
-					this.button_selecciona_solicitud.Sensitive = false;
-					this.button_buscar_solicitudes.Sensitive = false;
-					this.entry_numero_solicitud.IsEditable = false;	
+					button_selecciona_solicitud.Sensitive = false;
+					button_buscar_solicitudes.Sensitive = false;
+					entry_numero_solicitud.IsEditable = false;	
 					entry_status_solicitud.Text = "";
+					checkbutton_presolicitud.Sensitive = true;
+					checkbutton_sol_parastock.Sensitive = true;
+					entry_folio_servicio.Text = "0";
+					entry_pid_paciente.Text = "0";
+					entry_nombre_paciente.Text = "";
 	     		}else{
-	     			this.checkbutton_nueva_solicitud.Active = false;
+	     			checkbutton_nueva_solicitud.Active = false;
 	     		}
 	    	}else{
-	    		this.button_guardar_solicitud.Sensitive = false;
-				this.button_envio_solicitud.Sensitive = false;
-				this.button_quitar_productos.Sensitive = false;
-				this.button_busca_producto.Sensitive = false;
-				this.button_selecciona_solicitud.Sensitive = true;
-				this.button_buscar_solicitudes.Sensitive = true;
-				this.entry_numero_solicitud.IsEditable = true;
+	    		button_guardar_solicitud.Sensitive = false;
+				button_envio_solicitud.Sensitive = false;
+				button_quitar_productos.Sensitive = false;
+				button_busca_producto.Sensitive = false;
+				button_selecciona_solicitud.Sensitive = true;
+				button_buscar_solicitudes.Sensitive = true;
+				entry_numero_solicitud.IsEditable = true;
+				checkbutton_presolicitud.Sensitive = false;
+				checkbutton_sol_parastock.Sensitive = false;
 		 	}
 	    }
 		
@@ -364,9 +374,16 @@ namespace osiris
 		 
 		 void almacena_productos_solicitados()
 		 {
-			string ultimasolicitud;			
+			string ultimasolicitud;
+			int folio_de_servicio = int.Parse((string) entry_folio_servicio.Text.ToString().Trim());
 			TreeIter iter;
-			if(int.Parse((string) entry_folio_servicio.Text.ToString().Trim()) != 0){
+			if((bool) checkbutton_sol_parastock.Active == true){
+				folio_de_servicio = 1;
+			}
+			if((bool) checkbutton_presolicitud.Active == true){
+				folio_de_servicio = 1;
+			}
+			if(folio_de_servicio != 0){
 				if(editar == true){
 					ultimasolicitud = classpublic.lee_ultimonumero_registrado("osiris_his_solicitudes_deta","folio_de_solicitud","WHERE id_almacen = '"+idalmacen.ToString().Trim()+"' ");
 					entry_numero_solicitud.Text = ultimasolicitud.ToString().Trim();
@@ -389,7 +406,12 @@ namespace osiris
 																		"cantidad_solicitada,"+
 																		"fechahora_solicitud,"+
 																		"id_quien_solicito,"+
-																		"id_almacen,folio_de_servicio,pid_paciente) "+
+																		"id_almacen,folio_de_servicio,pid_paciente,"+
+																		"solicitud_stock,"+
+																		"pre_solicitud,"+
+																		"nombre_paciente,"+
+																		"procedimiento_qx,"+
+																		"diagnostico_qx)"+
 																		"VALUES ('"+
 																		this.entry_numero_solicitud.Text+"','"+
 																		(string) this.lista_produc_solicitados.Model.GetValue(iter,1)+"','"+
@@ -400,7 +422,12 @@ namespace osiris
 																		LoginEmpleado+"','"+
 																		this.idalmacen.ToString()+"','"+
 																		(string) entry_folio_servicio.Text.ToString().Trim()+"','"+
-																		(string) entry_pid_paciente.Text.ToString().Trim()+"');";
+																		(string) entry_pid_paciente.Text.ToString().Trim()+"','"+
+																		(bool) checkbutton_sol_parastock.Active+"','"+
+																		(bool) checkbutton_presolicitud.Active+"','"+
+																		(string) entry_nombre_paciente.Text.ToString().Trim().ToUpper()+"','"+
+																		(string) entry_procedimiento.Text.ToString().Trim().ToUpper()+"','"+
+																		(string) entry_diagnostico.Text.ToString().Trim().ToUpper()+"');";
 																	
 							//Console.WriteLine(comando.CommandText);
 							comando.ExecuteNonQuery();
@@ -427,7 +454,12 @@ namespace osiris
 																		"cantidad_solicitada,"+
 																		"fechahora_solicitud,"+
 																		"id_quien_solicito,"+
-																		"id_almacen,folio_de_servicio,pid_paciente) "+
+																		"id_almacen,folio_de_servicio,pid_paciente,"+
+																		"solicitud_stock,"+
+																		"pre_solicitud,"+
+																		"nombre_paciente,"+
+																		"procedimiento_qx,"+
+																		"diagnostico_qx)"+
 																		"VALUES ('"+
 																		this.entry_numero_solicitud.Text+"','"+
 																		(string) this.lista_produc_solicitados.Model.GetValue(iter,1)+"','"+
@@ -438,7 +470,12 @@ namespace osiris
 																		LoginEmpleado+"','"+
 																		this.idalmacen.ToString()+"','"+
 																		(string) entry_folio_servicio.Text.ToString().Trim()+"','"+
-																		(string) entry_pid_paciente.Text.ToString().Trim()+"');";
+																		(string) entry_pid_paciente.Text.ToString().Trim()+"','"+
+																		(bool) checkbutton_sol_parastock.Active+"','"+
+																		(bool) checkbutton_presolicitud.Active+"','"+
+																		(string) entry_nombre_paciente.Text.ToString().Trim().ToUpper()+"','"+
+																		(string) entry_procedimiento.Text.ToString().Trim().ToUpper()+"','"+
+																		(string) entry_diagnostico.Text.ToString().Trim().ToUpper()+"');";
 																	
 							//Console.WriteLine(comando.CommandText);
 								comando.ExecuteNonQuery();
@@ -537,7 +574,7 @@ namespace osiris
 									"AND osiris_productos.id_grupo2_producto = osiris_grupo2_producto.id_grupo2_producto "+
 									"AND id_almacen = '"+this.idalmacen.ToString().Trim()+"' "+
 									"ORDER BY osiris_his_solicitudes_deta.id_secuencia;";
-				Console.WriteLine(comando.CommandText);
+				//Console.WriteLine(comando.CommandText);
 				NpgsqlDataReader lector = comando.ExecuteReader ();
 				if(lector.Read()){
 					entry_folio_servicio.Text = (string) lector["foliodeatencion"].ToString().Trim();
@@ -935,6 +972,47 @@ namespace osiris
 			string query_in_almacen = " AND osiris_almacenes.id_almacen = '"+this.idalmacen.ToString().Trim()+"' ";
 			string query_fechas = "";
 			new osiris.rpt_solicitud_subalmacenes(idalmacen,query_in_num,query_in_almacen,query_fechas);
-		}		
+		}
+		
+		void on_checkbutton_sol_parastock_clicked(object sender, EventArgs args)
+		{
+			if(checkbutton_sol_parastock.Active == true){
+				checkbutton_presolicitud.Active = false;
+				entry_folio_servicio.Sensitive = false;
+				entry_pid_paciente.Sensitive = false;
+				entry_nombre_paciente.Sensitive = false;
+				button_busca_paciente.Sensitive = false;
+				entry_procedimiento.Sensitive = false;
+				entry_diagnostico.Sensitive = false;
+				checkbutton_presolicitud.Active = false;
+			}else{
+				entry_folio_servicio.Sensitive = true;
+				entry_pid_paciente.Sensitive = true;
+				entry_nombre_paciente.Sensitive = true;
+				button_busca_paciente.Sensitive = true;
+				entry_procedimiento.Sensitive = false;
+				entry_diagnostico.Sensitive = false;
+			}
+		}
+		
+		void on_checkbutton_presolicitud_clicked(object sender, EventArgs args)
+		{
+			if(checkbutton_presolicitud.Active == true){
+				checkbutton_sol_parastock.Active = false;
+				entry_folio_servicio.Sensitive = false;
+				entry_pid_paciente.Sensitive = false;
+				entry_nombre_paciente.IsEditable = true;
+				button_busca_paciente.Sensitive = false;
+				entry_procedimiento.Sensitive = true;
+				entry_diagnostico.Sensitive = true;
+			}else{
+				entry_folio_servicio.Sensitive = true;
+				entry_pid_paciente.Sensitive = true;
+				entry_nombre_paciente.IsEditable = false;
+				button_busca_paciente.Sensitive = true;
+				entry_procedimiento.Sensitive = false;
+				entry_diagnostico.Sensitive = false;
+			}
+		}
 	}
 }

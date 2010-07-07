@@ -159,10 +159,14 @@ namespace osiris
 					}
 					if((bool) lector["solicitud_stock"] == true){
 						tiposolictud = "SOLICITUD PARA STOCK DEL SUB-ALAMACEN";	
+					}else{
+						tiposolictud = "SOLICITUD A PACIENTE";
 					}
 					if((bool) lector["pre_solicitud"] == true){
 						tiposolictud = "PRE-SOLICITUD PARA CIRUGIAS PROGRAMADAS";
 						nombrepaciente = (string) lector["nombre_paciente"].ToString().Trim();
+					}else{
+						tiposolictud = "SOLICITUD A PACIENTE";
 					}
 					//comprueba las notas de los resultado en el reporte
 					if((bool) lector["sin_stock"] == true){		comentario = "sin stock";	}
@@ -181,10 +185,9 @@ namespace osiris
 					cr.MoveTo(120*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);			layout.SetText(toma_descrip_prod);						Pango.CairoHelper.ShowLayout (cr, layout);
 					cr.MoveTo(405*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);			layout.SetText((string) lector["cantaut"]);				Pango.CairoHelper.ShowLayout (cr, layout);
 					cr.MoveTo(465*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);			layout.SetText(fechaautorizacion);				Pango.CairoHelper.ShowLayout (cr, layout);
-					cr.MoveTo(530*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);			layout.SetText(comentario);				Pango.CairoHelper.ShowLayout (cr, layout);
+					cr.MoveTo(520*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);			layout.SetText(comentario);				Pango.CairoHelper.ShowLayout (cr, layout);
 					comienzo_linea += separacion_linea;
-					while (lector.Read()){
-						
+					while (lector.Read()){						
 						if(numero_solicitud != (int) lector["folio_de_solicitud"] || numero_almacen != (int) lector["idalmacen"]){
 							nombrepaciente = (string) lector["nombre1_paciente"].ToString().Trim()+" "+
 											(string) lector["nombre2_paciente"].ToString().Trim()+" "+
@@ -197,7 +200,10 @@ namespace osiris
 							}
 							if((bool) lector["pre_solicitud"] == true){
 								tiposolictud = "PRE-SOLICITUD PARA CIRUGIAS PROGRAMADAS";
-								nombrepaciente = (string) lector["nombre_paciente"].ToString().Trim();								
+								nombrepaciente = (string) lector["nombre_paciente"].ToString().Trim();
+							}
+							if((bool) lector["solicitud_stock"] == false && (bool) lector["pre_solicitud"] == false){
+								tiposolictud = "SOLICITUD A PACIENTE";
 							}
 							cr.ShowPage();
 							comienzo_linea = 125;
@@ -225,7 +231,7 @@ namespace osiris
 						cr.MoveTo(120*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);			layout.SetText(toma_descrip_prod);					Pango.CairoHelper.ShowLayout (cr, layout);
 						cr.MoveTo(405*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);			layout.SetText((string) lector["cantaut"]);			Pango.CairoHelper.ShowLayout (cr, layout);
 						cr.MoveTo(465*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);			layout.SetText(fechaautorizacion);				Pango.CairoHelper.ShowLayout (cr, layout);
-						cr.MoveTo(530*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);			layout.SetText(comentario);				Pango.CairoHelper.ShowLayout (cr, layout);
+						cr.MoveTo(520*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);			layout.SetText(comentario);				Pango.CairoHelper.ShowLayout (cr, layout);
 						comienzo_linea += separacion_linea;
 						salto_de_pagina(cr,layout,(string) lector["descripcion_almacen"],(string) lector["foliosol"],(string) lector["fecha_envio"],(string) lector["id_quien_solicito"],(string) lector["nombreempl"],
 						                (string) lector["foliodeatencion"].ToString().Trim(),(string) lector["pidpaciente"].ToString().Trim(),nombrepaciente,tiposolictud,

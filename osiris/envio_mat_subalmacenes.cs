@@ -69,7 +69,11 @@ namespace osiris
 		[Widget] Gtk.Button button_busca_producto;
 		[Widget] Gtk.Button button_quitar_productos;
 		[Widget] Gtk.Button button_rpt_surtido;
-		
+		[Widget] Gtk.RadioButton radiobutton_todas_solici = null;
+		[Widget] Gtk.RadioButton radiobutton_solic_paciente = null;
+		[Widget] Gtk.RadioButton radiobutton_solic_stock = null;
+		[Widget] Gtk.RadioButton radiobutton_pre_solic = null;
+				
 		[Widget] Gtk.CheckButton checkbutton_envio_directo;
 				
 		string connectionString;
@@ -84,6 +88,7 @@ namespace osiris
 		int idsubalmacen = 0;
 		string descsubalmacen = "";
 		int idalmacenorigen = 0;
+		string filtro_sub_almacen = "";
 		
 		/////// Ventana Busqueda de productos\\\\\\\\
 		[Widget] Gtk.TreeView lista_de_producto;
@@ -96,6 +101,17 @@ namespace osiris
 		private ListStore treeViewEngineSolicitado;
 		
 		TreeViewColumn col_envios00;		CellRendererToggle cellrt00;
+		TreeViewColumn col_envios01;		CellRendererText cellrt01;
+		TreeViewColumn col_envios02;		CellRendererText cellrt02;
+		TreeViewColumn col_envios03;		CellRendererText cellrt03;
+		TreeViewColumn col_envios04;		CellRendererText cellrt04;
+		TreeViewColumn col_envios05;		CellRendererText cellrt05;
+		TreeViewColumn col_envios06;		CellRendererText cellrt06;
+		TreeViewColumn col_envios10;		CellRendererText cellrt10;
+		TreeViewColumn col_envios11;		CellRendererText cellrt11;
+		TreeViewColumn col_envios12;		CellRendererText cellrt12;
+		TreeViewColumn col_envios13;		CellRendererToggle cellrt13;
+		TreeViewColumn col_envios14;		CellRendererToggle cellrt14;
 		
 		//Declaracion de ventana de error
 		protected Gtk.Window MyWinError;
@@ -119,8 +135,7 @@ namespace osiris
 			Glade.XML gxml = new Glade.XML (null, "almacen_costos_compras.glade", "envia_materiales_subalmacen", null);
 			gxml.Autoconnect (this);
 			////// Muestra ventana de Glade
-			envia_materiales_subalmacen.Show();
-			
+			envia_materiales_subalmacen.Show();			
 			button_surtir_materiales.Clicked += new EventHandler(on_button_surtir_materiales_clicked);
 			button_sin_stock.Clicked += new EventHandler(on_button_sin_stock_clicked);
 			button_pedido_erroneo.Clicked += new EventHandler(on_button_pedido_erroneo_clicked);
@@ -134,10 +149,14 @@ namespace osiris
 			//buscar pacientes
 			button_busca_paciente.Clicked += new EventHandler(on_button_busca_paciente_clicked);
 			////// Sale de la ventana
-			button_salir.Clicked += new EventHandler(on_cierraventanas_clicked);
-			
+			button_salir.Clicked += new EventHandler(on_cierraventanas_clicked);			
 			// envio directo a sub-almacenes
 			checkbutton_envio_directo.Clicked += new EventHandler(on_checkbutton_envio_directo_clicked);
+			// Radiobutton
+			radiobutton_todas_solici.Clicked += new EventHandler(on_radiobutton_filtros_clicked);
+			radiobutton_solic_paciente.Clicked += new EventHandler(on_radiobutton_filtros_clicked);
+			radiobutton_solic_stock.Clicked += new EventHandler(on_radiobutton_filtros_clicked);
+			radiobutton_pre_solic.Clicked += new EventHandler(on_radiobutton_filtros_clicked);
 			
 			entry_desc_producto.Sensitive = false;
 			button_busca_producto.Sensitive = false;
@@ -204,6 +223,43 @@ namespace osiris
 			crea_treeview_envio_materiales();
 		}
 		
+		void on_radiobutton_filtros_clicked(object obj, EventArgs args)
+		{
+			Gtk.RadioButton radiobutton_filtros = (Gtk.RadioButton) obj;
+			if(radiobutton_filtros.Name.ToString() == "radiobutton_todas_solici"){
+				filtro_sub_almacen = "";
+				llenado_de_material_solicitado();
+				entry_folio_servicio.Sensitive = false;
+				entry_pid_paciente.Sensitive = false;
+				entry_nombre_paciente.Sensitive = false;
+				button_busca_paciente.Sensitive = false;
+			}
+			if(radiobutton_filtros.Name.ToString() == "radiobutton_solic_paciente"){
+				filtro_sub_almacen = " AND solicitud_stock = 'false' AND pre_solicitud = 'false' ";
+				llenado_de_material_solicitado();
+				entry_folio_servicio.Sensitive = false;
+				entry_pid_paciente.Sensitive = false;
+				entry_nombre_paciente.Sensitive = false;
+				button_busca_paciente.Sensitive = false;
+			}
+			if(radiobutton_filtros.Name.ToString() == "radiobutton_solic_stock"){
+				filtro_sub_almacen = " AND solicitud_stock = 'true' AND pre_solicitud = 'false' ";
+				llenado_de_material_solicitado();
+				entry_folio_servicio.Sensitive = false;
+				entry_pid_paciente.Sensitive = false;
+				entry_nombre_paciente.Sensitive = false;
+				button_busca_paciente.Sensitive = false;
+			}
+			if(radiobutton_filtros.Name.ToString() == "radiobutton_pre_solic"){
+				filtro_sub_almacen = " AND solicitud_stock = 'false' AND pre_solicitud = 'true' ";
+				llenado_de_material_solicitado();
+				entry_folio_servicio.Sensitive = true;
+				entry_pid_paciente.Sensitive = true;
+				entry_nombre_paciente.Sensitive = true;
+				button_busca_paciente.Sensitive = true;
+			}
+		}
+		
 		void onComboBoxChanged_sub_almacenes(object sender, EventArgs args)
 		{
     		ComboBox combobox_sub_almacenes = sender as ComboBox;
@@ -215,7 +271,7 @@ namespace osiris
 		    	idsubalmacen = (int) combobox_sub_almacenes.Model.GetValue(iter,1);
 		    	descsubalmacen = (string) combobox_sub_almacenes.Model.GetValue(iter,0);
 		    	if (checkbutton_envio_directo.Active == false){
-					Console.WriteLine("selecciona sub almacen");
+					//Console.WriteLine("selecciona sub almacen");
 					llenado_de_material_solicitado();
 				}
 	     	}
@@ -292,12 +348,14 @@ namespace osiris
 												conexion1.Open ();
 												NpgsqlCommand comando1;
 												comando1 = conexion1.CreateCommand();
+												// verificando que asigne un paciente para que la pre-solicitud se pueda surtir
+												
 												comando1.CommandText = "UPDATE osiris_catalogo_almacenes SET stock  = stock + '"+(string) lista_de_materiales_solicitados.Model.GetValue (iterSelected,2)+"',"+
 																		//"historial_surtido_material = historial_surtido_material || '"+LoginEmpleado+" "+(string) lista_de_materiales_solicitados.Model.GetValue (iterSelected,2)+" "+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"\n',"+
 																		"fechahora_ultimo_surtimiento = '"+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"' "+
 																		"WHERE id_almacen = '"+this.idsubalmacen.ToString()+"' "+
 																		"AND id_producto = '"+(string) lista_de_materiales_solicitados.Model.GetValue (iterSelected,5)+"' ;";
-												Console.WriteLine(comando1.CommandText);
+												//Console.WriteLine(comando1.CommandText);
 												comando1.ExecuteNonQuery();
 												
 												comando1.Dispose();
@@ -365,33 +423,31 @@ namespace osiris
 												//Console.WriteLine("inserta el producto");
 												
 												if(this.checkbutton_envio_directo.Active == true && idsubalmacen != idalmacenorigen){
-
-												NpgsqlConnection conexion2;
-                                            	conexion2 = new NpgsqlConnection (connectionString+nombrebd);
-                                             	try{
-	                                                conexion2.Open ();
-	                                                NpgsqlCommand comando2;
-	                                                comando2 = conexion2.CreateCommand();
-	                                                comando2.CommandText = "UPDATE osiris_catalogo_almacenes SET stock  = stock - '"+(string) lista_de_materiales_solicitados.Model.GetValue (iterSelected,2)+"' "+
+													NpgsqlConnection conexion2;
+                                            		conexion2 = new NpgsqlConnection (connectionString+nombrebd);
+                                             		try{
+	                                                	conexion2.Open ();
+	                                                	NpgsqlCommand comando2;
+	                                                	comando2 = conexion2.CreateCommand();
+	                                                	comando2.CommandText = "UPDATE osiris_catalogo_almacenes SET stock  = stock - '"+(string) lista_de_materiales_solicitados.Model.GetValue (iterSelected,2)+"' "+
 	                                                                        //"historial_surtido_material = historial_surtido_material || '"+LoginEmpleado+" "+(string) lista_de_materiales_solicitados.Model.GetValue (iterSelected,2)+" "+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"\n',"+
 	                                                                        //"fechahora_ultimo_surtimiento = '"+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"' "+
 	                                                                        "WHERE id_almacen = '"+idalmacenorigen+"' "+
 	                                                                        "AND id_producto = '"+(string) lista_de_materiales_solicitados.Model.GetValue (iterSelected,5)+"' ;";
-	                                                //Console.WriteLine("Actualiza el Producto");
-	                                                Console.WriteLine("entra "+comando2.CommandText);
+	                                                	//Console.WriteLine("Actualiza el Producto");
+	                                                	//Console.WriteLine("entra "+comando2.CommandText);
 	                                                											
-	                                                comando2.ExecuteNonQuery();
-	                                                comando2.Dispose();
-	                                                conexion2.Close();
-	                                            }catch (NpgsqlException ex){
+	                                                	comando2.ExecuteNonQuery();
+	                                                	comando2.Dispose();
+	                                                	conexion2.Close();
+	                                            	}catch (NpgsqlException ex){
 	                                                   MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
 	                                                            MessageType.Error,
 	                                                            ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
 	                                                msgBoxError.Run ();
-	                                            }
-	                                            conexion2.Close();    
-                                            }												
-												
+	                                            	}
+	                                            	conexion2.Close();    
+                                            	}											
 											}catch (NpgsqlException ex){
 									   			MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
 															MessageType.Error, 
@@ -400,18 +456,33 @@ namespace osiris
 												msgBoxError.Destroy();
 											}
 											conexion1.Close();																																															
-										}
-										
+										}										
 										if (checkbutton_envio_directo.Active == false){
-											comando.CommandText = "UPDATE osiris_his_solicitudes_deta SET cantidad_autorizada = '"+(string) lista_de_materiales_solicitados.Model.GetValue (iterSelected,2)+"',"+
+											if((bool) lista_de_materiales_solicitados.Model.GetValue (iterSelected,14) == true){
+												if(int.Parse((string) entry_folio_servicio.Text.ToString()) != 0){
+													comando.CommandText = "UPDATE osiris_his_solicitudes_deta SET cantidad_autorizada = '"+(string) lista_de_materiales_solicitados.Model.GetValue (iterSelected,2)+"',"+
 															"fechahora_autorizado = '"+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"',"+
 															"id_quien_autorizo = '"+this.LoginEmpleado+"',"+
 															//"stock_cuando_solicito = '"++"',"+
 															"id_almacen_origen = '"+idalmacenorigen.ToString().Trim()+"',"+
 															"surtido = 'true' "+
+															"folio_de_servicio = '"+(string) entry_folio_servicio.Text.ToString()+"',"+
+															"pid_paciente = '"+(string) entry_pid_paciente.Text.ToString()+"',"+
 															"WHERE id_secuencia =  '"+(string) lista_de_materiales_solicitados.Model.GetValue (iterSelected,7)+"';";
-											//Console.WriteLine(comando.CommandText);
-											comando.ExecuteNonQuery();
+													//Console.WriteLine(comando.CommandText);
+													comando.ExecuteNonQuery();
+												}
+											}else{
+												comando.CommandText = "UPDATE osiris_his_solicitudes_deta SET cantidad_autorizada = '"+(string) lista_de_materiales_solicitados.Model.GetValue (iterSelected,2)+"',"+
+													"fechahora_autorizado = '"+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"',"+
+													"id_quien_autorizo = '"+this.LoginEmpleado+"',"+
+														//"stock_cuando_solicito = '"++"',"+
+													"id_almacen_origen = '"+idalmacenorigen.ToString().Trim()+"',"+
+													"surtido = 'true' "+
+													"WHERE id_secuencia =  '"+(string) lista_de_materiales_solicitados.Model.GetValue (iterSelected,7)+"';";
+												//Console.WriteLine(comando.CommandText);
+												comando.ExecuteNonQuery();
+											}
 											comando.Dispose();
 										}
 																				
@@ -529,7 +600,7 @@ namespace osiris
 		                                                                        "WHERE id_almacen = '"+idalmacenorigen+"' "+
 		                                                                        "AND id_producto = '"+(string) lista_de_materiales_solicitados.Model.GetValue (iterSelected,5)+"' ;";
 		                                                //Console.WriteLine("Actualiza el Producto");
-		                                                											Console.WriteLine("entra "+comando.CommandText);
+		                                                //Console.WriteLine("entra "+comando.CommandText);
 		                                                											
 		                                                comando.ExecuteNonQuery();
 		                                                comando.Dispose();
@@ -540,10 +611,8 @@ namespace osiris
 		                                                            ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
 		                                                msgBoxError.Run ();
 		                                            }
-		                                            conexion.Close();    
-													
+		                                            conexion.Close();
 												}
-												
 											}else{
 												NpgsqlConnection conexion3; 
 												conexion3 = new NpgsqlConnection (connectionString+nombrebd);
@@ -569,35 +638,32 @@ namespace osiris
 													comando3.ExecuteNonQuery();
 													comando3.Dispose();		
 													
-												if(this.checkbutton_envio_directo.Active == true && idsubalmacen != idalmacenorigen){
-
-												NpgsqlConnection conexion5;
-                                            	conexion5 = new NpgsqlConnection (connectionString+nombrebd);
-                                             	try{
-	                                                conexion5.Open ();
-	                                                NpgsqlCommand comando5;
-	                                                comando5 = conexion5.CreateCommand();
-	                                                comando5.CommandText = "UPDATE osiris_catalogo_almacenes SET stock  = stock - '"+(string) lista_de_materiales_solicitados.Model.GetValue (iterSelected,2)+"' "+
-	                                                                        //"historial_surtido_material = historial_surtido_material || '"+LoginEmpleado+" "+(string) lista_de_materiales_solicitados.Model.GetValue (iterSelected,2)+" "+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"\n',"+
-	                                                                        //"fechahora_ultimo_surtimiento = '"+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"' "+
-	                                                                        "WHERE id_almacen = '"+idalmacenorigen+"' "+
-	                                                                        "AND id_producto = '"+(string) lista_de_materiales_solicitados.Model.GetValue (iterSelected,5)+"' ;";
-	                                                //Console.WriteLine("Actualiza el Producto");
-	                                                											Console.WriteLine("entra "+comando2.CommandText);
-	                                                											
-	                                                comando5.ExecuteNonQuery();
-	                                                comando5.Dispose();
-	                                                conexion5.Close();
-	                                            }catch (NpgsqlException ex){
-	                                                   MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
-	                                                            MessageType.Error,
-	                                                            ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
-	                                                msgBoxError.Run ();
-	                                            }
-	                                            conexion5.Close();    
-                                            }
-	
-																	
+													if(this.checkbutton_envio_directo.Active == true && idsubalmacen != idalmacenorigen){
+														NpgsqlConnection conexion5;
+		                                            	conexion5 = new NpgsqlConnection (connectionString+nombrebd);
+		                                             	try{
+			                                                conexion5.Open ();
+			                                                NpgsqlCommand comando5;
+			                                                comando5 = conexion5.CreateCommand();
+			                                                comando5.CommandText = "UPDATE osiris_catalogo_almacenes SET stock  = stock - '"+(string) lista_de_materiales_solicitados.Model.GetValue (iterSelected,2)+"' "+
+			                                                                        //"historial_surtido_material = historial_surtido_material || '"+LoginEmpleado+" "+(string) lista_de_materiales_solicitados.Model.GetValue (iterSelected,2)+" "+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"\n',"+
+			                                                                        //"fechahora_ultimo_surtimiento = '"+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"' "+
+			                                                                        "WHERE id_almacen = '"+idalmacenorigen+"' "+
+			                                                                        "AND id_producto = '"+(string) lista_de_materiales_solicitados.Model.GetValue (iterSelected,5)+"' ;";
+			                                                //Console.WriteLine("Actualiza el Producto");
+			                                                											Console.WriteLine("entra "+comando2.CommandText);
+			                                                											
+			                                                comando5.ExecuteNonQuery();
+			                                                comando5.Dispose();
+			                                                conexion5.Close();
+			                                            }catch (NpgsqlException ex){
+			                                                   MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+			                                                            MessageType.Error,
+			                                                            ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
+			                                                msgBoxError.Run ();
+			                                            }
+			                                            conexion5.Close();    
+	                                            	}																
 												}catch (NpgsqlException ex){
 										   			MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
 																MessageType.Error, 
@@ -609,15 +675,32 @@ namespace osiris
 											}
 											
 											if (this.checkbutton_envio_directo.Active == false){
-												comando2.CommandText = "UPDATE osiris_his_solicitudes_deta SET cantidad_autorizada = '"+(string) lista_de_materiales_solicitados.Model.GetValue (iterSelected,2)+"',"+
+												// valida que la pre-solicitud tenga asignado un paciente
+												if((bool) lista_de_materiales_solicitados.Model.GetValue (iterSelected,14) == true){
+													if(int.Parse((string) entry_folio_servicio.Text.ToString()) != 0){
+														comando2.CommandText = "UPDATE osiris_his_solicitudes_deta SET cantidad_autorizada = '"+(string) lista_de_materiales_solicitados.Model.GetValue (iterSelected,2)+"',"+
+															"fechahora_autorizado = '"+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"',"+
+															"id_quien_autorizo = '"+this.LoginEmpleado+"',"+
+															//"stock_cuando_solicito = '"++"',"+
+															"id_almacen_origen = '"+idalmacenorigen.ToString().Trim()+"',"+
+															"surtido = 'true' "+
+															"folio_de_servicio = '"+(string) entry_folio_servicio.Text.ToString()+"',"+
+															"pid_paciente = '"+(string) entry_pid_paciente.Text.ToString()+"',"+
+															"WHERE id_secuencia =  '"+(string) lista_de_materiales_solicitados.Model.GetValue (iterSelected,7)+"';";
+														//Console.WriteLine(comando.CommandText);
+														comando2.ExecuteNonQuery();
+													}
+												}else{
+													comando2.CommandText = "UPDATE osiris_his_solicitudes_deta SET cantidad_autorizada = '"+(string) lista_de_materiales_solicitados.Model.GetValue (iterSelected,2)+"',"+
 														"fechahora_autorizado = '"+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"',"+
 														"id_quien_autorizo = '"+this.LoginEmpleado+"',"+
 														//"stock_cuando_solicito = '"++"',"+
 														"id_almacen_origen = '"+idalmacenorigen.ToString().Trim()+"',"+
 														"surtido = 'true' "+
 														"WHERE id_secuencia =  '"+(string) lista_de_materiales_solicitados.Model.GetValue (iterSelected,7)+"';";
-												//Console.WriteLine(comando.CommandText);
-												comando2.ExecuteNonQuery();
+													//Console.WriteLine(comando.CommandText);
+													comando2.ExecuteNonQuery();
+												}
 												comando2.Dispose();
 											}
 											
@@ -641,7 +724,7 @@ namespace osiris
 																								"envio_directo,"+
 																								"surtido,"+
 																								"fechahora_autorizado,"+
-																								"status ) "+
+																								"status,solicitud_stock,folio_de_servicio,pid_paciente) "+
 																								"VALUES ("+																							
 																								"0,'"+
 																								(string) this.lista_de_materiales_solicitados.Model.GetValue(iterSelected,5)+"','"+
@@ -655,7 +738,10 @@ namespace osiris
 																								"true','"+
 																								"true','"+
 																								DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"','"+
-																								"true');";
+																								"true"+"','"+
+																								(bool) checkbutton_stock_almacen.Active+"','"+
+																								(string) entry_folio_servicio.Text.ToString().Trim()+"','"+
+																								(string) entry_pid_paciente.Text.ToString()+"');";
 																							
 													//Console.WriteLine(comando4.CommandText);
 													comando4.ExecuteNonQuery();
@@ -815,6 +901,10 @@ namespace osiris
 					button_sin_stock.Sensitive = false;
 					checkbutton_stock_almacen.Sensitive = true;
 					checkbutton_stock_paciente.Sensitive = true;
+					radiobutton_pre_solic.Sensitive = false;
+					radiobutton_solic_paciente.Sensitive = false;
+					radiobutton_solic_stock.Sensitive = false;
+					radiobutton_todas_solici.Sensitive = false;
 				}else{
 		 			checkbutton_envio_directo.Active = false;		 			
 		 		}
@@ -825,7 +915,11 @@ namespace osiris
 				button_pedido_erroneo.Sensitive = true;
 				button_sin_stock.Sensitive = true;
 				checkbutton_stock_almacen.Sensitive = false;
-				checkbutton_stock_paciente.Sensitive = false;				
+				checkbutton_stock_paciente.Sensitive = false;
+				radiobutton_pre_solic.Sensitive = true;
+				radiobutton_solic_paciente.Sensitive = true;
+				radiobutton_solic_stock.Sensitive = true;
+				radiobutton_todas_solici.Sensitive = true;
 		 	}
 		}
 		
@@ -959,8 +1053,8 @@ namespace osiris
 				conexion.Open ();
 				NpgsqlCommand comando; 
 				comando = conexion.CreateCommand ();
-               	comando.CommandText = sql_envio_subalmacenes+
-									"ORDER BY osiris_his_solicitudes_deta.id_secuencia;";
+               	comando.CommandText = sql_envio_subalmacenes+filtro_sub_almacen+
+									" ORDER BY osiris_his_solicitudes_deta.id_secuencia;";
 				//Console.WriteLine(comando.CommandText);
 				NpgsqlDataReader lector = comando.ExecuteReader ();
 				while(lector.Read()){
@@ -987,7 +1081,18 @@ namespace osiris
 					                               	nombrepaciente,
 					                                (bool) lector["solicitud_stock"],
 					                                (bool) lector["pre_solicitud"]);
-					//col_agenda0.SetCellDataFunc(cellrt0, new Gtk.TreeCellDataFunc(cambia_colores_fila));
+					col_envios00.SetCellDataFunc(cellrt00, new Gtk.TreeCellDataFunc(cambia_colores_fila));
+					col_envios01.SetCellDataFunc(cellrt01, new Gtk.TreeCellDataFunc(cambia_colores_fila));
+					col_envios02.SetCellDataFunc(cellrt02, new Gtk.TreeCellDataFunc(cambia_colores_fila));
+					col_envios03.SetCellDataFunc(cellrt03, new Gtk.TreeCellDataFunc(cambia_colores_fila));
+					col_envios04.SetCellDataFunc(cellrt04, new Gtk.TreeCellDataFunc(cambia_colores_fila));
+					col_envios05.SetCellDataFunc(cellrt05, new Gtk.TreeCellDataFunc(cambia_colores_fila));
+					col_envios06.SetCellDataFunc(cellrt06, new Gtk.TreeCellDataFunc(cambia_colores_fila));
+					col_envios10.SetCellDataFunc(cellrt10, new Gtk.TreeCellDataFunc(cambia_colores_fila));
+					col_envios11.SetCellDataFunc(cellrt11, new Gtk.TreeCellDataFunc(cambia_colores_fila));
+					col_envios12.SetCellDataFunc(cellrt12, new Gtk.TreeCellDataFunc(cambia_colores_fila));
+					col_envios13.SetCellDataFunc(cellrt13, new Gtk.TreeCellDataFunc(cambia_colores_fila));
+					col_envios14.SetCellDataFunc(cellrt14, new Gtk.TreeCellDataFunc(cambia_colores_fila));
 				}				
 			}catch (NpgsqlException ex){
 		   		Console.WriteLine ("PostgresSQL error: {0}",ex.Message);
@@ -996,6 +1101,33 @@ namespace osiris
 				msgBoxError.Run ();					msgBoxError.Destroy();
 			}
 			conexion.Close ();
+		}
+		
+		//ACCION QUE CAMBIA EL COLOR DEL TEXTO PARA CUANDO SE GUARDA EN LA BASE DE DATOS 
+		void cambia_colores_fila(Gtk.TreeViewColumn column, Gtk.CellRenderer cell, Gtk.TreeModel model, Gtk.TreeIter iter)
+		{			
+			if(cell.GetType().ToString() == "Gtk.CellRendererToggle"){
+				if ((bool) lista_de_materiales_solicitados.Model.GetValue (iter,13)==true){
+					(cell as Gtk.CellRendererToggle).CellBackground = "yellow";					
+				}else{
+					if ((bool) lista_de_materiales_solicitados.Model.GetValue (iter,14)==true){
+						(cell as Gtk.CellRendererToggle).CellBackground = "green";
+					}else{
+						(cell as Gtk.CellRendererToggle).CellBackground = "white";
+					}
+				}
+			}
+			if(cell.GetType().ToString() == "Gtk.CellRendererText"){
+				if ((bool) lista_de_materiales_solicitados.Model.GetValue (iter,13)==true){
+					(cell as Gtk.CellRendererText).CellBackground = "yellow";					
+				}else{
+					if ((bool) lista_de_materiales_solicitados.Model.GetValue (iter,14)==true){
+						(cell as Gtk.CellRendererText).CellBackground = "green";
+					}else{
+						(cell as Gtk.CellRendererText).CellBackground = "white";
+					}
+				}
+			}
 		}
 		
 		void crea_treeview_envio_materiales()
@@ -1030,98 +1162,98 @@ namespace osiris
 			cellrt00.Activatable = true;
 			cellrt00.Toggled += selecciona_fila;
 			col_envios00.SortColumnId = (int) Column_solicitudes.col_envios00;
+						
+			col_envios01 = new TreeViewColumn();
+			cellrt01 = new CellRendererText();
+			col_envios01.Title = "Solicitado"; // titulo de la cabecera de la columna, si está visible
+			col_envios01.PackStart(cellrt01, true);
+			col_envios01.AddAttribute (cellrt01, "text", 1);
+			col_envios01.SortColumnId = (int) Column_solicitudes.col_envios01;
 			
-			TreeViewColumn col_cant_solicitado = new TreeViewColumn();
-			CellRendererText cel_cant_solicitado = new CellRendererText();
-			col_cant_solicitado.Title = "Solicitado"; // titulo de la cabecera de la columna, si está visible
-			col_cant_solicitado.PackStart(cel_cant_solicitado, true);
-			col_cant_solicitado.AddAttribute (cel_cant_solicitado, "text", 1);
-			col_cant_solicitado.SortColumnId = (int) Column_solicitudes.col_cant_solicitado;
+			col_envios02 = new TreeViewColumn();
+			cellrt02 = new CellRendererText();
+			col_envios02.Title = "Autorizado"; // titulo de la cabecera de la columna, si está visible
+			col_envios02.PackStart(cellrt02, true);
+			col_envios02.AddAttribute (cellrt02, "text", 2);
+			col_envios02.SortColumnId = (int) Column_solicitudes.col_envios01;
+			cellrt02.Editable = true;
+			cellrt02.Edited += NumberCellEdited_Autorizado;
 			
-			TreeViewColumn col_autorizado = new TreeViewColumn();
-			CellRendererText cel_autorizado = new CellRendererText();
-			col_autorizado.Title = "Autorizado"; // titulo de la cabecera de la columna, si está visible
-			col_autorizado.PackStart(cel_autorizado, true);
-			col_autorizado.AddAttribute (cel_autorizado, "text", 2);
-			col_autorizado.SortColumnId = (int) Column_solicitudes.col_autorizado;
-			cel_autorizado.Editable = true;
-			cel_autorizado.Edited += NumberCellEdited_Autorizado;
+			col_envios03 = new TreeViewColumn();
+			cellrt03 = new CellRendererText();
+			col_envios03.Title = "Nº Solicitud"; // titulo de la cabecera de la columna, si está visible
+			col_envios03.PackStart(cellrt03, true);
+			col_envios03.AddAttribute (cellrt03, "text", 3);
+			col_envios03.SortColumnId = (int) Column_solicitudes.col_envios03;
 			
-			TreeViewColumn col_nro_solicitud = new TreeViewColumn();
-			CellRendererText cel_nro_solicitud = new CellRendererText();
-			col_nro_solicitud.Title = "Nº Solicitud"; // titulo de la cabecera de la columna, si está visible
-			col_nro_solicitud.PackStart(cel_nro_solicitud, true);
-			col_nro_solicitud.AddAttribute (cel_nro_solicitud, "text", 3);
-			col_nro_solicitud.SortColumnId = (int) Column_solicitudes.col_nro_solicitud;
+			col_envios04 = new TreeViewColumn();
+			cellrt04 = new CellRendererText();
+			col_envios04.Title = "Descripcion del Producto"; // titulo de la cabecera de la columna, si está visible
+			col_envios04.PackStart(cellrt04, true);
+			col_envios04.AddAttribute (cellrt04, "text", 4);
+			col_envios04.SortColumnId = (int) Column_solicitudes.col_envios04;			
+			col_envios04.Resizable = true;
+			cellrt04.Width = 550;
 			
-			TreeViewColumn col_desc_producto = new TreeViewColumn();
-			CellRendererText cel_desc_producto = new CellRendererText();
-			col_desc_producto.Title = "Descripcion del Producto"; // titulo de la cabecera de la columna, si está visible
-			col_desc_producto.PackStart(cel_desc_producto, true);
-			col_desc_producto.AddAttribute (cel_desc_producto, "text", 4);
-			col_desc_producto.SortColumnId = (int) Column_solicitudes.col_desc_producto;			
-			col_desc_producto.Resizable = true;
-			cel_desc_producto.Width = 550;
+			col_envios05 = new TreeViewColumn();
+			cellrt05 = new CellRendererText();
+			col_envios05.Title = "ID. Producto"; // titulo de la cabecera de la columna, si está visible
+			col_envios05.PackStart(cellrt05, true);
+			col_envios05.AddAttribute (cellrt05, "text", 5);
+			col_envios05.SortColumnId = (int) Column_solicitudes.col_envios05;
 			
-			TreeViewColumn col_idproducto = new TreeViewColumn();
-			CellRendererText cel_idproducto = new CellRendererText();
-			col_idproducto.Title = "ID. Producto"; // titulo de la cabecera de la columna, si está visible
-			col_idproducto.PackStart(cel_idproducto, true);
-			col_idproducto.AddAttribute (cel_idproducto, "text", 5);
-			col_idproducto.SortColumnId = (int) Column_solicitudes.col_idproducto;
+			col_envios06 = new TreeViewColumn();
+			cellrt06 = new CellRendererText();
+			col_envios06.Title = "Fecha Solicitado"; // titulo de la cabecera de la columna, si está visible
+			col_envios06.PackStart(cellrt06, true);
+			col_envios06.AddAttribute (cellrt06, "text", 6);
+			col_envios06.SortColumnId = (int) Column_solicitudes.col_envios06;
 			
-			TreeViewColumn col_fecha_solicitado = new TreeViewColumn();
-			CellRendererText cel_fecha_solicitado = new CellRendererText();
-			col_fecha_solicitado.Title = "Fecha Solicitado"; // titulo de la cabecera de la columna, si está visible
-			col_fecha_solicitado.PackStart(cel_fecha_solicitado, true);
-			col_fecha_solicitado.AddAttribute (cel_fecha_solicitado, "text", 6);
-			col_fecha_solicitado.SortColumnId = (int) Column_solicitudes.col_fecha_solicitado;
+			col_envios10 = new TreeViewColumn();
+			cellrt10 = new CellRendererText();
+			col_envios10.Title = "N° Atencion"; // titulo de la cabecera de la columna, si está visible
+			col_envios10.PackStart(cellrt10, true);
+			col_envios10.AddAttribute (cellrt10, "text", 10);
+			col_envios10.SortColumnId = (int) Column_solicitudes.col_envios10;
 			
-			TreeViewColumn col_folioatencion = new TreeViewColumn();
-			CellRendererText cel_folioatencion = new CellRendererText();
-			col_folioatencion.Title = "N° Atencion"; // titulo de la cabecera de la columna, si está visible
-			col_folioatencion.PackStart(cel_folioatencion, true);
-			col_folioatencion.AddAttribute (cel_folioatencion, "text", 10);
-			col_folioatencion.SortColumnId = (int) Column_solicitudes.col_folioatencion;
+			col_envios11 = new TreeViewColumn();
+			cellrt11 = new CellRendererText();
+			col_envios11.Title = "PID"; // titulo de la cabecera de la columna, si está visible
+			col_envios11.PackStart(cellrt11, true);
+			col_envios11.AddAttribute (cellrt11, "text", 11);
+			col_envios11.SortColumnId = (int) Column_solicitudes.col_envios11;
 			
-			TreeViewColumn col_pidpaciente = new TreeViewColumn();
-			CellRendererText cel_pidpaciente = new CellRendererText();
-			col_pidpaciente.Title = "PID"; // titulo de la cabecera de la columna, si está visible
-			col_pidpaciente.PackStart(cel_pidpaciente, true);
-			col_pidpaciente.AddAttribute (cel_pidpaciente, "text", 11);
-			col_pidpaciente.SortColumnId = (int) Column_solicitudes.col_pidpaciente;
+			col_envios12 = new TreeViewColumn();
+			cellrt12 = new CellRendererText();
+			col_envios12.Title = "Nombre Paciente"; // titulo de la cabecera de la columna, si está visible
+			col_envios12.PackStart(cellrt12, true);
+			col_envios12.AddAttribute (cellrt12, "text", 12);
+			col_envios12.SortColumnId = (int) Column_solicitudes.col_envios12;
 			
-			TreeViewColumn col_nombrepaciente = new TreeViewColumn();
-			CellRendererText cel_nombrepaciente = new CellRendererText();
-			col_nombrepaciente.Title = "Nombre Paciente"; // titulo de la cabecera de la columna, si está visible
-			col_nombrepaciente.PackStart(cel_nombrepaciente, true);
-			col_nombrepaciente.AddAttribute (cel_nombrepaciente, "text", 12);
-			col_nombrepaciente.SortColumnId = (int) Column_solicitudes.col_nombrepaciente;
-			
-			TreeViewColumn col_envios13 = new TreeViewColumn();
-			CellRendererToggle cellrt13 = new CellRendererToggle();
+			col_envios13 = new TreeViewColumn();
+			cellrt13 = new CellRendererToggle();
 			col_envios13.Title = "Para Stock"; // titulo de la cabecera de la columna, si está visible
 			col_envios13.PackStart(cellrt13, true);
 			col_envios13.AddAttribute (cellrt13, "active", 13);
-			//col_envios13.SortColumnId = (int) Column_solicitudes.col_surtir;
+			col_envios13.SortColumnId = (int) Column_solicitudes.col_envios13;
 			
-			TreeViewColumn col_envios14 = new TreeViewColumn();
-			CellRendererToggle cellrt14 = new CellRendererToggle();
+			col_envios14 = new TreeViewColumn();
+			cellrt14 = new CellRendererToggle();
 			col_envios14.Title = "Pre-Solicitud"; // titulo de la cabecera de la columna, si está visible
 			col_envios14.PackStart(cellrt14, true);
 			col_envios14.AddAttribute (cellrt14, "active", 14);
-			//col_envios13.SortColumnId = (int) Column_solicitudes.col_surtir;
+			col_envios14.SortColumnId = (int) Column_solicitudes.col_envios14;
 						
 			lista_de_materiales_solicitados.AppendColumn(col_envios00);
-			lista_de_materiales_solicitados.AppendColumn(col_cant_solicitado);
-			lista_de_materiales_solicitados.AppendColumn(col_autorizado);
-			lista_de_materiales_solicitados.AppendColumn(col_nro_solicitud);
-			lista_de_materiales_solicitados.AppendColumn(col_desc_producto);
-			lista_de_materiales_solicitados.AppendColumn(col_idproducto);
-			lista_de_materiales_solicitados.AppendColumn(col_fecha_solicitado);
-			lista_de_materiales_solicitados.AppendColumn(col_folioatencion);
-			lista_de_materiales_solicitados.AppendColumn(col_pidpaciente);
-			lista_de_materiales_solicitados.AppendColumn(col_nombrepaciente);
+			lista_de_materiales_solicitados.AppendColumn(col_envios01);
+			lista_de_materiales_solicitados.AppendColumn(col_envios02);
+			lista_de_materiales_solicitados.AppendColumn(col_envios03);
+			lista_de_materiales_solicitados.AppendColumn(col_envios04);
+			lista_de_materiales_solicitados.AppendColumn(col_envios05);
+			lista_de_materiales_solicitados.AppendColumn(col_envios06);
+			lista_de_materiales_solicitados.AppendColumn(col_envios10);
+			lista_de_materiales_solicitados.AppendColumn(col_envios11);
+			lista_de_materiales_solicitados.AppendColumn(col_envios12);
 			lista_de_materiales_solicitados.AppendColumn(col_envios13);
 			lista_de_materiales_solicitados.AppendColumn(col_envios14);
 		}
@@ -1129,12 +1261,12 @@ namespace osiris
 		enum Column_solicitudes
 		{
 			col_envios00,
-			col_cant_solicitado,
-			col_autorizado,
-			col_nro_solicitud,
-			col_desc_producto,
-			col_idproducto,
-			col_fecha_solicitado,col_folioatencion,col_pidpaciente,col_nombrepaciente
+			col_envios01,
+			col_envios02,
+			col_envios03,
+			col_envios04,
+			col_envios05,
+			col_envios06,col_envios10,col_envios11,col_envios12,col_envios13,col_envios14
 		}
 		
 		// Cuando seleccion el treeview de cargos extras para cargar los productos  
@@ -1235,28 +1367,54 @@ namespace osiris
 		
 		void on_selecciona_producto_clicked(object sender, EventArgs args)
 		{
+			bool valida_paciente = true;
 			TreeModel model;
 			TreeIter iterSelected;
- 			if (lista_de_producto.Selection.GetSelected(out model, out iterSelected)){
- 				if ((float) float.Parse((string) entry_cantidad_aplicada.Text) > 0){
- 					this.treeViewEngineSolicitado.AppendValues(true,
- 														this.entry_cantidad_aplicada.Text,
- 														this.entry_cantidad_aplicada.Text,
- 														"0",
- 														(string) model.GetValue(iterSelected, 1),
- 														(string) model.GetValue(iterSelected, 0),
- 														(string) DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
- 														"0",
- 														(string) model.GetValue(iterSelected, 10),
- 														(string) model.GetValue(iterSelected, 5));
- 					entry_cantidad_aplicada.Text = "0";
- 				}else{
- 					MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
-												MessageType.Error,ButtonsType.Close, 
-											"La cantidad que quiere solicitar debe ser \n"+"distinta a cero, intente de nuevo");
+			if((bool) checkbutton_stock_almacen.Active == true || (bool) checkbutton_stock_paciente.Active == true){
+				if((bool) checkbutton_stock_paciente.Active == true){
+					//Console.WriteLine(entry_folio_servicio.Text.ToString());
+					if(int.Parse(entry_folio_servicio.Text.ToString()) == 0){
+						valida_paciente = false;
+					}
+				}
+				if((bool) valida_paciente == true){				
+					if (lista_de_producto.Selection.GetSelected(out model, out iterSelected)){
+		 				if ((float) float.Parse((string) entry_cantidad_aplicada.Text) > 0){
+		 					this.treeViewEngineSolicitado.AppendValues(true,
+		 														this.entry_cantidad_aplicada.Text,
+		 														this.entry_cantidad_aplicada.Text,
+		 														"0",
+		 														(string) model.GetValue(iterSelected, 1),
+		 														(string) model.GetValue(iterSelected, 0),
+		 														(string) DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
+		 														"0",
+		 														(string) model.GetValue(iterSelected, 10),
+		 														(string) model.GetValue(iterSelected, 5),
+							                                    (string) entry_folio_servicio.Text.ToString() ,
+							                                    (string) entry_pid_paciente.Text.ToString(),
+							                                    (string) entry_nombre_paciente.Text.ToString(),
+							                                    (bool) checkbutton_stock_almacen.Active,
+							                                     false);
+		 					entry_cantidad_aplicada.Text = "0";
+		 				}else{
+		 					MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+														MessageType.Error,ButtonsType.Close, 
+													"La cantidad que quiere solicitar debe ser \n"+"distinta a cero, intente de nuevo");
+							msgBoxError.Run ();					msgBoxError.Destroy();
+		 				}
+					}
+				}else{
+					MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+														MessageType.Error,ButtonsType.Close, 
+													"Seleccione un Paciente... ");
 					msgBoxError.Run ();					msgBoxError.Destroy();
- 				}
- 			} 			
+				}
+ 			}else{
+				MessageDialog msgBoxError2 = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+												MessageType.Error,ButtonsType.Close, 
+												"Debe elegir al menos un tipo de Envio \n"+"STOCK o a un Paciente");
+				msgBoxError2.Run ();					msgBoxError2.Destroy();
+		}
  		}
  		 		
  		void crea_treeview_busqueda(string tipo_busqueda)
@@ -1359,7 +1517,7 @@ namespace osiris
 				var_paso += 1;
 			}
 			if (esnumerico == true){		
-				this.treeViewEngineSolicitado.SetValue(iter,(int) Column_solicitudes.col_autorizado,args.NewText);
+				this.treeViewEngineSolicitado.SetValue(iter,(int) Column_solicitudes.col_envios02,args.NewText);
 				bool old = (bool) lista_de_materiales_solicitados.Model.GetValue (iter,0);
 				lista_de_materiales_solicitados.Model.SetValue(iter,0,!old);
 			}

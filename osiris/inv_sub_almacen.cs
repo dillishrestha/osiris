@@ -372,7 +372,7 @@ namespace osiris
 		
 		void on_button_quitar_clicked (object sender, EventArgs args)		
 		{
-			if(LoginEmpleado =="DOLIVARES" || LoginEmpleado =="ADMIN"){
+			if(LoginEmpleado =="DOLIVARES" || LoginEmpleado =="ADMIN" || LoginEmpleado == "ROLVEDAFLORES"){
 					MessageDialog msgBox2 = new MessageDialog (MyWin,DialogFlags.Modal,
 						                 MessageType.Question,ButtonsType.YesNo,"¿ Esta seguro de Borrar los Materiales Seleccionados?");
 					ResponseType miResultado2 = (ResponseType)msgBox2.Run ();

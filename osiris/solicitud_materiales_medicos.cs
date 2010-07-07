@@ -949,6 +949,7 @@ namespace osiris
 		//ACCION QUE CAMBIA EL COLOR DEL TEXTO PARA CUANDO SE GUARDA EN LA BASE DE DATOS 
 		void cambia_colores_fila(Gtk.TreeViewColumn column, Gtk.CellRenderer cell, Gtk.TreeModel model, Gtk.TreeIter iter)
 		{
+			//Console.WriteLine( cell.GetType().ToString());
 			//descripcion_producto descrip = (descripcion_producto) model.GetValue (iter, 14);
 			if ((bool) this.lista_produc_solicitados.Model.GetValue (iter,8)==true){
 				(cell as Gtk.CellRendererText).Foreground = "darkblue";

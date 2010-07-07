@@ -4721,7 +4721,8 @@ Ordenes de Compra</property>
                     <property name="visible">True</property>
                     <child>
                       <widget class="GtkRadioButton" id="radiobutton_todas_solici">
-                        <property name="label" translatable="yes">Todas</property>
+                        <property name="label" translatable="yes">Todas del 
+Sub-Almacen</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">False</property>

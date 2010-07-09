@@ -133,6 +133,8 @@ namespace osiris
 		TreeViewColumn col_costo;
 		TreeViewColumn col_cantidad;
 		TreeViewColumn col_precio;
+		TreeViewColumn col_quitar;		CellRendererToggle cel_quitar;
+		TreeViewColumn col_es_stock;	CellRendererToggle cel_es_stock;
 		
 		class_conexion conexion_a_DB = new class_conexion();
 	
@@ -168,7 +170,6 @@ namespace osiris
 			llenado_grupo("selecciona",descripgrupo,idtipogrupo);
 		 	llenado_grupo1("selecciona",descripgrupo1,idtipogrupo1);
 			llenado_grupo2("selecciona",descripgrupo2,idtipogrupo2);
-			
 			
 			statusbar_inv_sub_hosp.Pop(0);
 			statusbar_inv_sub_hosp.Push(1, "login: "+LoginEmpleado+"  |Usuario: "+NomEmpleado+" "+AppEmpleado+" "+ApmEmpleado);
@@ -279,10 +280,8 @@ namespace osiris
 			                                    typeof(string),
 			                                    typeof(string));
 			
-			lista_almacenes.Model = treeViewEngineBusca2;
-			
-			lista_almacenes.RulesHint = true;
-			
+			lista_almacenes.Model = treeViewEngineBusca2;			
+			lista_almacenes.RulesHint = true;			
 			//lista_almacenes.RowActivated += on_selecciona_almacen_clicked;  // Doble click selecciono paciente
 			
 			TreeViewColumn col_surtir = new TreeViewColumn();
@@ -344,7 +343,7 @@ namespace osiris
 			cellrt5 = new CellRendererText();
 			col_reorden.Title = "Punto de Reorden";
 			col_reorden.PackStart(cellrt5, true);
-			col_reorden.AddAttribute (cellrt5, "text", 7);
+			col_reorden.AddAttribute (cellrt5, "text", 9);
 			col_reorden.SortColumnId = (int) Col_traspaso.col_reorden;
 			cellrt5.Editable = true;
 						
@@ -468,15 +467,31 @@ namespace osiris
 			}	
 		}
 		
-		void selecciona_fila2(object sender, ToggledArgs args)
+		void selecciona_fila2(object obj, ToggledArgs args)
 		{
+			Gtk.CellRendererToggle check_toggle = (Gtk.CellRendererToggle) obj;
+			// Gtk.ComboBox combobox_almacen_origen = obj as ComboBox;
+			// Gtk.RadioButton radiobutton_filtros = (Gtk.RadioButton) obj;
 			TreeIter iter;
 			TreePath path = new TreePath (args.Path);
 			if (lista_almacenes.Model.GetIter (out iter, path)){
 				bool old = (bool) lista_almacenes.Model.GetValue (iter,8);
 				lista_almacenes.Model.SetValue(iter,8,!old);
 			}	
-		}				
+		}
+		
+		void selecciona_fila3(object obj, ToggledArgs args)
+		{
+			Gtk.CellRendererToggle check_toggle = (Gtk.CellRendererToggle) obj;
+			// Gtk.ComboBox combobox_almacen_origen = obj as ComboBox;
+			// Gtk.RadioButton radiobutton_filtros = (Gtk.RadioButton) obj;
+			TreeIter iter;
+			TreePath path = new TreePath (args.Path);
+			if (lista_almacenes.Model.GetIter (out iter, path)){				
+				bool old = (bool) lista_almacenes.Model.GetValue (iter,9);
+				lista_almacenes.Model.SetValue(iter,9,!old);
+			}	
+		}
 						
 		void NumberCellEdited_Autorizado (object o, EditedArgs args)
 		{
@@ -524,7 +539,8 @@ namespace osiris
 												typeof(string),
 												typeof(string),
 												typeof(string),
-												typeof(bool));
+												typeof(bool),
+			                                    typeof(bool));
 			lista_almacenes.Model = treeViewEngineBusca;
 			
 			lista_almacenes.RulesHint = true;
@@ -589,14 +605,23 @@ namespace osiris
 			col_embalaje.AddAttribute (cellrt7, "text", 7); // la siguiente columna será 1 en vez de 2
 			col_embalaje.SortColumnId = (int) Col_inv_sub_almacen.col_embalaje;
 			
-			TreeViewColumn col_quitar = new TreeViewColumn();
-			CellRendererToggle cel_quitar = new CellRendererToggle();
+			col_quitar = new TreeViewColumn();
+			cel_quitar = new CellRendererToggle();
 			col_quitar.Title = "Borrar"; // titulo de la cabecera de la columna, si está visible
 			col_quitar.PackStart(cel_quitar, true);
 			col_quitar.AddAttribute (cel_quitar, "active", 8);
 			cel_quitar.Activatable = true;
 			cel_quitar.Toggled += selecciona_fila2;
 			col_quitar.SortColumnId = (int) Col_inv_sub_almacen.col_quitar;
+			
+			col_es_stock = new TreeViewColumn();
+			cel_es_stock = new CellRendererToggle();
+			col_es_stock.Title = "Es de Stock"; // titulo de la cabecera de la columna, si está visible
+			col_es_stock.PackStart(cel_es_stock, true);
+			col_es_stock.AddAttribute (cel_es_stock, "active", 9);
+			cel_es_stock.Activatable = true;
+			cel_es_stock.Toggled += selecciona_fila3;
+			col_es_stock.SortColumnId = (int) Col_inv_sub_almacen.col_es_stock;
 			
 			lista_almacenes.AppendColumn(col_descrip);
 			lista_almacenes.AppendColumn(col_cantidad);
@@ -607,6 +632,7 @@ namespace osiris
 			lista_almacenes.AppendColumn(col_fecha);
 			lista_almacenes.AppendColumn(col_embalaje);
 			lista_almacenes.AppendColumn(col_quitar);
+			lista_almacenes.AppendColumn(col_es_stock);
 		}
 		
 		enum Col_inv_sub_almacen
@@ -619,7 +645,7 @@ namespace osiris
 			col_reorden,
 			col_fecha,
 			col_embalaje,
-			col_quitar
+			col_quitar,col_es_stock
 		}
 		
 		void onComboBoxChanged_sub_almacenes(object sender, EventArgs args)
@@ -654,16 +680,13 @@ namespace osiris
 		
 		void llenando_busqueda_productos()
 		{
-			if(this.tipoalmacen==1)
-			{
+			if(this.tipoalmacen==1){
 				treeViewEngineBusca.Clear(); // Limpia el treeview cuando realiza una nueva busqueda
 			}
-			if(this.tipoalmacen==2)
-			{
+			if(this.tipoalmacen==2){
 				treeViewEngineBusca2.Clear(); // Limpia el treeview cuando realiza una nueva busqueda
 			}
-			if(this.tipoalmacen==3)
-			{
+			if(this.tipoalmacen==3){
 				treeViewEngineBusca2.Clear(); // Limpia el treeview cuando realiza una nueva busqueda
 			}	
 			NpgsqlConnection conexion;
@@ -687,6 +710,7 @@ namespace osiris
 							"to_char(precio_producto_publico,'99999999.99') AS preciopublico,"+
 							"to_char(costo_por_unidad,'999999999.99') AS costoproductounitario, "+
 							"to_char(costo_producto,'999999999.99') AS costoproducto, "+
+							"tiene_stock,"+
 							"to_char(cantidad_de_embalaje,'999999999.99') AS embalaje "+
 							"FROM osiris_catalogo_almacenes,osiris_productos,osiris_grupo_producto "+ //,osiris_grupo1_producto,osiris_grupo2_producto "+
 							"WHERE osiris_catalogo_almacenes.id_producto = osiris_productos.id_producto "+ 
@@ -714,7 +738,8 @@ namespace osiris
 														(string) lector["reorden"],
 														(string) lector["fechsurti"],
 														(string) lector["embalaje"],
-														false);
+														false,
+						                                (bool) lector["tiene_stock"]);
 													
 						this.col_descrip.SetCellDataFunc(cellrt0, new Gtk.TreeCellDataFunc(cambia_colores_fila_productos));
 						this.col_cantidad.SetCellDataFunc(cellrt1, new Gtk.TreeCellDataFunc(cambia_colores_fila_productos));
@@ -1252,11 +1277,11 @@ namespace osiris
 									}
 								}
 							}
-							this.checkbutton_enviar_articulos.Active = false;
-							this.checkbutton_ajuste_de_articulos.Active = false;
-							this.checkbutton_ajuste_de_articulos.Sensitive = true;
+							checkbutton_enviar_articulos.Active = false;
+							checkbutton_ajuste_de_articulos.Active = false;
+							checkbutton_ajuste_de_articulos.Sensitive = true;
 							llenando_busqueda_productos();
-							this.entry_numero_de_traspaso.Text = "0";
+							entry_numero_de_traspaso.Text = "0";
 						}						
 					}
 					
@@ -1266,8 +1291,7 @@ namespace osiris
 							ResponseType miResultado2 = (ResponseType)msgBox2.Run ();
 							msgBox2.Destroy();					
 							if (miResultado2 == ResponseType.Yes){
-								TreeIter iterSelected2;
-								
+								TreeIter iterSelected2;								
 								if (this.treeViewEngineBusca2.GetIterFirst (out iterSelected2)){
 									if ((bool) this.lista_almacenes.Model.GetValue (iterSelected2,0) == true){
 										//if (decimal.Parse((string) this.lista_almacenes.Model.GetValue (iterSelected2,1)) != 0 ){

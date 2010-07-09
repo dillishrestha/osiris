@@ -465,9 +465,9 @@ namespace osiris
 															"id_quien_autorizo = '"+this.LoginEmpleado+"',"+
 															//"stock_cuando_solicito = '"++"',"+
 															"id_almacen_origen = '"+idalmacenorigen.ToString().Trim()+"',"+
-															"surtido = 'true' "+
+															"surtido = 'true', "+
 															"folio_de_servicio = '"+(string) entry_folio_servicio.Text.ToString()+"',"+
-															"pid_paciente = '"+(string) entry_pid_paciente.Text.ToString()+"',"+
+															"pid_paciente = '"+(string) entry_pid_paciente.Text.ToString()+"' "+
 															"WHERE id_secuencia =  '"+(string) lista_de_materiales_solicitados.Model.GetValue (iterSelected,7)+"';";
 													//Console.WriteLine(comando.CommandText);
 													comando.ExecuteNonQuery();
@@ -683,9 +683,9 @@ namespace osiris
 															"id_quien_autorizo = '"+this.LoginEmpleado+"',"+
 															//"stock_cuando_solicito = '"++"',"+
 															"id_almacen_origen = '"+idalmacenorigen.ToString().Trim()+"',"+
-															"surtido = 'true' "+
+															"surtido = 'true',"+
 															"folio_de_servicio = '"+(string) entry_folio_servicio.Text.ToString()+"',"+
-															"pid_paciente = '"+(string) entry_pid_paciente.Text.ToString()+"',"+
+															"pid_paciente = '"+(string) entry_pid_paciente.Text.ToString()+"' "+
 															"WHERE id_secuencia =  '"+(string) lista_de_materiales_solicitados.Model.GetValue (iterSelected,7)+"';";
 														//Console.WriteLine(comando.CommandText);
 														comando2.ExecuteNonQuery();

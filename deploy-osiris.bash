@@ -1,7 +1,7 @@
 #!/bin/bash
 
 REMOTE="dolivares@172.16.1.11"
-NOMBD=`grep "Database=hscmty" /opt/osiris/osiris/hscmty.cs | cut -c29-44`
+NOMBD=`grep "Database=osiris_produccion" /opt/osiris/osiris/hscmty.cs | cut -c29-44`
 
 if test $NOMBD = "Database=hscmty;"
 then 

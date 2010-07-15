@@ -1,4 +1,11 @@
-<Combine fileversion="2.0" name="osiris">
+<Combine fileversion="2.0" description="Sistema Hospitalario OSIRIS" name="osiris">
+  <Policies>
+    <DotNetNamingPolicy DirectoryNamespaceAssociation="None" ResourceNamePolicy="FileFormatDefault" />
+    <VersionControlPolicy inheritsSet="Mono" />
+    <ChangeLogPolicy UpdateMode="None" inheritsSet="Mono">
+      <MessageStyle LineAlign="0" />
+    </ChangeLogPolicy>
+  </Policies>
   <Configurations active="Debug">
     <Configuration name="Debug" ctype="CombineConfiguration">
       <Entry build="True" name="osiris" configuration="Debug" />

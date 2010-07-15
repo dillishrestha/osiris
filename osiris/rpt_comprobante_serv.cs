@@ -38,7 +38,7 @@ using GtkSharp;
 
 namespace osiris
 {
-	public class 	comprobante_serv 
+	public class comprobante_serv 
 	{
 		string connectionString;
         string nombrebd;
@@ -209,7 +209,7 @@ namespace osiris
 							"osiris_his_tipo_admisiones.id_tipo_admisiones AS idadmisiones,"+
 							"osiris_grupo_producto.descripcion_grupo_producto, "+
 							"osiris_productos.id_grupo_producto,  "+
-							"to_char(osiris_erp_cobros_deta.porcentage_descuento,999.99) AS porcdesc, "+
+							"to_char(osiris_erp_cobros_deta.porcentage_descuento,'999.99') AS porcdesc, "+
 							"to_char(osiris_erp_cobros_deta.fechahora_creacion,'dd-mm-yyyy') AS fechcreacion,  "+
 							"to_char(osiris_erp_cobros_deta.fechahora_creacion,'HH:mm') AS horacreacion,  "+
 							"to_char(osiris_erp_cobros_deta.id_producto,'999999999999') AS idproducto,descripcion_producto, "+

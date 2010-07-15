@@ -3766,9 +3766,11 @@ Solicitud</property>
     <child>
       <widget class="GtkVBox" id="vbox52">
         <property name="visible">True</property>
+        <property name="orientation">vertical</property>
         <child>
           <widget class="GtkVBox" id="vbox53">
             <property name="visible">True</property>
+            <property name="orientation">vertical</property>
             <child>
               <widget class="GtkHBox" id="hbox88">
                 <property name="visible">True</property>
@@ -4059,6 +4061,7 @@ Solicitud</property>
                     <property name="height_request">525</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
+                    <property name="tooltip" translatable="yes">Este boton le permite marcar un producto para quitar asi mismo para marcarlo como stock</property>
                   </widget>
                 </child>
               </widget>
@@ -4221,7 +4224,8 @@ Informacion</property>
                             <child>
                               <widget class="GtkLabel" id="label189">
                                 <property name="visible">True</property>
-                                <property name="label" translatable="yes">Quitar</property>
+                                <property name="label" translatable="yes">Quitar o
+Marca como Stock</property>
                                 <property name="use_underline">True</property>
                               </widget>
                               <packing>

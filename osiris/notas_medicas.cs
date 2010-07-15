@@ -54,7 +54,7 @@ namespace osiris
 		protected Gtk.Window MyWinError;
 		
 		public notas_medicas (string LoginEmp, string NomEmpleado_, string AppEmpleado_, string ApmEmpleado_,
-		                      string title_window, string name_field_,string pidpaciente_,string folioservicio_,string nombredoctor_)
+		                      string title_window, string name_field_,string pidpaciente_,string folioservicio_,string nombredoctor_,string nombrepaciente_)
 		{
 			connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
 			nombrebd = conexion_a_DB._nombrebd;
@@ -79,6 +79,9 @@ namespace osiris
 			button_salir.Clicked += new EventHandler(on_cierraventanas_clicked);
 			button_guardar.Clicked += new EventHandler(on_button_guardar_clicked);
 			entry_fechanotas.Text = (string) DateTime.Now.ToString("yyyy-MM-dd");
+			entry_pid_paciente.Text = (string) pidpaciente;
+			entry_nombre_paciente.Text = (string) nombrepaciente_;
+			entry_numerotencion.Text = (string) folioservicio;
 			switch (name_field){	
 				case "notas_de_evolucion":
 					textview1.ModifyBase(StateType.Normal, new Gdk.Color(255,243,169)); // Color Amarillo
@@ -142,8 +145,7 @@ namespace osiris
 				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.Modal,
 						MessageType.Error, 
 						ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
-				msgBoxError.Run ();
-				msgBoxError.Destroy();
+				msgBoxError.Run ();				msgBoxError.Destroy();
 	   			
 	       	}
        		conexion.Close ();
@@ -153,7 +155,23 @@ namespace osiris
 		void on_button_guardar_clicked(object sender, EventArgs args)
 		{
 			if(textview2.Buffer.Text.ToString()!=""){
-				
+				/*NpgsqlConnection conexion; 
+				conexion = new NpgsqlConnection (connectionString+nombrebd);
+            	try{
+					conexion.Open ();
+					NpgsqlCommand comando; 
+					comando = conexion.CreateCommand();
+					comando.CommandText = "INSERT INTO osiris_his_informacion_medica () VALUES ()";
+					comando.ExecuteNonQuery();
+					comando.Dispose();
+				}catch (NpgsqlException ex){
+					MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.Modal,
+						MessageType.Error, 
+						ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
+					msgBoxError.Run ();					msgBoxError.Destroy();	   			
+	       		}
+       			conexion.Close ();
+       			*/					
 			}else{
 				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.Modal,
 								MessageType.Error,ButtonsType.Close,"La nota no contiene informacion, verifique...");

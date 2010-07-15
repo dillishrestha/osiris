@@ -159,7 +159,7 @@ namespace osiris
 			entry_password.KeyPressEvent += onKeyPressEvent_enter;
 		}
 		
-		private void on_aceptar_clicked(object o, EventArgs args)
+		void on_aceptar_clicked(object o, EventArgs args)
     	{
 			verifica_usuariopasswd();
 			//pantalla_principal();
@@ -282,11 +282,10 @@ namespace osiris
 			button_terapia_nino.Clicked += new EventHandler( on_button_terapia_pediatrica_clicked );
 			button_terapia_neonatal.Clicked += new EventHandler(on_button_terapia_neonatal_clicked);
 			button_ginecologia.Clicked += new EventHandler(on_button_ginecologia_clicked);
-					 			
+			button_oftalmologia.Clicked += new EventHandler(on_button_oftalmologia_clicked);					 			
 			button_medicos.Clicked += new EventHandler(on_button_medicos_clicked);					 			
 			button_cambio_contraseña.Clicked += new EventHandler(on_button_cambio_contraseña_clicked);					 							 			
-			button_herramientas.Clicked += new EventHandler(on_button_herramientas_clicked);		
-						
+			button_herramientas.Clicked += new EventHandler(on_button_herramientas_clicked);						
 			button_farmacia.Clicked += new EventHandler(on_button_farmacia_clicked);			
 			 			
 			//button_nutricion.Clicked += new EventHandler(on_button_nutricion_clicked);
@@ -312,88 +311,93 @@ namespace osiris
 		}
 		
 		// Registro y Admision de Pacientes, realiza la pregunta
-		public void on_button_registro_admision_clicked (object sender, EventArgs a)
+		void on_button_registro_admision_clicked (object sender, EventArgs a)
 		{	
 			new osiris.admision (LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd); 
 		}
 		
 		// Ocupacion Hospitalaria
-		public void on_button_ocupacion_osiris_clicked (object sender, EventArgs a)
+		void on_button_ocupacion_osiris_clicked (object sender, EventArgs a)
 		{
 			new osiris.reporte_pacientes_sin_alta(this.nombrebd);
 		}
 		
 		// llamada de pantalla para cargos de enfermeria
 		// cargos_hospitalizacion.cs
-		public void on_button_cargos_hospital_clicked (object sender, EventArgs args)
+		void on_button_cargos_hospital_clicked (object sender, EventArgs args)
 		{
 			new osiris.hospitalizacion(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);   	
 		}
 		
-		public void on_button_cargos_quirofano_clicked (object sender, EventArgs args)
+		void on_button_cargos_quirofano_clicked (object sender, EventArgs args)
 		{
 			new osiris.quirofano(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);   	
 		}
 	
-		public void on_button_cargos_urgencia_clicked (object sender, EventArgs args)
+		void on_button_cargos_urgencia_clicked (object sender, EventArgs args)
 		{
 			new osiris.urgencia(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
 		}
 		
-		public void on_button_endoscopia_clicked (object sender, EventArgs args)
+		void on_button_endoscopia_clicked (object sender, EventArgs args)
 		{
 			new osiris.endoscopia(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
 		}
 		
-		public void on_button_laboratorio_clicked (object sender, EventArgs args)
+		void on_button_laboratorio_clicked (object sender, EventArgs args)
 		{
 			new osiris.laboratorio (LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
 		}
 		
-		public void on_button_hemodialisis_clicked (object sender, EventArgs args)
+		void on_button_hemodialisis_clicked (object sender, EventArgs args)
 		{
 			//new osiris.hemodialisis (LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
 		}
 		
 		///////////////////
-		public void on_button_imagenologia_clicked (object sender, EventArgs args)
+		void on_button_imagenologia_clicked (object sender, EventArgs args)
 		{
 			new osiris.imagenologia(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
 		}
 		
-		public void on_button_terapia_adulto_clicked (object sender, EventArgs args)
+		void on_button_terapia_adulto_clicked (object sender, EventArgs args)
 		{
 			new osiris.terapia_adulto(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
 		}
 		
-		public void on_button_terapia_pediatrica_clicked (object sender, EventArgs args)
+		void on_button_terapia_pediatrica_clicked (object sender, EventArgs args)
 		{
 			new osiris.terapia_pediatrica(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
 		}
 		
-		public void on_button_terapia_neonatal_clicked (object sender, EventArgs args)
+		void on_button_terapia_neonatal_clicked (object sender, EventArgs args)
 		{
 			new osiris.terapia_neonatal(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
 		}
 		
-		public void on_button_ginecologia_clicked (object sender, EventArgs args)
+		void on_button_ginecologia_clicked (object sender, EventArgs args)
 		{
 			new osiris.tococirugia_ginecologia(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
 		}
 		
-		public void on_button_almacen_clicked(object sender, EventArgs args)
+		void on_button_oftalmologia_clicked(object sender, EventArgs args)
+		{
+			new osiris.oftalmologia(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
+		}
+		
+		void on_button_almacen_clicked(object sender, EventArgs args)
 		{
 			// almacen.cs
 			new osiris.almacen(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
 		} 
 		
 		// llamada de modulo de caja caja.cs	
-		public void on_button_caja_clicked (object sender, EventArgs args)
+		void on_button_caja_clicked (object sender, EventArgs args)
 		{
 			new osiris.tesoreria(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
 		}
 		
-		public void on_button_costos_clicked (object sender, EventArgs args)
+		void on_button_costos_clicked (object sender, EventArgs args)
 		{	
 			// new osiris.nuevos_prod(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
 			new osiris.costos_consultas(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
@@ -426,7 +430,7 @@ namespace osiris
 			new osiris.nutricion(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
 		}
 		
-		public void on_button_agredecimientos_clicked (object sender, EventArgs args)
+		void on_button_agredecimientos_clicked (object sender, EventArgs args)
 		{
 			Glade.XML gxml = new Glade.XML (null, "osiris.glade", "agradece", null);
 			gxml.Autoconnect (this);
@@ -579,7 +583,7 @@ namespace osiris
         }
 		
 		[GLib.ConnectBefore ()]   	  // Esto es indispensable para que funcione    
-		public void onKeyPressEvent_enter(object o, Gtk.KeyPressEventArgs args)
+		void onKeyPressEvent_enter(object o, Gtk.KeyPressEventArgs args)
 		{
 			if (args.Event.Key == Gdk.Key.Return || args.Event.Key == Gdk.Key.KP_Enter){
 				args.RetVal = true;				
@@ -590,7 +594,7 @@ namespace osiris
 		// Valida entradas que solo sean numericas, se utiliza eb ventana de
 		// carga de producto
 		[GLib.ConnectBefore ()]   	  // Esto es indispensable para que funcione    
-		public void onKeyPressEvent_enter_pass(object o, Gtk.KeyPressEventArgs args)
+		void onKeyPressEvent_enter_pass(object o, Gtk.KeyPressEventArgs args)
 		{
 			//Console.WriteLine(args.Event.Key);
 			if (args.Event.Key == Gdk.Key.Return || args.Event.Key == Gdk.Key.KP_Enter){
@@ -605,7 +609,7 @@ namespace osiris
 			cambiando_contraseña(sender);
 		}
 		
-		public void cambiando_contraseña(object sender)
+		void cambiando_contraseña(object sender)
 		{
 			string nuevopassword;
 			if(entry_nueva_contraseña1.Text == entry_nueva_contraseña2.Text){

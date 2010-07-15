@@ -8,7 +8,7 @@
 //				  Ing. Daniel Olivares (Preprogramacion)
 // 				  
 // Licencia		: GLP
-// S.O. 		: GNU/Linux Ubuntu 6.06 LTS (Dapper Drake)
+// S.O. 		: GNU/Linux
 //////////////////////////////////////////////////////////
 //
 // proyect osiris is free software; you can redistribute it and/or modify
@@ -26,9 +26,9 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 // 
 //////////////////////////////////////////////////////////
-// Programa		: hscmty.cs
-// Proposito	: Pagos en Caja 
-// Objeto		: cargos_hospitalizacion.cs
+// Programa		: 
+// Proposito	: 
+// Objeto		:
 //////////////////////////////////////////////////////////	
 using System;
 using Npgsql;

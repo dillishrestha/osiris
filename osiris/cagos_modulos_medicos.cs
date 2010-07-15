@@ -2482,19 +2482,19 @@ namespace osiris
 		void on_button_notas_evolucion_clicked(object sender, EventArgs args)
 		{
 			new osiris.notas_medicas(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,"Notas de Evolucion","notas_de_evolucion",
-			                         PidPaciente.ToString(),(string) entry_folio_servicio.Text, (string) entry_doctor.Text);
+			                         PidPaciente.ToString(),(string) entry_folio_servicio.Text, (string) entry_doctor.Text,(string) entry_nombre_paciente.Text);
 		}
 		
 		void on_button_notas_enfermeria_clicked(object sender, EventArgs args)
 		{
 			new osiris.notas_medicas(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,"Notas de Enfermeria","notas_de_enfermeria",
-			                         PidPaciente.ToString(),(string) entry_folio_servicio.Text, (string) entry_doctor.Text);
+			                         PidPaciente.ToString(),(string) entry_folio_servicio.Text, (string) entry_doctor.Text,(string) entry_nombre_paciente.Text);
 		}
 		
 		void on_button_indicacionesmedicas_clicked(object sender, EventArgs args)
 		{
 			new osiris.notas_medicas(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,"Indicaciones Medicas","indicaciones_medicas",
-			                         PidPaciente.ToString(),(string) entry_folio_servicio.Text, (string) entry_doctor.Text);
+			                         PidPaciente.ToString(),(string) entry_folio_servicio.Text, (string) entry_doctor.Text,(string) entry_nombre_paciente.Text);
 		}
 		
 		// cierra ventanas emergentes

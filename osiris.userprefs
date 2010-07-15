@@ -1,27 +1,31 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workbench ActiveDocument="osiris/cambia_paciente.cs" ctype="Workbench">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" ctype="Workspace" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="osiris/catalogos.cs" ctype="Workbench">
     <Files>
-      <File FileName="osiris/captura_fac_ordenes_compra.cs" Line="117" Column="1" />
-      <File FileName="osiris/cagos_modulos_medicos.cs" Line="1345" Column="1" />
-      <File FileName="osiris/rpt_cons_informado.cs" Line="1" Column="60" />
-      <File FileName="osiris/cambia_paciente.cs" Line="199" Column="65" />
-      <File FileName="osiris/autorizacion_doctores_compra.cs" Line="1195" Column="4" />
+      <File FileName="osiris/osiris.cs" Line="1" Column="1" />
+      <File FileName="osiris/class_conexion.cs" Line="12" Column="54" />
+      <File FileName="osiris/inv_sub_almacen.cs" Line="1037" Column="19" />
+      <File FileName="osiris/rpt_comprobante_serv.cs" Line="41" Column="15" />
+      <File FileName="osiris/catalogos.cs" Line="14" Column="55" />
+      <File FileName="osiris/solicitud_materiales_medicos.cs" Line="117" Column="49" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
         <State expanded="True">
           <Node name="osiris" expanded="True">
-            <Node name="References" expanded="True" selected="True" />
+            <Node name="References" expanded="True" />
+            <Node name="catalogos.cs" selected="True" />
           </Node>
         </State>
       </Pad>
       <Pad Id="ClassPad">
-        <State selected="True" />
+        <State expanded="True" selected="True">
+          <Node name="osiris" expanded="True">
+            <Node name="References" expanded="True" />
+            <Node name="osiris" expanded="True" />
+          </Node>
+        </State>
       </Pad>
     </Pads>
   </MonoDevelop.Ide.Workbench>
-  <MonoDevelop.Ide.DebuggingService>
-    <BreakpointStore />
-  </MonoDevelop.Ide.DebuggingService>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" ctype="Workspace" />
 </Properties>

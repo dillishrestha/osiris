@@ -5,7 +5,7 @@
 //
 // Autor    	: Ing. Juan Antonio Peña Gonzalez (Programacion)
 // 				  Ing. Daniel Olivares Cuevas (Pre-Programacion y Adecuaciones)
-//                Homero Montoya Galvan (Aducuaciones)
+//                Tec. Homero Montoya Galvan (Aducuaciones)
 //				 
 // 				  
 // Licencia		: GLP
@@ -235,6 +235,7 @@ namespace osiris
 		
 		class_conexion conexion_a_DB = new class_conexion();
 		class_buscador classfind_data = new class_buscador();
+		class_public classpublic = new class_public();
 		
 		public catalogos_generales(string nomcatalogo_,string LoginEmp_, string NomEmpleado_, string AppEmpleado_, string ApmEmpleado_, string nombrebd_)
 		{					
@@ -1011,8 +1012,7 @@ namespace osiris
 			string clientesactivos = "";
 			if(nomcatalogo == "cliente1"){
 				clientesactivos = "AND cliente_activo = 'true' "; 
-			}
-			
+			}			
 			treeViewEngineClientes.Clear(); // Limpia el treeview cuando realiza una nueva busqueda
 			NpgsqlConnection conexion; 
 			conexion = new NpgsqlConnection (connectionString+nombrebd);
@@ -1114,8 +1114,7 @@ namespace osiris
 		
 		void on_guarda_clientes(object sender, EventArgs args)
 		{
-			if(checkbutton_nuevo_cliente.Active == true) 
-			{
+			if(checkbutton_nuevo_cliente.Active == true){
 				MessageDialog msgBox = new MessageDialog (MyWin,DialogFlags.Modal,MessageType.Question,
 									ButtonsType.YesNo,"¿ Desea grabar esta infomacion ?");
 				ResponseType miResultado = (ResponseType)msgBox.Run ();
@@ -1134,6 +1133,7 @@ namespace osiris
  						NpgsqlDataReader lector = comando.ExecuteReader ();
  						
 						if (!lector.Read()){
+							entry_id_cliente.Text = classpublic.lee_ultimonumero_registrado("osiris_erp_clientes","id_cliente"," ");
  							NpgsqlConnection conexion1; 
 							conexion1 = new NpgsqlConnection (connectionString+nombrebd);
 		    	        	// Verifica que la base de datos este conectada
@@ -1178,11 +1178,9 @@ namespace osiris
 		 											(string) DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+
 		 											"');";
 		 						comando1.ExecuteNonQuery();    	    	       	comando1.Dispose();
-		    	    	       	numero_cliente = int.Parse((string) lee_numero_cliente());
-		    	    	       	checkbutton_nuevo_cliente.Active = false;
+								checkbutton_nuevo_cliente.Active = false;
 		    	    	       	button_editar.Sensitive = true;
-		    	    	       	entry_id_cliente.Text = numero_cliente.ToString();
-		    	    	       	MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+								MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
 												MessageType.Info,ButtonsType.Close,"El cliente se guardo con exito");
 								msgBoxError.Run ();					msgBoxError.Destroy();
 							
@@ -1210,14 +1208,12 @@ namespace osiris
 				MessageDialog msgBox = new MessageDialog (MyWin,DialogFlags.Modal,MessageType.Question,
 									ButtonsType.YesNo,"¿ Desea Actualizar esta infomacion ?");
 				ResponseType miResultado = (ResponseType)
-				msgBox.Run ();							msgBox.Destroy();
-				
+				msgBox.Run ();					msgBox.Destroy();				
  				if (miResultado == ResponseType.Yes){
 					NpgsqlConnection conexion; 
 					conexion = new NpgsqlConnection (connectionString+nombrebd);
     	        	// Verifica que la base de datos este conectada
-    	        	try
-						{
+    	        	try{
 						conexion.Open ();
 						NpgsqlCommand comando; 
 						comando = conexion.CreateCommand ();
@@ -1243,8 +1239,7 @@ namespace osiris
  						comando.ExecuteNonQuery();    	    	       	comando.Dispose();
     	    	       	MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
 										MessageType.Info,ButtonsType.Close,"Los datos se actualizaron con exito");			
-						msgBoxError.Run ();					msgBoxError.Destroy();
-						
+						msgBoxError.Run ();					msgBoxError.Destroy();						
 						entry_nombre_cliente.Sensitive = false;
 						entry_rfc_cliente.Sensitive = false;
 						entry_curp_cliente.Sensitive = false;
@@ -1258,8 +1253,7 @@ namespace osiris
 						entry_teloficina.Sensitive = false;
 						entry_telcelular.Sensitive = false;
 						checkbutton_cliente_activo.Sensitive = false;
-						this.checkbutton_envio_facturas.Sensitive = false;				
-						
+						this.checkbutton_envio_facturas.Sensitive = false;						
 					}catch(NpgsqlException ex){
 	   					MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
 										MessageType.Error,ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
@@ -1267,38 +1261,6 @@ namespace osiris
 	       			}
        				conexion.Close ();
        			}
-			}
-		}
-		
-		string lee_numero_cliente()
-		{
-			NpgsqlConnection conexion; 
-			conexion = new NpgsqlConnection (connectionString+nombrebd);
-	        // Verifica que la base de datos este conectada
-			string tomavalor = "";
-			try
-				{
-				conexion.Open ();
-				NpgsqlCommand comando; 
-				comando = conexion.CreateCommand ();
-				comando.CommandText = "SELECT to_char(id_cliente,'99999999') AS idcliente "+ 
-									"FROM osiris_erp_clientes "+
-									"ORDER BY id_cliente DESC LIMIT 1;";
-				NpgsqlDataReader lector = comando.ExecuteReader ();
-				//bool verifica_activacion;
-				if (lector.Read()){	
-					tomavalor =(string) lector["idcliente"]; 
-					return tomavalor;
-				}else{
-					MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
-										            MessageType.Error,ButtonsType.Close,"No se guardo correctamente el cliente");
-					                                msgBoxError.Run ();			msgBoxError.Destroy();
-					return tomavalor;
-				}
-			}catch (NpgsqlException ex)	{		   					MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
-				MessageType.Error,ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
-				msgBoxError.Run ();			msgBoxError.Destroy();
-				return tomavalor;
 			}
 		}
 		
@@ -1316,8 +1278,8 @@ namespace osiris
 					llenado_formapago("nuevo",0," ");
 					limpia_textos("CLIENTES");
 					activa_campos(true,"CLIENTES");
-					numerocliente = int.Parse((string) lee_numero_cliente())+1;
-					entry_id_cliente.Text = numerocliente.ToString();
+					//numerocliente = int.Parse((string) lee_numero_cliente())+1;
+					entry_id_cliente.Text = classpublic.lee_ultimonumero_registrado("osiris_erp_clientes","id_cliente"," ");
 					checkbutton_cliente_activo.Active = false;
 					checkbutton_cliente_activo.Sensitive = true;
 					button_editar.Sensitive = false;
@@ -1378,7 +1340,7 @@ namespace osiris
 				entry_telcasa.Sensitive = valor;
 				entry_teloficina.Sensitive = valor;
 				entry_telcelular.Sensitive = valor;
-				this.checkbutton_cliente_activo.Sensitive = valor;
+				checkbutton_cliente_activo.Sensitive = valor;
 			}
 			if (tipos=="PROVEEDORES"){		
 				entry_id_proveedor.Sensitive = valor;

@@ -375,60 +375,102 @@ namespace osiris
 					MessageDialog msgBox2 = new MessageDialog (MyWin,DialogFlags.Modal,
 						                 MessageType.Question,ButtonsType.YesNo,"¿ Esta seguro de Borrar los Materiales Seleccionados?");
 					ResponseType miResultado2 = (ResponseType)msgBox2.Run ();
-					msgBox2.Destroy();					
-						if (miResultado2 == ResponseType.Yes){
-							TreeIter iterSelected;
-							if (this.treeViewEngineBusca.GetIterFirst (out iterSelected)){
-								if ((bool) this.lista_almacenes.Model.GetValue (iterSelected,8) == true){
-									NpgsqlConnection conexion;
-									conexion = new NpgsqlConnection (connectionString+nombrebd);
-									try{
-										conexion.Open ();
-										NpgsqlCommand comando; 
-										comando = conexion.CreateCommand();
-										comando.CommandText = "UPDATE osiris_catalogo_almacenes SET eliminado = 'true' "+
-											"WHERE id_almacen = '"+this.idsubalmacen.ToString()+"' "+
-											"AND id_producto = '"+(string)this.lista_almacenes.Model.GetValue(iterSelected,2)+"' ;";
-										comando.ExecuteNonQuery();
-										comando.Dispose();
-										conexion.Close();
-									}catch (NpgsqlException ex){
-										MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
-										                                               MessageType.Error, 
-										                                               ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
-										msgBoxError.Run ();
-									}
-									conexion.Close();
-								}
+				msgBox2.Destroy();					
+				if (miResultado2 == ResponseType.Yes){
+					TreeIter iterSelected;
+					if (this.treeViewEngineBusca.GetIterFirst (out iterSelected)){
+						if ((bool) this.lista_almacenes.Model.GetValue (iterSelected,8) == true){
+							NpgsqlConnection conexion;
+							conexion = new NpgsqlConnection (connectionString+nombrebd);
+							try{
+								conexion.Open ();
+								NpgsqlCommand comando; 
+								comando = conexion.CreateCommand();
+								comando.CommandText = "UPDATE osiris_catalogo_almacenes SET eliminado = 'true' "+
+									"WHERE id_almacen = '"+this.idsubalmacen.ToString()+"' "+
+									"AND id_producto = '"+(string)this.lista_almacenes.Model.GetValue(iterSelected,2)+"' ;";
+								comando.ExecuteNonQuery();
+								comando.Dispose();
+								conexion.Close();
+							}catch (NpgsqlException ex){
+								MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+								                                               MessageType.Error, 
+								                                               ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
+								msgBoxError.Run ();
 							}
-							while (treeViewEngineBusca.IterNext(ref iterSelected)){
-								if ((bool) this.lista_almacenes.Model.GetValue (iterSelected,8) == true){
-									NpgsqlConnection conexion;
-									conexion = new NpgsqlConnection (connectionString+nombrebd);
-									try{
-										conexion.Open ();
-										NpgsqlCommand comando; 
-										comando = conexion.CreateCommand();
-										comando.CommandText = "UPDATE osiris_catalogo_almacenes SET eliminado = 'true' "+
-											"WHERE id_almacen = '"+this.idsubalmacen.ToString()+"' "+
-											"AND id_producto = '"+(string)this.lista_almacenes.Model.GetValue(iterSelected,2)+"' ;";
-										comando.ExecuteNonQuery();
-										comando.Dispose();
-										conexion.Close();
-									}catch (NpgsqlException ex){
-										MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
-										                                               MessageType.Error, 
-										                                               ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
-										msgBoxError.Run ();									
-									}
-									conexion.Close();
-								}
-							}
+							conexion.Close();
 						}
-					llenando_busqueda_productos();
-				}else{
+						if ((bool) this.lista_almacenes.Model.GetValue (iterSelected,9) == true){
+							NpgsqlConnection conexion;
+							conexion = new NpgsqlConnection (connectionString+nombrebd);
+							try{
+								conexion.Open ();
+								NpgsqlCommand comando; 
+								comando = conexion.CreateCommand();
+								comando.CommandText = "UPDATE osiris_catalogo_almacenes SET tiene_stock = 'true' "+
+									"WHERE id_almacen = '"+this.idsubalmacen.ToString()+"' "+
+									"AND id_producto = '"+(string)this.lista_almacenes.Model.GetValue(iterSelected,2)+"' ;";
+								comando.ExecuteNonQuery();
+								comando.Dispose();
+								conexion.Close();
+							}catch (NpgsqlException ex){
+								MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+								                                               MessageType.Error, 
+								                                               ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
+								msgBoxError.Run ();
+							}
+							conexion.Close();
+						}
+					}
+					while (treeViewEngineBusca.IterNext(ref iterSelected)){
+						if ((bool) this.lista_almacenes.Model.GetValue (iterSelected,8) == true){
+							NpgsqlConnection conexion;
+							conexion = new NpgsqlConnection (connectionString+nombrebd);
+							try{
+								conexion.Open ();
+								NpgsqlCommand comando; 
+								comando = conexion.CreateCommand();
+								comando.CommandText = "UPDATE osiris_catalogo_almacenes SET eliminado = 'true' "+
+									"WHERE id_almacen = '"+this.idsubalmacen.ToString()+"' "+
+									"AND id_producto = '"+(string)this.lista_almacenes.Model.GetValue(iterSelected,2)+"' ;";
+								comando.ExecuteNonQuery();
+								comando.Dispose();
+								conexion.Close();
+							}catch (NpgsqlException ex){
+								MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+								                                               MessageType.Error, 
+								                                               ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
+								msgBoxError.Run ();									
+							}
+							conexion.Close();
+						}
+						if ((bool) this.lista_almacenes.Model.GetValue (iterSelected,9) == true){
+							NpgsqlConnection conexion;
+							conexion = new NpgsqlConnection (connectionString+nombrebd);
+							try{
+								conexion.Open ();
+								NpgsqlCommand comando; 
+								comando = conexion.CreateCommand();
+								comando.CommandText = "UPDATE osiris_catalogo_almacenes SET tiene_stock = 'true' "+
+									"WHERE id_almacen = '"+this.idsubalmacen.ToString()+"' "+
+									"AND id_producto = '"+(string)this.lista_almacenes.Model.GetValue(iterSelected,2)+"' ;";
+								comando.ExecuteNonQuery();
+								comando.Dispose();
+								conexion.Close();
+							}catch (NpgsqlException ex){
+								MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+								                                               MessageType.Error, 
+								                                               ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
+								msgBoxError.Run ();									
+							}
+							conexion.Close();
+						}
+					}
+				}
+				llenando_busqueda_productos();
+			}else{
 				MessageDialog msgBox = new MessageDialog (MyWin,DialogFlags.Modal,
-						MessageType.Info,ButtonsType.Ok,"No tiene Permiso para Borrar Articulos");
+					MessageType.Info,ButtonsType.Ok,"No tiene Permiso para Borrar Articulos");
 				msgBox.Run ();msgBox.Destroy();
 			}
 		}
@@ -697,8 +739,7 @@ namespace osiris
 			{
 				conexion.Open ();
 				NpgsqlCommand comando; 
-				comando = conexion.CreateCommand ();
-	          	
+				comando = conexion.CreateCommand ();	          	
 				comando.CommandText = "SELECT osiris_catalogo_almacenes.id_almacen,to_char(osiris_productos.id_producto,'999999999999') AS codProducto,"+
 							"osiris_productos.descripcion_producto, "+
 							"to_char(osiris_catalogo_almacenes.stock,'999999999999.99') AS stockactual,"+
@@ -708,9 +749,9 @@ namespace osiris
 							"to_char(osiris_catalogo_almacenes.fechahora_ultimo_surtimiento,'yyyy-MM-dd HH24:mi:ss') AS fechsurti, "+
 							"descripcion_grupo_producto, "+ //descripcion_grupo1_producto,descripcion_grupo2_producto, "+
 							"to_char(precio_producto_publico,'99999999.99') AS preciopublico,"+
-							"to_char(costo_por_unidad,'999999999.99') AS costoproductounitario, "+
-							"to_char(costo_producto,'999999999.99') AS costoproducto, "+
-							"tiene_stock,"+
+							"to_char(costo_por_unidad,'999999999.99') AS costoproductounitario,"+
+							"to_char(costo_producto,'999999999.99') AS costoproducto,"+
+							"osiris_catalogo_almacenes.tiene_stock,"+
 							"to_char(cantidad_de_embalaje,'999999999.99') AS embalaje "+
 							"FROM osiris_catalogo_almacenes,osiris_productos,osiris_grupo_producto "+ //,osiris_grupo1_producto,osiris_grupo2_producto "+
 							"WHERE osiris_catalogo_almacenes.id_producto = osiris_productos.id_producto "+ 
@@ -728,7 +769,10 @@ namespace osiris
 							"ORDER BY descripcion_producto; ";
 				Console.WriteLine(comando.CommandText);
 				NpgsqlDataReader lector = comando.ExecuteReader ();
+				string tienestock = "";
 				while (lector.Read()){
+					tienestock = Convert.ToString((bool) lector["tiene_stock"]);
+					Console.WriteLine(tienestock);
 					if(this.tipoalmacen==1){
 						treeViewEngineBusca.AppendValues ((string) lector["descripcion_producto"],
 														(string) lector["stockactual"], 
@@ -739,7 +783,7 @@ namespace osiris
 														(string) lector["fechsurti"],
 														(string) lector["embalaje"],
 														false,
-						                                (bool) lector["tiene_stock"]);
+						                                false);
 													
 						this.col_descrip.SetCellDataFunc(cellrt0, new Gtk.TreeCellDataFunc(cambia_colores_fila_productos));
 						this.col_cantidad.SetCellDataFunc(cellrt1, new Gtk.TreeCellDataFunc(cambia_colores_fila_productos));
@@ -815,7 +859,7 @@ namespace osiris
 				//msgBoxError.Run ();
 				//msgBoxError.Destroy();
 			//}else{
-				if(LoginEmpleado =="DOLIVARES" || LoginEmpleado =="ADMIN"){
+				if(LoginEmpleado =="DOLIVARES" || LoginEmpleado =="ADMIN" || LoginEmpleado == "ROLVEDAFLORES"){
 					if (this.checkbutton_enviar_articulos.Active == true){
 						if (idsubalmacen != 1){
 							MessageDialog msgBox = new MessageDialog (MyWin,DialogFlags.Modal,

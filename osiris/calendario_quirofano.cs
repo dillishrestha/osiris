@@ -166,7 +166,7 @@ namespace osiris
 					"osiris_his_medicos.id_medico,osiris_his_medicos.nombre_medico AS nombremedico,"+
 					"osiris_his_tipo_especialidad.id_especialidad,osiris_his_tipo_especialidad.descripcion_especialidad AS descripcionespecialidad,"+
 					"motivo_consulta,osiris_his_calendario_citaqx.observaciones AS observaciones_citaqx,referido_por,osiris_his_calendario_citaqx.cancelado AS cancelacitaqx,"+
-					"id_quiencreo_cita,osiris_his_calendario_citaqx.fechahora_creacion AS fechahoracreacion,"+
+					"id_quiencreo_cita,osiris_his_calendario_citaqx.fechahora_creacion AS fechahoracreacion,motivo_cancelacion_citaqx,"+
 					"osiris_empresas.id_empresa AS idempresa,descripcion_empresa,"+
 					"osiris_aseguradoras.id_aseguradora AS idaseguradora,descripcion_aseguradora,"+
 					"to_char(to_number(to_char(age('"+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"',osiris_his_paciente.fecha_nacimiento_paciente),'yyyy') ,'9999'),'9999') AS edad,"+
@@ -389,8 +389,8 @@ namespace osiris
 			
 			col_agenda4 = new TreeViewColumn();		cellrt4 = new CellRendererText();
 			col_agenda4.Title = "Paciente";
-			col_agenda4.PackStart(cellrt1, true);
-			col_agenda4.AddAttribute (cellrt1, "text", 4);
+			col_agenda4.PackStart(cellrt4, true);
+			col_agenda4.AddAttribute (cellrt4, "text", 4);
 			col_agenda4.Resizable = true;
 			col_agenda4.SortColumnId = (int) Coldatos_agenda.col_agenda4;
             
@@ -553,7 +553,7 @@ namespace osiris
 		{
 			Gtk.CheckButton checkbutton_crea_citas_qx = (Gtk.CheckButton) obj;
 			
-			Console.WriteLine(checkbutton_crea_citas_qx.Name.ToString());
+			//Console.WriteLine(checkbutton_crea_citas_qx.Name.ToString());
 			
 			if(checkbutton_crea_citas_qx.Name.ToString() == "checkbutton_crea_cita"){				
 				if(checkbutton_crea_cita.Active == true){ 
@@ -780,7 +780,7 @@ namespace osiris
 		void onComboBoxChanged_tipopaciente(object obj, EventArgs args)
 		{			
 			ComboBox combobox_tipo_paciente = obj as ComboBox;
-			Console.WriteLine(combobox_tipo_paciente.Name.ToString());
+			//Console.WriteLine(combobox_tipo_paciente.Name.ToString());
 			if (obj == null){
 				return;
 			}
@@ -1170,6 +1170,7 @@ namespace osiris
 			string telefonopaciente;
 			string emailpaciente;
 			string emprinstitucion_aseguradora;
+			string observaciongeneral = "";
 			contador_numerocitas = 0;
 			treeViewEngineListaCitas.Clear();
 			NpgsqlConnection conexion; 
@@ -1202,6 +1203,11 @@ namespace osiris
 						emprinstitucion_aseguradora = (string) lector["descripcion_empresa"];
 					}else{
 						emprinstitucion_aseguradora = (string) lector["descripcion_aseguradora"];
+					}					
+					if((bool) lector["cancelacitaqx"] == false){
+						observaciongeneral = (string) lector["observaciones_citaqx"].ToString().Trim().ToUpper();
+					}else{
+						observaciongeneral = (string) lector["motivo_cancelacion_citaqx"].ToString().Trim().ToUpper();
 					}
 					treeViewEngineListaCitas.AppendValues((string) lector["fechaprogramacion"],
 					                                      (string) lector["hora_programacion"],
@@ -1217,7 +1223,7 @@ namespace osiris
 					                                      (string) lector["nombremedico"],
 					                                      (string) lector["descripcionespecialidad"],
 					                                      (string) lector["motivo_consulta"],
-					                                      (string) lector["observaciones_citaqx"],
+					                                      observaciongeneral,
 					                                      (string) lector["referido_por"],
 					                                      emprinstitucion_aseguradora,
 					                                      (string) lector["id_quiencreo_cita"],
@@ -1228,7 +1234,21 @@ namespace osiris
 					col_agenda1.SetCellDataFunc(cellrt1, new Gtk.TreeCellDataFunc(cambia_colores_fila));
 					col_agenda2.SetCellDataFunc(cellrt2, new Gtk.TreeCellDataFunc(cambia_colores_fila));
 					col_agenda3.SetCellDataFunc(cellrt3, new Gtk.TreeCellDataFunc(cambia_colores_fila));
-					//col_agenda4.SetCellDataFunc(cellrt4, new Gtk.TreeCellDataFunc(cambia_colores_fila));					
+					col_agenda4.SetCellDataFunc(cellrt4, new Gtk.TreeCellDataFunc(cambia_colores_fila));	
+					col_agenda5.SetCellDataFunc(cellrt5, new Gtk.TreeCellDataFunc(cambia_colores_fila));
+					col_agenda6.SetCellDataFunc(cellrt6, new Gtk.TreeCellDataFunc(cambia_colores_fila));
+					col_agenda7.SetCellDataFunc(cellrt7, new Gtk.TreeCellDataFunc(cambia_colores_fila));
+					col_agenda8.SetCellDataFunc(cellrt8, new Gtk.TreeCellDataFunc(cambia_colores_fila));
+					col_agenda9.SetCellDataFunc(cellrt9, new Gtk.TreeCellDataFunc(cambia_colores_fila));
+					col_agenda10.SetCellDataFunc(cellrt10, new Gtk.TreeCellDataFunc(cambia_colores_fila));
+					col_agenda11.SetCellDataFunc(cellrt11, new Gtk.TreeCellDataFunc(cambia_colores_fila));
+					col_agenda12.SetCellDataFunc(cellrt12, new Gtk.TreeCellDataFunc(cambia_colores_fila));
+					col_agenda13.SetCellDataFunc(cellrt13, new Gtk.TreeCellDataFunc(cambia_colores_fila));
+					col_agenda14.SetCellDataFunc(cellrt14, new Gtk.TreeCellDataFunc(cambia_colores_fila));
+					col_agenda15.SetCellDataFunc(cellrt15, new Gtk.TreeCellDataFunc(cambia_colores_fila));
+					col_agenda16.SetCellDataFunc(cellrt16, new Gtk.TreeCellDataFunc(cambia_colores_fila));
+					col_agenda17.SetCellDataFunc(cellrt17, new Gtk.TreeCellDataFunc(cambia_colores_fila));
+					col_agenda18.SetCellDataFunc(cellrt18, new Gtk.TreeCellDataFunc(cambia_colores_fila));
 				}
 			}catch (NpgsqlException ex){
 	   				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
@@ -1242,10 +1262,10 @@ namespace osiris
 		void cambia_colores_fila(Gtk.TreeViewColumn column, Gtk.CellRenderer cell, Gtk.TreeModel model, Gtk.TreeIter iter)
 		{
 			if ((bool) treeview_lista_agenda.Model.GetValue (iter,20) == false) { 
-				(cell as Gtk.CellRendererText).Foreground = "black";
+				(cell as Gtk.CellRendererText).CellBackground = "white";
 				//(cell as Gtk.CellRendererText).CellBackgroundGdk = new Gdk.Color(0,0,0);
 			}else{
-				(cell as Gtk.CellRendererText).Foreground = "red";
+				(cell as Gtk.CellRendererText).CellBackground = "yellow";
 				//(cell as Gtk.CellRendererText).CellBackgroundGdk = new Gdk.Color(12,23,67);
 			}
 		}
@@ -1471,7 +1491,7 @@ namespace osiris
 										"SET cancelado = 'true' , "+
 										"fechahora_cancelacion = '"+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"', "+
 										"id_quien_cancelo = '"+LoginEmpleado+"', "+		
-										"motivo_cancelacion_citaqx = '"+entry_motivo.Text.ToString().Trim()+"' "+
+										"motivo_cancelacion_citaqx = '"+entry_motivo.Text.ToString().Trim().ToUpper()+"' "+
 				 						"WHERE id_secuencia =  '"+(string) treeview_lista_agenda.Model.GetValue (iter,19)+"';";
 						comando.ExecuteNonQuery();					comando.Dispose();
 						contador_numerocitas += -1;

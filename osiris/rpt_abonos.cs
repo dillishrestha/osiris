@@ -29,13 +29,12 @@
 // Objeto		: 
 //////////////////////////////////////////////////////////
 using System;
-using System.IO;
 using Gtk;
-using Gnome;
 using Npgsql;
-using System.Data;
 using Glade;
-using System.Collections;
+using Cairo;
+using Pango;
+
 
 namespace osiris
 {
@@ -60,7 +59,12 @@ namespace osiris
 		[Widget] Gtk.Button button_salir;
 		[Widget] Gtk.Button button_imprime_rangofecha;
 		[Widget] Gtk.CheckButton checkbutton_impr_todo_proce;
-		[Widget] Gtk.CheckButton checkbutton_todos_los_clientes;
+		[Widget] Gtk.CheckButton checkbutton_todos_los_clientes;		
+		
+		private static int pangoScale = 1024;
+		private PrintOperation print;
+		private double fontSize = 8.0;
+		int escala_en_linux_windows;		// Linux = 1  Windows = 8
 		
 		string connectionString;
         string nombrebd;
@@ -79,24 +83,17 @@ namespace osiris
 		string rango1 = "";
 		string rango2 = "";
 		
-		// Declaracion de fuentes tipo Bitstream Vera sans
-		Gnome.Font fuente6 = Gnome.Font.FindClosest("Bitstream Vera Sans", 6);
-		Gnome.Font fuente8 = Gnome.Font.FindClosest("Bitstream Vera Sans", 8);
-		Gnome.Font fuente12 = Gnome.Font.FindClosest("Bitstream Vera Sans", 12);
-		Gnome.Font fuente10 = Gnome.Font.FindClosest("Bitstream Vera Sans", 10);
-		Gnome.Font fuente11 = Gnome.Font.FindClosest("Bitstream Vera Sans", 11);
-		Gnome.Font fuente36 = Gnome.Font.FindClosest("Bitstream Vera Sans", 36);
-		Gnome.Font fuente7 = Gnome.Font.FindClosest("Bitstream Vera Sans", 7);
-		Gnome.Font fuente9 = Gnome.Font.FindClosest("Bitstream Vera Sans", 9);
 		//Declaracion de ventana de error
 		protected Gtk.Window MyWinError;
 		
 		class_conexion conexion_a_DB = new class_conexion();
+		class_public classpublic = new class_public();
 		
 		public reporte_de_abonos(string _nombrebd_)
 		{
 			connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
 			nombrebd = conexion_a_DB._nombrebd;
+			escala_en_linux_windows = classpublic.escala_linux_windows;
 			Glade.XML gxml = new Glade.XML (null, "caja.glade", "rango_de_fecha", null);
 			gxml.Autoconnect                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 (this);
         	rango_de_fecha.Show();
@@ -141,39 +138,42 @@ namespace osiris
 				query_fechas = "AND to_char(osiris_erp_abonos.fecha_abono,'yyyy-MM-dd') >= '"+entry_ano1.Text+"-"+entry_mes1.Text+"-"+entry_dia1.Text+"' "+//;//;//'"+rango1+"' "+
 								"AND to_char(osiris_erp_abonos.fecha_abono,'yyyy-MM-dd') <= '"+entry_ano2.Text+"-"+entry_mes2.Text+"-"+entry_dia2.Text+"' ";			
 			}
-			Gnome.PrintJob    trabajo = new Gnome.PrintJob(Gnome.PrintConfig.Default());
-        	Gnome.PrintDialog dialogo = new Gnome.PrintDialog(trabajo, "Reporte de Abonos/Pagos", 0);
-        	
-        	int         respuesta = dialogo.Run ();
-        	
-        	if (respuesta == (int) PrintButtons.Cancel) 
-			{
-				dialogo.Hide (); 
-				dialogo.Dispose (); 
-				return;
-			}
-			Gnome.PrintContext ctx = trabajo.Context;
-        	ComponerPagina(ctx, trabajo); 
-			trabajo.Close();
-			switch (respuesta)
-        	{
-				case (int) PrintButtons.Print:   
-                trabajo.Print (); 
-                break;
-                case (int) PrintButtons.Preview:
-                new PrintJobPreview(trabajo, "Reporte de Abonos").Show();
-                break;
-        	}
-			dialogo.Hide (); dialogo.Dispose ();
+			
+			print = new PrintOperation ();
+			print.JobName = "Reporte de Abonos y Pagos";
+			print.BeginPrint += new BeginPrintHandler (OnBeginPrint);
+			print.DrawPage += new DrawPageHandler (OnDrawPage);
+			print.EndPrint += new EndPrintHandler (OnEndPrint);
+			print.Run (PrintOperationAction.PrintDialog, null);	
 			rango_de_fecha.Destroy();
 		}	
 			
-			
- 		void ComponerPagina(Gnome.PrintContext ContextoImp, Gnome.PrintJob trabajoImpresion)
-		{	
+		private void OnBeginPrint (object obj, Gtk.BeginPrintArgs args)
+		{
+			print.NPages = 1;  // crea cantidad de copias del reporte			
+			// para imprimir horizontalmente el reporte
+			//print.PrintSettings.Orientation = PageOrientation.Landscape;
+			//Console.WriteLine(print.PrintSettings.Orientation.ToString());
+		}
+		
+		private void OnDrawPage (object obj, Gtk.DrawPageArgs args)
+		{			
+			PrintContext context = args.Context;			
+			ejecutar_consulta_reporte(context);			
+		}
+		
+		void ejecutar_consulta_reporte(PrintContext context)
+		{
 			string tomovalor1 = "";
 			int contadorprocedimientos = 0;
 			decimal total = 0;
+			
+			Cairo.Context cr = context.CairoContext;
+			Pango.Layout layout = context.CreatePangoLayout ();
+			Pango.FontDescription desc = Pango.FontDescription.FromString ("Sans");			
+			fontSize = 7.0;											layout = context.CreatePangoLayout ();		
+			desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;
+			
 			NpgsqlConnection conexion;
 			conexion = new NpgsqlConnection (connectionString+nombrebd);
         	// Verifica que la base de datos este conectada
@@ -203,11 +203,9 @@ namespace osiris
 							"ORDER BY osiris_erp_abonos.folio_de_servicio;";															
 				//Console.WriteLine(comando.CommandText);
 				NpgsqlDataReader lector = comando.ExecuteReader ();
-				ContextoImp.BeginPage("Pagina 1");
-				imprime_encabezado(ContextoImp,trabajoImpresion);
-				Gnome.Print.Setfont (ContextoImp, fuente6);
-				while (lector.Read())
-				{
+				imprime_encabezado(cr,layout);
+				while (lector.Read()){
+					/*
 					ContextoImp.MoveTo(15, filas);		ContextoImp.Show((string) lector["folio".Trim()]);
 					ContextoImp.MoveTo(40, filas);		ContextoImp.Show((string) lector["abono".Trim()]);
 					ContextoImp.MoveTo(93, filas);		ContextoImp.Show((string) lector["fechaabono"]);
@@ -227,113 +225,104 @@ namespace osiris
 					contador+=1;
 					contadorprocedimientos += 1;
 					salto_pagina(ContextoImp,trabajoImpresion);
-				}
-				Gnome.Print.Setfont (ContextoImp, fuente9);
-				filas -= 15;
-				ContextoImp.MoveTo(300,filas);				ContextoImp.Show("TOTAL DE ABONOS "+contadorprocedimientos.ToString());
-				ContextoImp.MoveTo(300,filas);				ContextoImp.Show("TOTAL DE ABONOS "+contadorprocedimientos.ToString());
-				ContextoImp.MoveTo(420,filas);				ContextoImp.Show("TOTAL" );
-				ContextoImp.MoveTo(420,filas);				ContextoImp.Show("TOTAL" );
-				ContextoImp.MoveTo(465,filas);				ContextoImp.Show(total.ToString("C"));
-				ContextoImp.MoveTo(465,filas);				ContextoImp.Show(total.ToString("C"));
-				/*		
-				double ancho;
-				double alto;
-				trabajoImpresion.GetPageSize (out ancho, out alto);
-				Gnome.Print.Beginpage (ContextoImp, "Prueba de impresion");
-				Gnome.Print.Moveto (ContextoImp, 1, 600);
-				Gdk.Pixbuf logohosp = new Gdk.Pixbuf ("/opt/osiris/img/hsc_logo_menu.png");
-				double scala = System.Math.Min (ancho / logohosp.Width, alto / logohosp.Height);
-				Gnome.Print.Scale (ContextoImp, 100, 35);
-				
-				Gnome.Print.Moveto (ContextoImp, 600, 1);
-				Gnome.Print.Pixbuf (ContextoImp, logohosp);
-				Gnome.Print.Moveto (ContextoImp, 600, 1);
-				ContextoImp.MoveTo(20,500);*/
-				//Prin.Grestore (ContextoImp);
-			
-			ContextoImp.ShowPage();
-			contadorprocedimientos += 1;
-			salto_pagina(ContextoImp,trabajoImpresion);			
-		}catch(NpgsqlException ex){
+					*/
+				}				
+				//ContextoImp.MoveTo(300,filas);				ContextoImp.Show("TOTAL DE ABONOS "+contadorprocedimientos.ToString());
+				//ContextoImp.MoveTo(420,filas);				ContextoImp.Show("TOTAL" );
+				//ContextoImp.MoveTo(465,filas);				ContextoImp.Show(total.ToString("C"));				
+			}catch(NpgsqlException ex){
 				Console.WriteLine("PostgresSQL error: {0}",ex.Message);
 				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
 								MessageType.Error,ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
 				msgBoxError.Run ();		msgBoxError.Destroy();
-		}			
-	}
+			}			
+		}
  	
-	void imprime_encabezado(Gnome.PrintContext ContextoImp, Gnome.PrintJob trabajoImpresion)
-	{
- 		// Cambiar la fuente
-		Gnome.Print.Setfont (ContextoImp, fuente6);
-		ContextoImp.MoveTo(19.7, 810);			ContextoImp.Show("Sistema Hospitalario OSIRIS");
-		ContextoImp.MoveTo(20, 810);			ContextoImp.Show("Sistema Hospitalario OSIRIS");
-		ContextoImp.MoveTo(19.7, 800);			ContextoImp.Show("Direccion: ");
-		ContextoImp.MoveTo(20, 800);			ContextoImp.Show("Direccion: ");
-		ContextoImp.MoveTo(19.7, 790);			ContextoImp.Show("Conmutador: ");
-		ContextoImp.MoveTo(20, 790);			ContextoImp.Show("Conmutador: ");
-		Gnome.Print.Setfont (ContextoImp, fuente36);
-		ContextoImp.MoveTo(20, 738);			ContextoImp.Show("_____________________________");
-		Gnome.Print.Setfont(ContextoImp,fuente11);
-		ContextoImp.MoveTo(219.7, 750);			ContextoImp.Show(titulo);
-		ContextoImp.MoveTo(220, 750);			ContextoImp.Show(titulo);
-		Gnome.Print.Setfont(ContextoImp,fuente8);
-		ContextoImp.MoveTo(25.5,720);			ContextoImp.Show("FOLIO");
-		ContextoImp.MoveTo(26,720);				ContextoImp.Show("FOLIO");
-		ContextoImp.MoveTo(55.5,720);			ContextoImp.Show("MONTO");
-		ContextoImp.MoveTo(56,720);				ContextoImp.Show("MONTO");
-		ContextoImp.MoveTo(92.5,720);			ContextoImp.Show("F. ABONO");
-		ContextoImp.MoveTo(93,720); 			ContextoImp.Show("F. ABONO");
-		ContextoImp.MoveTo(133.5,720);			ContextoImp.Show("Nº. REC.");
-		ContextoImp.MoveTo(134,720); 			ContextoImp.Show("Nº. REC.");
-		ContextoImp.MoveTo(170.5,720);			ContextoImp.Show("PID Y NOMBRE DEL PACIENTE");
-		ContextoImp.MoveTo(171,720);			ContextoImp.Show("PID Y NOMBRE DEL PACIENTE");
-		ContextoImp.MoveTo(350.5,720);			ContextoImp.Show("CONCEPTO");
-		ContextoImp.MoveTo(351,720);			ContextoImp.Show("CONCEPTO");
-		ContextoImp.MoveTo(500.5,720);			ContextoImp.Show("FORMA DE PAGO");
-		ContextoImp.MoveTo(501,720);			ContextoImp.Show("FORMA DE PAGO");
-		Gnome.Print.Setfont (ContextoImp, fuente10);
-		ContextoImp.MoveTo(230.7, 50);			ContextoImp.Show("Pagina "+numpage.ToString()+"  fecha "+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
-		ContextoImp.MoveTo(230, 50);			ContextoImp.Show("Pagina "+numpage.ToString()+"  fecha "+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
-		Gnome.Print.Setfont (ContextoImp, fuente9);
-		if(rango1 == "" || rango2 == "") {
-				ContextoImp.MoveTo(240, 740);		ContextoImp.Show("Todas Las Fechas");
+		void imprime_encabezado(Cairo.Context cr,Pango.Layout layout)
+		{	
+ 			Pango.FontDescription desc = Pango.FontDescription.FromString ("Sans");								
+			//cr.Rotate(90);  //Imprimir Orizontalmente rota la hoja cambian las posiciones de las lineas y columna					
+			fontSize = 8.0;
+			desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;
+			layout.FontDescription.Weight = Weight.Bold;		// Letra negrita
+			cr.MoveTo(05*escala_en_linux_windows,05*escala_en_linux_windows);			layout.SetText(classpublic.nombre_empresa);			Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(05*escala_en_linux_windows,15*escala_en_linux_windows);			layout.SetText(classpublic.direccion_empresa);		Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(05*escala_en_linux_windows,25*escala_en_linux_windows);			layout.SetText(classpublic.telefonofax_empresa);	Pango.CairoHelper.ShowLayout (cr, layout);
+			fontSize = 6.0;
+			desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;
+			cr.MoveTo(479*escala_en_linux_windows,05*escala_en_linux_windows);			layout.SetText("Fech.Rpt:"+(string) DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));		Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(479*escala_en_linux_windows,15*escala_en_linux_windows);			layout.SetText("N° Page :");		Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(05*escala_en_linux_windows,35*escala_en_linux_windows);			layout.SetText("Sistema Hospitalario OSIRIS");		Pango.CairoHelper.ShowLayout (cr, layout);
+			// Cambiando el tamaño de la fuente			
+			fontSize = 10.0;		
+			desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;
+			layout.FontDescription.Weight = Weight.Bold;		// Letra negrita
+			cr.MoveTo(225*escala_en_linux_windows, 35*escala_en_linux_windows);			layout.SetText("REPORTE DE PAGO/ABONOS");				Pango.CairoHelper.ShowLayout (cr, layout);
+			
+			fontSize = 8.0;
+			desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;
+			layout.FontDescription.Weight = Weight.Bold;
+			if(rango1 == "" || rango2 == ""){
+				cr.MoveTo(235*escala_en_linux_windows, 45*escala_en_linux_windows);		layout.SetText("Todas Las Fechas");	Pango.CairoHelper.ShowLayout (cr, layout);
 			}else{
 				if(rango1 == rango2) {
-					ContextoImp.MoveTo(234, 740);	ContextoImp.Show("FECHA: "+rango1);
+					cr.MoveTo(235*escala_en_linux_windows, 45*escala_en_linux_windows);		layout.SetText("FECHA: "+rango1);	Pango.CairoHelper.ShowLayout (cr, layout);
 				}else{
-					ContextoImp.MoveTo(195, 740);	ContextoImp.Show("Rango del "+rango1+" al "+rango2);
+					cr.MoveTo(235*escala_en_linux_windows, 45*escala_en_linux_windows);		layout.SetText("Rango del "+rango1+" al "+rango2);	Pango.CairoHelper.ShowLayout (cr, layout);
 				}
+			}	
+			
+			
+			fontSize = 7.0;
+			desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;
+			layout.FontDescription.Weight = Weight.Normal;		// Letra normal
+			// Creando el Cuadro de Titulos para colocar el nombre del usuario
+			cr.Rectangle (05*escala_en_linux_windows, 55*escala_en_linux_windows, 565*escala_en_linux_windows, 15*escala_en_linux_windows);
+			cr.FillExtents();  //. FillPreserve(); 
+			cr.SetSourceRGB (0, 0, 0);
+			cr.LineWidth = 0.5;
+			cr.Stroke();
+				
+			/*	
+			
+			ContextoImp.MoveTo(26,720);				ContextoImp.Show("FOLIO");			
+			ContextoImp.MoveTo(56,720);				ContextoImp.Show("MONTO");			
+			ContextoImp.MoveTo(93,720); 			ContextoImp.Show("F. ABONO");			
+			ContextoImp.MoveTo(134,720); 			ContextoImp.Show("Nº. REC.");			
+			ContextoImp.MoveTo(171,720);			ContextoImp.Show("PID Y NOMBRE DEL PACIENTE");			
+			ContextoImp.MoveTo(351,720);			ContextoImp.Show("CONCEPTO");			
+			ContextoImp.MoveTo(501,720);			ContextoImp.Show("FORMA DE PAGO");
+			*/
+	  	}
+		
+		void salto_de_pagina(Cairo.Context cr,Pango.Layout layout)			
+		{
+			//context.PageSetup.Orientation = PageOrientation.Landscape;
+			//if(comienzo_linea > 660){
+			//	cr.ShowPage();
+			//	Pango.FontDescription desc = Pango.FontDescription.FromString ("Sans");								
+			//	fontSize = 8.0;		desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;
+			//	comienzo_linea = 125;
+			//	imprime_encabezado(cr,layout);
+			//}
+		}
+	
+		void onKeyPressEvent(object o, Gtk.KeyPressEventArgs args)
+		{
+			//Console.WriteLine(args.Event.Key);
+			//Console.WriteLine(Convert.ToChar(args.Event.Key));
+			string misDigitos = ".0123456789ﾰﾱﾲﾳﾴﾵﾶﾷﾸﾹﾮ）（ｔｒｓｑ ";
+			if (Array.IndexOf(misDigitos.ToCharArray(), Convert.ToChar(args.Event.Key)) == -1 && args.Event.Key != Gdk.Key.BackSpace)
+			{
+				args.RetVal = true;
 			}
-			Gnome.Print.Setrgbcolor(ContextoImp, 0,0,0);//regreso color fuente a negro
-  		}
-	
-		void salto_pagina(Gnome.PrintContext ContextoImp, Gnome.PrintJob trabajoImpresion)
-		{
-	        if (contador > 80 )
-	        {
-	        	numpage +=1;
-	        	contador=1;
-	        	filas=710;
-	        	ContextoImp.ShowPage();
-				ContextoImp.BeginPage("Pagina "+numpage.ToString());
-				imprime_encabezado(ContextoImp,trabajoImpresion);
-				Gnome.Print.Setfont (ContextoImp, fuente6);
-	     	}
 		}
-	
-	public void onKeyPressEvent(object o, Gtk.KeyPressEventArgs args)
-	{
-		//Console.WriteLine(args.Event.Key);
-		//Console.WriteLine(Convert.ToChar(args.Event.Key));
-		string misDigitos = ".0123456789ﾰﾱﾲﾳﾴﾵﾶﾷﾸﾹﾮ）（ｔｒｓｑ ";
-		if (Array.IndexOf(misDigitos.ToCharArray(), Convert.ToChar(args.Event.Key)) == -1 && args.Event.Key != Gdk.Key.BackSpace)
+		
+		private void OnEndPrint (object obj, Gtk.EndPrintArgs args)
 		{
-			args.RetVal = true;
+			
 		}
-	}
-	
+		
 		// cierra ventanas emergentes
 		void on_cierraventanas_clicked (object sender, EventArgs args)
 		{

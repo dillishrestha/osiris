@@ -718,10 +718,8 @@ namespace osiris
 				                                     
                 lista_de_producto.Model = treeViewEngineBusca2;
 				
-				lista_de_producto.RulesHint = true;
-				
-				lista_de_producto.RowActivated += on_selecciona_diag_clicked;  // Doble click selecciono paciente
-				
+				lista_de_producto.RulesHint = true;				
+				lista_de_producto.RowActivated += on_selecciona_diag_clicked;  // Doble click selecciono paciente				
 				TreeViewColumn col_iddiagnostico = new TreeViewColumn();
 				CellRendererText cellr0 = new CellRendererText();
 				col_iddiagnostico.Title = "ID Diagnostico"; // titulo de la cabecera de la columna, si está visible
@@ -830,7 +828,7 @@ namespace osiris
 		
 		void on_selecciona_cirugia_clicked (object sender, EventArgs args)
 		{
-		TreeModel model;
+			TreeModel model;
 			TreeIter iterSelected;
 				if (lista_cirugia.Selection.GetSelected(out model, out iterSelected)) {
 				//Console.WriteLine((string) model.GetValue(iterSelected, 1));
@@ -841,6 +839,7 @@ namespace osiris
 			    this.button_busc_medic_trat.Sensitive = true;
 			}
 		}
+		
 		void on_button_guardar_clicked (object sender, EventArgs args)
 		{
 			NpgsqlConnection conexion; 

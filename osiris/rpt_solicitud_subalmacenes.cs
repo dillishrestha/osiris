@@ -141,7 +141,7 @@ namespace osiris
 	        	NpgsqlCommand comando; 
 	        	comando = conexion.CreateCommand ();
 				comando.CommandText = query_general;
-				Console.WriteLine(comando.CommandText);
+				//Console.WriteLine(comando.CommandText);
 				NpgsqlDataReader lector = comando.ExecuteReader ();
 		       	if (lector.Read()){
 					numero_solicitud = (int) lector["folio_de_solicitud"];

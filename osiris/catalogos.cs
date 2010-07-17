@@ -349,8 +349,7 @@ namespace osiris
 					checkbutton_proveedor_nuevo.Active = false;
 				}			
 			}
-			if (checkbutton_proveedor_nuevo.Active == false) 
-			{ 
+			if (checkbutton_proveedor_nuevo.Active == false){ 
 				activa_campos(false,"PROVEEDORES");
 			}
 		}
@@ -370,8 +369,7 @@ namespace osiris
 										"FROM osiris_erp_proveedores "+
 										"ORDER BY id_proveedor DESC LIMIT 1;";
 										NpgsqlDataReader lector = comando.ExecuteReader ();
-				if (lector.Read())
-				{	
+				if (lector.Read()){	
 					tomavalor =(string) lector["idproveedor"]; 
 					return tomavalor;
 				}else{
@@ -569,13 +567,11 @@ namespace osiris
 				NpgsqlConnection conexion; 
 				conexion = new NpgsqlConnection (connectionString+nombrebd);
 	            // Verifica que la base de datos este conectada
-				try
-				{
+				try	{
 				conexion.Open ();
 				NpgsqlCommand comando; 
 				comando = conexion.CreateCommand ();
-				if ((string) entry_expresion.Text.ToUpper() == "*")
-				{
+				if ((string) entry_expresion.Text.ToUpper() == "*"){
 					comando.CommandText = "SELECT descripcion_proveedor,direccion_proveedor,rfc_proveedor,curp_proveedor, "+
 								"colonia_proveedor,municipio_proveedor,estado_proveedor,telefono1_proveedor, "+ 
 								"telefono2_proveedor,celular_proveedor,cp_proveedor, proveedor_activo, "+
@@ -584,9 +580,7 @@ namespace osiris
 								"FROM osiris_erp_proveedores, osiris_erp_forma_de_pago "+
 								"WHERE osiris_erp_proveedores.id_forma_de_pago = osiris_erp_forma_de_pago.id_forma_de_pago "+
 								"ORDER BY descripcion_proveedor;";															
-				}
-				else
-				{
+				}else{
 					comando.CommandText = "SELECT descripcion_proveedor,direccion_proveedor,rfc_proveedor,curp_proveedor, "+
 								"colonia_proveedor,municipio_proveedor,estado_proveedor,telefono1_proveedor, "+ 
 								"telefono2_proveedor,celular_proveedor,cp_proveedor, proveedor_activo, "+
@@ -598,8 +592,7 @@ namespace osiris
 								"ORDER BY descripcion_proveedor;";
 				}
 				NpgsqlDataReader lector = comando.ExecuteReader ();
-				while (lector.Read())
-				{	
+				while (lector.Read()){	
 					treeViewEngineproveedores.AppendValues ((int) lector["id_proveedor"],//0
 													(string) lector["descripcion_proveedor"],//1
 													(string) lector["direccion_proveedor"],//2
@@ -617,14 +610,11 @@ namespace osiris
 													(string) lector["curp_proveedor"]);	//14
 					
 				}
-			}
-			
-				catch (NpgsqlException ex)
-				{
+			}catch (NpgsqlException ex){
 	   			MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
 									MessageType.Error,ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
 				msgBoxError.Run ();			msgBoxError.Destroy();
-				}
+			}
 			conexion.Close ();
 		}
 		
@@ -632,8 +622,7 @@ namespace osiris
 		{
 			TreeModel model;
 			TreeIter iterSelected;
-			if (lista_de_busqueda.Selection.GetSelected(out model, out iterSelected)) 
- 			{
+			if (lista_de_busqueda.Selection.GetSelected(out model, out iterSelected)){
  				int tomaidproveedor = (int) model.GetValue(iterSelected, 0);
  				this.entry_rfc_proveedor.Text = (string) model.GetValue(iterSelected, 13);
 	 			this.entry_curp_proveedor.Text = (string) model.GetValue(iterSelected, 14);
@@ -672,8 +661,7 @@ namespace osiris
 //////////////////////////////Hasta aki la busqueda de proveedores//////////////////////////////////////////////
 		void on_guarda_proveedor_clicked(object sender, EventArgs args)
 		{
-			if(checkbutton_proveedor_nuevo.Active == true)
-			{
+			if(checkbutton_proveedor_nuevo.Active == true){
 				MessageDialog msgBox = new MessageDialog (MyWin,DialogFlags.Modal,MessageType.Question,
 										ButtonsType.YesNo,"¿ Desea grabar esta infomacion ?");
 				ResponseType miResultado = (ResponseType)msgBox.Run ();
@@ -1079,8 +1067,7 @@ namespace osiris
 		{
 			TreeModel model;
 			TreeIter iterSelected;
-			if (lista_de_busqueda.Selection.GetSelected(out model, out iterSelected)) 
- 			{
+			if (lista_de_busqueda.Selection.GetSelected(out model, out iterSelected)){
  				int tomaidcliente = (int) model.GetValue(iterSelected, 0);
  				entry_id_cliente.Text = tomaidcliente.ToString();
 				entry_nombre_cliente.Text = (string) model.GetValue(iterSelected, 1);
@@ -1124,8 +1111,7 @@ namespace osiris
 					conexion = new NpgsqlConnection (connectionString+nombrebd);
 	    	        // Verifica que la base de datos este conectada
 	    	        int numero_cliente;
-					try
-					{
+					try	{
  						conexion.Open ();
 						NpgsqlCommand comando; 
 						comando = conexion.CreateCommand ();
@@ -1137,8 +1123,7 @@ namespace osiris
  							NpgsqlConnection conexion1; 
 							conexion1 = new NpgsqlConnection (connectionString+nombrebd);
 		    	        	// Verifica que la base de datos este conectada
-		    	        	try
-							{
+		    	        	try{
 								conexion1.Open ();
 								NpgsqlCommand comando1; 
 								comando1 = conexion.CreateCommand ();
@@ -1389,8 +1374,7 @@ namespace osiris
                						"ORDER BY descripcion_forma_de_pago;";
 				
 				NpgsqlDataReader lector = comando.ExecuteReader ();
-               	while (lector.Read())
-				{
+               	while (lector.Read()){
 					store5.AppendValues ((string) lector["descripcion_forma_de_pago"],
 									 	(int) lector["id_forma_de_pago"] );
 				}
@@ -1433,8 +1417,7 @@ namespace osiris
                						"ORDER BY descripcion_municipio;";
 				
 				NpgsqlDataReader lector = comando.ExecuteReader ();
-               	while (lector.Read())
-				{
+               	while (lector.Read()){
 					store3.AppendValues ((string) lector["descripcion_municipio"]);
 				}
 			}catch (NpgsqlException ex){

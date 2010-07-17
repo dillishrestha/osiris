@@ -59,6 +59,7 @@ namespace osiris
 		[Widget] Gtk.Entry entry_nombre_paciente = null;
 		[Widget] Gtk.Entry entry_telefono_paciente = null;
 		[Widget] Gtk.Entry entry_cirugia = null;
+		[Widget] Gtk.Entry entry_id_doctor = null;
 		[Widget] Gtk.Entry entry_doctor = null;
 		[Widget] Gtk.Entry entry_especialidad = null;
 		[Widget] Gtk.Entry entry_tipo_paciente = null;
@@ -1495,6 +1496,7 @@ namespace osiris
 					entry_nombre_paciente.Text = (string) lector["nombre1_paciente"]+" "+(string) lector["nombre2_paciente"]+" "+(string) lector["apellido_paterno_paciente"]+" "+(string) lector["apellido_materno_paciente"];
 					entry_pid_paciente.Text = (string) lector["pidpaciente"];
 					entry_telefono_paciente.Text = (string) lector["telefono_particular1_paciente"];
+					entry_id_doctor.Text = (string) lector["id_medico"].ToString().Trim();
 					entry_doctor.Text = (string) lector["nombre_medico"];
 					entry_especialidad.Text = (string) lector["descripcion_especialidad"];
 					entry_tipo_paciente.Text = (string) lector["descripcion_tipo_paciente"];
@@ -2482,19 +2484,19 @@ namespace osiris
 		void on_button_notas_evolucion_clicked(object sender, EventArgs args)
 		{
 			new osiris.notas_medicas(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,"Notas de Evolucion","notas_de_evolucion",
-			                         PidPaciente.ToString(),(string) entry_folio_servicio.Text, (string) entry_doctor.Text,(string) entry_nombre_paciente.Text);
+			                         PidPaciente.ToString(),(string) entry_folio_servicio.Text, (string) entry_id_doctor.Text,(string) entry_doctor.Text,(string) entry_nombre_paciente.Text);
 		}
 		
 		void on_button_notas_enfermeria_clicked(object sender, EventArgs args)
 		{
 			new osiris.notas_medicas(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,"Notas de Enfermeria","notas_de_enfermeria",
-			                         PidPaciente.ToString(),(string) entry_folio_servicio.Text, (string) entry_doctor.Text,(string) entry_nombre_paciente.Text);
+			                         PidPaciente.ToString(),(string) entry_folio_servicio.Text, (string) entry_id_doctor.Text,(string) entry_doctor.Text,(string) entry_nombre_paciente.Text);
 		}
 		
 		void on_button_indicacionesmedicas_clicked(object sender, EventArgs args)
 		{
 			new osiris.notas_medicas(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,"Indicaciones Medicas","indicaciones_medicas",
-			                         PidPaciente.ToString(),(string) entry_folio_servicio.Text, (string) entry_doctor.Text,(string) entry_nombre_paciente.Text);
+			                         PidPaciente.ToString(),(string) entry_folio_servicio.Text,(string) entry_id_doctor.Text,(string) entry_doctor.Text,(string) entry_nombre_paciente.Text);
 		}
 		
 		// cierra ventanas emergentes

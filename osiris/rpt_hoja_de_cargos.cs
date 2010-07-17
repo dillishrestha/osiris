@@ -140,7 +140,7 @@ namespace osiris
 			
 			sql_tipoadmision = " AND osiris_erp_cobros_deta.id_tipo_admisiones = '"+tipointernamiento.ToString()+"' ";
 			sql_numerofolio = " AND osiris_erp_cobros_deta.folio_de_servicio = '"+folioservicio.ToString()+"' ";			
-			//sql_loginempleado = " AND id_empleado = '"+LoginEmpleado+"' ";
+			sql_loginempleado = " AND id_empleado = '"+LoginEmpleado+"' ";
 			connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
 			nombrebd = conexion_a_DB._nombrebd;
 					
@@ -192,7 +192,7 @@ namespace osiris
 	 			conexion.Open ();
 	        	NpgsqlCommand comando; 
 	        	comando = conexion.CreateCommand (); 
-	        	comando.CommandText =query_todo+sql_tipoadmision+sql_numerofolio+sql_loginempleado+query_rango+ "ORDER BY to_char(osiris_erp_cobros_deta.fechahora_creacion,'yyyy-MM-dd 24HH:mm') ASC, osiris_productos.id_grupo_producto,osiris_erp_cobros_deta.id_secuencia; ";
+	        	comando.CommandText =query_todo+sql_tipoadmision+sql_numerofolio+sql_loginempleado+query_rango+ "ORDER BY to_char(osiris_erp_cobros_deta.fechahora_creacion,'yyyy-MM-dd') ASC, osiris_productos.id_grupo_producto,osiris_erp_cobros_deta.id_secuencia; ";
 				Console.WriteLine(comando.CommandText);
 				NpgsqlDataReader lector = comando.ExecuteReader ();
 	        	if (lector.Read()){	
@@ -364,7 +364,7 @@ namespace osiris
 	 			conexion.Open ();
 	        	NpgsqlCommand comando; 
 	        	comando = conexion.CreateCommand (); 
-	        	comando.CommandText =query_todo+sql_tipoadmision+sql_numerofolio+sql_loginempleado+query_rango+" ORDER BY to_char(osiris_erp_cobros_deta.fechahora_creacion,'yyyy-MM-dd 24HH:mm') ASC, osiris_productos.id_grupo_producto,osiris_erp_cobros_deta.id_secuencia; ";
+	        	comando.CommandText =query_todo+sql_tipoadmision+sql_numerofolio+sql_loginempleado+query_rango+" ORDER BY to_char(osiris_erp_cobros_deta.fechahora_creacion,'yyyy-MM-dd') ASC, osiris_productos.id_grupo_producto,osiris_erp_cobros_deta.id_secuencia; ";
 				Console.WriteLine(comando.CommandText);
 				NpgsqlDataReader lector = comando.ExecuteReader ();
 	        	if (lector.Read()){

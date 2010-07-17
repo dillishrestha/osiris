@@ -536,13 +536,27 @@ Busqueda de Paciente</property>
                                       </packing>
                                     </child>
                                     <child>
-                                      <widget class="GtkEntry" id="entry_doctor">
+                                      <widget class="GtkEntry" id="entry_id_doctor">
+                                        <property name="width_request">1</property>
                                         <property name="visible">True</property>
+                                        <property name="can_focus">True</property>
                                         <property name="editable">False</property>
                                         <property name="invisible_char">&#x25CF;</property>
                                       </widget>
                                       <packing>
                                         <property name="position">1</property>
+                                      </packing>
+                                    </child>
+                                    <child>
+                                      <widget class="GtkEntry" id="entry_doctor">
+                                        <property name="width_request">200</property>
+                                        <property name="visible">True</property>
+                                        <property name="can_focus">True</property>
+                                        <property name="editable">False</property>
+                                        <property name="invisible_char">&#x25CF;</property>
+                                      </widget>
+                                      <packing>
+                                        <property name="position">2</property>
                                       </packing>
                                     </child>
                                     <child>
@@ -553,17 +567,19 @@ Busqueda de Paciente</property>
                                       <packing>
                                         <property name="expand">False</property>
                                         <property name="fill">False</property>
-                                        <property name="position">2</property>
+                                        <property name="position">3</property>
                                       </packing>
                                     </child>
                                     <child>
                                       <widget class="GtkEntry" id="entry_especialidad">
+                                        <property name="width_request">200</property>
                                         <property name="visible">True</property>
+                                        <property name="can_focus">True</property>
                                         <property name="editable">False</property>
                                         <property name="invisible_char">&#x25CF;</property>
                                       </widget>
                                       <packing>
-                                        <property name="position">3</property>
+                                        <property name="position">4</property>
                                       </packing>
                                     </child>
                                     <child>
@@ -574,17 +590,18 @@ Busqueda de Paciente</property>
                                       <packing>
                                         <property name="expand">False</property>
                                         <property name="fill">False</property>
-                                        <property name="position">4</property>
+                                        <property name="position">5</property>
                                       </packing>
                                     </child>
                                     <child>
                                       <widget class="GtkEntry" id="entry_id_habitacion">
-                                        <property name="width_request">1</property>
+                                        <property name="width_request">90</property>
                                         <property name="visible">True</property>
                                         <property name="can_focus">True</property>
+                                        <property name="invisible_char">&#x25CF;</property>
                                       </widget>
                                       <packing>
-                                        <property name="position">5</property>
+                                        <property name="position">6</property>
                                       </packing>
                                     </child>
                                   </widget>
@@ -6221,6 +6238,71 @@ Medicamento</property>
                     <property name="visible">True</property>
                     <property name="orientation">vertical</property>
                     <child>
+                      <placeholder/>
+                    </child>
+                    <child>
+                      <widget class="GtkHBox" id="hbox7">
+                        <property name="visible">True</property>
+                        <child>
+                          <widget class="GtkLabel" id="label9">
+                            <property name="width_request">30</property>
+                            <property name="visible">True</property>
+                            <property name="tooltip" translatable="yes">Este es el numero de Evolucion o de atencion del paciente que se crea cuando se ingresa</property>
+                            <property name="label" translatable="yes">N&#xB0; Atencion</property>
+                          </widget>
+                          <packing>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <widget class="GtkEntry" id="entry_numerotencion">
+                            <property name="width_request">30</property>
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="invisible_char">&#x25CF;</property>
+                          </widget>
+                          <packing>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <widget class="GtkLabel" id="label10">
+                            <property name="width_request">30</property>
+                            <property name="visible">True</property>
+                            <property name="label" translatable="yes">Doctor :</property>
+                          </widget>
+                          <packing>
+                            <property name="position">2</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <widget class="GtkEntry" id="entry_id_doctor">
+                            <property name="width_request">50</property>
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="invisible_char">&#x25CF;</property>
+                          </widget>
+                          <packing>
+                            <property name="position">3</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <widget class="GtkEntry" id="entry_doctor">
+                            <property name="width_request">300</property>
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="invisible_char">&#x25CF;</property>
+                          </widget>
+                          <packing>
+                            <property name="position">4</property>
+                          </packing>
+                        </child>
+                      </widget>
+                      <packing>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
+                    <child>
                       <widget class="GtkHBox" id="hbox6">
                         <property name="visible">True</property>
                         <child>
@@ -6281,61 +6363,7 @@ Medicamento</property>
                         </child>
                       </widget>
                       <packing>
-                        <property name="position">0</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <widget class="GtkHBox" id="hbox7">
-                        <property name="visible">True</property>
-                        <child>
-                          <widget class="GtkLabel" id="label9">
-                            <property name="width_request">30</property>
-                            <property name="visible">True</property>
-                            <property name="tooltip" translatable="yes">Este es el numero de Evolucion o de atencion del paciente que se crea cuando se ingresa</property>
-                            <property name="label" translatable="yes">N&#xB0; Atencion</property>
-                          </widget>
-                          <packing>
-                            <property name="position">0</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <widget class="GtkEntry" id="entry_numerotencion">
-                            <property name="width_request">30</property>
-                            <property name="visible">True</property>
-                            <property name="can_focus">True</property>
-                            <property name="invisible_char">&#x25CF;</property>
-                          </widget>
-                          <packing>
-                            <property name="position">1</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <widget class="GtkLabel" id="label10">
-                            <property name="width_request">30</property>
-                            <property name="visible">True</property>
-                            <property name="label" translatable="yes">Doctor :</property>
-                          </widget>
-                          <packing>
-                            <property name="position">2</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <widget class="GtkEntry" id="entry_doctor">
-                            <property name="width_request">300</property>
-                            <property name="visible">True</property>
-                            <property name="can_focus">True</property>
-                            <property name="invisible_char">&#x25CF;</property>
-                          </widget>
-                          <packing>
-                            <property name="position">3</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <placeholder/>
-                        </child>
-                      </widget>
-                      <packing>
-                        <property name="position">1</property>
+                        <property name="position">2</property>
                       </packing>
                     </child>
                   </widget>

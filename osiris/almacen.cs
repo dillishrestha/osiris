@@ -52,6 +52,7 @@ namespace osiris
 		[Widget] Gtk.Button button_captura_fact_orden_comp = null;
 		[Widget] Gtk.Button button_autorizacion_medicamento = null;
 		[Widget] Gtk.Button button_productos_aplicados = null;
+		[Widget] Gtk.Button button_analisis_devoluciones = null;
 		[Widget] Gtk.Button button_productos_enviados = null;
 		[Widget] Gtk.Button button_traspaso_subalmacenes = null;
 		//[Widget] Gtk.Button button_soli_material;
@@ -91,6 +92,7 @@ namespace osiris
 			button_productos_aplicados.Clicked += new EventHandler(on_button_productos_aplicados_clicked);
 			button_productos_enviados.Clicked += new EventHandler(on_button_productos_enviados_clicked);
 			button_traspaso_subalmacenes.Clicked += new EventHandler(on_button_traspaso_subalmacenes_clicked);
+			button_analisis_devoluciones.Clicked += new EventHandler(on_button_analisis_devoluciones_clicked);
 		}
 		
 		void on_button_inventario_clicked(object sender, EventArgs args)
@@ -135,6 +137,11 @@ namespace osiris
 		void on_button_envios_subalmacenes_clicked(object sender, EventArgs args)
 		{
 			new osiris.envio_de_materiales_subalmacenes(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
+		}
+		
+		void on_button_analisis_devoluciones_clicked(object sender, EventArgs args)
+		{
+			new osiris.analisis_devoluciones(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
 		}
 		
 		void on_button_productos_enviados_clicked(object sender, EventArgs args)

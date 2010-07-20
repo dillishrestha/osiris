@@ -135,8 +135,6 @@ namespace osiris
 			TextIter insertIter = buffer.StartIter;
 			classpublic.CreateTags(buffer);
 						
-			string texto_hitoria_clinica = "";
-			
 			NpgsqlConnection conexion; 
 			conexion = new NpgsqlConnection (connectionString+nombrebd);
             
@@ -153,7 +151,7 @@ namespace osiris
 				
 				if(lector.Read()){
 					entry_pid_paciente.Text = pidpaciente;
-										entry_nombre_paciente.Text = (string) lector["nombre1_paciente"].ToString().Trim()+" "+
+					entry_nombre_paciente.Text = (string) lector["nombre1_paciente"].ToString().Trim()+" "+
 											(string) lector["nombre2_paciente"].ToString().Trim()+" "+
 											(string) lector["apellido_paterno_paciente"].ToString().Trim()+" "+
 											(string) lector["apellido_materno_paciente"].ToString().Trim();
@@ -204,7 +202,7 @@ namespace osiris
 					textview2.Buffer.Text.ToString()+"','"+
 					DateTime.Now.ToString("yyyy-MM-dd")+"','"+
 					"12:00"	+"')";
-					Console.WriteLine(comando.CommandText);
+					//Console.WriteLine(comando.CommandText);
 					comando.ExecuteNonQuery();
 					comando.Dispose();
 					MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,MessageType.Info,

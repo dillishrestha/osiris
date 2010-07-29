@@ -289,8 +289,7 @@ namespace osiris
 								"osiris_his_habitaciones.descripcion_cuarto_corta,"+
 								"osiris_erp_movcargos.id_tipo_paciente AS idtipopaciente, descripcion_tipo_paciente "+
 								"FROM osiris_erp_cobros_enca,osiris_his_paciente,osiris_erp_movcargos,osiris_his_tipo_pacientes,osiris_aseguradoras,"+
-								"osiris_his_habitaciones,"+
-								"osiris_empresas,osiris_his_medicos "+
+								"osiris_his_habitaciones,osiris_empresas,osiris_his_medicos "+
 								"WHERE osiris_erp_cobros_enca.pid_paciente = osiris_his_paciente.pid_paciente "+
 								"AND osiris_erp_movcargos.folio_de_servicio = osiris_erp_cobros_enca.folio_de_servicio "+
 								"AND osiris_erp_cobros_enca.id_aseguradora = osiris_aseguradoras.id_aseguradora "+
@@ -302,6 +301,7 @@ namespace osiris
 								"AND osiris_erp_cobros_enca.alta_paciente = 'false' "+
 								"AND osiris_erp_cobros_enca.cancelado = 'false' "+
 								"AND osiris_erp_movcargos.id_tipo_admisiones > '16' "+
+								"AND osiris_erp_movcargos.id_tipo_admisiones <> '940' "+
 								"AND osiris_erp_cobros_enca.id_habitacion = osiris_his_habitaciones.id_habitacion "+
 								"ORDER BY nombre_completo ;";
 				//Console.WriteLine(comando.CommandText);

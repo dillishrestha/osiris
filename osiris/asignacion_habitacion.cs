@@ -512,23 +512,17 @@ namespace osiris
 									  "FROM osiris_his_tipo_admisiones " +
 									  "WHERE habitaciones = 'true' AND grupo = 'MED';";
                			             
-				NpgsqlDataReader lector = comando.ExecuteReader ();
-				
-				while (lector.Read())
-				  {
+				NpgsqlDataReader lector = comando.ExecuteReader ();				
+				while (lector.Read()){
 					store.AppendValues ((string) lector ["descripcion_admisiones"], (int) lector["id_tipo_admisiones"]) ;
-			  		}
-				
-				}
-				
-				catch (NpgsqlException ex){
-		   			MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
-					MessageType.Error, ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
-					msgBoxError.Run ();	msgBoxError.Destroy();
-                }
-                conexion.Close ();
+			  	}				
+			}catch(NpgsqlException ex){
+		   		MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+				MessageType.Error, ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
+				msgBoxError.Run ();	msgBoxError.Destroy();
+            }
+            conexion.Close ();
 
-			
 			TreeIter iter;
 			if (store.GetIterFirst(out iter)){
 				combobox_area.SetActiveIter (iter);
@@ -627,8 +621,7 @@ namespace osiris
 				
 				while (lector.Read()){
 					this.treeViewEngineBuscahabitacion.AppendValues ((bool) false,(int) lector["id_habitacion"],(int) lector["numero_cuarto"],(string) lector["descripcion_admisiones"],(int) lector["id_tipo_admisiones"],(string) lector["descripcion_cuarto"]);
-				}
-				
+				}				
 			}catch (NpgsqlException ex){
 	   			MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
 										MessageType.Error, ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);

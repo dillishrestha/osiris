@@ -1054,7 +1054,7 @@ namespace osiris
 				NpgsqlCommand comando; 
 				comando = conexion.CreateCommand ();
                	comando.CommandText = sql_envio_subalmacenes+filtro_sub_almacen+
-									" ORDER BY osiris_his_solicitudes_deta.id_secuencia;";
+									" ORDER BY osiris_his_solicitudes_deta.id_almacen,osiris_his_solicitudes_deta.folio_de_solicitud,osiris_productos.descripcion_producto;";
 				//Console.WriteLine(comando.CommandText);
 				NpgsqlDataReader lector = comando.ExecuteReader ();
 				while(lector.Read()){

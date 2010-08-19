@@ -50,6 +50,7 @@ namespace osiris
 		[Widget] Gtk.Entry entry_nombre_paciente = null;
 		[Widget] Gtk.Button button_selecciona_folio = null;
 		[Widget] Gtk.Button button_buscar_paciente = null;
+		[Widget] Gtk.Button button_imprimir_mov = null;
 				
 		[Widget] Gtk.TreeView lista_cargos_desde_stock = null;
 		[Widget] Gtk.TreeView lista_solicitado_no_cargado = null;
@@ -87,7 +88,6 @@ namespace osiris
 			gxml.Autoconnect (this);
 	        // Muestra ventana de Glade
 			resumen_devoluciones.Show();
-			
 			statusbar_analisisdevol.Pop(0);
 			statusbar_analisisdevol.Push(1, "login: "+LoginEmpleado+"  |Usuario: "+NomEmpleado+" "+AppEmpleado+" "+ApmEmpleado);
 			statusbar_analisisdevol.HasResizeGrip = false;
@@ -97,6 +97,7 @@ namespace osiris
 			entry_folio_servicio.KeyPressEvent += onKeyPressEvent_enter_folio;
 			button_selecciona_folio.Clicked += new EventHandler(on_button_selecciona_folio_clicked);
 			button_buscar_paciente.Clicked += new EventHandler(on_button_buscar_paciente_clicked);
+			button_imprimir_mov.Clicked += new EventHandler(on_button_imprimir_mov_clicked);
 			// Sale de la ventana
 			button_salir.Clicked += new EventHandler(on_cierraventanas_clicked);
 			
@@ -345,6 +346,11 @@ namespace osiris
 			}
 		}
 		
+		void on_button_imprimir_mov_clicked(object obj, EventArgs args)
+		{
+			
+		}
+		
 		void llenado_de_devoluciones()
 		{
 			string toma_idproducto = "";
@@ -589,7 +595,7 @@ namespace osiris
 										"AND osiris_his_solicitudes_deta.surtido = 'true' "+
 										"GROUP BY osiris_his_solicitudes_deta.id_producto,osiris_productos.descripcion_producto,osiris_his_solicitudes_deta.id_almacen,descripcion_almacen "+
 										"ORDER BY osiris_his_solicitudes_deta.id_almacen,osiris_productos.descripcion_producto;";
-						Console.WriteLine(comando1.CommandText);					
+						//Console.WriteLine(comando1.CommandText);					
 						NpgsqlDataReader lector1 = comando1.ExecuteReader ();
 						if(lector1.Read() == true){
 							treeViewEngine3.AppendValues(toma_idproducto,toma_descripcionproducto,toma_productosaplicados,(string) lector1["cantidadautorizada"], Convert.ToDouble(float.Parse((string) lector1["cantidadautorizada"])-float.Parse(toma_productosaplicados)).ToString("F"),toma_subalmacen);

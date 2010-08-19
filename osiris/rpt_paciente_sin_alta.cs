@@ -302,8 +302,13 @@ namespace osiris
 								"AND osiris_erp_cobros_enca.cancelado = 'false' "+
 								"AND osiris_erp_movcargos.id_tipo_admisiones > '16' "+
 								"AND osiris_erp_movcargos.id_tipo_admisiones <> '940' "+
+								"AND osiris_erp_movcargos.id_tipo_admisiones <> '930' "+
+								"AND osiris_erp_movcargos.id_tipo_admisiones <> '920' "+
+								"AND osiris_erp_movcargos.id_tipo_admisiones <> '950' "+
+								"AND osiris_erp_movcargos.id_tipo_admisiones <> '300' "+
+								"AND osiris_erp_movcargos.id_tipo_admisiones <> '400' "+
 								"AND osiris_erp_cobros_enca.id_habitacion = osiris_his_habitaciones.id_habitacion "+
-								"ORDER BY nombre_completo ;";
+								"ORDER BY osiris_erp_movcargos.folio_de_servicio ;";		
 				//Console.WriteLine(comando.CommandText);
 				NpgsqlDataReader lector = comando.ExecuteReader ();
 				

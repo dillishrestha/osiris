@@ -238,6 +238,10 @@ namespace osiris
 		//int idtipointernamiento = 710;
 		//string descripinternamiento = "ENDOSCOPIA";
 		//int idsubalmacen = 10;
+		
+		//int idtipointernamiento = 940;
+		//string descripinternamiento = "OFTALMOLOGIA";
+		//int idsubalmacen = 14;
 				
 		public cargos_modulos_medicos(string LoginEmp, string NomEmpleado_, string AppEmpleado_, string ApmEmpleado_,
 		                       int idtipointernamiento_,string descripinternamiento_,int idsubalmacen_,string validacion_sql) 
@@ -2031,7 +2035,7 @@ namespace osiris
 						"AND osiris_grupo_producto.agrupacion = 'MD1' "+
 						"AND osiris_productos.cobro_activo = 'true' "+
 						"AND osiris_productos.descripcion_producto LIKE '%"+entry_expresion.Text.ToUpper().Trim()+"%' ORDER BY descripcion_producto;";
-				//Console.WriteLine(comando.CommandText.ToString());
+				Console.WriteLine(comando.CommandText.ToString());
 				NpgsqlDataReader lector = comando.ExecuteReader ();
 				
 				float tomaprecio;

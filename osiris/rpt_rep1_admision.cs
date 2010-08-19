@@ -731,6 +731,7 @@ namespace osiris
 				Pango.FontDescription desc = Pango.FontDescription.FromString ("Sans");								
 				fontSize = 7.0;		desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;
 				comienzo_linea = 85;
+				numerpage += 1;
 				imprime_encabezado(cr,layout);
 			}
 		}

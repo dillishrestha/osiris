@@ -84,7 +84,8 @@ namespace osiris
 		//Declarando la barra de estado
 		[Widget] Gtk.Statusbar statusbar_caja;
 		
-		/////// Ventana Busqueda de paciente\\\\\\\\
+		/////// Ventana Busqueda de paciente\\\\\\\\n
+		[Widget] Gtk.Window busca_paciente;
 		[Widget] Gtk.TreeView lista_de_Pacientes;
 		[Widget] Gtk.Button button_nuevo_paciente;
 		[Widget] Gtk.RadioButton radiobutton_busca_apellido;
@@ -1367,9 +1368,11 @@ namespace osiris
 		
 		// busco un paciente pantalla de ingreso de nuevo paciente
 		void on_button_buscar_paciente_clicked(object sender, EventArgs args)
-	    	{
-			Glade.XML gxml = new Glade.XML (null, "laboratorio.glade", "busca_paciente", null);
+	    {
+			Console.WriteLine("Busca el paciente");
+			Glade.XML gxml = new Glade.XML (null, "imagenologia.glade", "busca_paciente", null);
 			gxml.Autoconnect (this);
+			busca_paciente.Show();
 			crea_treeview_busqueda("paciente");
 			button_buscar_busqueda.Clicked += new EventHandler(on_buscar_paciente_clicked);
 			button_selecciona.Clicked += new EventHandler(on_selecciona_paciente_clicked);

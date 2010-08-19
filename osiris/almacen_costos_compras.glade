@@ -9797,7 +9797,8 @@ Proveedor</property>
                                         <child>
                                           <widget class="GtkLabel" id="label9">
                                             <property name="visible">True</property>
-                                            <property name="label" translatable="yes">Actualizar</property>
+                                            <property name="label" translatable="yes">_Actualizar</property>
+                                            <property name="use_underline">True</property>
                                           </widget>
                                           <packing>
                                             <property name="position">1</property>
@@ -9822,7 +9823,7 @@ Proveedor</property>
                               </packing>
                             </child>
                             <child>
-                              <widget class="GtkButton" id="button_salir2">
+                              <widget class="GtkButton" id="button_imprimir_mov">
                                 <property name="width_request">90</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
@@ -9845,7 +9846,8 @@ Proveedor</property>
                                         <child>
                                           <widget class="GtkLabel" id="label13">
                                             <property name="visible">True</property>
-                                            <property name="label" translatable="yes">Actualizar</property>
+                                            <property name="label" translatable="yes">_Imprimir</property>
+                                            <property name="use_underline">True</property>
                                           </widget>
                                           <packing>
                                             <property name="position">1</property>
@@ -9884,7 +9886,8 @@ Proveedor</property>
                                         <child>
                                           <widget class="GtkLabel" id="label8">
                                             <property name="visible">True</property>
-                                            <property name="label" translatable="yes">Salir</property>
+                                            <property name="label" translatable="yes">_Salir</property>
+                                            <property name="use_underline">True</property>
                                           </widget>
                                           <packing>
                                             <property name="position">1</property>

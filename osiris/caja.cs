@@ -2740,9 +2740,8 @@ namespace osiris
 								"AND osiris_erp_cobros_enca.id_aseguradora = osiris_aseguradoras.id_aseguradora "+
 								"AND osiris_erp_cobros_enca.id_habitacion = osiris_his_habitaciones.id_habitacion "+
 								"AND osiris_erp_cobros_enca.folio_de_servicio = "+(string) foliodeserv+";";
-								
-				NpgsqlDataReader lector = comando.ExecuteReader ();
-				//Console.WriteLine(comando.CommandText.ToString());
+				//Console.WriteLine(comando.CommandText.ToString());				
+				NpgsqlDataReader lector = comando.ExecuteReader ();				
 				bool procedimiento_cerrado = false;
 				if(lector.Read()){
 					button_removerItem.Sensitive = true;
@@ -2850,7 +2849,7 @@ namespace osiris
             		idhabitacion = (int) lector["id_habitacion"];
             		if ((int) lector["idtipoadmision"] == 300 || (int) lector["idtipoadmision"] == 400  || 
             		(int) lector["idtipoadmision"] == 930 || (int) lector["idtipoadmision"] == 200 && idhabitacion == 1 || 
-            		(int) lector["idtipoadmision"] == 920){            		
+            		(int) lector["idtipoadmision"] == 920 || (int) lector["idtipoadmision"] == 940){            		
 	            		button_alta_paciente.Sensitive = true;	            		
 	            	}else{
 	            		button_alta_paciente.Sensitive = false;

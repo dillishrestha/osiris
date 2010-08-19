@@ -92,8 +92,7 @@ namespace osiris
 		[Widget] Gtk.Button button_responsable = null;
 		[Widget] Gtk.Button button_imprimir_protocolo = null;
 		[Widget] Gtk.Button button_cancelar_pid = null;
-		[Widget] Gtk.Button button_referido_observ = null;
-		
+				
 		[Widget] Gtk.Button button_admision = null;
 		[Widget] Gtk.Button button_contrata_paquete = null;
 		//[Widget] Gtk.Button button_imprimir;
@@ -126,6 +125,9 @@ namespace osiris
 		[Widget] Gtk.Entry entry_telcasa = null;
 		[Widget] Gtk.Entry entry_teloficina = null;
 		[Widget] Gtk.Entry entry_telcelular = null;
+		[Widget] Gtk.Entry entry_religion_paciente = null;
+		[Widget] Gtk.Entry entry_alergia_paciente = null;
+		[Widget] Gtk.Entry entry_observacion_ingreso = null;
 		
 		[Widget] Gtk.CheckButton checkbutton_consulta = null;
 		[Widget] Gtk.Entry entry_medico_cm = null;
@@ -363,7 +365,6 @@ namespace osiris
 	        	
 	        		// activa boton de grabacion de informacion
 				button_grabar.Clicked += new EventHandler(on_graba_informacion_clicked);
-				button_referido_observ.Clicked += new EventHandler(on_button_referido_observ_clicked);
 	        	
 				// Activa boton de responsable
 				button_responsable.Clicked += new EventHandler(on_button_responsable_clicked);
@@ -407,11 +408,6 @@ namespace osiris
 				radiobutton_femenino.Clicked += new EventHandler(on_cambioHM_clicked);
 	        		
 			//}
-		}
-		
-		void on_button_referido_observ_clicked(object sender, EventArgs args)
-		{
-			
 		}
 		
 		// Estado Civil
@@ -1457,7 +1453,8 @@ namespace osiris
 							"rfc_paciente, curp_paciente, estado_civil_paciente, direccion_paciente, numero_casa_paciente, "+
 							"colonia_paciente, codigo_postal_paciente, telefono_particular1_paciente,"+
 							"telefono_trabajo1_paciente, celular1_paciente, municipio_paciente, estado_paciente, "+
-							"osiris_his_paciente.id_empresa AS idempresapaciente, osiris_empresas.descripcion_empresa "+
+							"osiris_his_paciente.id_empresa AS idempresapaciente, osiris_empresas.descripcion_empresa,"+
+							"religion_paciente,alegias_paciente "+
 							"FROM osiris_his_paciente, osiris_empresas WHERE osiris_his_paciente.id_empresa=osiris_empresas.id_empresa "+
 							"AND pid_paciente = '"+pidpaciente_.ToString()+"'"+
 							"AND activo = 'true' "+
@@ -1493,6 +1490,8 @@ namespace osiris
 					entry_telcasa.Text = (string) lector["telefono_particular1_paciente"];
 					entry_teloficina.Text = (string) lector["telefono_trabajo1_paciente"];
 					entry_telcelular.Text = (string) lector["celular1_paciente"];
+					entry_religion_paciente.Text = (string) lector["religion_paciente"];
+					entry_alergia_paciente.Text = (string) lector["alegias_paciente"];
 					
 					estadocivil = (string) lector["estado_civil_paciente"];
 					// Estado Civil
@@ -1906,7 +1905,8 @@ namespace osiris
                 					"codigo_postal_paciente,telefono_particular1_paciente,telefono_trabajo1_paciente,"+
                 					"celular1_paciente,email_paciente,estado_civil_paciente,"+
                 					"sexo_paciente,municipio_paciente,estado_paciente,ocupacion_paciente,"+
-                					"id_quienlocreo_paciente,pid_paciente,id_empresa,activo) VALUES ('"+
+                					"id_quienlocreo_paciente,pid_paciente,id_empresa,activo,"+
+									"religion_paciente,alegias_paciente) VALUES ('"+
                 					DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"','"+
                 					entry_nombre_1.Text.ToUpper().Trim()+"','"+
                 					entry_nombre_2.Text.ToUpper().Trim()+"','"+
@@ -1931,7 +1931,9 @@ namespace osiris
                 					LoginEmpleado+"','"+
                 					PidPaciente+"','"+
                 					idempresa_paciente+"','"+
-                					"true"+"');";
+                					"true"+"','"+
+									entry_religion_paciente.Text.ToUpper()+"','"+
+									entry_alergia_paciente.Text.ToUpper()+"');";
                 	//Console.WriteLine("Grabo informacion del Paciente "+PidPaciente.ToString());
 					comando.ExecuteNonQuery();					comando.Dispose();
 					return true;
@@ -2043,6 +2045,7 @@ namespace osiris
 							"telefono_emp_responsable,"+
 							"parentezco, id_medico,id_empresa,nombre_medico_encabezado,"+
 							"cerrado,facturacion,"+
+							"observacion_ingreso,"+
 							"nombre_empresa_encabezado ) VALUES ('"+
 							folioservicio+"','"+
 							PidPaciente+"','"+
@@ -2065,6 +2068,7 @@ namespace osiris
 							nombmedico.ToUpper().Trim()+"','"+
 							cerrar_folio+"','"+
 							facturacion_folio+"','"+
+							entry_observacion_ingreso.Text.ToUpper()+"','"+
 							this.entry_empresa.Text.ToString().Trim().ToUpper()+"');";
 				//Console.WriteLine("Graba Encabezado");
 				comando.ExecuteNonQuery();			comando.Dispose();
@@ -2216,8 +2220,6 @@ namespace osiris
 					button_contrata_paquete.Clicked += new EventHandler(on_button_contrata_paquete_clicked);
 					button_contrata_paquete.Sensitive = false;
 					
-					button_referido_observ.Clicked += new EventHandler(on_button_referido_observ_clicked);
-					
 					//Desactiva campos de PID y de FOLIO para que no se escriba en ellos
 		        	entry_pid_paciente.Sensitive = false;
 		        	entry_folio_paciente.Sensitive = false;
@@ -2235,6 +2237,7 @@ namespace osiris
 		       	    button_separa_folio.Clicked += new EventHandler(on_button_separa_folio_clicked);
 		        	
 					entry_pid_paciente.Text = PidPaciente.ToString();
+					entry_observacion_ingreso.Sensitive = true;
 					
 	 			}
 			}
@@ -2578,6 +2581,9 @@ namespace osiris
 			entry_teloficina.Sensitive = valor;
 			entry_telcelular.Sensitive = valor;
 			combobox_estado_civil.Sensitive = valor;
+			entry_religion_paciente.Sensitive = valor;
+			entry_alergia_paciente.Sensitive = valor;
+			entry_observacion_ingreso.Sensitive = valor;
 			
 			combobox_aseguradora.Sensitive = valor;
 			combobox_municipios.Sensitive = valor;

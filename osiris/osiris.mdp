@@ -80,7 +80,6 @@
     <File subtype="Code" buildaction="Compile" name="endoscopia.cs" />
     <File subtype="Code" buildaction="Compile" name="laboratorio.cs" />
     <File subtype="Code" buildaction="Compile" name="imagenologia.cs" />
-    <File subtype="Code" buildaction="Compile" name="imagenologia_cargos.cs" />
     <File subtype="Code" buildaction="Compile" name="imagenologia_cargos_b.cs" />
     <File subtype="Code" buildaction="Compile" name="terapia_adulto.cs" />
     <File subtype="Code" buildaction="Compile" name="terapia_adulto_cargos.cs" />
@@ -133,6 +132,8 @@
     <File subtype="Code" buildaction="Compile" name="notas_medicas.cs" />
     <File subtype="Code" buildaction="Compile" name="oftalmologia.cs" />
     <File subtype="Code" buildaction="Compile" name="analisis_devoluciones.cs" />
+    <File subtype="Code" buildaction="Compile" name="rpt_inv_subalmacenes.cs" />
+    <File subtype="Code" buildaction="Compile" name="solicitudes_rx_lab.cs" />
   </Contents>
   <References>
     <ProjectReference type="Gac" localcopy="True" refto="Mono.Cairo, Version=2.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756" />

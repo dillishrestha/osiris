@@ -290,15 +290,11 @@ namespace osiris
 			
               limpia_variables();
 			
-			}else{
-			   
-			   MessageDialog msgBox2 = new MessageDialog (MyWin,DialogFlags.Modal,MessageType.Info,
+			}else{			   
+				MessageDialog msgBox2 = new MessageDialog (MyWin,DialogFlags.Modal,MessageType.Info,
 				                          ButtonsType.Ok,"El paciente no se modifico y quedo en su habitacion");										
-				                         msgBox2.Run ();
-					                     msgBox2.Destroy();		
-			     
-			}
-			
+				msgBox2.Run ();		msgBox2.Destroy();			     
+			}			
 		}
 		
 		void on_aceptar_clicked(object sender, EventArgs args)
@@ -313,7 +309,7 @@ namespace osiris
 				
 					 	if (miResultado == ResponseType.Yes){
 				 			Console.WriteLine("acepto");
-						pid = this.pid_pasingado;
+							pid = this.pid_pasingado;
 						    query_fecha_de_ocupacion = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
                                    
 								        NpgsqlConnection conexion; 
@@ -329,14 +325,14 @@ namespace osiris
 											comando.ExecuteNonQuery();
 											comando.Dispose();					
 							              
-							               Console.WriteLine(comando.CommandText+"------------");
+							               //Console.WriteLine(comando.CommandText+"------------");
 					                   	   conexion.Close ();
-									        }catch (NpgsqlException ex){
+									   	}catch (NpgsqlException ex){
 										   		MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
 																MessageType.Error, 
 																ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
 												msgBoxError.Run ();			msgBoxError.Destroy();
-											}
+										}
 						
 						cambio = true;
 						idpacientehistorial = pid_pasingado;   
@@ -387,7 +383,7 @@ namespace osiris
 						
 						comando.ExecuteNonQuery();
 						comando.Dispose();
-					    Console.WriteLine(comando.CommandText+"------------");
+					    //Console.WriteLine(comando.CommandText+"------------");
 						
                         comando = conexion.CreateCommand ();
 						comando.CommandText = "UPDATE osiris_erp_cobros_enca SET id_habitacion ='"+this.entry_id_habitacion.Text+"' "+ 
@@ -395,7 +391,7 @@ namespace osiris
 						
 						comando.ExecuteNonQuery();
 						comando.Dispose();
-					    Console.WriteLine(comando.CommandText+"------------");
+					    //Console.WriteLine(comando.CommandText+"------------");
 																
 					
 			        	MessageDialog msgBox = new MessageDialog (MyWin,DialogFlags.Modal,MessageType.Info,
@@ -572,7 +568,7 @@ namespace osiris
 								"AND osiris_his_paciente.pid_paciente = osiris_erp_cobros_enca.pid_paciente "+
 								"AND osiris_erp_cobros_enca.alta_paciente = false "+
 								"AND osiris_erp_cobros_enca.cancelado = false "+
-								"AND osiris_erp_cobros_enca.id_habitacion != 1 "+
+								"AND osiris_erp_cobros_enca.id_habitacion != 1 "+						
 								"ORDER BY folio_de_servicio;";					  
 				NpgsqlDataReader lector = comando.ExecuteReader ();
 				while (lector.Read()){
@@ -685,16 +681,14 @@ namespace osiris
 			descripcion.Title = "Descripcion";
 			descripcion.PackStart(cellrt3, true);
 			descripcion.AddAttribute (cellrt3, "text", 5); // la siguiente columna será 2 en vez de 3
-			descripcion.SortColumnId = (int) Column2.descripcion;
-			
+			descripcion.SortColumnId = (int) Column2.descripcion;			
 			
             treeview_habitaciones.AppendColumn(col_check);
             treeview_habitaciones.AppendColumn(id_habitacion);
 			treeview_habitaciones.AppendColumn(habitacion);
 			treeview_habitaciones.AppendColumn(area);
 			treeview_habitaciones.AppendColumn(Tipo_admicion);
-			treeview_habitaciones.AppendColumn(descripcion);
-			
+			treeview_habitaciones.AppendColumn(descripcion);			
 		}
 		
 		enum Column2
@@ -1124,13 +1118,17 @@ namespace osiris
 				comando = conexion.CreateCommand ();
                	               	
 				if ((string) entry_expresion.Text.ToString() == ""){
-					comando.CommandText = "SELECT osiris_erp_cobros_enca.folio_de_servicio,osiris_erp_cobros_enca.pid_paciente, "+
+					comando.CommandText = "SELECT DISTINCT(osiris_erp_movcargos.folio_de_servicio),osiris_erp_cobros_enca.folio_de_servicio,osiris_erp_cobros_enca.pid_paciente, "+
 							" nombre1_paciente,nombre2_paciente, apellido_paterno_paciente, "+
 							"apellido_materno_paciente, to_char(fecha_nacimiento_paciente,'yyyy-MM-dd') AS fech_nacimiento,"+
 							"to_char(to_number(to_char(age('"+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"',fecha_nacimiento_paciente),'yyyy') ,'9999'),'9999') AS edad, "+
-							"sexo_paciente,to_char(osiris_erp_cobros_enca.fechahora_creacion,'dd-MM-yyyy HH:mi:ss') AS fech_creacion "+
-							"FROM osiris_his_paciente,osiris_erp_cobros_enca "+
-							"WHERE alta_paciente = 'false' "+
+							"sexo_paciente,to_char(osiris_erp_cobros_enca.fechahora_creacion,'dd-MM-yyyy HH:mi:ss') AS fech_creacion,osiris_his_habitaciones.id_tipo_admisiones "+
+							"FROM osiris_his_paciente,osiris_erp_cobros_enca,osiris_erp_movcargos,osiris_his_habitaciones "+
+							"WHERE osiris_erp_cobros_enca.pid_paciente = osiris_his_paciente.pid_paciente "+
+							"AND osiris_erp_movcargos.folio_de_servicio = osiris_erp_cobros_enca.folio_de_servicio "+
+							"AND alta_paciente = 'false' "+
+							"AND osiris_his_habitaciones.id_habitacion = osiris_erp_cobros_enca.id_habitacion "+
+						    //"AND osiris_his_habitaciones.id_tipo_admisiones = osiris_his_tipo_admisiones.id_tipo_admisiones " +
 							"AND pagado = 'false' "+
 							"AND cerrado = 'false' "+
 							"AND reservacion = 'false' "+
@@ -1139,7 +1137,15 @@ namespace osiris
 							"AND osiris_erp_cobros_enca.alta_paciente = false "+
 							"AND osiris_erp_cobros_enca.cancelado = false "+
 							"AND osiris_erp_cobros_enca.id_habitacion = 1 "+
-							"ORDER BY folio_de_servicio;";
+								"AND osiris_erp_movcargos.id_tipo_admisiones > '16' "+
+								"AND osiris_erp_movcargos.id_tipo_admisiones <> '940' "+
+								"AND osiris_erp_movcargos.id_tipo_admisiones <> '930' "+
+								"AND osiris_erp_movcargos.id_tipo_admisiones <> '920' "+
+								"AND osiris_erp_movcargos.id_tipo_admisiones <> '950' "+
+								"AND osiris_erp_movcargos.id_tipo_admisiones <> '300' "+
+								"AND osiris_erp_movcargos.id_tipo_admisiones <> '400' "+
+							"ORDER BY osiris_erp_cobros_enca.folio_de_servicio;";
+					Console.WriteLine(comando.CommandText);
 				}else{              	
 					if (radiobutton_busca_apellido.Active == true){
 						comando.CommandText = "SELECT osiris_erp_cobros_enca.folio_de_servicio,osiris_erp_cobros_enca.pid_paciente, "+

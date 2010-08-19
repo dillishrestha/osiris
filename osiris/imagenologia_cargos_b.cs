@@ -25,9 +25,9 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 // 
 //////////////////////////////////////////////////////////
-// Programa		: cargos_hospitalizacion.cs
-// Proposito	: Pagos en Caja 
-// Objeto		: cargos_hospitalizacion.cs
+// Programa		:
+// Proposito	:
+// Objeto		:
 //////////////////////////////////////////////////////////	
 using System;
 using Npgsql;
@@ -52,7 +52,7 @@ namespace osiris
 		[Widget] Gtk.Button button_buscar_busqueda;
 			
 		// Declarando ventana principal de pago
-		[Widget] Gtk.Window cargos_de_laboratorio;
+		[Widget] Gtk.Window cargos_de_imagenologia;
 		[Widget] Gtk.Entry entry_folio_servicio;
 		[Widget] Gtk.Entry entry_fecha_admision;
 		[Widget] Gtk.Entry entry_hora_registro;
@@ -89,6 +89,7 @@ namespace osiris
 		[Widget] Gtk.Statusbar statusbar_caja;
 		
 		/////// Ventana Busqueda de paciente\\\\\\\\
+		[Widget] Gtk.Window busca_paciente;
 		[Widget] Gtk.TreeView lista_de_Pacientes;
 		[Widget] Gtk.Button button_nuevo_paciente;
 		[Widget] Gtk.RadioButton radiobutton_busca_apellido;
@@ -196,10 +197,10 @@ namespace osiris
 			nombrebd = conexion_a_DB._nombrebd;			
 			valoriva = float.Parse(classpublic.ivaparaaplicar);
 			
-			Glade.XML gxml = new Glade.XML (null, "imagenologia.glade", "cargos_de_laboratorio", null);
+			Glade.XML gxml = new Glade.XML (null, "imagenologia.glade", "cargos_de_imagenologia", null);
 			gxml.Autoconnect (this);
 	        // Muestra ventana de Glade
-			cargos_de_laboratorio.Show();
+			cargos_de_imagenologia.Show();
 			
 			// Creacion de los treeview para la pantalla	
 			crea_treeview_servicio();
@@ -1348,8 +1349,9 @@ namespace osiris
 		// busco un paciente pantalla de ingreso de nuevo paciente
 		void on_button_buscar_paciente_clicked(object sender, EventArgs args)
 	    	{
-			Glade.XML gxml = new Glade.XML (null, "laboratorio.glade", "busca_paciente", null);
+			Glade.XML gxml = new Glade.XML (null, "imagenologia.glade", "busca_paciente", null);
 			gxml.Autoconnect (this);
+			busca_paciente.Show();
 			crea_treeview_busqueda("paciente");
 			button_buscar_busqueda.Clicked += new EventHandler(on_buscar_paciente_clicked);
 			button_selecciona.Clicked += new EventHandler(on_selecciona_paciente_clicked);

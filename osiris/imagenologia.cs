@@ -26,17 +26,15 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 // 
 //////////////////////////////////////////////////////////
-// Programa		: hscmty.cs
-// Proposito	: Pagos en Caja 
-// Objeto		: cargos_hospitalizacion.cs
+// Programa		:
+// Proposito	:
+// Objeto		:
 //////////////////////////////////////////////////////////	
 using System;
 using Npgsql;
 using System.Data;
 using Gtk;
 using Glade;
-using System.Collections;
-
 
 namespace osiris
 {
@@ -51,6 +49,7 @@ namespace osiris
 		[Widget] Gtk.Button button_cargos_pacientes;
 		[Widget] Gtk.Button button_soli_material;
 		[Widget] Gtk.Button button_reporte_imagenologia;
+		[Widget] Gtk.Button button_solicitud_examenes;
 		
 		string LoginEmpleado;
 		string NomEmpleado;
@@ -78,6 +77,7 @@ namespace osiris
 			button_cargos_pacientes.Clicked += new EventHandler(on_button_cargos_pacientes_clicked);
 			button_soli_material.Clicked += new EventHandler(on_button_soli_material_clicked);
 			button_reporte_imagenologia.Clicked += new EventHandler(on_button_reporte_imagenologia_clicked);
+			button_solicitud_examenes.Clicked += new EventHandler(on_button_solicitud_examenes_clicked);
 		}
 		
 		void on_button_cargos_pacientes_clicked(object sender, EventArgs args)
@@ -92,7 +92,12 @@ namespace osiris
 		
 		void on_button_reporte_imagenologia_clicked(object sender, EventArgs args)
 		{
-			//new osiris.rep_reg_pac_labo_rx(nombrebd,"AND osiris_grupo_producto.agrupacion = 'IMG' ","IMAGENOLOGIA");
+			new osiris.rep_reg_pac_labo_rx(nombrebd,"AND osiris_grupo_producto.agrupacion = 'IMG' ","IMAGENOLOGIA");
+		}
+		
+		void on_button_solicitud_examenes_clicked(object sender, EventArgs args)
+		{
+			new osiris.solicitudes_rx_lab(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
 		}
 		
 		void on_cierraventanas_clicked (object sender, EventArgs args)

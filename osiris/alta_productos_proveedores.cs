@@ -249,8 +249,8 @@ namespace osiris
 				store3.AppendValues ("CENTIMETRO");
 				store3.AppendValues ("CAJA");
 				store3.AppendValues ("PULGADA");
+				store3.AppendValues ("PAQUETE");
 			
-	      
 			TreeIter iter3;
 			if (store3.GetIterFirst(out iter3)){
 				combobox_tipo_unidad.SetActiveIter (iter3);

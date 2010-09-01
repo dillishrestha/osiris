@@ -1514,7 +1514,7 @@ namespace osiris
 		[GLib.ConnectBefore ()]   	  // Esto es indispensable para que funcione    
 		public void onKeyPressEvent_enter_id(object o, Gtk.KeyPressEventArgs args)
 		{
-			string misDigitos = ".0123456789ﾰﾱﾲﾳﾴﾵﾶﾷﾸﾹﾮｔｒｓｑ（";
+			string misDigitos = ".0123456789ﾰﾱﾲﾳﾴﾵﾶﾷﾸﾹﾮｔｒｓｑ（）";
 			//Console.WriteLine(args.Event.Key.ToString());
 			//Console.WriteLine(Convert.ToChar(args.Event.Key));
 			//Console.WriteLine(Array.IndexOf(misDigitos.ToCharArray(), Convert.ToChar(args.Event.Key)));

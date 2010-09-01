@@ -261,7 +261,7 @@ namespace osiris
 				args.RetVal = true;
 				llena_seleccion_compra();			
 			}
-			string misDigitos = ".0123456789ﾰﾱﾲﾳﾴﾵﾶﾷﾸﾹﾮｔｒｓｑ（";
+			string misDigitos = ".0123456789ﾰﾱﾲﾳﾴﾵﾶﾷﾸﾹﾮｔｒｓｑ（）";
 			if (Array.IndexOf(misDigitos.ToCharArray(), Convert.ToChar(args.Event.Key)) == -1 && args.Event.Key != Gdk.Key.BackSpace)
 			{
 				args.RetVal = true;
@@ -1835,7 +1835,7 @@ namespace osiris
 		public void onKeyPressEvent(object o, Gtk.KeyPressEventArgs args)
 		{
 			//Console.WriteLine(Convert.ToChar(args.Event.KeyValue));
-			string misDigitos = ".0123456789ﾰﾱﾲﾳﾴﾵﾶﾷﾸﾹﾮｔｒｓｑ（";
+			string misDigitos = ".0123456789ﾰﾱﾲﾳﾴﾵﾶﾷﾸﾹﾮｔｒｓｑ（）";
 			if (Array.IndexOf(misDigitos.ToCharArray(), Convert.ToChar(args.Event.Key)) == -1 && args.Event.Key != Gdk.Key.BackSpace){
 				args.RetVal = true;
 			}

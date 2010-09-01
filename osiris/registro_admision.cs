@@ -1655,9 +1655,8 @@ namespace osiris
 			if (args.Event.Key == Gdk.Key.Return){
 				//Console.WriteLine("Presione Enter");
 			}
-			string misDigitos = ".0123456789ﾰﾱﾲﾳﾴﾵﾶﾷﾸﾹﾮ)(ｔｒｓｑ";
-			if (Array.IndexOf(misDigitos.ToCharArray(), Convert.ToChar(args.Event.Key)) == -1 && args.Event.Key != Gdk.Key.BackSpace && args.Event.Key == Gdk.Key.Tab)
-			{
+			string misDigitos = ".0123456789ﾰﾱﾲﾳﾴﾵﾶﾷﾸﾹﾮｔｒｓｑ（）";
+			if (Array.IndexOf(misDigitos.ToCharArray(), Convert.ToChar(args.Event.Key)) == -1 && args.Event.Key != Gdk.Key.BackSpace){
 				args.RetVal = true;
 			}
 		}
@@ -1668,6 +1667,7 @@ namespace osiris
 			if ((string) entry_nombre_1.Text.Trim() == "" || (string) entry_apellido_paterno.Text.Trim() == "" ||	
 				(string) entry_apellido_materno.Text.Trim() == "" || (string) entry_dia_nacimiento.Text.Trim() == "" ||
 				(string) entry_mes_nacimiento.Text.Trim() == "" || (string) entry_ano_nacimiento.Text.Trim() == "" ||
+			    (string) entry_religion_paciente.Text.Trim() == "" || entry_alergia_paciente.Text.Trim() == "" ||
 				(string) entry_rfc.Text.Trim() =="" || grabarespocuenta == false || id_tipopaciente == 0 || (string) this.entry_empresa.Text.ToString().Trim() == ""){
 				return false;
 			}else{
@@ -1695,8 +1695,7 @@ namespace osiris
 		public bool verifica_paciente()
 		{
 	   		NpgsqlConnection conexion; 
-			conexion = new NpgsqlConnection (connectionString+nombrebd );
-            
+			conexion = new NpgsqlConnection (connectionString+nombrebd );            
 			// Verifica que la base de datos este conectada
 			try{
 			// Transformando al Mayuscula datos
@@ -2143,8 +2142,7 @@ namespace osiris
 				NpgsqlDataReader lector = comando.ExecuteReader ();
 				//Console.WriteLine(comando.CommandText);
 				//string toma_edad;
-				while (lector.Read())
-				{
+				while (lector.Read()){
 					treeViewEngineBusca.AppendValues ((int) lector["pid_paciente"], 
 										(string) lector["nombre1_paciente"],(string) lector["nombre2_paciente"],
 										(string) lector["apellido_paterno_paciente"], (string) lector["apellido_materno_paciente"],
@@ -2203,7 +2201,7 @@ namespace osiris
 					// Activa boton de responsable
 					button_responsable.Clicked += new EventHandler(on_button_responsable_clicked);
 					// Activa boton de admision Urgenacias/Hospital/Quirofano
-					button_admision.Clicked += new EventHandler(on_button_admision_clicked);
+					//button_admision.Clicked += new EventHandler(on_button_admision_clicked);
 		        	// Activacion de boton de busqueda
 					button_buscar_paciente.Clicked += new EventHandler(on_button_buscar_paciente_clicked);
 					// Centro Medico

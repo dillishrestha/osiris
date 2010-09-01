@@ -942,7 +942,7 @@ namespace osiris
 		{
 			//Console.WriteLine(args.Event.Key);
 			//Console.WriteLine(Convert.ToChar(args.Event.Key));
-			string misDigitos = ".0123456789ﾰﾱﾲﾳﾴﾵﾶﾷﾸﾹﾮ）（ｔｒｓｑ ";
+			string misDigitos = ".0123456789ﾰﾱﾲﾳﾴﾵﾶﾷﾸﾹﾮｔｒｓｑ（）";
 			if (Array.IndexOf(misDigitos.ToCharArray(), Convert.ToChar(args.Event.Key)) == -1 && args.Event.Key != Gdk.Key.BackSpace)
 			{
 				args.RetVal = true;

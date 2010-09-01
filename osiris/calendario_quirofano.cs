@@ -1377,7 +1377,8 @@ namespace osiris
 							LoginEmpleado+"','"+
 							entry_fecha_cita.Text+"','"+
 							hora_cita_qx+":"+minutos_cita_qx+						
-							"')";							
+							"')";
+							Console.WriteLine(comando.CommandText);
 							comando.ExecuteNonQuery();					comando.Dispose();
 							checkbutton_crea_cita.Active = false;
 							radiobutton_paciente_conexpe_cita.Active = true;
@@ -1426,29 +1427,30 @@ namespace osiris
 		bool verifica_cita_doctor()
 		{
 			bool response_validation = true;
-			NpgsqlConnection conexion; 
-			conexion = new NpgsqlConnection (connectionString+nombrebd);
+			NpgsqlConnection conexion1; 
+			conexion1 = new NpgsqlConnection (connectionString+nombrebd);
             // Verifica que la base de datos este conectada
 			try{
-				conexion.Open ();
-				NpgsqlCommand comando; 
-				comando = conexion.CreateCommand ();
-				comando.CommandText = "SELECT * FROM osiris_his_calendario_citaqx WHERE fecha_programacion = '"+entry_fecha_cita.Text.ToString().Trim()+"' "+
+				conexion1.Open ();
+				NpgsqlCommand comando1; 
+				comando1 = conexion1.CreateCommand ();
+				comando1.CommandText = "SELECT * FROM osiris_his_calendario_citaqx WHERE fecha_programacion = '"+entry_fecha_cita.Text.ToString().Trim()+"' "+
 							"AND hora_programacion = '"+hora_cita_qx+":"+minutos_cita_qx+"' "+
 							"AND id_medico = '"+entry_id_doctor_cita.Text.ToString().Trim()+"' "+
-							"AND osiris_his_calendario_citaqx.cancelado = 'false';";
-				
-				//Console.WriteLine(comando.CommandText);
-				NpgsqlDataReader lector = comando.ExecuteReader ();				
-				if (lector.Read()){
+							"AND osiris_his_calendario_citaqx.cancelado = 'false';";				
+				Console.WriteLine(comando1.CommandText);
+				NpgsqlDataReader lector1 = comando1.ExecuteReader();				
+				if (lector1.Read()){
 					response_validation = false;
+				}else{
+					response_validation = true;
 				}
 			}catch (NpgsqlException ex){
 		   		MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
 											MessageType.Error, ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
 				msgBoxError.Run ();				msgBoxError.Destroy();					
 			}
-			conexion.Close ();
+			conexion1.Close ();
 			return response_validation;	
 		}
 		

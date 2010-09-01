@@ -319,7 +319,7 @@ namespace osiris
 		[GLib.ConnectBefore ()]   	  // Esto es indispensable para que funcione    
 		public void onKeyPressEventactual(object o, Gtk.KeyPressEventArgs args)
 		{
-			string misDigitos = ".0123456789ﾰﾱﾲﾳﾴﾵﾶﾷﾸﾹﾮｔｒｓｑ（";
+			string misDigitos = ".0123456789ﾰﾱﾲﾳﾴﾵﾶﾷﾸﾹﾮｔｒｓｑ（）";
 			if (Array.IndexOf(misDigitos.ToCharArray(), Convert.ToChar(args.Event.Key)) == -1 && args.Event.Key != Gdk.Key.BackSpace  && args.Event.Key != Gdk.Key.Delete)
 			{
 				args.RetVal = true;

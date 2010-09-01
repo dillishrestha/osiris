@@ -2093,7 +2093,7 @@ namespace osiris
 				idpresupuesto = entry_id_presupuesto.Text.Trim();
 				llenado_de_presupuesto( entry_id_presupuesto.Text );			
 			}
-			string misDigitos = ".0123456789ﾰﾱﾲﾳﾴﾵﾶﾷﾸﾹﾮｔｒｓｑ（";
+			string misDigitos = ".0123456789ﾰﾱﾲﾳﾴﾵﾶﾷﾸﾹﾮｔｒｓｑ（）";
 			if (Array.IndexOf(misDigitos.ToCharArray(), Convert.ToChar(args.Event.Key)) == -1 && args.Event.Key != Gdk.Key.BackSpace)
 			{
 				//Console.WriteLine(Convert.ToChar(args.Event.Key));

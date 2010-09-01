@@ -2587,7 +2587,7 @@ namespace osiris
 		{
 			//Console.WriteLine(args.Event.Key);
 			//Console.WriteLine(Convert.ToChar(args.Event.Key));
-			string misDigitos = ".0123456789ﾰﾱﾲﾳﾴﾵﾶﾷﾸﾹﾮ";
+			string misDigitos = ".0123456789ﾰﾱﾲﾳﾴﾵﾶﾷﾸﾹﾮｔｒｓｑ（）";
 			if (Array.IndexOf(misDigitos.ToCharArray(), Convert.ToChar(args.Event.Key)) == -1 && args.Event.Key != Gdk.Key.BackSpace  && args.Event.Key != Gdk.Key.Delete)
 			{
 				args.RetVal = true;
@@ -2599,7 +2599,7 @@ namespace osiris
 		[GLib.ConnectBefore ()]   	  // Esto es indispensable para que funcione    
 		public void onKeyPressEventactual(object o, Gtk.KeyPressEventArgs args)
 		{
-			string misDigitos = ".0123456789ﾰﾱﾲﾳﾴﾵﾶﾷﾸﾹﾮ";
+			string misDigitos = ".0123456789ﾰﾱﾲﾳﾴﾵﾶﾷﾸﾹﾮｔｒｓｑ（）";
 			if (Array.IndexOf(misDigitos.ToCharArray(), Convert.ToChar(args.Event.Key)) == -1 && args.Event.Key != Gdk.Key.BackSpace  && args.Event.Key != Gdk.Key.Delete)
 			{
 				args.RetVal = true;
@@ -2621,7 +2621,7 @@ namespace osiris
 			// actrivar sensitive de editar, no funciona dentro de llena_empleado
 			
 			}
-			string misDigitos = "0123456789ﾰﾱﾲﾳﾴﾵﾶﾷﾸﾹﾮ)(ｔｒｓｑnpexTNPEXTt";
+			string misDigitos = ".0123456789ﾰﾱﾲﾳﾴﾵﾶﾷﾸﾹﾮｔｒｓｑ（）npexTNPEXTt";
 			if (Array.IndexOf(misDigitos.ToCharArray(), Convert.ToChar(args.Event.Key)) == -1 && args.Event.Key != Gdk.Key.BackSpace && args.Event.Key != Gdk.Key.Delete)
 			{
 				args.RetVal = true;

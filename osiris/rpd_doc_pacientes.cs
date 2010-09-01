@@ -1536,7 +1536,7 @@ namespace osiris
 				args.RetVal = true;
 				llenado_de_datos_paciente( (string) entry_folio_servicio.Text );				
 			}
-			string misDigitos = "0123456789ﾰﾱﾲﾳﾴﾵﾶﾷﾸﾹﾮ";
+			string misDigitos = ".0123456789ﾰﾱﾲﾳﾴﾵﾶﾷﾸﾹﾮｔｒｓｑ（）";
 			if (Array.IndexOf(misDigitos.ToCharArray(), Convert.ToChar(args.Event.Key)) == -1 && args.Event.Key != Gdk.Key.BackSpace)
 			{
 				args.RetVal = true;

@@ -3522,7 +3522,7 @@ Solicitud</property>
       </widget>
     </child>
   </widget>
-  <widget class="GtkWindow" id="solicites_examenes_labrx">
+  <widget class="GtkWindow" id="solicitudes_examenes_labrx">
     <child>
       <widget class="GtkVBox" id="vbox1">
         <property name="visible">True</property>
@@ -3602,7 +3602,7 @@ Solicitud</property>
                               <widget class="GtkHBox" id="hbox2">
                                 <property name="visible">True</property>
                                 <child>
-                                  <widget class="GtkCheckButton" id="checkbutton2">
+                                  <widget class="GtkCheckButton" id="checkbutton_rango_fecha">
                                     <property name="label" translatable="yes">Consultar Rango de Fecha</property>
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
@@ -3734,7 +3734,7 @@ Solicitud</property>
                                               </packing>
                                             </child>
                                             <child>
-                                              <widget class="GtkEntry" id="entry1">
+                                              <widget class="GtkEntry" id="entry_fecha_inicio">
                                                 <property name="width_request">80</property>
                                                 <property name="visible">True</property>
                                                 <property name="can_focus">True</property>
@@ -3785,7 +3785,7 @@ Solicitud</property>
                                               </packing>
                                             </child>
                                             <child>
-                                              <widget class="GtkEntry" id="entry2">
+                                              <widget class="GtkEntry" id="entry_fecha_termino">
                                                 <property name="width_request">80</property>
                                                 <property name="visible">True</property>
                                                 <property name="can_focus">True</property>
@@ -3972,7 +3972,7 @@ Solicitud</property>
                             <property name="hscrollbar_policy">automatic</property>
                             <property name="vscrollbar_policy">automatic</property>
                             <child>
-                              <widget class="GtkTreeView" id="treeview2">
+                              <widget class="GtkTreeView" id="treeview_lista_solicitados">
                                 <property name="width_request">650</property>
                                 <property name="height_request">400</property>
                                 <property name="visible">True</property>
@@ -3989,7 +3989,7 @@ Solicitud</property>
                             <property name="visible">True</property>
                             <property name="orientation">vertical</property>
                             <child>
-                              <widget class="GtkButton" id="button_grabar4">
+                              <widget class="GtkButton" id="button_cargar_examen">
                                 <property name="width_request">90</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
@@ -4006,7 +4006,7 @@ Solicitud</property>
                                         <child>
                                           <widget class="GtkImage" id="image5">
                                             <property name="visible">True</property>
-                                            <property name="stock">gtk-apply</property>
+                                            <property name="stock">gtk-add</property>
                                           </widget>
                                           <packing>
                                             <property name="expand">False</property>
@@ -4017,7 +4017,7 @@ Solicitud</property>
                                         <child>
                                           <widget class="GtkLabel" id="label16">
                                             <property name="visible">True</property>
-                                            <property name="label" translatable="yes">_Consultar</property>
+                                            <property name="label" translatable="yes">_Cargar</property>
                                             <property name="use_underline">True</property>
                                           </widget>
                                           <packing>
@@ -4038,19 +4038,80 @@ Solicitud</property>
                               </packing>
                             </child>
                             <child>
-                              <widget class="GtkFixed" id="fixed7">
+                              <widget class="GtkButton" id="button_cargar_examen1">
+                                <property name="width_request">90</property>
                                 <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="receives_default">True</property>
+                                <child>
+                                  <widget class="GtkAlignment" id="alignment10">
+                                    <property name="visible">True</property>
+                                    <property name="xscale">0</property>
+                                    <property name="yscale">0</property>
+                                    <child>
+                                      <widget class="GtkHBox" id="hbox15">
+                                        <property name="visible">True</property>
+                                        <property name="spacing">2</property>
+                                        <child>
+                                          <widget class="GtkImage" id="image6">
+                                            <property name="visible">True</property>
+                                            <property name="stock">gtk-refresh</property>
+                                          </widget>
+                                          <packing>
+                                            <property name="expand">False</property>
+                                            <property name="fill">False</property>
+                                            <property name="position">0</property>
+                                          </packing>
+                                        </child>
+                                        <child>
+                                          <widget class="GtkLabel" id="label18">
+                                            <property name="visible">True</property>
+                                            <property name="label" translatable="yes">_Actualizar</property>
+                                            <property name="use_underline">True</property>
+                                          </widget>
+                                          <packing>
+                                            <property name="expand">False</property>
+                                            <property name="fill">False</property>
+                                            <property name="position">1</property>
+                                          </packing>
+                                        </child>
+                                      </widget>
+                                    </child>
+                                  </widget>
+                                </child>
                               </widget>
                               <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">False</property>
                                 <property name="position">1</property>
                               </packing>
                             </child>
                             <child>
-                              <widget class="GtkFixed" id="fixed8">
+                              <widget class="GtkCheckButton" id="checkbutton_px_solicitud">
+                                <property name="label" translatable="yes">Ver por Paciente</property>
                                 <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="receives_default">False</property>
+                                <property name="draw_indicator">True</property>
                               </widget>
                               <packing>
                                 <property name="position">2</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <widget class="GtkFixed" id="fixed2">
+                                <property name="visible">True</property>
+                              </widget>
+                              <packing>
+                                <property name="position">3</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <widget class="GtkFixed" id="fixed4">
+                                <property name="visible">True</property>
+                              </widget>
+                              <packing>
+                                <property name="position">4</property>
                               </packing>
                             </child>
                           </widget>
@@ -4080,7 +4141,7 @@ Solicitud</property>
                             <property name="hscrollbar_policy">automatic</property>
                             <property name="vscrollbar_policy">automatic</property>
                             <child>
-                              <widget class="GtkTreeView" id="treeview1">
+                              <widget class="GtkTreeView" id="treeview_lista_cargosvalid">
                                 <property name="width_request">650</property>
                                 <property name="height_request">400</property>
                                 <property name="visible">True</property>
@@ -4097,7 +4158,7 @@ Solicitud</property>
                             <property name="visible">True</property>
                             <property name="orientation">vertical</property>
                             <child>
-                              <widget class="GtkButton" id="button_grabar3">
+                              <widget class="GtkButton" id="button_validar_examen">
                                 <property name="width_request">90</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
@@ -4125,7 +4186,7 @@ Solicitud</property>
                                         <child>
                                           <widget class="GtkLabel" id="label14">
                                             <property name="visible">True</property>
-                                            <property name="label" translatable="yes">_Consultar</property>
+                                            <property name="label" translatable="yes">_Validar</property>
                                             <property name="use_underline">True</property>
                                           </widget>
                                           <packing>
@@ -4146,11 +4207,64 @@ Solicitud</property>
                               </packing>
                             </child>
                             <child>
-                              <widget class="GtkFixed" id="fixed4">
+                              <widget class="GtkButton" id="button_cargar_examen2">
+                                <property name="width_request">90</property>
                                 <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="receives_default">True</property>
+                                <child>
+                                  <widget class="GtkAlignment" id="alignment11">
+                                    <property name="visible">True</property>
+                                    <property name="xscale">0</property>
+                                    <property name="yscale">0</property>
+                                    <child>
+                                      <widget class="GtkHBox" id="hbox16">
+                                        <property name="visible">True</property>
+                                        <property name="spacing">2</property>
+                                        <child>
+                                          <widget class="GtkImage" id="image7">
+                                            <property name="visible">True</property>
+                                            <property name="stock">gtk-refresh</property>
+                                          </widget>
+                                          <packing>
+                                            <property name="expand">False</property>
+                                            <property name="fill">False</property>
+                                            <property name="position">0</property>
+                                          </packing>
+                                        </child>
+                                        <child>
+                                          <widget class="GtkLabel" id="label19">
+                                            <property name="visible">True</property>
+                                            <property name="label" translatable="yes">_Actualizar</property>
+                                            <property name="use_underline">True</property>
+                                          </widget>
+                                          <packing>
+                                            <property name="expand">False</property>
+                                            <property name="fill">False</property>
+                                            <property name="position">1</property>
+                                          </packing>
+                                        </child>
+                                      </widget>
+                                    </child>
+                                  </widget>
+                                </child>
                               </widget>
                               <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">False</property>
                                 <property name="position">1</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <widget class="GtkCheckButton" id="checkbutton_px_cargos">
+                                <property name="label" translatable="yes">Ver por Paciente</property>
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="receives_default">False</property>
+                                <property name="draw_indicator">True</property>
+                              </widget>
+                              <packing>
+                                <property name="position">2</property>
                               </packing>
                             </child>
                             <child>
@@ -4158,7 +4272,15 @@ Solicitud</property>
                                 <property name="visible">True</property>
                               </widget>
                               <packing>
-                                <property name="position">2</property>
+                                <property name="position">3</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <widget class="GtkFixed" id="fixed7">
+                                <property name="visible">True</property>
+                              </widget>
+                              <packing>
+                                <property name="position">4</property>
                               </packing>
                             </child>
                           </widget>

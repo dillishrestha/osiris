@@ -91,6 +91,8 @@ namespace osiris
 		[Widget] Gtk.Button button_notas_evolucion = null;
 		[Widget] Gtk.Button button_notas_enfermeria = null;
 		[Widget] Gtk.Button button_indicacionesmedicas = null;
+		[Widget] Gtk.Button button_solicitud_lab = null;
+		[Widget] Gtk.Button button_solicitud_rx = null;
 		
 		//Declarando la barra de estado
 		[Widget] Gtk.Statusbar statusbar_caja = null;
@@ -328,6 +330,9 @@ namespace osiris
 			button_historiaclinica.Clicked += new EventHandler(on_button_historiaclinica_clicked);
 			// Indicaciones Medicas
 			button_indicacionesmedicas.Clicked += new EventHandler(on_button_indicacionesmedicas_clicked);
+			// Solicitudes de Laboratorio y rayos X
+			button_solicitud_lab.Clicked += new EventHandler(on_solicitud_labrx_clicked);
+			button_solicitud_rx.Clicked += new EventHandler(on_solicitud_labrx_clicked);
 			
 			// Desactivando Botones de operacion se activa cuando selecciona una atencion
 			button_busca_producto.Sensitive = false;
@@ -345,6 +350,23 @@ namespace osiris
 			statusbar_caja.Push(1, "login: "+LoginEmpleado+"  |Usuario: "+NomEmpleado+" "+AppEmpleado+" "+ApmEmpleado);
 			statusbar_caja.HasResizeGrip = false;
 	    }
+		
+		void on_solicitud_labrx_clicked(object obj, EventArgs args)
+		{
+			// Si la descripcioninternamineto es "*" llena el combobox con todas los departamtos medicos
+			Gtk.Button button_solicitud_labrx = (Gtk.Button) obj;
+			if(button_busca_producto.Sensitive == true){
+				if(button_solicitud_labrx.Name.ToString() == "button_solicitud_lab"){					
+					new osiris.solicitudes_enfermeria(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,"Solicitud de Examen de LABORATORIO",400,"LAB",descripinternamiento);
+				}
+				if(button_solicitud_labrx.Name.ToString() == "button_solicitud_rx"){
+					new osiris.solicitudes_enfermeria(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,"Solicitud de Examen de IMAGENOLOGIA",300,"IMG",descripinternamiento);
+				}
+			}else{
+				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,MessageType.Info,ButtonsType.Close, "NO puede crear una solicitud, verifique....");
+				msgBoxError.Run ();	msgBoxError.Destroy();
+			}						
+		}
 		
 		void on_button_asignacion_habitacion_clicked(object sender, EventArgs args)
 		{
@@ -2283,7 +2305,7 @@ namespace osiris
 		public void onKeyPressEvent(object o, Gtk.KeyPressEventArgs args)
 		{
 			//Console.WriteLine(Convert.ToChar(args.Event.KeyValue));
-			string misDigitos = ".0123456789ﾰﾱﾲﾳﾴﾵﾶﾷﾸﾹﾮｔｒｓｑ（";
+			string misDigitos = ".0123456789ﾰﾱﾲﾳﾴﾵﾶﾷﾸﾹﾮｔｒｓｑ（）";
 			if (Array.IndexOf(misDigitos.ToCharArray(), Convert.ToChar(args.Event.Key)) == -1 && args.Event.Key != Gdk.Key.BackSpace)
 			{
 				args.RetVal = true;
@@ -2301,7 +2323,7 @@ namespace osiris
 				args.RetVal = true;
 				llenado_de_productos_aplicados( (string) entry_folio_servicio.Text );				
 			}
-			string misDigitos = ".0123456789ﾰﾱﾲﾳﾴﾵﾶﾷﾸﾹﾮｔｒｓｑ（";
+			string misDigitos = ".0123456789ﾰﾱﾲﾳﾴﾵﾶﾷﾸﾹﾮｔｒｓｑ（）";
 			if (Array.IndexOf(misDigitos.ToCharArray(), Convert.ToChar(args.Event.Key)) == -1 && args.Event.Key != Gdk.Key.BackSpace)
 			{
 				args.RetVal = true;
@@ -2487,20 +2509,35 @@ namespace osiris
 		
 		void on_button_notas_evolucion_clicked(object sender, EventArgs args)
 		{
-			new osiris.notas_medicas(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,"Notas de Evolucion","notas_de_evolucion",
+			if(button_busca_producto.Sensitive == true){
+				new osiris.notas_medicas(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,"Notas de Evolucion","notas_de_evolucion",
 			                         PidPaciente.ToString(),(string) entry_folio_servicio.Text, (string) entry_id_doctor.Text,(string) entry_doctor.Text,(string) entry_nombre_paciente.Text);
+			}else{
+				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,MessageType.Info,ButtonsType.Close, "NO puede crear la nota de Evolucion, verifique....");
+				msgBoxError.Run ();	msgBoxError.Destroy();
+			}
 		}
 		
 		void on_button_notas_enfermeria_clicked(object sender, EventArgs args)
 		{
-			new osiris.notas_medicas(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,"Notas de Enfermeria","notas_de_enfermeria",
+			if(button_busca_producto.Sensitive == true){
+				new osiris.notas_medicas(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,"Notas de Enfermeria","notas_de_enfermeria",
 			                         PidPaciente.ToString(),(string) entry_folio_servicio.Text, (string) entry_id_doctor.Text,(string) entry_doctor.Text,(string) entry_nombre_paciente.Text);
+			}else{
+				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,MessageType.Info,ButtonsType.Close, "NO puede crear la nota de Enfermeria, verifique....");
+				msgBoxError.Run ();	msgBoxError.Destroy();	
+			}
 		}
 		
 		void on_button_indicacionesmedicas_clicked(object sender, EventArgs args)
 		{
-			new osiris.notas_medicas(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,"Indicaciones Medicas","indicaciones_medicas",
+			if(button_busca_producto.Sensitive == true){
+				new osiris.notas_medicas(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,"Indicaciones Medicas","indicaciones_medicas",
 			                         PidPaciente.ToString(),(string) entry_folio_servicio.Text,(string) entry_id_doctor.Text,(string) entry_doctor.Text,(string) entry_nombre_paciente.Text);
+			}else{
+				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,MessageType.Info,ButtonsType.Close, "NO puede crear Indicaciones Medicas, verifique....");
+				msgBoxError.Run ();	msgBoxError.Destroy();
+			}
 		}
 		
 		// cierra ventanas emergentes

@@ -14,16 +14,12 @@
     </Configuration>
   </Configurations>
   <Contents>
-    <File subtype="Code" buildaction="Compile" name="osiris.cs" />
-    <File subtype="Code" buildaction="Compile" name="AssemblyInfo.cs" />
-    <File subtype="Code" buildaction="Compile" name="registro_admision.cs" />
     <File subtype="Code" buildaction="EmbedAsResource" name="caja.glade" />
     <File subtype="Code" buildaction="EmbedAsResource" name="hospitalizacion.glade" />
     <File subtype="Code" buildaction="EmbedAsResource" name="osiris.glade" />
     <File subtype="Code" buildaction="EmbedAsResource" name="registro_admision.glade" />
     <File subtype="Code" buildaction="EmbedAsResource" name="reportes.glade" />
     <File subtype="Code" buildaction="EmbedAsResource" name="impr_documentos.glade" />
-    <File subtype="Code" buildaction="Compile" name="admision.cs" />
     <File subtype="Code" buildaction="EmbedAsResource" name="quirofano.glade" />
     <File subtype="Code" buildaction="EmbedAsResource" name="herramientas.glade" />
     <File subtype="Code" buildaction="EmbedAsResource" name="laboratorio.glade" />
@@ -38,102 +34,115 @@
     <File subtype="Code" buildaction="EmbedAsResource" name="almacen_costos_compras.glade" />
     <File subtype="Code" buildaction="EmbedAsResource" name="costos.glade" />
     <File subtype="Code" buildaction="EmbedAsResource" name="recursos_humanos.glade" />
-    <File subtype="Code" buildaction="Compile" name="asignacion_habitacion.cs" />
     <File subtype="Code" buildaction="EmbedAsResource" name="nutricion.glade" />
-    <File subtype="Code" buildaction="Compile" name="rpt_rep1_admision.cs" />
-    <File subtype="Code" buildaction="Compile" name="cambia_paciente.cs" />
-    <File subtype="Code" buildaction="Compile" name="reservacion_de_paquetes.cs" />
-    <File subtype="Code" buildaction="Compile" name="presupuestos_quirurgicos.cs" />
-    <File subtype="Code" buildaction="Compile" name="paquetes_quirurgicos.cs" />
-    <File subtype="Code" buildaction="Compile" name="compras.cs" />
-    <File subtype="Code" buildaction="Compile" name="ordenes_de_compras.cs" />
-    <File subtype="Code" buildaction="Compile" name="catalogos.cs" />
-    <File subtype="Code" buildaction="Compile" name="almacen.cs" />
-    <File subtype="Code" buildaction="Compile" name="inv_sub_almacen.cs" />
-    <File subtype="Code" buildaction="Compile" name="almacen_inventario.cs" />
-    <File subtype="Code" buildaction="Compile" name="requisicion_compras.cs" />
-    <File subtype="Code" buildaction="Compile" name="alta_productos_proveedores.cs" />
-    <File subtype="Code" buildaction="Compile" name="captura_fac_ordenes_compra.cs" />
-    <File subtype="Code" buildaction="Compile" name="autorizacion_doctores_compra.cs" />
-    <File subtype="Code" buildaction="Compile" name="movimientos_productos_paciente.cs" />
-    <File subtype="Code" buildaction="Compile" name="envio_mat_subalmacenes.cs" />
-    <File subtype="Code" buildaction="Compile" name="recursos_humanos.cs" />
-    <File subtype="Code" buildaction="Compile" name="tesoreria.cs" />
-    <File subtype="Code" buildaction="Compile" name="caja.cs" />
-    <File subtype="Code" buildaction="Compile" name="cargos_extras.cs" />
+    <File subtype="Code" buildaction="Nothing" name="OSIRISLogo.jpg" />
     <File subtype="Code" buildaction="Compile" name="abonos.cs" />
-    <File subtype="Code" buildaction="Compile" name="costos_consultas.cs" />
-    <File subtype="Code" buildaction="Compile" name="catalogo_productos.cs" />
-    <File subtype="Code" buildaction="Compile" name="rpd_doc_pacientes.cs" />
-    <File subtype="Code" buildaction="Compile" name="rpt_proc_cobranza.cs" />
-    <File subtype="Code" buildaction="Compile" name="urgencia.cs" />
-    <File subtype="Code" buildaction="Compile" name="historia_clinica.cs" />
-    <File subtype="Code" buildaction="Compile" name="laboratorio_cargos.cs" />
-    <File subtype="Code" buildaction="Compile" name="facturador.cs" />
-    <File subtype="Code" buildaction="Compile" name="rpt_paciente_sin_alta.cs" />
-    <File subtype="Code" buildaction="Compile" name="hospitalizacion.cs" />
-    <File subtype="Code" buildaction="Compile" name="solicitud_materiales_medicos.cs" />
-    <File subtype="Code" buildaction="Compile" name="costeo.cs" />
-    <File subtype="Code" buildaction="Compile" name="quirofano.cs" />
+    <File subtype="Code" buildaction="Compile" name="admision.cs" />
+    <File subtype="Code" buildaction="Compile" name="almacen.cs" />
+    <File subtype="Code" buildaction="Compile" name="almacen_inventario.cs" />
+    <File subtype="Code" buildaction="Compile" name="alta_productos_proveedores.cs" />
+    <File subtype="Code" buildaction="Compile" name="analisis_devoluciones.cs" />
+    <File subtype="Code" buildaction="Compile" name="asignacion_habitacion.cs" />
+    <File subtype="Code" buildaction="Compile" name="AssemblyInfo.cs" />
+    <File subtype="Code" buildaction="Compile" name="autorizacion_doctores_compra.cs" />
+    <File subtype="Code" buildaction="Compile" name="buscapacientes.cs" />
+    <File subtype="Code" buildaction="Compile" name="cagos_modulos_medicos.cs" />
     <File subtype="Code" buildaction="Compile" name="calendario_quirofano.cs" />
-    <File subtype="Code" buildaction="Compile" name="envio_de_facturas.cs" />
-    <File subtype="Code" buildaction="Compile" name="endoscopia.cs" />
+    <File subtype="Code" buildaction="Compile" name="cambia_paciente.cs" />
+    <File subtype="Code" buildaction="Compile" name="captura_fac_ordenes_compra.cs" />
+    <File subtype="Code" buildaction="Compile" name="osiris.cs" />
+    <File subtype="Code" buildaction="Compile" name="class_buscador.cs" />
+    <File subtype="Code" buildaction="Compile" name="class_conexion.cs" />
+    <File subtype="Code" buildaction="Compile" name="class_public.cs" />
+    <File subtype="Code" buildaction="Compile" name="compras.cs" />
+    <File subtype="Code" buildaction="Compile" name="rpd_doc_pacientes.cs" />
+    <File subtype="Code" buildaction="Compile" name="rpt_abonos.cs" />
+    <File subtype="Code" buildaction="Compile" name="rpt_almacen.cs" />
+    <File subtype="Code" buildaction="Compile" name="rpt_caja_comprobante.cs" />
+    <File subtype="Code" buildaction="Compile" name="rpt_cargos_extras.cs" />
+    <File subtype="Code" buildaction="Compile" name="rpt_compras_farmacia.cs" />
+    <File subtype="Code" buildaction="Compile" name="rpt_comprobante_serv.cs" />
+    <File subtype="Code" buildaction="Compile" name="rpt_cons_informado.cs" />
+    <File subtype="Code" buildaction="Compile" name="rpt_consumo_productos.cs" />
+    <File subtype="Code" buildaction="Compile" name="rpt_cont_prestaciones.cs" />
+    <File subtype="Code" buildaction="Compile" name="rpt_contrato_empleado.cs" />
+    <File subtype="Code" buildaction="Compile" name="rpt_detalle_empleados.cs" />
+    <File subtype="Code" buildaction="Compile" name="rpt_empelados_contratos.cs" />
+    <File subtype="Code" buildaction="Compile" name="rpt_envio_de_facturas.cs" />
+    <File subtype="Code" buildaction="Compile" name="rpt_envio_mat_almacen.cs" />
+    <File subtype="Code" buildaction="Compile" name="rpt_formato_factura.cs" />
+    <File subtype="Code" buildaction="Compile" name="rpt_historia_clinica.cs" />
+    <File subtype="Code" buildaction="Compile" name="rpt_hoja_de_cargos.cs" />
+    <File subtype="Code" buildaction="Compile" name="rpt_honorario_medicos.cs" />
+    <File subtype="Code" buildaction="Compile" name="rpt_inv_subalmacenes.cs" />
+    <File subtype="Code" buildaction="Compile" name="rpt_lista_de_precios.cs" />
+    <File subtype="Code" buildaction="Compile" name="rpt_lista_precios.cs" />
+    <File subtype="Code" buildaction="Compile" name="rpt_mov_productos.cs" />
+    <File subtype="Code" buildaction="Compile" name="rpt_notas_de_cargos.cs" />
+    <File subtype="Code" buildaction="Compile" name="rpt_orden_compras.cs" />
+    <File subtype="Code" buildaction="Compile" name="rpt_paciente_con_alta.cs" />
+    <File subtype="Code" buildaction="Compile" name="rpt_paciente_sin_alta.cs" />
+    <File subtype="Code" buildaction="Compile" name="rpt_paquetes.cs" />
+    <File subtype="Code" buildaction="Compile" name="rpt_presupuestos.cs" />
+    <File subtype="Code" buildaction="Compile" name="rpt_proc_cerrados.cs" />
+    <File subtype="Code" buildaction="Compile" name="rpt_proc_cobranza.cs" />
+    <File subtype="Code" buildaction="Compile" name="rpt_proc_facturados.cs" />
+    <File subtype="Code" buildaction="Compile" name="rpt_proc_totales.cs" />
+    <File subtype="Code" buildaction="Compile" name="rpt_prot_admision.cs" />
+    <File subtype="Code" buildaction="Compile" name="rpt_reg_pac_lab_rx.cs" />
+    <File subtype="Code" buildaction="Compile" name="rpt_rep1_admision.cs" />
+    <File subtype="Code" buildaction="Compile" name="rpt_reporte_citasqx.cs" />
+    <File subtype="Code" buildaction="Compile" name="rpt_requisicion_compras.cs" />
+    <File subtype="Code" buildaction="Compile" name="rpt_reservacion_paquetes.cs" />
+    <File subtype="Code" buildaction="Compile" name="rpt_resultado_lab.cs" />
+    <File subtype="Code" buildaction="Compile" name="rpt_separacion_de_paquetes.cs" />
+    <File subtype="Code" buildaction="Compile" name="rpt_solicitud_de_cheque.cs" />
+    <File subtype="Code" buildaction="Compile" name="rpt_solicitud_subalmacenes.cs" />
+    <File subtype="Code" buildaction="Compile" name="seleccion_paquete.cs" />
+    <File subtype="Code" buildaction="Compile" name="solicitudes_rx_lab.cs" />
+    <File subtype="Code" buildaction="Compile" name="solicitud_materiales_medicos.cs" />
+    <File subtype="Code" buildaction="Compile" name="reservacion_de_paquetes.cs" />
+    <File subtype="Code" buildaction="Compile" name="registro_admision.cs" />
+    <File subtype="Code" buildaction="Compile" name="paquetes_quirurgicos.cs" />
+    <File subtype="Code" buildaction="Compile" name="presupuestos_quirurgicos.cs" />
+    <File subtype="Code" buildaction="Compile" name="envio_mat_subalmacenes.cs" />
+    <File subtype="Code" buildaction="Compile" name="inv_sub_almacen.cs" />
+    <File subtype="Code" buildaction="Compile" name="requisicion_compras.cs" />
+    <File subtype="Code" buildaction="Compile" name="movimientos_productos_paciente.cs" />
+    <File subtype="Code" buildaction="Compile" name="historia_clinica.cs" />
+    <File subtype="Code" buildaction="Compile" name="hospitalizacion.cs" />
     <File subtype="Code" buildaction="Compile" name="laboratorio.cs" />
+    <File subtype="Code" buildaction="Compile" name="laboratorio_cargos.cs" />
+    <File subtype="Code" buildaction="Compile" name="notas_medicas.cs" />
+    <File subtype="Code" buildaction="Compile" name="endoscopia.cs" />
+    <File subtype="Code" buildaction="Compile" name="oftalmologia.cs" />
+    <File subtype="Code" buildaction="Compile" name="quirofano.cs" />
+    <File subtype="Code" buildaction="Compile" name="urgencia.cs" />
     <File subtype="Code" buildaction="Compile" name="imagenologia.cs" />
+    <File subtype="Code" buildaction="Compile" name="imagenologia_cargos.cs" />
     <File subtype="Code" buildaction="Compile" name="imagenologia_cargos_b.cs" />
     <File subtype="Code" buildaction="Compile" name="terapia_adulto.cs" />
-    <File subtype="Code" buildaction="Compile" name="terapia_adulto_cargos.cs" />
-    <File subtype="Code" buildaction="Compile" name="terapia_pediatria.cs" />
-    <File subtype="Code" buildaction="Compile" name="terapia_pediatria_cargos.cs" />
     <File subtype="Code" buildaction="Compile" name="terapia_neonatal.cs" />
-    <File subtype="Code" buildaction="Compile" name="terapia_neonatal_cargos.cs" />
+    <File subtype="Code" buildaction="Compile" name="terapia_pediatria.cs" />
+    <File subtype="Code" buildaction="Compile" name="tesoreria.cs" />
     <File subtype="Code" buildaction="Compile" name="tococirugia_ginecologia.cs" />
-    <File subtype="Code" buildaction="Compile" name="tococirugia_ginecologia_cargos.cs" />
-    <File subtype="Code" buildaction="Compile" name="class_public.cs" />
-    <File subtype="Code" buildaction="Compile" name="class_conexion.cs" />
     <File subtype="Code" buildaction="Compile" name="herramientas.cs" />
-    <File subtype="Code" buildaction="Compile" name="rpt_cons_informado.cs" />
-    <File subtype="Code" buildaction="Compile" name="rpt_prot_admision.cs" />
+    <File subtype="Code" buildaction="Compile" name="recursos_humanos.cs" />
+    <File subtype="Code" buildaction="Compile" name="costos_consultas.cs" />
     <File subtype="Code" buildaction="Compile" name="nutricion.cs" />
-    <File subtype="Code" buildaction="Compile" name="rpt_compras_farmacia.cs" />
-    <File subtype="Code" buildaction="Compile" name="cagos_modulos_medicos.cs" />
-    <File subtype="Code" buildaction="Compile" name="class_buscador.cs" />
-    <File subtype="Code" buildaction="Nothing" name="OSIRISLogo.jpg" />
-    <File subtype="Code" buildaction="Compile" name="rpt_separacion_de_paquetes.cs" />
-    <File subtype="Code" buildaction="Compile" name="rpt_paciente_con_alta.cs" />
-    <File subtype="Code" buildaction="Compile" name="rpt_presupuestos.cs" />
-    <File subtype="Code" buildaction="Compile" name="rpt_paquetes.cs" />
-    <File subtype="Code" buildaction="Compile" name="rpt_abonos.cs" />
-    <File subtype="Code" buildaction="Compile" name="rpt_honorario_medicos.cs" />
-    <File subtype="Code" buildaction="Compile" name="rpt_proc_cerrados.cs" />
-    <File subtype="Code" buildaction="Compile" name="rpt_proc_facturados.cs" />
-    <File subtype="Code" buildaction="Compile" name="rpt_envio_de_facturas.cs" />
-    <File subtype="Code" buildaction="Compile" name="rpt_requisicion_compras.cs" />
-    <File subtype="Code" buildaction="Compile" name="rpt_orden_compras.cs" />
-    <File subtype="Code" buildaction="Compile" name="rpt_envio_mat_almacen.cs" />
-    <File subtype="Code" buildaction="Compile" name="rpt_mov_productos.cs" />
-    <File subtype="Code" buildaction="Compile" name="rpt_comprobante_serv.cs" />
-    <File subtype="Code" buildaction="Compile" name="rpt_caja_comprobante.cs" />
-    <File subtype="Code" buildaction="Compile" name="rpt_proc_totales.cs" />
-    <File subtype="Code" buildaction="Compile" name="rpt_reg_pac_lab_rx.cs" />
-    <File subtype="Code" buildaction="Compile" name="rpt_hoja_de_cargos.cs" />
-    <File subtype="Code" buildaction="Compile" name="rpt_notas_de_cargos.cs" />
-    <File subtype="Code" buildaction="Compile" name="rpt_resultado_lab.cs" />
-    <File subtype="Code" buildaction="Compile" name="rpt_consumo_productos.cs" />
-    <File subtype="Code" buildaction="Compile" name="rpt_detalle_empleados.cs" />
-    <File subtype="Code" buildaction="Compile" name="rpt_contrato_empleado.cs" />
-    <File subtype="Code" buildaction="Compile" name="rpt_historia_clinica.cs" />
+    <File subtype="Code" buildaction="Compile" name="catalogos.cs" />
     <File subtype="Code" buildaction="Compile" name="consulta_ordencompra.cs" />
-    <File subtype="Code" buildaction="Compile" name="rpt_almacen.cs" />
-    <File subtype="Code" buildaction="Compile" name="rpt_empleados_contratos.cs" />
-    <File subtype="Code" buildaction="Compile" name="rpt_reporte_citasqx.cs" />
-    <File subtype="Code" buildaction="Compile" name="rpt_formato_factura.cs" />
-    <File subtype="Code" buildaction="Compile" name="rpt_solicitud_subalmacenes.cs" />
-    <File subtype="Code" buildaction="Compile" name="notas_medicas.cs" />
-    <File subtype="Code" buildaction="Compile" name="oftalmologia.cs" />
-    <File subtype="Code" buildaction="Compile" name="analisis_devoluciones.cs" />
-    <File subtype="Code" buildaction="Compile" name="rpt_inv_subalmacenes.cs" />
-    <File subtype="Code" buildaction="Compile" name="solicitudes_rx_lab.cs" />
+    <File subtype="Code" buildaction="Compile" name="ordenes_de_compras.cs" />
+    <File subtype="Code" buildaction="Compile" name="terapia_adulto_cargos.cs" />
+    <File subtype="Code" buildaction="Compile" name="terapia_neonatal_cargos.cs" />
+    <File subtype="Code" buildaction="Compile" name="terapia_pediatria_cargos.cs" />
+    <File subtype="Code" buildaction="Compile" name="caja.cs" />
+    <File subtype="Code" buildaction="Compile" name="envio_de_facturas.cs" />
+    <File subtype="Code" buildaction="Compile" name="facturador.cs" />
+    <File subtype="Code" buildaction="Compile" name="tococirugia_ginecologia_cargos.cs" />
+    <File subtype="Code" buildaction="Compile" name="costeo.cs" />
+    <File subtype="Code" buildaction="Compile" name="catalogo_productos.cs" />
+    <File subtype="Code" buildaction="Compile" name="cargos_extras.cs" />
   </Contents>
   <References>
     <ProjectReference type="Gac" localcopy="True" refto="Mono.Cairo, Version=2.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756" />
@@ -150,5 +159,14 @@
     <ProjectReference type="Gac" localcopy="True" refto="gnome-sharp, Version=2.24.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
     <ProjectReference type="Gac" localcopy="True" refto="gnome-print-sharp, Version=2.18.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
   </References>
+  <MonoDevelop.Autotools.MakefileInfo RelativeMakefileName="Makefile">
+    <BuildFilesVar Sync="True" Name="DEP1" />
+    <DeployFilesVar />
+    <ResourcesVar />
+    <OthersVar />
+    <GacRefVar />
+    <AsmRefVar />
+    <ProjectRefVar />
+  </MonoDevelop.Autotools.MakefileInfo>
   <DeploymentInformation strategy="File" />
 </Project>

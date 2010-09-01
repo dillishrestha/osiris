@@ -228,8 +228,8 @@ namespace osiris
 					cr.MoveTo(500*escala_en_linux_windows, numero_linea*escala_en_linux_windows);					layout.SetText("Sexo: "+sexo_paciente);			Pango.CairoHelper.ShowLayout (cr, layout);
 					cr.MoveTo(521*escala_en_linux_windows, numero_linea*escala_en_linux_windows);					layout.SetText("____________");					Pango.CairoHelper.ShowLayout (cr, layout);
 					numero_linea += separacionlineas;
-					cr.MoveTo(20*escala_en_linux_windows, numero_linea*escala_en_linux_windows);					layout.SetText("Alergico: "+(string) lector["religion_paciente"]);					Pango.CairoHelper.ShowLayout (cr, layout);
-					cr.MoveTo(320*escala_en_linux_windows, numero_linea*escala_en_linux_windows);					layout.SetText("Religion: "+(string) lector["alegias_paciente"]);					Pango.CairoHelper.ShowLayout (cr, layout);
+					cr.MoveTo(20*escala_en_linux_windows, numero_linea*escala_en_linux_windows);					layout.SetText("Religion: "+(string) lector["religion_paciente"]);					Pango.CairoHelper.ShowLayout (cr, layout);
+					cr.MoveTo(320*escala_en_linux_windows, numero_linea*escala_en_linux_windows);					layout.SetText("Alergias: "+(string) lector["alegias_paciente"]);					Pango.CairoHelper.ShowLayout (cr, layout);
 					numero_linea += separacionlineas;
 					//cr.MoveTo(20*escala_en_linux_windows, numero_linea*escala_en_linux_windows);					layout.SetText("Referido por: ");					Pango.CairoHelper.ShowLayout (cr, layout);
 					//numero_linea += separacionlineas;

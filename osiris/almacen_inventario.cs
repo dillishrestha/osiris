@@ -284,7 +284,7 @@ namespace osiris
 					llenado_de_almacen(entry_id_almacen.Text );
 				}			
 			}
-			string misDigitos = "0123456789ﾰﾱﾲﾳﾴﾵﾶﾷﾸﾹﾮｔｒｓｑ（";
+			string misDigitos = ".0123456789ﾰﾱﾲﾳﾴﾵﾶﾷﾸﾹﾮｔｒｓｑ（）";
 			if (Array.IndexOf(misDigitos.ToCharArray(), Convert.ToChar(args.Event.Key)) == -1 && args.Event.Key != Gdk.Key.BackSpace)
 			{
 				//Console.WriteLine(Convert.ToChar(args.Event.Key));
@@ -551,7 +551,7 @@ namespace osiris
 		{
 			//Console.WriteLine(args.Event.Key);
 			//Console.WriteLine(Convert.ToChar(args.Event.Key));
-			string misDigitos = "-.0123456789ﾰﾱﾲﾳﾴﾵﾶﾷﾸﾹﾮｔｒｓｑ（";
+			string misDigitos = "-.0123456789ﾰﾱﾲﾳﾴﾵﾶﾷﾸﾹﾮｔｒｓｑ（）";
 			if (Array.IndexOf(misDigitos.ToCharArray(), Convert.ToChar(args.Event.Key)) == -1 && args.Event.Key != Gdk.Key.BackSpace)
 			{
 				args.RetVal = true;

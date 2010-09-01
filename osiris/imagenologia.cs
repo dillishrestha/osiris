@@ -8,7 +8,7 @@
 //				  Daniel Olivares - arcangeldoc@gmail.com (Diseño de Pantallas Glade)
 // 				  
 // Licencia		: GLP
-// S.O. 		: GNU/Linux Ubuntu 6.06 LTS (Dapper Drake)
+// S.O. 		:
 //////////////////////////////////////////////////////////
 //
 // proyect osiris is free software; you can redistribute it and/or modify
@@ -97,7 +97,7 @@ namespace osiris
 		
 		void on_button_solicitud_examenes_clicked(object sender, EventArgs args)
 		{
-			new osiris.solicitudes_rx_lab(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
+			new osiris.solicitudes_rx_lab(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,"IMAGENOLOGIA - RAYOS X",300);
 		}
 		
 		void on_cierraventanas_clicked (object sender, EventArgs args)

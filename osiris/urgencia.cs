@@ -8,7 +8,7 @@
 //				  Daniel Olivares - arcangeldoc@gmail.com (Diseño de Pantallas Glade)
 // 				  
 // Licencia		: GLP
-// S.O. 		: GNU/Linux Ubuntu 6.06 LTS (Dapper Drake)
+// S.O. 		:
 //////////////////////////////////////////////////////////
 //
 // proyect osiris is free software; you can redistribute it and/or modify

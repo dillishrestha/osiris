@@ -928,7 +928,7 @@ namespace osiris
 				args.RetVal = true;
 				llena_solicitud_material((string) this.entry_numero_solicitud.Text);				
 			}
-			string misDigitos = ".0123456789ﾰﾱﾲﾳﾴﾵﾶﾷﾸﾹﾮｔｒｓｑ（";
+			string misDigitos = ".0123456789ﾰﾱﾲﾳﾴﾵﾶﾷﾸﾹﾮｔｒｓｑ（）";
 			if (Array.IndexOf(misDigitos.ToCharArray(), Convert.ToChar(args.Event.Key)) == -1){
 				args.RetVal = true;
 			}
@@ -940,7 +940,7 @@ namespace osiris
 		public void onKeyPressEvent(object o, Gtk.KeyPressEventArgs args)
 		{
 			//Console.WriteLine(Convert.ToChar(args.Event.KeyValue));
-			string misDigitos = ".0123456789ﾰﾱﾲﾳﾴﾵﾶﾷﾸﾹﾮｔｒｓｑ（";
+			string misDigitos = ".0123456789ﾰﾱﾲﾳﾴﾵﾶﾷﾸﾹﾮｔｒｓｑ（）";
 			if (Array.IndexOf(misDigitos.ToCharArray(), Convert.ToChar(args.Event.Key)) == -1){
 				args.RetVal = true;
 			}

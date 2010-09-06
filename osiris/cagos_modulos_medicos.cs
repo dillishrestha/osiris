@@ -357,10 +357,10 @@ namespace osiris
 			Gtk.Button button_solicitud_labrx = (Gtk.Button) obj;
 			if(button_busca_producto.Sensitive == true){
 				if(button_solicitud_labrx.Name.ToString() == "button_solicitud_lab"){					
-					new osiris.solicitudes_enfermeria(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,"Solicitud de Examen de LABORATORIO",400,"LAB",descripinternamiento);
+					new osiris.solicitudes_enfermeria(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,"Solicitud de Examen de LABORATORIO",400,"LAB",descripinternamiento,this.id_tipopaciente,this.idempresa_paciente,this.idaseguradora_paciente);
 				}
 				if(button_solicitud_labrx.Name.ToString() == "button_solicitud_rx"){
-					new osiris.solicitudes_enfermeria(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,"Solicitud de Examen de IMAGENOLOGIA",300,"IMG",descripinternamiento);
+					new osiris.solicitudes_enfermeria(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,"Solicitud de Examen de IMAGENOLOGIA",300,"IMG",descripinternamiento,this.id_tipopaciente,this.idempresa_paciente,this.idaseguradora_paciente);
 				}
 			}else{
 				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,MessageType.Info,ButtonsType.Close, "NO puede crear una solicitud, verifique....");
@@ -415,6 +415,7 @@ namespace osiris
 			col_descripcion_hc.AddAttribute (cel_descripcion, "text", 0);
 			col_descripcion_hc.SortColumnId = (int) Column_serv.col_descripcion_hc ;
 			col_descripcion_hc.SetCellDataFunc(cel_descripcion, new Gtk.TreeCellDataFunc(cambia_colores_fila));
+			col_descripcion_hc.Resizable = true;
 			//cel_descripcion.Foreground = "darkblue";
 			
 			TreeViewColumn col_cantidad_hc = new TreeViewColumn();
@@ -552,6 +553,7 @@ namespace osiris
 			col_descripcion.Title = "Descripcion"; // titulo de la cabecera de la columna, si está visible
 			col_descripcion.PackStart(cellr3, true);
 			col_descripcion.AddAttribute (cellr3, "text", 3);
+			col_descripcion.Resizable = true;
         
 			TreeViewColumn col_quien_cargo = new TreeViewColumn();
 			CellRendererText cellr4 = new CellRendererText();

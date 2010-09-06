@@ -1416,8 +1416,7 @@ namespace osiris
 
 		void crea_treeview_busqueda(string tipo_busqueda)
 		{
-			if (tipo_busqueda == "paciente")
-			{
+			if (tipo_busqueda == "paciente"){
 				treeViewEngineBusca = new TreeStore(typeof(int),
 													typeof(int),
 													typeof(string),
@@ -1517,8 +1516,7 @@ namespace osiris
 				lista_de_Pacientes.AppendColumn(col_sexo_Paciente);
 				lista_de_Pacientes.AppendColumn(col_creacion_Paciente);
 			}
-			if (tipo_busqueda == "producto")
-			{
+			if (tipo_busqueda == "producto"){
 				treeViewEngineBusca2 = new TreeStore(typeof(string),
 													typeof(string),
 													typeof(string),

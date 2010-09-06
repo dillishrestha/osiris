@@ -51,6 +51,8 @@ namespace osiris
 		[Widget] Gtk.Entry entry_nombre_proveedor = null;
 		[Widget] Gtk.Button button_buscar_proveedor = null;
 		[Widget] Gtk.Button button_busca_producto = null;
+		[Widget] Gtk.TreeView treeview_solicitud_labrx = null;
+		[Widget] Gtk.Statusbar statusbar_solicitud_labrx = null;
 		
 		/////// Ventana Busqueda de productos\\\\\\\\
 		[Widget] Gtk.Window busca_producto = null;
@@ -70,6 +72,13 @@ namespace osiris
 		string agrupacion_lab_rx;
 		string descripinternamiento;
 		int tipo_admisiones;
+		int id_tipopaciente;
+		int idempresa_paciente;
+		int idaseguradora_paciente;
+			//********    //nuevo lista de precios multiples//   *****************
+		bool aplica_precios_aseguradoras = false;// Toma el valor de si se tiene creado la lista de precio en la tabla de Productos
+		bool aplica_precios_empresas = false;	// Toma el valor de si se tiene creado la lista de precio en la tabla de Productos
+		
 		string LoginEmpleado;
 		string NomEmpleado;
 		string AppEmpleado;
@@ -77,6 +86,11 @@ namespace osiris
 		
 		string connectionString;
 		string nombrebd;
+		
+		float valoriva;
+		
+		TreeStore treeViewEngineEstudios;
+		TreeStore treeViewEngineBusca2;
 		
 		class_conexion conexion_a_DB = new class_conexion();
 		class_buscador classfind_data = new class_buscador();
@@ -87,7 +101,8 @@ namespace osiris
 		protected Gtk.Window MyWin;
 		
 		public solicitudes_enfermeria(string LoginEmp_, string NomEmpleado_, string AppEmpleado_, string ApmEmpleado_, string nombrebd_,
-		                              string departament_,int tipo_admisiones_,string agrupacion_lab_rx_,string descripinternamiento_)
+		                              string departament_,int tipo_admisiones_,string agrupacion_lab_rx_,string descripinternamiento_,
+		                              int id_tipopaciente_,int idempresa_paciente_,int idaseguradora_paciente_)
 		{
 			LoginEmpleado = LoginEmp_;
 			NomEmpleado = NomEmpleado_;
@@ -97,7 +112,12 @@ namespace osiris
 			nombrebd = conexion_a_DB._nombrebd;
 			agrupacion_lab_rx = agrupacion_lab_rx_;
 			descripinternamiento = descripinternamiento_;
+			id_tipopaciente = id_tipopaciente_;
 			tipo_admisiones = tipo_admisiones_;
+			idempresa_paciente = idempresa_paciente_;
+			idaseguradora_paciente = idaseguradora_paciente_;
+			valoriva = float.Parse(classpublic.ivaparaaplicar);
+			
 			Glade.XML gxml = new Glade.XML (null, "hospitalizacion.glade", "solicitar_examen_labrx", null);
 			gxml.Autoconnect (this); 
 			
@@ -107,6 +127,8 @@ namespace osiris
 			entry_id_proveedor.Sensitive = false;
 			entry_nombre_proveedor.Sensitive = false;
 			button_buscar_proveedor.Sensitive = false;
+			entry_id_proveedor.Text = "0";
+			entry_nombre_proveedor.Text = "SOLICITUD INTERNA";
 			// Sale de la ventana
 			button_salir.Clicked += new EventHandler(on_cierraventanas_clicked);
 			//radiobutton_soli_interna
@@ -117,6 +139,11 @@ namespace osiris
 			entry_id_proveedor.Sensitive = false;
 			entry_nombre_proveedor.Sensitive = false;
 			button_buscar_proveedor.Sensitive = false;
+			crea_treeview_estudios();	
+			
+			statusbar_solicitud_labrx.Pop(0);
+			statusbar_solicitud_labrx.Push(1, "login: "+LoginEmpleado+"  |Usuario: "+NomEmpleado+" "+AppEmpleado+" "+ApmEmpleado);
+			statusbar_solicitud_labrx.HasResizeGrip = false;
 		}
 		
 		void on_radiobutton_soli_externa_clicked(object sender, EventArgs args)
@@ -125,10 +152,14 @@ namespace osiris
 				entry_id_proveedor.Sensitive = true;
 				entry_nombre_proveedor.Sensitive = true;
 				button_buscar_proveedor.Sensitive = true;
+				entry_id_proveedor.Text = "";
+				entry_nombre_proveedor.Text = "";
 			}else{
 				entry_id_proveedor.Sensitive = false;
 				entry_nombre_proveedor.Sensitive = false;
 				button_buscar_proveedor.Sensitive = false;
+				entry_id_proveedor.Text = "0";
+				entry_nombre_proveedor.Text = "SOLICITUD INTERNA";
 			}			
 		}
 		
@@ -157,7 +188,12 @@ namespace osiris
 			Glade.XML gxml = new Glade.XML (null, "laboratorio.glade", "busca_producto", null);
 			gxml.Autoconnect (this);
 			label_cantidad.Text = "Cantidad Solicitada";
+			crea_treeview_busqueda("producto");
+			
+			button_buscar_busqueda.Clicked += new EventHandler(on_llena_lista_producto_clicked);
+			button_selecciona.Clicked += new EventHandler(on_selecciona_producto_clicked);
 			button_salir.Clicked += new EventHandler(on_cierraventanas_clicked);
+			entry_expresion.KeyPressEvent += onKeyPressEvent_entry_expresion;
 			
 			entry_fecha_solicitud.Text = DateTime.Now.ToString("yyyy-MM-dd");
 			entry_hora_solicitud.Text = DateTime.Now.ToString("HH:mm:ss");
@@ -175,6 +211,8 @@ namespace osiris
 			ListStore store2 = new ListStore( typeof (string), typeof (int));
 			combobox_tipo_admision.Model = store2;
 			
+			// si es * se llena para hace solicitudes desde cualquier departamento, para que la classe
+			// se pueda llamar desde otro modulo
 			if(descripinternamiento == "*"){	        
 		      	NpgsqlConnection conexion; 
 				conexion = new NpgsqlConnection (connectionString+nombrebd);
@@ -189,8 +227,7 @@ namespace osiris
 					
 					NpgsqlDataReader lector = comando.ExecuteReader ();
 					store2.AppendValues ("", 0);
-	               	while (lector.Read())
-					{
+	               	while (lector.Read()){
 						store2.AppendValues ((string) lector["descripcion_admisiones"], (int) lector["id_tipo_admisiones"]);
 					}
 				}catch (NpgsqlException ex){
@@ -212,14 +249,320 @@ namespace osiris
 		
 		void onComboBoxChanged_tipo_admision (object sender, EventArgs args)
 		{
-	    	ComboBox combobox_tipo_admision = sender as ComboBox;
-			if (sender == null) { 		return; }
-	  		TreeIter iter;
+	    	TreeIter iter;
+			ComboBox combobox_tipo_admision = sender as ComboBox;			
+			if (sender == null) { return; }
 	  		if (combobox_tipo_admision.GetActiveIter (out iter)){
-		    		//idlugarprocedencia = (int) combobox_tipo_admision.Model.GetValue(iter,1);
-		    		//descriplugarprocedencia = (string) combobox_tipo_admision.Model.GetValue(iter,0);
-		    		//Console.WriteLine(idlugarprocedencia+" "+descriplugarprocedencia);
+				tipo_admisiones = (int) combobox_tipo_admision.Model.GetValue(iter,1);
+		    	descripinternamiento = (string) combobox_tipo_admision.Model.GetValue(iter,0);
+		    	Console.WriteLine(tipo_admisiones.ToString()+" "+descripinternamiento);
 	     	}
+		}
+		
+		void crea_treeview_estudios()
+		{
+			treeViewEngineEstudios = new TreeStore(typeof(string),
+													typeof(string),
+													typeof(string),
+													typeof(string),
+													typeof(string),
+													typeof(string),
+													typeof(string),
+													typeof(string),
+													typeof(string),
+													typeof(string),
+													typeof(string),
+													typeof(string),
+													typeof(string));
+			treeview_solicitud_labrx.Model = treeViewEngineEstudios;
+			
+			treeview_solicitud_labrx.RulesHint = true;
+			
+			Gtk.TreeViewColumn col_request = new TreeViewColumn();		
+			Gtk.CellRendererText cellrt0 = new Gtk.CellRendererText();
+			col_request.Title = "Cant.Solicitado";
+			col_request.PackStart(cellrt0, true);
+			col_request.AddAttribute (cellrt0, "text", 0);
+			col_request.Resizable = true;
+			
+			TreeViewColumn col_idproducto = new TreeViewColumn();
+			CellRendererText cellr1 = new CellRendererText();
+			col_idproducto.Title = "ID Producto"; // titulo de la cabecera de la columna, si está visible
+			col_idproducto.PackStart(cellr1, true);
+			col_idproducto.AddAttribute (cellr1, "text", 1);    // la siguiente columna será 1 en vez de 1
+			col_idproducto.Resizable = true;
+						
+			TreeViewColumn col_desc_producto = new TreeViewColumn();
+			CellRendererText cellr2 = new CellRendererText();
+			col_desc_producto.Title = "Descripcion de Producto"; // titulo de la cabecera de la columna, si está visible
+			col_desc_producto.PackStart(cellr2, true);
+			col_desc_producto.AddAttribute (cellr2, "text", 2);    // la siguiente columna será 1 en vez de 1
+			col_desc_producto.Resizable = true;
+			
+			Gtk.TreeViewColumn col_depart = new TreeViewColumn();		
+			Gtk.CellRendererText cellrt3 = new Gtk.CellRendererText();
+			col_depart.Title = "Departamento";
+			col_depart.PackStart(cellrt3, true);
+			col_depart.AddAttribute (cellrt3, "text", 3);
+			col_depart.Resizable = true;
+			
+			Gtk.TreeViewColumn col_gabinete = new TreeViewColumn();		
+			Gtk.CellRendererText cellrt4 = new Gtk.CellRendererText();
+			col_gabinete.Title = "Gabinete";
+			col_gabinete.PackStart(cellrt4, true);
+			col_gabinete.AddAttribute (cellrt4, "text", 4);
+			col_gabinete.Resizable = true;
+			
+			Gtk.TreeViewColumn col_fechasol = new TreeViewColumn();		
+			Gtk.CellRendererText cellrt5 = new Gtk.CellRendererText();
+			col_fechasol.Title = "Fecha Solicitud";
+			col_fechasol.PackStart(cellrt5, true);
+			col_fechasol.AddAttribute (cellrt5, "text", 5);
+			col_fechasol.Resizable = true;
+			
+			Gtk.TreeViewColumn col_horasol = new TreeViewColumn();		
+			Gtk.CellRendererText cellrt6 = new Gtk.CellRendererText();
+			col_horasol.Title = "Hora Solicitud";
+			col_horasol.PackStart(cellrt6, true);
+			col_horasol.AddAttribute (cellrt6, "text", 6);
+			col_horasol.Resizable = true;
+			
+			Gtk.TreeViewColumn col_quiensolicita = new TreeViewColumn();		
+			Gtk.CellRendererText cellrt7 = new Gtk.CellRendererText();
+			col_quiensolicita.Title = "Quien Solicita";
+			col_quiensolicita.PackStart(cellrt7, true);
+			col_quiensolicita.AddAttribute (cellrt7, "text", 7);
+			col_quiensolicita.Resizable = true;
+			
+			treeview_solicitud_labrx.AppendColumn(col_request); 		// 0
+			treeview_solicitud_labrx.AppendColumn(col_idproducto);  	// 1
+			treeview_solicitud_labrx.AppendColumn(col_desc_producto);	// 2
+			treeview_solicitud_labrx.AppendColumn(col_depart);	 		// 3
+			treeview_solicitud_labrx.AppendColumn(col_gabinete); 		// 4
+			treeview_solicitud_labrx.AppendColumn(col_fechasol); 		// 5
+			treeview_solicitud_labrx.AppendColumn(col_horasol); 		// 6
+			treeview_solicitud_labrx.AppendColumn(col_quiensolicita); 	// 7
+		}
+		
+		void crea_treeview_busqueda(string tipo_busqueda)
+		{
+			if (tipo_busqueda == "producto"){
+				treeViewEngineBusca2 = new TreeStore(typeof(string),
+													typeof(string),
+													typeof(string),
+													typeof(string),
+													typeof(string),
+													typeof(string),
+													typeof(string),
+													typeof(string),
+													typeof(string),
+													typeof(string),
+													typeof(string),
+													typeof(string),
+													typeof(string));
+				lista_de_producto.Model = treeViewEngineBusca2;
+			
+				lista_de_producto.RulesHint = true;
+			
+				lista_de_producto.RowActivated += on_selecciona_producto_clicked;  // Doble click selecciono paciente*/
+				
+				TreeViewColumn col_idproducto = new TreeViewColumn();
+				CellRendererText cellr0 = new CellRendererText();
+				col_idproducto.Title = "ID Producto"; // titulo de la cabecera de la columna, si está visible
+				col_idproducto.PackStart(cellr0, true);
+				col_idproducto.AddAttribute (cellr0, "text", 0);    // la siguiente columna será 1 en vez de 1
+				col_idproducto.SortColumnId = (int) Column_prod.col_idproducto;
+				col_idproducto.Resizable = true;
+			
+				TreeViewColumn col_desc_producto = new TreeViewColumn();
+				CellRendererText cellr1 = new CellRendererText();
+				col_desc_producto.Title = "Descripcion de Producto"; // titulo de la cabecera de la columna, si está visible
+				col_desc_producto.PackStart(cellr1, true);
+				col_desc_producto.AddAttribute (cellr1, "text", 1);    // la siguiente columna será 1 en vez de 1
+				col_desc_producto.SortColumnId = (int) Column_prod.col_desc_producto;
+				col_desc_producto.Resizable = true;
+            	
+				TreeViewColumn col_grupoprod = new TreeViewColumn();
+				CellRendererText cellrt2 = new CellRendererText();
+				col_grupoprod.Title = "Grupo Producto";//Precio Producto
+				col_grupoprod.PackStart(cellrt2, true);
+				col_grupoprod.AddAttribute (cellrt2, "text", 2); // la siguiente columna será 1 en vez de 2
+				col_grupoprod.SortColumnId = (int) Column_prod.col_grupoprod;
+            	col_grupoprod.Resizable = true;
+				
+				TreeViewColumn col_grupo1prod = new TreeViewColumn();
+				CellRendererText cellrt3 = new CellRendererText();
+				col_grupo1prod.Title = "Grupo1 Producto";//I.V.A.
+				col_grupo1prod.PackStart(cellrt3, true);
+				col_grupo1prod.AddAttribute (cellrt3, "text", 3); // la siguiente columna será 2 en vez de 3
+				col_grupo1prod.SortColumnId = (int) Column_prod.col_grupo1prod;
+				col_grupo1prod.Resizable = true;
+            
+				TreeViewColumn col_grupo2prod = new TreeViewColumn();
+				CellRendererText cellrt4 = new CellRendererText();
+				col_grupo2prod.Title = "Grupo2 Producto";//Total
+				col_grupo2prod.PackStart(cellrt4, true);
+				col_grupo2prod.AddAttribute (cellrt4, "text", 4); // la siguiente columna será 3 en vez de 4
+				col_grupo2prod.SortColumnId = (int) Column_prod.col_grupo2prod;
+				col_grupo2prod.Resizable = true;
+            	
+				lista_de_producto.AppendColumn(col_idproducto);  // 0
+				lista_de_producto.AppendColumn(col_desc_producto); // 1
+				lista_de_producto.AppendColumn(col_grupoprod);	//7
+				lista_de_producto.AppendColumn(col_grupo1prod);	//8
+				lista_de_producto.AppendColumn(col_grupo2prod);	//9							
+			}
+		}
+		
+		enum Column_prod
+		{
+			col_idproducto,
+			col_desc_producto,
+			col_grupoprod,
+			col_grupo1prod,
+			col_grupo2prod
+		}
+		
+		void on_selecciona_producto_clicked (object sender, EventArgs args)
+		{
+			TreeModel model;	TreeIter iterSelected;
+			if (lista_de_producto.Selection.GetSelected(out model, out iterSelected)){
+				treeViewEngineEstudios.AppendValues((string) entry_cantidad_aplicada.Text.ToString().Trim(),
+													(string) lista_de_producto.Model.GetValue (iterSelected,1),
+													(string) lista_de_producto.Model.GetValue (iterSelected,2),
+				                                    descripinternamiento,
+				                                    entry_nombre_proveedor.Text,
+				                                    entry_fecha_solicitud.Text,
+				                                    entry_hora_solicitud.Text,
+				                                    LoginEmpleado);
+			}
+		}
+		
+		// llena la lista de productos
+ 		void on_llena_lista_producto_clicked (object sender, EventArgs args)
+ 		{
+ 			llenando_lista_de_productos();
+ 		}
+ 		void llenando_lista_de_productos()
+ 		{
+ 			treeViewEngineBusca2.Clear(); // Limpia el treeview cuando realiza una nueva busqueda
+			string precio_a_tomar = "";    // en esta variable dejo el precio que va tomar para los direfentes clientes
+			string query_lab_rx = "";
+			float tomaprecio;
+			float calculodeiva;
+			float preciomasiva;
+			float tomadescue;
+			float preciocondesc;
+			
+			if(agrupacion_lab_rx == "LAB"){
+				query_lab_rx = "AND osiris_grupo_producto.agrupacion2 = 'LAB' ";
+			} 			
+			if(agrupacion_lab_rx == "IMG"){
+				query_lab_rx = "AND osiris_grupo_producto.agrupacion3 = 'IMG' ";
+			}
+			
+			//// para las diferentes listas de precios \\\\\\\\\\\\\			
+			if (id_tipopaciente == 500 || id_tipopaciente == 102) {  // Municipio y Empresas			
+				// verifica si ese cliente tiene una lista de precio asignada
+				if (this.aplica_precios_empresas == true || aplica_precios_aseguradoras == true){     
+					precio_a_tomar = "precio_producto_"+id_tipopaciente.ToString().Trim()+idempresa_paciente.ToString().Trim();
+					//precio_a_tomar = "precio_producto_publico1";
+				}else{
+					precio_a_tomar = "precio_producto_publico";
+				}
+			}else{				
+				if (id_tipopaciente == 400 ) { // Aseguradora
+					precio_a_tomar = "precio_producto_"+id_tipopaciente.ToString().Trim()+idaseguradora_paciente.ToString().Trim();
+				
+					if (this.aplica_precios_empresas == true || aplica_precios_aseguradoras == true){    
+						precio_a_tomar = "precio_producto_"+id_tipopaciente.ToString().Trim()+this.idaseguradora_paciente.ToString().Trim();
+						//precio_a_tomar = "precio_producto_publico1";
+					}else{
+						precio_a_tomar = "precio_producto_publico";
+					}
+				}else{
+					precio_a_tomar = "precio_producto_publico";
+				}
+			}			
+			//Console.WriteLine(precio_a_tomar);			
+			NpgsqlConnection conexion; 
+			conexion = new NpgsqlConnection (connectionString+nombrebd);
+			// Verifica que la base de datos este conectada
+			try{
+				conexion.Open ();
+				NpgsqlCommand comando; 
+				comando = conexion.CreateCommand ();				
+				comando.CommandText = "SELECT to_char(osiris_productos.id_producto,'999999999999') AS codProducto,"+
+						"osiris_productos.descripcion_producto,"+
+						"to_char(precio_producto_publico,'99999999.99') AS preciopublico,"+
+						//"to_char(precio_producto_publico1,'99999999.99') AS preciopublico1,"+
+						"to_char("+precio_a_tomar+",'99999999.99') AS preciopublico_cliente,"+
+						"aplicar_iva,to_char(porcentage_descuento,'999.99') AS porcentagesdesc,aplica_descuento,"+
+						"descripcion_grupo_producto,descripcion_grupo1_producto,descripcion_grupo2_producto,"+
+						"to_char(costo_por_unidad,'999999999.99') AS costoproductounitario, "+
+						"to_char(porcentage_ganancia,'99999.99') AS porcentageutilidad,"+
+						"to_char(costo_producto,'999999999.99') AS costoproducto "+
+						"FROM osiris_productos,osiris_grupo_producto,osiris_grupo1_producto,osiris_grupo2_producto "+
+						"WHERE osiris_productos.id_grupo_producto = osiris_grupo_producto.id_grupo_producto "+
+						"AND osiris_productos.id_grupo1_producto = osiris_grupo1_producto.id_grupo1_producto "+
+						"AND osiris_productos.id_grupo2_producto = osiris_grupo2_producto.id_grupo2_producto "+
+						query_lab_rx+
+						"AND osiris_productos.cobro_activo = 'true' "+
+						"AND osiris_productos.descripcion_producto LIKE '%"+entry_expresion.Text.ToUpper().Trim()+"%' ORDER BY descripcion_producto;";
+					
+				Console.WriteLine(comando.CommandText);				
+				NpgsqlDataReader lector = comando.ExecuteReader ();										
+				while (lector.Read()){
+					calculodeiva = 0;
+					preciomasiva = 0;					
+					///////////////////////////////////////////////////////////
+					// ---- nuevo para las multiples listas de precio					
+					if (float.Parse((string) lector["preciopublico_cliente"]) > 0){
+							tomaprecio = float.Parse((string) lector["preciopublico_cliente"]);
+						}else{
+							tomaprecio = float.Parse((string) lector["preciopublico"]);
+					}									
+					tomadescue = float.Parse((string) lector["porcentagesdesc"],System.Globalization.NumberStyles.Float,new System.Globalization.CultureInfo("es-MX"));
+					preciocondesc = tomaprecio;
+					if ((bool) lector["aplicar_iva"]){
+						calculodeiva = (tomaprecio * valoriva)/100;
+					}
+					if ((bool) lector["aplica_descuento"]){
+						preciocondesc = tomaprecio-((tomaprecio*tomadescue)/100);
+					}
+					preciomasiva = tomaprecio + calculodeiva; 
+					treeViewEngineBusca2.AppendValues (//TreeIter iter = 
+											(string) lector["codProducto"],//0
+											(string) lector["descripcion_producto"],//1
+											(string) lector["descripcion_grupo_producto"],//2
+											(string) lector["descripcion_grupo1_producto"],//3
+											(string) lector["descripcion_grupo2_producto"],//4
+											tomaprecio.ToString("F").PadLeft(10),//2-5
+											calculodeiva.ToString("F").PadLeft(10),//3-6
+											preciomasiva.ToString("F").PadLeft(10),//4-7
+											(string) lector["porcentagesdesc"],//8
+											preciocondesc.ToString("F").PadLeft(10),//9
+											(string) lector["costoproductounitario"],//10
+											(string) lector["porcentageutilidad"],//11
+											(string) lector["costoproducto"]);//12
+					
+				}
+			}catch (NpgsqlException ex){
+	   			Console.WriteLine ("PostgresSQL error: {0}",ex.Message);
+			}
+			conexion.Close ();
+		}
+		
+		// carga de producto
+		[GLib.ConnectBefore ()]   	  // Esto es indispensable para que funcione    
+		public void onKeyPressEvent_entry_expresion(object o, Gtk.KeyPressEventArgs args)
+		{
+			//Console.WriteLine(Convert.ToChar(args.Event.KeyValue));
+			//Console.WriteLine(args.Event.Key);
+			if (args.Event.Key == Gdk.Key.Return || args.Event.Key == Gdk.Key.KP_Enter){
+				args.RetVal = true;
+				llenando_lista_de_productos();			
+			}
 		}
 		
 		// Valida entradas que solo sean numericas, se utiliza eb ventana de
@@ -239,8 +582,16 @@ namespace osiris
 			win.Toplevel.Destroy();
 		}
 		
-	}	
+	}
+
+
 	
+	/// <summary>
+	///
+	/// Esta classe es la que se encarga de llenar las solictudes de 
+	/// Laboratorio y Rayos X
+	/// 
+	/// </summary>
 	public class solicitudes_rx_lab
 	{
 		// Boton general para salir de las ventanas

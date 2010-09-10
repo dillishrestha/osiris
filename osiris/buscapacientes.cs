@@ -15,9 +15,7 @@ using Npgsql;
 using System.Data;
 using Gtk;
 using Glade;
-using Gnome;
 using System.Collections;
-using GtkSharp;
 
 	
 	public class busca_pacientes
@@ -120,7 +118,7 @@ using GtkSharp;
 		// funcion para cuando se activa el checkbox en la lista (toggle)
 		private void BoolCellDataFunc (TreeViewColumn col, CellRenderer cell, TreeModel model, TreeIter iter)
 		{
-			CellRendererToggle t = (CellRendererToggle) cell;
+			//CellRendererToggle t = (CellRendererToggle) cell;
 			//Channel c = (Channel) model.GetValue (iter, 0);
 			//t.Active = c.Subscribed;
 		}

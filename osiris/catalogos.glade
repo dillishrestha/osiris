@@ -1661,110 +1661,6 @@
                   </packing>
                 </child>
                 <child>
-                  <widget class="GtkFrame">
-                    <property name="visible">True</property>
-                    <property name="label_xalign">0</property>
-                    <child>
-                      <widget class="GtkAlignment" id="alignment11">
-                        <property name="visible">True</property>
-                        <property name="left_padding">12</property>
-                        <child>
-                          <widget class="GtkVBox" id="vbox8">
-                            <property name="visible">True</property>
-                            <child>
-                              <widget class="GtkHBox" id="hbox32">
-                                <property name="visible">True</property>
-                                <child>
-                                  <widget class="GtkCheckButton" id="checkbutton_tituloprof_medico">
-                                    <property name="label" translatable="yes">Titulo Profesional</property>
-                                    <property name="visible">True</property>
-                                    <property name="can_focus">False</property>
-                                    <property name="receives_default">False</property>
-                                    <property name="use_underline">True</property>
-                                    <property name="focus_on_click">False</property>
-                                    <property name="draw_indicator">True</property>
-                                  </widget>
-                                  <packing>
-                                    <property name="position">0</property>
-                                  </packing>
-                                </child>
-                                <child>
-                                  <widget class="GtkCheckButton" id="checkbutton_cedula_prof_medico">
-                                    <property name="label" translatable="yes">Cedula Profesional</property>
-                                    <property name="visible">True</property>
-                                    <property name="can_focus">False</property>
-                                    <property name="receives_default">False</property>
-                                    <property name="use_underline">True</property>
-                                    <property name="focus_on_click">False</property>
-                                    <property name="draw_indicator">True</property>
-                                  </widget>
-                                  <packing>
-                                    <property name="position">1</property>
-                                  </packing>
-                                </child>
-                                <child>
-                                  <widget class="GtkCheckButton" id="checkbutton_diploespecial_medico">
-                                    <property name="label" translatable="yes">Diploma de Especialidad</property>
-                                    <property name="visible">True</property>
-                                    <property name="can_focus">False</property>
-                                    <property name="receives_default">False</property>
-                                    <property name="use_underline">True</property>
-                                    <property name="focus_on_click">False</property>
-                                    <property name="draw_indicator">True</property>
-                                  </widget>
-                                  <packing>
-                                    <property name="position">2</property>
-                                  </packing>
-                                </child>
-                                <child>
-                                  <widget class="GtkCheckButton" id="checkbutton_cursoadistramiento_medico">
-                                    <property name="label" translatable="yes">Curso de adiestramiento</property>
-                                    <property name="visible">True</property>
-                                    <property name="can_focus">False</property>
-                                    <property name="receives_default">False</property>
-                                    <property name="use_underline">True</property>
-                                    <property name="focus_on_click">False</property>
-                                    <property name="draw_indicator">True</property>
-                                  </widget>
-                                  <packing>
-                                    <property name="position">3</property>
-                                  </packing>
-                                </child>
-                              </widget>
-                              <packing>
-                                <property name="position">0</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <widget class="GtkLabel" id="label66">
-                                <property name="visible">True</property>
-                                <property name="label" translatable="yes">
-Nota : Debe de existir al menos una seleccionada</property>
-                              </widget>
-                              <packing>
-                                <property name="position">1</property>
-                              </packing>
-                            </child>
-                          </widget>
-                        </child>
-                      </widget>
-                    </child>
-                    <child>
-                      <widget class="GtkLabel" id="label62">
-                        <property name="visible">True</property>
-                        <property name="label" translatable="yes">&lt;b&gt;Papeleria Obligatoria&lt;/b&gt;</property>
-                        <property name="use_markup">True</property>
-                      </widget>
-                      <packing>
-                        <property name="type">label_item</property>
-                      </packing>
-                    </child>
-                  </widget>
-                  <packing>
-                    <property name="position">1</property>
-                  </packing>
-                </child>
-                <child>
                   <widget class="GtkFrame" id="frame11">
                     <property name="height_request">0</property>
                     <property name="visible">True</property>
@@ -2641,10 +2537,12 @@ Consejo de su Especialidad</property>
     <child>
       <widget class="GtkVBox" id="vbox40">
         <property name="visible">True</property>
+        <property name="orientation">vertical</property>
         <child>
           <widget class="GtkVPaned" id="vpaned2">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
+            <property name="orientation">vertical</property>
             <child>
               <widget class="GtkVBox" id="vbox41">
                 <property name="visible">True</property>
@@ -2668,12 +2566,14 @@ Consejo de su Especialidad</property>
                     <child>
                       <widget class="GtkVBox" id="vbox42">
                         <property name="visible">True</property>
+                        <property name="orientation">vertical</property>
                         <child>
                           <widget class="GtkHBox" id="hbox88">
                             <property name="visible">True</property>
                             <child>
                               <widget class="GtkVBox" id="vbox43">
                                 <property name="visible">True</property>
+                                <property name="orientation">vertical</property>
                                 <child>
                                   <widget class="GtkFixed" id="fixed110">
                                     <property name="visible">True</property>
@@ -2687,7 +2587,7 @@ Consejo de su Especialidad</property>
                                     <property name="width_request">108</property>
                                     <property name="height_request">34</property>
                                     <property name="visible">True</property>
-                                    <property name="label" translatable="yes">Producto a Buscar</property>
+                                    <property name="label" translatable="yes">a Buscar</property>
                                   </widget>
                                   <packing>
                                     <property name="expand">False</property>
@@ -2715,6 +2615,7 @@ Consejo de su Especialidad</property>
                             <child>
                               <widget class="GtkVBox" id="vbox44">
                                 <property name="visible">True</property>
+                                <property name="orientation">vertical</property>
                                 <child>
                                   <widget class="GtkFixed" id="fixed112">
                                     <property name="visible">True</property>
@@ -2791,6 +2692,7 @@ Consejo de su Especialidad</property>
                     <child>
                       <widget class="GtkVBox" id="vbox45">
                         <property name="visible">True</property>
+                        <property name="orientation">vertical</property>
                         <child>
                           <widget class="GtkButton" id="button_buscar_busqueda">
                             <property name="label">gtk-find</property>

@@ -29,7 +29,6 @@
 using System;
 using Gtk;
 using Npgsql;
-using Glade;
 using Cairo;
 using Pango;
 
@@ -137,8 +136,7 @@ namespace osiris
 		}
 		
 		void OnBeginPrint (object obj, Gtk.BeginPrintArgs args)
-		{
-			PrintContext context = args.Context;											
+		{									
 			print.NPages = 1; // crea cantidad de copias del reporte
 		}
 		

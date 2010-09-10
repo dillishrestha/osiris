@@ -1058,8 +1058,8 @@ namespace osiris
  			 			
  			if (this.lista_de_honorarios.Selection.GetSelected (out model, out iter)){ 				
 				if((bool) this.lista_de_honorarios.Model.GetValue (iter,8)){					
-					//new osiris.rpt_solicitud_cheque((string) this.lista_de_honorarios.Model.GetValue (iter,1),
-				    //                            (string) this.lista_de_honorarios.Model.GetValue (iter,3), entry_tipo_paciente.Text.Trim(), entry_aseguradora.Text.Trim(), entry_nombre_paciente.Text.Trim(), entry_folio_servicio.Text.Trim());
+					new osiris.rpt_solicitud_cheque((string) this.lista_de_honorarios.Model.GetValue (iter,1),
+				                                (string) this.lista_de_honorarios.Model.GetValue (iter,3), entry_tipo_paciente.Text.Trim(), entry_aseguradora.Text.Trim(), entry_nombre_paciente.Text.Trim(), entry_folio_servicio.Text.Trim());
 				}else{
 					MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
 					                                               MessageType.Error,ButtonsType.Close, "Debe de estar guardado el honorario");

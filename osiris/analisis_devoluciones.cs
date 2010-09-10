@@ -367,8 +367,6 @@ namespace osiris
 			conexion = new NpgsqlConnection (connectionString+nombrebd);
 			NpgsqlConnection conexion1;
 			conexion1 = new NpgsqlConnection (connectionString+nombrebd);
-			NpgsqlConnection conexion2;
-			conexion2 = new NpgsqlConnection (connectionString+nombrebd); 
 			
 			// Cargos desde el stock del sub-almacen
 			// Verifica que la base de datos este conectada
@@ -553,7 +551,7 @@ namespace osiris
 	   			
 	       	}
        		conexion.Close ();
-			string xxx;
+
 			try{
 				conexion.Open ();
 				NpgsqlCommand comando; 

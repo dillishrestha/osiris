@@ -51,6 +51,8 @@ namespace osiris
 		[Widget] Gtk.Entry entry_dia_termino;
 		[Widget] Gtk.Entry entry_mes_termino;
 		[Widget] Gtk.Entry entry_ano_termino;
+		
+		[Widget] Gtk.HBox hbox1 = null;
 				
 		[Widget] Gtk.Window envio_almacenes;
 		[Widget] Gtk.CheckButton checkbutton_todos_envios;
@@ -112,6 +114,8 @@ namespace osiris
 			entry_dia_termino.Text = DateTime.Now.ToString("dd");
 			entry_mes_termino.Text = DateTime.Now.ToString("MM");
 			entry_ano_termino.Text = DateTime.Now.ToString("yyyy");
+			
+			hbox1.Hide();
 			
 			button_salir.Clicked += new EventHandler(on_cierraventanas_clicked);
             button_buscar.Clicked += new EventHandler(on_buscar_clicked);
@@ -582,6 +586,4 @@ namespace osiris
 			win.Toplevel.Destroy();
 		}	
 	}
-}                	    	             
-
-
+}

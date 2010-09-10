@@ -300,7 +300,7 @@ namespace osiris
 			//button_farmacia.Hide();
 			button_nutricion.Hide();
 			button_afiliados.Hide();
-			button_proveedores.Hide();
+			//button_proveedores.Hide();
 			//button_oftalmologia.Hide();
 			button_hemodialisis.Hide();
 				
@@ -422,7 +422,7 @@ namespace osiris
 		void on_button_farmacia_clicked(object sender, EventArgs args)
 		{
 			// autorizacion_doctores_compra.cs
-			new osiris.orden_compra_urgencias(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,0,"",26,"COMERCIALIZADORA MEDIX S. A. DE C. V.");
+			new osiris.orden_compra_urgencias(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,0,"",1,"Enlasalo a un id de tu proveedor de farmacia local");
 		}
 		
 		void on_button_nutricion_clicked(object sender, EventArgs args)
@@ -495,6 +495,7 @@ namespace osiris
 			button_recursos_humanos.Sensitive = false;
 			button_nutricion.Sensitive = false;
 			button_herramientas.Sensitive = false;
+			button_proveedores.Sensitive = false;
 			
 			// opciones generales
 			button_medicos.Sensitive = false;

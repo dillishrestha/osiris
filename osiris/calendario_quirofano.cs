@@ -1402,7 +1402,6 @@ namespace osiris
 		bool validacion_informacion_cita()
 		{
 			bool response_validation = false;
-			bool verificacitadoctor;
 			if(id_tipointernamiento != 0 && id_tipopaciente != 0 && entry_id_especialidad_cita.Text.ToString().Trim() != "1"
 			   && entry_fecha_cita.Text != "" && hora_cita_qx != "" && minutos_cita_qx != ""){
 				if((bool) verifica_cita_doctor() == true){

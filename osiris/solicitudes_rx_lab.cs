@@ -45,13 +45,26 @@ namespace osiris
 		[Widget] Gtk.Button button_salir = null;
 		
 		[Widget] Gtk.Window solicitar_examen_labrx = null;
+		[Widget] Gtk.CheckButton checkbutton_nueva_solicitud = null;
+		[Widget] Gtk.Entry entry_numero_solicitud = null;
+		[Widget] Gtk.Button button_selec_solilabrx = null;
+		[Widget] Gtk.Button button_enviar_solicitud_labrx = null;
+		[Widget] Gtk.Button button_imprimir_solilabrx = null;
 		[Widget] Gtk.RadioButton radiobutton_soli_interna = null;
 		[Widget] Gtk.RadioButton radiobutton_soli_externa = null;		
 		[Widget] Gtk.Entry entry_id_proveedor = null;
 		[Widget] Gtk.Entry entry_nombre_proveedor = null;
 		[Widget] Gtk.Button button_buscar_proveedor = null;
 		[Widget] Gtk.Button button_busca_producto = null;
+		[Widget] Gtk.Button button_quitar_examen = null;
 		[Widget] Gtk.TreeView treeview_solicitud_labrx = null;
+		[Widget] Gtk.Entry entry_folio_servicio = null;
+		[Widget] Gtk.Entry entry_pid_paciente = null;
+		[Widget] Gtk.Entry entry_nombre_paciente = null;
+		[Widget] Gtk.Entry entry_id_doctor = null;
+		[Widget] Gtk.Entry entry_doctor = null;
+		[Widget] Gtk.Entry entry_diagnostico = null;
+		[Widget] Gtk.Entry entry_id_habitacion = null;
 		[Widget] Gtk.Statusbar statusbar_solicitud_labrx = null;
 		
 		/////// Ventana Busqueda de productos\\\\\\\\
@@ -71,10 +84,12 @@ namespace osiris
 		
 		string agrupacion_lab_rx;
 		string descripinternamiento;
-		int tipo_admisiones;
+		int id_tipoadmisiones;
 		int id_tipopaciente;
 		int idempresa_paciente;
 		int idaseguradora_paciente;
+		int PidPaciente;
+		int folioservicio;
 			//********    //nuevo lista de precios multiples//   *****************
 		bool aplica_precios_aseguradoras = false;// Toma el valor de si se tiene creado la lista de precio en la tabla de Productos
 		bool aplica_precios_empresas = false;	// Toma el valor de si se tiene creado la lista de precio en la tabla de Productos
@@ -101,8 +116,10 @@ namespace osiris
 		protected Gtk.Window MyWin;
 		
 		public solicitudes_enfermeria(string LoginEmp_, string NomEmpleado_, string AppEmpleado_, string ApmEmpleado_, string nombrebd_,
-		                              string departament_,int tipo_admisiones_,string agrupacion_lab_rx_,string descripinternamiento_,
-		                              int id_tipopaciente_,int idempresa_paciente_,int idaseguradora_paciente_)
+		                              string departament_,int id_tipoadmisiones_,string agrupacion_lab_rx_,string descripinternamiento_,
+		                              int id_tipopaciente_,int idempresa_paciente_,int idaseguradora_paciente_,
+		                              int PidPaciente_,int folioservicio_,string nombrepaciente_,string iddoctor_,string nombremedico_,
+		                              string diag_admision_,string habitacion_)
 		{
 			LoginEmpleado = LoginEmp_;
 			NomEmpleado = NomEmpleado_;
@@ -113,9 +130,11 @@ namespace osiris
 			agrupacion_lab_rx = agrupacion_lab_rx_;
 			descripinternamiento = descripinternamiento_;
 			id_tipopaciente = id_tipopaciente_;
-			tipo_admisiones = tipo_admisiones_;
+			id_tipoadmisiones = id_tipoadmisiones_;
 			idempresa_paciente = idempresa_paciente_;
 			idaseguradora_paciente = idaseguradora_paciente_;
+			PidPaciente = PidPaciente_;
+			folioservicio = folioservicio_;
 			valoriva = float.Parse(classpublic.ivaparaaplicar);
 			
 			Glade.XML gxml = new Glade.XML (null, "hospitalizacion.glade", "solicitar_examen_labrx", null);
@@ -129,22 +148,69 @@ namespace osiris
 			button_buscar_proveedor.Sensitive = false;
 			entry_id_proveedor.Text = "0";
 			entry_nombre_proveedor.Text = "SOLICITUD INTERNA";
+			entry_folio_servicio.Text = folioservicio.ToString();
+			entry_pid_paciente.Text = PidPaciente.ToString();
+			entry_nombre_paciente.Text = nombrepaciente_;
+			entry_id_doctor.Text = iddoctor_; 
+			entry_doctor.Text = nombremedico_;
+			entry_diagnostico.Text = diag_admision_;
+			entry_id_habitacion.Text = habitacion_;
 			// Sale de la ventana
 			button_salir.Clicked += new EventHandler(on_cierraventanas_clicked);
 			//radiobutton_soli_interna
 			radiobutton_soli_externa.Clicked += new EventHandler(on_radiobutton_soli_externa_clicked);
 			button_buscar_proveedor.Clicked += new EventHandler(on_button_buscar_proveedor_clicked);
 			button_busca_producto.Clicked += new EventHandler(on_button_busca_producto_clicked);
-				
+			button_enviar_solicitud_labrx.Clicked += new EventHandler(on_button_enviar_solicitud_labrx_clicked);
+			checkbutton_nueva_solicitud.Clicked += new EventHandler(on_checkbutton_nueva_solicitud_clicked);
+							
 			entry_id_proveedor.Sensitive = false;
 			entry_nombre_proveedor.Sensitive = false;
 			button_buscar_proveedor.Sensitive = false;
-			crea_treeview_estudios();	
+			button_enviar_solicitud_labrx.Sensitive = false;
+			button_busca_producto.Sensitive = false;
+			button_quitar_examen.Sensitive = false;
+			button_imprimir_solilabrx.Sensitive = false;
+			
+			crea_treeview_estudios();
+			
+			entry_numero_solicitud.ModifyBase(StateType.Normal, new Gdk.Color(0,255,0)); // Color Amarillo
 			
 			statusbar_solicitud_labrx.Pop(0);
 			statusbar_solicitud_labrx.Push(1, "login: "+LoginEmpleado+"  |Usuario: "+NomEmpleado+" "+AppEmpleado+" "+ApmEmpleado);
 			statusbar_solicitud_labrx.HasResizeGrip = false;
 		}
+		
+		void on_checkbutton_nueva_solicitud_clicked(object sender, EventArgs args)
+	    {
+	    	string ultimasolicitud;
+			if (checkbutton_nueva_solicitud.Active == true){
+				MessageDialog msgBox = new MessageDialog (MyWin,DialogFlags.Modal,
+									MessageType.Question,ButtonsType.YesNo,"¿ Esta seguro de CREAR una Nueva SOLICITUD ?");
+				ResponseType miResultado = (ResponseType)msgBox.Run ();
+				msgBox.Destroy();
+		 		if (miResultado == ResponseType.Yes){
+					treeViewEngineEstudios.Clear();
+					ultimasolicitud = classpublic.lee_ultimonumero_registrado("osiris_his_solicitudes_labrx","folio_de_solicitud","WHERE id_tipo_admisiones = '"+id_tipoadmisiones.ToString().Trim()+"' ");
+					entry_numero_solicitud.Text = ultimasolicitud;
+					button_enviar_solicitud_labrx.Sensitive = true;
+					button_busca_producto.Sensitive = true;
+					button_quitar_examen.Sensitive = true;
+					button_imprimir_solilabrx.Sensitive = false;
+				}else{
+					checkbutton_nueva_solicitud.Active = false;
+					button_busca_producto.Sensitive = false;
+					button_quitar_examen.Sensitive = false;
+					button_imprimir_solilabrx.Sensitive = false;
+				}
+			}else{
+				button_enviar_solicitud_labrx.Sensitive = false;
+				button_busca_producto.Sensitive = false;
+				button_quitar_examen.Sensitive = false;
+				button_imprimir_solilabrx.Sensitive = false;
+			}
+		}
+				
 		
 		void on_radiobutton_soli_externa_clicked(object sender, EventArgs args)
 		{
@@ -237,7 +303,7 @@ namespace osiris
 				}
 				conexion.Close ();
 			}else{
-				store2.AppendValues (descripinternamiento,tipo_admisiones);
+				store2.AppendValues (descripinternamiento,id_tipoadmisiones);
 			}
 			TreeIter iter2;
 			if (store2.GetIterFirst(out iter2)) {
@@ -247,16 +313,131 @@ namespace osiris
 			combobox_tipo_admision.Changed += new EventHandler (onComboBoxChanged_tipo_admision);	    
 		}
 		
-		void onComboBoxChanged_tipo_admision (object sender, EventArgs args)
+		void onComboBoxChanged_tipo_admision(object sender, EventArgs args)
 		{
 	    	TreeIter iter;
 			ComboBox combobox_tipo_admision = sender as ComboBox;			
 			if (sender == null) { return; }
 	  		if (combobox_tipo_admision.GetActiveIter (out iter)){
-				tipo_admisiones = (int) combobox_tipo_admision.Model.GetValue(iter,1);
+				id_tipoadmisiones = (int) combobox_tipo_admision.Model.GetValue(iter,1);
 		    	descripinternamiento = (string) combobox_tipo_admision.Model.GetValue(iter,0);
-		    	Console.WriteLine(tipo_admisiones.ToString()+" "+descripinternamiento);
+		    	//Console.WriteLine(id_tipoadmisiones.ToString()+" "+descripinternamiento);
 	     	}
+		}
+		
+		void on_button_enviar_solicitud_labrx_clicked(object sender, EventArgs args)
+		{
+			TreeIter iter;
+			string ultimasolicitud = classpublic.lee_ultimonumero_registrado("osiris_his_solicitudes_labrx","folio_de_solicitud","WHERE id_tipo_admisiones = '"+id_tipoadmisiones.ToString().Trim()+"' ");
+			entry_numero_solicitud.Text = ultimasolicitud;
+			MessageDialog msgBox = new MessageDialog (MyWin,DialogFlags.Modal,MessageType.Question,ButtonsType.YesNo,"¿ Esta seguro de enviar esta Solicitud Numero :"+ultimasolicitud+"?");
+			ResponseType miResultado = (ResponseType)msgBox.Run ();
+			msgBox.Destroy(); 
+			if (miResultado == ResponseType.Yes){
+				if (this.treeViewEngineEstudios.GetIterFirst (out iter)){
+					//for (int i = 0; i < treeViewEngineEstudios.NColumns; i++)
+        			//Console.WriteLine((string) this.treeview_solicitud_labrx.Model.GetValue(iter,i));  
+										
+					ultimasolicitud = classpublic.lee_ultimonumero_registrado("osiris_his_solicitudes_labrx","folio_de_solicitud","WHERE id_tipo_admisiones = '"+id_tipoadmisiones.ToString().Trim()+"' ");
+					NpgsqlConnection conexion; 
+					conexion = new NpgsqlConnection (connectionString+nombrebd);
+					try{
+						conexion.Open ();
+						NpgsqlCommand comando; 
+						comando = conexion.CreateCommand ();
+						comando.CommandText =  "INSERT INTO osiris_his_solicitudes_labrx("+
+												"folio_de_solicitud,"+
+												"folio_de_servicio,"+
+												"pid_paciente,"+									
+												"id_producto,"+
+												"precio_producto_publico,"+
+												"costo_por_unidad,"+
+												"cantidad_solicitada,"+
+												//"cantidad_autorizada"+												
+												"fechahora_solicitud,"+
+												"id_quien_solicito,"+
+												//"fechahora_autorizado,"+
+												//"id_quien_autorizo,"+
+												//"status,"+
+												"id_proveedor,"+
+												"id_tipo_admisiones,"+
+												"folio_interno_labrx"+")"+
+														" VALUES ('"+
+												ultimasolicitud+"','"+
+												folioservicio.ToString()+"','"+
+												PidPaciente.ToString()+"','"+										
+												(string) this.treeview_solicitud_labrx.Model.GetValue(iter,1)+"','"+
+												(string) this.treeview_solicitud_labrx.Model.GetValue(iter,8)+"','"+
+												(string) this.treeview_solicitud_labrx.Model.GetValue(iter,9)+"','"+
+												(string) this.treeview_solicitud_labrx.Model.GetValue(iter,0)+"','"+
+												//
+												DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"','"+
+												LoginEmpleado+"','"+
+												//
+												//
+												//
+												entry_id_proveedor.Text.Trim()+"','"+
+												id_tipoadmisiones.ToString().Trim()+"','"+
+												(string) this.treeview_solicitud_labrx.Model.GetValue(iter,10).ToString().Trim()+"');";
+						Console.WriteLine(comando.CommandText);
+						comando.ExecuteNonQuery();
+						comando.Dispose();					
+						while (this.treeViewEngineEstudios.IterNext(ref iter)){
+							comando.CommandText = "INSERT INTO osiris_his_solicitudes_labrx("+
+												"folio_de_solicitud,"+
+												"folio_de_servicio,"+
+												"pid_paciente,"+									
+												"id_producto,"+
+												"precio_producto_publico,"+
+												"costo_por_unidad,"+
+												"cantidad_solicitada,"+
+												//"cantidad_autorizada"+												
+												"fechahora_solicitud,"+
+												"id_quien_solicito,"+
+												//"fechahora_autorizado,"+
+												//"id_quien_autorizo,"+
+												//"status,"+
+												"id_proveedor,"+
+												"id_tipo_admisiones,"+
+												"folio_interno_labrx"+")"+
+														" VALUES ('"+
+												ultimasolicitud+"','"+
+												folioservicio.ToString()+"','"+
+												PidPaciente.ToString()+"','"+										
+												(string) this.treeview_solicitud_labrx.Model.GetValue(iter,1)+"','"+
+												(string) this.treeview_solicitud_labrx.Model.GetValue(iter,8)+"','"+
+												(string) this.treeview_solicitud_labrx.Model.GetValue(iter,9)+"','"+
+												(string) this.treeview_solicitud_labrx.Model.GetValue(iter,0)+"','"+
+												//
+												DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"','"+
+												LoginEmpleado+"','"+
+												//
+												//
+												//
+												entry_id_proveedor.Text.Trim()+"','"+
+												id_tipoadmisiones.ToString().Trim()+"','"+
+												(string) this.treeview_solicitud_labrx.Model.GetValue(iter,10).ToString().Trim()+"');";
+							//Console.WriteLine(comando.CommandText);
+							comando.ExecuteNonQuery();
+							comando.Dispose();			
+						}
+						checkbutton_nueva_solicitud.Active = false;
+						button_imprimir_solilabrx.Sensitive = true;
+						MessageDialog msgBoxError = new MessageDialog(MyWinError,DialogFlags.DestroyWithParent,MessageType.Info,
+					                                              ButtonsType.Close, "La solicitud se envio con Exito...");
+						msgBoxError.Run ();	msgBoxError.Destroy();
+					}catch (NpgsqlException ex){
+						MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+													MessageType.Error,ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
+							msgBoxError.Run ();				msgBoxError.Destroy();
+					}
+					conexion.Close();
+				}else{
+					MessageDialog msgBoxError = new MessageDialog(MyWinError,DialogFlags.DestroyWithParent,MessageType.Error,
+					                                              ButtonsType.Close, "NO puede crear una solicitud, no ha seleccionado ningun estudio, verifique...");
+					msgBoxError.Run ();	msgBoxError.Destroy();
+				}
+			}
 		}
 		
 		void crea_treeview_estudios()
@@ -334,6 +515,13 @@ namespace osiris
 			col_quiensolicita.AddAttribute (cellrt7, "text", 7);
 			col_quiensolicita.Resizable = true;
 			
+			Gtk.TreeViewColumn col_foliointerno = new TreeViewColumn();		
+			Gtk.CellRendererText cellrt10 = new Gtk.CellRendererText();
+			col_foliointerno.Title = "Folio "+agrupacion_lab_rx;
+			col_foliointerno.PackStart(cellrt10, true);
+			col_foliointerno.AddAttribute (cellrt10, "text", 10);
+			col_foliointerno.Resizable = true;
+			
 			treeview_solicitud_labrx.AppendColumn(col_request); 		// 0
 			treeview_solicitud_labrx.AppendColumn(col_idproducto);  	// 1
 			treeview_solicitud_labrx.AppendColumn(col_desc_producto);	// 2
@@ -342,6 +530,7 @@ namespace osiris
 			treeview_solicitud_labrx.AppendColumn(col_fechasol); 		// 5
 			treeview_solicitud_labrx.AppendColumn(col_horasol); 		// 6
 			treeview_solicitud_labrx.AppendColumn(col_quiensolicita); 	// 7
+			treeview_solicitud_labrx.AppendColumn(col_foliointerno); 	// 8
 		}
 		
 		void crea_treeview_busqueda(string tipo_busqueda)
@@ -428,13 +617,16 @@ namespace osiris
 			TreeModel model;	TreeIter iterSelected;
 			if (lista_de_producto.Selection.GetSelected(out model, out iterSelected)){
 				treeViewEngineEstudios.AppendValues((string) entry_cantidad_aplicada.Text.ToString().Trim(),
+													(string) lista_de_producto.Model.GetValue (iterSelected,0),
 													(string) lista_de_producto.Model.GetValue (iterSelected,1),
-													(string) lista_de_producto.Model.GetValue (iterSelected,2),
 				                                    descripinternamiento,
 				                                    entry_nombre_proveedor.Text,
 				                                    entry_fecha_solicitud.Text,
 				                                    entry_hora_solicitud.Text,
-				                                    LoginEmpleado);
+				                                    LoginEmpleado,
+				                                    (string) lista_de_producto.Model.GetValue (iterSelected,5),
+				                                    (string) lista_de_producto.Model.GetValue (iterSelected,10),
+				                                    entry_folio_laboratorio.Text.Trim());
 			}
 		}
 		
@@ -583,8 +775,6 @@ namespace osiris
 		}
 		
 	}
-
-
 	
 	/// <summary>
 	///

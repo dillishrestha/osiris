@@ -32,7 +32,6 @@ using System;
 using Npgsql;
 using Gtk;
 using Glade;
-using System;
 
 namespace osiris
 {

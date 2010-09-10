@@ -357,10 +357,16 @@ namespace osiris
 			Gtk.Button button_solicitud_labrx = (Gtk.Button) obj;
 			if(button_busca_producto.Sensitive == true){
 				if(button_solicitud_labrx.Name.ToString() == "button_solicitud_lab"){					
-					new osiris.solicitudes_enfermeria(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,"Solicitud de Examen de LABORATORIO",400,"LAB",descripinternamiento,this.id_tipopaciente,this.idempresa_paciente,this.idaseguradora_paciente);
+					new osiris.solicitudes_enfermeria(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,"Solicitud de Examen de LABORATORIO",400,"LAB",
+					                                  descripinternamiento,id_tipopaciente,idempresa_paciente,idaseguradora_paciente,PidPaciente,folioservicio,
+					                                  entry_nombre_paciente.Text.Trim(),entry_id_doctor.Text.Trim(),entry_doctor.Text.Trim(),
+					                                  this.entry_cirugia.Text.Trim(),this.entry_id_habitacion.Text.Trim());
 				}
 				if(button_solicitud_labrx.Name.ToString() == "button_solicitud_rx"){
-					new osiris.solicitudes_enfermeria(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,"Solicitud de Examen de IMAGENOLOGIA",300,"IMG",descripinternamiento,this.id_tipopaciente,this.idempresa_paciente,this.idaseguradora_paciente);
+					new osiris.solicitudes_enfermeria(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,"Solicitud de Examen de IMAGENOLOGIA",300,"IMG",
+					                                  descripinternamiento,id_tipopaciente,idempresa_paciente,idaseguradora_paciente,PidPaciente,folioservicio,
+					                                  entry_nombre_paciente.Text.Trim(),entry_id_doctor.Text.Trim(),entry_doctor.Text.Trim(),
+					                                  this.entry_cirugia.Text.Trim(),this.entry_id_habitacion.Text.Trim());
 				}
 			}else{
 				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,MessageType.Info,ButtonsType.Close, "NO puede crear una solicitud, verifique....");
@@ -2498,6 +2504,7 @@ namespace osiris
  				total1_linea = precio_linea + iva_linea; 
  				
 			} catch (Exception e) {
+				Console.WriteLine(e);
 				return;
 			}
  			treeViewEngineExtras.SetValue (iter, (int) Colum_cargos_extras.col_cantidad, foo.col_cantidad);

@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // created on 1/04/2008                                                                           
-// Hospital Santa Cecilia                                                                                            
+// Sistema Hospitalario OSIRIS                                                                                          
 // Monterrey - Mexico                                                                                                
 //                                                                                                                            
 // Autor    	: Erick Eduardo Gonzalez Reyes (Programation & Glade's window)            
@@ -28,100 +28,89 @@ using Npgsql;
 using System.Data;
 using Gtk;
 using Glade;
-using Gnome;
-using System.Collections;
-using GtkSharp;
-
 
 namespace osiris
-{
-	
+{	
 	public class reportes_empleados
-	{
+	{	
+		[Widget] Gtk.Window reportes_de_empleados;
+		[Widget] Gtk.Button button_salir;
+		[Widget] Gtk.Button button_contrato;
+		[Widget] Gtk.Button button_bajas;
+		[Widget] Gtk.Button button_Imprimir;
+		[Widget] Gtk.TreeView treeview_reportelista;
+		[Widget] Gtk.Entry entry_dia_inicio;
+		[Widget] Gtk.Entry entry_mes_inicio;
+		[Widget] Gtk.Entry entry_anno_inicio;
+		[Widget] Gtk.Entry entry_dia_fin;
+		[Widget] Gtk.Entry entry_mes_fin;
+		[Widget] Gtk.Entry entry_anno_fin;
+		[Widget] Gtk.ComboBox combo_tipocontrato;
+		[Widget] Gtk.CheckButton check_todos;
+		[Widget] Gtk.Label label_cont;	
 	
-	[Widget] Gtk.Window reportes_de_empleados;
-	[Widget] Gtk.Button button_salir;
-	[Widget] Gtk.Button button_contrato;
-	[Widget] Gtk.Button button_bajas;
-	[Widget] Gtk.Button button_Imprimir;
-	[Widget] Gtk.TreeView treeview_reportelista;
-	[Widget] Gtk.Entry entry_dia_inicio;
-	[Widget] Gtk.Entry entry_mes_inicio;
-	[Widget] Gtk.Entry entry_anno_inicio;
-	[Widget] Gtk.Entry entry_dia_fin;
-	[Widget] Gtk.Entry entry_mes_fin;
-	[Widget] Gtk.Entry entry_anno_fin;
-	[Widget] Gtk.ComboBox combo_tipocontrato;
-	[Widget] Gtk.CheckButton check_todos;
-	[Widget] Gtk.Label label_cont;
-	
-
-	
-	
-	
-	public string connectionString = "Server=192.168.1.4;" +
-						"Port=5432;" +
-						"User ID=admin1;" +
-						"Password=1qaz2wsx;";
-						
-		public string nombrebd;
-		public string LoginEmpleado;
-    	public string NomEmpleado;
-    	public string AppEmpleado;
-    	public string ApmEmpleado;
-        public string fechamax;
-        public string fechamin;
-        public string fechamaxsql;
-        public string fechaminsql;
-        public string id_empleado;
-        public string var_fecha;
-        public string var_tipo;
-        public string var_id_empleado;
-        public string var_sueldo;
-        public string var_depto;
-        public string var_puesto;
-        public string var_tipofuncion;
-        public string var_horas;
-        public string var_tiempocomida;
-        public string var_tipopago;
-        public string var_jornada;
-        public string var_annos;
-        public string id_sel;
-        public string nombre_completo;
-        public string fechacontrato;
-        public int conteo_lineas = 0;
-        public bool leer = false;
-        public bool fecha_valida = false;
-        public string tiempo_de_contrato_short="";
+		string connectionString;
+		string nombrebd;
+		string LoginEmpleado;
+    	string NomEmpleado;
+    	string AppEmpleado;
+    	string ApmEmpleado;
+        string fechamax;
+        string fechamin;
+        string fechamaxsql;
+        string fechaminsql;
+        string id_empleado;
+        string var_fecha;
+        string var_tipo;
+        string var_id_empleado;
+        string var_sueldo;
+        string var_depto;
+        string var_puesto;
+        string var_tipofuncion;
+        string var_horas;
+        string var_tiempocomida;
+        string var_tipopago;
+        string var_jornada;
+        string var_annos;
+        string id_sel;
+        string nombre_completo;
+        string fechacontrato;
+        int conteo_lineas = 0;
+        bool leer = false;
+        bool fecha_valida = false;
+        string tiempo_de_contrato_short="";
         
-        public string fechadebaja = "";
+        string fechadebaja = "";
         
-        public string contrato;
-        public string fechacontr;
-		public string tpcontrato;		
-		public string tipfun;		
-		public string depart;	
-		public string puest;	
-		public string jorn;	
-		public string suel;	
-		public string tippag;	
-		public string tpocomida;
-		public string annosemp;
+        string contrato;
+        string fechacontr;
+		string tpcontrato;		
+		string tipfun;		
+		string depart;	
+		string puest;	
+		string jorn;	
+		string suel;	
+		string tippag;	
+		string tpocomida;
+		string annosemp;
         
     	private TreeStore treeViewEngineBusca;
     	
     	protected Gtk.Window MyWinError;
 		protected Gtk.Window MyWin;
 		
-		public reportes_empleados(string LoginEmp_, string NomEmpleado_, string AppEmpleado_, string ApmEmpleado_, string _nombrebd_,string tipo_reporte_)
+		class_conexion conexion_a_DB = new class_conexion();
+		
+		public reportes_empleados(string LoginEmp_, string NomEmpleado_, string AppEmpleado_, string ApmEmpleado_, string nombrebd_,string tipo_reporte_)
 		{
 			LoginEmpleado = LoginEmp_;
     		NomEmpleado = NomEmpleado_;
     		AppEmpleado = AppEmpleado_;
     		ApmEmpleado = ApmEmpleado_;
-    		nombrebd = _nombrebd_; 
-    		
-    		
+			
+    		connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
+			nombrebd = conexion_a_DB._nombrebd;
+    		    		
 			Glade.XML gxml = new Glade.XML (null, "recursos_humanos.glade", "reportes_de_empleados",null);
 			gxml.Autoconnect (this);
 	        reportes_de_empleados.Show();
@@ -241,8 +230,7 @@ namespace osiris
 			treeViewEngineBusca = new TreeStore(typeof(string),typeof(string),typeof(string),typeof(string));
 			treeview_reportelista.Model = treeViewEngineBusca;
 			
-			treeview_reportelista.RulesHint = true;
-			
+			treeview_reportelista.RulesHint = true;			
 			
 			TreeViewColumn col_idEmpleado = new TreeViewColumn();
 			CellRendererText cellr0 = new CellRendererText();
@@ -280,9 +268,7 @@ namespace osiris
 		 }
 				
 		void crea_treeview_busqueda_empleado()
-		{
-		    
-				    
+		{			    
 			treeViewEngineBusca = new TreeStore(typeof(string),typeof(string),typeof(string),typeof(string),typeof(string),typeof(string),typeof(string),typeof(string),typeof(string),typeof(string),typeof(string),typeof(string));
 			treeview_reportelista.Model = treeViewEngineBusca;
 			
@@ -437,10 +423,10 @@ namespace osiris
 				conexion.Open ();
 				NpgsqlCommand comando; 
 				comando = conexion.CreateCommand ();
-				//hscmty_empleado.id_empleado
-             	comando.CommandText = "SELECT hscmty_empleado.id_empleado,baja_empleado,nombre1_empleado,nombre2_empleado,apellido_paterno_empleado,apellido_materno_empleado,causa_baja,notas_baja,to_char(fecha_de_baja,'YYYY/MM/dd') as fechadebaja "+
-									"FROM hscmty_empleado_detalle,hscmty_empleado  " +
-									"WHERE ((hscmty_empleado.id_empleado = hscmty_empleado_detalle.id_empleado) "+
+				//osiris_empleado.id_empleado
+             	comando.CommandText = "SELECT osiris_empleado.id_empleado,baja_empleado,nombre1_empleado,nombre2_empleado,apellido_paterno_empleado,apellido_materno_empleado,causa_baja,notas_baja,to_char(fecha_de_baja,'YYYY/MM/dd') as fechadebaja "+
+									"FROM osiris_empleado_detalle,osiris_empleado  " +
+									"WHERE ((osiris_empleado.id_empleado = osiris_empleado_detalle.id_empleado) "+
 									"AND baja_empleado = 'true' "+
 									"AND to_char(fecha_de_baja,'yyyy-MM-dd') >= '"+fechaminsql+"' "+
 									"AND to_char(fecha_de_baja,'yyyy-MM-dd') <= '"+fechamaxsql+"');";
@@ -483,7 +469,7 @@ namespace osiris
 				comando = conexion.CreateCommand ();
 				
              comando.CommandText = "SELECT id_empleado, historial_de_contrato,nombre1_empleado,nombre2_empleado,apellido_paterno_empleado,apellido_materno_empleado "+
-									  "FROM hscmty_empleado " +
+									  "FROM osiris_empleado " +
 									 "WHERE ( historial_de_contrato != '');";
 									 // nadams consulta los que tienen historial
 									  
@@ -620,31 +606,26 @@ namespace osiris
 				 annosemp  = 	(string) model.GetValue(iterSelected, 11);	
 		    }
 		    
-		    			NpgsqlConnection conexion; 
+		    NpgsqlConnection conexion; 
 			conexion = new NpgsqlConnection (connectionString+nombrebd );
             
 			// Verifica que la base de datos este conectada
 			try{
 				conexion.Open ();
 				NpgsqlCommand comando; 
-				comando = conexion.CreateCommand ();
-				
-             comando.CommandText = "SELECT nombre1_empleado,nombre2_empleado,apellido_paterno_empleado,apellido_materno_empleado,nacionalidad,"+
+				comando = conexion.CreateCommand ();				
+             	comando.CommandText = "SELECT nombre1_empleado,nombre2_empleado,apellido_paterno_empleado,apellido_materno_empleado,nacionalidad,"+
                                    "calle, numero,colonia "+
-									  "FROM hscmty_empleado_detalle,hscmty_empleado  " +
-									"WHERE ((hscmty_empleado.id_empleado = hscmty_empleado_detalle.id_empleado) and hscmty_empleado.id_empleado = '"+id_sel+"' );";
+									  "FROM osiris_empleado_detalle,osiris_empleado  " +
+									"WHERE ((osiris_empleado.id_empleado = osiris_empleado_detalle.id_empleado) and osiris_empleado.id_empleado = '"+id_sel+"' );";
 									  
 									// "WHERE ( id_empleado = 'id_sel');";
 									 // nadams consulta los que tienen historial
 									  
-				NpgsqlDataReader lector = comando.ExecuteReader ();
-       
+				NpgsqlDataReader lector = comando.ExecuteReader ();            
+           		if ((bool) lector.Read()){
 		
-            
-            
-           if ((bool) lector.Read()){
-		
-		new rpt_contrato_empleado(tpcontrato,
+					new rpt_contrato_empleado(tpcontrato,
 						  		(string) lector["apellido_paterno_empleado"],
 						  		(string) lector["apellido_materno_empleado"],
 								(string) lector["nombre1_empleado"],
@@ -664,18 +645,16 @@ namespace osiris
 							    (string) lector["nacionalidad"]
 							    );
 							    
-							    }
-							    
-							    }  // X Cierra el Try de la conexion
-			
-			catch (NpgsqlException ex){
+				}							    
+			}catch (NpgsqlException ex){
 	   			MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
 										MessageType.Error, ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
 				msgBoxError.Run ();	msgBoxError.Destroy();
-            } // X Cierra el catch
+            }
             conexion.Close ();
 		
 		}
+		
 		void on_cierraventanas_clicked (object sender, EventArgs args)
 		{
 			Widget win = (Widget) sender;

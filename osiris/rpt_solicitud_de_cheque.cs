@@ -1,7 +1,7 @@
 // created on 00/06/2008 at 00:00 p
 ///////////////////////////////////////////////////////////
 // project created on 24/10/2006 at 10:20 a
-// Hospital Santa Cecilia
+//
 // Monterrey - Mexico
 //
 // Autor    	: Marcos Irak Gaspar Avila (Programacion) ing.gaspar@gmail.com
@@ -25,7 +25,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 // 
 //////////////////////////////////////////////////////////
-// Programa		: hscmty.cs
+// Programa		:
 // Proposito	:  
 // Objeto		: 
 //////////////////////////////////////////////////////////
@@ -35,35 +35,32 @@ using Gnome;
 using Npgsql;
 using System.Data;
 using Glade;
-using System.Collections;
-using GtkSharp;
 
 namespace osiris
 {
 	public class rpt_solicitud_cheque
 	{
-		public string[] sUnidades = {"", "un", "dos", "tres", "cuatro", "cinco", "seis", "siete", "ocho", "nueve", "diez", 
-									"once", "doce", "trece", "catorce", "quince", "dieciseis", "diecisiete", "dieciocho", "diecinueve", "veinte", 
-									"veintiún", "veintidos", "veintitres", "veinticuatro", "veinticinco", "veintiseis", "veintisiete", "veintiocho", "veintinueve"};
- 		public string[] sDecenas = {"", "diez", "veinte", "treinta", "cuarenta", "cincuenta", "sesenta", "setenta", "ochenta", "noventa"};
- 		public string[] sCentenas = {"", "ciento", "doscientos", "trescientos", "cuatrocientos", "quinientos", "seiscientos", "setecientos", "ochocientos", "novecientos"};
-  		public string sResultado = "";
-		public string connectionString = "Server=localhost;" +
-        	    	                     "Port=5432;" +
-            	    	                 "User ID=admin;" +
-                	    	             "Password=1qaz2wsx;";
-		public string nombredoctor = "";
-		public float hono_medico = 0;
-		public float descuento_hono_medico = 0;
-		public string cantidad_de_letras = "";
-		public string folio_servicio = "";
-		public float total_descuento = 0;
-		public string tipo_paciente = "";
-		public string nombre_paciente = "";
-		public string aseguradora = "";
+		string nombredoctor = "";
+		float hono_medico = 0;
+		float descuento_hono_medico = 0;
+		string cantidad_de_letras = "";
+		string folio_servicio = "";
+		float total_descuento = 0;
+		string tipo_paciente = "";
+		string nombre_paciente = "";
+		string aseguradora = "";
+		
+		string nombrebd;
+		string connectionString;
+		
+		class_conexion conexion_a_DB = new class_conexion();
+		class_public classpublic = new class_public();
 		
 		public rpt_solicitud_cheque(string nombredoctor_, string hono_medico_, string tipo_paciente_, string aseguradora_, string nombre_paciente_, string folio_servicio_)		
 		{
+			connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
+			nombrebd = conexion_a_DB._nombrebd;
+			
 			folio_servicio = folio_servicio_;
 			nombre_paciente = nombre_paciente_;
 			tipo_paciente = tipo_paciente_;
@@ -101,15 +98,15 @@ namespace osiris
 		void ComponerPagina (Gnome.PrintContext ContextoImp, Gnome.PrintJob trabajoImpresion)
 		{ 
 			for (int i1=0; i1 <= 1; i1++){
-				ContextoImp.BeginPage("Pagina 1");	
-				 
-				cantidad_de_letras = traduce_numeros(total_descuento.ToString("F"));
+				ContextoImp.BeginPage("Pagina 1");
+				
+				cantidad_de_letras = classpublic.ConvertirCadena(total_descuento.ToString("F"),"PESO");
 				Gnome.Font fuente2 = Gnome.Font.FindClosest("Bitstream Vera Sans", 8);
-				Gnome.Font fuente3 = Gnome.Font.FindClosest("Bitstream Vera Sans", 10);
+				//Gnome.Font fuente3 = Gnome.Font.FindClosest("Bitstream Vera Sans", 10);
 				
 				// ESTA FUNCION ES PARA QUE EL TEXTO SALGA EN NEGRITA
-				Gnome.Font fuente4 = Gnome.Font.FindClosestFromWeightSlant("Bitstream Vera Sans", FontWeight.Bold ,false, 12);
-				Gnome.Font fuente5 = Gnome.Font.FindClosestFromWeightSlant("Bitstream Vera Sans", FontWeight.Bold ,false, 10);
+				//Gnome.Font fuente4 = Gnome.Font.FindClosestFromWeightSlant("Bitstream Vera Sans", FontWeight.Bold ,false, 12);
+				//Gnome.Font fuente5 = Gnome.Font.FindClosestFromWeightSlant("Bitstream Vera Sans", FontWeight.Bold ,false, 10);
 				Gnome.Print.Setfont (ContextoImp, fuente2);
 	
 				ContextoImp.MoveTo(400, 780);			ContextoImp.Show(DateTime.Now.ToString("dd        MM     yyyy") );			 			
@@ -127,160 +124,6 @@ namespace osiris
 			    ContextoImp.MoveTo(500, 620);			ContextoImp.Show(total_descuento.ToString("C"));
 				ContextoImp.ShowPage();
 			}
-		}
-		public string traduce_numeros (string sNumero) {
-			double dNumero;
-			double dNumAux = 0;
-			char x;
-			string sAux;
-			
-			sResultado = " ";
-			try{
-				dNumero = Convert.ToDouble (sNumero);
-			}catch {				
-				return "";
-			} 
-			if (dNumero > 999999999999)
-				return "";
- 
-			if (dNumero > 999999999) {
-				dNumAux = dNumero % 1000000000000;
-				sResultado += Numeros (dNumAux, 1000000000) + " mil ";
-			}
- 
-			if (dNumero > 999999) {
-				dNumAux = dNumero % 1000000000;
-				sResultado += Numeros (dNumAux, 1000000) + " millones ";
-			}
- 
-			if (dNumero > 999) {
-				dNumAux = dNumero % 1000000;
-				sResultado += Numeros (dNumAux, 1000) + " mil ";
-			}
- 
-			dNumAux = dNumero % 1000;	
-			sResultado += Numeros (dNumAux, 1);
-  
-			//Enseguida verificamos si contiene punto, si es así, los convertimos a texto.
-			sAux = dNumero.ToString();
- 
-			if (sAux.IndexOf(".") >= 0){			
-				sResultado += ObtenerDecimales (sNumero);
-			}else{
-				sResultado += "pesos 00/100 M.N.";
-			}
-			//Las siguientes líneas convierten el primer caracter a mayúscula.
-			sAux = sResultado;
-			x = char.ToUpper (sResultado[1]);
-			sResultado = x.ToString ();
- 
-			for (int i = 2; i<sAux.Length; i++)
-				sResultado += sAux[i].ToString();
- 
-			return sResultado;
-		}
-		 
-		public string ConvertirCadena (double dNumero) {
-			double dNumAux = 0;
-			char x;
-			string sAux;
-			 
-			sResultado = " ";
- 
-			if (dNumero > 999999999999)
-				return "";
- 
-			if (dNumero > 999999999) {
-				dNumAux = dNumero % 1000000000000;
-				sResultado += Numeros (dNumAux, 1000000000) + " mil ";
-			}
- 
-			if (dNumero > 999999) {
-				dNumAux = dNumero % 1000000000;
-				sResultado += Numeros (dNumAux, 1000000) + " millones ";
-			}
- 
-			if (dNumero > 999) {
-				dNumAux = dNumero % 1000000;
-				sResultado += Numeros (dNumAux, 1000) + " mil ";
-			}
- 
-			dNumAux = dNumero % 1000;	
-			sResultado += Numeros (dNumAux, 1);
- 
- 
-			//Enseguida verificamos si contiene punto, si es así, los convertimos a texto.
-			sAux = dNumero.ToString();
- 
-			if (sAux.IndexOf(".") >= 0){
-				sResultado += ObtenerDecimales (sAux);
-			}else{
-				sResultado += "pesos 00/100 M.N.";
-			}
- 
-			//Las siguientes líneas convierten el primer caracter a mayúscula.
-			sAux = sResultado;
-			x = char.ToUpper (sResultado[1]);
-			sResultado = x.ToString ();
- 
-			for (int i = 2; i<sAux.Length; i++)
-				sResultado += sAux[i].ToString();
- 
-			return sResultado;
-		}
- 
-		private string Numeros (double dNumAux, double dFactor) {
-			double dCociente = dNumAux / dFactor;
-			double dNumero = 0;
-			int iNumero = 0;
-			string sNumero = "";
-			string sTexto = "";
- 
-			if (dCociente >= 100){
-				dNumero = dCociente / 100;
-				sNumero = dNumero.ToString();
-				iNumero = int.Parse (sNumero[0].ToString());
-				sTexto  +=  this.sCentenas [iNumero] + " ";
-			}
- 
-			dCociente = dCociente % 100;
-			if (dCociente >= 30){
-				dNumero = dCociente / 10;			
-				sNumero = dNumero.ToString();
-				iNumero = int.Parse (sNumero[0].ToString());
-				if (iNumero > 0)
-					sTexto  += this.sDecenas [iNumero] + " ";
- 
-				dNumero = dCociente % 10;
-				sNumero = dNumero.ToString();
-				iNumero = int.Parse (sNumero[0].ToString());
-				if (iNumero > 0)
-					sTexto  += "y " + this.sUnidades [iNumero] + " ";
-			}else{
-				dNumero = dCociente;	
-				sNumero = dNumero.ToString();
-				if (sNumero.Length > 1)
-					if (sNumero[1] != '.')
-						iNumero = int.Parse (sNumero[0].ToString() + sNumero[1].ToString());
-					else
-						iNumero = int.Parse (sNumero[0].ToString());
-				else
-					iNumero = int.Parse (sNumero[0].ToString());
-				sTexto  += this.sUnidades[iNumero] + " ";
-			}
-			return sTexto;
-		}		
-
-		private string ObtenerDecimales (string sNumero)
-		{
-			string[] sNumPuntos;
-			string sTexto = "";
-			double dNumero = 0;
-			sNumPuntos = sNumero.Split('.');
-    		dNumero = Convert.ToDouble(sNumPuntos[1]);
-			sTexto = " pesos "+dNumero.ToString().Trim()+"/100 M.N."; 
-			//sTexto = "peso con " + Numeros(dNumero,1);
-			return sTexto;
 		}
 	}
 }			

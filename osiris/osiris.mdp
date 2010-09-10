@@ -45,7 +45,6 @@
     <File subtype="Code" buildaction="Compile" name="asignacion_habitacion.cs" />
     <File subtype="Code" buildaction="Compile" name="AssemblyInfo.cs" />
     <File subtype="Code" buildaction="Compile" name="autorizacion_doctores_compra.cs" />
-    <File subtype="Code" buildaction="Compile" name="buscapacientes.cs" />
     <File subtype="Code" buildaction="Compile" name="cagos_modulos_medicos.cs" />
     <File subtype="Code" buildaction="Compile" name="calendario_quirofano.cs" />
     <File subtype="Code" buildaction="Compile" name="cambia_paciente.cs" />
@@ -143,6 +142,7 @@
     <File subtype="Code" buildaction="Compile" name="costeo.cs" />
     <File subtype="Code" buildaction="Compile" name="catalogo_productos.cs" />
     <File subtype="Code" buildaction="Compile" name="cargos_extras.cs" />
+    <File subtype="Code" buildaction="Compile" name="rpt_ocupacion_hospitalaria.cs" />
   </Contents>
   <References>
     <ProjectReference type="Gac" localcopy="True" refto="Mono.Cairo, Version=2.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756" />

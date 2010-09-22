@@ -24,9 +24,9 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 // 
 //////////////////////////////////////////////////////////
-// Programa		: hscmty.cs
-// Proposito	: Impresion de listas de precios 
-// Objeto		: rpt_lista_precios.cs
+// Programa		: 
+// Proposito	:
+// Objeto		:
 /////////////////////////////////////////////////////////
 using System;
 using Gtk;
@@ -569,8 +569,7 @@ namespace osiris
         void salto_pagina(Gnome.PrintContext ContextoImp, Gnome.PrintJob trabajoImpresion)
 		{
 		//Console.WriteLine("contador antes del if: "+contador.ToString());
-			if (contador > 45 )
-	        {
+			if (contador > 45 ){
 	        	numpage +=1;        	contador=1;	
 	        	fila=-80;
 	        	ContextoImp.ShowPage();

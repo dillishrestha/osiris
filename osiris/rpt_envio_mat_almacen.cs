@@ -38,7 +38,7 @@ namespace osiris
 	public class rpt_envio_almacen
 	{
 		//[Widget] Gtk.Entry entry_fecha_inicio;
-		
+		[Widget] Gtk.Window envio_almacenes = null;
 		[Widget] Gtk.Entry entry_dia_inicio;
 		[Widget] Gtk.Entry entry_mes_inicio;
 		[Widget] Gtk.Entry entry_ano_inicio;

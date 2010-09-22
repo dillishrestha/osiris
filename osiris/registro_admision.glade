@@ -8061,7 +8061,7 @@ Sin Precio</property>
                                   </packing>
                                 </child>
                                 <child>
-                                  <widget class="GtkEntry" id="entry1">
+                                  <widget class="GtkEntry" id="entry_religion">
                                     <property name="width_request">120</property>
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
@@ -8081,7 +8081,7 @@ Sin Precio</property>
                                   </packing>
                                 </child>
                                 <child>
-                                  <widget class="GtkEntry" id="entry2">
+                                  <widget class="GtkEntry" id="entry_alegias">
                                     <property name="width_request">120</property>
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>

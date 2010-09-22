@@ -2076,7 +2076,7 @@ HOSPITALIZACION</property>
                                   </packing>
                                 </child>
                                 <child>
-                                  <widget class="GtkEntry" id="entry_observaciones">
+                                  <widget class="GtkEntry" id="entry_motivo">
                                     <property name="width_request">397</property>
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
@@ -2107,6 +2107,63 @@ HOSPITALIZACION</property>
                               </widget>
                               <packing>
                                 <property name="position">2</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <widget class="GtkHBox" id="hbox1">
+                                <property name="visible">True</property>
+                                <child>
+                                  <widget class="GtkLabel" id="label1">
+                                    <property name="visible">True</property>
+                                    <property name="label" translatable="yes">Solicitado Por</property>
+                                  </widget>
+                                  <packing>
+                                    <property name="position">0</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <widget class="GtkEntry" id="entry_solicitado_por">
+                                    <property name="width_request">500</property>
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">True</property>
+                                    <property name="editable">False</property>
+                                    <property name="invisible_char">&#x25CF;</property>
+                                  </widget>
+                                  <packing>
+                                    <property name="position">1</property>
+                                  </packing>
+                                </child>
+                              </widget>
+                              <packing>
+                                <property name="position">3</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <widget class="GtkHBox" id="hbox2">
+                                <property name="visible">True</property>
+                                <child>
+                                  <widget class="GtkLabel" id="label2">
+                                    <property name="visible">True</property>
+                                    <property name="label" translatable="yes">Observacion</property>
+                                  </widget>
+                                  <packing>
+                                    <property name="position">0</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <widget class="GtkEntry" id="entry_observaciones">
+                                    <property name="width_request">500</property>
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">True</property>
+                                    <property name="invisible_char">&#x25CF;</property>
+                                  </widget>
+                                  <packing>
+                                    <property name="position">1</property>
+                                  </packing>
+                                </child>
+                              </widget>
+                              <packing>
+                                <property name="position">4</property>
                               </packing>
                             </child>
                           </widget>
@@ -2147,7 +2204,7 @@ HOSPITALIZACION</property>
                                 <property name="can_focus">True</property>
                                 <child>
                                   <widget class="GtkTreeView" id="lista_requisicion_productos">
-                                    <property name="height_request">465</property>
+                                    <property name="height_request">380</property>
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                   </widget>
@@ -2884,7 +2941,7 @@ Producto</property>
                   </packing>
                 </child>
                 <child>
-                  <widget class="GtkButton" id="button24">
+                  <widget class="GtkButton" id="button_busca_requisiones">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">False</property>

@@ -47,6 +47,7 @@ namespace osiris
 		int comienzo_linea = 70;
 		int separacion_linea = 10;
 		int contador_numerocitas = 1;
+		int numpage = 1;
 		
 		Gtk.TreeView treeview_lista_agenda = null;
 		TreeStore treeViewEngineListaCitas = null;
@@ -192,6 +193,7 @@ namespace osiris
 			fontSize = 6.0;
 			desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;
 			cr.MoveTo(650*escala_en_linux_windows,05*escala_en_linux_windows);			layout.SetText("Fech.Rpt:"+(string) DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));		Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(650*escala_en_linux_windows,15*escala_en_linux_windows);			layout.SetText("N° Page :"+numpage.ToString().Trim());		Pango.CairoHelper.ShowLayout (cr, layout);
 			cr.MoveTo(05*escala_en_linux_windows,35*escala_en_linux_windows);			layout.SetText("Sistema Hospitalario OSIRIS");		Pango.CairoHelper.ShowLayout (cr, layout);
 			// Cambiando el tamaño de la fuente			
 			fontSize = 10.0;
@@ -225,6 +227,7 @@ namespace osiris
 				Pango.FontDescription desc = Pango.FontDescription.FromString ("Sans");								
 				fontSize = 8.0;		desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;
 				comienzo_linea = 70;
+				numpage += 1;
 				imprime_encabezado(cr,layout);
 			}
 		}

@@ -77,6 +77,8 @@ namespace osiris
 		[Widget] Gtk.Entry entry_fecha_defuncion;
 		[Widget] Gtk.Entry entry_causa_defuncion;
 		[Widget] Gtk.Entry entry_edad;
+		[Widget] Gtk.Entry entry_religion = null;
+		[Widget] Gtk.Entry entry_alegias = null;
 		[Widget] Gtk.Button button_seleccionar;
 		[Widget] Gtk.Button button_buscar;
 		[Widget] Gtk.Button button_guardar;
@@ -459,7 +461,7 @@ namespace osiris
 									"ocupacion_paciente,"+
 									"id_empresa,"+
 									"municipio_paciente,"+
-									"activo,"+
+									"activo,religion_paciente,alegias_paciente,"+
 									"observaciones "+
 									"FROM osiris_his_paciente "+
 									"WHERE osiris_his_paciente.activo = true "+
@@ -499,6 +501,8 @@ namespace osiris
 					entry_fecha_defuncion.Text = (string) lector["fech_muerte"]; 
 					entry_causa_defuncion.Text = (string) lector["causa_muerte_paciente"];
 					entry_edad.Text = (string) lector["edad"];
+					entry_religion.Text = (string) lector["religion_paciente"];
+					entry_alegias.Text = (string) lector["alegias_paciente"];					
 					llenado_estados("selecciona",estado,0);
 					llenado_municipios("selecciona",municipios);
 					button_guardar.Sensitive = true;
@@ -631,6 +635,8 @@ namespace osiris
 									"municipio_paciente = '"+(string) municipios.ToString().ToUpper()+"',"+//+this.municipio.Text.Trim()+"',"+
 									"ocupacion_paciente = '"+this.entry_ocupacion.Text.ToUpper().Trim()+"',"+
 									"observaciones = '"+this.entry_observaciones.Text.ToUpper().Trim()+"',"+
+									"religion_paciente = '"+this.entry_religion.Text.ToUpper().Trim()+"',"+
+									"alegias_paciente = '"+this.entry_alegias.Text.ToUpper().Trim()+"',"+						
 									"historia_movimientos_paciente = historia_movimientos_paciente || '"+LoginEmpleado+" "+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"\n' "+
 									"WHERE  pid_paciente = '"+this.entry_pid_paciente.Text+"';";
 						comando.ExecuteNonQuery();

@@ -634,6 +634,7 @@
     <child>
       <widget class="GtkVBox" id="vbox6">
         <property name="visible">True</property>
+        <property name="orientation">vertical</property>
         <child>
           <widget class="GtkLabel" id="label107">
             <property name="visible">True</property>
@@ -661,9 +662,11 @@
             <child>
               <widget class="GtkHBox" id="hbox8">
                 <property name="visible">True</property>
+                <property name="orientation">vertical</property>
                 <child>
                   <widget class="GtkVBox" id="vbox7">
                     <property name="visible">True</property>
+                    <property name="orientation">vertical</property>
                     <child>
                       <widget class="GtkButton" id="button_catalogo_clientes">
                         <property name="label" translatable="yes">Catalogo Clientes</property>
@@ -710,6 +713,7 @@
                     <child>
                       <widget class="GtkVBox" id="vbox56">
                         <property name="visible">True</property>
+                        <property name="orientation">vertical</property>
                         <child>
                           <widget class="GtkButton" id="button_estados_municipios">
                             <property name="label" translatable="yes">Municipios y
@@ -728,6 +732,7 @@
                         <child>
                           <widget class="GtkVBox" id="vbox58">
                             <property name="visible">True</property>
+                            <property name="orientation">vertical</property>
                             <child>
                               <widget class="GtkButton" id="button_aseguradoras">
                                 <property name="label" translatable="yes">Aseguradoras</property>
@@ -764,6 +769,7 @@
                         <child>
                           <widget class="GtkVBox" id="vbox57">
                             <property name="visible">True</property>
+                            <property name="orientation">vertical</property>
                             <child>
                               <widget class="GtkFixed" id="fixed122">
                                 <property name="visible">True</property>
@@ -855,1292 +861,6 @@
             <property name="expand">False</property>
             <property name="fill">False</property>
             <property name="position">2</property>
-          </packing>
-        </child>
-      </widget>
-    </child>
-  </widget>
-  <widget class="GtkWindow" id="catalogo_medico">
-    <property name="resizable">False</property>
-    <child>
-      <widget class="GtkVBox" id="vbox9">
-        <property name="visible">True</property>
-        <child>
-          <widget class="GtkHBox" id="hbox9">
-            <property name="visible">True</property>
-            <child>
-              <widget class="GtkVBox" id="vbox10">
-                <property name="visible">True</property>
-                <child>
-                  <widget class="GtkVBox" id="vbox11">
-                    <property name="visible">True</property>
-                    <child>
-                      <widget class="GtkHBox" id="hbox10">
-                        <property name="visible">True</property>
-                        <child>
-                          <widget class="GtkCheckButton" id="checkbutton_nuevo_medico">
-                            <property name="label" translatable="yes">Nuevo Medico</property>
-                            <property name="visible">True</property>
-                            <property name="can_focus">False</property>
-                            <property name="receives_default">False</property>
-                            <property name="use_underline">True</property>
-                            <property name="draw_indicator">True</property>
-                          </widget>
-                          <packing>
-                            <property name="position">0</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <widget class="GtkCheckButton" id="checkbutton_medico_provisional">
-                            <property name="label" translatable="yes">Medico Provisional</property>
-                            <property name="visible">True</property>
-                            <property name="can_focus">False</property>
-                            <property name="receives_default">False</property>
-                            <property name="use_underline">True</property>
-                            <property name="draw_indicator">True</property>
-                          </widget>
-                          <packing>
-                            <property name="position">1</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <widget class="GtkHBox" id="hbox36">
-                            <property name="visible">True</property>
-                            <child>
-                              <widget class="GtkFixed" id="fixed109">
-                                <property name="width_request">6</property>
-                                <property name="visible">True</property>
-                              </widget>
-                              <packing>
-                                <property name="position">0</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <widget class="GtkHBox" id="hbox38">
-                                <property name="visible">True</property>
-                                <child>
-                                  <widget class="GtkHBox" id="hbox84">
-                                    <property name="visible">True</property>
-                                    <child>
-                                      <widget class="GtkLabel" id="label70">
-                                        <property name="visible">True</property>
-                                        <property name="label" translatable="yes">Fecha revision</property>
-                                      </widget>
-                                      <packing>
-                                        <property name="position">0</property>
-                                      </packing>
-                                    </child>
-                                    <child>
-                                      <widget class="GtkHBox" id="hbox85">
-                                        <property name="visible">True</property>
-                                        <child>
-                                          <widget class="GtkEntry" id="entry_fecha_revision">
-                                            <property name="width_request">152</property>
-                                            <property name="visible">True</property>
-                                          </widget>
-                                          <packing>
-                                            <property name="position">0</property>
-                                          </packing>
-                                        </child>
-                                      </widget>
-                                      <packing>
-                                        <property name="position">1</property>
-                                      </packing>
-                                    </child>
-                                  </widget>
-                                  <packing>
-                                    <property name="position">0</property>
-                                  </packing>
-                                </child>
-                              </widget>
-                              <packing>
-                                <property name="position">1</property>
-                              </packing>
-                            </child>
-                          </widget>
-                          <packing>
-                            <property name="position">2</property>
-                          </packing>
-                        </child>
-                      </widget>
-                      <packing>
-                        <property name="position">0</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <widget class="GtkFrame" id="frame13">
-                        <property name="visible">True</property>
-                        <property name="label_xalign">0</property>
-                        <child>
-                          <widget class="GtkAlignment" id="alignment3">
-                            <property name="visible">True</property>
-                            <property name="left_padding">12</property>
-                            <child>
-                              <widget class="GtkVBox" id="vbox18">
-                                <property name="visible">True</property>
-                                <child>
-                                  <widget class="GtkHBox" id="hbox12">
-                                    <property name="visible">True</property>
-                                    <child>
-                                      <widget class="GtkLabel" id="label108">
-                                        <property name="width_request">65</property>
-                                        <property name="visible">True</property>
-                                        <property name="label" translatable="yes">id Medico</property>
-                                      </widget>
-                                      <packing>
-                                        <property name="expand">False</property>
-                                        <property name="fill">False</property>
-                                        <property name="position">0</property>
-                                      </packing>
-                                    </child>
-                                    <child>
-                                      <widget class="GtkEntry" id="entry_id_medico">
-                                        <property name="width_request">53</property>
-                                        <property name="visible">True</property>
-                                        <property name="can_focus">True</property>
-                                        <property name="editable">False</property>
-                                      </widget>
-                                      <packing>
-                                        <property name="expand">False</property>
-                                        <property name="fill">False</property>
-                                        <property name="position">1</property>
-                                      </packing>
-                                    </child>
-                                    <child>
-                                      <widget class="GtkCheckButton" id="checkbutton_medico_activo">
-                                        <property name="label" translatable="yes">Activo</property>
-                                        <property name="width_request">72</property>
-                                        <property name="visible">True</property>
-                                        <property name="can_focus">True</property>
-                                        <property name="receives_default">False</property>
-                                        <property name="use_underline">True</property>
-                                        <property name="focus_on_click">False</property>
-                                        <property name="draw_indicator">True</property>
-                                      </widget>
-                                      <packing>
-                                        <property name="expand">False</property>
-                                        <property name="fill">False</property>
-                                        <property name="position">2</property>
-                                      </packing>
-                                    </child>
-                                    <child>
-                                      <widget class="GtkHBox" id="hbox37">
-                                        <property name="visible">True</property>
-                                        <child>
-                                          <widget class="GtkFixed" id="fixed116">
-                                            <property name="visible">True</property>
-                                          </widget>
-                                          <packing>
-                                            <property name="position">0</property>
-                                          </packing>
-                                        </child>
-                                        <child>
-                                          <widget class="GtkCheckButton" id="checkbutton_centro_medico">
-                                            <property name="label" translatable="yes">Centro Medico</property>
-                                            <property name="visible">True</property>
-                                            <property name="can_focus">True</property>
-                                            <property name="receives_default">False</property>
-                                            <property name="use_underline">True</property>
-                                            <property name="focus_on_click">False</property>
-                                            <property name="draw_indicator">True</property>
-                                          </widget>
-                                          <packing>
-                                            <property name="expand">False</property>
-                                            <property name="fill">False</property>
-                                            <property name="position">1</property>
-                                          </packing>
-                                        </child>
-                                        <child>
-                                          <widget class="GtkFixed" id="fixed22">
-                                            <property name="visible">True</property>
-                                          </widget>
-                                          <packing>
-                                            <property name="position">2</property>
-                                          </packing>
-                                        </child>
-                                        <child>
-                                          <widget class="GtkLabel" id="label71">
-                                            <property name="width_request">82</property>
-                                            <property name="visible">True</property>
-                                            <property name="label" translatable="yes">Fecha Ingreso</property>
-                                          </widget>
-                                          <packing>
-                                            <property name="position">3</property>
-                                          </packing>
-                                        </child>
-                                        <child>
-                                          <widget class="GtkEntry" id="entry_fecha_ingreso">
-                                            <property name="width_request">150</property>
-                                            <property name="visible">True</property>
-                                          </widget>
-                                          <packing>
-                                            <property name="position">4</property>
-                                          </packing>
-                                        </child>
-                                      </widget>
-                                      <packing>
-                                        <property name="position">3</property>
-                                      </packing>
-                                    </child>
-                                  </widget>
-                                  <packing>
-                                    <property name="position">0</property>
-                                  </packing>
-                                </child>
-                                <child>
-                                  <widget class="GtkVBox" id="vbox23">
-                                    <property name="visible">True</property>
-                                    <child>
-                                      <widget class="GtkHBox" id="hbox11">
-                                        <property name="visible">True</property>
-                                        <child>
-                                          <widget class="GtkLabel" id="label19">
-                                            <property name="visible">True</property>
-                                            <property name="label" translatable="yes">Nombre 1</property>
-                                          </widget>
-                                          <packing>
-                                            <property name="position">0</property>
-                                          </packing>
-                                        </child>
-                                        <child>
-                                          <widget class="GtkEntry" id="entry_nombre1_medico">
-                                            <property name="visible">True</property>
-                                          </widget>
-                                          <packing>
-                                            <property name="position">1</property>
-                                          </packing>
-                                        </child>
-                                        <child>
-                                          <widget class="GtkButton" id="button_buscar_medico">
-                                            <property name="label">gtk-find</property>
-                                            <property name="visible">True</property>
-                                            <property name="can_focus">False</property>
-                                            <property name="receives_default">False</property>
-                                            <property name="use_stock">True</property>
-                                            <property name="focus_on_click">False</property>
-                                          </widget>
-                                          <packing>
-                                            <property name="expand">False</property>
-                                            <property name="fill">False</property>
-                                            <property name="position">2</property>
-                                          </packing>
-                                        </child>
-                                        <child>
-                                          <widget class="GtkLabel" id="label21">
-                                            <property name="visible">True</property>
-                                            <property name="label" translatable="yes">Nombre 2</property>
-                                          </widget>
-                                          <packing>
-                                            <property name="position">3</property>
-                                          </packing>
-                                        </child>
-                                        <child>
-                                          <widget class="GtkEntry" id="entry_nombre2_medico">
-                                            <property name="visible">True</property>
-                                          </widget>
-                                          <packing>
-                                            <property name="position">4</property>
-                                          </packing>
-                                        </child>
-                                      </widget>
-                                      <packing>
-                                        <property name="position">0</property>
-                                      </packing>
-                                    </child>
-                                    <child>
-                                      <widget class="GtkHBox" id="hbox43">
-                                        <property name="visible">True</property>
-                                        <child>
-                                          <widget class="GtkLabel" id="label68">
-                                            <property name="width_request">63</property>
-                                            <property name="visible">True</property>
-                                            <property name="label" translatable="yes">Apellido Paterno</property>
-                                          </widget>
-                                          <packing>
-                                            <property name="position">0</property>
-                                          </packing>
-                                        </child>
-                                        <child>
-                                          <widget class="GtkEntry" id="entry_apellido_paterno_medico">
-                                            <property name="width_request">157</property>
-                                            <property name="visible">True</property>
-                                          </widget>
-                                          <packing>
-                                            <property name="position">1</property>
-                                          </packing>
-                                        </child>
-                                        <child>
-                                          <widget class="GtkLabel" id="label78">
-                                            <property name="width_request">124</property>
-                                            <property name="visible">True</property>
-                                            <property name="label" translatable="yes">Apellido Materno</property>
-                                          </widget>
-                                          <packing>
-                                            <property name="position">2</property>
-                                          </packing>
-                                        </child>
-                                        <child>
-                                          <widget class="GtkEntry" id="entry_apellido_materno_medico">
-                                            <property name="width_request">163</property>
-                                            <property name="visible">True</property>
-                                          </widget>
-                                          <packing>
-                                            <property name="position">3</property>
-                                          </packing>
-                                        </child>
-                                      </widget>
-                                      <packing>
-                                        <property name="position">1</property>
-                                      </packing>
-                                    </child>
-                                    <child>
-                                      <widget class="GtkHBox" id="hbox90">
-                                        <property name="visible">True</property>
-                                        <child>
-                                          <widget class="GtkLabel" id="label113">
-                                            <property name="width_request">127</property>
-                                            <property name="visible">True</property>
-                                            <property name="label" translatable="yes">Cedula Prof.</property>
-                                          </widget>
-                                          <packing>
-                                            <property name="expand">False</property>
-                                            <property name="fill">False</property>
-                                            <property name="position">0</property>
-                                          </packing>
-                                        </child>
-                                        <child>
-                                          <widget class="GtkEntry" id="entry_cedula_profecional">
-                                            <property name="visible">True</property>
-                                            <property name="can_focus">True</property>
-                                          </widget>
-                                          <packing>
-                                            <property name="position">1</property>
-                                          </packing>
-                                        </child>
-                                        <child>
-                                          <widget class="GtkLabel" id="label114">
-                                            <property name="visible">True</property>
-                                            <property name="label" translatable="yes">  Empresa:  </property>
-                                          </widget>
-                                          <packing>
-                                            <property name="expand">False</property>
-                                            <property name="fill">False</property>
-                                            <property name="position">2</property>
-                                          </packing>
-                                        </child>
-                                        <child>
-                                          <widget class="GtkEntry" id="entry_empresa">
-                                            <property name="visible">True</property>
-                                            <property name="can_focus">True</property>
-                                          </widget>
-                                          <packing>
-                                            <property name="position">3</property>
-                                          </packing>
-                                        </child>
-                                        <child>
-                                          <widget class="GtkButton" id="button_buscar_empresa">
-                                            <property name="width_request">80</property>
-                                            <property name="visible">True</property>
-                                            <property name="can_focus">True</property>
-                                            <property name="receives_default">False</property>
-                                            <property name="focus_on_click">False</property>
-                                            <child>
-                                              <widget class="GtkAlignment" id="alignment33">
-                                                <property name="visible">True</property>
-                                                <property name="xscale">0</property>
-                                                <property name="yscale">0</property>
-                                                <child>
-                                                  <widget class="GtkHBox" id="hbox136">
-                                                    <property name="visible">True</property>
-                                                    <property name="spacing">2</property>
-                                                    <child>
-                                                      <widget class="GtkImage" id="image22">
-                                                        <property name="visible">True</property>
-                                                        <property name="stock">gtk-find</property>
-                                                      </widget>
-                                                      <packing>
-                                                        <property name="expand">False</property>
-                                                        <property name="fill">False</property>
-                                                        <property name="position">0</property>
-                                                      </packing>
-                                                    </child>
-                                                    <child>
-                                                      <widget class="GtkLabel" id="label179">
-                                                        <property name="visible">True</property>
-                                                        <property name="label">_Buscar</property>
-                                                        <property name="use_underline">True</property>
-                                                      </widget>
-                                                      <packing>
-                                                        <property name="expand">False</property>
-                                                        <property name="fill">False</property>
-                                                        <property name="position">1</property>
-                                                      </packing>
-                                                    </child>
-                                                  </widget>
-                                                </child>
-                                              </widget>
-                                            </child>
-                                          </widget>
-                                          <packing>
-                                            <property name="expand">False</property>
-                                            <property name="fill">False</property>
-                                            <property name="position">4</property>
-                                          </packing>
-                                        </child>
-                                      </widget>
-                                      <packing>
-                                        <property name="position">2</property>
-                                      </packing>
-                                    </child>
-                                  </widget>
-                                  <packing>
-                                    <property name="position">1</property>
-                                  </packing>
-                                </child>
-                                <child>
-                                  <widget class="GtkHBox" id="hbox13">
-                                    <property name="visible">True</property>
-                                    <child>
-                                      <widget class="GtkLabel" id="label20">
-                                        <property name="visible">True</property>
-                                        <property name="label" translatable="yes">Especialidad</property>
-                                      </widget>
-                                      <packing>
-                                        <property name="position">0</property>
-                                      </packing>
-                                    </child>
-                                    <child>
-                                      <widget class="GtkHBox" id="hbox1">
-                                        <property name="width_request">409</property>
-                                        <property name="visible">True</property>
-                                        <child>
-                                          <widget class="GtkEntry" id="entry_id_especialidad">
-                                            <property name="width_request">80</property>
-                                            <property name="visible">True</property>
-                                            <property name="can_focus">True</property>
-                                            <property name="editable">False</property>
-                                            <property name="invisible_char">&#x25CF;</property>
-                                          </widget>
-                                          <packing>
-                                            <property name="expand">False</property>
-                                            <property name="fill">False</property>
-                                            <property name="position">0</property>
-                                          </packing>
-                                        </child>
-                                        <child>
-                                          <widget class="GtkEntry" id="entry_especialidad">
-                                            <property name="width_request">377</property>
-                                            <property name="visible">True</property>
-                                            <property name="editable">False</property>
-                                          </widget>
-                                          <packing>
-                                            <property name="expand">False</property>
-                                            <property name="fill">False</property>
-                                            <property name="position">1</property>
-                                          </packing>
-                                        </child>
-                                      </widget>
-                                      <packing>
-                                        <property name="position">1</property>
-                                      </packing>
-                                    </child>
-                                    <child>
-                                      <widget class="GtkButton" id="button_buscar_especialidad">
-                                        <property name="width_request">80</property>
-                                        <property name="visible">True</property>
-                                        <property name="can_focus">False</property>
-                                        <property name="receives_default">False</property>
-                                        <property name="focus_on_click">False</property>
-                                        <child>
-                                          <widget class="GtkAlignment" id="alignment34">
-                                            <property name="visible">True</property>
-                                            <property name="xscale">0</property>
-                                            <property name="yscale">0</property>
-                                            <child>
-                                              <widget class="GtkHBox" id="hbox137">
-                                                <property name="visible">True</property>
-                                                <property name="spacing">2</property>
-                                                <child>
-                                                  <widget class="GtkImage" id="image23">
-                                                    <property name="visible">True</property>
-                                                    <property name="stock">gtk-find</property>
-                                                  </widget>
-                                                  <packing>
-                                                    <property name="expand">False</property>
-                                                    <property name="fill">False</property>
-                                                    <property name="position">0</property>
-                                                  </packing>
-                                                </child>
-                                                <child>
-                                                  <widget class="GtkLabel" id="label180">
-                                                    <property name="visible">True</property>
-                                                    <property name="label">_Buscar</property>
-                                                    <property name="use_underline">True</property>
-                                                  </widget>
-                                                  <packing>
-                                                    <property name="expand">False</property>
-                                                    <property name="fill">False</property>
-                                                    <property name="position">1</property>
-                                                  </packing>
-                                                </child>
-                                              </widget>
-                                            </child>
-                                          </widget>
-                                        </child>
-                                      </widget>
-                                      <packing>
-                                        <property name="expand">False</property>
-                                        <property name="fill">False</property>
-                                        <property name="position">2</property>
-                                      </packing>
-                                    </child>
-                                    <child>
-                                      <widget class="GtkFixed" id="fixed29">
-                                        <property name="width_request">20</property>
-                                        <property name="visible">True</property>
-                                      </widget>
-                                      <packing>
-                                        <property name="position">3</property>
-                                      </packing>
-                                    </child>
-                                  </widget>
-                                  <packing>
-                                    <property name="position">2</property>
-                                  </packing>
-                                </child>
-                              </widget>
-                            </child>
-                          </widget>
-                        </child>
-                        <child>
-                          <widget class="GtkLabel" id="label17">
-                            <property name="visible">True</property>
-                            <property name="label" translatable="yes">&lt;b&gt;Datos del Medico&lt;/b&gt;</property>
-                            <property name="use_markup">True</property>
-                          </widget>
-                          <packing>
-                            <property name="type">label_item</property>
-                          </packing>
-                        </child>
-                      </widget>
-                      <packing>
-                        <property name="position">1</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <widget class="GtkFrame" id="frame3">
-                        <property name="visible">True</property>
-                        <property name="label_xalign">0</property>
-                        <child>
-                          <widget class="GtkAlignment" id="alignment4">
-                            <property name="visible">True</property>
-                            <property name="left_padding">12</property>
-                            <child>
-                              <widget class="GtkVBox" id="vbox14">
-                                <property name="visible">True</property>
-                                <child>
-                                  <widget class="GtkHBox" id="hbox14">
-                                    <property name="visible">True</property>
-                                    <child>
-                                      <widget class="GtkLabel" id="label23">
-                                        <property name="visible">True</property>
-                                        <property name="xalign">0.17000000178813934</property>
-                                        <property name="label" translatable="yes">Direccion Casa</property>
-                                      </widget>
-                                      <packing>
-                                        <property name="position">0</property>
-                                      </packing>
-                                    </child>
-                                    <child>
-                                      <widget class="GtkEntry" id="entry_direccion_casa_medico">
-                                        <property name="width_request">567</property>
-                                        <property name="visible">True</property>
-                                      </widget>
-                                      <packing>
-                                        <property name="position">1</property>
-                                      </packing>
-                                    </child>
-                                  </widget>
-                                  <packing>
-                                    <property name="position">0</property>
-                                  </packing>
-                                </child>
-                                <child>
-                                  <widget class="GtkHBox" id="hbox15">
-                                    <property name="visible">True</property>
-                                    <child>
-                                      <widget class="GtkLabel" id="label25">
-                                        <property name="width_request">145</property>
-                                        <property name="visible">True</property>
-                                        <property name="xalign">0.40000000596046448</property>
-                                        <property name="label" translatable="yes">Direccion Consultorio</property>
-                                      </widget>
-                                      <packing>
-                                        <property name="position">0</property>
-                                      </packing>
-                                    </child>
-                                    <child>
-                                      <widget class="GtkEntry" id="entry_direccion_consultorio_medico">
-                                        <property name="width_request">618</property>
-                                        <property name="visible">True</property>
-                                      </widget>
-                                      <packing>
-                                        <property name="position">1</property>
-                                      </packing>
-                                    </child>
-                                  </widget>
-                                  <packing>
-                                    <property name="position">1</property>
-                                  </packing>
-                                </child>
-                                <child>
-                                  <widget class="GtkHBox" id="hbox16">
-                                    <property name="visible">True</property>
-                                    <child>
-                                      <widget class="GtkLabel" id="label26">
-                                        <property name="width_request">62</property>
-                                        <property name="visible">True</property>
-                                        <property name="xalign">0.10000000149011612</property>
-                                        <property name="label" translatable="yes">Telefono Casa</property>
-                                      </widget>
-                                      <packing>
-                                        <property name="position">0</property>
-                                      </packing>
-                                    </child>
-                                    <child>
-                                      <widget class="GtkEntry" id="entry_telcasa_medico">
-                                        <property name="width_request">79</property>
-                                        <property name="visible">True</property>
-                                      </widget>
-                                      <packing>
-                                        <property name="position">1</property>
-                                      </packing>
-                                    </child>
-                                    <child>
-                                      <widget class="GtkLabel" id="label29">
-                                        <property name="width_request">77</property>
-                                        <property name="visible">True</property>
-                                        <property name="xalign">0.54000002145767212</property>
-                                        <property name="label" translatable="yes">Telefono Oficina</property>
-                                      </widget>
-                                      <packing>
-                                        <property name="position">2</property>
-                                      </packing>
-                                    </child>
-                                    <child>
-                                      <widget class="GtkEntry" id="entry_teloficina_medico">
-                                        <property name="width_request">81</property>
-                                        <property name="visible">True</property>
-                                      </widget>
-                                      <packing>
-                                        <property name="position">3</property>
-                                      </packing>
-                                    </child>
-                                  </widget>
-                                  <packing>
-                                    <property name="position">2</property>
-                                  </packing>
-                                </child>
-                                <child>
-                                  <widget class="GtkHBox" id="hbox17">
-                                    <property name="visible">True</property>
-                                    <child>
-                                      <widget class="GtkLabel" id="label27">
-                                        <property name="width_request">54</property>
-                                        <property name="visible">True</property>
-                                        <property name="xalign">0.079999998211860657</property>
-                                        <property name="label" translatable="yes">Celular 1</property>
-                                      </widget>
-                                      <packing>
-                                        <property name="position">0</property>
-                                      </packing>
-                                    </child>
-                                    <child>
-                                      <widget class="GtkEntry" id="entry_celular1_medico">
-                                        <property name="width_request">70</property>
-                                        <property name="visible">True</property>
-                                      </widget>
-                                      <packing>
-                                        <property name="position">1</property>
-                                      </packing>
-                                    </child>
-                                    <child>
-                                      <widget class="GtkLabel" id="label40">
-                                        <property name="width_request">70</property>
-                                        <property name="visible">True</property>
-                                        <property name="xalign">0.38999998569488525</property>
-                                        <property name="label" translatable="yes">Celular 2</property>
-                                      </widget>
-                                      <packing>
-                                        <property name="position">2</property>
-                                      </packing>
-                                    </child>
-                                    <child>
-                                      <widget class="GtkEntry" id="entry_celular2_medico">
-                                        <property name="width_request">73</property>
-                                        <property name="visible">True</property>
-                                      </widget>
-                                      <packing>
-                                        <property name="position">3</property>
-                                      </packing>
-                                    </child>
-                                  </widget>
-                                  <packing>
-                                    <property name="position">3</property>
-                                  </packing>
-                                </child>
-                                <child>
-                                  <widget class="GtkHBox" id="hbox18">
-                                    <property name="visible">True</property>
-                                    <child>
-                                      <widget class="GtkLabel" id="label28">
-                                        <property name="width_request">28</property>
-                                        <property name="visible">True</property>
-                                        <property name="xalign">0.059999998658895493</property>
-                                        <property name="label" translatable="yes">Nextel</property>
-                                      </widget>
-                                      <packing>
-                                        <property name="position">0</property>
-                                      </packing>
-                                    </child>
-                                    <child>
-                                      <widget class="GtkEntry" id="entry_nextel_medico">
-                                        <property name="width_request">45</property>
-                                        <property name="visible">True</property>
-                                      </widget>
-                                      <packing>
-                                        <property name="position">1</property>
-                                      </packing>
-                                    </child>
-                                    <child>
-                                      <widget class="GtkLabel" id="label41">
-                                        <property name="visible">True</property>
-                                        <property name="xalign">0.36000001430511475</property>
-                                        <property name="label" translatable="yes">Beeper</property>
-                                      </widget>
-                                      <packing>
-                                        <property name="position">2</property>
-                                      </packing>
-                                    </child>
-                                    <child>
-                                      <widget class="GtkEntry" id="entry_beeper_medico">
-                                        <property name="width_request">48</property>
-                                        <property name="visible">True</property>
-                                      </widget>
-                                      <packing>
-                                        <property name="position">3</property>
-                                      </packing>
-                                    </child>
-                                  </widget>
-                                  <packing>
-                                    <property name="position">4</property>
-                                  </packing>
-                                </child>
-                              </widget>
-                            </child>
-                          </widget>
-                        </child>
-                        <child>
-                          <widget class="GtkLabel" id="label22">
-                            <property name="visible">True</property>
-                            <property name="label" translatable="yes">&lt;b&gt;Localizacion&lt;/b&gt;</property>
-                            <property name="use_markup">True</property>
-                          </widget>
-                          <packing>
-                            <property name="type">label_item</property>
-                          </packing>
-                        </child>
-                      </widget>
-                      <packing>
-                        <property name="position">2</property>
-                      </packing>
-                    </child>
-                  </widget>
-                  <packing>
-                    <property name="position">0</property>
-                  </packing>
-                </child>
-                <child>
-                  <widget class="GtkFrame" id="frame11">
-                    <property name="height_request">0</property>
-                    <property name="visible">True</property>
-                    <property name="label_xalign">0</property>
-                    <child>
-                      <widget class="GtkAlignment" id="alignment13">
-                        <property name="visible">True</property>
-                        <property name="left_padding">12</property>
-                        <child>
-                          <widget class="GtkVBox" id="vbox13">
-                            <property name="visible">True</property>
-                            <child>
-                              <widget class="GtkHBox" id="hbox34">
-                                <property name="visible">True</property>
-                                <child>
-                                  <widget class="GtkCheckButton" id="checkbutton_diplomasubespecial">
-                                    <property name="label" translatable="yes">   Diploma de Subespecialidad</property>
-                                    <property name="width_request">217</property>
-                                    <property name="visible">True</property>
-                                    <property name="can_focus">False</property>
-                                    <property name="receives_default">False</property>
-                                    <property name="use_underline">True</property>
-                                    <property name="focus_on_click">False</property>
-                                    <property name="draw_indicator">True</property>
-                                  </widget>
-                                  <packing>
-                                    <property name="position">0</property>
-                                  </packing>
-                                </child>
-                                <child>
-                                  <widget class="GtkCheckButton" id="checkbutton_copiaidentificacionoficial">
-                                    <property name="label" translatable="yes">  Copia de Identificacion Oficial</property>
-                                    <property name="width_request">220</property>
-                                    <property name="visible">True</property>
-                                    <property name="can_focus">False</property>
-                                    <property name="receives_default">False</property>
-                                    <property name="use_underline">True</property>
-                                    <property name="focus_on_click">False</property>
-                                    <property name="draw_indicator">True</property>
-                                  </widget>
-                                  <packing>
-                                    <property name="position">1</property>
-                                  </packing>
-                                </child>
-                                <child>
-                                  <widget class="GtkCheckButton" id="checkbutton_copiacedularfc">
-                                    <property name="label" translatable="yes">  Copia de la cedula de R.F.C.</property>
-                                    <property name="width_request">215</property>
-                                    <property name="visible">True</property>
-                                    <property name="can_focus">False</property>
-                                    <property name="receives_default">False</property>
-                                    <property name="use_underline">True</property>
-                                    <property name="focus_on_click">False</property>
-                                    <property name="draw_indicator">True</property>
-                                  </widget>
-                                  <packing>
-                                    <property name="expand">False</property>
-                                    <property name="fill">False</property>
-                                    <property name="position">2</property>
-                                  </packing>
-                                </child>
-                                <child>
-                                  <widget class="GtkCheckButton" id="checkbutton_cedula_especialidad_medico">
-                                    <property name="label" translatable="yes">Cedula Especialidad  </property>
-                                    <property name="visible">True</property>
-                                    <property name="can_focus">True</property>
-                                    <property name="receives_default">False</property>
-                                    <property name="use_underline">True</property>
-                                    <property name="draw_indicator">True</property>
-                                  </widget>
-                                  <packing>
-                                    <property name="expand">False</property>
-                                    <property name="fill">False</property>
-                                    <property name="position">3</property>
-                                  </packing>
-                                </child>
-                              </widget>
-                              <packing>
-                                <property name="position">0</property>
-                              </packing>
-                            </child>
-                          </widget>
-                        </child>
-                      </widget>
-                    </child>
-                    <child>
-                      <widget class="GtkLabel" id="label64">
-                        <property name="visible">True</property>
-                        <property name="label" translatable="yes">&lt;b&gt;Papeleria Necesaria&lt;/b&gt;</property>
-                        <property name="use_markup">True</property>
-                      </widget>
-                      <packing>
-                        <property name="type">label_item</property>
-                      </packing>
-                    </child>
-                  </widget>
-                  <packing>
-                    <property name="position">2</property>
-                  </packing>
-                </child>
-                <child>
-                  <widget class="GtkFrame" id="frame10">
-                    <property name="visible">True</property>
-                    <property name="label_xalign">0</property>
-                    <child>
-                      <widget class="GtkAlignment" id="alignment12">
-                        <property name="visible">True</property>
-                        <property name="left_padding">12</property>
-                        <child>
-                          <widget class="GtkTable" id="table8">
-                            <property name="visible">True</property>
-                            <property name="n_rows">2</property>
-                            <property name="n_columns">4</property>
-                            <child>
-                              <widget class="GtkCheckButton" id="checkbutton_certificadoconsejo_esp">
-                                <property name="label" translatable="yes">Certificacion o recertificacion del 
-Consejo de su Especialidad</property>
-                                <property name="visible">True</property>
-                                <property name="can_focus">False</property>
-                                <property name="can_default">True</property>
-                                <property name="has_default">True</property>
-                                <property name="receives_default">False</property>
-                                <property name="use_underline">True</property>
-                                <property name="focus_on_click">False</property>
-                                <property name="draw_indicator">True</property>
-                              </widget>
-                            </child>
-                            <child>
-                              <widget class="GtkCheckButton" id="checkbutton_copia_comprobante_domicilio">
-                                <property name="label" translatable="yes">Copia de comprobante  domicilio</property>
-                                <property name="visible">True</property>
-                                <property name="can_focus">False</property>
-                                <property name="receives_default">False</property>
-                                <property name="use_underline">True</property>
-                                <property name="focus_on_click">False</property>
-                                <property name="draw_indicator">True</property>
-                              </widget>
-                              <packing>
-                                <property name="left_attach">2</property>
-                                <property name="right_attach">3</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <widget class="GtkCheckButton" id="checkbutton_diplomacursos">
-                                <property name="label" translatable="yes">Diploma de Cursos</property>
-                                <property name="visible">True</property>
-                                <property name="can_focus">False</property>
-                                <property name="receives_default">False</property>
-                                <property name="use_underline">True</property>
-                                <property name="focus_on_click">False</property>
-                                <property name="draw_indicator">True</property>
-                              </widget>
-                              <packing>
-                                <property name="left_attach">1</property>
-                                <property name="right_attach">2</property>
-                                <property name="top_attach">1</property>
-                                <property name="bottom_attach">2</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <widget class="GtkCheckButton" id="checkbutton_diploseminarios">
-                                <property name="label" translatable="yes">Diploma de Seminarios</property>
-                                <property name="visible">True</property>
-                                <property name="can_focus">False</property>
-                                <property name="receives_default">False</property>
-                                <property name="use_underline">True</property>
-                                <property name="focus_on_click">False</property>
-                                <property name="draw_indicator">True</property>
-                              </widget>
-                              <packing>
-                                <property name="left_attach">2</property>
-                                <property name="right_attach">3</property>
-                                <property name="top_attach">1</property>
-                                <property name="bottom_attach">2</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <widget class="GtkCheckButton" id="checkbutton_constancia_congresos">
-                                <property name="label" translatable="yes">Constancia de Congresos</property>
-                                <property name="visible">True</property>
-                                <property name="can_focus">False</property>
-                                <property name="receives_default">False</property>
-                                <property name="use_underline">True</property>
-                                <property name="focus_on_click">False</property>
-                                <property name="draw_indicator">True</property>
-                              </widget>
-                              <packing>
-                                <property name="left_attach">1</property>
-                                <property name="right_attach">2</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <widget class="GtkFixed" id="fixed21">
-                                <property name="visible">True</property>
-                              </widget>
-                              <packing>
-                                <property name="left_attach">3</property>
-                                <property name="right_attach">4</property>
-                                <property name="top_attach">1</property>
-                                <property name="bottom_attach">2</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <widget class="GtkCheckButton" id="checkbutton_diplomaextranjero">
-                                <property name="label" translatable="yes">Cursos en el extranjeros</property>
-                                <property name="visible">True</property>
-                                <property name="can_focus">False</property>
-                                <property name="receives_default">False</property>
-                                <property name="use_underline">True</property>
-                                <property name="focus_on_click">False</property>
-                                <property name="draw_indicator">True</property>
-                              </widget>
-                              <packing>
-                                <property name="top_attach">1</property>
-                                <property name="bottom_attach">2</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <widget class="GtkFixed" id="fixed19">
-                                <property name="visible">True</property>
-                              </widget>
-                              <packing>
-                                <property name="left_attach">3</property>
-                                <property name="right_attach">4</property>
-                              </packing>
-                            </child>
-                          </widget>
-                        </child>
-                      </widget>
-                    </child>
-                    <child>
-                      <widget class="GtkLabel" id="label63">
-                        <property name="visible">True</property>
-                        <property name="label" translatable="yes">&lt;b&gt;Papeleria Opcional&lt;/b&gt;</property>
-                        <property name="use_markup">True</property>
-                      </widget>
-                      <packing>
-                        <property name="type">label_item</property>
-                      </packing>
-                    </child>
-                  </widget>
-                  <packing>
-                    <property name="position">3</property>
-                  </packing>
-                </child>
-                <child>
-                  <widget class="GtkVBox" id="vbox20">
-                    <property name="visible">True</property>
-                    <child>
-                      <widget class="GtkHBox" id="hbox42">
-                        <property name="visible">True</property>
-                        <child>
-                          <widget class="GtkNotebook" id="notebook7">
-                            <property name="width_request">719</property>
-                            <property name="height_request">0</property>
-                            <property name="visible">True</property>
-                            <child>
-                              <widget class="GtkScrolledWindow" id="scrolledwindow8">
-                                <property name="visible">True</property>
-                                <property name="can_focus">False</property>
-                                <child>
-                                  <widget class="GtkTextView" id="textview_notas">
-                                    <property name="width_request">90</property>
-                                    <property name="sensitive">False</property>
-                                  </widget>
-                                </child>
-                              </widget>
-                            </child>
-                            <child>
-                              <widget class="GtkLabel" id="label79">
-                                <property name="visible">True</property>
-                                <property name="label" translatable="yes">Notas adicionales</property>
-                              </widget>
-                              <packing>
-                                <property name="tab_fill">False</property>
-                                <property name="type">tab</property>
-                              </packing>
-                            </child>
-                          </widget>
-                          <packing>
-                            <property name="position">0</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <widget class="GtkVBox" id="vbox22">
-                            <property name="visible">True</property>
-                            <child>
-                              <widget class="GtkFixed" id="fixed26">
-                                <property name="visible">True</property>
-                              </widget>
-                              <packing>
-                                <property name="position">0</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <widget class="GtkFixed" id="fixed25">
-                                <property name="height_request">69</property>
-                                <property name="visible">True</property>
-                              </widget>
-                              <packing>
-                                <property name="position">1</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <widget class="GtkButton" id="button_notas">
-                                <property name="label" translatable="yes">Nuevas 
- Notas</property>
-                                <property name="visible">True</property>
-                                <property name="can_focus">False</property>
-                                <property name="receives_default">False</property>
-                                <property name="use_underline">True</property>
-                                <property name="focus_on_click">False</property>
-                              </widget>
-                              <packing>
-                                <property name="expand">False</property>
-                                <property name="fill">False</property>
-                                <property name="position">2</property>
-                              </packing>
-                            </child>
-                          </widget>
-                          <packing>
-                            <property name="position">1</property>
-                          </packing>
-                        </child>
-                      </widget>
-                      <packing>
-                        <property name="position">0</property>
-                      </packing>
-                    </child>
-                  </widget>
-                  <packing>
-                    <property name="position">4</property>
-                  </packing>
-                </child>
-              </widget>
-              <packing>
-                <property name="position">0</property>
-              </packing>
-            </child>
-            <child>
-              <widget class="GtkVBox" id="vbox12">
-                <property name="visible">True</property>
-                <child>
-                  <widget class="GtkButton" id="button_guardar">
-                    <property name="label">gtk-save</property>
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="receives_default">False</property>
-                    <property name="use_stock">True</property>
-                    <property name="focus_on_click">False</property>
-                  </widget>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">False</property>
-                    <property name="position">0</property>
-                  </packing>
-                </child>
-                <child>
-                  <widget class="GtkButton" id="button_actualizar">
-                    <property name="label">gtk-refresh</property>
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="receives_default">False</property>
-                    <property name="use_stock">True</property>
-                    <property name="focus_on_click">False</property>
-                  </widget>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">False</property>
-                    <property name="position">1</property>
-                  </packing>
-                </child>
-                <child>
-                  <widget class="GtkButton" id="button_autorizacion_medico">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="receives_default">False</property>
-                    <property name="focus_on_click">False</property>
-                    <child>
-                      <widget class="GtkAlignment" id="alignment14">
-                        <property name="visible">True</property>
-                        <property name="xscale">0</property>
-                        <property name="yscale">0</property>
-                        <child>
-                          <widget class="GtkHBox" id="hbox86">
-                            <property name="visible">True</property>
-                            <property name="spacing">2</property>
-                            <child>
-                              <widget class="GtkImage" id="image5">
-                                <property name="visible">True</property>
-                                <property name="stock">gtk-apply</property>
-                              </widget>
-                              <packing>
-                                <property name="expand">False</property>
-                                <property name="fill">False</property>
-                                <property name="position">0</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <widget class="GtkLabel" id="label109">
-                                <property name="visible">True</property>
-                                <property name="label" translatable="yes">Autorizacion
-   Medico</property>
-                                <property name="use_underline">True</property>
-                              </widget>
-                              <packing>
-                                <property name="expand">False</property>
-                                <property name="fill">False</property>
-                                <property name="position">1</property>
-                              </packing>
-                            </child>
-                          </widget>
-                        </child>
-                      </widget>
-                    </child>
-                  </widget>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">False</property>
-                    <property name="position">2</property>
-                  </packing>
-                </child>
-                <child>
-                  <widget class="GtkFixed" id="fixed9">
-                    <property name="height_request">420</property>
-                    <property name="visible">True</property>
-                  </widget>
-                  <packing>
-                    <property name="position">3</property>
-                  </packing>
-                </child>
-                <child>
-                  <widget class="GtkButton" id="button_imprimir">
-                    <property name="label">gtk-print</property>
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="receives_default">False</property>
-                    <property name="use_stock">True</property>
-                    <property name="focus_on_click">False</property>
-                  </widget>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">False</property>
-                    <property name="position">4</property>
-                  </packing>
-                </child>
-                <child>
-                  <widget class="GtkButton" id="button_salir">
-                    <property name="label">gtk-quit</property>
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="receives_default">False</property>
-                    <property name="use_stock">True</property>
-                    <property name="focus_on_click">False</property>
-                  </widget>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">False</property>
-                    <property name="position">5</property>
-                  </packing>
-                </child>
-              </widget>
-              <packing>
-                <property name="position">1</property>
-              </packing>
-            </child>
-          </widget>
-          <packing>
-            <property name="position">0</property>
-          </packing>
-        </child>
-        <child>
-          <widget class="GtkStatusbar" id="statusbar_catalogo_medicos">
-            <property name="visible">True</property>
-            <property name="has_resize_grip">False</property>
-          </widget>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">False</property>
-            <property name="position">1</property>
           </packing>
         </child>
       </widget>
@@ -4300,6 +3020,1310 @@ Consejo de su Especialidad</property>
             <property name="bottom_attach">3</property>
             <property name="x_options">GTK_FILL</property>
             <property name="y_options"></property>
+          </packing>
+        </child>
+      </widget>
+    </child>
+  </widget>
+  <widget class="GtkWindow" id="catalogo_medico">
+    <property name="resizable">False</property>
+    <child>
+      <widget class="GtkVBox" id="vbox9">
+        <property name="visible">True</property>
+        <property name="orientation">vertical</property>
+        <child>
+          <widget class="GtkHBox" id="hbox9">
+            <property name="visible">True</property>
+            <child>
+              <widget class="GtkVBox" id="vbox10">
+                <property name="visible">True</property>
+                <property name="orientation">vertical</property>
+                <child>
+                  <widget class="GtkVBox" id="vbox11">
+                    <property name="visible">True</property>
+                    <property name="orientation">vertical</property>
+                    <child>
+                      <widget class="GtkHBox" id="hbox10">
+                        <property name="visible">True</property>
+                        <child>
+                          <widget class="GtkCheckButton" id="checkbutton_nuevo_medico">
+                            <property name="label" translatable="yes">Nuevo Medico</property>
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="receives_default">False</property>
+                            <property name="use_underline">True</property>
+                            <property name="draw_indicator">True</property>
+                          </widget>
+                          <packing>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <widget class="GtkCheckButton" id="checkbutton_medico_provisional">
+                            <property name="label" translatable="yes">Medico Provisional</property>
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="receives_default">False</property>
+                            <property name="use_underline">True</property>
+                            <property name="draw_indicator">True</property>
+                          </widget>
+                          <packing>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <widget class="GtkHBox" id="hbox36">
+                            <property name="visible">True</property>
+                            <child>
+                              <widget class="GtkFixed" id="fixed109">
+                                <property name="width_request">6</property>
+                                <property name="visible">True</property>
+                              </widget>
+                              <packing>
+                                <property name="position">0</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <widget class="GtkHBox" id="hbox38">
+                                <property name="visible">True</property>
+                                <child>
+                                  <widget class="GtkHBox" id="hbox84">
+                                    <property name="visible">True</property>
+                                    <child>
+                                      <widget class="GtkLabel" id="label70">
+                                        <property name="visible">True</property>
+                                        <property name="label" translatable="yes">Fecha revision</property>
+                                      </widget>
+                                      <packing>
+                                        <property name="position">0</property>
+                                      </packing>
+                                    </child>
+                                    <child>
+                                      <widget class="GtkHBox" id="hbox85">
+                                        <property name="visible">True</property>
+                                        <child>
+                                          <widget class="GtkEntry" id="entry_fecha_revision">
+                                            <property name="width_request">152</property>
+                                            <property name="visible">True</property>
+                                          </widget>
+                                          <packing>
+                                            <property name="position">0</property>
+                                          </packing>
+                                        </child>
+                                      </widget>
+                                      <packing>
+                                        <property name="position">1</property>
+                                      </packing>
+                                    </child>
+                                  </widget>
+                                  <packing>
+                                    <property name="position">0</property>
+                                  </packing>
+                                </child>
+                              </widget>
+                              <packing>
+                                <property name="position">1</property>
+                              </packing>
+                            </child>
+                          </widget>
+                          <packing>
+                            <property name="position">2</property>
+                          </packing>
+                        </child>
+                      </widget>
+                      <packing>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <widget class="GtkFrame" id="frame13">
+                        <property name="visible">True</property>
+                        <property name="label_xalign">0</property>
+                        <property name="shadow_type">etched-out</property>
+                        <child>
+                          <widget class="GtkAlignment" id="alignment3">
+                            <property name="visible">True</property>
+                            <property name="left_padding">12</property>
+                            <child>
+                              <widget class="GtkVBox" id="vbox18">
+                                <property name="visible">True</property>
+                                <property name="orientation">vertical</property>
+                                <child>
+                                  <widget class="GtkHBox" id="hbox12">
+                                    <property name="visible">True</property>
+                                    <child>
+                                      <widget class="GtkLabel" id="label108">
+                                        <property name="width_request">65</property>
+                                        <property name="visible">True</property>
+                                        <property name="label" translatable="yes">id Medico</property>
+                                      </widget>
+                                      <packing>
+                                        <property name="expand">False</property>
+                                        <property name="fill">False</property>
+                                        <property name="position">0</property>
+                                      </packing>
+                                    </child>
+                                    <child>
+                                      <widget class="GtkEntry" id="entry_id_medico">
+                                        <property name="width_request">53</property>
+                                        <property name="visible">True</property>
+                                        <property name="can_focus">True</property>
+                                        <property name="editable">False</property>
+                                      </widget>
+                                      <packing>
+                                        <property name="expand">False</property>
+                                        <property name="fill">False</property>
+                                        <property name="position">1</property>
+                                      </packing>
+                                    </child>
+                                    <child>
+                                      <widget class="GtkCheckButton" id="checkbutton_medico_activo">
+                                        <property name="label" translatable="yes">Activo</property>
+                                        <property name="width_request">72</property>
+                                        <property name="visible">True</property>
+                                        <property name="can_focus">True</property>
+                                        <property name="receives_default">False</property>
+                                        <property name="use_underline">True</property>
+                                        <property name="focus_on_click">False</property>
+                                        <property name="draw_indicator">True</property>
+                                      </widget>
+                                      <packing>
+                                        <property name="expand">False</property>
+                                        <property name="fill">False</property>
+                                        <property name="position">2</property>
+                                      </packing>
+                                    </child>
+                                    <child>
+                                      <widget class="GtkHBox" id="hbox37">
+                                        <property name="visible">True</property>
+                                        <child>
+                                          <widget class="GtkFixed" id="fixed116">
+                                            <property name="visible">True</property>
+                                          </widget>
+                                          <packing>
+                                            <property name="position">0</property>
+                                          </packing>
+                                        </child>
+                                        <child>
+                                          <widget class="GtkCheckButton" id="checkbutton_centro_medico">
+                                            <property name="label" translatable="yes">Centro Medico</property>
+                                            <property name="visible">True</property>
+                                            <property name="can_focus">True</property>
+                                            <property name="receives_default">False</property>
+                                            <property name="use_underline">True</property>
+                                            <property name="focus_on_click">False</property>
+                                            <property name="draw_indicator">True</property>
+                                          </widget>
+                                          <packing>
+                                            <property name="expand">False</property>
+                                            <property name="fill">False</property>
+                                            <property name="position">1</property>
+                                          </packing>
+                                        </child>
+                                        <child>
+                                          <widget class="GtkFixed" id="fixed22">
+                                            <property name="visible">True</property>
+                                          </widget>
+                                          <packing>
+                                            <property name="position">2</property>
+                                          </packing>
+                                        </child>
+                                        <child>
+                                          <widget class="GtkLabel" id="label71">
+                                            <property name="width_request">82</property>
+                                            <property name="visible">True</property>
+                                            <property name="label" translatable="yes">Fecha Ingreso</property>
+                                          </widget>
+                                          <packing>
+                                            <property name="position">3</property>
+                                          </packing>
+                                        </child>
+                                        <child>
+                                          <widget class="GtkEntry" id="entry_fecha_ingreso">
+                                            <property name="width_request">150</property>
+                                            <property name="visible">True</property>
+                                          </widget>
+                                          <packing>
+                                            <property name="position">4</property>
+                                          </packing>
+                                        </child>
+                                      </widget>
+                                      <packing>
+                                        <property name="position">3</property>
+                                      </packing>
+                                    </child>
+                                  </widget>
+                                  <packing>
+                                    <property name="position">0</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <widget class="GtkVBox" id="vbox23">
+                                    <property name="visible">True</property>
+                                    <property name="orientation">vertical</property>
+                                    <child>
+                                      <widget class="GtkHBox" id="hbox11">
+                                        <property name="visible">True</property>
+                                        <child>
+                                          <widget class="GtkLabel" id="label19">
+                                            <property name="visible">True</property>
+                                            <property name="label" translatable="yes">Nombre 1</property>
+                                          </widget>
+                                          <packing>
+                                            <property name="position">0</property>
+                                          </packing>
+                                        </child>
+                                        <child>
+                                          <widget class="GtkEntry" id="entry_nombre1_medico">
+                                            <property name="visible">True</property>
+                                          </widget>
+                                          <packing>
+                                            <property name="position">1</property>
+                                          </packing>
+                                        </child>
+                                        <child>
+                                          <widget class="GtkButton" id="button_buscar_medico">
+                                            <property name="label">gtk-find</property>
+                                            <property name="visible">True</property>
+                                            <property name="can_focus">False</property>
+                                            <property name="receives_default">False</property>
+                                            <property name="use_stock">True</property>
+                                            <property name="focus_on_click">False</property>
+                                          </widget>
+                                          <packing>
+                                            <property name="expand">False</property>
+                                            <property name="fill">False</property>
+                                            <property name="position">2</property>
+                                          </packing>
+                                        </child>
+                                        <child>
+                                          <widget class="GtkLabel" id="label21">
+                                            <property name="visible">True</property>
+                                            <property name="label" translatable="yes">Nombre 2</property>
+                                          </widget>
+                                          <packing>
+                                            <property name="position">3</property>
+                                          </packing>
+                                        </child>
+                                        <child>
+                                          <widget class="GtkEntry" id="entry_nombre2_medico">
+                                            <property name="visible">True</property>
+                                          </widget>
+                                          <packing>
+                                            <property name="position">4</property>
+                                          </packing>
+                                        </child>
+                                      </widget>
+                                      <packing>
+                                        <property name="position">0</property>
+                                      </packing>
+                                    </child>
+                                    <child>
+                                      <widget class="GtkHBox" id="hbox43">
+                                        <property name="visible">True</property>
+                                        <child>
+                                          <widget class="GtkLabel" id="label68">
+                                            <property name="width_request">63</property>
+                                            <property name="visible">True</property>
+                                            <property name="label" translatable="yes">Apellido Paterno</property>
+                                          </widget>
+                                          <packing>
+                                            <property name="position">0</property>
+                                          </packing>
+                                        </child>
+                                        <child>
+                                          <widget class="GtkEntry" id="entry_apellido_paterno_medico">
+                                            <property name="width_request">157</property>
+                                            <property name="visible">True</property>
+                                          </widget>
+                                          <packing>
+                                            <property name="position">1</property>
+                                          </packing>
+                                        </child>
+                                        <child>
+                                          <widget class="GtkLabel" id="label78">
+                                            <property name="width_request">124</property>
+                                            <property name="visible">True</property>
+                                            <property name="label" translatable="yes">Apellido Materno</property>
+                                          </widget>
+                                          <packing>
+                                            <property name="position">2</property>
+                                          </packing>
+                                        </child>
+                                        <child>
+                                          <widget class="GtkEntry" id="entry_apellido_materno_medico">
+                                            <property name="width_request">163</property>
+                                            <property name="visible">True</property>
+                                          </widget>
+                                          <packing>
+                                            <property name="position">3</property>
+                                          </packing>
+                                        </child>
+                                      </widget>
+                                      <packing>
+                                        <property name="position">1</property>
+                                      </packing>
+                                    </child>
+                                    <child>
+                                      <widget class="GtkHBox" id="hbox90">
+                                        <property name="visible">True</property>
+                                        <child>
+                                          <widget class="GtkLabel" id="label113">
+                                            <property name="width_request">127</property>
+                                            <property name="visible">True</property>
+                                            <property name="label" translatable="yes">Cedula Prof.</property>
+                                          </widget>
+                                          <packing>
+                                            <property name="expand">False</property>
+                                            <property name="fill">False</property>
+                                            <property name="position">0</property>
+                                          </packing>
+                                        </child>
+                                        <child>
+                                          <widget class="GtkEntry" id="entry_cedula_profecional">
+                                            <property name="visible">True</property>
+                                            <property name="can_focus">True</property>
+                                          </widget>
+                                          <packing>
+                                            <property name="position">1</property>
+                                          </packing>
+                                        </child>
+                                        <child>
+                                          <widget class="GtkLabel" id="label114">
+                                            <property name="visible">True</property>
+                                            <property name="label" translatable="yes">  Empresa:  </property>
+                                          </widget>
+                                          <packing>
+                                            <property name="expand">False</property>
+                                            <property name="fill">False</property>
+                                            <property name="position">2</property>
+                                          </packing>
+                                        </child>
+                                        <child>
+                                          <widget class="GtkEntry" id="entry_empresa">
+                                            <property name="visible">True</property>
+                                            <property name="can_focus">True</property>
+                                          </widget>
+                                          <packing>
+                                            <property name="position">3</property>
+                                          </packing>
+                                        </child>
+                                        <child>
+                                          <widget class="GtkButton" id="button_buscar_empresa">
+                                            <property name="label">gtk-find</property>
+                                            <property name="visible">True</property>
+                                            <property name="can_focus">True</property>
+                                            <property name="receives_default">False</property>
+                                            <property name="use_stock">True</property>
+                                            <property name="focus_on_click">False</property>
+                                          </widget>
+                                          <packing>
+                                            <property name="expand">False</property>
+                                            <property name="fill">False</property>
+                                            <property name="position">4</property>
+                                          </packing>
+                                        </child>
+                                      </widget>
+                                      <packing>
+                                        <property name="position">2</property>
+                                      </packing>
+                                    </child>
+                                  </widget>
+                                  <packing>
+                                    <property name="position">1</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <widget class="GtkHBox" id="hbox13">
+                                    <property name="visible">True</property>
+                                    <child>
+                                      <widget class="GtkLabel" id="label20">
+                                        <property name="visible">True</property>
+                                        <property name="label" translatable="yes">Especialidad</property>
+                                      </widget>
+                                      <packing>
+                                        <property name="position">0</property>
+                                      </packing>
+                                    </child>
+                                    <child>
+                                      <widget class="GtkHBox" id="hbox1">
+                                        <property name="visible">True</property>
+                                        <child>
+                                          <widget class="GtkEntry" id="entry_id_especialidad">
+                                            <property name="width_request">90</property>
+                                            <property name="visible">True</property>
+                                            <property name="can_focus">True</property>
+                                            <property name="invisible_char">&#x25CF;</property>
+                                          </widget>
+                                          <packing>
+                                            <property name="position">0</property>
+                                          </packing>
+                                        </child>
+                                        <child>
+                                          <widget class="GtkEntry" id="entry_especialidad">
+                                            <property name="width_request">252</property>
+                                            <property name="visible">True</property>
+                                            <property name="can_focus">True</property>
+                                            <property name="invisible_char">&#x25CF;</property>
+                                          </widget>
+                                          <packing>
+                                            <property name="position">1</property>
+                                          </packing>
+                                        </child>
+                                      </widget>
+                                      <packing>
+                                        <property name="position">1</property>
+                                      </packing>
+                                    </child>
+                                    <child>
+                                      <widget class="GtkButton" id="button_buscar_especialidad">
+                                        <property name="label">gtk-find</property>
+                                        <property name="visible">True</property>
+                                        <property name="can_focus">True</property>
+                                        <property name="receives_default">True</property>
+                                        <property name="use_stock">True</property>
+                                        <property name="focus_on_click">False</property>
+                                      </widget>
+                                      <packing>
+                                        <property name="expand">False</property>
+                                        <property name="fill">False</property>
+                                        <property name="position">2</property>
+                                      </packing>
+                                    </child>
+                                    <child>
+                                      <widget class="GtkFixed" id="fixed1">
+                                        <property name="visible">True</property>
+                                      </widget>
+                                      <packing>
+                                        <property name="position">3</property>
+                                      </packing>
+                                    </child>
+                                    <child>
+                                      <widget class="GtkFixed" id="fixed2">
+                                        <property name="width_request">200</property>
+                                        <property name="visible">True</property>
+                                      </widget>
+                                      <packing>
+                                        <property name="position">4</property>
+                                      </packing>
+                                    </child>
+                                  </widget>
+                                  <packing>
+                                    <property name="position">2</property>
+                                  </packing>
+                                </child>
+                              </widget>
+                            </child>
+                          </widget>
+                        </child>
+                        <child>
+                          <widget class="GtkLabel" id="label17">
+                            <property name="visible">True</property>
+                            <property name="label" translatable="yes">&lt;b&gt;Datos del Medico&lt;/b&gt;</property>
+                            <property name="use_markup">True</property>
+                          </widget>
+                          <packing>
+                            <property name="type">label_item</property>
+                          </packing>
+                        </child>
+                      </widget>
+                      <packing>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <widget class="GtkFrame" id="frame3">
+                        <property name="visible">True</property>
+                        <property name="label_xalign">0</property>
+                        <child>
+                          <widget class="GtkAlignment" id="alignment4">
+                            <property name="visible">True</property>
+                            <property name="left_padding">12</property>
+                            <child>
+                              <widget class="GtkVBox" id="vbox14">
+                                <property name="visible">True</property>
+                                <property name="orientation">vertical</property>
+                                <child>
+                                  <widget class="GtkHBox" id="hbox14">
+                                    <property name="visible">True</property>
+                                    <child>
+                                      <widget class="GtkLabel" id="label23">
+                                        <property name="visible">True</property>
+                                        <property name="xalign">0.17000000178813934</property>
+                                        <property name="label" translatable="yes">Direccion Casa</property>
+                                      </widget>
+                                      <packing>
+                                        <property name="position">0</property>
+                                      </packing>
+                                    </child>
+                                    <child>
+                                      <widget class="GtkEntry" id="entry_direccion_casa_medico">
+                                        <property name="width_request">567</property>
+                                        <property name="visible">True</property>
+                                        <property name="can_focus">True</property>
+                                        <property name="invisible_char">&#x25CF;</property>
+                                      </widget>
+                                      <packing>
+                                        <property name="position">1</property>
+                                      </packing>
+                                    </child>
+                                  </widget>
+                                  <packing>
+                                    <property name="position">0</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <widget class="GtkHBox" id="hbox15">
+                                    <property name="visible">True</property>
+                                    <child>
+                                      <widget class="GtkLabel" id="label25">
+                                        <property name="width_request">145</property>
+                                        <property name="visible">True</property>
+                                        <property name="xalign">0.40000000596046448</property>
+                                        <property name="label" translatable="yes">Direccion Consultorio</property>
+                                      </widget>
+                                      <packing>
+                                        <property name="position">0</property>
+                                      </packing>
+                                    </child>
+                                    <child>
+                                      <widget class="GtkEntry" id="entry_direccion_consultorio_medico">
+                                        <property name="width_request">618</property>
+                                        <property name="visible">True</property>
+                                        <property name="can_focus">True</property>
+                                        <property name="invisible_char">&#x25CF;</property>
+                                      </widget>
+                                      <packing>
+                                        <property name="position">1</property>
+                                      </packing>
+                                    </child>
+                                  </widget>
+                                  <packing>
+                                    <property name="position">1</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <widget class="GtkHBox" id="hbox16">
+                                    <property name="visible">True</property>
+                                    <child>
+                                      <widget class="GtkLabel" id="label26">
+                                        <property name="width_request">62</property>
+                                        <property name="visible">True</property>
+                                        <property name="xalign">0.10000000149011612</property>
+                                        <property name="label" translatable="yes">Telefono Casa</property>
+                                      </widget>
+                                      <packing>
+                                        <property name="position">0</property>
+                                      </packing>
+                                    </child>
+                                    <child>
+                                      <widget class="GtkEntry" id="entry_telcasa_medico">
+                                        <property name="width_request">79</property>
+                                        <property name="visible">True</property>
+                                        <property name="can_focus">True</property>
+                                        <property name="invisible_char">&#x25CF;</property>
+                                      </widget>
+                                      <packing>
+                                        <property name="position">1</property>
+                                      </packing>
+                                    </child>
+                                    <child>
+                                      <widget class="GtkLabel" id="label29">
+                                        <property name="width_request">77</property>
+                                        <property name="visible">True</property>
+                                        <property name="xalign">0.54000002145767212</property>
+                                        <property name="label" translatable="yes">Telefono Oficina</property>
+                                      </widget>
+                                      <packing>
+                                        <property name="position">2</property>
+                                      </packing>
+                                    </child>
+                                    <child>
+                                      <widget class="GtkEntry" id="entry_teloficina_medico">
+                                        <property name="width_request">81</property>
+                                        <property name="visible">True</property>
+                                        <property name="can_focus">True</property>
+                                        <property name="invisible_char">&#x25CF;</property>
+                                      </widget>
+                                      <packing>
+                                        <property name="position">3</property>
+                                      </packing>
+                                    </child>
+                                  </widget>
+                                  <packing>
+                                    <property name="position">2</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <widget class="GtkHBox" id="hbox17">
+                                    <property name="visible">True</property>
+                                    <child>
+                                      <widget class="GtkLabel" id="label27">
+                                        <property name="width_request">54</property>
+                                        <property name="visible">True</property>
+                                        <property name="xalign">0.079999998211860657</property>
+                                        <property name="label" translatable="yes">Celular 1</property>
+                                      </widget>
+                                      <packing>
+                                        <property name="position">0</property>
+                                      </packing>
+                                    </child>
+                                    <child>
+                                      <widget class="GtkEntry" id="entry_celular1_medico">
+                                        <property name="width_request">70</property>
+                                        <property name="visible">True</property>
+                                        <property name="can_focus">True</property>
+                                        <property name="invisible_char">&#x25CF;</property>
+                                      </widget>
+                                      <packing>
+                                        <property name="position">1</property>
+                                      </packing>
+                                    </child>
+                                    <child>
+                                      <widget class="GtkLabel" id="label40">
+                                        <property name="width_request">70</property>
+                                        <property name="visible">True</property>
+                                        <property name="xalign">0.38999998569488525</property>
+                                        <property name="label" translatable="yes">Celular 2</property>
+                                      </widget>
+                                      <packing>
+                                        <property name="position">2</property>
+                                      </packing>
+                                    </child>
+                                    <child>
+                                      <widget class="GtkEntry" id="entry_celular2_medico">
+                                        <property name="width_request">73</property>
+                                        <property name="visible">True</property>
+                                        <property name="can_focus">True</property>
+                                        <property name="invisible_char">&#x25CF;</property>
+                                      </widget>
+                                      <packing>
+                                        <property name="position">3</property>
+                                      </packing>
+                                    </child>
+                                  </widget>
+                                  <packing>
+                                    <property name="position">3</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <widget class="GtkHBox" id="hbox18">
+                                    <property name="visible">True</property>
+                                    <child>
+                                      <widget class="GtkLabel" id="label28">
+                                        <property name="width_request">28</property>
+                                        <property name="visible">True</property>
+                                        <property name="xalign">0.059999998658895493</property>
+                                        <property name="label" translatable="yes">Nextel</property>
+                                      </widget>
+                                      <packing>
+                                        <property name="position">0</property>
+                                      </packing>
+                                    </child>
+                                    <child>
+                                      <widget class="GtkEntry" id="entry_nextel_medico">
+                                        <property name="width_request">45</property>
+                                        <property name="visible">True</property>
+                                        <property name="can_focus">True</property>
+                                        <property name="invisible_char">&#x25CF;</property>
+                                      </widget>
+                                      <packing>
+                                        <property name="position">1</property>
+                                      </packing>
+                                    </child>
+                                    <child>
+                                      <widget class="GtkLabel" id="label41">
+                                        <property name="visible">True</property>
+                                        <property name="xalign">0.36000001430511475</property>
+                                        <property name="label" translatable="yes">Beeper</property>
+                                      </widget>
+                                      <packing>
+                                        <property name="position">2</property>
+                                      </packing>
+                                    </child>
+                                    <child>
+                                      <widget class="GtkEntry" id="entry_beeper_medico">
+                                        <property name="width_request">48</property>
+                                        <property name="visible">True</property>
+                                        <property name="can_focus">True</property>
+                                        <property name="invisible_char">&#x25CF;</property>
+                                      </widget>
+                                      <packing>
+                                        <property name="position">3</property>
+                                      </packing>
+                                    </child>
+                                  </widget>
+                                  <packing>
+                                    <property name="position">4</property>
+                                  </packing>
+                                </child>
+                              </widget>
+                            </child>
+                          </widget>
+                        </child>
+                        <child>
+                          <widget class="GtkLabel" id="label22">
+                            <property name="visible">True</property>
+                            <property name="label" translatable="yes">&lt;b&gt;Localizacion&lt;/b&gt;</property>
+                            <property name="use_markup">True</property>
+                          </widget>
+                          <packing>
+                            <property name="type">label_item</property>
+                          </packing>
+                        </child>
+                      </widget>
+                      <packing>
+                        <property name="position">2</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <widget class="GtkFrame" id="frame1">
+                        <property name="visible">True</property>
+                        <property name="label_xalign">0</property>
+                        <child>
+                          <widget class="GtkAlignment" id="alignment1">
+                            <property name="visible">True</property>
+                            <property name="left_padding">12</property>
+                            <child>
+                              <widget class="GtkHBox" id="hbox2">
+                                <property name="visible">True</property>
+                                <child>
+                                  <widget class="GtkCheckButton" id="checkbutton_tituloprof_medico">
+                                    <property name="label" translatable="yes">Titulo Profesional</property>
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">True</property>
+                                    <property name="receives_default">False</property>
+                                    <property name="draw_indicator">True</property>
+                                  </widget>
+                                  <packing>
+                                    <property name="position">0</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <widget class="GtkCheckButton" id="checkbutton_cedula_prof_medico">
+                                    <property name="label" translatable="yes">Cedula Profesional</property>
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">True</property>
+                                    <property name="receives_default">False</property>
+                                    <property name="draw_indicator">True</property>
+                                  </widget>
+                                  <packing>
+                                    <property name="position">1</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <widget class="GtkCheckButton" id="checkbutton_diploespecial_medico">
+                                    <property name="label" translatable="yes">Diploma Especial</property>
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">True</property>
+                                    <property name="receives_default">False</property>
+                                    <property name="draw_indicator">True</property>
+                                  </widget>
+                                  <packing>
+                                    <property name="position">2</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <widget class="GtkCheckButton" id="checkbutton_cursoadistramiento_medico">
+                                    <property name="label" translatable="yes">Adiestramiento Especial</property>
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">True</property>
+                                    <property name="receives_default">False</property>
+                                    <property name="draw_indicator">True</property>
+                                  </widget>
+                                  <packing>
+                                    <property name="position">3</property>
+                                  </packing>
+                                </child>
+                              </widget>
+                            </child>
+                          </widget>
+                        </child>
+                        <child>
+                          <widget class="GtkLabel" id="label1">
+                            <property name="visible">True</property>
+                            <property name="label" translatable="yes">&lt;b&gt;Papeleria Obligatoria&lt;/b&gt;</property>
+                            <property name="use_markup">True</property>
+                          </widget>
+                          <packing>
+                            <property name="type">label_item</property>
+                          </packing>
+                        </child>
+                      </widget>
+                      <packing>
+                        <property name="position">3</property>
+                      </packing>
+                    </child>
+                  </widget>
+                  <packing>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <widget class="GtkFrame" id="frame11">
+                    <property name="height_request">0</property>
+                    <property name="visible">True</property>
+                    <property name="label_xalign">0</property>
+                    <property name="shadow_type">etched-out</property>
+                    <child>
+                      <widget class="GtkAlignment" id="alignment13">
+                        <property name="visible">True</property>
+                        <property name="left_padding">12</property>
+                        <child>
+                          <widget class="GtkVBox" id="vbox13">
+                            <property name="visible">True</property>
+                            <property name="orientation">vertical</property>
+                            <child>
+                              <widget class="GtkHBox" id="hbox34">
+                                <property name="visible">True</property>
+                                <child>
+                                  <widget class="GtkCheckButton" id="checkbutton_diplomasubespecial">
+                                    <property name="label" translatable="yes">   Diploma de Subespecialidad</property>
+                                    <property name="width_request">217</property>
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">True</property>
+                                    <property name="receives_default">False</property>
+                                    <property name="use_underline">True</property>
+                                    <property name="focus_on_click">False</property>
+                                    <property name="draw_indicator">True</property>
+                                  </widget>
+                                  <packing>
+                                    <property name="position">0</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <widget class="GtkCheckButton" id="checkbutton_copiaidentificacionoficial">
+                                    <property name="label" translatable="yes">  Copia de Identificacion Oficial</property>
+                                    <property name="width_request">220</property>
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">True</property>
+                                    <property name="receives_default">False</property>
+                                    <property name="use_underline">True</property>
+                                    <property name="focus_on_click">False</property>
+                                    <property name="draw_indicator">True</property>
+                                  </widget>
+                                  <packing>
+                                    <property name="position">1</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <widget class="GtkCheckButton" id="checkbutton_copiacedularfc">
+                                    <property name="label" translatable="yes">  Copia de la cedula de R.F.C.</property>
+                                    <property name="width_request">215</property>
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">True</property>
+                                    <property name="receives_default">False</property>
+                                    <property name="use_underline">True</property>
+                                    <property name="focus_on_click">False</property>
+                                    <property name="draw_indicator">True</property>
+                                  </widget>
+                                  <packing>
+                                    <property name="expand">False</property>
+                                    <property name="fill">False</property>
+                                    <property name="position">2</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <widget class="GtkCheckButton" id="checkbutton_cedula_especialidad_medico">
+                                    <property name="label" translatable="yes">Cedula Especialidad  </property>
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">True</property>
+                                    <property name="receives_default">False</property>
+                                    <property name="use_underline">True</property>
+                                    <property name="draw_indicator">True</property>
+                                  </widget>
+                                  <packing>
+                                    <property name="expand">False</property>
+                                    <property name="fill">False</property>
+                                    <property name="position">3</property>
+                                  </packing>
+                                </child>
+                              </widget>
+                              <packing>
+                                <property name="position">0</property>
+                              </packing>
+                            </child>
+                          </widget>
+                        </child>
+                      </widget>
+                    </child>
+                    <child>
+                      <widget class="GtkLabel" id="label64">
+                        <property name="visible">True</property>
+                        <property name="label" translatable="yes">&lt;b&gt;Papeleria Necesaria&lt;/b&gt;</property>
+                        <property name="use_markup">True</property>
+                      </widget>
+                      <packing>
+                        <property name="type">label_item</property>
+                      </packing>
+                    </child>
+                  </widget>
+                  <packing>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+                <child>
+                  <widget class="GtkFrame" id="frame10">
+                    <property name="visible">True</property>
+                    <property name="label_xalign">0</property>
+                    <child>
+                      <widget class="GtkAlignment" id="alignment12">
+                        <property name="visible">True</property>
+                        <property name="left_padding">12</property>
+                        <child>
+                          <widget class="GtkTable" id="table8">
+                            <property name="visible">True</property>
+                            <property name="n_rows">2</property>
+                            <property name="n_columns">4</property>
+                            <child>
+                              <widget class="GtkCheckButton" id="checkbutton_certificadoconsejo_esp">
+                                <property name="label" translatable="yes">Certificacion o recertificacion del 
+Consejo de su Especialidad</property>
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="can_default">True</property>
+                                <property name="has_default">True</property>
+                                <property name="receives_default">False</property>
+                                <property name="use_underline">True</property>
+                                <property name="focus_on_click">False</property>
+                                <property name="draw_indicator">True</property>
+                              </widget>
+                            </child>
+                            <child>
+                              <widget class="GtkCheckButton" id="checkbutton_copia_comprobante_domicilio">
+                                <property name="label" translatable="yes">Copia de comprobante  domicilio</property>
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="receives_default">False</property>
+                                <property name="use_underline">True</property>
+                                <property name="focus_on_click">False</property>
+                                <property name="draw_indicator">True</property>
+                              </widget>
+                              <packing>
+                                <property name="left_attach">2</property>
+                                <property name="right_attach">3</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <widget class="GtkCheckButton" id="checkbutton_diplomacursos">
+                                <property name="label" translatable="yes">Diploma de Cursos</property>
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="receives_default">False</property>
+                                <property name="use_underline">True</property>
+                                <property name="focus_on_click">False</property>
+                                <property name="draw_indicator">True</property>
+                              </widget>
+                              <packing>
+                                <property name="left_attach">1</property>
+                                <property name="right_attach">2</property>
+                                <property name="top_attach">1</property>
+                                <property name="bottom_attach">2</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <widget class="GtkCheckButton" id="checkbutton_diploseminarios">
+                                <property name="label" translatable="yes">Diploma de Seminarios</property>
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="receives_default">False</property>
+                                <property name="use_underline">True</property>
+                                <property name="focus_on_click">False</property>
+                                <property name="draw_indicator">True</property>
+                              </widget>
+                              <packing>
+                                <property name="left_attach">2</property>
+                                <property name="right_attach">3</property>
+                                <property name="top_attach">1</property>
+                                <property name="bottom_attach">2</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <widget class="GtkCheckButton" id="checkbutton_constancia_congresos">
+                                <property name="label" translatable="yes">Constancia de Congresos</property>
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="receives_default">False</property>
+                                <property name="use_underline">True</property>
+                                <property name="focus_on_click">False</property>
+                                <property name="draw_indicator">True</property>
+                              </widget>
+                              <packing>
+                                <property name="left_attach">1</property>
+                                <property name="right_attach">2</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <widget class="GtkCheckButton" id="checkbutton_diplomaextranjero">
+                                <property name="label" translatable="yes">Cursos en el extranjeros</property>
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="receives_default">False</property>
+                                <property name="use_underline">True</property>
+                                <property name="focus_on_click">False</property>
+                                <property name="draw_indicator">True</property>
+                              </widget>
+                              <packing>
+                                <property name="top_attach">1</property>
+                                <property name="bottom_attach">2</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <placeholder/>
+                            </child>
+                            <child>
+                              <placeholder/>
+                            </child>
+                          </widget>
+                        </child>
+                      </widget>
+                    </child>
+                    <child>
+                      <widget class="GtkLabel" id="label63">
+                        <property name="visible">True</property>
+                        <property name="label" translatable="yes">&lt;b&gt;Papeleria Opcional&lt;/b&gt;</property>
+                        <property name="use_markup">True</property>
+                      </widget>
+                      <packing>
+                        <property name="type">label_item</property>
+                      </packing>
+                    </child>
+                  </widget>
+                  <packing>
+                    <property name="position">2</property>
+                  </packing>
+                </child>
+                <child>
+                  <widget class="GtkHBox" id="hbox42">
+                    <property name="visible">True</property>
+                    <child>
+                      <widget class="GtkNotebook" id="notebook7">
+                        <property name="width_request">719</property>
+                        <property name="height_request">0</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <child>
+                          <widget class="GtkScrolledWindow" id="scrolledwindow8">
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <child>
+                              <widget class="GtkTextView" id="textview_notas">
+                                <property name="width_request">90</property>
+                                <property name="sensitive">False</property>
+                                <property name="can_focus">True</property>
+                              </widget>
+                            </child>
+                          </widget>
+                        </child>
+                        <child>
+                          <widget class="GtkLabel" id="label79">
+                            <property name="visible">True</property>
+                            <property name="label" translatable="yes">Notas adicionales</property>
+                          </widget>
+                          <packing>
+                            <property name="tab_fill">False</property>
+                            <property name="type">tab</property>
+                          </packing>
+                        </child>
+                      </widget>
+                      <packing>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <widget class="GtkVBox" id="vbox22">
+                        <property name="visible">True</property>
+                        <property name="orientation">vertical</property>
+                        <child>
+                          <widget class="GtkFixed" id="fixed26">
+                            <property name="visible">True</property>
+                          </widget>
+                          <packing>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <widget class="GtkFixed" id="fixed25">
+                            <property name="height_request">69</property>
+                            <property name="visible">True</property>
+                          </widget>
+                          <packing>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <widget class="GtkButton" id="button_notas">
+                            <property name="label" translatable="yes">Nuevas 
+ Notas</property>
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="receives_default">True</property>
+                            <property name="use_underline">True</property>
+                            <property name="focus_on_click">False</property>
+                          </widget>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">False</property>
+                            <property name="position">2</property>
+                          </packing>
+                        </child>
+                      </widget>
+                      <packing>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
+                  </widget>
+                  <packing>
+                    <property name="position">3</property>
+                  </packing>
+                </child>
+              </widget>
+              <packing>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="GtkVBox" id="vbox12">
+                <property name="visible">True</property>
+                <property name="orientation">vertical</property>
+                <child>
+                  <widget class="GtkButton" id="button_guardar">
+                    <property name="label">gtk-save</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="receives_default">False</property>
+                    <property name="use_stock">True</property>
+                    <property name="focus_on_click">False</property>
+                  </widget>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">False</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <widget class="GtkButton" id="button_actualizar">
+                    <property name="label">gtk-refresh</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="receives_default">False</property>
+                    <property name="use_stock">True</property>
+                    <property name="focus_on_click">False</property>
+                  </widget>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">False</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+                <child>
+                  <widget class="GtkButton" id="button_autorizacion_medico">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="receives_default">False</property>
+                    <property name="focus_on_click">False</property>
+                    <child>
+                      <widget class="GtkAlignment" id="alignment14">
+                        <property name="visible">True</property>
+                        <property name="xscale">0</property>
+                        <property name="yscale">0</property>
+                        <child>
+                          <widget class="GtkHBox" id="hbox86">
+                            <property name="visible">True</property>
+                            <property name="spacing">2</property>
+                            <child>
+                              <widget class="GtkImage" id="image5">
+                                <property name="visible">True</property>
+                                <property name="stock">gtk-apply</property>
+                              </widget>
+                              <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">False</property>
+                                <property name="position">0</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <widget class="GtkLabel" id="label109">
+                                <property name="visible">True</property>
+                                <property name="label" translatable="yes">Autorizacion
+   Medico</property>
+                                <property name="use_underline">True</property>
+                              </widget>
+                              <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">False</property>
+                                <property name="position">1</property>
+                              </packing>
+                            </child>
+                          </widget>
+                        </child>
+                      </widget>
+                    </child>
+                  </widget>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">False</property>
+                    <property name="position">2</property>
+                  </packing>
+                </child>
+                <child>
+                  <widget class="GtkFixed" id="fixed9">
+                    <property name="height_request">420</property>
+                    <property name="visible">True</property>
+                  </widget>
+                  <packing>
+                    <property name="position">3</property>
+                  </packing>
+                </child>
+                <child>
+                  <widget class="GtkButton" id="button_imprimir">
+                    <property name="label">gtk-print</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="receives_default">False</property>
+                    <property name="use_stock">True</property>
+                    <property name="focus_on_click">False</property>
+                  </widget>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">False</property>
+                    <property name="position">4</property>
+                  </packing>
+                </child>
+                <child>
+                  <widget class="GtkButton" id="button_salir">
+                    <property name="label">gtk-quit</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="receives_default">False</property>
+                    <property name="use_stock">True</property>
+                    <property name="focus_on_click">False</property>
+                  </widget>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">False</property>
+                    <property name="position">5</property>
+                  </packing>
+                </child>
+              </widget>
+              <packing>
+                <property name="position">1</property>
+              </packing>
+            </child>
+          </widget>
+          <packing>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="GtkStatusbar" id="statusbar_catalogo_medicos">
+            <property name="visible">True</property>
+            <property name="has_resize_grip">False</property>
+          </widget>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">False</property>
+            <property name="position">1</property>
           </packing>
         </child>
       </widget>

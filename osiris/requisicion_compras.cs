@@ -45,6 +45,7 @@ namespace osiris
 		
 		//imprimir
 		[Widget] Gtk.Button button_imprimir;
+		[Widget] Gtk.Button button_busca_requisiones = null;
 		// Para todas las busquedas este es el nombre asignado
 		// se declara una vez
 		[Widget] Gtk.Entry entry_cantidad_aplicada;
@@ -77,7 +78,9 @@ namespace osiris
 		
 		[Widget] Gtk.ComboBox combobox_tipo_admision;
 		[Widget] Gtk.ComboBox combobox_tipo_admision2;
+		[Widget] Gtk.Entry entry_motivo = null;
 		[Widget] Gtk.Entry entry_observaciones;
+		[Widget] Gtk.Entry entry_solicitado_por = null;
 		[Widget] Gtk.Entry entry_nombre_prodrequisado;		
 		[Widget] Gtk.Entry entry_totalitems_productos;
 		
@@ -94,7 +97,30 @@ namespace osiris
 		
 		// Para la busqueda de proveedores
 		[Widget] Gtk.TreeView lista_de_busqueda;
-				
+		
+		
+		/// <summary>
+		/// Ventana de busqueda de requisiciones
+		/// </summary>
+		//[Widget] Gtk.Entry entry_fecha_inicio;
+		[Widget] Gtk.Window envio_almacenes = null;
+		[Widget] Gtk.Entry entry_dia_inicio;
+		[Widget] Gtk.Entry entry_mes_inicio;
+		[Widget] Gtk.Entry entry_ano_inicio;
+		
+		//[Widget] Gtk.Entry entry_fecha_termino;
+		
+		[Widget] Gtk.Entry entry_dia_termino;
+		[Widget] Gtk.Entry entry_mes_termino;
+		[Widget] Gtk.Entry entry_ano_termino;
+		[Widget] Gtk.HBox hbox1 = null;
+		
+		[Widget] Gtk.CheckButton checkbutton_todos_envios;
+		[Widget] Gtk.CheckButton checkbutton_seleccion_presupuestos;
+		[Widget] Gtk.TreeView lista_almacenes;
+		[Widget] Gtk.Button button_buscar;
+		[Widget] Gtk.Button button_rep;
+					
 		string connectionString;
 		string nombrebd;
 		string LoginEmpleado;
@@ -117,6 +143,10 @@ namespace osiris
 		bool requi_urgente = false;
 		bool enviadacompras = false;			// Verifica que la requisicion este enviada a compras
 				
+		string nombre_proveedor1;
+		string nombre_proveedor2;
+		string nombre_proveedor3;
+		
 		string centrocosto = "";
     	string campoacceso = "";
     	
@@ -189,6 +219,8 @@ namespace osiris
 			
 			// Asignando valores de Fechas
 			this.entry_fecha_solicitud.Text = (string) DateTime.Now.ToString("yyyy-MM-dd");
+			
+			entry_solicitado_por.Text = NomEmpleado+" "+AppEmpleado+" "+ApmEmpleado;
 						
 			entry_dia_requerida.Text = (string) DateTime.Now.ToString("dd");
 			entry_mes_requerida.Text = (string) DateTime.Now.ToString("MM");
@@ -203,6 +235,7 @@ namespace osiris
 			
 			//imprime la informacion:
 			this.button_imprimir.Clicked += new EventHandler(on_imprime_requisicion_clicked);
+			button_busca_requisiones.Clicked += new EventHandler(on_button_busca_requisiones_clicked);
 			
 			// Activacion de boton de busqueda
 			button_busca_producto.Clicked += new EventHandler(on_button_busca_producto_clicked);
@@ -237,6 +270,8 @@ namespace osiris
 			this.combobox_tipo_admision.Sensitive = false;
 			this.combobox_tipo_admision2.Sensitive = false;
 			this.entry_observaciones.Sensitive = false;
+			entry_motivo.Sensitive = false;
+			entry_solicitado_por.Sensitive = false;
 			this.button_guardar_requisicion.Sensitive = false;
 			this.button_envio_compras.Sensitive = false;
 			this.button_autorizar_compra.Sensitive = false;
@@ -256,15 +291,39 @@ namespace osiris
 		
 		void on_imprime_requisicion_clicked(object sender, EventArgs args)
 		{
-		  if(this.entry_requisicion.Text == "")
-		  {
+		  if(this.entry_requisicion.Text == ""){
 				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,MessageType.Info,
 				                                               ButtonsType.Close,"Favor de llenar toda la informaciòn correspondiente");
-				msgBoxError.Run ();					msgBoxError.Destroy();
-			
+				msgBoxError.Run ();					msgBoxError.Destroy();			
 			}else{ 
-		  		new osiris.rpt_requisicion_compras(this.nombrebd,entry_requisicion.Text,entry_status_requisicion.Text,entry_fecha_solicitud.Text,entry_dia_requerida.Text,entry_mes_requerida.Text,entry_ano_requerida.Text,entry_observaciones.Text,entry_nombre_prodrequisado.Text,entry_totalitems_productos.Text,this.lista_requisicion_productos,this.treeViewEngineRequisicion);
+		  		new osiris.rpt_requisicion_compras(this.nombrebd,entry_requisicion.Text,entry_status_requisicion.Text,entry_fecha_solicitud.Text,
+				                                   entry_ano_requerida.Text+"-"+entry_mes_requerida.Text+"-"+entry_dia_requerida.Text,entry_observaciones.Text,
+				                                   entry_totalitems_productos.Text,this.lista_requisicion_productos,this.treeViewEngineRequisicion,
+				                                   entry_solicitado_por.Text,entry_motivo.Text,nombre_proveedor1,nombre_proveedor2,nombre_proveedor3,
+				                                   descripcion_tipo_requi,descripinternamiento,descripinternamiento2);
 			}
+		}
+		
+		void on_button_busca_requisiones_clicked(object sender, EventArgs args)
+		{
+		  	Glade.XML gxml = new Glade.XML (null, "almacen_costos_compras.glade", "envio_almacenes", null);
+			gxml.Autoconnect (this);
+				
+			entry_dia_inicio.Text = DateTime.Now.ToString("dd");
+			entry_mes_inicio.Text = DateTime.Now.ToString("MM");
+			entry_ano_inicio.Text = DateTime.Now.ToString("yyyy");
+				
+			entry_dia_termino.Text = DateTime.Now.ToString("dd");
+			entry_mes_termino.Text = DateTime.Now.ToString("MM");
+			entry_ano_termino.Text = DateTime.Now.ToString("yyyy");
+				
+			hbox1.Hide();
+			
+			button_salir.Clicked += new EventHandler(on_cierraventanas_clicked);
+			//button_buscar.Clicked += new EventHandler(on_buscar_clicked);
+           	//button_rep.Clicked += new EventHandler(on_button_rep_clicked);
+          	//checkbutton_todos_envios.Clicked += new EventHandler(on_checkbutton_todos_envios);
+          	checkbutton_seleccion_presupuestos.Hide();			
 		}
 		
 		void on_checkbutton_nueva_requisicion_clicked(object sender, EventArgs args)
@@ -296,6 +355,8 @@ namespace osiris
 					this.button_busca_proveedores1.Sensitive = true;
 					this.button_busca_proveedores2.Sensitive = true;
 					this.button_busca_proveedores3.Sensitive = true;
+					entry_motivo.Sensitive = true;
+					entry_solicitado_por.Sensitive = true;
 					// Limpiando Variables
 					this.entry_observaciones.Text = "";
 					this.entry_status_requisicion.Text = "";					
@@ -327,6 +388,8 @@ namespace osiris
 				this.button_busca_proveedores1.Sensitive = false;
 				this.button_busca_proveedores2.Sensitive = false;
 				this.button_busca_proveedores3.Sensitive = false;
+				entry_motivo.Sensitive = false;
+				entry_solicitado_por.Sensitive = false;
 		 	}
 		 }
 		
@@ -648,6 +711,8 @@ namespace osiris
  		{
  			string tiporequisicion_ = "";
  			bool validar_centro_costos = false;
+			int proveedor_proveedor;
+			
  			idtipointernamiento = idcentrocosto;
  			contador_items_autorizadoscompra = 0;
  			this.treeViewEngineRequisicion.Clear();
@@ -663,13 +728,18 @@ namespace osiris
 				comando.CommandText = "SELECT id_requisicion,fechahora_creacion_requisicion,"+
 									"osiris_erp_requisicion_enca.id_tipo_admisiones,osiris_his_tipo_admisiones.descripcion_admisiones,"+
 									"descripcion_admisiones_cargada,"+
-									"to_char(fechahora_envio_compras,'dd-MM-yyyy') AS fechahoraenviocompras,"+
+									"to_char(fechahora_envio_compras,'yyyy-MM-dd') AS fechahoraenviocompras,"+
+									"to_char(fechahora_creacion_requisicion,'yyyy-MM-dd') AS fechacrearequisicion,"+
+									"to_char(fecha_requerida,'yyyy') AS ano_fecha_requerida,"+
+									"to_char(fecha_requerida,'MM') AS mes_fecha_requerida,"+
+									"to_char(fecha_requerida,'dd') AS dia_fecha_requerida,"+
 									"requisicion_ordinaria,requisicion_urgente,"+
-									"enviada_a_compras,fechahora_envio_compras,observaciones,"+
-									"cancelado,"+
+									"enviada_a_compras,fechahora_envio_compras,observaciones,motivo_requisicion,"+
+									"cancelado,nombre1_empleado,nombre2_empleado,apellido_paterno_empleado,apellido_materno_empleado,"+
 									"fechahora_autorizacion_comprar,autorizacion_para_comprar,items_autorizados_paracomprar,total_items_comprados "+
-				  					"FROM osiris_erp_requisicion_enca,osiris_his_tipo_admisiones "+
+				  					"FROM osiris_erp_requisicion_enca,osiris_his_tipo_admisiones,osiris_empleado "+
 									"WHERE osiris_erp_requisicion_enca.id_tipo_admisiones = osiris_his_tipo_admisiones.id_tipo_admisiones "+
+									"AND osiris_erp_requisicion_enca.id_quien_requiso = osiris_empleado.login_empleado "+
 									"AND cancelado = 'false' "+
 									"AND id_requisicion = '"+this.entry_requisicion.Text.Trim()+"';";
 				
@@ -690,8 +760,19 @@ namespace osiris
 												(bool) lector["requisicion_ordinaria"],(bool) lector["requisicion_urgente"],(string) tiporequisicion_);
 						
 						idrequisicion = int.Parse((string) this.entry_requisicion.Text.Trim());
-						this.entry_observaciones.Text = (string) lector["observaciones"];
-												
+						this.entry_motivo.Text = (string) lector["motivo_requisicion"].ToString().Trim();
+						this.entry_observaciones.Text = (string) lector["observaciones"].ToString().Trim();
+						descripinternamiento = (string) lector["descripcion_admisiones"];	// Descripcion de Centro de Costos - Solicitado por
+						descripinternamiento2 = (string) lector["descripcion_admisiones_cargada"];	// Descripcion de Centro de Costos - con Cargo a
+						descripcion_tipo_requi = (string) tiporequisicion_;	// descripcion del tipo de requisicion
+						this.entry_solicitado_por.Text = (string) lector["nombre1_empleado"].ToString().Trim()+" "+
+														(string) lector["nombre2_empleado"].ToString().Trim()+" "+
+														(string) lector["apellido_paterno_empleado"].ToString().Trim()+" "+
+														(string) lector["apellido_materno_empleado"].ToString().Trim();
+						this.entry_fecha_solicitud.Text = (string) lector["fechacrearequisicion"];
+						this.entry_dia_requerida.Text = (string) lector["dia_fecha_requerida"];
+						this.entry_mes_requerida.Text = (string) lector["mes_fecha_requerida"];
+						this.entry_ano_requerida.Text = (string) lector["ano_fecha_requerida"];					
 						if ((bool) lector["enviada_a_compras"] == true && (bool) lector["cancelado"] == false){
 											
 							this.button_guardar_requisicion.Sensitive = false;
@@ -711,8 +792,7 @@ namespace osiris
 								MessageType.Info,ButtonsType.Ok,"Envie su Autorizacion para Generar ORDEN DE COMPRA "+(string) lector["fechahoraenviocompras"]);
 								msgBox1.Run ();		msgBox1.Destroy();
 								//Console.WriteLine("envio para autorizar");
-								if((string) LoginEmpleado == "DOLIVARES" || (string) LoginEmpleado == "ADMIN"){
-									
+								if((string) LoginEmpleado == "DOLIVARES" || (string) LoginEmpleado == "ADMIN"){									
 									this.button_autorizar_compra.Sensitive = false;
 									this.button_enviopara_autorizar.Sensitive = true;									
 								}							
@@ -774,7 +854,7 @@ namespace osiris
 										"WHERE osiris_erp_requisicion_deta.id_producto = osiris_productos.id_producto "+
 										"AND osiris_erp_requisicion_deta.id_proveedor1 = osiris_erp_proveedores.id_proveedor "+
 										"AND eliminado = 'false' "+
-										"AND id_requisicion = '"+this.entry_requisicion.Text.Trim()+"';";
+										"AND id_requisicion = '"+this.entry_requisicion.Text.Trim()+"' ";
 							
 						//Console.WriteLine(comando.CommandText);
 						NpgsqlDataReader lector1 = comando.ExecuteReader ();
@@ -797,9 +877,13 @@ namespace osiris
 								fechahoraautorizado_ = "";
 							}
 							
+							nombre_proveedor1 = (string) lector1["descripcion_proveedor"].ToString();
+							nombre_proveedor2 = (string) lector1["descripcion_proveedor2"].ToString();
+							nombre_proveedor3 = (string) lector1["descripcion_proveedor3"].ToString();
+							
 							treeViewEngineRequisicion.AppendValues((string) lector1["cantidadsolicitada"],
 														(string) lector1["descripcion_producto"], 
-														(string) lector1["idproducto"],
+														this.entry_solicitado_por.Text = (string) lector1["idproducto"],
 														(string) lector1["cantidadembalaje"],
 														(string) lector1["tipo_unidad_producto"],
 														"",
@@ -841,8 +925,19 @@ namespace osiris
 													(bool) lector["requisicion_ordinaria"],(bool) lector["requisicion_urgente"],(string) tiporequisicion_);
 							
 							idrequisicion = int.Parse((string) this.entry_requisicion.Text.Trim());
-							this.entry_observaciones.Text = (string) lector["observaciones"];
-							
+							this.entry_motivo.Text = (string) lector["motivo_requisicion"].ToString().Trim();
+							this.entry_observaciones.Text = (string) lector["observaciones"].ToString().Trim();
+							descripinternamiento = (string) lector["descripcion_admisiones"];	// Descripcion de Centro de Costos - Solicitado por
+							descripinternamiento2 = (string) lector["descripcion_admisiones_cargada"];	// Descripcion de Centro de Costos - con Cargo a
+							descripcion_tipo_requi = (string) tiporequisicion_;	// descripcion del tipo de requisicion
+							this.entry_solicitado_por.Text = (string) lector["nombre1_empleado"].ToString().Trim()+" "+
+														(string) lector["nombre2_empleado"].ToString().Trim()+" "+
+														(string) lector["apellido_paterno_empleado"].ToString().Trim()+" "+
+														(string) lector["apellido_materno_empleado"].ToString().Trim();
+							this.entry_fecha_solicitud.Text = (string) lector["fechacrearequisicion"];
+							this.entry_dia_requerida.Text = (string) lector["dia_fecha_requerida"];
+							this.entry_mes_requerida.Text = (string) lector["mes_fecha_requerida"];
+							this.entry_ano_requerida.Text = (string) lector["ano_fecha_requerida"];
 							if ((bool) lector["enviada_a_compras"] == true){						
 								this.button_guardar_requisicion.Sensitive = false;
 								this.button_envio_compras.Sensitive = false;
@@ -915,6 +1010,10 @@ namespace osiris
 								}else{
 									fechahoraautorizado_ = (string) lector1["fechahoraautorizado"];
 								}
+								
+								nombre_proveedor1 = (string) lector1["descripcion_proveedor"].ToString();
+								nombre_proveedor2 = (string) lector1["descripcion_proveedor2"].ToString();
+								nombre_proveedor3 = (string) lector1["descripcion_proveedor3"].ToString();
 								
 								treeViewEngineRequisicion.AppendValues((string) lector1["cantidadsolicitada"],
 															(string) lector1["descripcion_producto"], 
@@ -1206,7 +1305,8 @@ namespace osiris
 											"id_tipo_admisiones_cargada,"+
 											"descripcion_admisiones_cargada,"+
 											"id_quien_requiso,"+
-											"observaciones,"+ 
+											"observaciones,"+
+											"motivo_requisicion,"+
 											"requisicion_ordinaria,"+
 											"requisicion_urgente,"+
 											"descripcion_tipo_requisicion,"+
@@ -1219,7 +1319,8 @@ namespace osiris
 											idtipointernamiento2.ToString().Trim()+"','"+
 											descripinternamiento2.Trim()+"','"+
 											this.LoginEmpleado+"','"+
-											this.entry_observaciones.Text+"','"+
+											this.entry_observaciones.Text.ToUpper().Trim()+"','"+
+											entry_motivo.Text.ToString().Trim().ToUpper()+"','"+
 											requi_ordinaria.ToString()+"','"+
 											requi_urgente.ToString()+"','"+
 											descripcion_tipo_requi+"','"+																					

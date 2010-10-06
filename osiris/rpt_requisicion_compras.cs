@@ -291,7 +291,7 @@ namespace osiris
 			cr.MoveTo(250*escala_en_linux_windows,72*escala_en_linux_windows);			layout.SetText(descripinternamiento);			Pango.CairoHelper.ShowLayout (cr, layout);
 			cr.MoveTo(400*escala_en_linux_windows,72*escala_en_linux_windows);			layout.SetText(descripinternamiento2);			Pango.CairoHelper.ShowLayout (cr, layout);
 			cr.MoveTo(555*escala_en_linux_windows, 72*escala_en_linux_windows);			layout.SetText(fecha_solicitud);				Pango.CairoHelper.ShowLayout (cr, layout);
-			cr.MoveTo(102*escala_en_linux_windows,115*escala_en_linux_windows);			layout.SetText(motivo_de_requi.ToUpper());				Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(102*escala_en_linux_windows,105*escala_en_linux_windows);			layout.SetText(motivo_de_requi.ToUpper());				Pango.CairoHelper.ShowLayout (cr, layout);
 			cr.MoveTo(555*escala_en_linux_windows, 115*escala_en_linux_windows);		layout.SetText(fecha_requerida);				Pango.CairoHelper.ShowLayout (cr, layout);
 			cr.MoveTo(655*escala_en_linux_windows, 115*escala_en_linux_windows);			layout.SetText(descripcion_tipo_requi);		Pango.CairoHelper.ShowLayout (cr, layout);
 			cr.MoveTo(07*escala_en_linux_windows, 125*escala_en_linux_windows);			layout.SetText(observaciones.ToUpper());					Pango.CairoHelper.ShowLayout (cr, layout);

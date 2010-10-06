@@ -47,6 +47,7 @@ namespace osiris
         string nombrebd;
 		int comienzo_linea = 125;
 		int separacion_linea = 10;
+		int numpage = 1;
 		
 		string query_general = "";
 		
@@ -55,7 +56,7 @@ namespace osiris
 		class_conexion conexion_a_DB = new class_conexion();
 		class_public classpublic = new class_public();
 		
-		public rpt_solicitud_subalmacenes (int idsubalmacen,string query_numerosolicitud,string query_subalmacen, string query_fechas)
+		public rpt_solicitud_subalmacenes (int idsubalmacen, string query_numerosolicitud, string query_subalmacen, string query_fechas)
 		{
 			escala_en_linux_windows = classpublic.escala_linux_windows;
 			connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
@@ -282,6 +283,8 @@ namespace osiris
 			fontSize = 6.0;
 			desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;
 			cr.MoveTo(479*escala_en_linux_windows,05*escala_en_linux_windows);			layout.SetText("Fech.Rpt:"+(string) DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));		Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(479*escala_en_linux_windows,15*escala_en_linux_windows);			layout.SetText("N° Page :"+numpage.ToString().Trim());		Pango.CairoHelper.ShowLayout (cr, layout);
+
 			cr.MoveTo(05*escala_en_linux_windows,35*escala_en_linux_windows);			layout.SetText("Sistema Hospitalario OSIRIS");		Pango.CairoHelper.ShowLayout (cr, layout);
 			// Cambiando el tamaño de la fuente			
 			fontSize = 10.0;		
@@ -293,11 +296,13 @@ namespace osiris
 			desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;
 			layout.FontDescription.Weight = Weight.Normal;		// Letra normal
 			cr.MoveTo(05*escala_en_linux_windows, 55*escala_en_linux_windows);		layout.SetText("Area quien Solicito: "+descripcion_almacen);	Pango.CairoHelper.ShowLayout (cr, layout);
-			cr.MoveTo(250*escala_en_linux_windows,55*escala_en_linux_windows);		layout.SetText("N° de Solicitud: "+numerosolicitud);			Pango.CairoHelper.ShowLayout (cr, layout);
+			//cr.MoveTo(250*escala_en_linux_windows,55*escala_en_linux_windows);		layout.SetText("N° de Solicitud: "+numerosolicitud);			Pango.CairoHelper.ShowLayout (cr, layout);
 			cr.MoveTo(440*escala_en_linux_windows,55*escala_en_linux_windows);		layout.SetText("Fecha Envio: "+fechaenvio);						Pango.CairoHelper.ShowLayout (cr, layout);
 			cr.MoveTo(05*escala_en_linux_windows,65*escala_en_linux_windows);		layout.SetText("Tipo de Solicitud: "+tiposolicitud);			Pango.CairoHelper.ShowLayout (cr, layout);
 			
 			layout.FontDescription.Weight = Weight.Bold;		// Letra negrita
+			cr.MoveTo(250*escala_en_linux_windows,55*escala_en_linux_windows);		layout.SetText("N° de Solicitud: "+numerosolicitud);			Pango.CairoHelper.ShowLayout (cr, layout);
+
 			cr.MoveTo(05*escala_en_linux_windows,75*escala_en_linux_windows);		layout.SetText("N° Atencion: "+numeroatencion);					Pango.CairoHelper.ShowLayout (cr, layout);
 			cr.MoveTo(120*escala_en_linux_windows,75*escala_en_linux_windows);		layout.SetText("N° Expe.: "+pidpaciente);						Pango.CairoHelper.ShowLayout (cr, layout);
 			cr.MoveTo(220*escala_en_linux_windows,75*escala_en_linux_windows);		layout.SetText("Nombre Paciente: "+nombrepaciente);				Pango.CairoHelper.ShowLayout (cr, layout);
@@ -335,6 +340,7 @@ namespace osiris
 				Pango.FontDescription desc = Pango.FontDescription.FromString ("Sans");								
 				fontSize = 8.0;		desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;
 				comienzo_linea = 125;
+				numpage += 1;
 				imprime_encabezado(cr,layout,descripcion_almacen,numerosolicitud,fechaenvio,idusuario,nombreusr,numeroatencion,pidpaciente,nombrepaciente,tiposolicitud,procedimientoqx,diagnosticoqx);
 			}
 		}

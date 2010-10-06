@@ -232,9 +232,9 @@ namespace osiris
 			Pango.CairoHelper.ShowLayout (cr, layout);
 			cr.MoveTo(001, (filatex+50)*escala_en_linux_windows);									layout.SetText("(farmacológicos, anetésicos, quirúrgicos y  de rehabilitación) que le  han sido propuestos  y  que  se realizarán en  éste ");
 			Pango.CairoHelper.ShowLayout (cr, layout);
-			cr.MoveTo(001, (filatex+60)*escala_en_linux_windows);									layout.SetText("hospital. Este documento le permite otorgar su consentimiento informado y autorizar al HOSPITAL SANTA CECILIA DE"); 
+			cr.MoveTo(001, (filatex+60)*escala_en_linux_windows);									layout.SetText("hospital. Este documento le permite otorgar su consentimiento informado y autorizar al HOSPITAL XXXXXXXXXX"); 
 			Pango.CairoHelper.ShowLayout (cr, layout);
-			cr.MoveTo(001, (filatex+70)*escala_en_linux_windows);									layout.SetText("MONTERREY S.A. DE C.V. a  su médico  tratante, DR. (A):_________________________________________________");
+			cr.MoveTo(001, (filatex+70)*escala_en_linux_windows);									layout.SetText("                   a  su médico  tratante, DR. (A):_________________________________________________");
 			Pango.CairoHelper.ShowLayout (cr, layout);
 			cr.MoveTo(001, (filatex+80)*escala_en_linux_windows);									layout.SetText(" y  a su equipo de salud y personal del hospital, a realizar:");
 			Pango.CairoHelper.ShowLayout (cr, layout);

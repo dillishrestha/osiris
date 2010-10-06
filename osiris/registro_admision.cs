@@ -912,6 +912,11 @@ namespace osiris
 			store3.AppendValues ("CIRUGIA PROGRAMADA", 0);
 			store3.AppendValues ("SIN CIRUGIA", 0);
 			
+			TreeIter iter;
+			if (store3.GetIterFirst(out iter)){
+				combobox_tipo_cirugia.SetActiveIter (iter);
+			}
+			
 			combobox_tipo_cirugia.Changed += new EventHandler (onComboBoxChanged_combobox_tipo_cirugia);
 		}
 		

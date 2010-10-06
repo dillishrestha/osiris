@@ -5,6 +5,7 @@
 //
 // Autor    	: Juan Antonio Peña Gonzalez (Programacion) gjuanzz@gmail.com
 // 				  Daniel Olivares Cuevas (Pre-Programacion, Colaboracion y Ajustes) arcangeldoc@gmail.com
+//				  Traspaso a GTKPrint 23/09/2010
 // 				  
 // Licencia		: GLP
 //////////////////////////////////////////////////////////
@@ -28,20 +29,25 @@
 // Proposito	: 
 // Objeto		:
 /// //////////////////////////////////////////////////////
-
 using System;
 using Gtk;
-using Gnome;
 using Npgsql;
-using System.Data;
 using Glade;
-using System.Collections;
-using GtkSharp;
+using Cairo;
+using Pango;
 
 namespace osiris
 {
 	public class caja_comprobante
 	{
+		private static int pangoScale = 1024;
+		private PrintOperation print;
+		private double fontSize = 8.0;
+		int escala_en_linux_windows;		// Linux = 1  Windows = 8
+		int comienzo_linea = 125;
+		int separacion_linea = 10;
+		int numpage = 1;
+		
 		string connectionString;
         string nombrebd;
 		int PidPaciente = 0;
@@ -64,19 +70,8 @@ namespace osiris
 		string nombrecajero;
 		string totalabonos;
 		float valoriva;
-		
-		int filas=645;				
-				
-		// Declarando variable de fuente para la impresion
-		// Declaracion de fuentes tipo Bitstream Vera sans
-		//Gnome.Font fuente6 = Gnome.Font.FindClosest("Bitstream Vera Sans", 6);
-		//Gnome.Font fuente8 = Gnome.Font.FindClosest("Bitstream Vera Sans", 8);
-		//Gnome.Font fuente12 = Gnome.Font.FindClosest("Bitstream Vera Sans", 12);
-		Gnome.Font fuente10 = Gnome.Font.FindClosest("Bitstream Vera Sans", 10);
-		//Gnome.Font fuente36 = Gnome.Font.FindClosest("Bitstream Vera Sans", 36);
-		Gnome.Font fuente7 = Gnome.Font.FindClosest("Bitstream Vera Sans", 7);
-		Gnome.Font fuente9 = Gnome.Font.FindClosest("Bitstream Vera Sans", 9);
-				
+		string tipo_comprobante;
+								
 		//Declaracion de ventana de error
 		protected Gtk.Window MyWinError;
 		
@@ -86,7 +81,7 @@ namespace osiris
 		public caja_comprobante ( int PidPaciente_ , int folioservicio_,string nombrebd_ ,string entry_fecha_admision_,string entry_fechahora_alta_,
 						string entry_numero_factura_,string entry_nombre_paciente_,string entry_telefono_paciente_,string entry_doctor_,
 						string entry_tipo_paciente_,string entry_aseguradora_,string edadpac_,string fecha_nacimiento_,string dir_pac_,
-						string cirugia_,string empresapac_, int idtipopaciente_, string nombrecajero_, string totalabonos_)
+						string cirugia_,string empresapac_, int idtipopaciente_, string nombrecajero_, string totalabonos_,string tipo_comprobante_)
 		{
 			PidPaciente = PidPaciente_;//
 			folioservicio = folioservicio_;//
@@ -105,10 +100,76 @@ namespace osiris
 			empresapac = empresapac_;//
 			nombrecajero = nombrecajero_;
 			totalabonos = totalabonos_;
+			tipo_comprobante = tipo_comprobante_;
+			
 			connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
 			nombrebd = conexion_a_DB._nombrebd;
-			valoriva = float.Parse(classpublic.ivaparaaplicar);	
+			valoriva = float.Parse(classpublic.ivaparaaplicar);
+			escala_en_linux_windows = classpublic.escala_linux_windows;
+			
+			print.JobName = "COMPROBANTE DE "+tipo_comprobante_;
+			print.BeginPrint += new BeginPrintHandler (OnBeginPrint);
+			print.DrawPage += new DrawPageHandler (OnDrawPage);
+			print.EndPrint += new EndPrintHandler (OnEndPrint);
+			print.Run (PrintOperationAction.PrintDialog, null);
+					
+		}
 		
+		private void OnBeginPrint (object obj, Gtk.BeginPrintArgs args)
+		{
+			print.NPages = 1;  // crea cantidad de copias del reporte			
+			// para imprimir horizontalmente el reporte
+			//print.PrintSettings.Orientation = PageOrientation.Landscape;
+			//Console.WriteLine(print.PrintSettings.Orientation.ToString());
+		}
+		
+		private void OnDrawPage (object obj, Gtk.DrawPageArgs args)
+		{			
+			PrintContext context = args.Context;			
+			ejecutar_consulta_reporte(context);			
+		}
+		
+		void ejecutar_consulta_reporte(PrintContext context)
+		{
+			Cairo.Context cr = context.CairoContext;
+			Pango.Layout layout = context.CreatePangoLayout ();
+			Pango.FontDescription desc = Pango.FontDescription.FromString ("Sans");			
+			fontSize = 7.0;											layout = context.CreatePangoLayout ();		
+			desc.Size = (int)(fontSize * pangoScale);				layout.FontDescription = desc;			
+		}
+		
+		void imprime_encabezado(Cairo.Context cr,Pango.Layout layout)
+		{
+			Pango.FontDescription desc = Pango.FontDescription.FromString ("Sans");								
+			//cr.Rotate(90);  //Imprimir Orizontalmente rota la hoja cambian las posiciones de las lineas y columna					
+			fontSize = 8.0;
+			desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;
+			layout.FontDescription.Weight = Weight.Bold;		// Letra negrita
+			cr.MoveTo(05*escala_en_linux_windows,05*escala_en_linux_windows);			layout.SetText(classpublic.nombre_empresa);			Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(05*escala_en_linux_windows,15*escala_en_linux_windows);			layout.SetText(classpublic.direccion_empresa);		Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(05*escala_en_linux_windows,25*escala_en_linux_windows);			layout.SetText(classpublic.telefonofax_empresa);	Pango.CairoHelper.ShowLayout (cr, layout);
+			fontSize = 6.0;
+			desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;
+			cr.MoveTo(479*escala_en_linux_windows,05*escala_en_linux_windows);			layout.SetText("Fech.Rpt:"+(string) DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));		Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(479*escala_en_linux_windows,15*escala_en_linux_windows);			layout.SetText("N° Page :"+numpage.ToString().Trim());		Pango.CairoHelper.ShowLayout (cr, layout);
+
+			cr.MoveTo(05*escala_en_linux_windows,35*escala_en_linux_windows);			layout.SetText("Sistema Hospitalario OSIRIS");		Pango.CairoHelper.ShowLayout (cr, layout);
+			// Cambiando el tamaño de la fuente			
+			fontSize = 10.0;		
+			desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;
+			layout.FontDescription.Weight = Weight.Bold;		// Letra negrita
+			cr.MoveTo(225*escala_en_linux_windows, 35*escala_en_linux_windows);			layout.SetText("COMPROBANTE DE "+tipo_comprobante);				Pango.CairoHelper.ShowLayout (cr, layout);
+			
+		}
+		
+		private void OnEndPrint (object obj, Gtk.EndPrintArgs args)
+		{
+			
+		}
+	}
+}
+
+/*
 			Gnome.PrintJob    trabajo   = new Gnome.PrintJob (PrintConfig.Default());
         	Gnome.PrintDialog dialogo   = new Gnome.PrintDialog (trabajo, "COMPROBANTE DE CAJA", 0);
         	int         respuesta = dialogo.Run ();
@@ -498,3 +559,4 @@ namespace osiris
 	
 	}    
 }
+*/

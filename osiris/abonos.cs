@@ -25,7 +25,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 // 
 //////////////////////////////////////////////////////////
-// Programa		: hscmty.cs
+// Programa		:
 // Proposito	:  
 // Objeto		: 
 //////////////////////////////////////////////////////////
@@ -299,7 +299,8 @@ namespace osiris
 								"WHERE osiris_erp_abonos.folio_de_servicio = '"+this.folioservicio.ToString()+"' "+
 								"AND osiris_erp_abonos.id_forma_de_pago = osiris_erp_forma_de_pago.id_forma_de_pago "+
 								"AND osiris_erp_abonos.eliminado = 'false' "+
-								"ORDER BY osiris_erp_abonos.folio_de_servicio;";															
+								"ORDER BY osiris_erp_abonos.folio_de_servicio;";
+				Console.WriteLine(comando.CommandText);
 				NpgsqlDataReader lector = comando.ExecuteReader ();
 				while (lector.Read())
 				{	
@@ -685,7 +686,8 @@ namespace osiris
 				imprime_resumen_comprobante("RESUMEN DE ABONOS","resumen");
 			}
 			if (this.tipo_reporte == "comprobante")	{ 
-				imprime_resumen_comprobante("COMPROBANTE DE CAJA","comprobante");
+				
+				//imprime_resumen_comprobante("COMPROBANTE DE CAJA","comprobante");
 			}
 		}	
 		

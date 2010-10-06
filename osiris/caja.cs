@@ -89,6 +89,7 @@ namespace osiris
 		[Widget] Gtk.Button button_imprimir_protocolo;
 		[Widget] Gtk.Button button_compro_caja;
 		[Widget] Gtk.Button button_compro_serv;
+		[Widget] Gtk.Button button_pagare = null;
 		[Widget] Gtk.Button button_bloquea_cuenta;
 		[Widget] Gtk.Button button_alta_paciente;
 		[Widget] Gtk.Button button_abonar;
@@ -364,6 +365,8 @@ namespace osiris
 			button_compro_caja.Clicked += new EventHandler(on_button_compro_caja_clicked);
 			// Imprimime comprobante de caja
 			button_compro_serv.Clicked += new EventHandler(on_button_compro_serv_clicked);
+			// Imprime pagare
+			button_pagare.Clicked += new EventHandler(on_button_compro_caja_clicked);
 			//quita lementos aplicados
 			button_quitar_aplicados.Clicked += new EventHandler(on_button_quitar_aplicados_clicked);
 			// Busqueda de Productos
@@ -828,7 +831,7 @@ namespace osiris
 						entry_ingreso.Text,entry_egreso.Text,entry_numero_factura.Text,
 						entry_nombre_paciente.Text,entry_telefono_paciente.Text,entry_doctor.Text,
 						entry_tipo_paciente.Text,entry_aseguradora.Text,edadpac+" Años y "+mesespac+" Meses",fecha_nacimiento,
-						dir_pac,cirugia,empresapac,id_tipopaciente,NomEmpleado+" "+AppEmpleado+" "+ApmEmpleado,this.LoginEmpleado,this.agregarmasabonos);
+						dir_pac,cirugia,empresapac,id_tipopaciente,NomEmpleado+" "+AppEmpleado+" "+ApmEmpleado,this.LoginEmpleado,agregarmasabonos);
 			}
 		}
 		
@@ -1665,8 +1668,12 @@ namespace osiris
 				
 		void on_button_compro_caja_clicked(object sender, EventArgs args)
 		{
-			if ((string) entry_folio_servicio.Text == "" || (string) entry_pid_paciente.Text == "" )
-		    {	
+			comprobante_venta_servicio();	
+		}
+		
+		void comprobante_venta_servicio()
+		{
+			if ((string) entry_folio_servicio.Text == "" || (string) entry_pid_paciente.Text == "" ){	
 				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
 				MessageType.Error, ButtonsType.Close, "Debe de llenar el campo de Folio con uno \n"+
 							"existente para que el comprobante se muestre \n"+"o no a pulsado el boton ''Seleccionar''");
@@ -1828,12 +1835,13 @@ namespace osiris
 		
 		void comprobante_de_caja_pago()
 		{
+			// rpt_caja-comprobante.cs
 			new caja_comprobante ( PidPaciente,this.folioservicio,nombrebd,
 					entry_ingreso.Text,entry_egreso.Text,entry_numero_factura.Text,
 					entry_nombre_paciente.Text,entry_telefono_paciente.Text,entry_doctor.Text,
-					entry_tipo_paciente.Text,entry_aseguradora.Text,edadpac+" Años y "+mesespac+" Meses",
+					entry_tipo_paciente.Text,entry_aseguradora.Text,edadpac+" Años",
 					fecha_nacimiento,dir_pac,cirugia,empresapac,id_tipopaciente,NomEmpleado+" "+AppEmpleado+" "+ApmEmpleado,
-					this.entry_total_abonos_caja.Text.Trim());
+					this.entry_total_abonos_caja.Text.Trim(),"VENTA");
 		}
 		
 		void on_button_compro_serv_clicked(object sender, EventArgs args)
@@ -1846,10 +1854,21 @@ namespace osiris
 				msgBoxError.Run ();				msgBoxError.Destroy();
 			}else{
 				// rpt_comprobante_serv.cs
+				
 				new comprobante_serv ( PidPaciente,this.folioservicio,nombrebd,
-						entry_ingreso.Text,entry_egreso.Text,entry_numero_factura.Text,
-						entry_nombre_paciente.Text,entry_telefono_paciente.Text,entry_doctor.Text,
-						entry_tipo_paciente.Text,entry_aseguradora.Text,edadpac+" Años y "+mesespac+" Meses",fecha_nacimiento,dir_pac,cirugia,empresapac,id_tipopaciente);
+					entry_ingreso.Text,entry_egreso.Text,entry_numero_factura.Text,
+					entry_nombre_paciente.Text,entry_telefono_paciente.Text,entry_doctor.Text,
+					entry_tipo_paciente.Text,entry_aseguradora.Text,edadpac+" Años",
+				    fecha_nacimiento,dir_pac,cirugia,empresapac,id_tipopaciente);
+				
+				// rpt_caja-comprobante.cs
+				/*new caja_comprobante ( PidPaciente,this.folioservicio,nombrebd,
+					entry_ingreso.Text,entry_egreso.Text,entry_numero_factura.Text,
+					entry_nombre_paciente.Text,entry_telefono_paciente.Text,entry_doctor.Text,
+					entry_tipo_paciente.Text,entry_aseguradora.Text,edadpac+" Años",
+					fecha_nacimiento,dir_pac,cirugia,empresapac,id_tipopaciente,NomEmpleado+" "+AppEmpleado+" "+ApmEmpleado,
+					this.entry_total_abonos_caja.Text.Trim(),"SERVICIO");
+				*/
 			}
 		}
 		
@@ -2674,6 +2693,7 @@ namespace osiris
 			sub_total = 0;
 			id_tipopaciente = 0;
 			idempresa_paciente = 0;
+			agregarmasabonos = true;
 			
 			NpgsqlConnection conexion; 
 			conexion = new NpgsqlConnection (connectionString+nombrebd);
@@ -2757,6 +2777,7 @@ namespace osiris
 					button_procedimiento_totales.Sensitive = false;
 					button_compro_caja.Sensitive = false;
 					button_compro_serv.Sensitive = false;
+					button_pagare.Sensitive = false;
 					button_quitar_aplicados.Sensitive = true;
 					button_actualizar.Sensitive = true;
 					button_abre_folio.Sensitive = false;
@@ -2904,6 +2925,7 @@ namespace osiris
 											button_honorario_medico.Sensitive = true;
 											button_compro_caja.Sensitive = true;
 											button_compro_serv.Sensitive = true;
+											button_pagare.Sensitive = true;
 											button_traspasa_productos.Sensitive = true;
 											MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
 												MessageType.Error,ButtonsType.Close,"Ya se dio el ALTA a este paciente, CIERRE la \n"+

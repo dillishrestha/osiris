@@ -78,8 +78,9 @@ namespace osiris
 		[Widget] Gtk.Button button_contrato_prest = null;
 		[Widget] Gtk.Button button_historia_clinica = null;
 		[Widget] Gtk.RadioButton radiobutton_tipo_cirugia  = null;
-		[Widget] Gtk.Entry entry_alergia_paciente = null;
+		[Widget] Gtk.ComboBox  combobox_tipo_cirugia = null;
 		[Widget] Gtk.CheckButton checkbutton_camb_dats;
+		[Widget] Gtk.ComboBox combobox_diagprimeravez = null;
 				
 		//Declarando la barra de estado
 		[Widget] Gtk.Statusbar statusbar_caja;
@@ -128,7 +129,7 @@ namespace osiris
 		[Widget] Gtk.RadioButton radiobutton_cirugia;
 		[Widget] Gtk.RadioButton radiobutton_diag_cie10;
 		[Widget] Gtk.RadioButton radiobutton_diag_final;
-		[Widget] Gtk.RadioButton radiobutton_alergico;
+		[Widget] Gtk.RadioButton radiobutton_diag_primeravez;
 
 		//nuevos:
 		//[Widget] Gtk.RadioButton radiobutton_diag_cie_10;
@@ -171,6 +172,8 @@ namespace osiris
 		int idmedicotratante = 1;
  		string nombmedico;
  		string tipobusqueda = "AND osiris_his_medicos.nombre1_medico LIKE '";
+		string descrip_tipo_cirugia = "";
+		string diag_primeravez = "";
 		
 		bool tipomedico = true;
 		
@@ -227,9 +230,10 @@ namespace osiris
 		    radiobutton_diag_final.Sensitive = false;
 			radiobutton_cirugia.Sensitive= false;
 			radiobutton_tipo_cirugia.Sensitive= false;
-			radiobutton_alergico.Sensitive= false;
-			entry_alergia_paciente.Sensitive= false;
-			
+			radiobutton_diag_primeravez.Sensitive = false;
+			combobox_tipo_cirugia.Sensitive = false;
+			combobox_diagprimeravez.Sensitive = false;
+									
 			if( control == 1){
 				entry_folio_servicio.Sensitive = false;
 				entry_folio_servicio.ModifyText(StateType.Normal, new Gdk.Color(255,0,0));
@@ -279,11 +283,82 @@ namespace osiris
 			
 			radiobutton_cirugia.Clicked += new EventHandler(on_radio_clicked);
 			
-			radiobutton_alergico.Clicked += new EventHandler(on_radio_clicked);
-	    	
+			radiobutton_tipo_cirugia.Clicked += new EventHandler(on_radio_clicked);
+			
+			radiobutton_diag_primeravez.Clicked += new EventHandler(on_radio_clicked);
+						   	
 			statusbar_caja.Pop(0);
 			statusbar_caja.Push(1, "login: "+LoginEmpleado+"  |Usuario: "+NomEmpleado+" "+AppEmpleado+" "+ApmEmpleado);
 			statusbar_caja.HasResizeGrip = false;
+		}
+		
+		void llenado_combobox_diagprimeravez(string diag_primeravez_)
+		{
+			// Llenado de combobox con los tipos de cirugia
+			this.combobox_diagprimeravez.Clear();
+			CellRendererText cell3 = new CellRendererText();
+			combobox_diagprimeravez.PackStart(cell3, true);
+			combobox_diagprimeravez.AddAttribute(cell3,"text",0);
+	        
+			ListStore store3 = new ListStore( typeof (string), typeof (int));
+			combobox_diagprimeravez.Model = store3;
+			store3.AppendValues (diag_primeravez_, 0);
+			store3.AppendValues ("", 0);
+			store3.AppendValues ("SI", 0);
+			store3.AppendValues ("NO", 0);
+			
+			TreeIter iter;
+			if (store3.GetIterFirst(out iter)){
+				combobox_diagprimeravez.SetActiveIter (iter);
+			}
+			
+			combobox_diagprimeravez.Changed += new EventHandler (onComboBoxChanged_combobox_diagprimeravez);
+		}
+		
+		void onComboBoxChanged_combobox_diagprimeravez(object sender, EventArgs args)
+		{
+	    	ComboBox combobox_diagprimeravez = sender as ComboBox;
+			if (sender == null)	{	return;	}
+			TreeIter iter;			
+			int numbusqueda = 0;
+			if (combobox_diagprimeravez.GetActiveIter (out iter)){
+				diag_primeravez = (string) combobox_diagprimeravez.Model.GetValue(iter,0);
+			}
+			Console.WriteLine(diag_primeravez);
+		}
+						
+		void llenado_combobox_tipocirugia(string descrip_tipo_cirugia_)
+		{
+			// Llenado de combobox con los tipos de cirugia
+			this.combobox_tipo_cirugia.Clear();
+			CellRendererText cell3 = new CellRendererText();
+			combobox_tipo_cirugia.PackStart(cell3, true);
+			combobox_tipo_cirugia.AddAttribute(cell3,"text",0);
+	        
+			ListStore store3 = new ListStore( typeof (string), typeof (int));
+			combobox_tipo_cirugia.Model = store3;
+			store3.AppendValues (descrip_tipo_cirugia_, 0);
+			store3.AppendValues ("CIRUGIA AMBULATORIA", 0);
+			store3.AppendValues ("CIRUGIA PROGRAMADA", 0);
+			store3.AppendValues ("SIN CIRUGIA", 0);
+			
+			TreeIter iter;
+			if (store3.GetIterFirst(out iter)){
+				combobox_tipo_cirugia.SetActiveIter (iter);
+			}
+			
+			combobox_tipo_cirugia.Changed += new EventHandler (onComboBoxChanged_combobox_tipo_cirugia);
+		}
+		
+		void onComboBoxChanged_combobox_tipo_cirugia(object sender, EventArgs args)
+		{
+	    	ComboBox combobox_tipo_cirugia = sender as ComboBox;
+			if (sender == null)	{	return;	}
+			TreeIter iter;			
+			int numbusqueda = 0;
+			if (combobox_tipo_cirugia.GetActiveIter (out iter)){
+				descrip_tipo_cirugia = (string) combobox_tipo_cirugia.Model.GetValue(iter,0);
+			}
 		}
 		
 		void on_button_historia_clinica_clicked(object sender, EventArgs args)
@@ -306,7 +381,8 @@ namespace osiris
 				    button_busc_diag.Sensitive = false;
 					button_diag_final.Sensitive = false;
 				    button_busc_cirugia.Sensitive = false;
-					entry_alergia_paciente.Sensitive= false;
+					combobox_tipo_cirugia.Sensitive= false;
+					combobox_diagprimeravez.Sensitive = false;					
 				}
 				if (radiobutton_med_trat.Active == true){
 					button_busc_medic_trat.Sensitive =true;
@@ -315,7 +391,8 @@ namespace osiris
 					button_busc_diag.Sensitive = false;
 					button_diag_final.Sensitive = false;
 					button_busc_cirugia.Sensitive = false;
-					entry_alergia_paciente.Sensitive= false;
+					combobox_tipo_cirugia.Sensitive= false;
+					combobox_diagprimeravez.Sensitive = false;	
 				}
 				if (radiobutton_diag.Active == true){
 					button_busc_diag.Sensitive = false;
@@ -324,7 +401,8 @@ namespace osiris
 					button_busc_cirugia.Sensitive = false;
 					button_busc_medic_diag.Sensitive = false;
 					button_busc_medic_trat.Sensitive =false;
-					entry_alergia_paciente.Sensitive= false;
+					combobox_tipo_cirugia.Sensitive= false;
+					combobox_diagprimeravez.Sensitive = false;	
 				}					    
 				if (radiobutton_cirugia.Active == true){
 					button_busc_cirugia.Sensitive = true;
@@ -333,7 +411,8 @@ namespace osiris
 					button_busc_medic_diag.Sensitive = false;
 					button_busc_diag.Sensitive = false;
 					button_diag_final.Sensitive = false;
-					entry_alergia_paciente.Sensitive= false;
+					combobox_tipo_cirugia.Sensitive= false;
+					combobox_diagprimeravez.Sensitive = false;
 				}
 				if (radiobutton_diag_cie10.Active == true){
 					this.button_busc_diag.Sensitive = true;
@@ -343,7 +422,8 @@ namespace osiris
 					//button_busc_diag.Sensitive = false;
 					button_diag_final.Sensitive = false;
 					button_busc_cirugia.Sensitive = false;
-					entry_alergia_paciente.Sensitive= false;
+					combobox_tipo_cirugia.Sensitive= false;
+					combobox_diagprimeravez.Sensitive = false;
 				}
 	            if (radiobutton_diag_final.Active == true){
 					button_busc_medic_trat.Sensitive = false;
@@ -352,17 +432,28 @@ namespace osiris
 					button_busc_diag.Sensitive = false;
 					button_busc_cirugia.Sensitive = false;
 					button_busc_diag.Sensitive = false;
-					entry_alergia_paciente.Sensitive= false;
+					combobox_tipo_cirugia.Sensitive= false;
+					combobox_diagprimeravez.Sensitive = false;
 				}
-				if(radiobutton_alergico.Active == true){
-					entry_alergia_paciente.Sensitive= true;
+				if(radiobutton_tipo_cirugia.Active == true){
 					button_busc_medic_trat.Sensitive = false;
 					button_diag_final.Sensitive = false;
 					button_busc_medic_diag.Sensitive = false;
 					button_busc_diag.Sensitive = false;
 					button_busc_cirugia.Sensitive = false;
+					combobox_tipo_cirugia.Sensitive= true;
+					combobox_diagprimeravez.Sensitive = false;
+				}
+				if(radiobutton_diag_primeravez.Active == true){
+					combobox_diagprimeravez.Sensitive = true;
+					button_busc_cirugia.Sensitive = false;
+					button_busc_medic_trat.Sensitive =false;
+					this.entry_diag.Sensitive = false;
+					button_busc_medic_diag.Sensitive = false;
 					button_busc_diag.Sensitive = false;
-				}				
+					button_diag_final.Sensitive = false;
+					combobox_tipo_cirugia.Sensitive= false;
+				}
 			}
 		}
 		
@@ -377,10 +468,12 @@ namespace osiris
 		        radiobutton_diag_final.Sensitive= true;
 				radiobutton_cirugia.Sensitive= true;
 				radiobutton_tipo_cirugia.Sensitive= true;
-				radiobutton_alergico.Sensitive= true;
+				radiobutton_diag_primeravez.Sensitive = true;
                 button_busc_medic_diag.Sensitive = true;
 				button_guardar.Sensitive = true;
-				entry_alergia_paciente.Sensitive= true;				
+				combobox_tipo_cirugia.Sensitive = true;
+				combobox_diagprimeravez.Sensitive = true;
+						
 		      }else{	       
 		      	radiobutton_med.Sensitive= false;
 				radiobutton_med_trat.Sensitive= false;
@@ -389,14 +482,15 @@ namespace osiris
 		        radiobutton_diag_final.Sensitive = false;
 				radiobutton_cirugia.Sensitive= false;
 				radiobutton_tipo_cirugia.Sensitive= false;
-				radiobutton_alergico.Sensitive= false;
-				entry_alergia_paciente.Sensitive= false;
 				button_busc_medic_diag.Sensitive = false;
 				button_busc_medic_trat.Sensitive = false;
 				button_busc_diag.Sensitive = false;
 				button_diag_final.Sensitive = false;
 				button_busc_cirugia.Sensitive = false;
 				button_guardar.Sensitive = false;
+				radiobutton_diag_primeravez.Sensitive = false;
+				combobox_tipo_cirugia.Sensitive = false;
+				combobox_diagprimeravez.Sensitive = false;
 			}
 			verifica_radiobutton();
 		}
@@ -884,6 +978,14 @@ namespace osiris
 											"nombre_de_cirugia ='" +this.entry_docimp_cirugia.Text.Trim()+"' "+
 											"WHERE folio_de_servicio =  '"+this.entry_folio_servicio.Text+"';";
 				}
+				if (radiobutton_tipo_cirugia.Active == true){
+					strsql = "UPDATE osiris_erp_movcargos SET tipo_cirugia ='"+descrip_tipo_cirugia+"' "+
+											"WHERE folio_de_servicio =  '"+this.entry_folio_servicio.Text+"';";
+				}
+				if (radiobutton_diag_primeravez.Active == true){					
+					strsql = "UPDATE osiris_erp_movcargos SET diagnostico_primeravez ='"+diag_primeravez+"' "+
+											"WHERE folio_de_servicio =  '"+this.entry_folio_servicio.Text+"';";
+				}
 				//Console.WriteLine(strsql);
 				comando.CommandText = strsql;
 				comando.ExecuteNonQuery();
@@ -1049,7 +1151,7 @@ namespace osiris
             				"osiris_erp_movcargos.id_tipo_admisiones AS idtipoadmision,descripcion_admisiones,"+
             				"osiris_erp_cobros_enca.id_aseguradora,descripcion_aseguradora, "+
             				"descripcion_diagnostico_movcargos,nombre_medico_encabezado, "+
-            				"osiris_erp_cobros_enca.id_medico,nombre_medico,cancelado, "+
+            				"osiris_erp_cobros_enca.id_medico,nombre_medico,cancelado,tipo_cirugia,diagnostico_primeravez,"+
             				"osiris_erp_movcargos.descripcion_diagnostico_cie10,osiris_erp_movcargos.descripcion_diagnostico_final "+            				
             				//"osiris_his_tipo_diagnosticos.descripcion_diagnostico "+
             				"FROM osiris_erp_cobros_enca,osiris_his_paciente,osiris_erp_movcargos,osiris_his_tipo_admisiones,osiris_his_tipo_pacientes, "+
@@ -1105,7 +1207,9 @@ namespace osiris
 						this.entry_med_trat.Text = (string) lector["nombre_medico_tratante"];
 						this.entry_diag.Text = (string) lector["descripcion_diagnostico_movcargos"];
 						this.entry_diag_cie10.Text = (string) lector["descripcion_diagnostico_cie10"];
-						this.entry_diag_final.Text = (string) lector["descripcion_diagnostico_final"];						
+						this.entry_diag_final.Text = (string) lector["descripcion_diagnostico_final"];
+						llenado_combobox_tipocirugia((string) lector["tipo_cirugia"]);
+						llenado_combobox_diagprimeravez((string) lector["diagnostico_primeravez"]);
 					}
 					this.checkbutton_camb_dats.Sensitive = true;
 					//this.button_guardar.Sensitive = true;

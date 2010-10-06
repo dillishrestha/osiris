@@ -90,6 +90,7 @@ namespace osiris
 		int idaseguradora_paciente;
 		int PidPaciente;
 		int folioservicio;
+		string departament;
 			//********    //nuevo lista de precios multiples//   *****************
 		bool aplica_precios_aseguradoras = false;// Toma el valor de si se tiene creado la lista de precio en la tabla de Productos
 		bool aplica_precios_empresas = false;	// Toma el valor de si se tiene creado la lista de precio en la tabla de Productos
@@ -135,6 +136,7 @@ namespace osiris
 			idaseguradora_paciente = idaseguradora_paciente_;
 			PidPaciente = PidPaciente_;
 			folioservicio = folioservicio_;
+			departament = departament_;
 			valoriva = float.Parse(classpublic.ivaparaaplicar);
 			
 			Glade.XML gxml = new Glade.XML (null, "hospitalizacion.glade", "solicitar_examen_labrx", null);
@@ -142,7 +144,7 @@ namespace osiris
 			
 			// show the window
 			solicitar_examen_labrx.Show();
-			solicitar_examen_labrx.Title = departament_;
+			solicitar_examen_labrx.Title = departament_+"/"+descripinternamiento;
 			entry_id_proveedor.Sensitive = false;
 			entry_nombre_proveedor.Sensitive = false;
 			button_buscar_proveedor.Sensitive = false;
@@ -163,14 +165,14 @@ namespace osiris
 			button_busca_producto.Clicked += new EventHandler(on_button_busca_producto_clicked);
 			button_enviar_solicitud_labrx.Clicked += new EventHandler(on_button_enviar_solicitud_labrx_clicked);
 			checkbutton_nueva_solicitud.Clicked += new EventHandler(on_checkbutton_nueva_solicitud_clicked);
-							
+			button_imprimir_solilabrx.Clicked += new EventHandler(on_button_imprimir_solilabrx_clicked);				
 			entry_id_proveedor.Sensitive = false;
 			entry_nombre_proveedor.Sensitive = false;
 			button_buscar_proveedor.Sensitive = false;
 			button_enviar_solicitud_labrx.Sensitive = false;
 			button_busca_producto.Sensitive = false;
 			button_quitar_examen.Sensitive = false;
-			button_imprimir_solilabrx.Sensitive = false;
+			//button_imprimir_solilabrx.Sensitive = false;
 			
 			crea_treeview_estudios();
 			
@@ -179,6 +181,11 @@ namespace osiris
 			statusbar_solicitud_labrx.Pop(0);
 			statusbar_solicitud_labrx.Push(1, "login: "+LoginEmpleado+"  |Usuario: "+NomEmpleado+" "+AppEmpleado+" "+ApmEmpleado);
 			statusbar_solicitud_labrx.HasResizeGrip = false;
+		}
+		
+		void on_button_imprimir_solilabrx_clicked(object sender, EventArgs args)
+	    {
+			new osiris.rpt_solicitud_labrx(departament,id_tipopaciente,agrupacion_lab_rx," AND folio_de_solicitud = '"+this.entry_numero_solicitud.Text+"'");
 		}
 		
 		void on_checkbutton_nueva_solicitud_clicked(object sender, EventArgs args)
@@ -191,7 +198,7 @@ namespace osiris
 				msgBox.Destroy();
 		 		if (miResultado == ResponseType.Yes){
 					treeViewEngineEstudios.Clear();
-					ultimasolicitud = classpublic.lee_ultimonumero_registrado("osiris_his_solicitudes_labrx","folio_de_solicitud","WHERE id_tipo_admisiones = '"+id_tipoadmisiones.ToString().Trim()+"' ");
+					ultimasolicitud = classpublic.lee_ultimonumero_registrado("osiris_his_solicitudes_labrx","folio_de_solicitud","WHERE id_tipo_admisiones2 = '"+id_tipoadmisiones.ToString().Trim()+"' ");
 					entry_numero_solicitud.Text = ultimasolicitud;
 					button_enviar_solicitud_labrx.Sensitive = true;
 					button_busca_producto.Sensitive = true;
@@ -361,7 +368,9 @@ namespace osiris
 												//"status,"+
 												"id_proveedor,"+
 												"id_tipo_admisiones,"+
-												"folio_interno_labrx"+")"+
+												"folio_interno_labrx,"+
+												"area_quien_solicita,"+
+												"id_tipo_admisiones2)"+
 														" VALUES ('"+
 												ultimasolicitud+"','"+
 												folioservicio.ToString()+"','"+
@@ -377,8 +386,10 @@ namespace osiris
 												//
 												//
 												entry_id_proveedor.Text.Trim()+"','"+
-												id_tipoadmisiones.ToString().Trim()+"','"+
-												(string) this.treeview_solicitud_labrx.Model.GetValue(iter,10).ToString().Trim()+"');";
+												id_tipopaciente.ToString().Trim()+"','"+
+												(string) this.treeview_solicitud_labrx.Model.GetValue(iter,10).ToString().Trim()+"','"+
+												(string) descripinternamiento+"','"+
+												id_tipoadmisiones.ToString().Trim()+"');";
 						Console.WriteLine(comando.CommandText);
 						comando.ExecuteNonQuery();
 						comando.Dispose();					
@@ -399,7 +410,9 @@ namespace osiris
 												//"status,"+
 												"id_proveedor,"+
 												"id_tipo_admisiones,"+
-												"folio_interno_labrx"+")"+
+												"folio_interno_labrx,"+
+												"area_quien_solicita,"+
+												"id_tipo_admisiones2)"+
 														" VALUES ('"+
 												ultimasolicitud+"','"+
 												folioservicio.ToString()+"','"+
@@ -415,8 +428,10 @@ namespace osiris
 												//
 												//
 												entry_id_proveedor.Text.Trim()+"','"+
-												id_tipoadmisiones.ToString().Trim()+"','"+
-												(string) this.treeview_solicitud_labrx.Model.GetValue(iter,10).ToString().Trim()+"');";
+												id_tipopaciente.ToString().Trim()+"','"+
+												(string) this.treeview_solicitud_labrx.Model.GetValue(iter,10).ToString().Trim()+"','"+
+												(string) descripinternamiento+"','"+
+												id_tipoadmisiones.ToString().Trim()+"');";
 							//Console.WriteLine(comando.CommandText);
 							comando.ExecuteNonQuery();
 							comando.Dispose();			

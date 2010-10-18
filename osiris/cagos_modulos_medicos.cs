@@ -355,7 +355,7 @@ namespace osiris
 		{
 			// Si la descripcioninternamineto es "*" llena el combobox con todas los departamtos medicos
 			Gtk.Button button_solicitud_labrx = (Gtk.Button) obj;
-			if(button_busca_producto.Sensitive == true){
+			//if(button_busca_producto.Sensitive == true){
 				if(button_solicitud_labrx.Name.ToString() == "button_solicitud_lab"){					
 					new osiris.solicitudes_enfermeria(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,"Solicitud Examen de LABORATORIO",400,"LAB",
 					                                  descripinternamiento,idtipointernamiento,idempresa_paciente,idaseguradora_paciente,PidPaciente,folioservicio,
@@ -368,10 +368,10 @@ namespace osiris
 					                                  entry_nombre_paciente.Text.Trim(),entry_id_doctor.Text.Trim(),entry_doctor.Text.Trim(),
 					                                  this.entry_cirugia.Text.Trim(),this.entry_id_habitacion.Text.Trim());
 				}
-			}else{
-				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,MessageType.Info,ButtonsType.Close, "NO puede crear una solicitud, verifique....");
-				msgBoxError.Run ();	msgBoxError.Destroy();
-			}						
+			//}else{
+			//	MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,MessageType.Info,ButtonsType.Close, "NO puede crear una solicitud, verifique....");
+			//	msgBoxError.Run ();	msgBoxError.Destroy();
+			//}						
 		}
 		
 		void on_button_asignacion_habitacion_clicked(object sender, EventArgs args)

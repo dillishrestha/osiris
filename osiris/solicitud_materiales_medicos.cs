@@ -557,7 +557,7 @@ namespace osiris
                						"to_char(osiris_his_solicitudes_deta.costo_por_unidad,'999999999.99') AS costoporunidad,"+
                						"to_char(cantidad_autorizada,'999999.999') AS cantidadautorizada,id_quien_autorizo, "+
                						"to_char(fechahora_solicitud,'dd-MM-yyyy') AS fechahorasolicitud,"+
-               						"to_char(fechahora_autorizado,'dd-MM-yyyy') AS fechahoraautorizado,"+
+               						"to_char(fechahora_autorizado,'dd-MM-yyyy') AS fechahoraautorizado,procedimiento_qx,diagnostico_qx,"+
                						"status,surtido,osiris_productos.descripcion_producto,"+
                						"to_char(osiris_his_solicitudes_deta.id_secuencia,'9999999999') AS idsecuencia,"+
 									"descripcion_grupo_producto,descripcion_grupo1_producto,descripcion_grupo2_producto,"+
@@ -583,6 +583,8 @@ namespace osiris
 												(string) lector["nombre2_paciente"].ToString().Trim()+" "+
 												(string) lector["apellido_paterno_paciente"].ToString().Trim()+" "+
 												(string) lector["apellido_materno_paciente"].ToString().Trim();
+					entry_diagnostico.Text = (string) lector["diagnostico_qx"].ToString().Trim();
+					entry_procedimiento.Text = (string) lector["procedimiento_qx"].ToString().Trim();
 					if((bool) lector["status"] == false){
 						editar = false;
 					}

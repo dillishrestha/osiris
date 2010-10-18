@@ -58,6 +58,7 @@ namespace osiris
 		[Widget] Gtk.Button button_busca_producto = null;
 		[Widget] Gtk.Button button_quitar_examen = null;
 		[Widget] Gtk.TreeView treeview_solicitud_labrx = null;
+		[Widget] Gtk.TreeView treeview_estudios_solicitados = null;
 		[Widget] Gtk.Entry entry_folio_servicio = null;
 		[Widget] Gtk.Entry entry_pid_paciente = null;
 		[Widget] Gtk.Entry entry_nombre_paciente = null;
@@ -106,6 +107,7 @@ namespace osiris
 		float valoriva;
 		
 		TreeStore treeViewEngineEstudios;
+		TreeStore treeViewEngineEstudiosSoli;
 		TreeStore treeViewEngineBusca2;
 		
 		class_conexion conexion_a_DB = new class_conexion();
@@ -148,7 +150,7 @@ namespace osiris
 			entry_id_proveedor.Sensitive = false;
 			entry_nombre_proveedor.Sensitive = false;
 			button_buscar_proveedor.Sensitive = false;
-			entry_id_proveedor.Text = "0";
+			entry_id_proveedor.Text = "1";
 			entry_nombre_proveedor.Text = "SOLICITUD INTERNA";
 			entry_folio_servicio.Text = folioservicio.ToString();
 			entry_pid_paciente.Text = PidPaciente.ToString();
@@ -172,10 +174,10 @@ namespace osiris
 			button_enviar_solicitud_labrx.Sensitive = false;
 			button_busca_producto.Sensitive = false;
 			button_quitar_examen.Sensitive = false;
-			//button_imprimir_solilabrx.Sensitive = false;
+			button_imprimir_solilabrx.Sensitive = false;
 			
 			crea_treeview_estudios();
-			
+			crea_treeview_estudios_solicitados();
 			entry_numero_solicitud.ModifyBase(StateType.Normal, new Gdk.Color(0,255,0)); // Color Amarillo
 			
 			statusbar_solicitud_labrx.Pop(0);
@@ -216,8 +218,7 @@ namespace osiris
 				button_quitar_examen.Sensitive = false;
 				button_imprimir_solilabrx.Sensitive = false;
 			}
-		}
-				
+		}				
 		
 		void on_radiobutton_soli_externa_clicked(object sender, EventArgs args)
 		{
@@ -225,13 +226,13 @@ namespace osiris
 				entry_id_proveedor.Sensitive = true;
 				entry_nombre_proveedor.Sensitive = true;
 				button_buscar_proveedor.Sensitive = true;
-				entry_id_proveedor.Text = "";
+				entry_id_proveedor.Text = "1";
 				entry_nombre_proveedor.Text = "";
 			}else{
 				entry_id_proveedor.Sensitive = false;
 				entry_nombre_proveedor.Sensitive = false;
 				button_buscar_proveedor.Sensitive = false;
-				entry_id_proveedor.Text = "0";
+				entry_id_proveedor.Text = "1";
 				entry_nombre_proveedor.Text = "SOLICITUD INTERNA";
 			}			
 		}
@@ -335,7 +336,7 @@ namespace osiris
 		void on_button_enviar_solicitud_labrx_clicked(object sender, EventArgs args)
 		{
 			TreeIter iter;
-			string ultimasolicitud = classpublic.lee_ultimonumero_registrado("osiris_his_solicitudes_labrx","folio_de_solicitud","WHERE id_tipo_admisiones = '"+id_tipoadmisiones.ToString().Trim()+"' ");
+			string ultimasolicitud = classpublic.lee_ultimonumero_registrado("osiris_his_solicitudes_labrx","folio_de_solicitud","WHERE id_tipo_admisiones2 = '"+id_tipoadmisiones.ToString().Trim()+"' ");
 			entry_numero_solicitud.Text = ultimasolicitud;
 			MessageDialog msgBox = new MessageDialog (MyWin,DialogFlags.Modal,MessageType.Question,ButtonsType.YesNo,"¿ Esta seguro de enviar esta Solicitud Numero :"+ultimasolicitud+"?");
 			ResponseType miResultado = (ResponseType)msgBox.Run ();
@@ -345,7 +346,7 @@ namespace osiris
 					//for (int i = 0; i < treeViewEngineEstudios.NColumns; i++)
         			//Console.WriteLine((string) this.treeview_solicitud_labrx.Model.GetValue(iter,i));  
 										
-					ultimasolicitud = classpublic.lee_ultimonumero_registrado("osiris_his_solicitudes_labrx","folio_de_solicitud","WHERE id_tipo_admisiones = '"+id_tipoadmisiones.ToString().Trim()+"' ");
+					ultimasolicitud = classpublic.lee_ultimonumero_registrado("osiris_his_solicitudes_labrx","folio_de_solicitud","WHERE id_tipo_admisiones2 = '"+id_tipoadmisiones.ToString().Trim()+"' ");
 					NpgsqlConnection conexion; 
 					conexion = new NpgsqlConnection (connectionString+nombrebd);
 					try{
@@ -470,8 +471,7 @@ namespace osiris
 													typeof(string),
 													typeof(string),
 													typeof(string));
-			treeview_solicitud_labrx.Model = treeViewEngineEstudios;
-			
+			treeview_solicitud_labrx.Model = treeViewEngineEstudios;			
 			treeview_solicitud_labrx.RulesHint = true;
 			
 			Gtk.TreeViewColumn col_request = new TreeViewColumn();		
@@ -546,6 +546,90 @@ namespace osiris
 			treeview_solicitud_labrx.AppendColumn(col_horasol); 		// 6
 			treeview_solicitud_labrx.AppendColumn(col_quiensolicita); 	// 7
 			treeview_solicitud_labrx.AppendColumn(col_foliointerno); 	// 8
+		}
+		
+		void crea_treeview_estudios_solicitados()
+		{
+			treeViewEngineEstudiosSoli = new TreeStore(typeof(string),
+													typeof(string),
+													typeof(string),
+													typeof(string),
+													typeof(string),
+													typeof(string),
+													typeof(string),
+													typeof(bool),
+													typeof(string),
+													typeof(string),
+													typeof(string),
+													typeof(string),
+													typeof(string));
+			treeview_estudios_solicitados.Model = treeViewEngineEstudiosSoli;
+			treeview_estudios_solicitados.RulesHint = true;
+			
+			TreeViewColumn col_nrosolicitud = new TreeViewColumn();
+			CellRendererText cellr0 = new CellRendererText();
+			col_nrosolicitud.Title = "N° Solicitud"; // titulo de la cabecera de la columna, si está visible
+			col_nrosolicitud.PackStart(cellr0, true);
+			col_nrosolicitud.AddAttribute (cellr0, "text", 0);    // la siguiente columna será 1 en vez de 1
+			col_nrosolicitud.Resizable = true;
+								
+			Gtk.TreeViewColumn col_depart = new TreeViewColumn();		
+			Gtk.CellRendererText cellrt1 = new Gtk.CellRendererText();
+			col_depart.Title = "Departamento";
+			col_depart.PackStart(cellrt1, true);
+			col_depart.AddAttribute (cellrt1, "text", 1);
+			col_depart.Resizable = true;
+			
+			Gtk.TreeViewColumn col_gabinete = new TreeViewColumn();		
+			Gtk.CellRendererText cellrt2 = new Gtk.CellRendererText();
+			col_gabinete.Title = "Gabinete";
+			col_gabinete.PackStart(cellrt2, true);
+			col_gabinete.AddAttribute (cellrt2, "text", 2);
+			col_gabinete.Resizable = true;
+			
+			Gtk.TreeViewColumn col_fechasol = new TreeViewColumn();		
+			Gtk.CellRendererText cellrt3 = new Gtk.CellRendererText();
+			col_fechasol.Title = "Fecha Solicitud";
+			col_fechasol.PackStart(cellrt3, true);
+			col_fechasol.AddAttribute (cellrt3, "text", 3);
+			col_fechasol.Resizable = true;
+			
+			Gtk.TreeViewColumn col_horasol = new TreeViewColumn();		
+			Gtk.CellRendererText cellrt4 = new Gtk.CellRendererText();
+			col_horasol.Title = "Hora Solicitud";
+			col_horasol.PackStart(cellrt4, true);
+			col_horasol.AddAttribute (cellrt4, "text", 4);
+			col_horasol.Resizable = true;
+			
+			Gtk.TreeViewColumn col_quiensolicita = new TreeViewColumn();		
+			Gtk.CellRendererText cellrt5 = new Gtk.CellRendererText();
+			col_quiensolicita.Title = "Quien Solicita";
+			col_quiensolicita.PackStart(cellrt5, true);
+			col_quiensolicita.AddAttribute (cellrt5, "text", 5);
+			col_quiensolicita.Resizable = true;
+			
+			Gtk.TreeViewColumn col_foliointerno = new TreeViewColumn();		
+			Gtk.CellRendererText cellrt6 = new Gtk.CellRendererText();
+			col_foliointerno.Title = "Folio "+agrupacion_lab_rx;
+			col_foliointerno.PackStart(cellrt6, true);
+			col_foliointerno.AddAttribute (cellrt6, "text", 6);
+			col_foliointerno.Resizable = true;
+			
+			Gtk.TreeViewColumn col_cargado = new TreeViewColumn();	
+			Gtk.CellRendererToggle cellrt7 = new CellRendererToggle();		
+			col_cargado.Title = "Cargado";
+			col_cargado.PackStart(cellrt7, true);
+			col_cargado.AddAttribute (cellrt7, "active", 7);
+			col_cargado.Resizable = true;
+			
+			treeview_estudios_solicitados.AppendColumn(col_nrosolicitud); 	// 0
+			treeview_estudios_solicitados.AppendColumn(col_depart);	 		// 1
+			treeview_estudios_solicitados.AppendColumn(col_gabinete); 		// 2
+			treeview_estudios_solicitados.AppendColumn(col_fechasol); 		// 3
+			treeview_estudios_solicitados.AppendColumn(col_horasol); 		// 4
+			treeview_estudios_solicitados.AppendColumn(col_quiensolicita); 	// 5
+			treeview_estudios_solicitados.AppendColumn(col_foliointerno); 	// 6
+			treeview_estudios_solicitados.AppendColumn(col_cargado);		// 7
 		}
 		
 		void crea_treeview_busqueda(string tipo_busqueda)
@@ -790,13 +874,12 @@ namespace osiris
 		}
 		
 	}
-	
-	/// <summary>
-	///
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	/// 
 	/// Esta classe es la que se encarga de llenar las solictudes de 
 	/// Laboratorio y Rayos X
 	/// 
-	/// </summary>
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	public class solicitudes_rx_lab
 	{
 		// Boton general para salir de las ventanas

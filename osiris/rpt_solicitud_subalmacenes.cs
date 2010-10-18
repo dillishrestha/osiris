@@ -307,8 +307,8 @@ namespace osiris
 			cr.MoveTo(120*escala_en_linux_windows,75*escala_en_linux_windows);		layout.SetText("N° Expe.: "+pidpaciente);						Pango.CairoHelper.ShowLayout (cr, layout);
 			cr.MoveTo(220*escala_en_linux_windows,75*escala_en_linux_windows);		layout.SetText("Nombre Paciente: "+nombrepaciente);				Pango.CairoHelper.ShowLayout (cr, layout);
 			layout.FontDescription.Weight = Weight.Normal;		// Letra normal
-			cr.MoveTo(05*escala_en_linux_windows,85*escala_en_linux_windows);		layout.SetText("Procedimiento: ");				Pango.CairoHelper.ShowLayout (cr, layout);
-			cr.MoveTo(300*escala_en_linux_windows,85*escala_en_linux_windows);		layout.SetText("Diagnostico: ");				Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(05*escala_en_linux_windows,85*escala_en_linux_windows);		layout.SetText("Procedimiento: "+procedimientoqx);				Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(300*escala_en_linux_windows,85*escala_en_linux_windows);		layout.SetText("Diagnostico: "+diagnosticoqx);				Pango.CairoHelper.ShowLayout (cr, layout);
 			cr.MoveTo(05*escala_en_linux_windows,95*escala_en_linux_windows);		layout.SetText("Usuario: "+idusuario);							Pango.CairoHelper.ShowLayout (cr, layout);
 			cr.MoveTo(200*escala_en_linux_windows,95*escala_en_linux_windows);		layout.SetText("Nom. Solicitante: "+nombreusr);					Pango.CairoHelper.ShowLayout (cr, layout);
 			

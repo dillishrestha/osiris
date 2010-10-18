@@ -68,9 +68,25 @@ namespace osiris
 			departament = departament_;
 			agrupacion_lab_rx = agrupacion_lab_rx_;
 			
-			query_general = "SELECT area_quien_solicita,folio_de_solicitud,fechahora_solicitud "+
-							"FROM osiris_his_solicitudes_labrx "+
-							"WHERE id_tipo_admisiones = '"+id_tipoadmisiones_.ToString().Trim()+"' "+query_numerosolicitud;
+			query_general = "SELECT osiris_erp_movcargos.folio_de_servicio,osiris_his_solicitudes_labrx.area_quien_solicita,osiris_his_solicitudes_labrx.folio_de_solicitud,"+
+							"osiris_his_solicitudes_labrx.fechahora_solicitud,osiris_his_solicitudes_labrx.folio_de_servicio AS foliodeservicio,osiris_his_solicitudes_labrx.pid_paciente AS pidpaciente,"+
+							"osiris_his_solicitudes_labrx.id_quien_solicito,osiris_his_solicitudes_labrx.id_proveedor,osiris_his_solicitudes_labrx.id_producto,osiris_his_solicitudes_labrx.cantidad_solicitada,"+
+							"nombre1_paciente || ' ' || nombre2_paciente || ' ' || apellido_paterno_paciente || ' ' || apellido_materno_paciente AS nombre_completo,"+
+							"to_char(osiris_his_paciente.fecha_nacimiento_paciente, 'dd-MM-yyyy') AS fechanacpaciente, to_char(to_number(to_char(age('"+DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss")+"',osiris_his_paciente.fecha_nacimiento_paciente),'yyyy') ,'9999'),'9999') AS edadpaciente,"+
+							"osiris_his_paciente.sexo_paciente,osiris_erp_movcargos.descripcion_diagnostico_movcargos,osiris_erp_movcargos.nombre_de_cirugia,osiris_erp_cobros_enca.nombre_medico_tratante,"+
+							"osiris_erp_cobros_enca.id_habitacion,osiris_his_habitaciones.descripcion_cuarto,osiris_his_habitaciones.numero_cuarto,osiris_empleado.login_empleado,"+
+							"nombre1_empleado || ' ' || nombre2_empleado || ' ' || apellido_paterno_empleado || ' ' || apellido_materno_empleado AS nombresolicitante,osiris_erp_proveedores.descripcion_proveedor,"+
+							"osiris_productos.descripcion_producto "+
+							"FROM osiris_his_solicitudes_labrx,osiris_his_paciente,osiris_erp_movcargos,osiris_erp_cobros_enca,osiris_his_habitaciones,osiris_empleado,osiris_erp_proveedores,osiris_productos "+
+							"WHERE osiris_his_solicitudes_labrx.id_tipo_admisiones = '"+id_tipoadmisiones_.ToString().Trim()+"' "+
+							"AND osiris_his_solicitudes_labrx.pid_paciente = osiris_his_paciente.pid_paciente "+
+							"AND osiris_his_solicitudes_labrx.folio_de_servicio = osiris_erp_movcargos.folio_de_servicio " +
+							"AND osiris_his_solicitudes_labrx.folio_de_servicio = osiris_erp_cobros_enca.folio_de_servicio "+
+							"AND osiris_erp_cobros_enca.id_habitacion = osiris_his_habitaciones.id_habitacion "+
+							"AND osiris_his_solicitudes_labrx.id_quien_solicito = osiris_empleado.login_empleado "+
+							"AND osiris_his_solicitudes_labrx.id_proveedor = osiris_erp_proveedores.id_proveedor "+
+							"AND osiris_his_solicitudes_labrx.id_producto = osiris_productos.id_producto "+
+							query_numerosolicitud;
 			
 			print = new PrintOperation ();
 			print.JobName = departament;
@@ -83,7 +99,7 @@ namespace osiris
 		private void OnBeginPrint (object obj, Gtk.BeginPrintArgs args)
 		{
 			print.NPages = 1;  // crea cantidad de copias del reporte			
-			// para imprimir horizontalmente el reporte
+			//para imprimir horizontalmente el reporte
 			//print.PrintSettings.Orientation = PageOrientation.Landscape;
 			//Console.WriteLine(print.PrintSettings.Orientation.ToString());
 		}
@@ -99,6 +115,7 @@ namespace osiris
 			
 			Cairo.Context cr = context.CairoContext;
 			Pango.Layout layout = context.CreatePangoLayout ();
+			string sexopaciente = "";
 			
 			Pango.FontDescription desc = Pango.FontDescription.FromString ("Sans");									
 			//cr.Rotate(90);  //Imprimir Orizontalmente rota la hoja cambian las posiciones de las lineas y columna					
@@ -116,25 +133,44 @@ namespace osiris
 				Console.WriteLine(comando.CommandText);
 				NpgsqlDataReader lector = comando.ExecuteReader ();
 		       	if (lector.Read()){
+					if (lector["sexo_paciente"].ToString().Trim() == "H"){
+						sexopaciente = "HOMBRE";
+					}else{
+						sexopaciente = "MUJER";
+					}
 					comienzo_linea = 05;
 					imprime_encabezado(cr,layout);
 					comienzo_linea = 55;
-					imprime_cuerpo(cr,layout, (string) lector["area_quien_solicita"],lector["folio_de_solicitud"].ToString().Trim(),lector["fechahora_solicitud"].ToString().Trim());
+					
+					imprime_cuerpo(cr,layout, (string) lector["area_quien_solicita"],lector["folio_de_solicitud"].ToString().Trim(),
+					               lector["fechahora_solicitud"].ToString().Trim(),lector["foliodeservicio"].ToString().Trim(),lector["pidpaciente"].ToString().Trim(),
+					               lector["nombre_completo"].ToString().Trim(),lector["fechanacpaciente"].ToString().Trim(),lector["edadpaciente"].ToString().Trim(),
+					               sexopaciente,lector["descripcion_diagnostico_movcargos"].ToString().Trim(),lector["nombre_de_cirugia"].ToString().Trim(),lector["nombre_medico_tratante"].ToString().Trim(),
+					               lector["descripcion_cuarto"].ToString().Trim()+" "+lector["numero_cuarto"].ToString().Trim(),lector["id_quien_solicito"].ToString().Trim(),
+					               lector["nombresolicitante"].ToString().Trim());
+					               
 					linea_detalle1 = comienzo_linea;
 					linea_detalle1 += separacion_linea;
-					cr.MoveTo(07*escala_en_linux_windows,linea_detalle1*escala_en_linux_windows);		layout.SetText("Examemfmdsmfdsmf85832495834958n....");					Pango.CairoHelper.ShowLayout (cr, layout);
+					cr.MoveTo(07*escala_en_linux_windows,linea_detalle1*escala_en_linux_windows);		layout.SetText(lector["cantidad_solicitada"].ToString().Trim()+ " " +lector["id_producto"].ToString().Trim()+" "+lector["descripcion_producto"].ToString().Trim());						Pango.CairoHelper.ShowLayout (cr, layout);
 					
 					comienzo_linea = 395;			
 					imprime_encabezado(cr,layout);
 					comienzo_linea = 395+55;
-					imprime_cuerpo(cr,layout,(string) lector["area_quien_solicita"],lector["folio_de_solicitud"].ToString().Trim(),lector["fechahora_solicitud"].ToString().Trim());
+					imprime_cuerpo(cr,layout, (string) lector["area_quien_solicita"],lector["folio_de_solicitud"].ToString().Trim(),
+					               lector["fechahora_solicitud"].ToString().Trim(),lector["foliodeservicio"].ToString().Trim(),lector["pidpaciente"].ToString().Trim(),
+					               lector["nombre_completo"].ToString().Trim(),lector["fechanacpaciente"].ToString().Trim(),lector["edadpaciente"].ToString().Trim(),
+					               sexopaciente,lector["descripcion_diagnostico_movcargos"].ToString().Trim(),lector["nombre_de_cirugia"].ToString().Trim(),lector["nombre_medico_tratante"].ToString().Trim(),
+					               lector["descripcion_cuarto"].ToString().Trim()+" "+lector["numero_cuarto"].ToString().Trim(),lector["id_quien_solicito"].ToString().Trim(),
+					               lector["nombresolicitante"].ToString().Trim());
 					linea_detalle2 = comienzo_linea;
-					linea_detalle2 += separacion_linea;
-					
-					cr.MoveTo(07*escala_en_linux_windows,linea_detalle2*escala_en_linux_windows);		layout.SetText("Examemfmdsmfdsmf85832495834958n....");					Pango.CairoHelper.ShowLayout (cr, layout);
+					linea_detalle2 += separacion_linea;					
+					cr.MoveTo(07*escala_en_linux_windows,linea_detalle2*escala_en_linux_windows);		layout.SetText(lector["cantidad_solicitada"].ToString().Trim()+ " " +lector["id_producto"].ToString().Trim()+" "+lector["descripcion_producto"].ToString().Trim());					Pango.CairoHelper.ShowLayout (cr, layout);
 
 					while (lector.Read()){
-						
+						linea_detalle1 += separacion_linea;
+						cr.MoveTo(07*escala_en_linux_windows,linea_detalle1*escala_en_linux_windows);		layout.SetText(lector["cantidad_solicitada"].ToString().Trim()+ " " +lector["id_producto"].ToString().Trim()+" "+lector["descripcion_producto"].ToString().Trim());					Pango.CairoHelper.ShowLayout (cr, layout);
+						linea_detalle2 += separacion_linea;					
+						cr.MoveTo(07*escala_en_linux_windows,linea_detalle2*escala_en_linux_windows);		layout.SetText(lector["cantidad_solicitada"].ToString().Trim()+ " " +lector["id_producto"].ToString().Trim()+" "+lector["descripcion_producto"].ToString().Trim());					Pango.CairoHelper.ShowLayout (cr, layout);
 					}
 				}
 			}catch (NpgsqlException ex){
@@ -143,16 +179,15 @@ namespace osiris
 					msgBoxError.Run ();
 					msgBoxError.Destroy();
 				Console.WriteLine ("PostgresSQL error: {0}",ex.Message);				
-			}
-			
-			
-						
-			
+			}			
 		}
 	 
-		void imprime_cuerpo(Cairo.Context cr,Pango.Layout layout,string areaquiensolicita,string numerosolicitud,string fechasolicitud)
+		void imprime_cuerpo(Cairo.Context cr,Pango.Layout layout,string areaquiensolicita,string numerosolicitud,string fechasolicitud, 
+		                    string numerodeatencion, string numeroexpediente, string nombrepaciente, string fechanacimiento, string edadpaciente, 
+		                    string sexodelpaciente, string descripciondiagnostico, string nombredecirugia, string medicotratante, string numerohabitacion,
+		                    string quiensolicito, string nomsolicitante)
 		{			
-			Pango.FontDescription desc = Pango.FontDescription.FromString ("Sans");									
+			Pango.FontDescription desc = Pango.FontDescription.FromString ("Sans");									 
 			//cr.Rotate(90);  //Imprimir Orizontalmente rota la hoja cambian las posiciones de las lineas y columna					
 			fontSize = 8.0;
 			desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;
@@ -163,30 +198,31 @@ namespace osiris
 			comienzo_linea += separacion_linea;
 			layout.FontDescription.Weight = Weight.Bold;		// Letra negrita
 			cr.MoveTo(250*escala_en_linux_windows,comienzo_linea-separacion_linea*escala_en_linux_windows);		layout.SetText("N° de Solicitud: "+numerosolicitud);			Pango.CairoHelper.ShowLayout (cr, layout);
-			cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText("N° Atencion: ");					Pango.CairoHelper.ShowLayout (cr, layout);
-			cr.MoveTo(120*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText("N° Expe.: ");						Pango.CairoHelper.ShowLayout (cr, layout);
-			cr.MoveTo(220*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText("Nombre Paciente: ");				Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText("N° Atencion: "+numerodeatencion);	Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(120*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText("N° Expe.: "+numeroexpediente);		Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(220*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText("Nombre Paciente: "+nombrepaciente);	Pango.CairoHelper.ShowLayout (cr, layout);
 			comienzo_linea += separacion_linea;
-			cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText("Fecha Nacimiento: ");					Pango.CairoHelper.ShowLayout (cr, layout);
-			cr.MoveTo(250*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText("Edad: ");						Pango.CairoHelper.ShowLayout (cr, layout);
-			cr.MoveTo(400*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText("Sexo: ");						Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText("Fecha Nacimiento: "+fechanacimiento);	Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(250*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText("Edad: "+edadpaciente);				Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(400*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText("Sexo: "+sexodelpaciente);			Pango.CairoHelper.ShowLayout (cr, layout);
 			layout.FontDescription.Weight = Weight.Normal;
 			comienzo_linea += separacion_linea;
-			cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText("Procedimiento: ");				Pango.CairoHelper.ShowLayout (cr, layout);
-			cr.MoveTo(300*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText("Diagnostico: ");				Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText("Procedimiento: "+nombredecirugia);	Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(300*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText("Diagnostico Admision: "+descripciondiagnostico);	Pango.CairoHelper.ShowLayout (cr, layout);
 			comienzo_linea += separacion_linea;
-			cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText("Medico Tratante: ");							Pango.CairoHelper.ShowLayout (cr, layout);
-			cr.MoveTo(400*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText("Habitacion: ");							Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText("Medico Tratante: "+medicotratante);	Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(400*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText("Habitacion: "+numerohabitacion);		Pango.CairoHelper.ShowLayout (cr, layout);
 			comienzo_linea += separacion_linea;
-			cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText("Usuario: ");							Pango.CairoHelper.ShowLayout (cr, layout);
-			cr.MoveTo(200*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText("Nom. Solicitante: ");					Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText("Usuario: "+quiensolicito);							Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(200*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText("Nom. Solicitante: "+nomsolicitante);					Pango.CairoHelper.ShowLayout (cr, layout);
 			comienzo_linea += separacion_linea;
 			cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText("Gabinete o Proveedor : ");							Pango.CairoHelper.ShowLayout (cr, layout);
 			comienzo_linea += separacion_linea;
 			cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText("Estudio(s) Solicitado(s) : ");							Pango.CairoHelper.ShowLayout (cr, layout);
 			comienzo_linea += separacion_linea;
+			cr.MoveTo(200*escala_en_linux_windows,(comienzo_linea+(separacion_linea*22))*escala_en_linux_windows);		layout.SetText("Firma Solicitante");							Pango.CairoHelper.ShowLayout (cr, layout);
 			
-			Console.WriteLine(comienzo_linea.ToString());
+			//Console.WriteLine(comienzo_linea.ToString());
 			cr.Rectangle (05*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows, 565*escala_en_linux_windows, 180*escala_en_linux_windows);
 			cr.FillExtents();  //. FillPreserve(); 
 			cr.SetSourceRGB (0, 0, 0);

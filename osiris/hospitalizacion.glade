@@ -7917,7 +7917,7 @@ para Imprimir&lt;/b&gt;</property>
                             <property name="hscrollbar_policy">automatic</property>
                             <property name="vscrollbar_policy">automatic</property>
                             <child>
-                              <widget class="GtkTreeView" id="treeview_solicitud_labrx1">
+                              <widget class="GtkTreeView" id="treeview_estudios_solicitados">
                                 <property name="width_request">610</property>
                                 <property name="height_request">140</property>
                                 <property name="visible">True</property>

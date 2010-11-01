@@ -360,13 +360,13 @@ namespace osiris
 					new osiris.solicitudes_enfermeria(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,"Solicitud Examen de LABORATORIO",400,"LAB",
 					                                  descripinternamiento,idtipointernamiento,idempresa_paciente,idaseguradora_paciente,PidPaciente,folioservicio,
 					                                  entry_nombre_paciente.Text.Trim(),entry_id_doctor.Text.Trim(),entry_doctor.Text.Trim(),
-					                                  this.entry_cirugia.Text.Trim(),this.entry_id_habitacion.Text.Trim());
+					                                  this.entry_cirugia.Text.Trim(),this.entry_id_habitacion.Text.Trim(),button_busca_producto.Sensitive);
 				}
 				if(button_solicitud_labrx.Name.ToString() == "button_solicitud_rx"){
 					new osiris.solicitudes_enfermeria(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,"Solicitud Examen de IMAGENOLOGIA",300,"IMG",
 					                                  descripinternamiento,idtipointernamiento,idempresa_paciente,idaseguradora_paciente,PidPaciente,folioservicio,
 					                                  entry_nombre_paciente.Text.Trim(),entry_id_doctor.Text.Trim(),entry_doctor.Text.Trim(),
-					                                  this.entry_cirugia.Text.Trim(),this.entry_id_habitacion.Text.Trim());
+					                                  this.entry_cirugia.Text.Trim(),this.entry_id_habitacion.Text.Trim(),button_busca_producto.Sensitive);
 				}
 			//}else{
 			//	MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,MessageType.Info,ButtonsType.Close, "NO puede crear una solicitud, verifique....");

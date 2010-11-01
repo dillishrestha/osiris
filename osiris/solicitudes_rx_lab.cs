@@ -122,7 +122,7 @@ namespace osiris
 		                              string departament_,int id_tipoadmisiones_,string agrupacion_lab_rx_,string descripinternamiento_,
 		                              int id_tipopaciente_,int idempresa_paciente_,int idaseguradora_paciente_,
 		                              int PidPaciente_,int folioservicio_,string nombrepaciente_,string iddoctor_,string nombremedico_,
-		                              string diag_admision_,string habitacion_)
+		                              string diag_admision_,string habitacion_,bool estatus_procedimiento)
 		{
 			LoginEmpleado = LoginEmp_;
 			NomEmpleado = NomEmpleado_;
@@ -174,7 +174,10 @@ namespace osiris
 			button_enviar_solicitud_labrx.Sensitive = false;
 			button_busca_producto.Sensitive = false;
 			button_quitar_examen.Sensitive = false;
-			button_imprimir_solilabrx.Sensitive = false;
+			//button_imprimir_solilabrx.Sensitive = false;
+			if ((bool) estatus_procedimiento == false){
+				checkbutton_nueva_solicitud.Sensitive = false;
+			}
 			
 			crea_treeview_estudios();
 			crea_treeview_estudios_solicitados();
@@ -187,7 +190,7 @@ namespace osiris
 		
 		void on_button_imprimir_solilabrx_clicked(object sender, EventArgs args)
 	    {
-			new osiris.rpt_solicitud_labrx(departament,id_tipopaciente,agrupacion_lab_rx," AND folio_de_solicitud = '"+this.entry_numero_solicitud.Text+"'");
+			new osiris.rpt_solicitud_labrx(departament, id_tipoadmisiones,agrupacion_lab_rx," AND folio_de_solicitud = '"+this.entry_numero_solicitud.Text+"'");
 		}
 		
 		void on_checkbutton_nueva_solicitud_clicked(object sender, EventArgs args)
@@ -263,6 +266,7 @@ namespace osiris
 			gxml.Autoconnect (this);
 			label_cantidad.Text = "Cantidad Solicitada";
 			crea_treeview_busqueda("producto");
+			busca_producto.SetPosition(WindowPosition.CenterOnParent);
 			
 			button_buscar_busqueda.Clicked += new EventHandler(on_llena_lista_producto_clicked);
 			button_selecciona.Clicked += new EventHandler(on_selecciona_producto_clicked);
@@ -713,9 +717,12 @@ namespace osiris
 		
 		void on_selecciona_producto_clicked (object sender, EventArgs args)
 		{
+			int validacantidad = 0;
 			TreeModel model;	TreeIter iterSelected;
-			if (lista_de_producto.Selection.GetSelected(out model, out iterSelected)){
-				treeViewEngineEstudios.AppendValues((string) entry_cantidad_aplicada.Text.ToString().Trim(),
+			if(entry_cantidad_aplicada.Text != "" && entry_cantidad_aplicada.Text != "0"){
+				if ((float) float.Parse(entry_cantidad_aplicada.Text) > 0){
+					if (lista_de_producto.Selection.GetSelected(out model, out iterSelected)){
+						treeViewEngineEstudios.AppendValues((string) entry_cantidad_aplicada.Text.ToString().Trim(),
 													(string) lista_de_producto.Model.GetValue (iterSelected,0),
 													(string) lista_de_producto.Model.GetValue (iterSelected,1),
 				                                    descripinternamiento,
@@ -726,6 +733,18 @@ namespace osiris
 				                                    (string) lista_de_producto.Model.GetValue (iterSelected,5),
 				                                    (string) lista_de_producto.Model.GetValue (iterSelected,10),
 				                                    entry_folio_laboratorio.Text.Trim());
+					}
+				}else{
+					MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+								MessageType.Error, ButtonsType.Close, "La cantidad solicitada NO \n"+
+												"puede quedar vacia, intente de nuevo");
+								msgBoxError.Run ();					msgBoxError.Destroy();
+				}
+			}else{
+				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+								MessageType.Error, ButtonsType.Close, "La cantidad solicitada NO \n"+
+												"puede quedar vacia, intente de nuevo");
+								msgBoxError.Run ();					msgBoxError.Destroy();
 			}
 		}
 		

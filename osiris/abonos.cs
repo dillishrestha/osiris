@@ -58,6 +58,7 @@ namespace osiris
 		[Widget] Gtk.TreeView lista_abonos = null;
 		[Widget] Gtk.Statusbar statusbar_abonos = null;
 		[Widget] Gtk.ComboBox combobox_formapago = null;
+		[Widget] Gtk.Button button_imprimir_comp_serv = null;
 		
 		int PidPaciente;
 		int folioservicio;
@@ -137,8 +138,14 @@ namespace osiris
 	        abonar_procedimientos.Show();
 			crea_treeview_abonos();
 			llenando_lista_de_abonos();
+			
+			llenando_lista_comprobante();
+			
+			llenando_lista_de_pagares();
+			
 			button_guardar.Clicked += new EventHandler(on_button_guardar_clicked);
 			button_imprimir.Clicked += new EventHandler(on_button_imprimir_clicked);
+			button_imprimir_comp_serv.Clicked += new EventHandler(on_button_imprimir_comp_serv_clicked);
 			button_resumen.Clicked += new EventHandler(on_button_resumen_clicked);
 			button_salir.Clicked += new EventHandler(on_cierraventanas_clicked);
 			if (agregarmasabonos == true ){
@@ -530,9 +537,13 @@ namespace osiris
 				idformadepago = (int) combobox_formapago.Model.GetValue(iter,1);
 			}
 		}
-		
-		
+				
 		void on_button_imprimir_clicked(object sender, EventArgs args)
+		{
+			imprime_comprobante_resumen("caja");
+		}
+		
+		void on_button_imprimir_comp_serv_clicked(object sender, EventArgs args)
 		{
 			imprime_comprobante_resumen("comprobante");
 		}
@@ -544,7 +555,7 @@ namespace osiris
 		
 		void imprime_comprobante_resumen(string tipo_reporte)
 		{
-		if (tipo_reporte == "comprobante"){
+		
 			TreeModel model;
 			TreeIter iterSelected;
 			if (lista_abonos.Selection.GetSelected(out model, out iterSelected)){
@@ -556,27 +567,64 @@ namespace osiris
 				presupuesto = (string) model.GetValue(iterSelected, 5);
 				paquete = (string) model.GetValue(iterSelected, 6);
 				descripcion = (string) model.GetValue(iterSelected, 7);
-				new osiris.comprobante_abono_resumen(tipo_reporte,PidPaciente,folioservicio,nombrebd,
-						fecha_admision,fechahora_alta,nombre_paciente,telefono_paciente,doctor,cirugia,
-						tipo_paciente,id_tipopaciente,aseguradora,edadpac,fecha_nacimiento,dir_pac,
-						empresapac,nombrecajero,LoginEmpleado,monto,fecha,concepto,idcreo,recibo,
-						presupuesto,paquete,this.lista_abonos,this.treeViewEngineabonos,descripcion);
+				if (tipo_reporte == "caja"){	
+					new caja_comprobante(int.Parse(recibo),"CAJA", folioservicio,"SELECT osiris_erp_cobros_deta.folio_de_servicio,osiris_erp_cobros_deta.pid_paciente, "+ 
+							"osiris_his_tipo_admisiones.descripcion_admisiones,aplicar_iva, "+
+							"osiris_his_tipo_admisiones.id_tipo_admisiones AS idadmisiones,"+
+							"osiris_grupo_producto.descripcion_grupo_producto, "+
+							"osiris_productos.id_grupo_producto,  "+
+							"to_char(osiris_erp_cobros_deta.porcentage_descuento,'999.99') AS porcdesc, "+
+							"to_char(osiris_erp_cobros_deta.fechahora_creacion,'dd-mm-yyyy') AS fechcreacion,  "+
+							"to_char(osiris_erp_cobros_deta.fechahora_creacion,'HH:mm') AS horacreacion,  "+
+							"to_char(osiris_erp_cobros_deta.id_producto,'999999999999') AS idproducto,descripcion_producto, "+
+							"to_char(osiris_erp_cobros_deta.cantidad_aplicada,'99999999.99') AS cantidadaplicada, "+
+							"to_char(osiris_erp_cobros_deta.precio_producto,'9999999.99') AS preciounitario, "+
+							"ltrim(to_char(osiris_erp_cobros_deta.precio_producto,'9999999.99')) AS preciounitarioprod, "+
+							"to_char(osiris_erp_cobros_deta.iva_producto,'999999.99') AS ivaproducto, "+
+							//"to_char(osiris_erp_cobros_deta.precio_por_cantidad,'999999.99') AS ppcantidad, "+
+							"to_char(osiris_erp_cobros_deta.cantidad_aplicada * osiris_erp_cobros_deta.precio_producto,'99999999.99') AS ppcantidad,"+
+							"to_char(osiris_productos.precio_producto_publico,'999999999.99999') AS preciopublico,osiris_erp_abonos.numero_recibo_caja,"+
+							"osiris_his_paciente.nombre1_paciente || ' ' || osiris_his_paciente.nombre2_paciente || ' ' || osiris_his_paciente.apellido_paterno_paciente || ' ' || osiris_his_paciente.apellido_materno_paciente AS nombre_completo, "+
+							"to_char(osiris_his_paciente.fecha_nacimiento_paciente, 'dd-MM-yyyy') AS fechanacpaciente, to_char(to_number(to_char(age('"+DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss")+"',osiris_his_paciente.fecha_nacimiento_paciente),'yyyy') ,'9999'),'9999') AS edadpaciente "+
+							"FROM osiris_erp_cobros_deta,osiris_his_tipo_admisiones,osiris_productos,osiris_grupo_producto,osiris_erp_abonos,osiris_his_paciente "+
+							"WHERE osiris_erp_cobros_deta.id_tipo_admisiones = osiris_his_tipo_admisiones.id_tipo_admisiones "+
+							"AND osiris_erp_cobros_deta.id_producto = osiris_productos.id_producto  "+ 
+							"AND osiris_productos.id_grupo_producto = osiris_grupo_producto.id_grupo_producto "+
+							"AND osiris_erp_cobros_deta.pid_paciente = osiris_his_paciente.pid_paciente "+ 
+							"AND osiris_erp_cobros_deta.eliminado = 'false' ");
+				}
+				if (tipo_reporte == "comprobante"){
+					new caja_comprobante(int.Parse(recibo),"SERVICIO", folioservicio,"SELECT osiris_erp_cobros_deta.folio_de_servicio,osiris_erp_cobros_deta.pid_paciente, "+ 
+						"osiris_his_tipo_admisiones.descripcion_admisiones,aplicar_iva, "+
+						"osiris_his_tipo_admisiones.id_tipo_admisiones AS idadmisiones,"+
+						"osiris_grupo_producto.descripcion_grupo_producto, "+
+						"osiris_productos.id_grupo_producto,  "+
+						"to_char(osiris_erp_cobros_deta.porcentage_descuento,'999.99') AS porcdesc, "+
+						"to_char(osiris_erp_cobros_deta.fechahora_creacion,'dd-mm-yyyy') AS fechcreacion,  "+
+						"to_char(osiris_erp_cobros_deta.fechahora_creacion,'HH:mm') AS horacreacion,  "+
+						"to_char(osiris_erp_cobros_deta.id_producto,'999999999999') AS idproducto,descripcion_producto, "+
+						"to_char(osiris_erp_cobros_deta.cantidad_aplicada,'99999999.99') AS cantidadaplicada, "+
+						"to_char(osiris_erp_cobros_deta.precio_producto,'9999999.99') AS preciounitario, "+
+						"ltrim(to_char(osiris_erp_cobros_deta.precio_producto,'9999999.99')) AS preciounitarioprod, "+
+						"to_char(osiris_erp_cobros_deta.iva_producto,'999999.99') AS ivaproducto, "+
+						//"to_char(osiris_erp_cobros_deta.precio_por_cantidad,'999999.99') AS ppcantidad, "+
+						"to_char(osiris_erp_cobros_deta.cantidad_aplicada * osiris_erp_cobros_deta.precio_producto,'99999999.99') AS ppcantidad,"+
+						"to_char(osiris_productos.precio_producto_publico,'999999999.99999') AS preciopublico,osiris_erp_comprobante_servicio.numero_comprobante_servicio,"+
+						"osiris_his_paciente.nombre1_paciente || ' ' || osiris_his_paciente.nombre2_paciente || ' ' || osiris_his_paciente.apellido_paterno_paciente || ' ' || osiris_his_paciente.apellido_materno_paciente AS nombre_completo, "+
+						"to_char(osiris_his_paciente.fecha_nacimiento_paciente, 'dd-MM-yyyy') AS fechanacpaciente, to_char(to_number(to_char(age('"+DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss")+"',osiris_his_paciente.fecha_nacimiento_paciente),'yyyy') ,'9999'),'9999') AS edadpaciente "+
+						"FROM osiris_erp_cobros_deta,osiris_his_tipo_admisiones,osiris_productos,osiris_grupo_producto,osiris_erp_comprobante_servicio,osiris_his_paciente "+
+						"WHERE osiris_erp_cobros_deta.id_tipo_admisiones = osiris_his_tipo_admisiones.id_tipo_admisiones "+
+						"AND osiris_erp_cobros_deta.id_producto = osiris_productos.id_producto  "+ 
+						"AND osiris_productos.id_grupo_producto = osiris_grupo_producto.id_grupo_producto "+
+						"AND osiris_erp_cobros_deta.pid_paciente = osiris_his_paciente.pid_paciente "+ 
+						"AND osiris_erp_cobros_deta.eliminado = 'false' ");
+				}
+				
 			}
-		}
-		if (tipo_reporte == "resumen"){
-				monto = ""; 				
- 				fecha = "";
-				concepto = "";
-				idcreo = "";
-				recibo = "";
-				presupuesto = "";
-				paquete = "";
-				descripcion = "";
-				new osiris.comprobante_abono_resumen(tipo_reporte,PidPaciente,folioservicio,nombrebd,
-						fecha_admision,fechahora_alta,nombre_paciente,telefono_paciente,doctor,cirugia,
-						tipo_paciente,id_tipopaciente,aseguradora,edadpac,fecha_nacimiento,dir_pac,
-						empresapac,nombrecajero,LoginEmpleado,monto,fecha,concepto,idcreo,recibo,
-						presupuesto,paquete,this.lista_abonos,this.treeViewEngineabonos,descripcion);
+			
+			if (tipo_reporte == "resumen"){
+				
+			
 			}
 		}
 		
@@ -586,305 +634,6 @@ namespace osiris
 			Widget win = (Widget) sender;
 			win.Toplevel.Destroy();
 		}
-	}
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////////////////////////////////
-	public class comprobante_abono_resumen
-	{
-			
-		string connectionString;		
-		string tipo_reporte;
-		string nombrebd;
-		int PidPaciente = 0;
-		int folioservicio = 0;
-		string fecha_admision;
-		string fechahora_alta;
-		string nombre_paciente;
-		string telefono_paciente;
-		string doctor;
-		string cirugia;
-		string fecha_nacimiento;
-		string edadpac;
-		string tipo_paciente;
-		int id_tipopaciente;
-		string aseguradora;
-		string dir_pac;
-		string empresapac;
-		string nombrecajero;		
-		string LoginEmpleado;
-		string monto;
-		string fecha;
-		string concepto;
-		string idcreo;
-		string recibo;
-		string presupuesto;
-		string paquete;
-		string descripcion;
-		string datos = "";
-		int contador = 1;
-		int numpage = 1;
-		string schars = "";
-		int filas=645;
-		
-		Gtk.TreeView lista_abonos;
-		Gtk.TreeStore treeViewEngineabonos;
-		
-		// Declaracion de fuentes tipo Bitstream Vera sans
-		Gnome.Font fuente6 = Gnome.Font.FindClosest("Bitstream Vera Sans", 6);
-		//Gnome.Font fuente8 = Gnome.Font.FindClosest("Bitstream Vera Sans", 8);
-		//Gnome.Font fuente12 = Gnome.Font.FindClosest("Bitstream Vera Sans", 12);
-		Gnome.Font fuente10 = Gnome.Font.FindClosest("Bitstream Vera Sans", 10);
-		Gnome.Font fuente36 = Gnome.Font.FindClosest("Bitstream Vera Sans", 36);
-		//Gnome.Font fuente7 = Gnome.Font.FindClosest("Bitstream Vera Sans", 7);
-		Gnome.Font fuente9 = Gnome.Font.FindClosest("Bitstream Vera Sans", 9);
-		
-		class_conexion conexion_a_DB = new class_conexion();
-		class_public classpublic = new class_public();
-		
-		public comprobante_abono_resumen(string tipo_reporte_,int PidPaciente_,int folioservicio_,
-					string nombrebd_,string entry_fecha_admision_,string entry_fechahora_alta_,
-					string entry_nombre_paciente_,string entry_telefono_paciente_,string entry_doctor_,
-					string cirugia_,string entry_tipo_paciente_,int idtipopaciente_,string entry_aseguradora_,
-					string edadpac_,string fecha_nacimiento_,string dir_pac_,string empresapac_,string nombrecajero_,
-					string LoginEmpleado_,string monto_,string fecha_,string concepto_,string idcreo_,string recibo_,
-					string presupuesto_,string paquete_,object lista_abonos_,object treeViewEngineabonos_,
-					string descripcion_)
-		{		
-			lista_abonos = lista_abonos_ as Gtk.TreeView;
-			treeViewEngineabonos = treeViewEngineabonos_ as Gtk.TreeStore;
-			tipo_reporte = tipo_reporte_;
-			PidPaciente = PidPaciente_;
-			folioservicio = folioservicio_;
-			fecha_admision = entry_fecha_admision_;
-			fechahora_alta = entry_fechahora_alta_;
-			nombre_paciente = entry_nombre_paciente_;
-			telefono_paciente = entry_telefono_paciente_;
-			doctor = entry_doctor_;
-			cirugia = cirugia_;
-			tipo_paciente = entry_tipo_paciente_;
-			id_tipopaciente = idtipopaciente_;
-			aseguradora = entry_aseguradora_;
-			edadpac = edadpac_;
-			fecha_nacimiento = fecha_nacimiento_;
-			dir_pac = dir_pac_;
-			empresapac = empresapac_;
-			nombrecajero = nombrecajero_;
-			LoginEmpleado = LoginEmpleado_;
-			monto = monto_;
-			fecha = fecha_;
-			concepto = concepto_;
-			idcreo = idcreo_;
-			recibo = recibo_;
-			presupuesto = presupuesto_;
-			paquete = paquete_;
-			descripcion = descripcion_;
-			nombrebd = conexion_a_DB._nombrebd;
-			
-			if (this.tipo_reporte == "resumen")	{
-				imprime_resumen_comprobante("RESUMEN DE ABONOS","resumen");
-			}
-			if (this.tipo_reporte == "comprobante")	{ 
-				
-				//imprime_resumen_comprobante("COMPROBANTE DE CAJA","comprobante");
-			}
-		}	
-		
-		void imprime_resumen_comprobante(string titulo,string tipo_reporte)
-		{
-			Gnome.PrintJob    trabajo   = new Gnome.PrintJob (PrintConfig.Default());
-        	Gnome.PrintDialog dialogo   = new Gnome.PrintDialog (trabajo, titulo, 0);
-        	int         respuesta = dialogo.Run ();
-        	if (respuesta == (int) PrintButtons.Cancel) 
-			{
-				dialogo.Hide (); 
-				dialogo.Dispose (); 
-				return;
-			}
-			Gnome.PrintContext ctx = trabajo.Context;
-			if (tipo_reporte == "resumen"){
-				ComponerPagina(ctx, trabajo);
-			}
-			if (tipo_reporte == "comprobante"){ 
-        		ComponerPagina1(ctx, trabajo);
-        	} 
-			trabajo.Close();
-            switch (respuesta)
-        	{
-                  case (int) PrintButtons.Print:   
-                  		trabajo.Print (); 
-                  		break;
-                  case (int) PrintButtons.Preview:
-                      	new PrintJobPreview(trabajo, "COMPROBANTE").Show();
-                        break;
-        	}
-			dialogo.Hide (); dialogo.Dispose ();
-		}
-		
-      	void ComponerPagina(Gnome.PrintContext ContextoImp, Gnome.PrintJob trabajoImpresion)
-		{	
-			ContextoImp.BeginPage("Pagina 1");
-			Gnome.Print.Setfont (ContextoImp, fuente10);
-			ContextoImp.MoveTo(500.5, 740);		ContextoImp.Show(DateTime.Now.ToString("dd-MM-yyyy") );
-			ContextoImp.MoveTo(501, 740);		ContextoImp.Show(DateTime.Now.ToString("dd-MM-yyyy") );
-			Gnome.Print.Setfont (ContextoImp, fuente9);
-			ContextoImp.MoveTo(39.5, 710);		ContextoImp.Show("Nombre: ");
-			ContextoImp.MoveTo(40, 710);		ContextoImp.Show("Nombre: "+nombre_paciente.ToString());
-			ContextoImp.MoveTo(39.5, 690);		ContextoImp.Show("Direccion: ");
-			ContextoImp.MoveTo(40, 690);		ContextoImp.Show("Direccion: "+dir_pac.ToString());
-			ContextoImp.MoveTo(39.5, 670);		ContextoImp.Show("Telefono: ");
-			ContextoImp.MoveTo(40, 670);		ContextoImp.Show("Telefono: "+telefono_paciente.ToString());
-			Gnome.Print.Setrgbcolor(ContextoImp,150,0,0);//cambio a color rojo obscuro
-			ContextoImp.MoveTo(154.5, 670);		ContextoImp.Show("PID: "+PidPaciente.ToString());
-			ContextoImp.MoveTo(155, 670);		ContextoImp.Show("PID: "+PidPaciente.ToString());
-			ContextoImp.MoveTo(209.5, 670);		ContextoImp.Show("EDAD: "+edadpac.ToString());
-			ContextoImp.MoveTo(210, 670);		ContextoImp.Show("EDAD: "+edadpac.ToString());
-			ContextoImp.MoveTo(360.5, 670);		ContextoImp.Show("Folio de Servicio: "+folioservicio.ToString());
-			ContextoImp.MoveTo(361, 670);		ContextoImp.Show("Folio de Servicio: "+folioservicio.ToString());
-			ContextoImp.MoveTo(375.5, 710);		ContextoImp.Show("Fecha Admision: "+fecha_admision.ToString());
-			ContextoImp.MoveTo(376, 710);		ContextoImp.Show("Fecha Admision: "+fecha_admision.ToString());			
-			Gnome.Print.Setrgbcolor(ContextoImp,0,0,0);//cambio a color negro
-			ContextoImp.MoveTo(375.5, 710);		ContextoImp.Show("Fecha Admision: ");
-			ContextoImp.MoveTo(376, 710);		ContextoImp.Show("Fecha Admision: ");
-			ContextoImp.MoveTo(154.5, 670);		ContextoImp.Show("PID: ");
-			ContextoImp.MoveTo(155, 670);		ContextoImp.Show("PID: ");
-			ContextoImp.MoveTo(209.5, 670);		ContextoImp.Show("EDAD: ");
-			ContextoImp.MoveTo(210, 670);		ContextoImp.Show("EDAD: ");
-			ContextoImp.MoveTo(360.5, 670);		ContextoImp.Show("Folio de Servicio: ");
-			ContextoImp.MoveTo(361, 670);		ContextoImp.Show("Folio de Servicio: ");
-			ContextoImp.MoveTo(25.5, 650);		ContextoImp.Show("Fecha del Abono");
-			ContextoImp.MoveTo(26, 650);		ContextoImp.Show("Fecha del Abono");
-			ContextoImp.MoveTo(103.5, 650);		ContextoImp.Show("Forma de Pago");
-			ContextoImp.MoveTo(104, 650);		ContextoImp.Show("Forma de Pago");
-			ContextoImp.MoveTo(200.5, 650);		ContextoImp.Show("Concepto");
-			ContextoImp.MoveTo(201, 650);		ContextoImp.Show("Concepto");
-			ContextoImp.MoveTo(475.5, 650);		ContextoImp.Show("Monto del Abono");
-			ContextoImp.MoveTo(476, 650);		ContextoImp.Show("Monto del Abono");
-			imprime_encabezado(ContextoImp,trabajoImpresion);
-			filas = 630;
-			TreeIter iter;
-			float total_de_abonos = 0;
-			string tomovalor1 = "";
-			if (this.treeViewEngineabonos.GetIterFirst (out iter)){
-				ContextoImp.MoveTo(470, filas);	ContextoImp.Show((string) this.lista_abonos.Model.GetValue (iter,0));
-				
-				tomovalor1 = (string) this.lista_abonos.Model.GetValue (iter,2);
-					if(tomovalor1.Length > 50)
-					{
-						tomovalor1 = tomovalor1.Substring(0,50); 
-					}
-				ContextoImp.MoveTo(200, filas);	ContextoImp.Show(tomovalor1);
-				
-				ContextoImp.MoveTo(30, filas);	ContextoImp.Show((string) this.lista_abonos.Model.GetValue (iter,1));
-				ContextoImp.MoveTo(100, filas);				ContextoImp.Show((string) this.lista_abonos.Model.GetValue (iter,7));
-				
-				total_de_abonos += float.Parse((string) this.lista_abonos.Model.GetValue (iter,0));
-				
-				filas -= 08;
-				while (treeViewEngineabonos.IterNext(ref iter))
-				{
-					ContextoImp.MoveTo(470, filas);	ContextoImp.Show((string) this.lista_abonos.Model.GetValue (iter,0));
-					ContextoImp.MoveTo(30, filas);	ContextoImp.Show((string) this.lista_abonos.Model.GetValue (iter,1));
-					
-					tomovalor1 = (string) this.lista_abonos.Model.GetValue (iter,2);
-					if(tomovalor1.Length > 50)
-					{
-						tomovalor1 = tomovalor1.Substring(0,50); 
-					}
-					ContextoImp.MoveTo(200, filas);	ContextoImp.Show(tomovalor1);
-					ContextoImp.MoveTo(100, filas);				ContextoImp.Show((string) this.lista_abonos.Model.GetValue (iter,7));
-					total_de_abonos += float.Parse((string) this.lista_abonos.Model.GetValue (iter,0));
-					filas -= 08;
-				}
-				filas -= 10;
-				ContextoImp.MoveTo(400.5, filas);	ContextoImp.Show("Total de Abonos: "+total_de_abonos.ToString("C"));
-				ContextoImp.MoveTo(401, filas);		ContextoImp.Show("Total de Abonos: "+total_de_abonos.ToString("C"));
-			}
-			ContextoImp.ShowPage();
-		}
-      	
-      	void imprime_encabezado(Gnome.PrintContext ContextoImp, Gnome.PrintJob trabajoImpresion)
-		{
-      		// Cambiar la fuente
-			Gnome.Print.Setfont (ContextoImp, fuente6);
-			ContextoImp.MoveTo(19.7, 770);			ContextoImp.Show("Sistema Hospitalario OSIRIS");
-			ContextoImp.MoveTo(20, 770);			ContextoImp.Show("Sistema Hospitalario OSIRIS");
-			ContextoImp.MoveTo(19.7, 760);			ContextoImp.Show("Direccion:");
-			ContextoImp.MoveTo(20, 760);			ContextoImp.Show("Direccion:");
-			ContextoImp.MoveTo(19.7, 750);			ContextoImp.Show("Conmutador:");
-			ContextoImp.MoveTo(20, 750);			ContextoImp.Show("Conmutador:");
-			Gnome.Print.Setfont (ContextoImp, fuente36);
-			ContextoImp.MoveTo(20, 738);			ContextoImp.Show("_______________________________");
-			//Print.Setrgbcolor(ContextoImp, 150,0,0);///cambio color de fuente a rojo
-			Gnome.Print.Setfont (ContextoImp, fuente10);
-			ContextoImp.MoveTo(230.7, 50);			ContextoImp.Show("Pagina "+numpage.ToString()+"  fecha "+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
-			ContextoImp.MoveTo(230, 50);			ContextoImp.Show("Pagina "+numpage.ToString()+"  fecha "+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
-			Gnome.Print.Setfont (ContextoImp, fuente9);
-			Gnome.Print.Setrgbcolor(ContextoImp, 0,0,0);//regreso color fuente a negro
-	  	}
-				
-		void ComponerPagina1 (Gnome.PrintContext ContextoImp, Gnome.PrintJob trabajoImpresion)
-		{	
-			for (int i1=0; i1 <= 4; i1++)//5 veces para tasmaño carta
-			{
-				ContextoImp.BeginPage("Pagina 1");
-				/////DATOS DE PRODUCTOS
-	 		  	Gnome.Print.Setfont (ContextoImp, fuente10);
-				ContextoImp.MoveTo(500.5, 740);		ContextoImp.Show(DateTime.Now.ToString("dd-MM-yyyy") );
-				ContextoImp.MoveTo(501, 740);		ContextoImp.Show(DateTime.Now.ToString("dd-MM-yyyy") );
-				Gnome.Print.Setfont (ContextoImp, fuente9);
-				ContextoImp.MoveTo(79.5, 710);		ContextoImp.Show(nombre_paciente.ToString());
-				ContextoImp.MoveTo(80, 710);		ContextoImp.Show(nombre_paciente.ToString());
-				ContextoImp.MoveTo(80, 690);		ContextoImp.Show(dir_pac.ToString());
-				ContextoImp.MoveTo(80, 670);		ContextoImp.Show(telefono_paciente.ToString());
-				Gnome.Print.Setrgbcolor(ContextoImp,150,0,0);//cambio a color rojo obscuro
-				ContextoImp.MoveTo(144.5, 670);		ContextoImp.Show("PID: "+PidPaciente.ToString());
-				ContextoImp.MoveTo(145, 670);		ContextoImp.Show("PID: "+PidPaciente.ToString());
-				ContextoImp.MoveTo(199.5, 670);		ContextoImp.Show("EDAD: "+edadpac.ToString());
-				ContextoImp.MoveTo(200, 670);		ContextoImp.Show("EDAD: "+edadpac.ToString());
-				ContextoImp.MoveTo(340.5, 670);		ContextoImp.Show("Folio de Servicio: "+folioservicio.ToString());
-				ContextoImp.MoveTo(341, 670);		ContextoImp.Show("Folio de Servicio: "+folioservicio.ToString());
-				ContextoImp.MoveTo(375.5, 710);		ContextoImp.Show("Fecha Admision: "+fecha_admision.ToString());
-				ContextoImp.MoveTo(376, 710);		ContextoImp.Show("Fecha Admision: "+fecha_admision.ToString());			
-				Gnome.Print.Setrgbcolor(ContextoImp,0,0,0);//cambio a color negro
-				ContextoImp.MoveTo(144.5, 670);		ContextoImp.Show("PID: ");
-				ContextoImp.MoveTo(145, 670);		ContextoImp.Show("PID: ");
-				ContextoImp.MoveTo(199.5, 670);		ContextoImp.Show("EDAD: ");
-				ContextoImp.MoveTo(200, 670);		ContextoImp.Show("EDAD: ");
-				ContextoImp.MoveTo(340.5, 670);		ContextoImp.Show("Folio de Servicio: ");
-				ContextoImp.MoveTo(341, 670);		ContextoImp.Show("Folio de Servicio: ");
-				ContextoImp.MoveTo(375.5, 710);		ContextoImp.Show("Fecha Admision: ");
-				ContextoImp.MoveTo(376, 710);		ContextoImp.Show("Fecha Admision: ");
-				Gnome.Print.Setfont (ContextoImp, fuente9);
-				//LUGAR DE CARGO
-				string tomovalor1 = "";
-				
-				tomovalor1 = this.concepto.ToString();
-				if(tomovalor1.Length > 75){
-					tomovalor1 = tomovalor1.Substring(0,75); 
-				}
-				ContextoImp.MoveTo(90.5, 600);	ContextoImp.Show(tomovalor1);
-				ContextoImp.MoveTo(91, 600);	ContextoImp.Show(tomovalor1);
-				
-				filas+=20;
-				filas-=35;
-				ContextoImp.MoveTo(514.7, 600);			ContextoImp.Show("$: "+monto.Trim());
-				ContextoImp.MoveTo(515, 600);			ContextoImp.Show("$: "+monto.Trim());
-			 	filas-=30;
-				float apagar = float.Parse(monto);
-				ContextoImp.MoveTo(175, 450);				ContextoImp.Show(classpublic.ConvertirCadena(apagar.ToString("F"),"Peso"));
-				ContextoImp.MoveTo(175, 440);				ContextoImp.Show("Forma de Pago: "+descripcion.ToUpper());
-				ContextoImp.MoveTo(514.7, 465);				ContextoImp.Show(apagar.ToString("C").PadLeft(10));
-				ContextoImp.MoveTo(515, 465);				ContextoImp.Show(apagar.ToString("C").PadLeft(10));
-				filas-=10;
-				ContextoImp.MoveTo(175, 430);				ContextoImp.Show("ATENDIO: "+nombrecajero.ToUpper());	
-				ContextoImp.MoveTo(514.7, 425);				ContextoImp.Show(apagar.ToString("C").PadLeft(10)); 
-				ContextoImp.MoveTo(515, 425);				ContextoImp.Show(apagar.ToString("C").PadLeft(10)); 
-				filas-=10;
-				ContextoImp.ShowPage();
-			}
-		}		
 	}
 }
 	

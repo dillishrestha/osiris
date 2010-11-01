@@ -7144,7 +7144,7 @@ para Imprimir&lt;/b&gt;</property>
   </widget>
   <widget class="GtkWindow" id="solicitar_examen_labrx">
     <property name="title" translatable="yes">SOLICITUD DE ESTUDIO</property>
-    <property name="window_position">center-always</property>
+    <property name="window_position">center-on-parent</property>
     <child>
       <widget class="GtkVBox" id="vbox1">
         <property name="visible">True</property>

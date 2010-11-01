@@ -1812,6 +1812,7 @@ namespace osiris
 						"AND osiris_productos.id_grupo2_producto = osiris_grupo2_producto.id_grupo2_producto "+
 						"AND osiris_grupo_producto.agrupacion3 = 'IMG' "+
 						"AND osiris_productos.cobro_activo = 'true' "+
+						"AND osiris_productos.id_grupo1_producto IN('2','3','4','5','6','7','9','10') "+
 						"AND osiris_productos.descripcion_producto LIKE '%"+entry_expresion.Text.ToUpper().Trim()+"%' ORDER BY descripcion_producto;";
 		
 				NpgsqlDataReader lector = comando.ExecuteReader ();

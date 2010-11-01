@@ -47,77 +47,57 @@ namespace osiris
 		int comienzo_linea = 125;
 		int separacion_linea = 10;
 		int numpage = 1;
+		int numero_comprobante;
 		
 		string connectionString;
         string nombrebd;
-		int PidPaciente = 0;
-		int folioservicio = 0;
-		string fecha_admision;
-		string fechahora_alta;
-		string nombre_paciente;
-		string telefono_paciente;
-		string doctor;
-		string cirugia;
-		string fecha_nacimiento;
-		string edadpac;
-		string tipo_paciente;
-		int id_tipopaciente;
-		string aseguradora;
-		string dir_pac;
-		string empresapac;
-		bool apl_desc_siempre = true;
-		bool apl_desc;
-		string nombrecajero;
-		string totalabonos;
 		float valoriva;
-		string tipo_comprobante;
-								
+		string tipocomprobante = "";
+		
+		string sql_compcaja = "";
+						//"AND to_char(osiris_erp_movcargos.fechahora_admision_registro,'dd') >= '"+DateTime.Now.ToString("dd")+"'  AND to_char(osiris_erp_movcargos.fechahora_admision_registro,'dd') <= '"+DateTime.Now.ToString("dd")+"' "+
+						//"AND to_char(osiris_erp_movcargos.fechahora_admision_registro,'MM') >= '"+DateTime.Now.ToString("MM")+"' AND to_char(osiris_erp_movcargos.fechahora_admision_registro,'MM') <= '"+DateTime.Now.ToString("MM")+"' "+
+						//"AND to_char(osiris_erp_movcargos.fechahora_admision_registro,'yyyy') >= '"+DateTime.Now.ToString("yyyy")+"' AND to_char(osiris_erp_movcargos.fechahora_admision_registro,'yyyy') <= '"+DateTime.Now.ToString("yyyy")+"' " ;
 		//Declaracion de ventana de error
+		string sql_foliodeservicio = "";
+		string sql_numerocomprobante = "";
+		string sql_orderquery = " ORDER BY  osiris_erp_cobros_deta.id_tipo_admisiones ASC, osiris_productos.id_grupo_producto";
 		protected Gtk.Window MyWinError;
 		
 		class_conexion conexion_a_DB = new class_conexion();
 		class_public classpublic = new class_public();
 		
-		public caja_comprobante ( int PidPaciente_ , int folioservicio_,string nombrebd_ ,string entry_fecha_admision_,string entry_fechahora_alta_,
-						string entry_numero_factura_,string entry_nombre_paciente_,string entry_telefono_paciente_,string entry_doctor_,
-						string entry_tipo_paciente_,string entry_aseguradora_,string edadpac_,string fecha_nacimiento_,string dir_pac_,
-						string cirugia_,string empresapac_, int idtipopaciente_, string nombrecajero_, string totalabonos_,string tipo_comprobante_)
+		public caja_comprobante(int numero_comprobante_, string tipo_comprobante_, int folioservicio_, string sql_consulta_)
 		{
-			PidPaciente = PidPaciente_;//
-			folioservicio = folioservicio_;//
-			fecha_admision = entry_fecha_admision_;//
-			fechahora_alta = entry_fechahora_alta_;//
-			nombre_paciente = entry_nombre_paciente_;//
-			telefono_paciente = entry_telefono_paciente_;//
-			doctor = entry_doctor_;//
-			cirugia = cirugia_;//
-			tipo_paciente = entry_tipo_paciente_;//
-			id_tipopaciente = idtipopaciente_;
-			aseguradora = entry_aseguradora_;//
-			edadpac = edadpac_;//
-			fecha_nacimiento = fecha_nacimiento_;//
-			dir_pac = dir_pac_;//
-			empresapac = empresapac_;//
-			nombrecajero = nombrecajero_;
-			totalabonos = totalabonos_;
-			tipo_comprobante = tipo_comprobante_;
-			
 			connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
 			nombrebd = conexion_a_DB._nombrebd;
 			valoriva = float.Parse(classpublic.ivaparaaplicar);
 			escala_en_linux_windows = classpublic.escala_linux_windows;
+			tipocomprobante = tipo_comprobante_;
+			numero_comprobante = numero_comprobante_;
+			sql_compcaja = sql_consulta_;
 			
-			print.JobName = "COMPROBANTE DE "+tipo_comprobante_;
+			if (tipocomprobante == "CAJA"){			
+				sql_numerocomprobante = "AND osiris_erp_abonos.numero_recibo_caja = '"+numero_comprobante.ToString().Trim()+"' ";
+			}
+			if (tipocomprobante == "SERVICIO"){			
+				sql_numerocomprobante = "AND osiris_erp_comprobante_servicio.numero_comprobante_servicio = '"+numero_comprobante.ToString().Trim()+"' ";
+			}
+			if (tipocomprobante == "PAGARE"){			
+				sql_numerocomprobante = "AND osiris_erp_comprobante_servicio.numero_comprobante_servicio = '"+numero_comprobante.ToString().Trim()+"' ";
+			}
+			sql_foliodeservicio = "AND osiris_erp_cobros_deta.folio_de_servicio = '"+folioservicio_.ToString()+"' ";
+			print = new PrintOperation ();
+			print.JobName = "IMPRIME COMPROBANTE DE "+tipocomprobante;
 			print.BeginPrint += new BeginPrintHandler (OnBeginPrint);
 			print.DrawPage += new DrawPageHandler (OnDrawPage);
 			print.EndPrint += new EndPrintHandler (OnEndPrint);
-			print.Run (PrintOperationAction.PrintDialog, null);
-					
+			print.Run (PrintOperationAction.PrintDialog, null);					
 		}
 		
 		private void OnBeginPrint (object obj, Gtk.BeginPrintArgs args)
 		{
-			print.NPages = 1;  // crea cantidad de copias del reporte			
+			print.NPages = 3;  // crea cantidad de copias del reporte			
 			// para imprimir horizontalmente el reporte
 			//print.PrintSettings.Orientation = PageOrientation.Landscape;
 			//Console.WriteLine(print.PrintSettings.Orientation.ToString());
@@ -133,12 +113,40 @@ namespace osiris
 		{
 			Cairo.Context cr = context.CairoContext;
 			Pango.Layout layout = context.CreatePangoLayout ();
-			Pango.FontDescription desc = Pango.FontDescription.FromString ("Sans");			
-			fontSize = 7.0;											layout = context.CreatePangoLayout ();		
-			desc.Size = (int)(fontSize * pangoScale);				layout.FontDescription = desc;			
+						
+			Pango.FontDescription desc = Pango.FontDescription.FromString ("Sans");									
+			//cr.Rotate(90);  //Imprimir Orizontalmente rota la hoja cambian las posiciones de las lineas y columna					
+			fontSize = 8.0;
+			desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;
+			
+			NpgsqlConnection conexion; 
+	        conexion = new NpgsqlConnection (connectionString+nombrebd);
+	        // Verifica que la base de datos este conectada
+	        try{
+	 			conexion.Open ();
+	        	NpgsqlCommand comando; 
+	        	comando = conexion.CreateCommand (); 
+	           	comando.CommandText = sql_compcaja+sql_numerocomprobante+sql_foliodeservicio;
+	        	Console.WriteLine(comando.CommandText.ToString());
+				NpgsqlDataReader lector = comando.ExecuteReader();
+				if (lector.Read()){
+					imprime_encabezado(cr,layout,numero_comprobante.ToString().Trim());
+					while (lector.Read()){
+						
+					}	
+				}								
+			}catch (NpgsqlException ex){
+				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+					MessageType.Warning, ButtonsType.Ok, "PostgresSQL error: {0}",ex.Message);
+					msgBoxError.Run ();
+					msgBoxError.Destroy();
+				Console.WriteLine ("PostgresSQL error: {0}",ex.Message);
+				return; 
+			}
+			conexion.Close();
 		}
 		
-		void imprime_encabezado(Cairo.Context cr,Pango.Layout layout)
+		void imprime_encabezado(Cairo.Context cr,Pango.Layout layout,string numerocomprobante)
 		{
 			Pango.FontDescription desc = Pango.FontDescription.FromString ("Sans");								
 			//cr.Rotate(90);  //Imprimir Orizontalmente rota la hoja cambian las posiciones de las lineas y columna					
@@ -158,7 +166,14 @@ namespace osiris
 			fontSize = 10.0;		
 			desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;
 			layout.FontDescription.Weight = Weight.Bold;		// Letra negrita
-			cr.MoveTo(225*escala_en_linux_windows, 35*escala_en_linux_windows);			layout.SetText("COMPROBANTE DE "+tipo_comprobante);				Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(225*escala_en_linux_windows, 35*escala_en_linux_windows);			layout.SetText("COMPROBANTE DE "+tipocomprobante);				Pango.CairoHelper.ShowLayout (cr, layout);
+			layout.FontDescription.Weight = Weight.Normal;		// Letra normal
+			cr.MoveTo(479*escala_en_linux_windows, 25*escala_en_linux_windows);			layout.SetText("N° Folio "+numerocomprobante);				Pango.CairoHelper.ShowLayout (cr, layout);
+			fontSize = 8.0;		
+			desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;
+			layout.FontDescription.Weight = Weight.Normal;		// Letra normal
+			
+			
 			
 		}
 		
@@ -170,29 +185,7 @@ namespace osiris
 }
 
 /*
-			Gnome.PrintJob    trabajo   = new Gnome.PrintJob (PrintConfig.Default());
-        	Gnome.PrintDialog dialogo   = new Gnome.PrintDialog (trabajo, "COMPROBANTE DE CAJA", 0);
-        	int         respuesta = dialogo.Run ();
-        	if (respuesta == (int) PrintButtons.Cancel) 
-			{
-				dialogo.Hide (); 
-				dialogo.Dispose (); 
-				return;
-			}
-			Gnome.PrintContext ctx = trabajo.Context;
-        	ComponerPagina(ctx, trabajo); 
-			trabajo.Close();
-            switch (respuesta)
-        	{
-                  case (int) PrintButtons.Print:   
-                  		trabajo.Print (); 
-                  		break;
-                  case (int) PrintButtons.Preview:
-                      	new PrintJobPreview(trabajo, "COMPROBANTE DE CAJA").Show();
-                        break;
-        	}
-			dialogo.Hide (); dialogo.Dispose ();
-		}
+			
       	
 		void imprime_encabezado(Gnome.PrintContext ContextoImp, Gnome.PrintJob trabajoImpresion)
 		{

@@ -60,7 +60,6 @@
     <File subtype="Code" buildaction="Compile" name="rpt_caja_comprobante.cs" />
     <File subtype="Code" buildaction="Compile" name="rpt_cargos_extras.cs" />
     <File subtype="Code" buildaction="Compile" name="rpt_compras_farmacia.cs" />
-    <File subtype="Code" buildaction="Compile" name="rpt_comprobante_serv.cs" />
     <File subtype="Code" buildaction="Compile" name="rpt_cons_informado.cs" />
     <File subtype="Code" buildaction="Compile" name="rpt_consumo_productos.cs" />
     <File subtype="Code" buildaction="Compile" name="rpt_cont_prestaciones.cs" />

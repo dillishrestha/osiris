@@ -179,6 +179,7 @@ namespace osiris
 		[Widget] Gtk.Label label_pago;
 		[Widget] Gtk.Label label_comp_remision;
 		[Widget] Gtk.ComboBox combobox_formapago;
+		[Widget] Gtk.Label label283 = null;
 		
 		/////// Ventana Alta de Paciente\\\\\\\\
 		[Widget] Gtk.Window causa_egreso;
@@ -608,6 +609,7 @@ namespace osiris
 						button_cierre_cuenta.Sensitive = true;
 						button_compro_caja.Sensitive = true;
 						button_compro_serv.Sensitive = true;
+						button_pagare.Sensitive = true;
 					}catch(NpgsqlException ex){
 						MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
 										MessageType.Error, 
@@ -1704,9 +1706,17 @@ namespace osiris
 			}
 		}
 		
+				
 		void on_button_guardar_pago_clicked(object sender, EventArgs args)
 		{
+			guarda_comprobante(sender,"CAJA");
+		}
+		
+		void guarda_comprobante(object sender, string tipo_de_comprobante)
+		{
 			string descrippago = "";
+			bool pago_sino = true;
+			string sql_abonos_servicio = "";
 			
 			if (entry_numero_comprobante.Text.Trim() != "" && idformadepago > 1){
 				Widget win = (Widget) sender;
@@ -1721,20 +1731,10 @@ namespace osiris
 	 				if (miResultado == ResponseType.Yes){
 				
 						//if (guado_el_abono == false){
-						if (pagodehonorario == false){
-							descrippago = "PAGO DE PROCEDIMIENTO";
-						}else{
+						if (pagodehonorario == true){
 							descrippago = "PAGO DE HONORARIO MEDICO";
-						}
-						
-	 					NpgsqlConnection conexion; 
-						conexion = new NpgsqlConnection (connectionString+nombrebd);
-						// Verifica que la base de datos este conectada
-						try{
-							conexion.Open ();
-							NpgsqlCommand comando; 
-							comando = conexion.CreateCommand ();
-				 			comando.CommandText = "INSERT INTO osiris_erp_abonos("+
+							pago_sino = true;
+							sql_abonos_servicio = "INSERT INTO osiris_erp_abonos("+
 				 								"monto_de_abono_procedimiento,"+
 				 								"folio_de_servicio,"+
 				 								"concepto_del_abono,"+
@@ -1746,7 +1746,8 @@ namespace osiris
 				 								"honorario_medico,"+
 				 								"pago_honorario_medico,"+
 				 								"numero_factura,"+
-				 								"numero_recibo_caja) "+
+				 								"numero_recibo_caja,"+
+												"tipo_comprobante) "+
 				 								"VALUES ('"+
 				 								(string) this.entry_total_comprobante.Text.Trim()+"','"+
 				 								folioservicio+"','"+
@@ -1757,63 +1758,152 @@ namespace osiris
 	 											pagodehonorario+"','"+
 	 											DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"','"+
 	 											pagodehonorario+"','"+
-	 											"true','"+
+	 											pago_sino.ToString()+"','"+
 	 											this.entry_numero_factura.Text+"','"+
-	 											(string) entry_numero_comprobante.Text.Trim()+"');";
+	 											(string) entry_numero_comprobante.Text.Trim()+"','"+
+												tipo_de_comprobante+"');";
+							
+						}
+						if(tipo_de_comprobante == "CAJA"){
+							descrippago = "PAGO DE PROCEDIMIENTO";
+							pago_sino = true;
+							sql_abonos_servicio = "INSERT INTO osiris_erp_abonos("+
+				 								"monto_de_abono_procedimiento,"+
+				 								"folio_de_servicio,"+
+				 								"concepto_del_abono,"+
+				 								"fecha_abono,"+
+				 								"id_quien_creo,"+
+				 								"id_forma_de_pago,"+
+				 								"pago,"+
+				 								"fechahora_registro,"+
+				 								"honorario_medico,"+
+				 								"pago_honorario_medico,"+
+				 								"numero_factura,"+
+				 								"numero_recibo_caja,"+
+												"tipo_comprobante,"+
+												"observaciones) "+
+				 								"VALUES ('"+
+				 								(string) this.entry_total_comprobante.Text.Trim()+"','"+
+				 								folioservicio+"','"+
+				 								descrippago+"','"+
+				 								DateTime.Now.ToString("yyyy-MM-dd")+"','"+
+	 											LoginEmpleado+"','"+
+	 											idformadepago.ToString()+"','"+
+	 											pagodehonorario+"','"+
+	 											DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"','"+
+	 											pagodehonorario+"','"+
+	 											pago_sino.ToString()+"','"+
+	 											this.entry_numero_factura.Text+"','"+
+	 											(string) entry_numero_comprobante.Text.Trim()+"','"+
+												tipo_de_comprobante+"','"+
+												entry_observacion_egreso.Text.ToString().ToUpper().Trim()+"');";
+						}
+						
+						if(tipo_de_comprobante == "SERVICIO"){
+							descrippago = "COMPROBANTE DE SERVICIO";
+							pago_sino = false;
+							sql_abonos_servicio = "INSERT INTO osiris_erp_comprobante_servicio("+
+														"numero_comprobante_servicio,"+
+														"folio_de_servicio,"+
+														"fechahora_creacion,"+
+														"fecha_comprobante,"+
+														"concepto_del_comprobante,"+
+														"id_quien_creo," +
+														"id_empresa,"+
+														"observaciones) "+
+													"VALUES ('"+
+														(string) entry_numero_comprobante.Text.Trim()+"','"+
+														folioservicio+"','"+
+														DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"','"+
+														DateTime.Now.ToString("yyyy-MM-dd")+"','"+
+														"COMPROBANTE DE SERVICO"+"','"+
+														LoginEmpleado+"','"+
+														idempresa_paciente.ToString().Trim()+"','"+
+														entry_observacion_egreso.Text.ToString().ToUpper().Trim()+"');";
+						}
+						
+						if(tipo_de_comprobante == "PAGARE"){
+							descrippago = "COMPROBANTE DE PAGARE";
+							pago_sino = false;
+							sql_abonos_servicio = "INSERT INTO osiris_erp_comprobante_servicio("+
+														"numero_comprobante_servicio,"+
+														"folio_de_servicio,"+
+														"fechahora_creacion)"+
+													"VALUES ('"+
+														(string) entry_numero_comprobante.Text.Trim()+"','"+
+														folioservicio+"','"+
+														DateTime.Now.ToString("yyyy-MM-dd")+"');";
+						}
+						
+	 					NpgsqlConnection conexion; 
+						conexion = new NpgsqlConnection (connectionString+nombrebd);
+						// Verifica que la base de datos este conectado
+						try{
+							conexion.Open ();
+							NpgsqlCommand comando; 
+							comando = conexion.CreateCommand ();
+				 			comando.CommandText = sql_abonos_servicio;
+							Console.WriteLine(comando.CommandText);
 	 											
 			 				comando.ExecuteNonQuery();    	    	       	comando.Dispose();
-			 				if (pagodehonorario == false){
-				 				NpgsqlConnection conexion1; 
+			 				if (pagodehonorario == true){
+								// Marca el pago del honorario en la tabla de honorarios medicos
+						       	NpgsqlConnection conexion1; 
 								conexion1 = new NpgsqlConnection (connectionString+nombrebd);
 								// Verifica que la base de datos este conectada
 								try{
 									conexion1.Open ();
 									NpgsqlCommand comando1; 
 									comando1 = conexion1.CreateCommand ();
-						 			comando1.CommandText = "UPDATE osiris_erp_cobros_enca "+
+							 		comando1.CommandText = "UPDATE osiris_erp_honorarios_medicos "+
+												"SET pagado = 'true',"+	
+												"fecha_pago = '"+this.entry_ano1.Text+"-"+this.entry_mes1.Text+"-"+this.entry_dia1.Text+"' "+			
+												"WHERE id_abono = '"+idhonorariomedico+"';";
+							 		comando1.ExecuteNonQuery();    	    	       	comando1.Dispose();
+							 			
+							 		comando1.CommandText = "UPDATE osiris_erp_cobros_enca "+
+												"SET total_abonos = total_abonos + '"+(string) this.entry_total_comprobante.Text.Trim()+"' "+							
+												"WHERE  folio_de_servicio =  '"+this.folioservicio+"';";
+							 		comando1.ExecuteNonQuery();    	    	       	comando1.Dispose();
+							 			
+							 		llenado_de_honorarios();
+							 							 			 	  
+					 			}catch(NpgsqlException ex){
+						   			MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+															MessageType.Error,ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
+									msgBoxError.Run ();					msgBoxError.Destroy();
+						       	}
+						       	conexion1.Close();
+							}else{								
+								if(tipo_de_comprobante == "CAJA"){	
+						       		NpgsqlConnection conexion1; 
+									conexion1 = new NpgsqlConnection (connectionString+nombrebd);
+									// Verifica que la base de datos este conectada
+									try{
+										conexion1.Open ();
+										NpgsqlCommand comando1; 
+										comando1 = conexion1.CreateCommand ();
+						 				comando1.CommandText = "UPDATE osiris_erp_cobros_enca "+
 											"SET pagado = 'true',"+	
 											"total_pago = '"+(string) this.entry_total_comprobante.Text.Trim()+"' "+							
 											"WHERE  folio_de_servicio =  '"+this.folioservicio+"';";
-						 			comando1.ExecuteNonQuery();    	    	       	comando1.Dispose();
+						 				comando1.ExecuteNonQuery();    	    	       	comando1.Dispose();
 						 			
+						 				cierre_de_procedimiento();				 			
+						 				comprobante_de_caja_pago("CAJA");
+						 							 			 	  
+				 					}catch(NpgsqlException ex){
+					   					MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+														MessageType.Error,ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
+										msgBoxError.Run ();					msgBoxError.Destroy();
+					       			}
+					       			conexion1.Close();
+								}									
+								if(tipo_de_comprobante == "SERVICIO"){						       								 			
 						 			cierre_de_procedimiento();				 			
-						 			comprobante_de_caja_pago();
-						 							 			 	  
-				 				}catch(NpgsqlException ex){
-					   				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
-														MessageType.Error,ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
-									msgBoxError.Run ();					msgBoxError.Destroy();
-					       		}
-					       		conexion1.Close();
-					       	}else{
-					       		// Marca el pago del honorario en la tabla de honorarios medicos
-					       		NpgsqlConnection conexion1; 
-								conexion1 = new NpgsqlConnection (connectionString+nombrebd);
-								// Verifica que la base de datos este conectada
-								try{
-									conexion1.Open ();
-									NpgsqlCommand comando1; 
-									comando1 = conexion1.CreateCommand ();
-						 			comando1.CommandText = "UPDATE osiris_erp_honorarios_medicos "+
-											"SET pagado = 'true',"+	
-											"fecha_pago = '"+this.entry_ano1.Text+"-"+this.entry_mes1.Text+"-"+this.entry_dia1.Text+"' "+			
-											"WHERE id_abono = '"+idhonorariomedico+"';";
-						 			comando1.ExecuteNonQuery();    	    	       	comando1.Dispose();
-						 			
-						 			comando1.CommandText = "UPDATE osiris_erp_cobros_enca "+
-											"SET total_abonos = total_abonos + '"+(string) this.entry_total_comprobante.Text.Trim()+"' "+							
-											"WHERE  folio_de_servicio =  '"+this.folioservicio+"';";
-						 			comando1.ExecuteNonQuery();    	    	       	comando1.Dispose();
-						 			
-						 			llenado_de_honorarios();
-						 							 			 	  
-				 				}catch(NpgsqlException ex){
-					   				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
-														MessageType.Error,ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
-									msgBoxError.Run ();					msgBoxError.Destroy();
-					       		}
-					       		conexion1.Close();
-					       	}
+						 			comprobante_de_caja_pago("SERVICIO");
+						       	}					
+							}
 						}catch(NpgsqlException ex){
 				   			MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
 													MessageType.Error,ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
@@ -1833,19 +1923,73 @@ namespace osiris
 			}
 		}
 		
-		void comprobante_de_caja_pago()
+		void comprobante_de_caja_pago(string tipo_comprobante)
 		{
 			// rpt_caja-comprobante.cs
-			new caja_comprobante ( PidPaciente,this.folioservicio,nombrebd,
-					entry_ingreso.Text,entry_egreso.Text,entry_numero_factura.Text,
-					entry_nombre_paciente.Text,entry_telefono_paciente.Text,entry_doctor.Text,
-					entry_tipo_paciente.Text,entry_aseguradora.Text,edadpac+" Años",
-					fecha_nacimiento,dir_pac,cirugia,empresapac,id_tipopaciente,NomEmpleado+" "+AppEmpleado+" "+ApmEmpleado,
-					this.entry_total_abonos_caja.Text.Trim(),"VENTA");
+			if (tipo_comprobante == "CAJA"){			
+				new caja_comprobante (int.Parse(entry_numero_comprobante.Text.ToString()), "CAJA", folioservicio,"SELECT osiris_erp_cobros_deta.folio_de_servicio,osiris_erp_cobros_deta.pid_paciente, "+ 
+						"osiris_his_tipo_admisiones.descripcion_admisiones,aplicar_iva, "+
+						"osiris_his_tipo_admisiones.id_tipo_admisiones AS idadmisiones,"+
+						"osiris_grupo_producto.descripcion_grupo_producto, "+
+						"osiris_productos.id_grupo_producto,  "+
+						"to_char(osiris_erp_cobros_deta.porcentage_descuento,'999.99') AS porcdesc, "+
+						"to_char(osiris_erp_cobros_deta.fechahora_creacion,'dd-mm-yyyy') AS fechcreacion,  "+
+						"to_char(osiris_erp_cobros_deta.fechahora_creacion,'HH:mm') AS horacreacion,  "+
+						"to_char(osiris_erp_cobros_deta.id_producto,'999999999999') AS idproducto,descripcion_producto, "+
+						"to_char(osiris_erp_cobros_deta.cantidad_aplicada,'99999999.99') AS cantidadaplicada, "+
+						"to_char(osiris_erp_cobros_deta.precio_producto,'9999999.99') AS preciounitario, "+
+						"ltrim(to_char(osiris_erp_cobros_deta.precio_producto,'9999999.99')) AS preciounitarioprod, "+
+						"to_char(osiris_erp_cobros_deta.iva_producto,'999999.99') AS ivaproducto, "+
+						//"to_char(osiris_erp_cobros_deta.precio_por_cantidad,'999999.99') AS ppcantidad, "+
+						"to_char(osiris_erp_cobros_deta.cantidad_aplicada * osiris_erp_cobros_deta.precio_producto,'99999999.99') AS ppcantidad,"+
+						"to_char(osiris_productos.precio_producto_publico,'999999999.99999') AS preciopublico,osiris_erp_abonos.numero_recibo_caja,"+
+						"osiris_his_paciente.nombre1_paciente || ' ' || osiris_his_paciente.nombre2_paciente || ' ' || osiris_his_paciente.apellido_paterno_paciente || ' ' || osiris_his_paciente.apellido_materno_paciente AS nombre_completo, "+
+						"to_char(osiris_his_paciente.fecha_nacimiento_paciente, 'dd-MM-yyyy') AS fechanacpaciente, to_char(to_number(to_char(age('"+DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss")+"',osiris_his_paciente.fecha_nacimiento_paciente),'yyyy') ,'9999'),'9999') AS edadpaciente "+
+						"FROM osiris_erp_cobros_deta,osiris_his_tipo_admisiones,osiris_productos,osiris_grupo_producto,osiris_erp_abonos,osiris_his_paciente "+
+						"WHERE osiris_erp_cobros_deta.id_tipo_admisiones = osiris_his_tipo_admisiones.id_tipo_admisiones "+
+						"AND osiris_erp_cobros_deta.id_producto = osiris_productos.id_producto  "+ 
+						"AND osiris_productos.id_grupo_producto = osiris_grupo_producto.id_grupo_producto "+
+						"AND osiris_erp_cobros_deta.pid_paciente = osiris_his_paciente.pid_paciente "+ 
+						"AND osiris_erp_cobros_deta.eliminado = 'false' ");
+			}
+			if (tipo_comprobante == "SERVICIO"){			
+				new caja_comprobante (int.Parse(entry_numero_comprobante.Text.ToString()), "SERVICIO", folioservicio,"SELECT osiris_erp_cobros_deta.folio_de_servicio,osiris_erp_cobros_deta.pid_paciente, "+ 
+						"osiris_his_tipo_admisiones.descripcion_admisiones,aplicar_iva, "+
+						"osiris_his_tipo_admisiones.id_tipo_admisiones AS idadmisiones,"+
+						"osiris_grupo_producto.descripcion_grupo_producto, "+
+						"osiris_productos.id_grupo_producto,  "+
+						"to_char(osiris_erp_cobros_deta.porcentage_descuento,'999.99') AS porcdesc, "+
+						"to_char(osiris_erp_cobros_deta.fechahora_creacion,'dd-mm-yyyy') AS fechcreacion,  "+
+						"to_char(osiris_erp_cobros_deta.fechahora_creacion,'HH:mm') AS horacreacion,  "+
+						"to_char(osiris_erp_cobros_deta.id_producto,'999999999999') AS idproducto,descripcion_producto, "+
+						"to_char(osiris_erp_cobros_deta.cantidad_aplicada,'99999999.99') AS cantidadaplicada, "+
+						"to_char(osiris_erp_cobros_deta.precio_producto,'9999999.99') AS preciounitario, "+
+						"ltrim(to_char(osiris_erp_cobros_deta.precio_producto,'9999999.99')) AS preciounitarioprod, "+
+						"to_char(osiris_erp_cobros_deta.iva_producto,'999999.99') AS ivaproducto, "+
+						//"to_char(osiris_erp_cobros_deta.precio_por_cantidad,'999999.99') AS ppcantidad, "+
+						"to_char(osiris_erp_cobros_deta.cantidad_aplicada * osiris_erp_cobros_deta.precio_producto,'99999999.99') AS ppcantidad,"+
+						"to_char(osiris_productos.precio_producto_publico,'999999999.99999') AS preciopublico,osiris_erp_comprobante_servicio.numero_comprobante_servicio,"+
+						"osiris_his_paciente.nombre1_paciente || ' ' || osiris_his_paciente.nombre2_paciente || ' ' || osiris_his_paciente.apellido_paterno_paciente || ' ' || osiris_his_paciente.apellido_materno_paciente AS nombre_completo, "+
+						"to_char(osiris_his_paciente.fecha_nacimiento_paciente, 'dd-MM-yyyy') AS fechanacpaciente, to_char(to_number(to_char(age('"+DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss")+"',osiris_his_paciente.fecha_nacimiento_paciente),'yyyy') ,'9999'),'9999') AS edadpaciente "+
+						"FROM osiris_erp_cobros_deta,osiris_his_tipo_admisiones,osiris_productos,osiris_grupo_producto,osiris_erp_comprobante_servicio,osiris_his_paciente "+
+						"WHERE osiris_erp_cobros_deta.id_tipo_admisiones = osiris_his_tipo_admisiones.id_tipo_admisiones "+
+						"AND osiris_erp_cobros_deta.id_producto = osiris_productos.id_producto  "+ 
+						"AND osiris_productos.id_grupo_producto = osiris_grupo_producto.id_grupo_producto "+
+						"AND osiris_erp_cobros_deta.pid_paciente = osiris_his_paciente.pid_paciente "+ 
+						"AND osiris_erp_cobros_deta.eliminado = 'false' ");
+			}
+			if (tipo_comprobante == "PAGARE"){			
+				new caja_comprobante (int.Parse(entry_numero_comprobante.Text.ToString()), "PAGARE", folioservicio,"");
+			}
 		}
 		
 		void on_button_compro_serv_clicked(object sender, EventArgs args)
 		{
+			comprobante_de_servicio();
+		}
+		
+		void comprobante_de_servicio()
+		{			
 			if ((string) entry_folio_servicio.Text == "" || (string) entry_pid_paciente.Text == "" )
 		    {	
 				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
@@ -1853,13 +1997,13 @@ namespace osiris
 							"existente para que el comprobante se muestre \n"+"o no a pulsado el boton ''Seleccionar''");
 				msgBoxError.Run ();				msgBoxError.Destroy();
 			}else{
-				// rpt_comprobante_serv.cs
 				
-				new comprobante_serv ( PidPaciente,this.folioservicio,nombrebd,
-					entry_ingreso.Text,entry_egreso.Text,entry_numero_factura.Text,
-					entry_nombre_paciente.Text,entry_telefono_paciente.Text,entry_doctor.Text,
-					entry_tipo_paciente.Text,entry_aseguradora.Text,edadpac+" Años",
-				    fecha_nacimiento,dir_pac,cirugia,empresapac,id_tipopaciente);
+				// rpt_comprobante_serv.cs
+				//new comprobante_serv ( PidPaciente,this.folioservicio,nombrebd,
+				//	entry_ingreso.Text,entry_egreso.Text,entry_numero_factura.Text,
+				//	entry_nombre_paciente.Text,entry_telefono_paciente.Text,entry_doctor.Text,
+				//	entry_tipo_paciente.Text,entry_aseguradora.Text,edadpac+" Años",
+				//   fecha_nacimiento,dir_pac,cirugia,empresapac,id_tipopaciente);
 				
 				// rpt_caja-comprobante.cs
 				/*new caja_comprobante ( PidPaciente,this.folioservicio,nombrebd,
@@ -1869,9 +2013,40 @@ namespace osiris
 					fecha_nacimiento,dir_pac,cirugia,empresapac,id_tipopaciente,NomEmpleado+" "+AppEmpleado+" "+ApmEmpleado,
 					this.entry_total_abonos_caja.Text.Trim(),"SERVICIO");
 				*/
+				pagodehonorario = false;
+				Glade.XML gxml = new Glade.XML (null, "caja.glade", "comprobante_pago", null);
+				gxml.Autoconnect (this);
+				comprobante_pago.Title = "Comprobante de Servicio";
+				comprobante_pago.Show();
+								
+				entry_numero_comprobante.KeyPressEvent += onKeyPressEvent;
+				entry_total_comprobante.KeyPressEvent += onKeyPressEvent;
+				entry_total_comprobante.Text = this.entry_a_pagar.Text;
+				
+				this.entry_dia1.Text = DateTime.Now.ToString("dd");
+				this.entry_mes1.Text = DateTime.Now.ToString("MM");
+				this.entry_ano1.Text = DateTime.Now.ToString("yyyy");
+				this.entry_hora_compr.Text = DateTime.Now.ToString("HH:mm:ss");
+				
+				this.entry_dia1.IsEditable = false;
+				this.entry_mes1.IsEditable = false;
+				this.entry_ano1.IsEditable = false;
+				entry_hora_compr.IsEditable = false;
+				
+				button_guardar_pago.Clicked += new EventHandler(on_button_guardar_servicio_clicked);
+				button_salir.Clicked += new EventHandler(on_cierraventanas_clicked); // esta sub-clase esta en hscmty.cs
+				combobox_formapago.Hide();
+				label283.Hide();
+				//llenado_formapago();
+				idformadepago = 2;
 			}
 		}
 		
+		void on_button_guardar_servicio_clicked(object sender, EventArgs args)
+		{
+			guarda_comprobante(sender,"SERVICIO");
+		}
+			
 		void llenado_formapago()
 		{
 			combobox_formapago.Clear();

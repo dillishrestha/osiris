@@ -2886,7 +2886,7 @@ Solicitud</property>
                             <child>
                               <widget class="GtkLabel" id="label3">
                                 <property name="visible">True</property>
-                                <property name="label" translatable="yes">_Buscar</property>
+                                <property name="label" translatable="yes">_Guardar</property>
                                 <property name="use_underline">True</property>
                               </widget>
                               <packing>

@@ -44,7 +44,7 @@ namespace osiris
 		private PrintOperation print;
 		private double fontSize = 8.0;
 		int escala_en_linux_windows;		// Linux = 1  Windows = 8
-		int comienzo_linea = 125;
+		int comienzo_linea = 60;
 		int separacion_linea = 10;
 		int numpage = 1;
 		int numero_comprobante;
@@ -53,6 +53,9 @@ namespace osiris
         string nombrebd;
 		float valoriva;
 		string tipocomprobante = "";
+		string tipo_paciente = "";
+		string empresapac = "";
+		string nombreempleado = "";
 		
 		string sql_compcaja = "";
 						//"AND to_char(osiris_erp_movcargos.fechahora_admision_registro,'dd') >= '"+DateTime.Now.ToString("dd")+"'  AND to_char(osiris_erp_movcargos.fechahora_admision_registro,'dd') <= '"+DateTime.Now.ToString("dd")+"' "+
@@ -61,13 +64,13 @@ namespace osiris
 		//Declaracion de ventana de error
 		string sql_foliodeservicio = "";
 		string sql_numerocomprobante = "";
-		string sql_orderquery = " ORDER BY  osiris_erp_cobros_deta.id_tipo_admisiones ASC, osiris_productos.id_grupo_producto";
+		string sql_orderquery = " ORDER BY osiris_erp_cobros_deta.id_tipo_admisiones ASC, osiris_productos.id_grupo_producto;";
 		protected Gtk.Window MyWinError;
 		
 		class_conexion conexion_a_DB = new class_conexion();
 		class_public classpublic = new class_public();
 		
-		public caja_comprobante(int numero_comprobante_, string tipo_comprobante_, int folioservicio_, string sql_consulta_)
+		public caja_comprobante(int numero_comprobante_, string tipo_comprobante_, int folioservicio_, string sql_consulta_, string nombreempleado_)
 		{
 			connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
 			nombrebd = conexion_a_DB._nombrebd;
@@ -76,6 +79,9 @@ namespace osiris
 			tipocomprobante = tipo_comprobante_;
 			numero_comprobante = numero_comprobante_;
 			sql_compcaja = sql_consulta_;
+			nombreempleado = nombreempleado_;
+			
+			Console.WriteLine(tipocomprobante);
 			
 			if (tipocomprobante == "CAJA"){			
 				sql_numerocomprobante = "AND osiris_erp_abonos.numero_recibo_caja = '"+numero_comprobante.ToString().Trim()+"' ";
@@ -83,8 +89,8 @@ namespace osiris
 			if (tipocomprobante == "SERVICIO"){			
 				sql_numerocomprobante = "AND osiris_erp_comprobante_servicio.numero_comprobante_servicio = '"+numero_comprobante.ToString().Trim()+"' ";
 			}
-			if (tipocomprobante == "PAGARE"){			
-				sql_numerocomprobante = "AND osiris_erp_comprobante_servicio.numero_comprobante_servicio = '"+numero_comprobante.ToString().Trim()+"' ";
+			if (tipocomprobante == "PAGARE"){
+				sql_numerocomprobante = "AND osiris_erp_pagares.numero_comprobante_servicio = '"+numero_comprobante.ToString().Trim()+"' ";
 			}
 			sql_foliodeservicio = "AND osiris_erp_cobros_deta.folio_de_servicio = '"+folioservicio_.ToString()+"' ";
 			print = new PrintOperation ();
@@ -97,7 +103,7 @@ namespace osiris
 		
 		private void OnBeginPrint (object obj, Gtk.BeginPrintArgs args)
 		{
-			print.NPages = 3;  // crea cantidad de copias del reporte			
+			print.NPages = 1;  // crea cantidad de copias del reporte			
 			// para imprimir horizontalmente el reporte
 			//print.PrintSettings.Orientation = PageOrientation.Landscape;
 			//Console.WriteLine(print.PrintSettings.Orientation.ToString());
@@ -111,6 +117,11 @@ namespace osiris
 		
 		void ejecutar_consulta_reporte(PrintContext context)
 		{
+			bool apl_desc = false;
+			bool apl_desc_siempre = true;
+			int toma_tipoadmisiones = 0;
+			int toma_grupoproducto = 0;
+			float toma_valor_total = 0;
 			Cairo.Context cr = context.CairoContext;
 			Pango.Layout layout = context.CreatePangoLayout ();
 						
@@ -126,14 +137,59 @@ namespace osiris
 	 			conexion.Open ();
 	        	NpgsqlCommand comando; 
 	        	comando = conexion.CreateCommand (); 
-	           	comando.CommandText = sql_compcaja+sql_numerocomprobante+sql_foliodeservicio;
+	           	comando.CommandText = sql_compcaja+sql_numerocomprobante+sql_foliodeservicio+sql_orderquery;
 	        	Console.WriteLine(comando.CommandText.ToString());
 				NpgsqlDataReader lector = comando.ExecuteReader();
 				if (lector.Read()){
-					imprime_encabezado(cr,layout,numero_comprobante.ToString().Trim());
+					if (tipocomprobante == "CAJA"){
+						toma_valor_total = float.Parse((string) lector["montodelabono"]);		
+					}
+					toma_tipoadmisiones = (int) lector["idadmisiones"];
+					toma_grupoproducto = (int) lector["id_grupo_producto"];
+					busca_tipoadmisiones(lector["foliodeservicio"].ToString().Trim());
+					imprime_encabezado(cr,layout,numero_comprobante.ToString().Trim(),lector["foliodeservicio"].ToString().Trim(),lector["pidpaciente"].ToString().Trim(),
+					               lector["nombre_completo"].ToString().Trim(),lector["descripcion_empresa"].ToString().Trim(),lector["telefono_particular1_paciente"].ToString().Trim(),
+					               lector["fechcreacion"].ToString().Trim()+" "+lector["horacreacion"].ToString().Trim(),lector["concepto_comprobante"].ToString().Trim(),lector["observacionesvarias"].ToString().Trim(),
+					                   toma_valor_total);
+					comienzo_linea += separacion_linea;
+					comienzo_linea += separacion_linea;
+					if ((int) lector["idadmisiones"] == 300 || (int) lector["idadmisiones"] == 400 || (int) lector["idadmisiones"] == 950 || (int) lector["idadmisiones"] == 960){	
+						cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText((string) lector["descripcion_admisiones"].ToString().Trim());	Pango.CairoHelper.ShowLayout (cr, layout);
+						comienzo_linea += separacion_linea;
+						cr.MoveTo(15*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText((string) lector["descripcion_grupo_producto"].ToString().Trim());	Pango.CairoHelper.ShowLayout (cr, layout);
+						comienzo_linea += separacion_linea;
+						cr.MoveTo(25*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText((string) lector["idproducto"].ToString().Trim()+" "+(string) lector["descripcion_producto"].ToString().Trim());	Pango.CairoHelper.ShowLayout (cr, layout);
+					}else{
+						cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText((string) lector["descripcion_admisiones"].ToString().Trim());	Pango.CairoHelper.ShowLayout (cr, layout);
+						comienzo_linea += separacion_linea;
+						cr.MoveTo(15*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText((string) lector["descripcion_grupo_producto"].ToString().Trim());	Pango.CairoHelper.ShowLayout (cr, layout);
+					}
+					
 					while (lector.Read()){
-						
-					}	
+						if (toma_tipoadmisiones != (int) lector["idadmisiones"]){
+							comienzo_linea += separacion_linea;
+							cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText((string) lector["descripcion_admisiones"].ToString().Trim());	Pango.CairoHelper.ShowLayout (cr, layout);
+							comienzo_linea += separacion_linea;
+							cr.MoveTo(15*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText((string) lector["descripcion_grupo_producto"].ToString().Trim());	Pango.CairoHelper.ShowLayout (cr, layout);
+							if ((int) lector["idadmisiones"] == 300 || (int) lector["idadmisiones"] == 400 || (int) lector["idadmisiones"] == 950 || (int) lector["idadmisiones"] == 960){
+								comienzo_linea += separacion_linea;
+								cr.MoveTo(25*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText((string) lector["idproducto"].ToString().Trim()+" "+(string) lector["descripcion_producto"].ToString().Trim());	Pango.CairoHelper.ShowLayout (cr, layout);
+								
+							}
+							toma_tipoadmisiones = (int) lector["idadmisiones"];
+							toma_grupoproducto = (int) lector["id_grupo_producto"];							
+						}else{
+							if(toma_grupoproducto != (int) lector["id_grupo_producto"]){
+								comienzo_linea += separacion_linea;
+								cr.MoveTo(15*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText((string) lector["descripcion_grupo_producto"].ToString().Trim());	Pango.CairoHelper.ShowLayout (cr, layout);
+								toma_grupoproducto = (int) lector["id_grupo_producto"];
+							}
+							if ((int) lector["idadmisiones"] == 300 || (int) lector["idadmisiones"] == 400 || (int) lector["idadmisiones"] == 950 || (int) lector["idadmisiones"] == 960){
+								comienzo_linea += separacion_linea;
+								cr.MoveTo(25*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText((string) lector["idproducto"].ToString().Trim()+" "+(string) lector["descripcion_producto"].ToString().Trim());	Pango.CairoHelper.ShowLayout (cr, layout);								
+							}
+						}
+					}
 				}								
 			}catch (NpgsqlException ex){
 				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
@@ -146,7 +202,9 @@ namespace osiris
 			conexion.Close();
 		}
 		
-		void imprime_encabezado(Cairo.Context cr,Pango.Layout layout,string numerocomprobante)
+		void imprime_encabezado(Cairo.Context cr,Pango.Layout layout,string numerocomprobante, string numerodeatencion, string numeroexpediente, 
+		                        string nombrepaciente, string descripcion_empmuni, string telefono_paciente, string fechahoraregistro,
+		                        string conceptocomprobante, string observacionescomprobante, float tomavalortotal )
 		{
 			Pango.FontDescription desc = Pango.FontDescription.FromString ("Sans");								
 			//cr.Rotate(90);  //Imprimir Orizontalmente rota la hoja cambian las posiciones de las lineas y columna					
@@ -171,15 +229,66 @@ namespace osiris
 			cr.MoveTo(479*escala_en_linux_windows, 25*escala_en_linux_windows);			layout.SetText("N° Folio "+numerocomprobante);				Pango.CairoHelper.ShowLayout (cr, layout);
 			fontSize = 8.0;		
 			desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;
+			layout.FontDescription.Weight = Weight.Bold;		// Letra negrita
+			cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText("N° Atencion: "+numerodeatencion);	Pango.CairoHelper.ShowLayout (cr, layout);
 			layout.FontDescription.Weight = Weight.Normal;		// Letra normal
+			cr.MoveTo(120*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText("N° Expe.: "+numeroexpediente);		Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(220*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText("Nombre Paciente: "+nombrepaciente);	Pango.CairoHelper.ShowLayout (cr, layout);
+			comienzo_linea += separacion_linea;
+			cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText("Telefono: "+telefono_paciente);	Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(250*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText("Fecha Admision: "+fechahoraregistro);	Pango.CairoHelper.ShowLayout (cr, layout);
+			comienzo_linea += separacion_linea;
+			cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText("Tipo Paciente: "+tipo_paciente);	Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(200*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText("Empr./Munic.: "+descripcion_empmuni);	Pango.CairoHelper.ShowLayout (cr, layout);		
 			
-			
-			
-		}
+			cr.MoveTo(05*escala_en_linux_windows,comienzo_linea+(separacion_linea*23)*escala_en_linux_windows);		layout.SetText("Concepto    : "+conceptocomprobante);	Pango.CairoHelper.ShowLayout (cr, layout);		
+			cr.MoveTo(05*escala_en_linux_windows,comienzo_linea+(separacion_linea*24)*escala_en_linux_windows);		layout.SetText("Observacion : "+observacionescomprobante);	Pango.CairoHelper.ShowLayout (cr, layout);		
+			cr.MoveTo(05*escala_en_linux_windows,comienzo_linea+(separacion_linea*25)*escala_en_linux_windows);		layout.SetText("Atendio por : "+nombreempleado);	Pango.CairoHelper.ShowLayout (cr, layout);		
+
+			if (tipocomprobante == "CAJA"){
+				fontSize = 9.0;		
+				desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;
+				layout.FontDescription.Weight = Weight.Bold;		// Letra negrita
+				cr.MoveTo(350*escala_en_linux_windows,comienzo_linea+(separacion_linea*23)*escala_en_linux_windows);		layout.SetText("T O T A L : "+tomavalortotal.ToString("C"));	Pango.CairoHelper.ShowLayout (cr, layout);		
+			}
+			fontSize = 8.0;		
+			desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;
+			layout.FontDescription.Weight = Weight.Normal;		// Letra normal
 		
+		}
+				
 		private void OnEndPrint (object obj, Gtk.EndPrintArgs args)
 		{
 			
+		}
+		
+		void busca_tipoadmisiones(string foliodeservicio)
+		{
+			NpgsqlConnection conexion; 
+	        conexion = new NpgsqlConnection (connectionString+nombrebd);
+	        // Verifica que la base de datos este conectada
+	        try{
+	 			conexion.Open ();
+	        	NpgsqlCommand comando; 
+	        	comando = conexion.CreateCommand (); 
+	           	comando.CommandText = "SELECT DISTINCT (osiris_erp_movcargos.folio_de_servicio),id_tipo_admisiones,osiris_erp_movcargos.id_tipo_paciente,pid_paciente,descripcion_tipo_paciente "+
+					"FROM osiris_erp_movcargos,osiris_his_tipo_pacientes "+
+					"WHERE osiris_erp_movcargos.id_tipo_paciente = osiris_his_tipo_pacientes.id_tipo_paciente "+
+						"AND osiris_erp_movcargos.folio_de_servicio = '"+foliodeservicio+"';";
+	        	Console.WriteLine(comando.CommandText.ToString());
+				NpgsqlDataReader lector = comando.ExecuteReader();
+				if (lector.Read()){
+					tipo_paciente = lector["descripcion_tipo_paciente"].ToString().Trim();					
+				}
+			}catch (NpgsqlException ex){
+				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+					MessageType.Warning, ButtonsType.Ok, "PostgresSQL error: {0}",ex.Message);
+					msgBoxError.Run ();
+					msgBoxError.Destroy();
+				Console.WriteLine ("PostgresSQL error: {0}",ex.Message);
+				return; 
+			}
+			conexion.Close();
 		}
 	}
 }

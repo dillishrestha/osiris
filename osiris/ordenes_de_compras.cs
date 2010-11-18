@@ -41,25 +41,40 @@ namespace osiris
 	
 		// Boton general para salir de las ventanas
 		// Todas la ventanas en glade este boton debe estra declarado identico
-		[Widget] Gtk.Button button_salir;
+		[Widget] Gtk.Button button_salir = null;
 		
 		//BOTON IMPRIMIR
-        [Widget] Gtk.Button button_imprimir;
+        [Widget] Gtk.Button button_imprimir = null;
 		
 		// Declarando ventana del menu de costos
-		[Widget] Gtk.Window crea_ordenes_compras;
-		[Widget] Gtk.ComboBox combobox_tipo_admision;
-		[Widget] Gtk.TreeView lista_productos_a_comprar;
-		[Widget] Gtk.Button button_busca_proveedores;
-		[Widget] Gtk.Button button_asignar_proveedor;
-		[Widget] Gtk.Button button_orden_compra;
-		[Widget] Gtk.Entry entry_id_proveedor;
-		[Widget] Gtk.Entry entry_nombre_proveedor;
-		[Widget] Gtk.Entry entry_formapago;	
-		[Widget] Gtk.Entry entry_dia;
-		[Widget] Gtk.Entry entry_mes;
-		[Widget] Gtk.Entry entry_ano;
-		[Widget] Gtk.Statusbar statusbar;
+		[Widget] Gtk.Window crea_ordenes_compras = null;
+		[Widget] Gtk.ComboBox combobox_tipo_admision = null;
+		[Widget] Gtk.TreeView lista_productos_a_comprar = null;
+		[Widget] Gtk.Button button_busca_proveedores = null;
+		[Widget] Gtk.Button button_asignar_proveedor = null;
+		[Widget] Gtk.Button button_orden_compra = null;
+		[Widget] Gtk.Entry entry_id_proveedor = null;
+		[Widget] Gtk.Entry entry_nombre_proveedor = null;
+		[Widget] Gtk.Entry entry_formapago = null;
+		[Widget] Gtk.Entry entry_dia = null;
+		[Widget] Gtk.Entry entry_mes = null;
+		[Widget] Gtk.Entry entry_ano = null;
+		[Widget] Gtk.Statusbar statusbar = null;
+		
+		// Ventana seleccion de Ordenes de Compra
+		[Widget] Gtk.Window envio_almacenes = null;
+		[Widget] Gtk.Entry entry_dia_inicio = null;
+		[Widget] Gtk.Entry entry_mes_inicio = null;
+		[Widget] Gtk.Entry entry_ano_inicio = null;		
+		[Widget] Gtk.Entry entry_dia_termino = null;
+		[Widget] Gtk.Entry entry_mes_termino = null;
+		[Widget] Gtk.Entry entry_ano_termino = null;
+		[Widget] Gtk.HBox hbox1 = null;
+		[Widget] Gtk.CheckButton checkbutton_todos_envios = null;
+		[Widget] Gtk.CheckButton checkbutton_seleccion_presupuestos = null;
+		[Widget] Gtk.TreeView lista_almacenes = null;
+		[Widget] Gtk.Button button_buscar = null;
+		[Widget] Gtk.Button button_rep = null;
 				
 		string connectionString;
 		string nombrebd;
@@ -364,7 +379,25 @@ namespace osiris
 		
 		void on_imprime_orden_clicked(object sender, EventArgs args)
 		{
-			new osiris.rpt_orden_compras(this.nombrebd,this.lista_productos_a_comprar,this.treeViewEngineProductosaComprar);
+			
+			Glade.XML gxml = new Glade.XML (null, "almacen_costos_compras.glade", "envio_almacenes", null);
+			gxml.Autoconnect (this);
+		
+			envio_almacenes.Title = "Lista ORDENES DE COMPRA";
+			entry_dia_inicio.Text = DateTime.Now.ToString("dd");
+			entry_mes_inicio.Text = DateTime.Now.ToString("MM");
+			entry_ano_inicio.Text = DateTime.Now.ToString("yyyy");
+				
+			entry_dia_termino.Text = DateTime.Now.ToString("dd");
+			entry_mes_termino.Text = DateTime.Now.ToString("MM");
+			entry_ano_termino.Text = DateTime.Now.ToString("yyyy");
+				
+			hbox1.Hide();
+			checkbutton_seleccion_presupuestos.Hide();
+			
+			button_salir.Clicked += new EventHandler(on_cierraventanas_clicked);		
+			
+			//new osiris.rpt_orden_compras();
 		}	
 		
 		void onComboBoxChanged_tipo_admision (object sender, EventArgs args)

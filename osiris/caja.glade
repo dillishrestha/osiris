@@ -8801,7 +8801,7 @@ Agregando DEDUCIBLE a Factura
             <child>
               <widget class="GtkLabel" id="label214">
                 <property name="visible">True</property>
-                <property name="label" translatable="yes">Concepto del Abono </property>
+                <property name="label" translatable="yes">Observacion  </property>
               </widget>
               <packing>
                 <property name="expand">False</property>
@@ -8879,7 +8879,6 @@ Agregando DEDUCIBLE a Factura
                   <widget class="GtkFrame" id="frame21">
                     <property name="visible">True</property>
                     <property name="label_xalign">0</property>
-                    <property name="shadow_type">in</property>
                     <child>
                       <widget class="GtkAlignment" id="alignment58">
                         <property name="visible">True</property>
@@ -8888,6 +8887,7 @@ Agregando DEDUCIBLE a Factura
                           <widget class="GtkScrolledWindow" id="scrolledwindow10">
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
+                            <property name="shadow_type">etched-in</property>
                             <child>
                               <widget class="GtkTreeView" id="lista_abonos">
                                 <property name="width_request">600</property>
@@ -9006,17 +9006,38 @@ de Caja</property>
               <widget class="GtkHBox" id="hbox2">
                 <property name="visible">True</property>
                 <child>
-                  <widget class="GtkScrolledWindow" id="scrolledwindow1">
-                    <property name="width_request">600</property>
+                  <widget class="GtkFrame" id="frame1">
                     <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="hscrollbar_policy">automatic</property>
-                    <property name="vscrollbar_policy">automatic</property>
+                    <property name="label_xalign">0</property>
                     <child>
-                      <widget class="GtkTreeView" id="treeview1">
+                      <widget class="GtkAlignment" id="alignment2">
                         <property name="visible">True</property>
-                        <property name="can_focus">True</property>
+                        <property name="left_padding">12</property>
+                        <child>
+                          <widget class="GtkScrolledWindow" id="scrolledwindow1">
+                            <property name="width_request">600</property>
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="shadow_type">etched-in</property>
+                            <child>
+                              <widget class="GtkTreeView" id="treeview_lista_comprserv">
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                              </widget>
+                            </child>
+                          </widget>
+                        </child>
                       </widget>
+                    </child>
+                    <child>
+                      <widget class="GtkLabel" id="label5">
+                        <property name="visible">True</property>
+                        <property name="label" translatable="yes">&lt;b&gt;Comprobante de Servicios&lt;/b&gt;</property>
+                        <property name="use_markup">True</property>
+                      </widget>
+                      <packing>
+                        <property name="type">label_item</property>
+                      </packing>
                     </child>
                   </widget>
                   <packing>

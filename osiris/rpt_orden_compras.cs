@@ -1,19 +1,101 @@
-// created on 23/10/2008 at 12:56 p
-// rpt_orden_compras.cs created with MonoDevelop
-// User: ipena at 10:44 a 22/10/2008
+///////////////////////////////////////////////////////////
+// project created on 23/10/2008 at 10:20 a
+// Sistema Hospitalario OSIRIS
+// Monterrey - Mexico
 //
-// To change standard headers go to Edit->Preferences->Coding->Standard Headers
+// 				: Israel Peña Gonzalez
+// Autor    	: Ing. Daniel Olivares C. cambio a GTKPrint con Pango y Cairo arcangeldoc@gmail.com 18/11/2010
+//				  				  
+// Licencia		: GLP
+//////////////////////////////////////////////////////////
 //
+// proyect osiris is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 2 of the License, or
+// (at your option) any later version.
+// 
+// proyect osiris is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// 
+// You should have received a copy of the GNU General Public License
+// along with Foobar; if not, write to the Free Software
+// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+// 
+//////////////////////////////////////////////////////////
+// Programa		: 
+// Proposito	: 
+// Objeto		:
+/////////////////////////////////////////////////////////
+
 using System;
-using Npgsql;
-using System.Data;
 using Gtk;
+using Npgsql;
 using Glade;
-using Gnome;
-using System.Collections;
+using Cairo;
+using Pango;
 
 namespace osiris
 {
+	public class rpt_orden_compras
+	{
+		private static int pangoScale = 1024;
+		private PrintOperation print;
+		private double fontSize = 8.0;
+		int escala_en_linux_windows;		// Linux = 1  Windows = 8
+		int comienzo_linea = 162;
+		int separacion_linea = 10;
+		int numpage = 1;
+		
+		string connectionString;						
+		string nombrebd;
+		string LoginEmpleado;
+    	string NomEmpleado;
+    	string AppEmpleado;
+    	string ApmEmpleado;
+		
+		string titulo = "ORDEN DE COMPRAS ";
+		
+		class_conexion conexion_a_DB = new class_conexion();
+		class_public classpublic = new class_public();
+		
+		public rpt_orden_compras()
+		{
+			connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
+			nombrebd = conexion_a_DB._nombrebd;
+			escala_en_linux_windows = classpublic.escala_linux_windows;
+			
+			print = new PrintOperation ();
+			print.JobName = titulo;
+			print.BeginPrint += new BeginPrintHandler (OnBeginPrint);
+			print.DrawPage += new DrawPageHandler (OnDrawPage);
+			print.EndPrint += new EndPrintHandler (OnEndPrint);
+			print.Run (PrintOperationAction.PrintDialog, null);			
+		}
+		
+		private void OnBeginPrint (object obj, Gtk.BeginPrintArgs args)
+		{
+			print.NPages = 1;  // crea cantidad de copias del reporte			
+			// para imprimir horizontalmente el reporte
+			print.PrintSettings.Orientation = PageOrientation.Landscape;
+			//Console.WriteLine(print.PrintSettings.Orientation.ToString());
+		}
+		
+		private void OnDrawPage (object obj, Gtk.DrawPageArgs args)
+		{			
+			PrintContext context = args.Context;
+			//ejecutar_consulta_reporte(context);
+		}
+		
+		private void OnEndPrint (object obj, Gtk.EndPrintArgs args)
+		{
+			
+		}
+	}	
+}
+
+/*
 	public class rpt_orden_compras
 	{
 		//private static int pangoScale = 1024;
@@ -150,8 +232,8 @@ namespace osiris
 			ContextoImp.MoveTo(620.5, -135);			ContextoImp.Show("L.A.B Y FLETES:");
 			ContextoImp.MoveTo(620, -135);			ContextoImp.Show("L.A.B Y FLETES:");
 			
-			ContextoImp.MoveTo(90, -175);			ContextoImp.Show("Con base en la cotizacion presentada por su empresa al HOSPITAL SANTA CECILIA DE MONTERREY, S.A DE C.V., Sirvase a remitir los bienes o servicios que a continuacion se detallan:");
-			ContextoImp.MoveTo(90.5, -175);			ContextoImp.Show("Con base en la cotizacion presentada por su empresa al HOSPITAL SANTA CECILIA DE MONTERREY, S.A DE C.V., Sirvase a remitir los bienes o servicios que a continuacion se detallan:");			
+			ContextoImp.MoveTo(90, -175);			ContextoImp.Show("Con base en la cotizacion presentada por su empresa, sirvase a remitir los bienes o servicios que a continuacion se detallan:");
+			ContextoImp.MoveTo(90.5, -175);			ContextoImp.Show("Con base en la cotizacion presentada por su empresa, sirvase a remitir los bienes o servicios que a continuacion se detallan:");			
 			
 			ContextoImp.MoveTo(95, -195);			    ContextoImp.Show("No. DE");
 			ContextoImp.MoveTo(95, -205);			    ContextoImp.Show("PARTIDA");
@@ -209,4 +291,4 @@ namespace osiris
 			ContextoImp.ShowPage();
 		}
 	}
-}
+}*/

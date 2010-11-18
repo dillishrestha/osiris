@@ -106,10 +106,7 @@ namespace osiris
 		[Widget] Gtk.Window envio_almacenes = null;
 		[Widget] Gtk.Entry entry_dia_inicio;
 		[Widget] Gtk.Entry entry_mes_inicio;
-		[Widget] Gtk.Entry entry_ano_inicio;
-		
-		//[Widget] Gtk.Entry entry_fecha_termino;
-		
+		[Widget] Gtk.Entry entry_ano_inicio;		
 		[Widget] Gtk.Entry entry_dia_termino;
 		[Widget] Gtk.Entry entry_mes_termino;
 		[Widget] Gtk.Entry entry_ano_termino;

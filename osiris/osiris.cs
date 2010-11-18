@@ -303,6 +303,11 @@ namespace osiris
 			//button_proveedores.Hide();
 			//button_oftalmologia.Hide();
 			button_hemodialisis.Hide();
+			button_terapia_adulto.Hide();
+			button_terapia_nino.Hide();
+			button_terapia_neonatal.Hide();
+			//button_ginecologia.Hide();
+			//button_endoscopia.Hide();
 				
 			// Actulizando statusbar
 			statusbar_menu.Pop(0);

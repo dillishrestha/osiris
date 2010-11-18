@@ -2744,7 +2744,7 @@ Medicas a Pacientes</property>
                                   </packing>
                                 </child>
                                 <child>
-                                  <widget class="GtkFixed" id="fixed43">
+                                  <widget class="GtkFixed" id="fixed4">
                                     <property name="visible">True</property>
                                   </widget>
                                   <packing>

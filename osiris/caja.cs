@@ -229,6 +229,7 @@ namespace osiris
 		int idaseguradora_paciente = 0;			// Toma el valor de la aseguradora que ingreso el paciente
 		bool aplica_precios_aseguradoras = false;// Toma el valor de si se tiene creado la lista de precio en la tabla de Productos
 		bool aplica_precios_empresas = false;	// Toma el valor de si se tiene creado la lista de precio en la tabla de Productos
+		bool aplica_precios_tipopaciente = false; // toma la lista de precio del tipo de paciente
 		//
 		
 		int idtipointernamiento = 10; 	 		// Toma el valor del tipo de internamiento
@@ -1927,7 +1928,7 @@ namespace osiris
 		{
 			// rpt_caja-comprobante.cs
 			if (tipo_comprobante == "CAJA"){			
-				new caja_comprobante (int.Parse(entry_numero_comprobante.Text.ToString()), "CAJA", folioservicio,"SELECT osiris_erp_cobros_deta.folio_de_servicio,osiris_erp_cobros_deta.pid_paciente, "+ 
+				new caja_comprobante (int.Parse(entry_numero_comprobante.Text.ToString()), "CAJA", folioservicio,"SELECT osiris_erp_cobros_deta.folio_de_servicio AS foliodeservicio,osiris_erp_cobros_deta.pid_paciente AS pidpaciente, "+ 
 						"osiris_his_tipo_admisiones.descripcion_admisiones,aplicar_iva, "+
 						"osiris_his_tipo_admisiones.id_tipo_admisiones AS idadmisiones,"+
 						"osiris_grupo_producto.descripcion_grupo_producto, "+
@@ -1942,18 +1943,23 @@ namespace osiris
 						"to_char(osiris_erp_cobros_deta.iva_producto,'999999.99') AS ivaproducto, "+
 						//"to_char(osiris_erp_cobros_deta.precio_por_cantidad,'999999.99') AS ppcantidad, "+
 						"to_char(osiris_erp_cobros_deta.cantidad_aplicada * osiris_erp_cobros_deta.precio_producto,'99999999.99') AS ppcantidad,"+
-						"to_char(osiris_productos.precio_producto_publico,'999999999.99999') AS preciopublico,osiris_erp_abonos.numero_recibo_caja,"+
+						"to_char(osiris_productos.precio_producto_publico,'999999999.99999') AS preciopublico,osiris_erp_abonos.numero_recibo_caja AS numerorecibo,"+
 						"osiris_his_paciente.nombre1_paciente || ' ' || osiris_his_paciente.nombre2_paciente || ' ' || osiris_his_paciente.apellido_paterno_paciente || ' ' || osiris_his_paciente.apellido_materno_paciente AS nombre_completo, "+
-						"to_char(osiris_his_paciente.fecha_nacimiento_paciente, 'dd-MM-yyyy') AS fechanacpaciente, to_char(to_number(to_char(age('"+DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss")+"',osiris_his_paciente.fecha_nacimiento_paciente),'yyyy') ,'9999'),'9999') AS edadpaciente "+
-						"FROM osiris_erp_cobros_deta,osiris_his_tipo_admisiones,osiris_productos,osiris_grupo_producto,osiris_erp_abonos,osiris_his_paciente "+
+						"to_char(osiris_his_paciente.fecha_nacimiento_paciente, 'dd-MM-yyyy') AS fechanacpaciente, to_char(to_number(to_char(age('"+DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss")+"',osiris_his_paciente.fecha_nacimiento_paciente),'yyyy') ,'9999'),'9999') AS edadpaciente, "+
+					    "telefono_particular1_paciente,osiris_erp_abonos.observaciones AS observacionesvarias,osiris_erp_abonos.concepto_del_abono AS concepto_comprobante,"+
+						"osiris_erp_cobros_enca.id_empresa,descripcion_empresa,"+
+					    "to_char(monto_de_abono_procedimiento,'999999999.99') AS montodelabono "+
+				        "FROM osiris_erp_cobros_deta,osiris_his_tipo_admisiones,osiris_productos,osiris_grupo_producto,osiris_erp_abonos,osiris_his_paciente,osiris_erp_cobros_enca,osiris_empresas "+
 						"WHERE osiris_erp_cobros_deta.id_tipo_admisiones = osiris_his_tipo_admisiones.id_tipo_admisiones "+
 						"AND osiris_erp_cobros_deta.id_producto = osiris_productos.id_producto  "+ 
 						"AND osiris_productos.id_grupo_producto = osiris_grupo_producto.id_grupo_producto "+
-						"AND osiris_erp_cobros_deta.pid_paciente = osiris_his_paciente.pid_paciente "+ 
-						"AND osiris_erp_cobros_deta.eliminado = 'false' ");
+						"AND osiris_erp_cobros_deta.pid_paciente = osiris_his_paciente.pid_paciente "+
+				        "AND osiris_erp_cobros_enca.id_empresa = osiris_empresas.id_empresa "+
+					    "AND osiris_erp_cobros_enca.folio_de_servicio = osiris_erp_cobros_deta.folio_de_servicio "+
+						"AND osiris_erp_cobros_deta.eliminado = 'false' ", NomEmpleado );
 			}
 			if (tipo_comprobante == "SERVICIO"){			
-				new caja_comprobante (int.Parse(entry_numero_comprobante.Text.ToString()), "SERVICIO", folioservicio,"SELECT osiris_erp_cobros_deta.folio_de_servicio,osiris_erp_cobros_deta.pid_paciente, "+ 
+				new caja_comprobante (int.Parse(entry_numero_comprobante.Text.ToString()), "SERVICIO", folioservicio,"SELECT osiris_erp_cobros_deta.folio_de_servicio AS foliodeservicio,osiris_erp_cobros_deta.pid_paciente AS pidpaciente, "+ 
 						"osiris_his_tipo_admisiones.descripcion_admisiones,aplicar_iva, "+
 						"osiris_his_tipo_admisiones.id_tipo_admisiones AS idadmisiones,"+
 						"osiris_grupo_producto.descripcion_grupo_producto, "+
@@ -1968,18 +1974,23 @@ namespace osiris
 						"to_char(osiris_erp_cobros_deta.iva_producto,'999999.99') AS ivaproducto, "+
 						//"to_char(osiris_erp_cobros_deta.precio_por_cantidad,'999999.99') AS ppcantidad, "+
 						"to_char(osiris_erp_cobros_deta.cantidad_aplicada * osiris_erp_cobros_deta.precio_producto,'99999999.99') AS ppcantidad,"+
-						"to_char(osiris_productos.precio_producto_publico,'999999999.99999') AS preciopublico,osiris_erp_comprobante_servicio.numero_comprobante_servicio,"+
+						"to_char(osiris_productos.precio_producto_publico,'999999999.99999') AS preciopublico,osiris_erp_comprobante_servicio.numero_comprobante_servicio AS numerorecibo,"+
 						"osiris_his_paciente.nombre1_paciente || ' ' || osiris_his_paciente.nombre2_paciente || ' ' || osiris_his_paciente.apellido_paterno_paciente || ' ' || osiris_his_paciente.apellido_materno_paciente AS nombre_completo, "+
-						"to_char(osiris_his_paciente.fecha_nacimiento_paciente, 'dd-MM-yyyy') AS fechanacpaciente, to_char(to_number(to_char(age('"+DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss")+"',osiris_his_paciente.fecha_nacimiento_paciente),'yyyy') ,'9999'),'9999') AS edadpaciente "+
-						"FROM osiris_erp_cobros_deta,osiris_his_tipo_admisiones,osiris_productos,osiris_grupo_producto,osiris_erp_comprobante_servicio,osiris_his_paciente "+
+						"to_char(osiris_his_paciente.fecha_nacimiento_paciente, 'dd-MM-yyyy') AS fechanacpaciente, to_char(to_number(to_char(age('"+DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss")+"',osiris_his_paciente.fecha_nacimiento_paciente),'yyyy') ,'9999'),'9999') AS edadpaciente, "+
+					    "telefono_particular1_paciente,osiris_erp_comprobante_servicio.observaciones AS observacionesvarias,osiris_erp_comprobante_servicio.concepto_del_comprobante AS concepto_comprobante,"+
+						"osiris_erp_cobros_enca.id_empresa,descripcion_empresa "+
+					    //"to_char(monto_de_abono_procedimiento,'999999999.99') AS montodelabono "+
+				        "FROM osiris_erp_cobros_deta,osiris_his_tipo_admisiones,osiris_productos,osiris_grupo_producto,osiris_erp_comprobante_servicio,osiris_his_paciente,osiris_erp_cobros_enca,osiris_empresas "+
 						"WHERE osiris_erp_cobros_deta.id_tipo_admisiones = osiris_his_tipo_admisiones.id_tipo_admisiones "+
 						"AND osiris_erp_cobros_deta.id_producto = osiris_productos.id_producto  "+ 
 						"AND osiris_productos.id_grupo_producto = osiris_grupo_producto.id_grupo_producto "+
-						"AND osiris_erp_cobros_deta.pid_paciente = osiris_his_paciente.pid_paciente "+ 
-						"AND osiris_erp_cobros_deta.eliminado = 'false' ");
+						"AND osiris_erp_cobros_deta.pid_paciente = osiris_his_paciente.pid_paciente "+
+				        "AND osiris_erp_cobros_enca.id_empresa = osiris_empresas.id_empresa "+
+					    "AND osiris_erp_cobros_enca.folio_de_servicio = osiris_erp_cobros_deta.folio_de_servicio "+
+						"AND osiris_erp_cobros_deta.eliminado = 'false' ", NomEmpleado );
 			}
 			if (tipo_comprobante == "PAGARE"){			
-				new caja_comprobante (int.Parse(entry_numero_comprobante.Text.ToString()), "PAGARE", folioservicio,"");
+				new caja_comprobante (int.Parse(entry_numero_comprobante.Text.ToString()), "PAGARE", folioservicio,"", NomEmpleado );
 			}
 		}
 		
@@ -2917,7 +2928,8 @@ namespace osiris
 				            	
 				            	"numero_ntacred,to_char(osiris_erp_cobros_enca.valor_total_notacredito,'99999999.99') AS valortotalnotacredito,"+
 				            	
-				            	"ltrim(to_char(osiris_erp_cobros_enca.honorario_medico,'999999999.99')) AS honorariomedico "+				            	
+				            	"ltrim(to_char(osiris_erp_cobros_enca.honorario_medico,'999999999.99')) AS honorariomedico, "+
+								"osiris_his_tipo_pacientes.lista_de_precio AS listadeprecio_tipopaciente "+
 				            	
 				            	"FROM "+ 
 				            	"osiris_erp_cobros_enca,osiris_his_paciente,osiris_erp_movcargos,osiris_his_tipo_admisiones,osiris_his_tipo_pacientes, "+
@@ -2983,6 +2995,7 @@ namespace osiris
 					idaseguradora_paciente = (int) lector["id_aseguradora"];
 					aplica_precios_aseguradoras = (bool) lector["listadeprecio_aseguradora"];
 					aplica_precios_empresas = (bool) lector["listadeprecio_empresa"];
+					aplica_precios_tipopaciente = (bool) lector["listadeprecio_tipopaciente"];
 					////////////////////////////////////////////////////////////////////
 					
 					if((int) lector["id_medico"] > 1){
@@ -3428,7 +3441,7 @@ namespace osiris
 				comando = conexion.CreateCommand ();
                	comando.CommandText = "SELECT * FROM osiris_his_tipo_admisiones "+
                						"WHERE cuenta_mayor = 4000 "+
-               						"AND id_tipo_admisiones IN('200','300','400','920','930') "+
+               						"AND id_tipo_admisiones IN('200','300','400','920','930','960') "+
                						"ORDER BY descripcion_admisiones;";
 				
 				NpgsqlDataReader lector = comando.ExecuteReader ();
@@ -3881,7 +3894,7 @@ namespace osiris
 			string precio_a_tomar = "";    // en esta variable dejo el precio que va tomar para los direfentes clientes
 			
 			//// para las diferentes listas de precios \\\\\\\\\\\\\			
-			if (id_tipopaciente == 500 || id_tipopaciente == 102) {  // Municipio y Empresas			
+			if (id_tipopaciente == 500 || id_tipopaciente == 102){  // Municipio, Empresas y Seccion 50		
 				// verifica si ese cliente tiene una lista de precio asignada
 				if (this.aplica_precios_empresas == true || aplica_precios_aseguradoras == true){     
 					precio_a_tomar = "precio_producto_"+id_tipopaciente.ToString().Trim()+idempresa_paciente.ToString().Trim();
@@ -3901,7 +3914,21 @@ namespace osiris
 				}else{
 					precio_a_tomar = "precio_producto_publico";
 				}
+				
+				if(id_tipopaciente == 700){   // Precios Seccion 50
+					// verifica si ese cliente tiene una lista de precio asignada
+					if ( aplica_precios_tipopaciente  == true){    
+						precio_a_tomar = "precio_producto_"+id_tipopaciente.ToString().Trim();
+						//precio_a_tomar = "precio_producto_publico1";
+					}else{
+						precio_a_tomar = "precio_producto_publico";
+					}
+				}else{
+					precio_a_tomar = "precio_producto_publico";
+					
+				}
 			}
+			
 			//////////////////////////////////
 			NpgsqlConnection conexion; 
 			conexion = new NpgsqlConnection (connectionString+nombrebd);
@@ -3925,7 +3952,7 @@ namespace osiris
 							"AND osiris_productos.id_grupo1_producto = osiris_grupo1_producto.id_grupo1_producto "+
 							"AND osiris_productos.id_grupo2_producto = osiris_grupo2_producto.id_grupo2_producto "+
 							"AND cobro_activo = 'true' "+
-							"AND osiris_productos.id_grupo_producto IN('6','7','10','11','12','13','14','15','16','17','19','91') "+
+							"AND osiris_productos.id_grupo_producto IN('6','7','10','11','12','13','14','15','16','17','19','20','91') "+
 							"AND osiris_productos.descripcion_producto LIKE '%"+entry_expresion.Text.ToUpper().Trim()+"%' ORDER BY descripcion_producto; ";
 				//Console.WriteLine(comando.CommandText.ToString());
 				NpgsqlDataReader lector = comando.ExecuteReader ();

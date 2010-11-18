@@ -351,15 +351,15 @@ namespace osiris
 		
 		void on_button_quitar_clicked (object sender, EventArgs args)		
 		{
-			if(LoginEmpleado =="DOLIVARES" || LoginEmpleado =="ADMIN" || LoginEmpleado == "ROLVEDAFLORES"){
+			if(LoginEmpleado =="DOLIVARES" || LoginEmpleado =="ADMIN" || LoginEmpleado == "ROLVEDAFLORES" || LoginEmpleado == "AGUTIERREZV"){
 					MessageDialog msgBox2 = new MessageDialog (MyWin,DialogFlags.Modal,
 						                 MessageType.Question,ButtonsType.YesNo,"¿ Esta seguro de Borrar los Materiales Seleccionados?");
 					ResponseType miResultado2 = (ResponseType)msgBox2.Run ();
 				msgBox2.Destroy();					
 				if (miResultado2 == ResponseType.Yes){
 					TreeIter iterSelected;
-					if (this.treeViewEngineBusca.GetIterFirst (out iterSelected)){
-						if ((bool) this.lista_almacenes.Model.GetValue (iterSelected,8) == true){
+					if(this.treeViewEngineBusca.GetIterFirst (out iterSelected)){
+						if((bool) this.lista_almacenes.Model.GetValue (iterSelected,8) == true){
 							NpgsqlConnection conexion;
 							conexion = new NpgsqlConnection (connectionString+nombrebd);
 							try{
@@ -839,7 +839,7 @@ namespace osiris
 				//msgBoxError.Run ();
 				//msgBoxError.Destroy();
 			//}else{
-				if(LoginEmpleado =="DOLIVARES" || LoginEmpleado =="ADMIN" || LoginEmpleado == "ROLVEDAFLORES"){
+				if(LoginEmpleado =="DOLIVARES" || LoginEmpleado =="ADMIN" || LoginEmpleado == "ROLVEDAFLORES" || LoginEmpleado == "AGUTIERREZV"){
 					if (this.checkbutton_enviar_articulos.Active == true){
 						if (idsubalmacen != 1){
 							MessageDialog msgBox = new MessageDialog (MyWin,DialogFlags.Modal,

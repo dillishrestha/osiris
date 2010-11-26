@@ -47,7 +47,7 @@ namespace osiris
 		// Declarando ventana principal de imagenologia
 		[Widget] Gtk.Window menu_imagenologia;
 		[Widget] Gtk.Button button_cargos_pacientes;
-		[Widget] Gtk.Button button_soli_material;
+		[Widget] Gtk.Button button_requisicion_materiales;
 		[Widget] Gtk.Button button_reporte_imagenologia;
 		[Widget] Gtk.Button button_solicitud_examenes;
 		
@@ -75,9 +75,9 @@ namespace osiris
 			button_salir.Clicked += new EventHandler(on_cierraventanas_clicked);
 			
 			button_cargos_pacientes.Clicked += new EventHandler(on_button_cargos_pacientes_clicked);
-			button_soli_material.Clicked += new EventHandler(on_button_soli_material_clicked);
-			button_reporte_imagenologia.Clicked += new EventHandler(on_button_reporte_imagenologia_clicked);
 			button_solicitud_examenes.Clicked += new EventHandler(on_button_solicitud_examenes_clicked);
+			button_requisicion_materiales.Clicked += new EventHandler(on_button_requisicion_materiales_clicked);
+			button_reporte_imagenologia.Clicked += new EventHandler(on_button_reporte_imagenologia_clicked);			
 		}
 		
 		void on_button_cargos_pacientes_clicked(object sender, EventArgs args)
@@ -85,19 +85,21 @@ namespace osiris
 			new osiris.cargos_imagenologia_b(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
 		}
 		
-		void on_button_soli_material_clicked(object sender, EventArgs args)
+		void on_button_solicitud_examenes_clicked(object sender, EventArgs args)
 		{
-			//new osiris.solicitud_material_hospital(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
+			new osiris.solicitudes_rx_lab(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,"IMAGENOLOGIA - RAYOS X",300);
+		}
+		
+		void on_button_requisicion_materiales_clicked(object sender, EventArgs args)
+		{
+			// centro de costo se debe enviar en el array y la clase 400   --   300
+			int [] array_idtipoadmisiones = { 0, 300};
+			new osiris.requisicion_materiales_compras(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,"IMAGENOLOGIA",300,"AND agrupacion IN ('IMG','OTR','MD1','ALM') ",array_idtipoadmisiones,0);
 		}
 		
 		void on_button_reporte_imagenologia_clicked(object sender, EventArgs args)
 		{
 			new osiris.rep_reg_pac_labo_rx(nombrebd,"AND osiris_grupo_producto.agrupacion = 'IMG' ","IMAGENOLOGIA");
-		}
-		
-		void on_button_solicitud_examenes_clicked(object sender, EventArgs args)
-		{
-			new osiris.solicitudes_rx_lab(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,"IMAGENOLOGIA - RAYOS X",300);
 		}
 		
 		void on_cierraventanas_clicked (object sender, EventArgs args)

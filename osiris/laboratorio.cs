@@ -49,6 +49,7 @@ namespace osiris
 		// Declarando ventana principal de Hospitalizacion
 		[Widget] Gtk.Window menu_laboratorio;
 		[Widget] Gtk.Button button_cargos_pacientes;
+		[Widget] Gtk.Button button_solicitud_examenes;
 		[Widget] Gtk.Button button_requisicion_materiales;
 		[Widget] Gtk.Button button_rpt_reg_pacientes;
 		
@@ -77,6 +78,7 @@ namespace osiris
 			button_salir.Clicked += new EventHandler(on_cierraventanas_clicked);
 			
 			button_cargos_pacientes.Clicked += new EventHandler(on_button_cargos_pacientes_clicked);
+			button_solicitud_examenes.Clicked += new EventHandler(on_button_solicitud_examenes_clicked);
 			button_requisicion_materiales.Clicked += new EventHandler(on_button_requisicion_materiales_clicked);
 			button_rpt_reg_pacientes.Clicked += new EventHandler(on_button_rpt_reg_pacientes_clicked);
 		}
@@ -84,6 +86,11 @@ namespace osiris
 		void on_button_cargos_pacientes_clicked(object sender, EventArgs args)
 		{
 			new osiris.cargos_laboratorio(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
+		}
+		
+		void on_button_solicitud_examenes_clicked(object sender, EventArgs args)
+		{
+			new osiris.solicitudes_rx_lab(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,"LABORATORIO",400);
 		}
 		
 		void on_button_requisicion_materiales_clicked(object sender, EventArgs args)

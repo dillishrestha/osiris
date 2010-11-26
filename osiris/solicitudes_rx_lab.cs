@@ -932,21 +932,26 @@ namespace osiris
 		string connectionString;
 		string nombrebd;
 		
+		int idtipoadmisiones;
+		
 		ArrayList columns = new ArrayList ();
 		Gtk.TreeStore treeViewEnginesolicitados;
+		
+		Gtk.TreeIter iter;
 		
 		//Declaracion de ventana de error
 		protected Gtk.Window MyWinError;
 		
 		class_conexion conexion_a_DB = new class_conexion();
 		
-		public solicitudes_rx_lab(string LoginEmp_, string NomEmpleado_, string AppEmpleado_, string ApmEmpleado_, string nombrebd_,string departament_,int tipo_admisiones_)
+		public solicitudes_rx_lab(string LoginEmp_, string NomEmpleado_, string AppEmpleado_, string ApmEmpleado_, string nombrebd_,string departament_,int idtipoadmisiones_)
 		{			
 			Glade.XML gxml = new Glade.XML (null, "imagenologia.glade", "solicitudes_examenes_labrx", null);
 			gxml.Autoconnect (this);	        
 			// Muestra ventana de Glade
 			solicitudes_examenes_labrx.Show();
 			solicitudes_examenes_labrx.Title = departament_;
+			idtipoadmisiones = idtipoadmisiones_;
 			
 			LoginEmpleado = LoginEmp_;
 			NomEmpleado = NomEmpleado_;
@@ -1011,7 +1016,8 @@ namespace osiris
 				foreach (TreeViewColumn tvc in this.treeview_lista_solicitados.Columns)
 				this.treeview_lista_solicitados.RemoveColumn(tvc);
 				treeViewEnginesolicitados = new TreeStore(typeof(bool),typeof(string),typeof(string),typeof(string),typeof(string),
-													typeof(string),typeof(string),typeof(string),typeof(string));
+													typeof(string),typeof(string),typeof(string),typeof(string),
+				                                          typeof(string),typeof(string));
 				treeview_lista_solicitados.Model = treeViewEnginesolicitados;
 				treeview_lista_solicitados.RulesHint = true;
 				
@@ -1021,55 +1027,76 @@ namespace osiris
 				col_request0.AddAttribute (cellrt0, "active", 0);
 				col_request0.Resizable = true;
 				//col_request1.SortColumnId = (int) coldatos_request.col_request0;
-				
+								
 				Gtk.TreeViewColumn col_request1 = new TreeViewColumn();		Gtk.CellRendererText cellrt1 = new Gtk.CellRendererText();		
-				col_request1.Title = "Paciente";
+				col_request1.Title = "Expediente";
 				col_request1.PackStart(cellrt1, true);
 				col_request1.AddAttribute (cellrt1, "text", 1);
 				col_request1.Resizable = true;
 				//col_request0.SortColumnId = (int) coldatos_request.col_request1;
 				
 				Gtk.TreeViewColumn col_request2 = new TreeViewColumn();		Gtk.CellRendererText cellrt2 = new Gtk.CellRendererText();		
-				col_request2.Title = "Codigo";
+				col_request2.Title = "Paciente";
 				col_request2.PackStart(cellrt2, true);
 				col_request2.AddAttribute (cellrt2, "text", 2);
 				col_request2.Resizable = true;
-				//col_request2.SortColumnId = (int) coldatos_request.col_request1;
+				//col_request0.SortColumnId = (int) coldatos_request.col_request1;
 				
 				Gtk.TreeViewColumn col_request3 = new TreeViewColumn();		Gtk.CellRendererText cellrt3 = new Gtk.CellRendererText();		
-				col_request3.Title = "Estudio Solicitado";
+				col_request3.Title = "N° Solic.";
 				col_request3.PackStart(cellrt3, true);
 				col_request3.AddAttribute (cellrt3, "text", 3);
 				col_request3.Resizable = true;
 				//col_request2.SortColumnId = (int) coldatos_request.col_request1;
 				
 				Gtk.TreeViewColumn col_request4 = new TreeViewColumn();		Gtk.CellRendererText cellrt4 = new Gtk.CellRendererText();		
-				col_request4.Title = "Cant.Solicitado";
+				col_request4.Title = "Codigo";
 				col_request4.PackStart(cellrt4, true);
 				col_request4.AddAttribute (cellrt4, "text", 4);
 				col_request4.Resizable = true;
-				//col_request1.SortColumnId = (int) coldatos_request.col_request1;
+				//col_request2.SortColumnId = (int) coldatos_request.col_request1;
 				
 				Gtk.TreeViewColumn col_request5 = new TreeViewColumn();		Gtk.CellRendererText cellrt5 = new Gtk.CellRendererText();		
-				col_request5.Title = "Fech.Hora Soli.";
+				col_request5.Title = "Estudio Solicitado";
 				col_request5.PackStart(cellrt5, true);
 				col_request5.AddAttribute (cellrt5, "text", 5);
 				col_request5.Resizable = true;
-				//col_request1.SortColumnId = (int) coldatos_request.col_request1;
+				//col_request2.SortColumnId = (int) coldatos_request.col_request1;
 				
 				Gtk.TreeViewColumn col_request6 = new TreeViewColumn();		Gtk.CellRendererText cellrt6 = new Gtk.CellRendererText();		
-				col_request6.Title = "Area quien solicta";
+				col_request6.Title = "Cant.Solicitado";
 				col_request6.PackStart(cellrt6, true);
 				col_request6.AddAttribute (cellrt6, "text", 6);
 				col_request6.Resizable = true;
-				//col_request1.SortColumnId = (int) coldatos_request.col_request1;
+				//col_request6.SortColumnId = (int) coldatos_request.col_request1;
 				
 				Gtk.TreeViewColumn col_request7 = new TreeViewColumn();		Gtk.CellRendererText cellrt7 = new Gtk.CellRendererText();		
-				col_request7.Title = "Gabinete";
+				col_request7.Title = "Cant.Autorizada";
 				col_request7.PackStart(cellrt7, true);
 				col_request7.AddAttribute (cellrt7, "text", 7);
 				col_request7.Resizable = true;
-				//col_request1.SortColumnId = (int) coldatos_request.col_request1;
+				//col_request6.SortColumnId = (int) coldatos_request.col_request1;
+				
+				Gtk.TreeViewColumn col_request8 = new TreeViewColumn();		Gtk.CellRendererText cellrt8 = new Gtk.CellRendererText();		
+				col_request8.Title = "Fech.Hora Soli.";
+				col_request8.PackStart(cellrt8, true);
+				col_request8.AddAttribute (cellrt8, "text", 8);
+				col_request8.Resizable = true;
+				//col_request7.SortColumnId = (int) coldatos_request.col_request1;
+				
+				Gtk.TreeViewColumn col_request9 = new TreeViewColumn();		Gtk.CellRendererText cellrt9 = new Gtk.CellRendererText();		
+				col_request9.Title = "Area quien solicta";
+				col_request9.PackStart(cellrt9, true);
+				col_request9.AddAttribute (cellrt9, "text", 9);
+				col_request9.Resizable = true;
+				//col_request8.SortColumnId = (int) coldatos_request.col_request1;
+				
+				Gtk.TreeViewColumn col_request10 = new TreeViewColumn();		Gtk.CellRendererText cellrt10 = new Gtk.CellRendererText();		
+				col_request10.Title = "Gabinete";
+				col_request10.PackStart(cellrt10, true);
+				col_request10.AddAttribute (cellrt10, "text", 10);
+				col_request10.Resizable = true;
+				//col_request9.SortColumnId = (int) coldatos_request.col_request1;
 							
 				treeview_lista_solicitados.AppendColumn(col_request0);
 				treeview_lista_solicitados.AppendColumn(col_request1);
@@ -1079,6 +1106,8 @@ namespace osiris
 				treeview_lista_solicitados.AppendColumn(col_request5);
 				treeview_lista_solicitados.AppendColumn(col_request6);
 				treeview_lista_solicitados.AppendColumn(col_request7);
+				treeview_lista_solicitados.AppendColumn(col_request8);
+				treeview_lista_solicitados.AppendColumn(col_request9);
 				
 				llenado_treeview_solicitudes((bool) checkbutton_px_solicitud.Active,treeViewEnginesolicitados);
 				
@@ -1150,50 +1179,111 @@ namespace osiris
 		void llenado_treeview_solicitudes(bool tipo_treeview, object obj)
 		{
 			Gtk.TreeStore treeViewEnginesolicitados = (Gtk.TreeStore) obj;
-			Gtk.TreeIter iter;
-						
-			// llenado de lista de solicitudes
+			string queryorder = "";
+			int toma_pidpaciente;
+			
+			// llenado por lista
 			if(tipo_treeview == false){
-				
-				NpgsqlConnection conexion;
-				conexion = new NpgsqlConnection (connectionString+nombrebd );
-				// Verifica que la base de datos este conectada
-				try{
-					conexion.Open ();
-					NpgsqlCommand comando; 
-					comando = conexion.CreateCommand ();
-					comando.CommandText = "SELECT pid_paciente FROM osiris_his_solicitudes_labrx";
-					NpgsqlDataReader lector = comando.ExecuteReader ();
-					while((bool) lector.Read()){
-						treeViewEnginesolicitados.AppendValues(false,"folio_de_solicitud");
-						
-					}
-				}catch (NpgsqlException ex){
-					MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
-					MessageType.Error, 
-					ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
-					msgBoxError.Run ();						msgBoxError.Destroy();
-				}
-				conexion.Close();		
+				queryorder = "ORDER BY folio_de_solicitud DESC;";
 			}
 			// llenado por paciente
 			if(tipo_treeview == true){
-				iter = treeViewEnginesolicitados.AppendValues ("Paciente 1",
+				queryorder = "ORDER BY osiris_his_solicitudes_labrx.pid_paciente ASC;";
+			}
+			
+			NpgsqlConnection conexion;
+			conexion = new NpgsqlConnection (connectionString+nombrebd );
+			// Verifica que la base de datos este conectada
+			try{
+				conexion.Open ();
+				NpgsqlCommand comando; 
+				comando = conexion.CreateCommand ();
+				comando.CommandText = "SELECT osiris_his_solicitudes_labrx.pid_paciente AS pidpaciente,"+
+										"nombre1_paciente || ' ' || nombre2_paciente || ' ' || apellido_paterno_paciente || ' ' || apellido_materno_paciente AS nombre_completo,"+
+										"osiris_his_solicitudes_labrx.id_producto,osiris_productos.descripcion_producto,folio_de_solicitud "+
+										"FROM osiris_his_solicitudes_labrx,osiris_his_paciente,osiris_productos "+
+										"WHERE osiris_his_solicitudes_labrx.pid_paciente = osiris_his_paciente.pid_paciente "+
+										"AND osiris_his_solicitudes_labrx.id_producto = osiris_productos.id_producto "+
+										"AND id_tipo_admisiones2 = '"+idtipoadmisiones.ToString().Trim()+"' "+queryorder;
+				NpgsqlDataReader lector = comando.ExecuteReader ();
+				if((bool) lector.Read()){
+					toma_pidpaciente = (int) lector["pidpaciente"];
+					// llenado de lista de solicitudes
+					if(tipo_treeview == false){
+						treeViewEnginesolicitados.AppendValues(false,
+						                                       lector["pidpaciente"].ToString().Trim(),
+						                                       lector["nombre_completo"].ToString().Trim(),
+						                                       lector["folio_de_solicitud"].ToString().Trim(),
+						                                       lector["id_producto"].ToString().Trim(),
+						                                       lector["descripcion_producto"].ToString().Trim());
+					}					
+					// llenado por paciente
+					if(tipo_treeview == true){
+						iter = treeViewEnginesolicitados.AppendValues (lector["nombre_completo"].ToString().Trim(),
 								    false,
 				                    null,
 				                    null,
 								    false,
 				                    false);
 				
-				treeViewEnginesolicitados.AppendValues (iter,
-							    "Examen de Laboratorio",
+						treeViewEnginesolicitados.AppendValues (iter,
+							   lector["descripcion_producto"].ToString().Trim(),
 							    false,
-				                "numero Solicitud",
+				                lector["folio_de_solicitud"].ToString().Trim(),
 				                "Cantidad Solici",
 							    true,
 							    true);
+					}
+					
+					while((bool) lector.Read()){					
+						// llenado de lista de solicitudes
+						if(tipo_treeview == false){
+							treeViewEnginesolicitados.AppendValues(false,
+						                                       lector["pidpaciente"].ToString().Trim(),
+						                                       lector["nombre_completo"].ToString().Trim(),
+						                                       lector["folio_de_solicitud"].ToString().Trim(),
+						                                       lector["id_producto"].ToString().Trim(),
+						                                       lector["descripcion_producto"].ToString().Trim());
+						}
+					
+						// llenado por paciente
+						if(tipo_treeview == true){
+							if (toma_pidpaciente != (int) lector["pidpaciente"]){	
+								iter = treeViewEnginesolicitados.AppendValues (lector["nombre_completo"].ToString().Trim(),
+								    false,
+				                    null,
+				                    null,
+								    false,
+				                    false);
+								toma_pidpaciente = (int) lector["pidpaciente"];
+								
+								treeViewEnginesolicitados.AppendValues (iter,
+							   		lector["descripcion_producto"].ToString().Trim(),
+							    	false,
+				                	lector["folio_de_solicitud"].ToString().Trim(),
+				                	"Cantidad Solici",
+							    	true,
+							    	true);
+								Gtk.TreeIter iter2 = (Gtk.TreeIter) iter;
+							}else{
+								treeViewEnginesolicitados.AppendValues (iter,
+							   		lector["descripcion_producto"].ToString().Trim(),
+							    	false,
+				                	lector["folio_de_solicitud"].ToString().Trim(),
+				                	"Cantidad Solici",
+							    	true,
+							    	true);
+							}
+						}
+					}
+				}
+			}catch (NpgsqlException ex){
+				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+				MessageType.Error, 
+				ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
+				msgBoxError.Run ();						msgBoxError.Destroy();
 			}
-			
+			conexion.Close();				
 		}
 				
 		private void ItemToggled (object sender, ToggledArgs args)
@@ -1202,7 +1292,7 @@ namespace osiris
 			TreePath path = new TreePath (args.Path);
 			if (treeview_lista_solicitados.Model.GetIter (out iter, path)){					
 				bool old = (bool) treeview_lista_solicitados.Model.GetValue(iter,1);
-				ttreeview_lista_solicitados.Model.SetValue(iter,1,!old);
+				treeview_lista_solicitados.Model.SetValue(iter,1,!old);
 			}						
 		}
 		

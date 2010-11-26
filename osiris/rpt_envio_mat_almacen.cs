@@ -116,7 +116,7 @@ namespace osiris
 			                                        	typeof(string),typeof(string),typeof(string));
 				
 			lista_almacenes.Model = treeViewEnginesolicitud;
-			//lista_almacenes.RulesHint = true;
+			lista_almacenes.RulesHint = true;
 				
 			TreeViewColumn col_seleccion = new TreeViewColumn();
 			CellRendererToggle cellr0 = new CellRendererToggle();

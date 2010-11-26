@@ -61,21 +61,6 @@ namespace osiris
 		[Widget] Gtk.Entry entry_ano = null;
 		[Widget] Gtk.Statusbar statusbar = null;
 		
-		// Ventana seleccion de Ordenes de Compra
-		[Widget] Gtk.Window envio_almacenes = null;
-		[Widget] Gtk.Entry entry_dia_inicio = null;
-		[Widget] Gtk.Entry entry_mes_inicio = null;
-		[Widget] Gtk.Entry entry_ano_inicio = null;		
-		[Widget] Gtk.Entry entry_dia_termino = null;
-		[Widget] Gtk.Entry entry_mes_termino = null;
-		[Widget] Gtk.Entry entry_ano_termino = null;
-		[Widget] Gtk.HBox hbox1 = null;
-		[Widget] Gtk.CheckButton checkbutton_todos_envios = null;
-		[Widget] Gtk.CheckButton checkbutton_seleccion_presupuestos = null;
-		[Widget] Gtk.TreeView lista_almacenes = null;
-		[Widget] Gtk.Button button_buscar = null;
-		[Widget] Gtk.Button button_rep = null;
-				
 		string connectionString;
 		string nombrebd;
 		string LoginEmpleado;
@@ -379,25 +364,7 @@ namespace osiris
 		
 		void on_imprime_orden_clicked(object sender, EventArgs args)
 		{
-			
-			Glade.XML gxml = new Glade.XML (null, "almacen_costos_compras.glade", "envio_almacenes", null);
-			gxml.Autoconnect (this);
-		
-			envio_almacenes.Title = "Lista ORDENES DE COMPRA";
-			entry_dia_inicio.Text = DateTime.Now.ToString("dd");
-			entry_mes_inicio.Text = DateTime.Now.ToString("MM");
-			entry_ano_inicio.Text = DateTime.Now.ToString("yyyy");
-				
-			entry_dia_termino.Text = DateTime.Now.ToString("dd");
-			entry_mes_termino.Text = DateTime.Now.ToString("MM");
-			entry_ano_termino.Text = DateTime.Now.ToString("yyyy");
-				
-			hbox1.Hide();
-			checkbutton_seleccion_presupuestos.Hide();
-			
-			button_salir.Clicked += new EventHandler(on_cierraventanas_clicked);		
-			
-			//new osiris.rpt_orden_compras();
+			new osiris.lista_ordenes_compra();
 		}	
 		
 		void onComboBoxChanged_tipo_admision (object sender, EventArgs args)

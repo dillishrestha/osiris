@@ -893,6 +893,7 @@ namespace osiris
 		}
 		
 	}
+	
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	/// 
 	/// Esta classe es la que se encarga de llenar las solictudes de 
@@ -927,7 +928,16 @@ namespace osiris
 		string NomEmpleado;
 		string AppEmpleado;
 		string ApmEmpleado;
+				
+		string connectionString;
 		string nombrebd;
+		
+		ArrayList columns = new ArrayList ();
+		Gtk.TreeStore treeViewEnginesolicitados;
+		
+		//Declaracion de ventana de error
+		protected Gtk.Window MyWinError;
+		
 		class_conexion conexion_a_DB = new class_conexion();
 		
 		public solicitudes_rx_lab(string LoginEmp_, string NomEmpleado_, string AppEmpleado_, string ApmEmpleado_, string nombrebd_,string departament_,int tipo_admisiones_)
@@ -943,6 +953,7 @@ namespace osiris
 			AppEmpleado = AppEmpleado_;
 			ApmEmpleado = ApmEmpleado_;
 			nombrebd = conexion_a_DB._nombrebd;
+			connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
 			
 			// Sale de la ventana
 			button_salir.Clicked += new EventHandler(on_cierraventanas_clicked);
@@ -954,6 +965,7 @@ namespace osiris
 			entry_fecha_inicio.Text = DateTime.Now.ToString("yyyy-MM-dd");
 			entry_fecha_termino.Text = DateTime.Now.ToString("yyyy-MM-dd");
 			checkbutton_rango_fecha.Active = true;
+			//checkbutton_px_solicitud.Clicked += new EventHandler()
 			
 			create_treeview_solicitudes((bool) checkbutton_px_solicitud.Active);
 			create_treeview_cargados();
@@ -990,82 +1002,73 @@ namespace osiris
 			
 		void create_treeview_solicitudes(bool tipo_treeview)
 		{
-			Gtk.TreeStore treeViewEnginesolicitados;
+			Gtk.CellRendererText text;
+			Gtk.CellRendererToggle toggle;			
 			
 			// create treeview List the request
 			if(tipo_treeview == false){
 				// Erase all columns
 				foreach (TreeViewColumn tvc in this.treeview_lista_solicitados.Columns)
 				this.treeview_lista_solicitados.RemoveColumn(tvc);
-				treeViewEnginesolicitados = new TreeStore(typeof(string),typeof(string),typeof(string),typeof(string),typeof(string),
+				treeViewEnginesolicitados = new TreeStore(typeof(bool),typeof(string),typeof(string),typeof(string),typeof(string),
 													typeof(string),typeof(string),typeof(string),typeof(string));
 				treeview_lista_solicitados.Model = treeViewEnginesolicitados;
 				treeview_lista_solicitados.RulesHint = true;
 				
-				Gtk.TreeViewColumn col_request0 = new TreeViewColumn();	Gtk.CellRendererToggle cellrt0 = new CellRendererToggle();		
+				Gtk.TreeViewColumn col_request0 = new TreeViewColumn(); 	Gtk.CellRendererToggle cellrt0 = new CellRendererToggle();		
 				col_request0.Title = "Seleccion";
 				col_request0.PackStart(cellrt0, true);
 				col_request0.AddAttribute (cellrt0, "active", 0);
-				//col_request0.Resizable = true;
-				//col_request0.SortColumnId = (int) coldatos_request.col_request0;
+				col_request0.Resizable = true;
+				//col_request1.SortColumnId = (int) coldatos_request.col_request0;
 				
 				Gtk.TreeViewColumn col_request1 = new TreeViewColumn();		Gtk.CellRendererText cellrt1 = new Gtk.CellRendererText();		
-				col_request1.Title = "Nº Solicitud";
+				col_request1.Title = "Paciente";
 				col_request1.PackStart(cellrt1, true);
 				col_request1.AddAttribute (cellrt1, "text", 1);
-				//col_request1.Resizable = true;
-				//col_request1.SortColumnId = (int) coldatos_request.col_request1;
-							
-				treeview_lista_solicitados.AppendColumn(col_request0);
-				treeview_lista_solicitados.AppendColumn(col_request1);
-				llenado_treeview_solicitudes((bool) checkbutton_px_solicitud.Active,treeViewEnginesolicitados);
-				
-			}else{
-				// create treeview for patients
-				// Erase all columns
-				foreach (TreeViewColumn tvc in this.treeview_lista_solicitados.Columns)
-				this.treeview_lista_solicitados.RemoveColumn(tvc);
-				//treeview_lista_solicitados.Remove();
-				
-				treeViewEnginesolicitados = new TreeStore(typeof(string),typeof(bool),typeof(string),typeof(string),typeof(string),
-													typeof(string),typeof(string),typeof(string),typeof(string));
-				treeview_lista_solicitados.Model = treeViewEnginesolicitados;
-				treeview_lista_solicitados.RulesHint = true;
-				treeview_lista_solicitados.Selection.Mode = SelectionMode.Multiple;
-											
-				Gtk.TreeViewColumn col_request0 = new TreeViewColumn();		Gtk.CellRendererText cellrt0 = new Gtk.CellRendererText();		
-				col_request0.Title = "Paciente/Estudio";
-				col_request0.PackStart(cellrt0, true);
-				col_request0.AddAttribute (cellrt0, "text", 0);
-				col_request0.SortOrder = SortType.Descending;
-				cellrt0.Xalign = 0.0f;
-				
-				Gtk.TreeViewColumn col_request1 = new TreeViewColumn();	Gtk.CellRendererToggle cellrt1 = new CellRendererToggle();		
-				col_request1.Title = "Seleccion";
-				col_request1.PackStart(cellrt1, true);
-				col_request1.AddAttribute (cellrt1, "active", 1);
-				//col_request0.Resizable = true;
-				//col_request0.SortColumnId = (int) coldatos_request.col_request0;
+				col_request1.Resizable = true;
+				//col_request0.SortColumnId = (int) coldatos_request.col_request1;
 				
 				Gtk.TreeViewColumn col_request2 = new TreeViewColumn();		Gtk.CellRendererText cellrt2 = new Gtk.CellRendererText();		
-				col_request2.Title = "Nº Solicitud";
+				col_request2.Title = "Codigo";
 				col_request2.PackStart(cellrt2, true);
 				col_request2.AddAttribute (cellrt2, "text", 2);
-				//col_request1.Resizable = true;
-				//col_request1.SortColumnId = (int) coldatos_request.col_request1;
+				col_request2.Resizable = true;
+				//col_request2.SortColumnId = (int) coldatos_request.col_request1;
 				
-				Gtk.TreeViewColumn col_request3 = new TreeViewColumn();		Gtk.CellRendererText cellrt3 = new Gtk.CellRendererText();
-				col_request3.Title = "Cant.Solicitado";
+				Gtk.TreeViewColumn col_request3 = new TreeViewColumn();		Gtk.CellRendererText cellrt3 = new Gtk.CellRendererText();		
+				col_request3.Title = "Estudio Solicitado";
 				col_request3.PackStart(cellrt3, true);
 				col_request3.AddAttribute (cellrt3, "text", 3);
-				//col_request1.Resizable = true;
-				//col_request1.SortColumnId = (int) coldatos_request.col_request1;
+				col_request3.Resizable = true;
+				//col_request2.SortColumnId = (int) coldatos_request.col_request1;
 				
-				Gtk.TreeViewColumn col_request4 = new TreeViewColumn();		Gtk.CellRendererText cellrt4 = new Gtk.CellRendererText();
-				col_request4.Title = "Codigo";
+				Gtk.TreeViewColumn col_request4 = new TreeViewColumn();		Gtk.CellRendererText cellrt4 = new Gtk.CellRendererText();		
+				col_request4.Title = "Cant.Solicitado";
 				col_request4.PackStart(cellrt4, true);
 				col_request4.AddAttribute (cellrt4, "text", 4);
-				//col_request1.Resizable = true;
+				col_request4.Resizable = true;
+				//col_request1.SortColumnId = (int) coldatos_request.col_request1;
+				
+				Gtk.TreeViewColumn col_request5 = new TreeViewColumn();		Gtk.CellRendererText cellrt5 = new Gtk.CellRendererText();		
+				col_request5.Title = "Fech.Hora Soli.";
+				col_request5.PackStart(cellrt5, true);
+				col_request5.AddAttribute (cellrt5, "text", 5);
+				col_request5.Resizable = true;
+				//col_request1.SortColumnId = (int) coldatos_request.col_request1;
+				
+				Gtk.TreeViewColumn col_request6 = new TreeViewColumn();		Gtk.CellRendererText cellrt6 = new Gtk.CellRendererText();		
+				col_request6.Title = "Area quien solicta";
+				col_request6.PackStart(cellrt6, true);
+				col_request6.AddAttribute (cellrt6, "text", 6);
+				col_request6.Resizable = true;
+				//col_request1.SortColumnId = (int) coldatos_request.col_request1;
+				
+				Gtk.TreeViewColumn col_request7 = new TreeViewColumn();		Gtk.CellRendererText cellrt7 = new Gtk.CellRendererText();		
+				col_request7.Title = "Gabinete";
+				col_request7.PackStart(cellrt7, true);
+				col_request7.AddAttribute (cellrt7, "text", 7);
+				col_request7.Resizable = true;
 				//col_request1.SortColumnId = (int) coldatos_request.col_request1;
 							
 				treeview_lista_solicitados.AppendColumn(col_request0);
@@ -1073,30 +1076,136 @@ namespace osiris
 				treeview_lista_solicitados.AppendColumn(col_request2);
 				treeview_lista_solicitados.AppendColumn(col_request3);
 				treeview_lista_solicitados.AppendColumn(col_request4);
+				treeview_lista_solicitados.AppendColumn(col_request5);
+				treeview_lista_solicitados.AppendColumn(col_request6);
+				treeview_lista_solicitados.AppendColumn(col_request7);
+				
 				llenado_treeview_solicitudes((bool) checkbutton_px_solicitud.Active,treeViewEnginesolicitados);
+				
+			}else{
+				// create treeview for patients
+				// Erase all columns
+				foreach (TreeViewColumn tvc in this.treeview_lista_solicitados.Columns)
+				this.treeview_lista_solicitados.RemoveColumn(tvc);
+				
+				
+				//treeview_lista_solicitados.Remove();
+				
+				treeViewEnginesolicitados = new TreeStore(typeof(string),typeof(bool),typeof(string),typeof(string),
+				                                          typeof(bool),typeof(bool));
+				treeview_lista_solicitados.Model = treeViewEnginesolicitados;
+				treeview_lista_solicitados.RulesHint = true;
+				treeview_lista_solicitados.Selection.Mode = SelectionMode.Multiple;
+				
+				// column for holiday names
+				text = new CellRendererText ();
+				text.Xalign = 0.0f;
+			 	columns.Add (text);
+				TreeViewColumn column0 = new TreeViewColumn("Paciente/Estudio", text,
+								    "text", Column.paciente_estudio);
+				treeview_lista_solicitados.InsertColumn (column0, (int) Column.paciente_estudio);
+				
+				toggle = new CellRendererToggle ();
+				toggle.Xalign = 0.0f;
+				columns.Add (toggle);
+				toggle.Toggled += new ToggledHandler (ItemToggled);
+				TreeViewColumn column1 = new TreeViewColumn ("Seleccion", toggle,
+							     "active", (int) Column.seleccion,
+							     "visible", (int) Column.Visible,
+							     "activatable", (int) Column.World);
+				column1.Sizing = TreeViewColumnSizing.Fixed;
+				column1.FixedWidth = 65;
+				column1.Clickable = true;
+				treeview_lista_solicitados.InsertColumn (column1, (int) Column.seleccion);
+				
+				text = new CellRendererText ();
+				text.Xalign = 0.0f;
+			 	columns.Add (text);
+				TreeViewColumn column2 = new TreeViewColumn("Nº Solicitud", text,
+								    "text", Column.nro_solicitud);
+				treeview_lista_solicitados.InsertColumn (column2, (int) Column.nro_solicitud);
+				
+				text = new CellRendererText ();
+				text.Xalign = 0.0f;
+			 	columns.Add (text);
+				TreeViewColumn column3 = new TreeViewColumn("Cant.Solicitado", text,
+								    "text", Column.cantsolicitada);
+				treeview_lista_solicitados.InsertColumn (column3, (int) Column.cantsolicitada);				
+				
+				llenado_treeview_solicitudes((bool) checkbutton_px_solicitud.Active,treeViewEnginesolicitados);			
 			}
+		}
+		
+		public enum Column
+		{
+			paciente_estudio,
+			seleccion,
+			nro_solicitud,
+			cantsolicitada,
+			
+			Visible,
+			World,			
 		}
 		
 		void llenado_treeview_solicitudes(bool tipo_treeview, object obj)
 		{
 			Gtk.TreeStore treeViewEnginesolicitados = (Gtk.TreeStore) obj;
 			Gtk.TreeIter iter;
+						
 			// llenado de lista de solicitudes
 			if(tipo_treeview == false){
 				
+				NpgsqlConnection conexion;
+				conexion = new NpgsqlConnection (connectionString+nombrebd );
+				// Verifica que la base de datos este conectada
+				try{
+					conexion.Open ();
+					NpgsqlCommand comando; 
+					comando = conexion.CreateCommand ();
+					comando.CommandText = "SELECT pid_paciente FROM osiris_his_solicitudes_labrx";
+					NpgsqlDataReader lector = comando.ExecuteReader ();
+					while((bool) lector.Read()){
+						treeViewEnginesolicitados.AppendValues(false,"folio_de_solicitud");
+						
+					}
+				}catch (NpgsqlException ex){
+					MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+					MessageType.Error, 
+					ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
+					msgBoxError.Run ();						msgBoxError.Destroy();
+				}
+				conexion.Close();		
 			}
 			// llenado por paciente
 			if(tipo_treeview == true){
-				iter = treeViewEnginesolicitados.AppendValues("paciente_01");
-				treeViewEnginesolicitados.AppendValues(iter,"RX. MUÑECA  AP Y OBLICUA  ( 2 POSICIONES ) BILATERAL COMPARATIVA",false,"123","1");
-				treeViewEnginesolicitados.AppendValues(iter,"RX. MUSLO O FEMUR  ( 1 POSICION )",true,"124","1");
-				treeViewEnginesolicitados.AppendValues(iter,"RX. ESTERNON ( 1 POSICI )",false,"124","1");
-				iter = treeViewEnginesolicitados.AppendValues("paciente_02");
+				iter = treeViewEnginesolicitados.AppendValues ("Paciente 1",
+								    false,
+				                    null,
+				                    null,
+								    false,
+				                    false);
 				
-				treeview_lista_solicitados.ExpandAll();
+				treeViewEnginesolicitados.AppendValues (iter,
+							    "Examen de Laboratorio",
+							    false,
+				                "numero Solicitud",
+				                "Cantidad Solici",
+							    true,
+							    true);
 			}
 			
 		}
+				
+		private void ItemToggled (object sender, ToggledArgs args)
+		{
+			Gtk.TreeIter iter; 			
+			TreePath path = new TreePath (args.Path);
+			if (treeview_lista_solicitados.Model.GetIter (out iter, path)){					
+				bool old = (bool) treeview_lista_solicitados.Model.GetValue(iter,1);
+				ttreeview_lista_solicitados.Model.SetValue(iter,1,!old);
+			}						
+		}
+		
 		
 		void create_treeview_cargados()
 		{
@@ -1115,7 +1224,7 @@ namespace osiris
 		}
 	}
 	
-		public class DemoTreeStore : Gtk.Window
+	public class DemoTreeStore : Gtk.Window
 	{
 		private TreeStore store;
 
@@ -1189,6 +1298,7 @@ namespace osiris
 			toggle.Xalign = 0.0f;
 			columns.Add (toggle);
 			toggle.Toggled += new ToggledHandler (ItemToggled);
+			
 			column = new TreeViewColumn ("Alex", toggle,
 						     "active", (int) Column.Alex,
 						     "visible", (int) Column.Visible,

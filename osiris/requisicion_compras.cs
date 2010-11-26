@@ -846,7 +846,7 @@ namespace osiris
 										"to_char(id_proveedor1,'9999999999') AS idproveedor1,osiris_erp_proveedores.descripcion_proveedor,"+
 										"to_char(id_proveedor2,'9999999999') AS idproveedor2,descripcion_proveedor2,"+
 										"to_char(id_proveedor3,'9999999999') AS idproveedor3,descripcion_proveedor3,"+
-										"to_char(osiris_erp_requisicion_deta.porcentage_ganancia,'9999.99') AS porcentageganancia "+							
+										"to_char(osiris_erp_requisicion_deta.porcentage_ganancia,'9999.99') AS porcentageganancia,id_quien_requiso "+							
 										"FROM osiris_erp_requisicion_deta,osiris_productos,osiris_erp_proveedores "+
 										"WHERE osiris_erp_requisicion_deta.id_producto = osiris_productos.id_producto "+
 										"AND osiris_erp_requisicion_deta.id_proveedor1 = osiris_erp_proveedores.id_proveedor "+
@@ -880,7 +880,7 @@ namespace osiris
 							
 							treeViewEngineRequisicion.AppendValues((string) lector1["cantidadsolicitada"],
 														(string) lector1["descripcion_producto"], 
-														this.entry_solicitado_por.Text = (string) lector1["idproducto"],
+														this.entry_solicitado_por.Text = (string) lector1["id_quien_requiso"],
 														(string) lector1["cantidadembalaje"],
 														(string) lector1["tipo_unidad_producto"],
 														"",

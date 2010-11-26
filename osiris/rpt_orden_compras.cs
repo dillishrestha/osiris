@@ -85,7 +85,35 @@ namespace osiris
 		private void OnDrawPage (object obj, Gtk.DrawPageArgs args)
 		{			
 			PrintContext context = args.Context;
-			//ejecutar_consulta_reporte(context);
+			ejecutar_consulta_reporte(context);
+		}
+		
+		void ejecutar_consulta_reporte(PrintContext context)
+		{
+			Cairo.Context cr = context.CairoContext;
+			Pango.Layout layout = context.CreatePangoLayout ();
+			imprime_encabezado(cr,layout);
+		}
+		
+		void imprime_encabezado(Cairo.Context cr,Pango.Layout layout)
+		{
+			Pango.FontDescription desc = Pango.FontDescription.FromString ("Sans");								
+			//cr.Rotate(90);  //Imprimir Orizontalmente rota la hoja cambian las posiciones de las lineas y columna					
+			fontSize = 8.0;
+			desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;
+			layout.FontDescription.Weight = Weight.Bold;		// Letra negrita
+			cr.MoveTo(05*escala_en_linux_windows,05*escala_en_linux_windows);			layout.SetText(classpublic.nombre_empresa);			Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(05*escala_en_linux_windows,15*escala_en_linux_windows);			layout.SetText(classpublic.direccion_empresa);		Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(05*escala_en_linux_windows,25*escala_en_linux_windows);			layout.SetText(classpublic.telefonofax_empresa);	Pango.CairoHelper.ShowLayout (cr, layout);
+			fontSize = 6.0;
+			desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;
+			cr.MoveTo(650*escala_en_linux_windows,05*escala_en_linux_windows);			layout.SetText("Fech.Rpt:"+(string) DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));		Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(650*escala_en_linux_windows,15*escala_en_linux_windows);			layout.SetText("N° Page :"+numpage.ToString().Trim());		Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(05*escala_en_linux_windows,35*escala_en_linux_windows);			layout.SetText("Sistema Hospitalario OSIRIS");		Pango.CairoHelper.ShowLayout (cr, layout);
+			// Cambiando el tamaño de la fuente			
+			fontSize = 10.0;
+			desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;
+			cr.MoveTo(290*escala_en_linux_windows, 25*escala_en_linux_windows);			layout.SetText("ORDEN DE COMPRAS");					Pango.CairoHelper.ShowLayout (cr, layout);
 		}
 		
 		private void OnEndPrint (object obj, Gtk.EndPrintArgs args)
@@ -125,12 +153,12 @@ namespace osiris
 		
 		class_conexion conexion_a_DB = new class_conexion();
 		
-		public rpt_orden_compras(string nombrebd_,object lista_productos_a_comprar_,object treeViewEngineProductosaComprar_)
+		public rpt_orden_compras()
 		{
 			connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
-			nombrebd = conexion_a_DB._nombrebd;
-			lista_productos_a_comprar = lista_productos_a_comprar_ as Gtk.TreeView;
-			treeViewEngineProductosaComprar = treeViewEngineProductosaComprar_ as Gtk.TreeStore; 
+			//nombrebd = conexion_a_DB._nombrebd;
+			//lista_productos_a_comprar = lista_productos_a_comprar_ as Gtk.TreeView;
+			//treeViewEngineProductosaComprar = treeViewEngineProductosaComprar_ as Gtk.TreeStore; 
 			
 			Gnome.PrintJob    trabajo   = new Gnome.PrintJob(Gnome.PrintConfig.Default());
         	Gnome.PrintDialog dialogo   = new Gnome.PrintDialog(trabajo, "ORDEN DE COMPRAS", 0);
@@ -168,7 +196,7 @@ namespace osiris
 			//Gnome.Font fuente1 = Gnome.Font.FindClosest("Bitstream Vera Sans", 6);
 			Gnome.Font fuente2 = Gnome.Font.FindClosest("Bitstream Vera Sans", 7);
 			//Gnome.Font fuente3 = Gnome.Font.FindClosest("Bitstream Vera Sans", 8);
-			Gnome.Font fuente5 = Gnome.Font.FindClosestFromWeightSlant("Bitstream Vera Sans", FontWeight.Bold ,false, 12);
+			Gnome.Font fuente5 = Gnome.Font.FindClosestFromWeightSlant("Bitstream Vera Sans", Gnome.FontWeight.Bold ,false, 12);
 				
 			// ESTA FUNCION ES PARA QUE EL TEXTO SALGA EN NEGRITA			
 			numpage = 1;			

@@ -2947,7 +2947,7 @@ namespace osiris
 								"AND osiris_erp_cobros_enca.id_aseguradora = osiris_aseguradoras.id_aseguradora "+
 								"AND osiris_erp_cobros_enca.id_habitacion = osiris_his_habitaciones.id_habitacion "+
 								"AND osiris_erp_cobros_enca.folio_de_servicio = "+(string) foliodeserv+";";
-				//Console.WriteLine(comando.CommandText.ToString());				
+				Console.WriteLine(comando.CommandText.ToString());				
 				NpgsqlDataReader lector = comando.ExecuteReader ();				
 				bool procedimiento_cerrado = false;
 				if(lector.Read()){

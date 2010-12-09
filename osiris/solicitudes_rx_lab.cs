@@ -274,7 +274,7 @@ namespace osiris
 			entry_expresion.KeyPressEvent += onKeyPressEvent_entry_expresion;
 			
 			entry_fecha_solicitud.Text = DateTime.Now.ToString("yyyy-MM-dd");
-			entry_hora_solicitud.Text = DateTime.Now.ToString("HH:mm:ss");
+			entry_hora_solicitud.Text = DateTime.Now.ToString("HH24:mm:ss");
 						
 			// Validando que sean solo numeros
 			entry_cantidad_aplicada.KeyPressEvent += onKeyPressEvent;
@@ -770,6 +770,9 @@ namespace osiris
 			if(agrupacion_lab_rx == "IMG"){
 				query_lab_rx = "AND osiris_grupo_producto.agrupacion3 = 'IMG' ";
 			}
+			if(agrupacion_lab_rx == "VIS"){
+				query_lab_rx = "AND osiris_grupo_producto.agrupacion5 = 'VIS' ";
+			}
 			
 			//// para las diferentes listas de precios \\\\\\\\\\\\\			
 			if (id_tipopaciente == 500 || id_tipopaciente == 102) {  // Municipio y Empresas			
@@ -914,7 +917,7 @@ namespace osiris
 		[Widget] Gtk.Entry entry_fecha_inicio = null;
 		[Widget] Gtk.Entry entry_fecha_termino = null;
 		[Widget] Gtk.CheckButton checkbutton_rango_fecha = null;
-		
+				
 		// Tab number one application form request LAB RX
 		[Widget] Gtk.TreeView treeview_lista_solicitados = null;
 		[Widget] Gtk.Button button_cargar_examen = null;
@@ -941,7 +944,7 @@ namespace osiris
 		
 		//Declaracion de ventana de error
 		protected Gtk.Window MyWinError;
-		
+		protected Gtk.Window MyWin;
 		class_conexion conexion_a_DB = new class_conexion();
 		
 		public solicitudes_rx_lab(string LoginEmp_, string NomEmpleado_, string AppEmpleado_, string ApmEmpleado_, string nombrebd_,string departament_,int idtipoadmisiones_)
@@ -1002,22 +1005,94 @@ namespace osiris
 		
 		void on_button_cargar_examen_clicked(object sender, EventArgs args)
 		{
-			new osiris.DemoTreeStore();
+			TreeModel model;
+			TreeIter iterSelected;
+ 			if (this.treeview_lista_solicitados.Selection.GetSelected(out model, out iterSelected)){
+				MessageDialog msgBox = new MessageDialog (MyWin,DialogFlags.Modal,
+										MessageType.Question,ButtonsType.YesNo,"¿ Esta seguro de cargar los Estudios Seleccionados");
+				ResponseType miResultado = (ResponseType)msgBox.Run ();
+				msgBox.Destroy();
+					
+			 	if (miResultado == ResponseType.Yes){
+					NpgsqlConnection conexion; 
+					conexion = new NpgsqlConnection (connectionString+nombrebd);
+    	        	// Verifica que la base de datos este conectada
+					try{
+						conexion.Open ();
+						NpgsqlCommand comando; 
+						comando = conexion.CreateCommand ();					
+						if(checkbutton_px_solicitud.Active == false){
+							// View for request
+							/*
+							comando.CommandText = "INSERT INTO osiris_erp_cobros_deta("+
+		 														"id_producto,"+
+		 														"folio_de_servicio,"+
+		 														"pid_paciente,"+
+		 														"cantidad_aplicada,"+
+		 														"id_tipo_admisiones,"+
+		 														"precio_producto, "+
+		 														//"precio_por_cantidad,"+
+		 														"iva_producto,"+
+		 														"precio_costo_unitario,"+
+		 														"porcentage_utilidad,"+
+		 														"porcentage_descuento,"+
+		 														"id_empleado,"+
+		 														"fechahora_creacion,"+
+		 														"porcentage_iva,"+
+		 														"id_almacen,"+
+		 														"precio_costo) "+
+		 														"VALUES ('"+
+		 														double.Parse((string) treeview_lista_solicitados.Model.GetValue(iter,2))+"','"+//id_producto
+		 														folioservicio+"','"+//folio_de_servicio
+		 														int.Parse((string)entry_pid_paciente.Text)+"','"+//pid_paciente
+		 														(float) treeview_lista_solicitados.Model.GetValue(iter,1)+"','"+//cantidad_aplicada
+		 														(int)treeview_lista_solicitados.Model.GetValue(iter,13)+"','"+//id_tipo_admisiones
+		 														double.Parse((string)treeview_lista_solicitados.Model.GetValue(iter,6))+"','"+//precio_producto
+		 														//double.Parse((string)lista_de_servicios.Model.GetValue(iter,7))+"','"+//precio_por_cantidad
+		 														double.Parse((string)treeview_lista_solicitados.Model.GetValue(iter,8))+"','"+//iva_producto
+		 														double.Parse((string)treeview_lista_solicitados.Model.GetValue(iter,15))+"','"+//precio_costo_unitario
+		 														float.Parse((string)treeview_lista_solicitados.Model.GetValue(iter,16))+"','"+//porcentage_utilidad
+		 														float.Parse((string) treeview_lista_solicitados.Model.GetValue(iter,10))+"','"+//porcentage_descuento
+		 														LoginEmpleado+"','"+//id_empleado
+		 														DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"','"+//fechahora_creacion
+		 														valoriva+"','"+//porcentage_iva
+		 														this.idsubalmacen.ToString().Trim()+"','"+
+		 														float.Parse((string)treeview_lista_solicitados.Model.GetValue(iter,17))+//precio_costo
+		 														"');";*/
+							comando.ExecuteNonQuery();
+							comando.Dispose();							
+						}else{
+							// View for patients
+							
+						}
+					}catch (NpgsqlException ex){
+						MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+															MessageType.Error, 
+															ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
+						msgBoxError.Run ();				conexion.Close();		
+					}
+					conexion.Close();
+				}
+			}else{
+				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+							MessageType.Error, ButtonsType.Close,"No hay solicitudes para cargar...","Solicitudes");
+				msgBoxError.Run ();						msgBoxError.Destroy();
+			}
 		}
 			
 		void create_treeview_solicitudes(bool tipo_treeview)
 		{
 			Gtk.CellRendererText text;
 			Gtk.CellRendererToggle toggle;			
-			
+			// Erase all columns
+			foreach (TreeViewColumn tvc in this.treeview_lista_solicitados.Columns)
+			this.treeview_lista_solicitados.RemoveColumn(tvc);
 			// create treeview List the request
-			if(tipo_treeview == false){
-				// Erase all columns
-				foreach (TreeViewColumn tvc in this.treeview_lista_solicitados.Columns)
-				this.treeview_lista_solicitados.RemoveColumn(tvc);
+			if(tipo_treeview == false){				
 				treeViewEnginesolicitados = new TreeStore(typeof(bool),typeof(string),typeof(string),typeof(string),typeof(string),
-													typeof(string),typeof(string),typeof(string),typeof(string),
-				                                          typeof(string),typeof(string));
+														typeof(string),typeof(string),typeof(string),typeof(string),
+				                                        typeof(string),typeof(string),typeof(string),typeof(string),typeof(string),
+				                                        typeof(string),typeof(string),typeof(string));
 				treeview_lista_solicitados.Model = treeViewEnginesolicitados;
 				treeview_lista_solicitados.RulesHint = true;
 				
@@ -1026,77 +1101,92 @@ namespace osiris
 				col_request0.PackStart(cellrt0, true);
 				col_request0.AddAttribute (cellrt0, "active", 0);
 				col_request0.Resizable = true;
-				//col_request1.SortColumnId = (int) coldatos_request.col_request0;
-								
+				col_request0.SortColumnId = (int) coldatos_request.col_request0;
+				cellrt0.Toggled += selecciona_examen; 
+				
 				Gtk.TreeViewColumn col_request1 = new TreeViewColumn();		Gtk.CellRendererText cellrt1 = new Gtk.CellRendererText();		
-				col_request1.Title = "Expediente";
+				col_request1.Title = "N° Atencion";
 				col_request1.PackStart(cellrt1, true);
 				col_request1.AddAttribute (cellrt1, "text", 1);
 				col_request1.Resizable = true;
-				//col_request0.SortColumnId = (int) coldatos_request.col_request1;
+				col_request1.SortColumnId = (int) coldatos_request.col_request1;
 				
 				Gtk.TreeViewColumn col_request2 = new TreeViewColumn();		Gtk.CellRendererText cellrt2 = new Gtk.CellRendererText();		
-				col_request2.Title = "Paciente";
+				col_request2.Title = "Expediente";
 				col_request2.PackStart(cellrt2, true);
 				col_request2.AddAttribute (cellrt2, "text", 2);
 				col_request2.Resizable = true;
-				//col_request0.SortColumnId = (int) coldatos_request.col_request1;
+				col_request2.SortColumnId = (int) coldatos_request.col_request2;
 				
 				Gtk.TreeViewColumn col_request3 = new TreeViewColumn();		Gtk.CellRendererText cellrt3 = new Gtk.CellRendererText();		
-				col_request3.Title = "N° Solic.";
+				col_request3.Title = "Paciente";
 				col_request3.PackStart(cellrt3, true);
 				col_request3.AddAttribute (cellrt3, "text", 3);
 				col_request3.Resizable = true;
-				//col_request2.SortColumnId = (int) coldatos_request.col_request1;
+				col_request3.SortColumnId = (int) coldatos_request.col_request3;
 				
 				Gtk.TreeViewColumn col_request4 = new TreeViewColumn();		Gtk.CellRendererText cellrt4 = new Gtk.CellRendererText();		
-				col_request4.Title = "Codigo";
+				col_request4.Title = "N° Solic.";
 				col_request4.PackStart(cellrt4, true);
 				col_request4.AddAttribute (cellrt4, "text", 4);
 				col_request4.Resizable = true;
-				//col_request2.SortColumnId = (int) coldatos_request.col_request1;
+				col_request4.SortColumnId = (int) coldatos_request.col_request4;
 				
 				Gtk.TreeViewColumn col_request5 = new TreeViewColumn();		Gtk.CellRendererText cellrt5 = new Gtk.CellRendererText();		
-				col_request5.Title = "Estudio Solicitado";
-				col_request5.PackStart(cellrt5, true);
-				col_request5.AddAttribute (cellrt5, "text", 5);
+				col_request5.Title = "Codigo";
+				col_request5.PackStart(cellrt4, true);
+				col_request5.AddAttribute (cellrt4, "text", 5);
 				col_request5.Resizable = true;
-				//col_request2.SortColumnId = (int) coldatos_request.col_request1;
+				col_request5.SortColumnId = (int) coldatos_request.col_request5;
 				
 				Gtk.TreeViewColumn col_request6 = new TreeViewColumn();		Gtk.CellRendererText cellrt6 = new Gtk.CellRendererText();		
-				col_request6.Title = "Cant.Solicitado";
+				col_request6.Title = "Estudio Solicitado";
 				col_request6.PackStart(cellrt6, true);
 				col_request6.AddAttribute (cellrt6, "text", 6);
 				col_request6.Resizable = true;
-				//col_request6.SortColumnId = (int) coldatos_request.col_request1;
+				col_request6.SortColumnId = (int) coldatos_request.col_request6;
 				
 				Gtk.TreeViewColumn col_request7 = new TreeViewColumn();		Gtk.CellRendererText cellrt7 = new Gtk.CellRendererText();		
-				col_request7.Title = "Cant.Autorizada";
+				col_request7.Title = "Cant.Solicitado";
 				col_request7.PackStart(cellrt7, true);
 				col_request7.AddAttribute (cellrt7, "text", 7);
 				col_request7.Resizable = true;
-				//col_request6.SortColumnId = (int) coldatos_request.col_request1;
+				col_request7.SortColumnId = (int) coldatos_request.col_request7;
 				
 				Gtk.TreeViewColumn col_request8 = new TreeViewColumn();		Gtk.CellRendererText cellrt8 = new Gtk.CellRendererText();		
-				col_request8.Title = "Fech.Hora Soli.";
+				col_request8.Title = "Cant.Autorizada";
 				col_request8.PackStart(cellrt8, true);
 				col_request8.AddAttribute (cellrt8, "text", 8);
 				col_request8.Resizable = true;
-				//col_request7.SortColumnId = (int) coldatos_request.col_request1;
+				col_request8.SortColumnId = (int) coldatos_request.col_request8;
 				
 				Gtk.TreeViewColumn col_request9 = new TreeViewColumn();		Gtk.CellRendererText cellrt9 = new Gtk.CellRendererText();		
-				col_request9.Title = "Area quien solicta";
+				col_request9.Title = "Fech.Hora Soli.";
 				col_request9.PackStart(cellrt9, true);
 				col_request9.AddAttribute (cellrt9, "text", 9);
 				col_request9.Resizable = true;
-				//col_request8.SortColumnId = (int) coldatos_request.col_request1;
+				col_request9.SortColumnId = (int) coldatos_request.col_request9;
 				
 				Gtk.TreeViewColumn col_request10 = new TreeViewColumn();		Gtk.CellRendererText cellrt10 = new Gtk.CellRendererText();		
-				col_request10.Title = "Gabinete";
+				col_request10.Title = "Area quien solicta";
 				col_request10.PackStart(cellrt10, true);
 				col_request10.AddAttribute (cellrt10, "text", 10);
 				col_request10.Resizable = true;
-				//col_request9.SortColumnId = (int) coldatos_request.col_request1;
+				col_request10.SortColumnId = (int) coldatos_request.col_request10;
+				
+				Gtk.TreeViewColumn col_request11 = new TreeViewColumn();		Gtk.CellRendererText cellrt11 = new Gtk.CellRendererText();		
+				col_request11.Title = "Quien Solicito";
+				col_request11.PackStart(cellrt11, true);
+				col_request11.AddAttribute (cellrt11, "text", 11);
+				col_request11.Resizable = true;
+				col_request11.SortColumnId = (int) coldatos_request.col_request11;
+				
+				Gtk.TreeViewColumn col_request12 = new TreeViewColumn();		Gtk.CellRendererText cellrt12 = new Gtk.CellRendererText();		
+				col_request12.Title = "Gabinete";
+				col_request12.PackStart(cellrt12, true);
+				col_request12.AddAttribute (cellrt12, "text", 12);
+				col_request12.Resizable = true;
+				col_request12.SortColumnId = (int) coldatos_request.col_request12;
 							
 				treeview_lista_solicitados.AppendColumn(col_request0);
 				treeview_lista_solicitados.AppendColumn(col_request1);
@@ -1108,18 +1198,13 @@ namespace osiris
 				treeview_lista_solicitados.AppendColumn(col_request7);
 				treeview_lista_solicitados.AppendColumn(col_request8);
 				treeview_lista_solicitados.AppendColumn(col_request9);
+				treeview_lista_solicitados.AppendColumn(col_request10);
+				treeview_lista_solicitados.AppendColumn(col_request11);
+				treeview_lista_solicitados.AppendColumn(col_request12);
 				
 				llenado_treeview_solicitudes((bool) checkbutton_px_solicitud.Active,treeViewEnginesolicitados);
 				
 			}else{
-				// create treeview for patients
-				// Erase all columns
-				foreach (TreeViewColumn tvc in this.treeview_lista_solicitados.Columns)
-				this.treeview_lista_solicitados.RemoveColumn(tvc);
-				
-				
-				//treeview_lista_solicitados.Remove();
-				
 				treeViewEnginesolicitados = new TreeStore(typeof(string),typeof(bool),typeof(string),typeof(string),
 				                                          typeof(bool),typeof(bool));
 				treeview_lista_solicitados.Model = treeViewEnginesolicitados;
@@ -1132,8 +1217,10 @@ namespace osiris
 			 	columns.Add (text);
 				TreeViewColumn column0 = new TreeViewColumn("Paciente/Estudio", text,
 								    "text", Column.paciente_estudio);
+				column0.Resizable = true;
+				column0.SortColumnId = (int) Column.paciente_estudio;
 				treeview_lista_solicitados.InsertColumn (column0, (int) Column.paciente_estudio);
-				
+												
 				toggle = new CellRendererToggle ();
 				toggle.Xalign = 0.0f;
 				columns.Add (toggle);
@@ -1145,6 +1232,8 @@ namespace osiris
 				column1.Sizing = TreeViewColumnSizing.Fixed;
 				column1.FixedWidth = 65;
 				column1.Clickable = true;
+				column1.Resizable = true;
+				column1.SortColumnId = (int) Column.seleccion;
 				treeview_lista_solicitados.InsertColumn (column1, (int) Column.seleccion);
 				
 				text = new CellRendererText ();
@@ -1152,6 +1241,8 @@ namespace osiris
 			 	columns.Add (text);
 				TreeViewColumn column2 = new TreeViewColumn("Nº Solicitud", text,
 								    "text", Column.nro_solicitud);
+				column2.Resizable = true;
+				column2.SortColumnId = (int) Column.nro_solicitud;
 				treeview_lista_solicitados.InsertColumn (column2, (int) Column.nro_solicitud);
 				
 				text = new CellRendererText ();
@@ -1159,13 +1250,32 @@ namespace osiris
 			 	columns.Add (text);
 				TreeViewColumn column3 = new TreeViewColumn("Cant.Solicitado", text,
 								    "text", Column.cantsolicitada);
+				column3.Resizable = true;
+				column3.SortColumnId = (int) Column.cantsolicitada;
 				treeview_lista_solicitados.InsertColumn (column3, (int) Column.cantsolicitada);				
 				
 				llenado_treeview_solicitudes((bool) checkbutton_px_solicitud.Active,treeViewEnginesolicitados);			
 			}
 		}
 		
-		public enum Column
+		enum coldatos_request
+		{	
+			col_request0,
+			col_request1,
+			col_request2,
+			col_request3,
+			col_request4,
+			col_request5,
+			col_request6,
+			col_request7,
+			col_request8,
+			col_request9,
+			col_request10,
+			col_request11,
+			col_request12,
+		}
+		
+		enum Column
 		{
 			paciente_estudio,
 			seleccion,
@@ -1198,12 +1308,18 @@ namespace osiris
 				conexion.Open ();
 				NpgsqlCommand comando; 
 				comando = conexion.CreateCommand ();
-				comando.CommandText = "SELECT osiris_his_solicitudes_labrx.pid_paciente AS pidpaciente,"+
+				comando.CommandText = "SELECT osiris_his_solicitudes_labrx.folio_de_servicio,osiris_his_solicitudes_labrx.id_secuencia,osiris_his_solicitudes_labrx.pid_paciente AS pidpaciente,"+
 										"nombre1_paciente || ' ' || nombre2_paciente || ' ' || apellido_paterno_paciente || ' ' || apellido_materno_paciente AS nombre_completo,"+
-										"osiris_his_solicitudes_labrx.id_producto,osiris_productos.descripcion_producto,folio_de_solicitud "+
-										"FROM osiris_his_solicitudes_labrx,osiris_his_paciente,osiris_productos "+
+										"osiris_his_solicitudes_labrx.id_producto,osiris_productos.descripcion_producto,folio_de_solicitud,"+
+										"cantidad_solicitada,cantidad_autorizada,fechahora_solicitud,"+
+										"to_char(osiris_his_solicitudes_labrx.fechahora_solicitud,'dd-mm-yyyy HH24:mi') AS fechahorasolicitud,"+
+										"area_quien_solicita,id_quien_solicito,osiris_his_solicitudes_labrx.id_proveedor,descripcion_proveedor "+
+										"FROM osiris_his_solicitudes_labrx,osiris_his_paciente,osiris_productos,osiris_erp_proveedores "+
 										"WHERE osiris_his_solicitudes_labrx.pid_paciente = osiris_his_paciente.pid_paciente "+
 										"AND osiris_his_solicitudes_labrx.id_producto = osiris_productos.id_producto "+
+										"AND osiris_his_solicitudes_labrx.id_proveedor = osiris_erp_proveedores.id_proveedor "+
+										"AND status = 'false' "+
+										"AND eliminado = 'false' "+
 										"AND id_tipo_admisiones2 = '"+idtipoadmisiones.ToString().Trim()+"' "+queryorder;
 				NpgsqlDataReader lector = comando.ExecuteReader ();
 				if((bool) lector.Read()){
@@ -1211,11 +1327,19 @@ namespace osiris
 					// llenado de lista de solicitudes
 					if(tipo_treeview == false){
 						treeViewEnginesolicitados.AppendValues(false,
+						                                       lector["folio_de_servicio"].ToString().Trim(),
 						                                       lector["pidpaciente"].ToString().Trim(),
 						                                       lector["nombre_completo"].ToString().Trim(),
 						                                       lector["folio_de_solicitud"].ToString().Trim(),
 						                                       lector["id_producto"].ToString().Trim(),
-						                                       lector["descripcion_producto"].ToString().Trim());
+						                                       lector["descripcion_producto"].ToString().Trim(),
+						                                       float.Parse(lector["cantidad_solicitada"].ToString().Trim()).ToString("F"),
+						                                       float.Parse(lector["cantidad_autorizada"].ToString().Trim()).ToString("F"),
+						                                       lector["fechahorasolicitud"].ToString().Trim(),
+						                                       lector["area_quien_solicita"].ToString().Trim(),
+						                                       lector["id_quien_solicito"].ToString().Trim(),
+						                                       lector["descripcion_proveedor"].ToString().Trim(),
+						                                       lector["id_secuencia"].ToString().Trim());
 					}					
 					// llenado por paciente
 					if(tipo_treeview == true){
@@ -1239,11 +1363,18 @@ namespace osiris
 						// llenado de lista de solicitudes
 						if(tipo_treeview == false){
 							treeViewEnginesolicitados.AppendValues(false,
+						                                       lector["folio_de_servicio"].ToString().Trim(),
 						                                       lector["pidpaciente"].ToString().Trim(),
 						                                       lector["nombre_completo"].ToString().Trim(),
 						                                       lector["folio_de_solicitud"].ToString().Trim(),
 						                                       lector["id_producto"].ToString().Trim(),
-						                                       lector["descripcion_producto"].ToString().Trim());
+						                                       lector["descripcion_producto"].ToString().Trim(),
+						                                       float.Parse(lector["cantidad_solicitada"].ToString().Trim()).ToString("F"),
+						                                       float.Parse(lector["cantidad_autorizada"].ToString().Trim()).ToString("F"),
+						                                       lector["fechahorasolicitud"].ToString().Trim(),
+						                                       lector["area_quien_solicita"].ToString().Trim(),
+						                                       lector["id_quien_solicito"].ToString().Trim(),
+						                                       lector["descripcion_proveedor"].ToString().Trim());
 						}
 					
 						// llenado por paciente
@@ -1264,7 +1395,6 @@ namespace osiris
 				                	"Cantidad Solici",
 							    	true,
 							    	true);
-								Gtk.TreeIter iter2 = (Gtk.TreeIter) iter;
 							}else{
 								treeViewEnginesolicitados.AppendValues (iter,
 							   		lector["descripcion_producto"].ToString().Trim(),
@@ -1279,8 +1409,7 @@ namespace osiris
 				}
 			}catch (NpgsqlException ex){
 				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
-				MessageType.Error, 
-				ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
+							MessageType.Error, ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
 				msgBoxError.Run ();						msgBoxError.Destroy();
 			}
 			conexion.Close();				
@@ -1296,6 +1425,15 @@ namespace osiris
 			}						
 		}
 		
+		private void selecciona_examen (object sender, ToggledArgs args)
+		{
+			Gtk.TreeIter iter; 			
+			TreePath path = new TreePath (args.Path);
+			if (treeview_lista_solicitados.Model.GetIter (out iter, path)){					
+				bool old = (bool) treeview_lista_solicitados.Model.GetValue(iter,0);
+				treeview_lista_solicitados.Model.SetValue(iter,0,!old);
+			}						
+		}
 		
 		void create_treeview_cargados()
 		{
@@ -1312,331 +1450,5 @@ namespace osiris
 			Widget win = (Widget) sender;
 			win.Toplevel.Destroy();
 		}
-	}
-	
-	public class DemoTreeStore : Gtk.Window
-	{
-		private TreeStore store;
-
-		public DemoTreeStore () : base ("Card planning sheet")
-		{
-			VBox vbox = new VBox (false, 8);
-			vbox.BorderWidth = 8;
-			Add (vbox);
-
-			vbox.PackStart (new Label ("Jonathan's Holiday Card Planning Sheet"),
-					false, false, 0);
-
-			ScrolledWindow sw = new ScrolledWindow ();
-			sw.ShadowType = ShadowType.EtchedIn;
-			sw.SetPolicy (PolicyType.Automatic, PolicyType.Automatic);
-			vbox.PackStart (sw, true, true, 0);
-
-			// create model
-			CreateModel ();
-
-			// create tree view
-			TreeView treeView = new TreeView (store);
-			treeView.RulesHint = true;
-			treeView.Selection.Mode = SelectionMode.Multiple;
-			AddColumns (treeView);
-
-			sw.Add (treeView);
-
-			// expand all rows after the treeview widget has been realized
-			treeView.Realized += new EventHandler (ExpandRows);
-
-			SetDefaultSize (650, 400);
-			ShowAll ();
-		}
-
-		private void ExpandRows (object obj, EventArgs args)
-		{
-			TreeView treeView = obj as TreeView;
-
-			treeView.ExpandAll ();
-		}
-
-		ArrayList columns = new ArrayList ();
-
-		private void ItemToggled (object sender, ToggledArgs args)
-		{
-			int column = columns.IndexOf (sender);
-
- 			Gtk.TreeIter iter;
- 			if (store.GetIterFromString (out iter, args.Path)) {
- 				bool val = (bool) store.GetValue (iter, column);
- 				store.SetValue (iter, column, !val);
- 			}
-		}
-
-		private void AddColumns (TreeView treeView)
-		{
-			CellRendererText text;
-			CellRendererToggle toggle;
-
-			// column for holiday names
-			text = new CellRendererText ();
-			text.Xalign = 0.0f;
-			columns.Add (text);
-			TreeViewColumn column = new TreeViewColumn ("Holiday", text,
-								    "text", Column.HolidayName);
-			treeView.InsertColumn (column, (int) Column.HolidayName);
-
-			// alex column
-			toggle = new CellRendererToggle ();
-			toggle.Xalign = 0.0f;
-			columns.Add (toggle);
-			toggle.Toggled += new ToggledHandler (ItemToggled);
-			
-			column = new TreeViewColumn ("Alex", toggle,
-						     "active", (int) Column.Alex,
-						     "visible", (int) Column.Visible,
-						     "activatable", (int) Column.World);
-			column.Sizing = TreeViewColumnSizing.Fixed;
-			column.FixedWidth = 50;
-			column.Clickable = true;
-			treeView.InsertColumn (column, (int) Column.Alex);
-
-			// havoc column
-			toggle = new CellRendererToggle ();
-			toggle.Xalign = 0.0f;
-			columns.Add (toggle);
-			toggle.Toggled += new ToggledHandler (ItemToggled);
-			column = new TreeViewColumn ("Havoc", toggle,
-						     "active", (int) Column.Havoc,
-						     "visible", (int) Column.Visible);
-			treeView.InsertColumn (column, (int) Column.Havoc);
-			column.Sizing = TreeViewColumnSizing.Fixed;
-			column.FixedWidth = 50;
-			column.Clickable = true;
-
-			// tim column
-			toggle = new CellRendererToggle ();
-			toggle.Xalign = 0.0f;
-			columns.Add (toggle);
-			toggle.Toggled += new ToggledHandler (ItemToggled);
-			column = new TreeViewColumn ("Tim", toggle,
-						     "active", (int) Column.Tim,
-						     "visible", (int) Column.Visible,
-						     "activatable", (int) Column.World);
-			treeView.InsertColumn (column, (int) Column.Tim);
-			column.Sizing = TreeViewColumnSizing.Fixed;
-			column.FixedWidth = 50;
-			column.Clickable = true;
-
-			// owen column
-			toggle = new CellRendererToggle ();
-			toggle.Xalign = 0.0f;
-			columns.Add (toggle);
-			toggle.Toggled += new ToggledHandler (ItemToggled);
-			column = new TreeViewColumn ("Owen", toggle,
-						     "active", (int) Column.Owen,
-						     "visible", (int) Column.Visible);
-			treeView.InsertColumn (column, (int) Column.Owen);
-			column.Sizing = TreeViewColumnSizing.Fixed;
-			column.FixedWidth = 50;
-			column.Clickable = true;
-
-			// dave column
-			toggle = new CellRendererToggle ();
-			toggle.Xalign = 0.0f;
-			columns.Add (toggle);
-			toggle.Toggled += new ToggledHandler (ItemToggled);
-			column = new TreeViewColumn ("Dave", toggle,
-						     "active", (int) Column.Dave,
-						     "visible", (int) Column.Visible);
-			treeView.InsertColumn (column, (int) Column.Dave);
-			column.Sizing = TreeViewColumnSizing.Fixed;
-			column.FixedWidth = 50;
-			column.Clickable = true;
-		}
-
-		protected override bool OnDeleteEvent (Gdk.Event evt)
-		{
-			Destroy ();
-			return true;
-		}
-
-		private void CreateModel ()
-		{
-			// create tree store
-			store = new TreeStore (typeof (string),
-					       typeof (bool),
-					       typeof (bool),
-					       typeof (bool),
-					       typeof (bool),
-					       typeof (bool),
-					       typeof (bool),
-					       typeof (bool));
-
-			// add data to the tree store
-			foreach (MyTreeItem month in toplevel) {
-				TreeIter iter = store.AppendValues (month.Label,
-								    false,
-								    false,
-								    false,
-								    false,
-								    false,
-								    false,
-								    false);
-
-				foreach (MyTreeItem holiday in month.Children) {
-					store.AppendValues (iter,
-							    holiday.Label,
-							    holiday.Alex,
-							    holiday.Havoc,
-							    holiday.Tim,
-							    holiday.Owen,
-							    holiday.Dave,
-							    true,
-							    holiday.WorldHoliday);
-				}
-			}
-		}
-
-		// tree data
-		private static MyTreeItem[] january =
-		{
-			new MyTreeItem ("New Years Day", true, true, true, true, false, true, null ),
-			new MyTreeItem ("Presidential Inauguration", false, true, false, true, false, false, null ),
-			new MyTreeItem ("Martin Luther King Jr. day", false, true, false, true, false, false, null )
-		};
-
-		private static MyTreeItem[] february =
-		{
-			new MyTreeItem ( "Presidents' Day", false, true, false, true, false, false, null ),
-			new MyTreeItem ( "Groundhog Day", false, false, false, false, false, false, null ),
-			new MyTreeItem ( "Valentine's Day", false, false, false, false, true, true, null )
-		};
-
-		private static MyTreeItem[] march =
-		{
-			new MyTreeItem ( "National Tree Planting Day", false, false, false, false, false, false, null ),
-			new MyTreeItem ( "St Patrick's Day", false, false, false, false, false, true, null )
-		};
-
-		private static MyTreeItem[] april =
-		{
-			new MyTreeItem ( "April Fools' Day", false, false, false, false, false, true, null ),
-			new MyTreeItem ( "Army Day", false, false, false, false, false, false, null ),
-			new MyTreeItem ( "Earth Day", false, false, false, false, false, true, null ),
-			new MyTreeItem ( "Administrative Professionals' Day", false, false, false, false, false, false, null )
-		};
-
-		private static MyTreeItem[] may =
-		{
-			new MyTreeItem ( "Nurses' Day", false, false, false, false, false, false, null ),
-			new MyTreeItem ( "National Day of Prayer", false, false, false, false, false, false, null ),
-			new MyTreeItem ( "Mothers' Day", false, false, false, false, false, true, null ),
-			new MyTreeItem ( "Armed Forces Day", false, false, false, false, false, false, null ),
-			new MyTreeItem ( "Memorial Day", true, true, true, true, false, true, null )
-		};
-
-		private static MyTreeItem[] june =
-		{
-			new MyTreeItem ( "June Fathers' Day", false, false, false, false, false, true, null ),
-			new MyTreeItem ( "Juneteenth (Liberation of Slaves)", false, false, false, false, false, false, null ),
-			new MyTreeItem ( "Flag Day", false, true, false, true, false, false, null )
-		};
-
-		private static MyTreeItem[] july =
-		{
-			new MyTreeItem ( "Parents' Day", false, false, false, false, false, true, null ),
-			new MyTreeItem ( "Independence Day", false, true, false, true, false, false, null )
-		};
-
-		private static MyTreeItem[] august =
-		{
-			new MyTreeItem ( "Air Force Day", false, false, false, false, false, false, null ),
-			new MyTreeItem ( "Coast Guard Day", false, false, false, false, false, false, null ),
-			new MyTreeItem ( "Friendship Day", false, false, false, false, false, false, null )
-		};
-
-		private static MyTreeItem[] september =
-		{
-			new MyTreeItem ( "Grandparents' Day", false, false, false, false, false, true, null ),
-			new MyTreeItem ( "Citizenship Day or Constitution Day", false, false, false, false, false, false, null ),
-			new MyTreeItem ( "Labor Day", true, true, true, true, false, true, null )
-		};
-
-		private static MyTreeItem[] october =
-		{
-			new MyTreeItem ( "National Children's Day", false, false, false, false, false, false, null ),
-			new MyTreeItem ( "Bosses' Day", false, false, false, false, false, false, null ),
-			new MyTreeItem ( "Sweetest Day", false, false, false, false, false, false, null ),
-			new MyTreeItem ( "Mother-in-Law's Day", false, false, false, false, false, false, null ),
-			new MyTreeItem ( "Navy Day", false, false, false, false, false, false, null ),
-			new MyTreeItem ( "Columbus Day", false, true, false, true, false, false, null ),
-			new MyTreeItem ( "Halloween", false, false, false, false, false, true, null )
-		};
-
-		private static MyTreeItem[] november =
-		{
-			new MyTreeItem ( "Marine Corps Day", false, false, false, false, false, false, null ),
-			new MyTreeItem ( "Veterans' Day", true, true, true, true, false, true, null ),
-			new MyTreeItem ( "Thanksgiving", false, true, false, true, false, false, null )
-		};
-
-		private static MyTreeItem[] december =
-		{
-			new MyTreeItem ( "Pearl Harbor Remembrance Day", false, false, false, false, false, false, null ),
-			new MyTreeItem ( "Christmas", true, true, true, true, false, true, null ),
-			new MyTreeItem ( "Kwanzaa", false, false, false, false, false, false, null )
-		};
-
-
-		private static MyTreeItem[] toplevel =
-		{
-			new MyTreeItem ("January", false, false, false, false, false, false, january),
-			new MyTreeItem ("February", false, false, false, false, false, false, february),
-			new MyTreeItem ("March", false, false, false, false, false, false, march),
-			new MyTreeItem ("April", false, false, false, false, false, false, april),
-			new MyTreeItem ("May", false, false, false, false, false, false, may),
-			new MyTreeItem ("June", false, false, false, false, false, false, june),
-			new MyTreeItem ("July", false, false, false, false, false, false, july),
-			new MyTreeItem ("August", false, false, false, false, false, false, august),
-			new MyTreeItem ("September", false, false, false, false, false, false, september),
-			new MyTreeItem ("October", false, false, false, false, false, false, october),
-			new MyTreeItem ("November", false, false, false, false, false, false, november),
-			new MyTreeItem ("December", false, false, false, false, false, false, december)
-		};
-
-		// TreeItem structure
-		public class MyTreeItem
-		{
-			public string Label;
-			public bool Alex, Havoc, Tim, Owen, Dave;
-			public bool WorldHoliday; // shared by the European hackers
-			public MyTreeItem[] Children;
-
-			public MyTreeItem (string label, bool alex, bool havoc, bool tim,
-					   bool owen, bool dave, bool worldHoliday,
-					   MyTreeItem[] children)
-			{
-				Label = label;
-				Alex = alex;
-				Havoc = havoc;
-				Tim = tim;
-				Owen = owen;
-				Dave = dave;
-				WorldHoliday =  worldHoliday;
-				Children = children;
-			}
-		}
-
-		// columns
-		public enum Column
-		{
-			HolidayName,
-			Alex,
-			Havoc,
-			Tim,
-			Owen,
-			Dave,
-
-			Visible,
-			World,
-		}
-	}
+	}	
 }

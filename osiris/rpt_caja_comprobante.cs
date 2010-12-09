@@ -103,7 +103,7 @@ namespace osiris
 		
 		private void OnBeginPrint (object obj, Gtk.BeginPrintArgs args)
 		{
-			print.NPages = 1;  // crea cantidad de copias del reporte			
+			print.NPages = 3;  // crea cantidad de copias del reporte			
 			// para imprimir horizontalmente el reporte
 			//print.PrintSettings.Orientation = PageOrientation.Landscape;
 			//Console.WriteLine(print.PrintSettings.Orientation.ToString());
@@ -122,6 +122,7 @@ namespace osiris
 			int toma_tipoadmisiones = 0;
 			int toma_grupoproducto = 0;
 			float toma_valor_total = 0;
+			comienzo_linea = 60;
 			Cairo.Context cr = context.CairoContext;
 			Pango.Layout layout = context.CreatePangoLayout ();
 						
@@ -206,6 +207,7 @@ namespace osiris
 		                        string nombrepaciente, string descripcion_empmuni, string telefono_paciente, string fechahoraregistro,
 		                        string conceptocomprobante, string observacionescomprobante, float tomavalortotal )
 		{
+			comienzo_linea = 60;
 			Pango.FontDescription desc = Pango.FontDescription.FromString ("Sans");								
 			//cr.Rotate(90);  //Imprimir Orizontalmente rota la hoja cambian las posiciones de las lineas y columna					
 			fontSize = 8.0;

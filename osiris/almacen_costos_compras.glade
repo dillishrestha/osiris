@@ -7584,15 +7584,18 @@ Traspaso</property>
     <child>
       <widget class="GtkVBox" id="vbox83">
         <property name="visible">True</property>
+        <property name="orientation">vertical</property>
         <child>
           <widget class="GtkHBox" id="hbox192">
             <property name="visible">True</property>
             <child>
               <widget class="GtkVBox" id="vbox77">
                 <property name="visible">True</property>
+                <property name="orientation">vertical</property>
                 <child>
                   <widget class="GtkVBox" id="vbox78">
                     <property name="visible">True</property>
+                    <property name="orientation">vertical</property>
                     <child>
                       <widget class="GtkHBox" id="hbox206">
                         <property name="visible">True</property>
@@ -7947,6 +7950,7 @@ Traspaso</property>
                   <widget class="GtkVPaned" id="vpaned2">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
+                    <property name="orientation">vertical</property>
                     <property name="position">240</property>
                     <child>
                       <widget class="GtkFrame" id="frame32">
@@ -8041,6 +8045,7 @@ Traspaso</property>
             <child>
               <widget class="GtkVBox" id="vbox81">
                 <property name="visible">True</property>
+                <property name="orientation">vertical</property>
                 <child>
                   <widget class="GtkButton" id="button_guarda">
                     <property name="width_request">1</property>
@@ -8093,12 +8098,14 @@ Traspaso</property>
                 <child>
                   <widget class="GtkVBox" id="vbox82">
                     <property name="visible">True</property>
+                    <property name="orientation">vertical</property>
                     <child>
                       <widget class="GtkVBox" id="vbox1">
                         <property name="visible">True</property>
                         <child>
                           <widget class="GtkVBox" id="vbox84">
                             <property name="visible">True</property>
+                            <property name="orientation">vertical</property>
                             <child>
                               <widget class="GtkButton" id="button_agrega">
                                 <property name="visible">True</property>
@@ -8214,6 +8221,7 @@ Traspaso</property>
                             <child>
                               <widget class="GtkVBox" id="vbox89">
                                 <property name="visible">True</property>
+                                <property name="orientation">vertical</property>
                                 <child>
                                   <widget class="GtkFixed" id="fixed241">
                                     <property name="visible">True</property>
@@ -8587,7 +8595,7 @@ Producto</property>
                             <child>
                               <widget class="GtkLabel" id="label354">
                                 <property name="visible">True</property>
-                                <property name="label" translatable="yes">Forma de Credito :</property>
+                                <property name="label" translatable="yes">Condiciones de Pago :</property>
                               </widget>
                               <packing>
                                 <property name="expand">False</property>
@@ -8663,6 +8671,33 @@ Producto</property>
                             <property name="position">2</property>
                           </packing>
                         </child>
+                        <child>
+                          <widget class="GtkHBox" id="hbox1">
+                            <property name="visible">True</property>
+                            <child>
+                              <widget class="GtkLabel" id="label1">
+                                <property name="visible">True</property>
+                                <property name="label" translatable="yes">Logar de Entrega</property>
+                              </widget>
+                              <packing>
+                                <property name="position">0</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <widget class="GtkEntry" id="entry1">
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="invisible_char">&#x25CF;</property>
+                              </widget>
+                              <packing>
+                                <property name="position">1</property>
+                              </packing>
+                            </child>
+                          </widget>
+                          <packing>
+                            <property name="position">3</property>
+                          </packing>
+                        </child>
                       </widget>
                       <packing>
                         <property name="resize">False</property>
@@ -8684,7 +8719,7 @@ Producto</property>
                                 <property name="can_focus">True</property>
                                 <child>
                                   <widget class="GtkTreeView" id="treeview2">
-                                    <property name="height_request">110</property>
+                                    <property name="height_request">80</property>
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                   </widget>

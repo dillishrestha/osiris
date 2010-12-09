@@ -1335,7 +1335,7 @@ Terapia Intensiva Ni&#xF1;os</property>
                                 <child>
                                   <widget class="GtkLabel" id="label_departamento">
                                     <property name="visible">True</property>
-                                    <property name="label" translatable="yes">Folio Laboratorio</property>
+                                    <property name="label" translatable="yes">Folio Asignado</property>
                                   </widget>
                                   <packing>
                                     <property name="expand">False</property>

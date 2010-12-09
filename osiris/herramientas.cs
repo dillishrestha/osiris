@@ -100,82 +100,63 @@ namespace osiris
 		
 		void on_button_cmb_tab_clicked(object sender, EventArgs args)
 		{
-			/*string connectionString = "DNS=huelladigital;"+"UID=usuario;"+"PWD=nac3000";
-			
-			IDbConnection dbcon;
-			dbcon = new OdbcConnection(connectionString);
-			dbcon.Open();
-			IDbCommand dbcmd = dbcon.CreateCommand();
-			
-			string sql ="SELECT * FROM NGAC_DEPARTAMENTO;";
-			dbcmd.CommandText = sql;
-			IDataReader reader = dbcmd.ExecuteReader();
-			
-			while(reader.Read()){
-				Console.WriteLine((string) reader["descripcion"]);
-			}
-			
-			reader.Close();
-			reader = null;
-			dbcmd.Dispose();
-			dbcmd = null;
-			dbcon.Close();
-			dbcon = null;*/
-			
-			/*NpgsqlConnection conexion; 
-			conexion = new NpgsqlConnection (connectionString+"Database=osiris;");
-        	// Verifica que la base de datos este conectada
-			try{
-				conexion.Open ();
-				NpgsqlCommand comando; 
-				comando = conexion.CreateCommand ();
-               	comando.CommandText = "SELECT to_char() "+
-               						  "FROM inventario_sub_almacenes;";	               						
-				//Console.WriteLine(comando.CommandText);
-				NpgsqlDataReader lector = comando.ExecuteReader ();
-				string codigodeproducto = "";
-				  
-				while(lector.Read()){
-					codigodeproducto = (int) lector["numero_factura"];
-					//Console.WriteLine(numerofactura.ToString());
-					
-					NpgsqlConnection conexion1; 
-					conexion1 = new NpgsqlConnection (connectionString+"Database=osiris;");
-		        	// Verifica que la base de datos este conectada
-					try{
-						conexion1.Open ();
-						NpgsqlCommand comando1; 
-						comando1 = conexion1.CreateCommand ();
-		               	comando1.CommandText = "UPDATE osiris_catalogo_almacenes SET stock = '"+(string)this.lista_almacenes.Model.GetValue(iterSelected2,1)+"',"+
-												"historial_ajustes = historial_ajustes || 'DOLIVARES";"+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss").Trim()+";"+
-												Convert.ToString((string) this.lista_almacenes.Model.GetValue (iterSelected2,2)).Trim()+";"+
-												Convert.ToString((string) this.lista_almacenes.Model.GetValue (iterSelected2,1)).Trim()+"\n' "+
-												"WHERE id_almacen = '"+this.idsubalmacen.ToString()+"' "+
-												"AND eliminado = 'false' " +
-												"AND id_producto = '"+(string)this.lista_almacenes.Model.GetValue(iterSelected2,3)+"' ;";	               						
-						//Console.WriteLine(comando.CommandText);
-						NpgsqlDataReader lector1 = comando1.ExecuteReader ();
-						if(lector1.Read()){
-							
-						}else{
-							Console.WriteLine("NO ENCONTRE LA FACTURA; "+numerofactura.ToString().Trim());
-						}
+			// Cambios Tabla
+			string codigodelproducto = "";
+			float nvopreciopublico = 0;
+			if(LoginEmpleado == "DOLIVARES" || LoginEmpleado == "ADMIN"){
+				NpgsqlConnection conexion; 
+				conexion = new NpgsqlConnection (connectionString+nombrebd);
+	        	// Verifica que la base de datos este conectada
+				try{
+					conexion.Open ();
+					NpgsqlCommand comando; 
+					comando = conexion.CreateCommand ();
+	               	comando.CommandText = "SELECT * FROM osiris_productos WHERE id_grupo_producto IN ('4','5') AND cobro_activo = 'true'";
+					NpgsqlDataReader lector = comando.ExecuteReader ();
+					while(lector.Read()){
 						
-					}catch(NpgsqlException ex){
-						Console.WriteLine("PostgresSQL error: {0}",ex.Message);
-						MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
-											MessageType.Error,ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
-						msgBoxError.Run ();		msgBoxError.Destroy();
+						codigodelproducto = (string) lector["id_producto"].ToString().Trim();
+						nvopreciopublico = (((float.Parse((string) lector["costo_producto"].ToString().Trim()) * float.Parse((string) lector["porcentage_ganancia"].ToString().Trim()))/100)+
+						                   float.Parse((string) lector["costo_producto"].ToString().Trim()))/float.Parse((string) lector["cantidad_de_embalaje"].ToString().Trim());
+						Console.WriteLine(codigodelproducto+ "      "+nvopreciopublico.ToString().Trim());
+						
+						if (nvopreciopublico != 0){
+						
+							
+							NpgsqlConnection conexion2; 
+							conexion2 = new NpgsqlConnection (connectionString+nombrebd);
+				            try{
+								conexion2.Open ();
+								NpgsqlCommand comando2; 
+								comando2 = conexion2.CreateCommand ();
+								comando2.CommandText ="UPDATE osiris_productos SET precio_producto_publico = '"+nvopreciopublico.ToString("F").Trim() +"' "+
+													"WHERE id_producto = '"+codigodelproducto.ToString()+"';";	
+								Console.WriteLine(comando2.CommandText);
+								comando2.ExecuteNonQuery();
+								comando2.Dispose();
+							}catch(NpgsqlException ex){
+								Console.WriteLine("subquery"+"PostgresSQL error: {0}",ex.Message);
+								MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+												MessageType.Error,ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
+								msgBoxError.Run ();		msgBoxError.Destroy();
+							}
+							conexion2.Close();
+							
+						
+						}
 					}
-					conexion1.Close();
+				}catch(NpgsqlException ex){
+					Console.WriteLine("PostgresSQL error: {0}",ex.Message);
+					MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+									MessageType.Error,ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
+					msgBoxError.Run ();		msgBoxError.Destroy();
 				}
-			}catch(NpgsqlException ex){
-				Console.WriteLine("PostgresSQL error: {0}",ex.Message);
-				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
-											MessageType.Error,ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
-				msgBoxError.Run ();		msgBoxError.Destroy();
+				conexion.Close();
+			}else{ MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+				  MessageType.Error,ButtonsType.Close,"NO esta autorizado para accesar");
+				  msgBoxError.Run ();			msgBoxError.Destroy(); 
 			}
-			conexion.Close();*/
+			
 		}
 				
 		void on_button_corrige_san_nicolas_clicked(object sender, EventArgs args)

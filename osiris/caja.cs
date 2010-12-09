@@ -1738,6 +1738,7 @@ namespace osiris
 							sql_abonos_servicio = "INSERT INTO osiris_erp_abonos("+
 				 								"monto_de_abono_procedimiento,"+
 				 								"folio_de_servicio,"+
+												"pid_paciente,"+
 				 								"concepto_del_abono,"+
 				 								"fecha_abono,"+
 				 								"id_quien_creo,"+
@@ -1752,6 +1753,7 @@ namespace osiris
 				 								"VALUES ('"+
 				 								(string) this.entry_total_comprobante.Text.Trim()+"','"+
 				 								folioservicio+"','"+
+												this.PidPaciente.ToString().Trim()+"','"+
 				 								descrippago+"','"+
 				 								DateTime.Now.ToString("yyyy-MM-dd")+"','"+
 	 											LoginEmpleado+"','"+
@@ -1771,6 +1773,7 @@ namespace osiris
 							sql_abonos_servicio = "INSERT INTO osiris_erp_abonos("+
 				 								"monto_de_abono_procedimiento,"+
 				 								"folio_de_servicio,"+
+												"pid_paciente,"+
 				 								"concepto_del_abono,"+
 				 								"fecha_abono,"+
 				 								"id_quien_creo,"+
@@ -1786,6 +1789,7 @@ namespace osiris
 				 								"VALUES ('"+
 				 								(string) this.entry_total_comprobante.Text.Trim()+"','"+
 				 								folioservicio+"','"+
+												PidPaciente.ToString().Trim()+"','"+
 				 								descrippago+"','"+
 				 								DateTime.Now.ToString("yyyy-MM-dd")+"','"+
 	 											LoginEmpleado+"','"+
@@ -1806,6 +1810,7 @@ namespace osiris
 							sql_abonos_servicio = "INSERT INTO osiris_erp_comprobante_servicio("+
 														"numero_comprobante_servicio,"+
 														"folio_de_servicio,"+
+														"pid_paciente,"+
 														"fechahora_creacion,"+
 														"fecha_comprobante,"+
 														"concepto_del_comprobante,"+
@@ -1815,6 +1820,7 @@ namespace osiris
 													"VALUES ('"+
 														(string) entry_numero_comprobante.Text.Trim()+"','"+
 														folioservicio+"','"+
+														this.PidPaciente.ToString().Trim()+"','"+
 														DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"','"+
 														DateTime.Now.ToString("yyyy-MM-dd")+"','"+
 														"COMPROBANTE DE SERVICO"+"','"+
@@ -1829,10 +1835,12 @@ namespace osiris
 							sql_abonos_servicio = "INSERT INTO osiris_erp_comprobante_servicio("+
 														"numero_comprobante_servicio,"+
 														"folio_de_servicio,"+
+														"pid_paciente,"+
 														"fechahora_creacion)"+
 													"VALUES ('"+
 														(string) entry_numero_comprobante.Text.Trim()+"','"+
 														folioservicio+"','"+
+														this.PidPaciente.ToString().Trim()+"','"+
 														DateTime.Now.ToString("yyyy-MM-dd")+"');";
 						}
 						
@@ -2034,6 +2042,7 @@ namespace osiris
 				entry_total_comprobante.KeyPressEvent += onKeyPressEvent;
 				entry_total_comprobante.Text = this.entry_a_pagar.Text;
 				
+				entry_numero_comprobante.Text = (string) classpublic.lee_ultimonumero_registrado("osiris_erp_comprobante_servicio","numero_comprobante_servicio","");
 				this.entry_dia1.Text = DateTime.Now.ToString("dd");
 				this.entry_mes1.Text = DateTime.Now.ToString("MM");
 				this.entry_ano1.Text = DateTime.Now.ToString("yyyy");
@@ -3084,7 +3093,7 @@ namespace osiris
 											// habilitando boton para poder realizar mas cargos
 											if ((bool) lector ["bloqueo_de_folio"] == false){
 												button_busca_producto.Sensitive = true;
-												if(LoginEmpleado =="DOLIVARES" || LoginEmpleado =="ADMIN"){
+												if(LoginEmpleado =="DOLIVARES" || LoginEmpleado =="ADMIN" || LoginEmpleado =="IESPINOZAF"){
 													button_busca_producto.Sensitive = true;
 												}else{
 													button_cierre_cuenta.Sensitive = false;
@@ -3092,7 +3101,7 @@ namespace osiris
 													button_busca_producto.Sensitive = true;
 												}
 											}else{
-												if(LoginEmpleado =="DOLIVARES" || LoginEmpleado =="ADMIN"){
+												if(LoginEmpleado =="DOLIVARES" || LoginEmpleado =="ADMIN" || LoginEmpleado =="IESPINOZAF" ){
 													
 													button_bloquea_cuenta.Sensitive = false;
 												}else{

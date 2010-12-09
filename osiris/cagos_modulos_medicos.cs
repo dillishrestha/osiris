@@ -93,6 +93,7 @@ namespace osiris
 		[Widget] Gtk.Button button_indicacionesmedicas = null;
 		[Widget] Gtk.Button button_solicitud_lab = null;
 		[Widget] Gtk.Button button_solicitud_rx = null;
+		[Widget] Gtk.Button button_solicitud_vision = null;
 		
 		//Declarando la barra de estado
 		[Widget] Gtk.Statusbar statusbar_caja = null;
@@ -330,10 +331,10 @@ namespace osiris
 			button_historiaclinica.Clicked += new EventHandler(on_button_historiaclinica_clicked);
 			// Indicaciones Medicas
 			button_indicacionesmedicas.Clicked += new EventHandler(on_button_indicacionesmedicas_clicked);
-			// Solicitudes de Laboratorio y rayos X
+			// Solicitudes de Laboratorio, rayos X, Vision
 			button_solicitud_lab.Clicked += new EventHandler(on_solicitud_labrx_clicked);
 			button_solicitud_rx.Clicked += new EventHandler(on_solicitud_labrx_clicked);
-			
+			button_solicitud_vision.Clicked += new EventHandler(on_solicitud_labrx_clicked);
 			// Desactivando Botones de operacion se activa cuando selecciona una atencion
 			button_busca_producto.Sensitive = false;
 			button_removerItem.Sensitive = false;
@@ -357,13 +358,19 @@ namespace osiris
 			Gtk.Button button_solicitud_labrx = (Gtk.Button) obj;
 			//if(button_busca_producto.Sensitive == true){
 				if(button_solicitud_labrx.Name.ToString() == "button_solicitud_lab"){					
-					new osiris.solicitudes_enfermeria(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,"Solicitud Examen de LABORATORIO",400,"LAB",
+					new osiris.solicitudes_enfermeria(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,"Solicitud Estudio de LABORATORIO",400,"LAB",
 					                                  descripinternamiento,idtipointernamiento,idempresa_paciente,idaseguradora_paciente,PidPaciente,folioservicio,
 					                                  entry_nombre_paciente.Text.Trim(),entry_id_doctor.Text.Trim(),entry_doctor.Text.Trim(),
 					                                  this.entry_cirugia.Text.Trim(),this.entry_id_habitacion.Text.Trim(),button_busca_producto.Sensitive);
 				}
 				if(button_solicitud_labrx.Name.ToString() == "button_solicitud_rx"){
-					new osiris.solicitudes_enfermeria(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,"Solicitud Examen de IMAGENOLOGIA",300,"IMG",
+					new osiris.solicitudes_enfermeria(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,"Solicitud Estudio de IMAGENOLOGIA",300,"IMG",
+					                                  descripinternamiento,idtipointernamiento,idempresa_paciente,idaseguradora_paciente,PidPaciente,folioservicio,
+					                                  entry_nombre_paciente.Text.Trim(),entry_id_doctor.Text.Trim(),entry_doctor.Text.Trim(),
+					                                  this.entry_cirugia.Text.Trim(),this.entry_id_habitacion.Text.Trim(),button_busca_producto.Sensitive);
+				}
+				if(button_solicitud_labrx.Name.ToString() == "button_solicitud_vision"){
+					new osiris.solicitudes_enfermeria(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,"Solicitud Estudio de VISION",960,"VIS",
 					                                  descripinternamiento,idtipointernamiento,idempresa_paciente,idaseguradora_paciente,PidPaciente,folioservicio,
 					                                  entry_nombre_paciente.Text.Trim(),entry_id_doctor.Text.Trim(),entry_doctor.Text.Trim(),
 					                                  this.entry_cirugia.Text.Trim(),this.entry_id_habitacion.Text.Trim(),button_busca_producto.Sensitive);
@@ -579,15 +586,14 @@ namespace osiris
 			col_asignado.PackStart(cellr6, true);
 			col_asignado.AddAttribute (cellr6, "text", 6);
 			cellr6.CellBackground = "red";
-        	
+			
 			lista_cargos_extras.AppendColumn(col_seleccion);
 			lista_cargos_extras.AppendColumn(col_cantidad);
 			lista_cargos_extras.AppendColumn(col_codigo_prod);
 			lista_cargos_extras.AppendColumn(col_descripcion);
 			lista_cargos_extras.AppendColumn(col_quien_cargo);
 			lista_cargos_extras.AppendColumn(col_fecha_hora);
-			lista_cargos_extras.AppendColumn(col_asignado);
-			
+			lista_cargos_extras.AppendColumn(col_asignado);			
 		}
 		
 		void on_button_resultados_lab_clicked(object sender, EventArgs args)

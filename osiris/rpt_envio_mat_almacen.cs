@@ -124,7 +124,8 @@ namespace osiris
 			col_seleccion.PackStart(cellr0, true);
 			col_seleccion.AddAttribute (cellr0, "active", 0);
 			cellr0.Activatable = true;
-			cellr0.Toggled += selecciona_fila_grupo; 
+			cellr0.Toggled += selecciona_fila_grupo;
+			col_seleccion.SortColumnId = (int) column_reporte.col_seleccion;
 		
 			TreeViewColumn col_solicito = new TreeViewColumn();
 			CellRendererText cellr1 = new CellRendererText();
@@ -132,6 +133,7 @@ namespace osiris
 			col_solicito.PackStart(cellr1, true);
 			col_solicito.AddAttribute (cellr1, "text", 1);
 			cellr1.Foreground = "darkblue";
+			col_solicito.SortColumnId = (int) column_reporte.col_solicito;
 			
 			TreeViewColumn col_sub = new TreeViewColumn();
 			CellRendererText cellr2 = new CellRendererText();
@@ -139,6 +141,7 @@ namespace osiris
 			col_sub.PackStart(cellr2, true);
 			col_sub.AddAttribute (cellr2, "text", 2);
 			cellr2.Foreground = "darkblue";
+			col_sub.SortColumnId = (int) column_reporte.col_sub;
 						
 			TreeViewColumn col_fecha_envio = new TreeViewColumn();
 			CellRendererText cellr3 = new CellRendererText();
@@ -146,6 +149,7 @@ namespace osiris
 			col_fecha_envio.PackStart(cellr3, true);
 			col_fecha_envio.AddAttribute (cellr3, "text", 3);
 			cellr3.Foreground = "darkblue";
+			col_fecha_envio.SortColumnId = (int) column_reporte.col_fecha_envio;
 			
 			TreeViewColumn col_id_sol = new TreeViewColumn();
 			CellRendererText cellr4 = new CellRendererText();
@@ -153,6 +157,7 @@ namespace osiris
 			col_id_sol.PackStart(cellr4, true);
 			col_id_sol.AddAttribute (cellr4, "text", 4);
 			cellr4.Foreground = "darkblue";
+			col_id_sol.SortColumnId = (int) column_reporte.col_id_sol;
 			
 			TreeViewColumn col_numeroatencion = new TreeViewColumn();
 			CellRendererText cellr6 = new CellRendererText();
@@ -160,6 +165,7 @@ namespace osiris
 			col_numeroatencion.PackStart(cellr6, true);
 			col_numeroatencion.AddAttribute (cellr6, "text", 6);
 			cellr6.Foreground = "darkblue";
+			col_numeroatencion.SortColumnId = (int) column_reporte.col_numeroatencion;
 			
 			TreeViewColumn col_pidpaciente = new TreeViewColumn();
 			CellRendererText cellr7 = new CellRendererText();
@@ -167,6 +173,7 @@ namespace osiris
 			col_pidpaciente.PackStart(cellr7, true);
 			col_pidpaciente.AddAttribute (cellr7, "text", 7);
 			cellr7.Foreground = "darkblue";
+			col_pidpaciente.SortColumnId = (int) column_reporte.col_pidpaciente;
 			
 			TreeViewColumn col_nombrepaciente = new TreeViewColumn();
 			CellRendererText cellr8 = new CellRendererText();
@@ -174,6 +181,7 @@ namespace osiris
 			col_nombrepaciente.PackStart(cellr8, true);
 			col_nombrepaciente.AddAttribute (cellr8, "text", 8);
 			cellr8.Foreground = "darkblue";
+			col_nombrepaciente.SortColumnId = (int) column_reporte.col_nombrepaciente;
 			
 			lista_almacenes.AppendColumn(col_seleccion);
 			lista_almacenes.AppendColumn(col_solicito);
@@ -183,6 +191,18 @@ namespace osiris
 			lista_almacenes.AppendColumn(col_numeroatencion);
 			lista_almacenes.AppendColumn(col_pidpaciente);
 			lista_almacenes.AppendColumn(col_nombrepaciente);
+		}
+		
+		enum column_reporte
+		{
+			col_seleccion,
+			col_solicito,
+			col_sub,
+			col_fecha_envio,
+			col_id_sol,
+			col_numeroatencion,
+			col_pidpaciente,
+			col_nombrepaciente,
 		}
 		
 		void llenando_lista_de_solicitudes()
@@ -199,7 +219,7 @@ namespace osiris
 				
 					comando.CommandText = "SELECT COUNT(osiris_his_solicitudes_deta.folio_de_solicitud) AS cantidad_solicitud,to_char(folio_de_solicitud,'9999999999') AS foliodesolicitud,"+
 								"to_char(osiris_his_solicitudes_deta.id_almacen,'999999999') AS idalmacen,osiris_almacenes.descripcion_almacen AS descripcionalmacen,"+
-								"to_char(osiris_his_solicitudes_deta.fecha_envio_almacen,'dd-MM-yyyy HH24:mi') AS fecha_envio,osiris_his_solicitudes_deta.id_empleado,"+
+								"to_char(osiris_his_solicitudes_deta.fecha_envio_almacen,'yyyy-MM-dd HH24:mi') AS fecha_envio,osiris_his_solicitudes_deta.id_empleado,"+
 								"osiris_his_solicitudes_deta.folio_de_servicio AS foliodeatencion,"+
 								"osiris_his_solicitudes_deta.pid_paciente AS pidpaciente,"+
 								"nombre1_paciente,nombre2_paciente,apellido_paterno_paciente,apellido_materno_paciente "+
@@ -210,10 +230,10 @@ namespace osiris
 								"AND osiris_his_paciente.pid_paciente = osiris_his_solicitudes_deta.pid_paciente "+
 								""+query_fechas+" "+
 								"GROUP BY osiris_his_solicitudes_deta.folio_de_solicitud,osiris_his_solicitudes_deta.id_almacen,"+
-								"osiris_almacenes.descripcion_almacen,to_char(osiris_his_solicitudes_deta.fecha_envio_almacen,'dd-MM-yyyy HH24:mi'),osiris_his_solicitudes_deta.id_empleado,"+
+								"osiris_almacenes.descripcion_almacen,to_char(osiris_his_solicitudes_deta.fecha_envio_almacen,'yyyy-MM-dd HH24:mi'),osiris_his_solicitudes_deta.id_empleado,"+
 								"osiris_his_solicitudes_deta.folio_de_servicio,"+
 								"osiris_his_solicitudes_deta.pid_paciente,nombre1_paciente,nombre2_paciente,apellido_paterno_paciente,apellido_materno_paciente "+
-								"ORDER BY osiris_his_solicitudes_deta.id_almacen,osiris_his_solicitudes_deta.folio_de_solicitud;";
+								"ORDER BY to_char(osiris_his_solicitudes_deta.fecha_envio_almacen,'yyyy-MM-dd HH24:mi'),osiris_his_solicitudes_deta.id_almacen,osiris_his_solicitudes_deta.folio_de_solicitud;";
 				Console.WriteLine(comando.CommandText);
 				NpgsqlDataReader lector = comando.ExecuteReader ();
 
@@ -306,7 +326,7 @@ namespace osiris
 				query_fechas = " AND to_char(osiris_his_solicitudes_deta.fecha_envio_almacen,'yyyy-MM-dd') >= '"+rango1+"' "+
 								"AND to_char(osiris_his_solicitudes_deta.fecha_envio_almacen,'yyyy-MM-dd') <= '"+rango2+"' ";
 			}
-						
+		
 			//poder elegir una fila del treeview
 			TreeIter iter;
 			if (treeViewEnginesolicitud.GetIterFirst (out iter)){

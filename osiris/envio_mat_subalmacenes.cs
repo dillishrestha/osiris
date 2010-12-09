@@ -393,9 +393,7 @@ namespace osiris
 	                                                msgBoxError.Run ();
 	                                            }
 	                                            conexion2.Close();    
-                                            }
-	
-											
+                                            }											
 										}else{
 											//Console.WriteLine("else"+idalmacenorigen);
 											NpgsqlConnection conexion1; 
@@ -842,7 +840,11 @@ namespace osiris
 		 		if (miResultado == ResponseType.Yes){
 		 			this.treeViewEngineSolicitado.Remove(ref iterSelected);
 		 		}
-		 	}
+		 	}else{
+				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+							MessageType.Error, ButtonsType.Close,"no hay nada para quitar...");
+				msgBoxError.Run ();						msgBoxError.Destroy();
+			}
 		 }
 		
 		void on_button_pedido_erroneo_clicked(object sender, EventArgs args)

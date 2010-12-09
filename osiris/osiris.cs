@@ -58,6 +58,7 @@ namespace osiris
 		[Widget] Gtk.Button button_laboratorio = null;
 		[Widget] Gtk.Button button_imagenologia = null;
 		[Widget] Gtk.Button button_oftalmologia = null;
+		[Widget] Gtk.Button button_vision = null;
 		[Widget] Gtk.Button button_nutricion = null;
 		[Widget] Gtk.Button button_hemodialisis = null;
 		
@@ -282,7 +283,8 @@ namespace osiris
 			button_terapia_nino.Clicked += new EventHandler( on_button_terapia_pediatrica_clicked );
 			button_terapia_neonatal.Clicked += new EventHandler(on_button_terapia_neonatal_clicked);
 			button_ginecologia.Clicked += new EventHandler(on_button_ginecologia_clicked);
-			button_oftalmologia.Clicked += new EventHandler(on_button_oftalmologia_clicked);					 			
+			button_oftalmologia.Clicked += new EventHandler(on_button_oftalmologia_clicked);
+			button_vision.Clicked += new EventHandler(on_button_vision_clicked);
 			button_medicos.Clicked += new EventHandler(on_button_medicos_clicked);					 			
 			button_cambio_contraseña.Clicked += new EventHandler(on_button_cambio_contraseña_clicked);					 							 			
 			button_herramientas.Clicked += new EventHandler(on_button_herramientas_clicked);						
@@ -388,6 +390,11 @@ namespace osiris
 		void on_button_oftalmologia_clicked(object sender, EventArgs args)
 		{
 			new osiris.oftalmologia(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
+		}
+		
+		void on_button_vision_clicked(object sender, EventArgs args)
+		{
+			new osiris.vision(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
 		}
 		
 		void on_button_almacen_clicked(object sender, EventArgs args)

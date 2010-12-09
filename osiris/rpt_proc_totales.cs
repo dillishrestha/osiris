@@ -129,7 +129,7 @@ namespace osiris
 			dir_pac = dir_pac_;//
 			empresapac = empresapac_;//
 			query_rango_fechas = query;
-			
+						
 			connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
 			nombrebd = conexion_a_DB._nombrebd;
 			valoriva = decimal.Parse(classpublic.ivaparaaplicar);	
@@ -369,7 +369,7 @@ namespace osiris
 				
 				//dandole valores a las variables
 				precio_por_cantidad = decimal.Parse((string) lector["ppcantidad"]);
-				ivaproducto = (precio_por_cantidad*15)/100;
+				ivaproducto = (precio_por_cantidad*valoriva)/100;
 				
 				porcentagedesc =  decimal.Parse((string) lector["porcdesc"]);
 												
@@ -420,7 +420,7 @@ namespace osiris
         			precio_por_cantidad = decimal.Parse((string) lector["ppcantidad"]);
         			//precio_por_cantidad = decimal.Parse((string) lector["cantidadaplicada"])* decimal.Parse((string) lector["preciopublico"]);
         			
-					ivaproducto = (precio_por_cantidad*15)/100;
+					ivaproducto = (precio_por_cantidad*valoriva)/100;
 					
 					porcentagedesc =  decimal.Parse((string) lector["porcdesc"]);
 					

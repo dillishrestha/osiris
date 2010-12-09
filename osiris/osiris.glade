@@ -647,7 +647,7 @@ H I S
                   </packing>
                 </child>
                 <child>
-                  <widget class="GtkButton" id="button_oftalmologia1">
+                  <widget class="GtkButton" id="button_vision">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>

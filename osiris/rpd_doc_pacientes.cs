@@ -1100,7 +1100,11 @@ namespace osiris
 				msgBoxError.Destroy();
 			}else{
 				//rpt_cons_informado.cs
-				new conse_info(PidPaciente,int.Parse(entry_folio_servicio.Text),nombrebd,this.entry_med_trat.Text.ToUpper().Trim(),this.entry_cirugia.Text.ToUpper().Trim());   // rpt_cons_informado.cs
+				new conse_info(PidPaciente,int.Parse(entry_folio_servicio.Text),nombrebd,
+				               entry_nombre_paciente.Text.Trim(),
+				               entry_medic_diag.Text.Trim(),
+				               entry_med_trat.Text.ToUpper().Trim(),
+				               entry_cirugia.Text.ToUpper().Trim());   // rpt_cons_informado.cs
 			}
 		}
 		

@@ -146,6 +146,8 @@ namespace osiris
 		
 		void on_button_productos_enviados_clicked(object sender, EventArgs args)
 		{
+			// Productos enviado a los sub-almacenes
+			new osiris.envios_a_subalmacenes(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
 			
 		}
 		

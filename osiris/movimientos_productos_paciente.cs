@@ -148,7 +148,13 @@ namespace osiris
 	        this.entry_dia2.KeyPressEvent += onKeyPressEventactual;
 	        this.entry_mes2.KeyPressEvent += onKeyPressEventactual;
 	        this.entry_ano2.KeyPressEvent += onKeyPressEventactual;
-			 
+			
+			llenado_combobox_departamentos();
+				        
+		}
+		
+		void llenado_combobox_departamentos()
+		{
 			// Llenado de combobox con los tipos de departamentos:
 			combobox_departamentos.Clear();
 			CellRendererText cell1 = new CellRendererText();
@@ -180,7 +186,7 @@ namespace osiris
 												MessageType.Error,ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
 				msgBoxError.Run ();				msgBoxError.Destroy();
 			}
-			conexion.Close ();	        
+			conexion.Close ();
 		}
 		
 		void onComboBoxChanged_departamentos(object sender, EventArgs args)

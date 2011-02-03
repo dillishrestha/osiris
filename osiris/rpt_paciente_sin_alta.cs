@@ -47,6 +47,7 @@ namespace osiris
 		[Widget] Gtk.CheckButton checkbutton_impr_todo_proce;
 		[Widget] Gtk.CheckButton checkbutton_agregar_monto;
 		[Widget] Gtk.Button button_imprime_rangofecha;
+		[Widget] Gtk.Button button_actualiza_ocupacion = null;
 		[Widget] Gtk.Button button_salir;
 		[Widget] Gtk.TreeView lista_ocupacion;
 		[Widget] Gtk.Entry entry_totalsaldos;
@@ -89,6 +90,7 @@ namespace osiris
 			rpt_ocupacion.Show();
 			checkbutton_impr_todo_proce.Label = "Agrega Abonos";
 			button_imprime_rangofecha.Clicked += new EventHandler(imprime_reporte);
+			button_actualiza_ocupacion.Clicked += new EventHandler(on_button_actualiza_ocupacion_clicked);
 			button_salir.Clicked += new EventHandler(on_cierraventanas_clicked);
 			this.checkbutton_agregar_monto.Clicked += new EventHandler(on_checkbutton_agregar_monto_clicked);
 			this.checkbutton_impr_todo_proce.Clicked += new EventHandler(on_checkbutton_agregar_monto_clicked);
@@ -283,12 +285,14 @@ namespace osiris
 								"AND osiris_erp_cobros_enca.alta_paciente = 'false' "+
 								"AND osiris_erp_cobros_enca.cancelado = 'false' "+
 								"AND osiris_erp_movcargos.id_tipo_admisiones > '16' "+
+								/*
 								"AND osiris_erp_movcargos.id_tipo_admisiones <> '940' "+
 								"AND osiris_erp_movcargos.id_tipo_admisiones <> '930' "+
 								"AND osiris_erp_movcargos.id_tipo_admisiones <> '920' "+
 								"AND osiris_erp_movcargos.id_tipo_admisiones <> '950' "+
 								"AND osiris_erp_movcargos.id_tipo_admisiones <> '300' "+
 								"AND osiris_erp_movcargos.id_tipo_admisiones <> '400' "+
+								*/
 								"AND osiris_erp_cobros_enca.id_habitacion = osiris_his_habitaciones.id_habitacion "+
 								"ORDER BY osiris_erp_movcargos.folio_de_servicio ;";		
 				//Console.WriteLine(comando.CommandText);
@@ -394,6 +398,11 @@ namespace osiris
 		{
 			llenando_lista_de_ocupacion();
 		}
+		
+		void on_button_actualiza_ocupacion_clicked(object sender, EventArgs args)
+		{
+			llenando_lista_de_ocupacion();
+		}
 				
 		void imprime_reporte(object sender, EventArgs args)
 		{
@@ -419,8 +428,6 @@ namespace osiris
 		{
 			Widget win = (Widget) sender;
 			win.Toplevel.Destroy();
-		}
-	
-	}
-	
+		}	
+	}	
 }

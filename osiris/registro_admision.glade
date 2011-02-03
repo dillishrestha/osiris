@@ -8827,9 +8827,11 @@ Sin Precio</property>
     <child>
       <widget class="GtkVBox" id="vbox69">
         <property name="visible">True</property>
+        <property name="orientation">vertical</property>
         <child>
           <widget class="GtkVBox" id="vbox70">
             <property name="visible">True</property>
+            <property name="orientation">vertical</property>
             <child>
               <widget class="GtkHBox" id="hbox144">
                 <property name="visible">True</property>
@@ -9040,13 +9042,48 @@ Sin Precio</property>
                   </packing>
                 </child>
                 <child>
-                  <widget class="GtkButton" id="button_salir">
-                    <property name="label">gtk-quit</property>
+                  <widget class="GtkButton" id="button_actualiza_ocupacion">
                     <property name="width_request">90</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
-                    <property name="receives_default">False</property>
-                    <property name="use_stock">True</property>
+                    <property name="receives_default">True</property>
+                    <child>
+                      <widget class="GtkAlignment" id="alignment1">
+                        <property name="visible">True</property>
+                        <property name="xscale">0</property>
+                        <property name="yscale">0</property>
+                        <child>
+                          <widget class="GtkHBox" id="hbox1">
+                            <property name="visible">True</property>
+                            <property name="spacing">2</property>
+                            <child>
+                              <widget class="GtkImage" id="image1">
+                                <property name="visible">True</property>
+                                <property name="stock">gtk-refresh</property>
+                              </widget>
+                              <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">False</property>
+                                <property name="position">0</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <widget class="GtkLabel" id="label1">
+                                <property name="visible">True</property>
+                                <property name="label" translatable="yes">Actualizar
+   Lista</property>
+                                <property name="use_underline">True</property>
+                              </widget>
+                              <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">False</property>
+                                <property name="position">1</property>
+                              </packing>
+                            </child>
+                          </widget>
+                        </child>
+                      </widget>
+                    </child>
                   </widget>
                   <packing>
                     <property name="expand">False</property>
@@ -9055,11 +9092,34 @@ Sin Precio</property>
                   </packing>
                 </child>
                 <child>
-                  <widget class="GtkFixed" id="fixed145">
+                  <widget class="GtkFixed" id="fixed1">
                     <property name="visible">True</property>
                   </widget>
                   <packing>
                     <property name="position">4</property>
+                  </packing>
+                </child>
+                <child>
+                  <widget class="GtkButton" id="button_salir">
+                    <property name="label">gtk-quit</property>
+                    <property name="width_request">90</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="use_stock">True</property>
+                  </widget>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">False</property>
+                    <property name="position">5</property>
+                  </packing>
+                </child>
+                <child>
+                  <widget class="GtkFixed" id="fixed145">
+                    <property name="visible">True</property>
+                  </widget>
+                  <packing>
+                    <property name="position">6</property>
                   </packing>
                 </child>
               </widget>

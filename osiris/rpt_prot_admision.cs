@@ -35,6 +35,7 @@ using Npgsql;
 using Glade;
 using Cairo;
 using Pango;
+using System.Collections;
 
 namespace osiris
 {
@@ -95,7 +96,7 @@ namespace osiris
 		{
 			Cairo.Context cr = context.CairoContext;
 			Pango.Layout layout = context.CreatePangoLayout ();
-			Pango.FontDescription desc = Pango.FontDescription.FromString ("Sans");									
+			Pango.FontDescription desc = Pango.FontDescription.FromString ("Sans");
 			// cr.Rotate(90)  Imprimir Orizontalmente rota la hoja cambian las posiciones de las lineas y columna					
 			fontSize = 8.0;
 			desc.Size = (int)(fontSize * pangoScale);		layout.FontDescription = desc;
@@ -178,6 +179,11 @@ namespace osiris
 					cr.MoveTo(430*escala_en_linux_windows, numero_linea*escala_en_linux_windows);					layout.SetText("______________________");					Pango.CairoHelper.ShowLayout (cr, layout);
 					
 					numero_linea += separacionlineas;
+					cr.MoveTo(20*escala_en_linux_windows, numero_linea*escala_en_linux_windows);					layout.SetText("C.U.R.P.: ");	Pango.CairoHelper.ShowLayout (cr, layout);
+					cr.MoveTo(290*escala_en_linux_windows, numero_linea*escala_en_linux_windows);					layout.SetText("R.F.C.: ");		Pango.CairoHelper.ShowLayout (cr, layout);
+					
+					numero_linea += separacionlineas;
+					
 					cr.MoveTo(20*escala_en_linux_windows, numero_linea*escala_en_linux_windows);						layout.SetText("Dirección: "+(string) lector["direccion_paciente"]+"  "+
 																	(string) lector["numero_casa_paciente"]+" "+(string) lector["numero_departamento_paciente"]+", Col. "+
 																	(string) lector["colonia_paciente"]+ ", CP. "+(string) lector["codigo_postal_paciente"]+", "+(string) lector["municipio_paciente"]+", "+(string) lector["estado_paciente"]);					Pango.CairoHelper.ShowLayout (cr, layout);
@@ -189,9 +195,9 @@ namespace osiris
 					cr.MoveTo(58*escala_en_linux_windows, numero_linea*escala_en_linux_windows);						layout.SetText("________________________________");					Pango.CairoHelper.ShowLayout (cr, layout);
 					
 					if((int) lector["idempresa_enca"] == 1){
-						cr.MoveTo(320*escala_en_linux_windows, numero_linea*escala_en_linux_windows);				layout.SetText("Nombre de la Empresa:  "+(string) lector["nombre_empresa_encabezado"]);		Pango.CairoHelper.ShowLayout (cr, layout);
+						cr.MoveTo(310*escala_en_linux_windows, numero_linea*escala_en_linux_windows);				layout.SetText("Nombre de la Empresa:  "+(string) lector["nombre_empresa_encabezado"]);		Pango.CairoHelper.ShowLayout (cr, layout);
 					}else{
-						cr.MoveTo(320*escala_en_linux_windows, numero_linea*escala_en_linux_windows);				layout.SetText("Nombre de la Empresa:  "+(string) lector["descripcion_empresa"]);			Pango.CairoHelper.ShowLayout (cr, layout);
+						cr.MoveTo(310*escala_en_linux_windows, numero_linea*escala_en_linux_windows);				layout.SetText("Nombre de la Empresa:  "+(string) lector["descripcion_empresa"]);			Pango.CairoHelper.ShowLayout (cr, layout);
 					}
 					
 					cr.MoveTo(411*escala_en_linux_windows, numero_linea*escala_en_linux_windows);					layout.SetText("___________________________________");
@@ -207,11 +213,9 @@ namespace osiris
 					cr.MoveTo(380*escala_en_linux_windows, numero_linea*escala_en_linux_windows);					layout.SetText("_________________________");
 					Pango.CairoHelper.ShowLayout (cr, layout);
 					numero_linea += separacionlineas;
-					cr.MoveTo(19.5*escala_en_linux_windows, numero_linea*escala_en_linux_windows);					layout.SetText("Tipo de paciente:  "+(string) lector["descripcion_tipo_paciente"]);
-					Pango.CairoHelper.ShowLayout (cr, layout);
+					layout.FontDescription.Weight = Weight.Bold;
 					cr.MoveTo(20*escala_en_linux_windows, numero_linea*escala_en_linux_windows);						layout.SetText("Tipo de paciente:  "+(string) lector["descripcion_tipo_paciente"]);
 					Pango.CairoHelper.ShowLayout (cr, layout);
-					layout.FontDescription.Weight = Weight.Bold;
 					cr.MoveTo(85*escala_en_linux_windows, numero_linea*escala_en_linux_windows);						layout.SetText("______________________________");
 					Pango.CairoHelper.ShowLayout (cr, layout);	
 					layout.FontDescription.Weight = Weight.Normal;
@@ -229,60 +233,67 @@ namespace osiris
 					cr.MoveTo(521*escala_en_linux_windows, numero_linea*escala_en_linux_windows);					layout.SetText("____________");					Pango.CairoHelper.ShowLayout (cr, layout);
 					numero_linea += separacionlineas;
 					cr.MoveTo(20*escala_en_linux_windows, numero_linea*escala_en_linux_windows);					layout.SetText("Religion: "+(string) lector["religion_paciente"]);					Pango.CairoHelper.ShowLayout (cr, layout);
-					cr.MoveTo(320*escala_en_linux_windows, numero_linea*escala_en_linux_windows);					layout.SetText("Alergias: "+(string) lector["alegias_paciente"]);					Pango.CairoHelper.ShowLayout (cr, layout);
+					cr.MoveTo(310*escala_en_linux_windows, numero_linea*escala_en_linux_windows);					layout.SetText("Alergias: "+(string) lector["alegias_paciente"]);					Pango.CairoHelper.ShowLayout (cr, layout);
 					numero_linea += separacionlineas;
 					//cr.MoveTo(20*escala_en_linux_windows, numero_linea*escala_en_linux_windows);					layout.SetText("Referido por: ");					Pango.CairoHelper.ShowLayout (cr, layout);
 					//numero_linea += separacionlineas;
 					cr.MoveTo(20*escala_en_linux_windows, numero_linea*escala_en_linux_windows);					layout.SetText("Observaciones: "+(string) lector["observacion_ingreso"]);					Pango.CairoHelper.ShowLayout (cr, layout);
-					
-					
+					numero_linea += separacionlineas;
+					numero_linea += separacionlineas;
 					layout.FontDescription.Weight = Weight.Bold;
-					cr.MoveTo(260*escala_en_linux_windows, 210*escala_en_linux_windows);					layout.SetText("DATOS DEL RESPONSABLE");
+					cr.MoveTo(260*escala_en_linux_windows, numero_linea*escala_en_linux_windows);					layout.SetText("DATOS DEL RESPONSABLE");
 					Pango.CairoHelper.ShowLayout (cr, layout);
 					layout.FontDescription.Weight = Weight.Normal;
-					cr.MoveTo(20*escala_en_linux_windows, 225*escala_en_linux_windows);						layout.SetText("Nombre de la persona responsable del paciente:  "+(string) lector["responsable_cuenta"]);
+					numero_linea += separacionlineas;
+					numero_linea += separacionlineas;
+					cr.MoveTo(20*escala_en_linux_windows, numero_linea*escala_en_linux_windows);						layout.SetText("Nombre de la persona responsable del paciente:  "+(string) lector["responsable_cuenta"]);
 					Pango.CairoHelper.ShowLayout (cr, layout);
-					cr.MoveTo(193*escala_en_linux_windows, 225*escala_en_linux_windows);					layout.SetText("___________________________________________________________");
+					cr.MoveTo(193*escala_en_linux_windows, numero_linea*escala_en_linux_windows);					layout.SetText("___________________________________________________________");
 					Pango.CairoHelper.ShowLayout (cr, layout);
-					cr.MoveTo(20*escala_en_linux_windows, 240*escala_en_linux_windows);						layout.SetText("Dirección:  "+(string) lector["direccion_responsable_cuenta"]);
+					numero_linea += separacionlineas;
+					cr.MoveTo(20*escala_en_linux_windows, numero_linea*escala_en_linux_windows);						layout.SetText("Dirección:  "+(string) lector["direccion_responsable_cuenta"]);
 					Pango.CairoHelper.ShowLayout (cr, layout);
-					cr.MoveTo(56*escala_en_linux_windows, 240*escala_en_linux_windows);						layout.SetText("___________________________________________________________________________________________");
+					cr.MoveTo(56*escala_en_linux_windows, numero_linea*escala_en_linux_windows);						layout.SetText("___________________________________________________________________________________________");
 					Pango.CairoHelper.ShowLayout (cr, layout);
-					cr.MoveTo(20*escala_en_linux_windows, 258*escala_en_linux_windows);						layout.SetText("Tel:  "+(string) lector["telefono1_responsable_cuenta"]);
+					numero_linea += separacionlineas;
+					cr.MoveTo(20*escala_en_linux_windows, numero_linea*escala_en_linux_windows);						layout.SetText("Tel:  "+(string) lector["telefono1_responsable_cuenta"]);
 					Pango.CairoHelper.ShowLayout (cr, layout);
-					cr.MoveTo(37*escala_en_linux_windows, 258*escala_en_linux_windows);						layout.SetText("_________________");
+					cr.MoveTo(37*escala_en_linux_windows, numero_linea*escala_en_linux_windows);						layout.SetText("_________________");
 					Pango.CairoHelper.ShowLayout (cr, layout);
-					cr.MoveTo(20*escala_en_linux_windows, 275*escala_en_linux_windows);						layout.SetText("Ocupación del responsable:  "+(string) lector["ocupacion_responsable"]);
+					numero_linea += separacionlineas;
+					cr.MoveTo(20*escala_en_linux_windows, numero_linea*escala_en_linux_windows);						layout.SetText("Ocupación del responsable:  "+(string) lector["ocupacion_responsable"]);
 					Pango.CairoHelper.ShowLayout (cr, layout);
-					cr.MoveTo(126*escala_en_linux_windows, 275*escala_en_linux_windows);					layout.SetText("__________________________________");
+					cr.MoveTo(126*escala_en_linux_windows, numero_linea*escala_en_linux_windows);					layout.SetText("__________________________________");
 					Pango.CairoHelper.ShowLayout (cr, layout);
-					cr.MoveTo(350*escala_en_linux_windows, 275*escala_en_linux_windows);					layout.SetText("Parentesco:  "+(string) lector["parentezco"]);
+					cr.MoveTo(350*escala_en_linux_windows, numero_linea*escala_en_linux_windows);					layout.SetText("Parentesco:  "+(string) lector["parentezco"]);
 					Pango.CairoHelper.ShowLayout (cr, layout);
-					cr.MoveTo(393*escala_en_linux_windows, 275*escala_en_linux_windows);					layout.SetText("________________________");
+					cr.MoveTo(393*escala_en_linux_windows, numero_linea*escala_en_linux_windows);					layout.SetText("________________________");
 					Pango.CairoHelper.ShowLayout (cr, layout);
-					cr.MoveTo(20*escala_en_linux_windows, 290*escala_en_linux_windows);						layout.SetText("Empresa donde labora:  "+(string) lector["empresa_labora_responsable"]);
+					numero_linea += separacionlineas;
+					cr.MoveTo(20*escala_en_linux_windows, numero_linea*escala_en_linux_windows);						layout.SetText("Empresa donde labora:  "+(string) lector["empresa_labora_responsable"]);
 					Pango.CairoHelper.ShowLayout (cr, layout);
-					cr.MoveTo(103*escala_en_linux_windows, 290*escala_en_linux_windows);					layout.SetText("_______________________________________");
+					cr.MoveTo(103*escala_en_linux_windows, numero_linea*escala_en_linux_windows);					layout.SetText("_______________________________________");
 					Pango.CairoHelper.ShowLayout (cr, layout);
-					cr.MoveTo(345*escala_en_linux_windows, 290*escala_en_linux_windows);					layout.SetText("Tel. de Empresa:  "+(string) lector["telefono_emp_responsable"]);
+					cr.MoveTo(345*escala_en_linux_windows, numero_linea*escala_en_linux_windows);					layout.SetText("Tel. de Empresa:  "+(string) lector["telefono_emp_responsable"]);
 					Pango.CairoHelper.ShowLayout (cr, layout);
-					cr.MoveTo(406*escala_en_linux_windows, 290*escala_en_linux_windows);					layout.SetText("________________________");
+					cr.MoveTo(406*escala_en_linux_windows, numero_linea*escala_en_linux_windows);					layout.SetText("________________________");
 					Pango.CairoHelper.ShowLayout (cr, layout);
-					cr.MoveTo(20*escala_en_linux_windows, 307*escala_en_linux_windows);						layout.SetText("Responsable de la cuenta(Aseguradora y/o membresia):  "+(string) lector["descripcion_aseguradora"]);
+					numero_linea += separacionlineas;
+					cr.MoveTo(20*escala_en_linux_windows, numero_linea*escala_en_linux_windows);						layout.SetText("Responsable de la cuenta(Aseguradora y/o membresia):  "+(string) lector["descripcion_aseguradora"]);
 					Pango.CairoHelper.ShowLayout (cr, layout);
-					cr.MoveTo(224*escala_en_linux_windows, 307*escala_en_linux_windows);					layout.SetText("__________________________________________");
+					cr.MoveTo(224*escala_en_linux_windows, numero_linea*escala_en_linux_windows);					layout.SetText("__________________________________________");
 					Pango.CairoHelper.ShowLayout (cr, layout);
-					cr.MoveTo(450*escala_en_linux_windows, 307*escala_en_linux_windows);					layout.SetText("Nº de poliza:  "+(string) lector["numero_poliza"]);
+					cr.MoveTo(450*escala_en_linux_windows, numero_linea*escala_en_linux_windows);					layout.SetText("Nº de poliza:  "+(string) lector["numero_poliza"]);
 					Pango.CairoHelper.ShowLayout (cr, layout);
-					cr.MoveTo(498*escala_en_linux_windows, 307*escala_en_linux_windows);					layout.SetText("____________________");
+					cr.MoveTo(498*escala_en_linux_windows, numero_linea*escala_en_linux_windows);					layout.SetText("____________________");
 					Pango.CairoHelper.ShowLayout (cr, layout);
-					cr.MoveTo(20*escala_en_linux_windows, 322*escala_en_linux_windows);						layout.SetText("Dirección:  "+(string) lector["direccion_emp_responsable"]);
+					numero_linea += separacionlineas;
+					cr.MoveTo(20*escala_en_linux_windows, numero_linea*escala_en_linux_windows);						layout.SetText("Dirección:  "+(string) lector["direccion_emp_responsable"]);
 					Pango.CairoHelper.ShowLayout (cr, layout);
-					cr.MoveTo(60*escala_en_linux_windows, 322*escala_en_linux_windows);						layout.SetText("___________________________________________________________________________");
-					Pango.CairoHelper.ShowLayout (cr, layout);		
+					cr.MoveTo(60*escala_en_linux_windows, numero_linea*escala_en_linux_windows);						layout.SetText("___________________________________________________________________________");
+					Pango.CairoHelper.ShowLayout (cr, layout);
+					
 					layout.FontDescription.Weight = Weight.Bold;
-					cr.MoveTo(0*escala_en_linux_windows, 340*escala_en_linux_windows);						layout.SetText("_______________________________________________________________________________________________________________");
-					Pango.CairoHelper.ShowLayout (cr, layout);
 					cr.MoveTo(270*escala_en_linux_windows, 350*escala_en_linux_windows);					layout.SetText("DATOS DE ADMISION");
 					Pango.CairoHelper.ShowLayout (cr, layout);
 					cr.MoveTo(20*escala_en_linux_windows, 375*escala_en_linux_windows);					    layout.SetText("Nº de Ingreso:  "+ folioservicio.ToString());

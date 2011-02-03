@@ -86,6 +86,7 @@ namespace osiris
 							"AND osiris_his_solicitudes_labrx.id_quien_solicito = osiris_empleado.login_empleado "+
 							"AND osiris_his_solicitudes_labrx.id_proveedor = osiris_erp_proveedores.id_proveedor "+
 							"AND osiris_his_solicitudes_labrx.id_producto = osiris_productos.id_producto "+
+							"AND osiris_his_solicitudes_labrx.eliminado = 'false' "+
 							query_numerosolicitud;
 			
 			print = new PrintOperation ();

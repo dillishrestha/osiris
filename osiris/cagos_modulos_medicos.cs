@@ -339,11 +339,10 @@ namespace osiris
 			button_busca_producto.Sensitive = false;
 			button_removerItem.Sensitive = false;
 			button_graba_pago.Sensitive = false;
-			//button_alta_paciente.Sensitive = false;
 			button_aplica_cargos.Sensitive = false;
 			button_quitar_aplicados.Sensitive = false;
 			button_actualizar.Sensitive = false;
-			this.button_alta_paciente.Sensitive = false;
+			//this.button_alta_paciente.Sensitive = false;
 			this.button_hoja_cargos.Sensitive = false;
 			this.button_notas_de_cargos.Sensitive = false;
 			
@@ -1132,7 +1131,7 @@ namespace osiris
 						comando1.ExecuteNonQuery();
 	    	    	    comando1.Dispose();
 	    	    	    conexion1.Close();
-	    	    	    this.button_alta_paciente.Sensitive = false;
+	    	    	    //this.button_alta_paciente.Sensitive = false;
     	    			this.button_busca_producto.Sensitive = false;
 					}catch(NpgsqlException ex){
 						MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
@@ -1581,7 +1580,7 @@ namespace osiris
 					//int foliointernodep = (int) lector["folio_de_servicio_dep"];
 					
 					if ( idhabitacion == 1){
-						button_alta_paciente.Sensitive = false;
+						//button_alta_paciente.Sensitive = false;
 					}
 					
 					PidPaciente = int.Parse(entry_pid_paciente.Text);		    // Toma la actualizacion del pid del paciente
@@ -1639,7 +1638,7 @@ namespace osiris
 								MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
 								MessageType.Error, 
 								ButtonsType.Close, "El paciente ya fue dado de ALTA\n"+
-												"NO podra Registrar mas productos a esta cuenta");
+												"NO podra Registrar mas acciones a este numero de Atencion, verifique...");
 								msgBoxError.Run ();
 								msgBoxError.Destroy();
 							}
@@ -2071,7 +2070,7 @@ namespace osiris
 						"AND osiris_grupo_producto.agrupacion = 'MD1' "+
 						"AND osiris_productos.cobro_activo = 'true' "+
 						"AND osiris_productos.descripcion_producto LIKE '%"+entry_expresion.Text.ToUpper().Trim()+"%' ORDER BY descripcion_producto;";
-				Console.WriteLine(comando.CommandText.ToString());
+				//Console.WriteLine(comando.CommandText.ToString());
 				NpgsqlDataReader lector = comando.ExecuteReader ();
 				
 				float tomaprecio;
@@ -2524,35 +2523,38 @@ namespace osiris
 		
 		void on_button_notas_evolucion_clicked(object sender, EventArgs args)
 		{
-			if(button_busca_producto.Sensitive == true){
+			//if(button_busca_producto.Sensitive == true){
 				new osiris.notas_medicas(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,"Notas de Evolucion","notas_de_evolucion",
-			                         PidPaciente.ToString(),(string) entry_folio_servicio.Text, (string) entry_id_doctor.Text,(string) entry_doctor.Text,(string) entry_nombre_paciente.Text);
-			}else{
-				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,MessageType.Info,ButtonsType.Close, "NO puede crear la nota de Evolucion, verifique....");
-				msgBoxError.Run ();	msgBoxError.Destroy();
-			}
+			                         PidPaciente.ToString(),(string) entry_folio_servicio.Text, (string) entry_id_doctor.Text,(string) entry_doctor.Text,(string) entry_nombre_paciente.Text,
+			                         button_alta_paciente.Sensitive);
+			//}else{
+			//	MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,MessageType.Info,ButtonsType.Close, "NO puede crear la nota de Evolucion, verifique....");
+			//	msgBoxError.Run ();	msgBoxError.Destroy();
+			//}
 		}
 		
 		void on_button_notas_enfermeria_clicked(object sender, EventArgs args)
 		{
-			if(button_busca_producto.Sensitive == true){
+			//if(button_busca_producto.Sensitive == true){
 				new osiris.notas_medicas(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,"Notas de Enfermeria","notas_de_enfermeria",
-			                         PidPaciente.ToString(),(string) entry_folio_servicio.Text, (string) entry_id_doctor.Text,(string) entry_doctor.Text,(string) entry_nombre_paciente.Text);
-			}else{
-				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,MessageType.Info,ButtonsType.Close, "NO puede crear la nota de Enfermeria, verifique....");
-				msgBoxError.Run ();	msgBoxError.Destroy();	
-			}
+			                         PidPaciente.ToString(),(string) entry_folio_servicio.Text, (string) entry_id_doctor.Text,(string) entry_doctor.Text,(string) entry_nombre_paciente.Text,
+			                         button_alta_paciente.Sensitive);
+			//}else{
+			//	MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,MessageType.Info,ButtonsType.Close, "NO puede crear la nota de Enfermeria, verifique....");
+			//	msgBoxError.Run ();	msgBoxError.Destroy();	
+			//}
 		}
 		
 		void on_button_indicacionesmedicas_clicked(object sender, EventArgs args)
 		{
-			if(button_busca_producto.Sensitive == true){
+			//if(button_busca_producto.Sensitive == true){
 				new osiris.notas_medicas(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,"Indicaciones Medicas","indicaciones_medicas",
-			                         PidPaciente.ToString(),(string) entry_folio_servicio.Text,(string) entry_id_doctor.Text,(string) entry_doctor.Text,(string) entry_nombre_paciente.Text);
-			}else{
-				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,MessageType.Info,ButtonsType.Close, "NO puede crear Indicaciones Medicas, verifique....");
-				msgBoxError.Run ();	msgBoxError.Destroy();
-			}
+			                         PidPaciente.ToString(),(string) entry_folio_servicio.Text,(string) entry_id_doctor.Text,(string) entry_doctor.Text,(string) entry_nombre_paciente.Text,
+			                         button_alta_paciente.Sensitive);
+			//}else{
+			//	MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,MessageType.Info,ButtonsType.Close, "NO puede crear Indicaciones Medicas, verifique....");
+			//	msgBoxError.Run ();	msgBoxError.Destroy();
+			//}
 		}
 		
 		// cierra ventanas emergentes

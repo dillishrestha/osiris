@@ -187,7 +187,7 @@ namespace osiris
 		public void on_button_imprime_prot_clicked (object sender, EventArgs a)
 		{
 			string folioserv = "";
-			new osiris.impr_doc_pacientes(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,folioserv,2);
+			new osiris.impr_doc_pacientes(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,folioserv,2);  // rpd_doc_pacientes.cs
 		}
 		
 		void on_button_reportes_regadmin_clicked (object sender, EventArgs args)
@@ -217,7 +217,7 @@ namespace osiris
 		
 		void on_button_cancela_folios_clicked(object sender, EventArgs args)
 		{
-			if (LoginEmpleado =="DOLIVARES" || LoginEmpleado =="ADMIN" || LoginEmpleado =="RIOSGARCIA"){
+			if (LoginEmpleado =="DOLIVARES" || LoginEmpleado =="ADMIN" || LoginEmpleado =="RIOSGARCIA" || LoginEmpleado == "CMARQUEZ"){
 				menu_admision.Destroy();
 				Glade.XML gxml = new Glade.XML (null, "registro_admision.glade", "cancelador_folios", null);
 				gxml.Autoconnect (this);

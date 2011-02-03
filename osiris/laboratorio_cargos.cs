@@ -856,7 +856,7 @@ namespace osiris
 					//toma_a_pagar = sub_total - totaldescuento;
 					
  				}else{
- 					if (LoginEmpleado =="DOLIVARES" || LoginEmpleado =="HVARGAS" || LoginEmpleado =="JPENA" || LoginEmpleado == "N000073"){
+ 					if (LoginEmpleado =="DOLIVARES" || LoginEmpleado == "ADMIN"){
  						MessageDialog msgBox = new MessageDialog (MyWin,DialogFlags.Modal,
 						MessageType.Question,ButtonsType.YesNo,"¿ Desea DEVOLVER este producto ?");
 						ResponseType miResultado = (ResponseType)msgBox.Run (); 	msgBox.Destroy();

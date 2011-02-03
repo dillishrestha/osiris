@@ -3,7 +3,7 @@
 // Sistema Hospitalario OSIRIS
 // Monterrey - Mexico
 //
-// Autor    	:  Ing. Daniel Olivares C. (Programacion Base y Ajustes)
+// Autor    	: Ing. Daniel Olivares C. (Programacion Base y Ajustes)
 //
 // Licencia		: GLP
 //////////////////////////////////////////////////////////
@@ -53,6 +53,9 @@ namespace osiris
 		[Widget] Gtk.Entry entry_doctor = null;
 		[Widget] Gtk.Button button_guardar = null;
 		[Widget] Gtk.Entry entry_fechanotas = null;
+		[Widget] Gtk.TreeView treeview_listanotas = null;
+		[Widget] Gtk.ComboBox combobox_hora_nota = null;
+		[Widget] Gtk.ComboBox combobox_minutos_nota = null;
 		
 		TextBuffer buffer = new TextBuffer (null);
 		
@@ -67,24 +70,37 @@ namespace osiris
 		string folioservicio;
 		string nombredoctor;
 		
+		string hora_nota = "";
+		string minutos_nota = "";
+		
 		string sql_general = "SELECT notas_de_enfermeria,notas_de_evolucion,indicaciones_medicas,nombre1_paciente,nombre2_paciente,apellido_paterno_paciente,apellido_materno_paciente,"+
 							"to_char(to_number(to_char(age('"+DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss")+"',osiris_his_paciente.fecha_nacimiento_paciente),'yyyy') ,'9999'),'9999') AS edad," +
-							"to_char(fecha_anotacion,'yyyy-MM-dd') AS fechaanotacion,id_secuencia "+
-							""+
-							"FROM osiris_his_informacion_medica,osiris_his_paciente "+
-									"WHERE osiris_his_informacion_medica.pid_paciente = osiris_his_paciente.pid_paciente ";
+							"to_char(fecha_anotacion,'yyyy-MM-dd') AS fechaanotacion,hora_anotacion AS horaanotacion,id_secuencia, "+
+							"nombre1_empleado || ' ' || nombre2_empleado || ' ' || apellido_paterno_empleado || ' ' || apellido_materno_empleado AS nombreempleado "+
+							"FROM osiris_his_informacion_medica,osiris_his_paciente,osiris_empleado "+
+									"WHERE osiris_his_informacion_medica.pid_paciente = osiris_his_paciente.pid_paciente "+
+									"AND id_empleado_creacion = login_empleado ";
 		string sql_pidpaciente;
 		string sql_folioservicio;
 		string sql_filtronotasblanco;
+		
+		private TreeStore treeViewEngineListaNotas;
+		
+		TreeViewColumn col_00;		CellRendererToggle cellrt00;
+		TreeViewColumn col_01;		CellRendererText cellrt01;
+		TreeViewColumn col_02;		CellRendererText cellrt02;
+		TreeViewColumn col_03;		CellRendererText cellrt03;
 			
 		class_conexion conexion_a_DB = new class_conexion();
 		class_public classpublic = new class_public();
 		
 		//Declaracion de ventana de error
 		protected Gtk.Window MyWinError;
+		protected Gtk.Window MyWin;
 		
 		public notas_medicas (string LoginEmp, string NomEmpleado_, string AppEmpleado_, string ApmEmpleado_,
-		                      string title_window, string name_field_,string pidpaciente_,string folioservicio_,string iddoctor_,string nombredoctor_,string nombrepaciente_)
+		                      string title_window, string name_field_,string pidpaciente_,string folioservicio_,string iddoctor_,string nombredoctor_,string nombrepaciente_,
+		                      bool altapaciente_)
 		{
 			connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
 			nombrebd = conexion_a_DB._nombrebd;
@@ -124,8 +140,17 @@ namespace osiris
 				case "indicaciones_medicas":
 					textview1.ModifyBase(StateType.Normal, new Gdk.Color(152,255,255)); // Color Rosa
 				break;
-			}			
-			llenando_informacion();			
+			}
+			if (altapaciente_ == false){
+				button_guardar.Sensitive = false;
+				textview2.Sensitive = false;
+				entry_fechanotas.Sensitive = false;
+				combobox_hora_nota.Sensitive = false;
+				combobox_minutos_nota.Sensitive = false;
+			}
+			crea_treeview_notas();
+			llena_horas_notas();
+			llenando_informacion();		
 		}
 		
 		void llenando_informacion()
@@ -146,7 +171,7 @@ namespace osiris
                	
 				// asigna el numero de folio de ingreso de paciente (FOLIO)
 				comando.CommandText = sql_general+sql_pidpaciente+sql_folioservicio+sql_filtronotasblanco+" ORDER BY id_secuencia DESC;";
-				Console.WriteLine(comando.CommandText);					
+				//Console.WriteLine(comando.CommandText);					
 				NpgsqlDataReader lector = comando.ExecuteReader ();
 				
 				if(lector.Read()){
@@ -160,14 +185,23 @@ namespace osiris
 					entry_doctor.Text = nombredoctor;
 					if((string) lector[name_field].ToString() != ""){
 						buffer.InsertWithTagsByName (ref insertIter, "Fecha de Nota: "+(string) lector["fechaanotacion"].ToString().Trim()+"    Nº de NOTA :"+(string) lector["id_secuencia"].ToString().Trim()+"\n", "bold");
-						buffer.InsertWithTagsByName (ref insertIter, "Hora de Nota : \n\n", "bold");
+						buffer.InsertWithTagsByName (ref insertIter, "Hora de Nota :"+(string) lector["horaanotacion"].ToString().Trim()+" \n\n", "bold");
 						buffer.Insert (ref insertIter, (string) lector[name_field].ToString()+"\n\n\n");
+						treeViewEngineListaNotas.AppendValues(false,
+						                                      (string) lector["fechaanotacion"].ToString().Trim(),
+						                                      (string) lector["horaanotacion"].ToString().Trim(),
+						                                      (string) lector["nombreempleado"].ToString().Trim());
+						
 					}
 					while(lector.Read()){
 						if((string) lector[name_field].ToString() != ""){
 							buffer.InsertWithTagsByName (ref insertIter, "Fecha de Nota: "+(string) lector["fechaanotacion"].ToString().Trim()+"    Nº de NOTA :"+(string) lector["id_secuencia"].ToString().Trim()+"\n", "bold");
-							buffer.InsertWithTagsByName (ref insertIter, "Hora de Nota : \n\n", "bold");
+							buffer.InsertWithTagsByName (ref insertIter, "Hora de Nota :"+(string) lector["horaanotacion"].ToString().Trim()+" \n\n", "bold");
 							buffer.Insert (ref insertIter, (string) lector[name_field].ToString()+"\n\n\n");
+							treeViewEngineListaNotas.AppendValues(false,
+							                                      (string) lector["fechaanotacion"].ToString().Trim(),
+							                                      (string) lector["horaanotacion"].ToString().Trim(),
+							                                      (string) lector["nombreempleado"].ToString().Trim());
 						}
 					}
 				}
@@ -182,48 +216,168 @@ namespace osiris
 			//buffer.InsertWithTagsByName (ref insertIter, "\nThis line has center justification.\n", "center");			
 		}
 		
+		void crea_treeview_notas()
+		{
+			treeViewEngineListaNotas = new TreeStore( typeof(bool),
+													typeof(string),
+													typeof(string),
+			                                        typeof(string),
+													typeof(string),
+													typeof(string),
+													typeof(string),
+													typeof(string),
+													typeof(string));
+				
+			treeview_listanotas.Model = treeViewEngineListaNotas;
+			treeview_listanotas.RulesHint = true;
+			
+			col_00 = new TreeViewColumn();
+			cellrt00 = new CellRendererToggle();
+			col_00.Title = "Selcciona"; // titulo de la cabecera de la columna, si está visible
+			col_00.PackStart(cellrt00, true);
+			col_00.AddAttribute (cellrt00, "active", 0);
+			cellrt00.Activatable = true;
+			cellrt00.Toggled += selecciona_fila;
+			//col_00.SortColumnId = (int) Column_notas.col_00;
+			
+			col_01 = new TreeViewColumn();
+			cellrt01 = new CellRendererText();
+			col_01.Title = "Fecha Nota"; // titulo de la cabecera de la columna, si está visible
+			col_01.PackStart(cellrt01, true);
+			col_01.AddAttribute (cellrt01, "text", 1);
+			//col_01.SortColumnId = (int) Column_notas.col_01;
+			
+			col_02 = new TreeViewColumn();
+			cellrt02 = new CellRendererText();
+			col_02.Title = "Hora Nota"; // titulo de la cabecera de la columna, si está visible
+			col_02.PackStart(cellrt02, true);
+			col_02.AddAttribute (cellrt02, "text", 2);
+			//col_02.SortColumnId = (int) Column_notas.col_02;
+			
+			col_03 = new TreeViewColumn();
+			cellrt03 = new CellRendererText();
+			col_03.Title = "Quien Realizo"; // titulo de la cabecera de la columna, si está visible
+			col_03.PackStart(cellrt03, true);
+			col_03.AddAttribute (cellrt03, "text", 3);
+			//col_03.SortColumnId = (int) Column_notas.col_03;
+			
+			
+			treeview_listanotas.AppendColumn(col_00); // 0
+			treeview_listanotas.AppendColumn(col_01); // 1
+			treeview_listanotas.AppendColumn(col_02); // 2
+			treeview_listanotas.AppendColumn(col_03); // 2
+		}
+		
+		// Cuando seleccion el treeview de cargos extras para cargar los productos  
+		void selecciona_fila(object sender, ToggledArgs args)
+		{
+			TreeIter iter;
+			if (treeview_listanotas.Model.GetIter (out iter,new TreePath (args.Path))) {
+				bool old = (bool) treeview_listanotas.Model.GetValue (iter,0);
+				treeview_listanotas.Model.SetValue(iter,0,!old);
+			}	
+		}
+		
 		void on_button_guardar_clicked(object sender, EventArgs args)
 		{
-			if(textview2.Buffer.Text.ToString()!=""){
-				NpgsqlConnection conexion; 
-				conexion = new NpgsqlConnection (connectionString+nombrebd);
-            	try{
-					conexion.Open ();
-					NpgsqlCommand comando; 
-					comando = conexion.CreateCommand();
-					comando.CommandText = "INSERT INTO osiris_his_informacion_medica (pid_paciente,folio_de_servicio,"+
-					"fechahora_creacion,id_empleado_creacion,id_medico,"+name_field+",fecha_anotacion,hora_anotacion)"+
-					" VALUES ('"+
-					(string) entry_pid_paciente.Text.ToString().Trim()+"','"+
-					(string) entry_numerotencion.Text.ToString().Trim()+"','"+
-					DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"','"+
-					LoginEmpleado+"','"+
-					(string) entry_id_doctor.Text.ToString().Trim()+"','"+
-					textview2.Buffer.Text.ToString()+"','"+
-					DateTime.Now.ToString("yyyy-MM-dd")+"','"+
-					"12:00"	+"')";
-					//Console.WriteLine(comando.CommandText);
-					comando.ExecuteNonQuery();
-					comando.Dispose();
-					MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,MessageType.Info,
-			 							ButtonsType.Close, "Los datos se guardaron con EXITO");
-					msgBoxError.Run ();			msgBoxError.Destroy();
-					textview2.Buffer.Clear();
-					llenando_informacion();
-				}catch (NpgsqlException ex){
+			if(textview2.Buffer.Text.ToString()!=""){				
+				if(hora_nota != "" || minutos_nota != ""){
+					MessageDialog msgBox = new MessageDialog (MyWin,DialogFlags.Modal,
+												MessageType.Question,ButtonsType.YesNo,"¿ Esta seguro de Almacenar esta NOTA ?");
+					ResponseType miResultado = (ResponseType)
+					msgBox.Run ();				msgBox.Destroy();
+		 			if (miResultado == ResponseType.Yes){				
+						NpgsqlConnection conexion; 
+						conexion = new NpgsqlConnection (connectionString+nombrebd);
+		            	try{
+							conexion.Open ();
+							NpgsqlCommand comando; 
+							comando = conexion.CreateCommand();
+							comando.CommandText = "INSERT INTO osiris_his_informacion_medica (pid_paciente,folio_de_servicio,"+
+							"fechahora_creacion,id_empleado_creacion,id_medico,"+name_field+",fecha_anotacion,hora_anotacion)"+
+							" VALUES ('"+
+							(string) entry_pid_paciente.Text.ToString().Trim()+"','"+
+							(string) entry_numerotencion.Text.ToString().Trim()+"','"+
+							DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"','"+
+							LoginEmpleado+"','"+
+							(string) entry_id_doctor.Text.ToString().Trim()+"','"+
+							textview2.Buffer.Text.ToString()+"','"+
+							DateTime.Now.ToString("yyyy-MM-dd")+"','"+
+							hora_nota+":"+minutos_nota
+							+"')";
+							//Console.WriteLine(comando.CommandText);
+							comando.ExecuteNonQuery();
+							comando.Dispose();
+							MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,MessageType.Info,
+					 							ButtonsType.Close, "Los datos se guardaron con EXITO");
+							msgBoxError.Run ();			msgBoxError.Destroy();
+							textview2.Buffer.Clear();
+							llenando_informacion();
+						}catch (NpgsqlException ex){
+							MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.Modal,
+								MessageType.Error, 
+								ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
+							msgBoxError.Run ();					msgBoxError.Destroy();	   			
+			       		}
+		       			conexion.Close ();      							
+					}			
+					//Console.WriteLine(textview2.Buffer.Text.ToString());
+				}else{
 					MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.Modal,
-						MessageType.Error, 
-						ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
-					msgBoxError.Run ();					msgBoxError.Destroy();	   			
-	       		}
-       			conexion.Close ();      							
+										MessageType.Error,ButtonsType.Close,"La nota no tiene hora o minutos, verifique...");
+					msgBoxError.Run ();						msgBoxError.Destroy();	
+				}
 			}else{
 				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.Modal,
-								MessageType.Error,ButtonsType.Close,"La nota no contiene informacion, verifique...");
-				msgBoxError.Run ();
-				msgBoxError.Destroy();
-			}			
-			//Console.WriteLine(textview2.Buffer.Text.ToString());
+										MessageType.Error,ButtonsType.Close,"La nota no contiene informacion, verifique...");
+				msgBoxError.Run ();						msgBoxError.Destroy();
+			}
+		}
+		
+		void llena_horas_notas()
+		{
+			combobox_hora_nota.Clear();
+			CellRendererText cell2 = new CellRendererText();
+			combobox_hora_nota.PackStart(cell2, true);
+			combobox_hora_nota.AddAttribute(cell2,"text",0);
+	        
+			ListStore store2 = new ListStore( typeof (string), typeof (int));
+			combobox_hora_nota.Model = store2;
+			for(int i = (int) classpublic.horario_cita_inicio; i < (int)classpublic.horario_24_horas+1 ; i++){				
+				store2.AppendValues ((string)i.ToString("00").Trim());
+			}
+			combobox_hora_nota.Changed += new EventHandler (onComboBoxChanged_hora_minutos_cita);
+			
+			combobox_minutos_nota.Clear();
+			CellRendererText cell3 = new CellRendererText();
+			combobox_minutos_nota.PackStart(cell3, true);
+			combobox_minutos_nota.AddAttribute(cell3,"text",0);
+	        
+			ListStore store3 = new ListStore( typeof (string), typeof (int));
+			combobox_minutos_nota.Model = store3;
+			
+			for(int i = (int) 0; i < 60 ; i=i+(int) classpublic.intervalo_minutos){				
+				store3.AppendValues ((string)i.ToString("00").Trim());
+			}
+			combobox_minutos_nota.Changed += new EventHandler (onComboBoxChanged_hora_minutos_cita);
+		}
+		
+		void onComboBoxChanged_hora_minutos_cita(object sender, EventArgs args)
+		{
+			//Gtk.ComboBox hora_minutos_cita = (Gtk.ComboBox) sender;
+			Gtk.ComboBox hora_minutos = sender as Gtk.ComboBox;			
+			if (sender == null){
+				return;
+			}
+			TreeIter iter;
+			if (hora_minutos.GetActiveIter (out iter)){
+				if(hora_minutos.Name.ToString() == "combobox_hora_nota"){				
+					hora_nota = (string) hora_minutos.Model.GetValue(iter,0);
+				}			
+				if(hora_minutos.Name.ToString() == "combobox_minutos_nota"){
+					minutos_nota = (string) hora_minutos.Model.GetValue(iter,0);
+				}
+			}
 		}
 		
 		// cierra ventanas emergentes

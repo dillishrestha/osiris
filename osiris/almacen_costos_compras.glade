@@ -217,9 +217,8 @@ a Sub-Almacenes</property>
                             <child>
                               <widget class="GtkLabel" id="label372">
                                 <property name="visible">True</property>
-                                <property name="label" translatable="yes">     Entrada de
- Materiales CON
-Orden de Compra </property>
+                                <property name="label" translatable="yes">     Recepcion de
+Facturas Proveedor </property>
                                 <property name="use_underline">True</property>
                               </widget>
                               <packing>
@@ -5989,7 +5988,7 @@ Paciente</property>
   </widget>
   <widget class="GtkWindow" id="captura_facturas_orden_compra">
     <property name="visible">True</property>
-    <property name="title" translatable="yes">Captura de Facturas de Ordenes de Compra</property>
+    <property name="title" translatable="yes">Captura de Facturas de Proveedores</property>
     <child>
       <widget class="GtkVBox" id="vbox69">
         <property name="visible">True</property>
@@ -6276,7 +6275,7 @@ Paciente</property>
                     <child>
                       <widget class="GtkLabel" id="label276">
                         <property name="visible">True</property>
-                        <property name="label" translatable="yes">&lt;b&gt;Datos de Factura&lt;/b&gt;</property>
+                        <property name="label" translatable="yes">&lt;b&gt;Datos de Orden de Compra&lt;/b&gt;</property>
                         <property name="use_markup">True</property>
                       </widget>
                       <packing>

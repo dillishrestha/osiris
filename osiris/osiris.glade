@@ -2388,6 +2388,7 @@ Licencia P&#xFA;blica General GNU para mayor informaci&#xF3;n.
     <child>
       <widget class="GtkVBox" id="vbox1">
         <property name="visible">True</property>
+        <property name="orientation">vertical</property>
         <child>
           <widget class="GtkFrame" id="frame29">
             <property name="visible">True</property>
@@ -2399,6 +2400,7 @@ Licencia P&#xFA;blica General GNU para mayor informaci&#xF3;n.
                 <child>
                   <widget class="GtkVBox" id="vbox81">
                     <property name="visible">True</property>
+                    <property name="orientation">vertical</property>
                     <child>
                       <widget class="GtkLabel" id="label1">
                         <property name="height_request">58</property>
@@ -2516,9 +2518,45 @@ Ingrese Login y Contrase&#xF1;a
                       </packing>
                     </child>
                     <child>
-                      <widget class="GtkFixed" id="fixed1">
-                        <property name="height_request">35</property>
+                      <widget class="GtkHBox" id="hbox4">
                         <property name="visible">True</property>
+                        <child>
+                          <widget class="GtkFixed" id="fixed1">
+                            <property name="width_request">20</property>
+                            <property name="visible">True</property>
+                          </widget>
+                          <packing>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <widget class="GtkLabel" id="label4">
+                            <property name="width_request">80</property>
+                            <property name="visible">True</property>
+                            <property name="label" translatable="yes">Sucursal</property>
+                          </widget>
+                          <packing>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <widget class="GtkComboBox" id="combobox_sucursal">
+                            <property name="width_request">160</property>
+                            <property name="visible">True</property>
+                          </widget>
+                          <packing>
+                            <property name="position">2</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <widget class="GtkFixed" id="fixed5">
+                            <property name="width_request">20</property>
+                            <property name="visible">True</property>
+                          </widget>
+                          <packing>
+                            <property name="position">3</property>
+                          </packing>
+                        </child>
                       </widget>
                       <packing>
                         <property name="position">3</property>

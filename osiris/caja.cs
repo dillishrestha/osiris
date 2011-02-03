@@ -1816,6 +1816,7 @@ namespace osiris
 														"concepto_del_comprobante,"+
 														"id_quien_creo," +
 														"id_empresa,"+
+														"id_tipo_paciente,"+
 														"observaciones) "+
 													"VALUES ('"+
 														(string) entry_numero_comprobante.Text.Trim()+"','"+
@@ -1826,6 +1827,7 @@ namespace osiris
 														"COMPROBANTE DE SERVICO"+"','"+
 														LoginEmpleado+"','"+
 														idempresa_paciente.ToString().Trim()+"','"+
+														id_tipopaciente.ToString()+"','"+
 														entry_observacion_egreso.Text.ToString().ToUpper().Trim()+"');";
 						}
 						
@@ -1986,7 +1988,7 @@ namespace osiris
 						"osiris_his_paciente.nombre1_paciente || ' ' || osiris_his_paciente.nombre2_paciente || ' ' || osiris_his_paciente.apellido_paterno_paciente || ' ' || osiris_his_paciente.apellido_materno_paciente AS nombre_completo, "+
 						"to_char(osiris_his_paciente.fecha_nacimiento_paciente, 'dd-MM-yyyy') AS fechanacpaciente, to_char(to_number(to_char(age('"+DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss")+"',osiris_his_paciente.fecha_nacimiento_paciente),'yyyy') ,'9999'),'9999') AS edadpaciente, "+
 					    "telefono_particular1_paciente,osiris_erp_comprobante_servicio.observaciones AS observacionesvarias,osiris_erp_comprobante_servicio.concepto_del_comprobante AS concepto_comprobante,"+
-						"osiris_erp_cobros_enca.id_empresa,descripcion_empresa "+
+						"osiris_erp_cobros_enca.id_empresa,descripcion_empresa,osiris_erp_cobros_enca.nombre_medico_encabezado "+
 					    //"to_char(monto_de_abono_procedimiento,'999999999.99') AS montodelabono "+
 				        "FROM osiris_erp_cobros_deta,osiris_his_tipo_admisiones,osiris_productos,osiris_grupo_producto,osiris_erp_comprobante_servicio,osiris_his_paciente,osiris_erp_cobros_enca,osiris_empresas "+
 						"WHERE osiris_erp_cobros_deta.id_tipo_admisiones = osiris_his_tipo_admisiones.id_tipo_admisiones "+
@@ -2048,10 +2050,10 @@ namespace osiris
 				this.entry_ano1.Text = DateTime.Now.ToString("yyyy");
 				this.entry_hora_compr.Text = DateTime.Now.ToString("HH:mm:ss");
 				
-				this.entry_dia1.IsEditable = false;
-				this.entry_mes1.IsEditable = false;
-				this.entry_ano1.IsEditable = false;
-				entry_hora_compr.IsEditable = false;
+				this.entry_dia1.IsEditable = true;
+				this.entry_mes1.IsEditable = true;
+				this.entry_ano1.IsEditable = true;
+				entry_hora_compr.IsEditable = true;
 				
 				button_guardar_pago.Clicked += new EventHandler(on_button_guardar_servicio_clicked);
 				button_salir.Clicked += new EventHandler(on_cierraventanas_clicked); // esta sub-clase esta en hscmty.cs
@@ -3961,9 +3963,10 @@ namespace osiris
 							"AND osiris_productos.id_grupo1_producto = osiris_grupo1_producto.id_grupo1_producto "+
 							"AND osiris_productos.id_grupo2_producto = osiris_grupo2_producto.id_grupo2_producto "+
 							"AND cobro_activo = 'true' "+
-							"AND osiris_productos.id_grupo_producto IN('6','7','10','11','12','13','14','15','16','17','19','20','91') "+
+							"AND osiris_grupo_producto.agrupacion6 = 'CAJ' "+
+							//"AND osiris_productos.id_grupo_producto IN('4','6','7','10','11','12','13','14','15','16','17','19','20','91') "+
 							"AND osiris_productos.descripcion_producto LIKE '%"+entry_expresion.Text.ToUpper().Trim()+"%' ORDER BY descripcion_producto; ";
-				//Console.WriteLine(comando.CommandText.ToString());
+				Console.WriteLine(comando.CommandText.ToString());
 				NpgsqlDataReader lector = comando.ExecuteReader ();
 				
 				float tomaprecio;

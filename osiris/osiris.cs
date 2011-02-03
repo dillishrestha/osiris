@@ -45,6 +45,7 @@ namespace osiris
 		[Widget] Gtk.Button button_aceptar = null;
 		[Widget] Gtk.Entry entry_login = null;
 		[Widget] Gtk.Entry entry_password = null;
+		[Widget] Gtk.ComboBox combobox_sucursal = null;
 		
 		[Widget] Gtk.Window menuprincipal = null;
 		[Widget] Gtk.Button button_cargos_hospital = null;
@@ -129,7 +130,7 @@ namespace osiris
 		
 		// Asignando Clases
 		class_conexion conexion_a_DB = new class_conexion();
-		//class_public classpublic = new class_public();
+		class_public classpublic = new class_public();
 		
 		protected Gtk.Window MyWinError;
 		
@@ -142,6 +143,8 @@ namespace osiris
 
 		public principal () 
 		{	
+			connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
+			nombrebd = conexion_a_DB._nombrebd;
 			pantalla_login();			
 			//verifica_usuariopasswd();			
 		}
@@ -152,12 +155,68 @@ namespace osiris
 			gxml.Autoconnect (this);
 			
 			login_osiris.Show();
+			
+			llenado_de_sucursales();
+			//string rfc_ = classpublic.CalcularRFC("DANIEL","OLIVARES","CUEVAS","25/06/74");
+			
+			//Console.WriteLine(rfc_);
 												
 			button_cancelar.Clicked += new EventHandler(on_button_salir_clicked);
 			button_aceptar.Clicked += new EventHandler(on_aceptar_clicked);
 			// activacion de la tecla Enter en los entry
 			entry_login.KeyPressEvent += onKeyPressEvent_enter;
 			entry_password.KeyPressEvent += onKeyPressEvent_enter;
+		}
+		
+		void llenado_de_sucursales()
+		{
+			combobox_sucursal.Clear();
+			
+			CellRendererText cell3 = new CellRendererText();
+			combobox_sucursal.PackStart(cell3, true);
+			combobox_sucursal.AddAttribute(cell3,"text",0);
+	        
+			ListStore store5 = new ListStore( typeof (string), typeof (int));
+			combobox_sucursal.Model = store5;
+						
+	        NpgsqlConnection conexion; 
+			conexion = new NpgsqlConnection (connectionString+nombrebd);
+            // Verifica que la base de datos este conectada
+			try{
+				conexion.Open ();
+				NpgsqlCommand comando; 
+				comando = conexion.CreateCommand ();
+               	comando.CommandText = "SELECT * FROM osiris_erp_sucursales "+
+               						"WHERE activo = 'true' "+	
+               						"ORDER BY descripcion_sucursal ;";
+				
+				NpgsqlDataReader lector = comando.ExecuteReader ();
+               	while (lector.Read())				{
+					store5.AppendValues ((string) lector["descripcion_sucursal"],
+									 	(int) lector["id_sucursal"] );
+				}
+			}catch (NpgsqlException ex){
+				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+										MessageType.Error,ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
+				msgBoxError.Run ();				msgBoxError.Destroy();
+			}
+			conexion.Close ();
+	        
+			TreeIter iter5;
+			if (store5.GetIterFirst(out iter5)){
+				combobox_sucursal.SetActiveIter (iter5);
+			}
+			combobox_sucursal.Changed += new EventHandler (onComboBoxChanged_sucursal);
+		}
+		
+		void onComboBoxChanged_sucursal (object sender, EventArgs args)
+		{
+			ComboBox combobox_sucursal = sender as ComboBox;
+			if (sender == null) {return;}
+			TreeIter iter;
+			if (combobox_sucursal.GetActiveIter (out iter)){ 
+				//idformadepago = (int) combobox_sucursal.Model.GetValue(iter,1);
+			}
 		}
 		
 		void on_aceptar_clicked(object o, EventArgs args)
@@ -168,10 +227,6 @@ namespace osiris
 		
 		void verifica_usuariopasswd()
 		{
-			class_conexion conexion_a_DB = new class_conexion();
-			connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
-			nombrebd = conexion_a_DB._nombrebd;
-						
 			NpgsqlConnection conexion;
             conexion = new NpgsqlConnection(connectionString+nombrebd);
             // Verifica que la base de datos este conectada
@@ -292,7 +347,6 @@ namespace osiris
 			 			
 			//button_nutricion.Clicked += new EventHandler(on_button_nutricion_clicked);
 			//button_hemodialisis.Clicked += new EventHandler(on_button_hemodialisis_clicked);
-					 			
 			//button_imagenologia_b.Clicked += new EventHandler( on_button_imagenologia_b_clicked );
 								
 			button_salir.Clicked += new EventHandler(on_button_salir_clicked);

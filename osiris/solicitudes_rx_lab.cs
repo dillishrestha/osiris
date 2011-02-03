@@ -118,6 +118,9 @@ namespace osiris
 		protected Gtk.Window MyWinError;
 		protected Gtk.Window MyWin;
 		
+		ArrayList columns = new ArrayList ();
+		Gtk.TreeIter iter;
+		
 		public solicitudes_enfermeria(string LoginEmp_, string NomEmpleado_, string AppEmpleado_, string ApmEmpleado_, string nombrebd_,
 		                              string departament_,int id_tipoadmisiones_,string agrupacion_lab_rx_,string descripinternamiento_,
 		                              int id_tipopaciente_,int idempresa_paciente_,int idaseguradora_paciente_,
@@ -181,6 +184,9 @@ namespace osiris
 			
 			crea_treeview_estudios();
 			crea_treeview_estudios_solicitados();
+			carga_estudios_solicitados();
+			// expand all rows after the treeview widget has been realized
+			treeview_estudios_solicitados.ExpandAll();
 			entry_numero_solicitud.ModifyBase(StateType.Normal, new Gdk.Color(0,255,0)); // Color Amarillo
 			
 			statusbar_solicitud_labrx.Pop(0);
@@ -446,6 +452,9 @@ namespace osiris
 						MessageDialog msgBoxError = new MessageDialog(MyWinError,DialogFlags.DestroyWithParent,MessageType.Info,
 					                                              ButtonsType.Close, "La solicitud se envio con Exito...");
 						msgBoxError.Run ();	msgBoxError.Destroy();
+						carga_estudios_solicitados();
+						// expand all rows after the treeview widget has been realized
+						treeview_estudios_solicitados.ExpandAll();
 					}catch (NpgsqlException ex){
 						MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
 													MessageType.Error,ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
@@ -554,6 +563,9 @@ namespace osiris
 		
 		void crea_treeview_estudios_solicitados()
 		{
+			Gtk.CellRendererText text;
+			foreach (TreeViewColumn tvc in this.treeview_estudios_solicitados.Columns)
+			this.treeview_estudios_solicitados.RemoveColumn(tvc);
 			treeViewEngineEstudiosSoli = new TreeStore(typeof(string),
 													typeof(string),
 													typeof(string),
@@ -561,7 +573,7 @@ namespace osiris
 													typeof(string),
 													typeof(string),
 													typeof(string),
-													typeof(bool),
+													typeof(string),
 													typeof(string),
 													typeof(string),
 													typeof(string),
@@ -569,71 +581,144 @@ namespace osiris
 													typeof(string));
 			treeview_estudios_solicitados.Model = treeViewEngineEstudiosSoli;
 			treeview_estudios_solicitados.RulesHint = true;
+			treeview_estudios_solicitados.Selection.Mode = SelectionMode.Multiple;
 			
-			TreeViewColumn col_nrosolicitud = new TreeViewColumn();
-			CellRendererText cellr0 = new CellRendererText();
-			col_nrosolicitud.Title = "N° Solicitud"; // titulo de la cabecera de la columna, si está visible
-			col_nrosolicitud.PackStart(cellr0, true);
-			col_nrosolicitud.AddAttribute (cellr0, "text", 0);    // la siguiente columna será 1 en vez de 1
-			col_nrosolicitud.Resizable = true;
+			// column for holiday names
+			text = new CellRendererText ();
+			text.Xalign = 0.0f;
+			columns.Add (text);
+			TreeViewColumn column0 = new TreeViewColumn("N° Soli./Estudio", text,
+								    "text", Column.solicitud_estudio);
+			column0.Resizable = true;
+			column0.SortColumnId = (int) Column.solicitud_estudio;
+			treeview_estudios_solicitados.InsertColumn (column0, (int) Column.solicitud_estudio);
+			
+			text = new CellRendererText ();
+			text.Xalign = 0.0f;
+			columns.Add (text);
+			TreeViewColumn column1 = new TreeViewColumn("Cant.Soli", text,
+								    "text", Column.cant_solicitado);
+			column1.Resizable = true;
+			column1.SortColumnId = (int) Column.cant_solicitado;
+			treeview_estudios_solicitados.InsertColumn (column1, (int) Column.cant_solicitado);
+			
+			text = new CellRendererText ();
+			text.Xalign = 0.0f;
+			columns.Add (text);
+			TreeViewColumn column2 = new TreeViewColumn("Fecha Solicitud", text,
+								    "text", Column.col_fechasol);
+			column2.Resizable = true;
+			column2.SortColumnId = (int) Column.col_fechasol;
+			treeview_estudios_solicitados.InsertColumn (column2, (int) Column.col_fechasol);
+			
+			text = new CellRendererText ();
+			text.Xalign = 0.0f;
+			columns.Add (text);
+			TreeViewColumn column3 = new TreeViewColumn("Gabinete", text,
+								    "text", Column.col_gabinete);
+			column3.Resizable = true;
+			column3.SortColumnId = (int) Column.col_gabinete;
+			treeview_estudios_solicitados.InsertColumn (column3, (int) Column.col_gabinete);
+			
+			text = new CellRendererText ();
+			text.Xalign = 0.0f;
+			columns.Add (text);
+			TreeViewColumn column4 = new TreeViewColumn("Quien Solicito", text,
+								    "text", Column.col_quiensolicito);
+			column4.Resizable = true;
+			column4.SortColumnId = (int) Column.col_quiensolicito;
+			treeview_estudios_solicitados.InsertColumn (column4, (int) Column.col_quiensolicito);
+		}
+		
+		enum Column
+		{
+			solicitud_estudio,
+			cant_solicitado,
+			col_fechasol,
+			col_gabinete,
+			col_quiensolicito
+		}
+		
+		private void ExpandRows (object obj, EventArgs args)
+		{
+			TreeView treeView = obj as TreeView;
+			treeView.ExpandAll ();
+		}
+		
+		void carga_estudios_solicitados()
+		{			
+			int toma_numerosolicitud = 0;
+			NpgsqlConnection conexion;
+			conexion = new NpgsqlConnection (connectionString+nombrebd );
+			// Verifica que la base de datos este conectada
+			try{
+				conexion.Open ();
+				NpgsqlCommand comando; 
+				comando = conexion.CreateCommand ();
+				comando.CommandText = "SELECT osiris_his_solicitudes_labrx.folio_de_servicio,osiris_his_solicitudes_labrx.id_secuencia,osiris_his_solicitudes_labrx.pid_paciente AS pidpaciente,"+
+										"nombre1_paciente || ' ' || nombre2_paciente || ' ' || apellido_paterno_paciente || ' ' || apellido_materno_paciente AS nombre_completo,"+
+										"osiris_his_solicitudes_labrx.id_producto,osiris_productos.descripcion_producto,folio_de_solicitud,id_tipo_admisiones2,"+
+										"cantidad_solicitada,cantidad_autorizada,fechahora_solicitud,"+
+										"to_char(osiris_his_solicitudes_labrx.fechahora_solicitud,'dd-mm-yyyy HH24:mi') AS fechahorasolicitud,"+
+										"area_quien_solicita,id_quien_solicito,osiris_his_solicitudes_labrx.id_proveedor,descripcion_proveedor "+
+										"FROM osiris_his_solicitudes_labrx,osiris_his_paciente,osiris_productos,osiris_erp_proveedores "+
+										"WHERE osiris_his_solicitudes_labrx.pid_paciente = osiris_his_paciente.pid_paciente "+
+										"AND osiris_his_solicitudes_labrx.id_producto = osiris_productos.id_producto "+
+										"AND osiris_his_solicitudes_labrx.id_proveedor = osiris_erp_proveedores.id_proveedor "+
+										"AND status = 'false' "+
+										"AND eliminado = 'false' "+
+										"AND folio_de_servicio = '"+folioservicio+"' "+
+										"AND id_tipo_admisiones2 = '"+id_tipoadmisiones.ToString().Trim()+"';";
+				Console.WriteLine(comando.CommandText);
+				NpgsqlDataReader lector = comando.ExecuteReader ();
+				if((bool) lector.Read()){
+					toma_numerosolicitud = (int) lector["folio_de_solicitud"];
+					iter = treeViewEngineEstudiosSoli.AppendValues (lector["folio_de_solicitud"].ToString().Trim(),
+								    null,
+				                    lector["fechahorasolicitud"].ToString().Trim(),
+				                    lector["descripcion_proveedor"].ToString().Trim(),
+								    lector["id_quien_solicito"].ToString().Trim(),
+				                    null);
+				
+					treeViewEngineEstudiosSoli.AppendValues (iter,
+							   lector["descripcion_producto"].ToString().Trim(),
+							    lector["cantidad_solicitada"].ToString().Trim(),
+				                null,
+				                null,
+							    null,
+							    null);
+					while((bool) lector.Read()){
+						if (toma_numerosolicitud != (int) lector["folio_de_solicitud"]){	
+							iter = treeViewEngineEstudiosSoli.AppendValues (lector["folio_de_solicitud"].ToString().Trim(),
+								    null,
+				                    lector["fechahorasolicitud"].ToString().Trim(),
+				                    lector["descripcion_proveedor"].ToString().Trim(),
+								    lector["id_quien_solicito"].ToString().Trim(),
+				                    null);
+							toma_numerosolicitud = (int) lector["folio_de_solicitud"];
 								
-			Gtk.TreeViewColumn col_depart = new TreeViewColumn();		
-			Gtk.CellRendererText cellrt1 = new Gtk.CellRendererText();
-			col_depart.Title = "Departamento";
-			col_depart.PackStart(cellrt1, true);
-			col_depart.AddAttribute (cellrt1, "text", 1);
-			col_depart.Resizable = true;
-			
-			Gtk.TreeViewColumn col_gabinete = new TreeViewColumn();		
-			Gtk.CellRendererText cellrt2 = new Gtk.CellRendererText();
-			col_gabinete.Title = "Gabinete";
-			col_gabinete.PackStart(cellrt2, true);
-			col_gabinete.AddAttribute (cellrt2, "text", 2);
-			col_gabinete.Resizable = true;
-			
-			Gtk.TreeViewColumn col_fechasol = new TreeViewColumn();		
-			Gtk.CellRendererText cellrt3 = new Gtk.CellRendererText();
-			col_fechasol.Title = "Fecha Solicitud";
-			col_fechasol.PackStart(cellrt3, true);
-			col_fechasol.AddAttribute (cellrt3, "text", 3);
-			col_fechasol.Resizable = true;
-			
-			Gtk.TreeViewColumn col_horasol = new TreeViewColumn();		
-			Gtk.CellRendererText cellrt4 = new Gtk.CellRendererText();
-			col_horasol.Title = "Hora Solicitud";
-			col_horasol.PackStart(cellrt4, true);
-			col_horasol.AddAttribute (cellrt4, "text", 4);
-			col_horasol.Resizable = true;
-			
-			Gtk.TreeViewColumn col_quiensolicita = new TreeViewColumn();		
-			Gtk.CellRendererText cellrt5 = new Gtk.CellRendererText();
-			col_quiensolicita.Title = "Quien Solicita";
-			col_quiensolicita.PackStart(cellrt5, true);
-			col_quiensolicita.AddAttribute (cellrt5, "text", 5);
-			col_quiensolicita.Resizable = true;
-			
-			Gtk.TreeViewColumn col_foliointerno = new TreeViewColumn();		
-			Gtk.CellRendererText cellrt6 = new Gtk.CellRendererText();
-			col_foliointerno.Title = "Folio "+agrupacion_lab_rx;
-			col_foliointerno.PackStart(cellrt6, true);
-			col_foliointerno.AddAttribute (cellrt6, "text", 6);
-			col_foliointerno.Resizable = true;
-			
-			Gtk.TreeViewColumn col_cargado = new TreeViewColumn();	
-			Gtk.CellRendererToggle cellrt7 = new CellRendererToggle();		
-			col_cargado.Title = "Cargado";
-			col_cargado.PackStart(cellrt7, true);
-			col_cargado.AddAttribute (cellrt7, "active", 7);
-			col_cargado.Resizable = true;
-			
-			treeview_estudios_solicitados.AppendColumn(col_nrosolicitud); 	// 0
-			treeview_estudios_solicitados.AppendColumn(col_depart);	 		// 1
-			treeview_estudios_solicitados.AppendColumn(col_gabinete); 		// 2
-			treeview_estudios_solicitados.AppendColumn(col_fechasol); 		// 3
-			treeview_estudios_solicitados.AppendColumn(col_horasol); 		// 4
-			treeview_estudios_solicitados.AppendColumn(col_quiensolicita); 	// 5
-			treeview_estudios_solicitados.AppendColumn(col_foliointerno); 	// 6
-			treeview_estudios_solicitados.AppendColumn(col_cargado);		// 7
+							treeViewEngineEstudiosSoli.AppendValues (iter,lector["descripcion_producto"].ToString().Trim(),
+							    	lector["cantidad_solicitada"].ToString().Trim(),
+				                	null,
+				                	null,
+							    	null,
+							    	null);
+						}else{
+							treeViewEngineEstudiosSoli.AppendValues (iter,lector["descripcion_producto"].ToString().Trim(),
+							    	lector["cantidad_solicitada"].ToString().Trim(),
+				                	null,
+				                	null,
+							    	null,
+							    	null);
+						}
+					}
+				}
+			}catch (NpgsqlException ex){
+				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+							MessageType.Error, ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
+				msgBoxError.Run ();						msgBoxError.Destroy();
+			}
+			conexion.Close();		
 		}
 		
 		void crea_treeview_busqueda(string tipo_busqueda)
@@ -1321,6 +1406,7 @@ namespace osiris
 										"AND status = 'false' "+
 										"AND eliminado = 'false' "+
 										"AND id_tipo_admisiones2 = '"+idtipoadmisiones.ToString().Trim()+"' "+queryorder;
+				Console.WriteLine(comando.CommandText);
 				NpgsqlDataReader lector = comando.ExecuteReader ();
 				if((bool) lector.Read()){
 					toma_pidpaciente = (int) lector["pidpaciente"];

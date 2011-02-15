@@ -1766,7 +1766,7 @@ Medicas a Pacientes</property>
                             <child>
                               <widget class="GtkTable" id="table1">
                                 <property name="visible">True</property>
-                                <property name="n_rows">4</property>
+                                <property name="n_rows">3</property>
                                 <property name="n_columns">5</property>
                                 <child>
                                   <widget class="GtkComboBox" id="combobox_estado_civil">
@@ -1837,19 +1837,6 @@ Medicas a Pacientes</property>
                                   </packing>
                                 </child>
                                 <child>
-                                  <widget class="GtkEntry" id="entry_curp">
-                                    <property name="visible">True</property>
-                                    <property name="max_length">20</property>
-                                    <property name="invisible_char">&#x25CF;</property>
-                                  </widget>
-                                  <packing>
-                                    <property name="left_attach">4</property>
-                                    <property name="right_attach">5</property>
-                                    <property name="top_attach">3</property>
-                                    <property name="bottom_attach">4</property>
-                                  </packing>
-                                </child>
-                                <child>
                                   <widget class="GtkEntry" id="entry_apellido_materno">
                                     <property name="visible">True</property>
                                     <property name="max_length">50</property>
@@ -1871,18 +1858,6 @@ Medicas a Pacientes</property>
                                   <packing>
                                     <property name="left_attach">4</property>
                                     <property name="right_attach">5</property>
-                                  </packing>
-                                </child>
-                                <child>
-                                  <widget class="GtkLabel" id="label43">
-                                    <property name="visible">True</property>
-                                    <property name="label" translatable="yes">CURP.</property>
-                                  </widget>
-                                  <packing>
-                                    <property name="left_attach">3</property>
-                                    <property name="right_attach">4</property>
-                                    <property name="top_attach">3</property>
-                                    <property name="bottom_attach">4</property>
                                   </packing>
                                 </child>
                                 <child>
@@ -1933,19 +1908,6 @@ Medicas a Pacientes</property>
                                   </packing>
                                 </child>
                                 <child>
-                                  <widget class="GtkEntry" id="entry_rfc">
-                                    <property name="visible">True</property>
-                                    <property name="max_length">15</property>
-                                    <property name="invisible_char">&#x25CF;</property>
-                                  </widget>
-                                  <packing>
-                                    <property name="left_attach">1</property>
-                                    <property name="right_attach">2</property>
-                                    <property name="top_attach">3</property>
-                                    <property name="bottom_attach">4</property>
-                                  </packing>
-                                </child>
-                                <child>
                                   <widget class="GtkEntry" id="entry_apellido_paterno">
                                     <property name="visible">True</property>
                                     <property name="max_length">50</property>
@@ -1967,16 +1929,6 @@ Medicas a Pacientes</property>
                                   <packing>
                                     <property name="left_attach">1</property>
                                     <property name="right_attach">2</property>
-                                  </packing>
-                                </child>
-                                <child>
-                                  <widget class="GtkLabel" id="label37">
-                                    <property name="visible">True</property>
-                                    <property name="label" translatable="yes">R.F.C.</property>
-                                  </widget>
-                                  <packing>
-                                    <property name="top_attach">3</property>
-                                    <property name="bottom_attach">4</property>
                                   </packing>
                                 </child>
                                 <child>
@@ -2016,21 +1968,80 @@ Medicas a Pacientes</property>
                                     <property name="bottom_attach">2</property>
                                   </packing>
                                 </child>
-                                <child>
-                                  <widget class="GtkFixed" id="fixed2">
-                                    <property name="visible">True</property>
-                                  </widget>
-                                  <packing>
-                                    <property name="left_attach">2</property>
-                                    <property name="right_attach">3</property>
-                                    <property name="top_attach">3</property>
-                                    <property name="bottom_attach">4</property>
-                                  </packing>
-                                </child>
                               </widget>
                               <packing>
                                 <property name="position">0</property>
                               </packing>
+                            </child>
+                            <child>
+                              <widget class="GtkHBox" id="hbox2">
+                                <property name="visible">True</property>
+                                <child>
+                                  <widget class="GtkLabel" id="label37">
+                                    <property name="visible">True</property>
+                                    <property name="label" translatable="yes">R.F.C.</property>
+                                  </widget>
+                                  <packing>
+                                    <property name="position">0</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <widget class="GtkEntry" id="entry_rfc">
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">True</property>
+                                    <property name="max_length">15</property>
+                                    <property name="invisible_char">&#x25CF;</property>
+                                  </widget>
+                                  <packing>
+                                    <property name="position">1</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <widget class="GtkLabel" id="label43">
+                                    <property name="visible">True</property>
+                                    <property name="label" translatable="yes">CURP.</property>
+                                  </widget>
+                                  <packing>
+                                    <property name="position">2</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <widget class="GtkEntry" id="entry_curp">
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">True</property>
+                                    <property name="max_length">20</property>
+                                    <property name="invisible_char">&#x25CF;</property>
+                                  </widget>
+                                  <packing>
+                                    <property name="position">3</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <widget class="GtkLabel" id="label2">
+                                    <property name="visible">True</property>
+                                    <property name="label" translatable="yes">Lugar Nac.</property>
+                                  </widget>
+                                  <packing>
+                                    <property name="position">4</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <widget class="GtkEntry" id="entry_lugar_nacimiento">
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">True</property>
+                                    <property name="invisible_char">&#x25CF;</property>
+                                  </widget>
+                                  <packing>
+                                    <property name="position">5</property>
+                                  </packing>
+                                </child>
+                              </widget>
+                              <packing>
+                                <property name="position">1</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <placeholder/>
                             </child>
                             <child>
                               <widget class="GtkHBox" id="hbox7">
@@ -2145,7 +2156,7 @@ Medicas a Pacientes</property>
                                 </child>
                               </widget>
                               <packing>
-                                <property name="position">1</property>
+                                <property name="position">3</property>
                               </packing>
                             </child>
                             <child>
@@ -2210,7 +2221,7 @@ Medicas a Pacientes</property>
                                 </child>
                               </widget>
                               <packing>
-                                <property name="position">2</property>
+                                <property name="position">4</property>
                               </packing>
                             </child>
                             <child>
@@ -2297,7 +2308,7 @@ Medicas a Pacientes</property>
                                 </child>
                               </widget>
                               <packing>
-                                <property name="position">3</property>
+                                <property name="position">5</property>
                               </packing>
                             </child>
                           </widget>

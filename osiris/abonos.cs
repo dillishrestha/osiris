@@ -33,7 +33,6 @@ using System;
 using Gtk;
 using Npgsql;
 using Glade;
-using Gnome;
 
 namespace osiris
 {
@@ -273,58 +272,58 @@ namespace osiris
 			
 			TreeViewColumn col_abono = new TreeViewColumn();
 			cellr0 = new CellRendererText();
-			col_abono.Title = "Abonos Ralizados"; // titulo de la cabecera de la columna, si está visible
+			col_abono.Title = "N° Comp.Serv.";
 			col_abono.PackStart(cellr0, true);
-			col_abono.AddAttribute (cellr0, "text", 0);    // la siguiente columna será 1
+			col_abono.AddAttribute (cellr0, "text", 0);
 			col_abono.SortColumnId = (int) Col_proveedores.col_abono;
 			
 			TreeViewColumn col_fecha_abono = new TreeViewColumn();
 			CellRendererText cellrt1 = new CellRendererText();
-			col_fecha_abono.Title = "Fecha del Serv.";
+			col_fecha_abono.Title = "Fecha Compr.";
 			col_fecha_abono.PackStart(cellrt1, true);
-			col_fecha_abono.AddAttribute (cellrt1, "text", 1); // la siguiente columna será 2
+			col_fecha_abono.AddAttribute (cellrt1, "text", 1);
 			col_fecha_abono.SortColumnId = (int) Col_proveedores.col_fecha_abono;
 			
 			TreeViewColumn col_concepto = new TreeViewColumn();
 			CellRendererText cellrt2 = new CellRendererText();
-			col_concepto.Title = "Concepto Servicio";
+			col_concepto.Title = "Concepto";
 			col_concepto.PackStart(cellrt2, true);
-			col_concepto.AddAttribute (cellrt2, "text", 2); // la siguiente columna será 3
+			col_concepto.AddAttribute (cellrt2, "text", 2);
 			col_concepto.SortColumnId = (int) Col_proveedores.col_concepto;
 			
 			TreeViewColumn col_id_creo = new TreeViewColumn();
 			CellRendererText cellrt3 = new CellRendererText();
 			col_id_creo.Title = "Id Quien Creo";
 			col_id_creo.PackStart(cellrt3, true);
-			col_id_creo.AddAttribute (cellrt3, "text", 3); // la siguiente columna será 4
+			col_id_creo.AddAttribute (cellrt3, "text", 3);
 			col_id_creo.SortColumnId = (int) Col_proveedores.col_id_creo;
 			
 			TreeViewColumn col_recibo = new TreeViewColumn();
 			CellRendererText cellrt4 = new CellRendererText();
 			col_recibo.Title = "No. Recibo";
 			col_recibo.PackStart(cellrt4, true);
-			col_recibo.AddAttribute (cellrt4, "text", 4); // la siguiente columna será 5
+			col_recibo.AddAttribute (cellrt4, "text", 4);
 			col_recibo.SortColumnId = (int) Col_proveedores.col_recibo;
 			
 			TreeViewColumn col_presu = new TreeViewColumn();
 			CellRendererText cellrt5 = new CellRendererText();
 			col_presu.Title = "Id Presupuesto";
 			col_presu.PackStart(cellrt5, true);
-			col_presu.AddAttribute (cellrt5, "text", 5); // la siguiente columna será 6
+			col_presu.AddAttribute (cellrt5, "text", 5);
 			col_presu.SortColumnId = (int) Col_proveedores.col_presu;
 			
 			TreeViewColumn col_paq = new TreeViewColumn();
 			CellRendererText cellrt6 = new CellRendererText();
 			col_paq.Title = "Id Paquete";
 			col_paq.PackStart(cellrt6, true);
-			col_paq.AddAttribute (cellrt6, "text", 6); // la siguiente columna será 7
+			col_paq.AddAttribute (cellrt6, "text", 6);
 			col_paq.SortColumnId = (int) Col_proveedores.col_paq;
 			
 			TreeViewColumn col_forma_pago = new TreeViewColumn();
 			CellRendererText cellrt7 = new CellRendererText();
-			col_forma_pago.Title = "Forma de Pago";
+			col_forma_pago.Title = "Observaciones";
 			col_forma_pago.PackStart(cellrt7, true);
-			col_forma_pago.AddAttribute (cellrt7, "text", 7); // la siguiente columna será 8
+			col_forma_pago.AddAttribute (cellrt7, "text", 7);
 			col_forma_pago.SortColumnId = (int) Col_proveedores.col_forma_pago;			
 			
 			treeview_lista_comprserv.AppendColumn(col_abono);
@@ -358,8 +357,7 @@ namespace osiris
 			NpgsqlConnection conexion; 
 			conexion = new NpgsqlConnection (connectionString+nombrebd);
 	        // Verifica que la base de datos este conectada
-			try
-				{
+			try{
 				conexion.Open ();
 				NpgsqlCommand comando; 
 				comando = conexion.CreateCommand ();
@@ -392,8 +390,7 @@ namespace osiris
 								"ORDER BY osiris_erp_abonos.folio_de_servicio;";
 				Console.WriteLine(comando.CommandText);
 				NpgsqlDataReader lector = comando.ExecuteReader ();
-				while (lector.Read())
-				{	
+				while (lector.Read()){
 					treeViewEngineabonos.AppendValues ((string) lector["abono"],//0
 													(string) lector["fechaabono"],//1
 													(string) lector["concepto_del_abono"],//2
@@ -403,8 +400,7 @@ namespace osiris
 													(string) lector["paquete"],//6
 													(string) lector["descripago"]);//7
 					total += decimal.Parse((string) lector["abono"]);
-					
-					this.entry_total_abonos.Text = total.ToString();
+					entry_total_abonos.Text = total.ToString("F");
 				}
 			}catch (NpgsqlException ex){
    				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
@@ -417,8 +413,7 @@ namespace osiris
 		void llenando_lista_comprobante()
 		{
 			decimal total = 0;
-			treeViewEngineabonos.Clear(); // Limpia el treeview cuando realiza una nueva busqueda
-			
+			treeViewEngincomprserv.Clear();	// Limpia el treeview cuando realiza una nueva busqueda
 			NpgsqlConnection conexion; 
 			conexion = new NpgsqlConnection (connectionString+nombrebd);
 	        // Verifica que la base de datos este conectada
@@ -426,18 +421,21 @@ namespace osiris
 				conexion.Open ();
 				NpgsqlCommand comando; 
 				comando = conexion.CreateCommand ();
-					comando.CommandText = "SELECT to_char(numero_comprobante_servicio,'99999999999') AS recibocaja "+
-									"FROM osiris_erp_comprobante_servicio WHERE osiris_erp_comprobante_servicio.folio_de_servicio = '"+this.folioservicio.ToString()+"' ";
-				Console.WriteLine(comando.CommandText);
+					comando.CommandText = "SELECT to_char(numero_comprobante_servicio,'99999999999') AS reciboservicio," +
+										"to_char(osiris_erp_comprobante_servicio.fecha_comprobante,'yyyy-MM-dd') AS fechacomprobante,concepto_del_comprobante "+
+									"FROM osiris_erp_comprobante_servicio "+
+									"WHERE osiris_erp_comprobante_servicio.eliminado = 'false' " +
+									"AND osiris_erp_comprobante_servicio.folio_de_servicio = '"+this.folioservicio.ToString()+"' ";
+				//Console.WriteLine(comando.CommandText);
 				NpgsqlDataReader lector = comando.ExecuteReader ();
 				while (lector.Read()){	
-					treeViewEngincomprserv.AppendValues (" ",
+					treeViewEngincomprserv.AppendValues ((string) lector["reciboservicio"],
+					                                   (string) lector["fechacomprobante"],
+					                                   (string) lector["concepto_del_comprobante"],
 					                                   " ",
 					                                   " ",
-					                                   " ",
-					                                   (string) lector["recibocaja"]," ");
+					                                   " ");
 					//total += decimal.Parse((string) lector["abono"]);
-					
 					// entry_total_abonos.Text = total.ToString();
 				}
 			}catch (NpgsqlException ex){
@@ -605,14 +603,12 @@ namespace osiris
 			combobox_formapago.Clear();
 			CellRendererText cell3 = new CellRendererText();
 			combobox_formapago.PackStart(cell3, true);
-			combobox_formapago.AddAttribute(cell3,"text",0);
-	        
+			combobox_formapago.AddAttribute(cell3,"text",0);	        
 			ListStore store5 = new ListStore( typeof (string), typeof (int));
 			combobox_formapago.Model = store5;
 			if(tipo_ == "selecciona"){
 				store5.AppendValues ( (string) descrippago_,(int) idformapago_ );
-			}
-	      
+			}	      
 	        NpgsqlConnection conexion; 
 			conexion = new NpgsqlConnection (connectionString+nombrebd);
             // Verifica que la base de datos este conectada
@@ -623,10 +619,8 @@ namespace osiris
                	comando.CommandText = "SELECT * FROM osiris_erp_forma_de_pago "+
                						"WHERE proveedor = false "+	
                						"ORDER BY descripcion_forma_de_pago;";
-				
 				NpgsqlDataReader lector = comando.ExecuteReader ();
-               	while (lector.Read())
-				{
+               	while (lector.Read()){
 					store5.AppendValues ((string) lector["descripcion_forma_de_pago"],
 									 	(int) lector["id_forma_de_pago"] );
 				}
@@ -670,11 +664,9 @@ namespace osiris
 		}
 		
 		void imprime_comprobante_resumen(string tipo_reporte)
-		{
-		
+		{		
 			TreeModel model;
-			TreeIter iterSelected;
-			
+			TreeIter iterSelected;			
 			if (tipo_reporte == "caja"){
 				if (lista_abonos.Selection.GetSelected(out model, out iterSelected)){
 	 				monto = (string) model.GetValue(iterSelected, 0); 				
@@ -684,8 +676,7 @@ namespace osiris
 					recibo = (string) model.GetValue(iterSelected, 4);
 					presupuesto = (string) model.GetValue(iterSelected, 5);
 					paquete = (string) model.GetValue(iterSelected, 6);
-					descripcion = (string) model.GetValue(iterSelected, 7);
-					
+					descripcion = (string) model.GetValue(iterSelected, 7);					
 					new caja_comprobante(int.Parse(recibo),"CAJA", folioservicio,"SELECT osiris_erp_cobros_deta.folio_de_servicio AS foliodeservicio,osiris_erp_cobros_deta.pid_paciente AS pidpaciente, "+ 
 						"osiris_his_tipo_admisiones.descripcion_admisiones,aplicar_iva, "+
 						"osiris_his_tipo_admisiones.id_tipo_admisiones AS idadmisiones,"+
@@ -719,10 +710,8 @@ namespace osiris
 			}
 				
 			if(tipo_reporte == "comprobante"){
-				if (treeview_lista_comprserv.Selection.GetSelected(out model, out iterSelected)){
-					
-					recibo = (string) model.GetValue(iterSelected, 4);					
-					
+				if (treeview_lista_comprserv.Selection.GetSelected(out model, out iterSelected)){					
+					recibo = (string) model.GetValue(iterSelected, 0);					
 					new caja_comprobante(int.Parse(recibo),"SERVICIO", folioservicio,"SELECT osiris_erp_cobros_deta.folio_de_servicio AS foliodeservicio,osiris_erp_cobros_deta.pid_paciente AS pidpaciente, "+ 
 						"osiris_his_tipo_admisiones.descripcion_admisiones,aplicar_iva, "+
 						"osiris_his_tipo_admisiones.id_tipo_admisiones AS idadmisiones,"+
@@ -753,8 +742,7 @@ namespace osiris
 					    "AND osiris_erp_cobros_enca.folio_de_servicio = osiris_erp_cobros_deta.folio_de_servicio "+
 						"AND osiris_erp_cobros_deta.eliminado = 'false' ", nombrecajero );
 				}
-			}
-			
+			}			
 			if (tipo_reporte == "resumen"){
 				
 			
@@ -769,4 +757,3 @@ namespace osiris
 		}
 	}
 }
-	

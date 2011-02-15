@@ -52,13 +52,15 @@ namespace osiris
 		[Widget] Gtk.Entry entry_id_doctor = null;
 		[Widget] Gtk.Entry entry_doctor = null;
 		[Widget] Gtk.Button button_guardar = null;
+		[Widget] Gtk.Button button_imprimir_notas = null;
 		[Widget] Gtk.Entry entry_fechanotas = null;
 		[Widget] Gtk.TreeView treeview_listanotas = null;
 		[Widget] Gtk.ComboBox combobox_hora_nota = null;
 		[Widget] Gtk.ComboBox combobox_minutos_nota = null;
 		
 		TextBuffer buffer = new TextBuffer (null);
-		
+		TextIter insertIter;
+			
 		string connectionString;
 		string nombrebd;
 		string LoginEmpleado;
@@ -116,7 +118,7 @@ namespace osiris
 			sql_pidpaciente = " AND osiris_his_informacion_medica.pid_paciente = '"+pidpaciente+"' ";
 			sql_folioservicio = " AND osiris_his_informacion_medica.folio_de_servicio = '"+folioservicio+"' ";
 			sql_filtronotasblanco = " AND "+name_field+" <> '' ";
-			
+						
 			Glade.XML gxml = new Glade.XML (null, "hospitalizacion.glade", "notas_medicas_enfermeria", null);
 			gxml.Autoconnect (this);
 			notas_medicas_enfermeria.Show();
@@ -124,6 +126,7 @@ namespace osiris
 			notas_medicas_enfermeria.Title = title_window;
 			button_salir.Clicked += new EventHandler(on_cierraventanas_clicked);
 			button_guardar.Clicked += new EventHandler(on_button_guardar_clicked);
+			button_imprimir_notas.Clicked += new EventHandler(on_button_imprimir_notas_clicked);
 			entry_fechanotas.Text = (string) DateTime.Now.ToString("yyyy-MM-dd");
 			entry_pid_paciente.Text = (string) pidpaciente;
 			entry_nombre_paciente.Text = (string) nombrepaciente_;
@@ -153,16 +156,21 @@ namespace osiris
 			llenando_informacion();		
 		}
 		
+		void on_button_imprimir_notas_clicked (object sender, EventArgs args)
+		{
+			new osiris.rpt_notas_medicas(name_field);
+		}
+		
 		void llenando_informacion()
 		{
-			buffer.Clear();
-			buffer = textview1.Buffer;			
-			TextIter insertIter = buffer.StartIter;
+			buffer = textview1.Buffer;
 			classpublic.CreateTags(buffer);
+			insertIter = buffer.StartIter;
+			buffer.Clear();		
+			treeViewEngineListaNotas.Clear();
 						
 			NpgsqlConnection conexion; 
-			conexion = new NpgsqlConnection (connectionString+nombrebd);
-            
+			conexion = new NpgsqlConnection (connectionString+nombrebd);            
 			// Verifica que la base de datos este conectada
 			try{
 				conexion.Open ();
@@ -185,8 +193,8 @@ namespace osiris
 					entry_doctor.Text = nombredoctor;
 					if((string) lector[name_field].ToString() != ""){
 						buffer.InsertWithTagsByName (ref insertIter, "Fecha de Nota: "+(string) lector["fechaanotacion"].ToString().Trim()+"    Nº de NOTA :"+(string) lector["id_secuencia"].ToString().Trim()+"\n", "bold");
-						buffer.InsertWithTagsByName (ref insertIter, "Hora de Nota :"+(string) lector["horaanotacion"].ToString().Trim()+" \n\n", "bold");
-						buffer.Insert (ref insertIter, (string) lector[name_field].ToString()+"\n\n\n");
+						buffer.InsertWithTagsByName (ref insertIter, "Hora de Nota : "+(string) lector["horaanotacion"].ToString().Trim()+" \n\n", "bold");
+						buffer.Insert (ref insertIter, (string) lector[name_field].ToString().ToUpper()+"\n\n\n");
 						treeViewEngineListaNotas.AppendValues(false,
 						                                      (string) lector["fechaanotacion"].ToString().Trim(),
 						                                      (string) lector["horaanotacion"].ToString().Trim(),
@@ -196,8 +204,8 @@ namespace osiris
 					while(lector.Read()){
 						if((string) lector[name_field].ToString() != ""){
 							buffer.InsertWithTagsByName (ref insertIter, "Fecha de Nota: "+(string) lector["fechaanotacion"].ToString().Trim()+"    Nº de NOTA :"+(string) lector["id_secuencia"].ToString().Trim()+"\n", "bold");
-							buffer.InsertWithTagsByName (ref insertIter, "Hora de Nota :"+(string) lector["horaanotacion"].ToString().Trim()+" \n\n", "bold");
-							buffer.Insert (ref insertIter, (string) lector[name_field].ToString()+"\n\n\n");
+							buffer.InsertWithTagsByName (ref insertIter, "Hora de Nota : "+(string) lector["horaanotacion"].ToString().Trim()+" \n\n", "bold");
+							buffer.Insert (ref insertIter, (string) lector[name_field].ToString().ToUpper()+"\n\n\n");
 							treeViewEngineListaNotas.AppendValues(false,
 							                                      (string) lector["fechaanotacion"].ToString().Trim(),
 							                                      (string) lector["horaanotacion"].ToString().Trim(),
@@ -281,7 +289,7 @@ namespace osiris
 		void on_button_guardar_clicked(object sender, EventArgs args)
 		{
 			if(textview2.Buffer.Text.ToString()!=""){				
-				if(hora_nota != "" || minutos_nota != ""){
+				if(hora_nota != "" && minutos_nota != ""){
 					MessageDialog msgBox = new MessageDialog (MyWin,DialogFlags.Modal,
 												MessageType.Question,ButtonsType.YesNo,"¿ Esta seguro de Almacenar esta NOTA ?");
 					ResponseType miResultado = (ResponseType)
@@ -301,7 +309,7 @@ namespace osiris
 							DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"','"+
 							LoginEmpleado+"','"+
 							(string) entry_id_doctor.Text.ToString().Trim()+"','"+
-							textview2.Buffer.Text.ToString()+"','"+
+							textview2.Buffer.Text.ToString().ToUpper()+"','"+
 							DateTime.Now.ToString("yyyy-MM-dd")+"','"+
 							hora_nota+":"+minutos_nota
 							+"')";
@@ -343,7 +351,7 @@ namespace osiris
 	        
 			ListStore store2 = new ListStore( typeof (string), typeof (int));
 			combobox_hora_nota.Model = store2;
-			for(int i = (int) classpublic.horario_cita_inicio; i < (int)classpublic.horario_24_horas+1 ; i++){				
+			for(int i = 1; i < (int)classpublic.horario_24_horas+1 ; i++){				
 				store2.AppendValues ((string)i.ToString("00").Trim());
 			}
 			combobox_hora_nota.Changed += new EventHandler (onComboBoxChanged_hora_minutos_cita);

@@ -45,7 +45,7 @@ namespace osiris
 		
 		// Informacion de la Empresa
 		public string nombre_empresa = "P R A C T I M E D"; //"P R A C T I M E D"; "MEDICA NORESTE ION"
-		public string nombre_empresa2 = "PRACTIMED";
+		public string nombre_empresa2 = "P R A C T I M E D";
 		public string direccion_empresa = "Loma Grande 2703, Col. Loma de San Francisco"; //"Loma Grande 2703, Col. Loma de San Francisco"; //"Jose Angel Conchello 2880, Col. Victora"
 		public string telefonofax_empresa = "Telefono: (01)(81) 8040-6060"; //"Telefono: (01)(81) 8040-6060"; // "Telefono: (01)(81) 8351-3610"
 		public string version_sistema = "Sistema Hospitalario OSIRIS ver. 1.0";
@@ -53,7 +53,7 @@ namespace osiris
 		public string ivaparaaplicar = "16.00";
 		
 		public int escala_linux_windows = 1;   // Linux = 1  Windows = 8
-		public int horario_cita_inicio = 7;		// 7 am
+		public int horario_cita_inicio = 1;		// 7 am
 		public int horario_cita_termino = 20;	// 8 pm
 		public int horario_24_horas = 24; 		// media moche
 		public int intervalo_minutos = 05;

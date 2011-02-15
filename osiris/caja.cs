@@ -336,25 +336,18 @@ namespace osiris
 
 	    	// Voy a buscar el folio que capturo
 			button_selec_folio.Clicked += new EventHandler(on_selec_folio_clicked);
-			
 			// Validando que sen solo numeros
 			entry_folio_servicio.KeyPressEvent += onKeyPressEvent_enter_folio;
-			
 			// Activacion de grabacion de informacion
 	    	button_graba_pago.Clicked += new EventHandler(on_button_graba_pago_clicked);
-	    	
-			// Activacion de boton de busqueda
+	    	// Activacion de boton de busqueda
 			button_buscar_paciente.Clicked += new EventHandler(on_button_buscar_paciente_clicked);
-			
 			// Graba el pago para el cierre de esta cuenta
 			button_cierre_cuenta.Clicked += new EventHandler(on_button_cierre_cuenta_clicked);
-			
 			//graba el bloqueo de esta cuanta para que solo caja pueda realizar cargos
 			button_bloquea_cuenta.Clicked += new EventHandler(on_button_bloquea_cuenta_clicked);
-			
 			//Alta de paciente
 			button_alta_paciente.Clicked += new EventHandler(on_button_alta_paciente_clicked);
-			
 			// Imprime resumen de honorarios Medicos
 			button_honorario_medico.Clicked += new EventHandler(on_button_honorario_medico_clicked);
 			// Imprimime protocolo
@@ -387,7 +380,6 @@ namespace osiris
 			button_compara_extras.Clicked += new EventHandler(on_button_compara_extras_clicked);
 			// Traspasa cargos de un folio a otros mientras sea el mismo paciente
 			button_traspasa_productos.Clicked += new EventHandler(on_button_traspasa_productos_clicked);
-			
 			// Sale de la ventana
 			button_salir.Clicked += new EventHandler(on_cierraventanas_clicked);
 						
@@ -754,7 +746,7 @@ namespace osiris
 		
 		void on_button_abre_folio_clicked(object sender, EventArgs args)
 		{
-			if(LoginEmpleado == "DOLIVARES" || LoginEmpleado =="ADMIN" ){
+			if(LoginEmpleado == "DOLIVARES" || LoginEmpleado =="ADMIN" || LoginEmpleado =="MARGARITAZ" || LoginEmpleado =="IESPINOZAF"){
 				MessageDialog msgBox = new MessageDialog (MyWin,DialogFlags.Modal,
 							MessageType.Question,ButtonsType.YesNo,"¿ Esta seguro de Abrir este Nº de Atencion ?");
 				ResponseType miResultado = (ResponseType)msgBox.Run ();
@@ -1957,7 +1949,7 @@ namespace osiris
 						"osiris_his_paciente.nombre1_paciente || ' ' || osiris_his_paciente.nombre2_paciente || ' ' || osiris_his_paciente.apellido_paterno_paciente || ' ' || osiris_his_paciente.apellido_materno_paciente AS nombre_completo, "+
 						"to_char(osiris_his_paciente.fecha_nacimiento_paciente, 'dd-MM-yyyy') AS fechanacpaciente, to_char(to_number(to_char(age('"+DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss")+"',osiris_his_paciente.fecha_nacimiento_paciente),'yyyy') ,'9999'),'9999') AS edadpaciente, "+
 					    "telefono_particular1_paciente,osiris_erp_abonos.observaciones AS observacionesvarias,osiris_erp_abonos.concepto_del_abono AS concepto_comprobante,"+
-						"osiris_erp_cobros_enca.id_empresa,descripcion_empresa,"+
+						"osiris_erp_cobros_enca.id_empresa,descripcion_empresa,,osiris_erp_cobros_enca.nombre_medico_encabezado,"+
 					    "to_char(monto_de_abono_procedimiento,'999999999.99') AS montodelabono "+
 				        "FROM osiris_erp_cobros_deta,osiris_his_tipo_admisiones,osiris_productos,osiris_grupo_producto,osiris_erp_abonos,osiris_his_paciente,osiris_erp_cobros_enca,osiris_empresas "+
 						"WHERE osiris_erp_cobros_deta.id_tipo_admisiones = osiris_his_tipo_admisiones.id_tipo_admisiones "+
@@ -3069,7 +3061,7 @@ namespace osiris
             		idhabitacion = (int) lector["id_habitacion"];
             		if ((int) lector["idtipoadmision"] == 300 || (int) lector["idtipoadmision"] == 400  || 
             		(int) lector["idtipoadmision"] == 930 || (int) lector["idtipoadmision"] == 200 && idhabitacion == 1 || 
-            		(int) lector["idtipoadmision"] == 920 || (int) lector["idtipoadmision"] == 940){            		
+            		(int) lector["idtipoadmision"] == 920 || (int) lector["idtipoadmision"] == 940 || (int) lector["idtipoadmision"] == 950){            		
 	            		button_alta_paciente.Sensitive = true;	            		
 	            	}else{
 	            		button_alta_paciente.Sensitive = false;
@@ -3103,9 +3095,8 @@ namespace osiris
 													button_busca_producto.Sensitive = true;
 												}
 											}else{
-												if(LoginEmpleado =="DOLIVARES" || LoginEmpleado =="ADMIN" || LoginEmpleado =="IESPINOZAF" ){
-													
-													button_bloquea_cuenta.Sensitive = false;
+												if(LoginEmpleado =="DOLIVARES" || LoginEmpleado =="ADMIN" || LoginEmpleado =="IESPINOZAF" ){													
+													button_bloquea_cuenta.Sensitive = true;
 												}else{
 													button_cierre_cuenta.Sensitive = false;
 													button_bloquea_cuenta.Sensitive = false;
@@ -3452,13 +3443,12 @@ namespace osiris
 				comando = conexion.CreateCommand ();
                	comando.CommandText = "SELECT * FROM osiris_his_tipo_admisiones "+
                						"WHERE cuenta_mayor = 4000 "+
-               						"AND id_tipo_admisiones IN('200','300','400','920','930','960') "+
+               						"AND id_tipo_admisiones IN('200','300','400','920','930','950','960') "+
                						"ORDER BY descripcion_admisiones;";
 				
 				NpgsqlDataReader lector = comando.ExecuteReader ();
 				store2.AppendValues ("", 0);
-               	while (lector.Read())
-				{
+               	while (lector.Read()){
 					store2.AppendValues ((string) lector["descripcion_admisiones"], (int) lector["id_tipo_admisiones"]);
 				}
 			}catch (NpgsqlException ex){
@@ -3469,8 +3459,7 @@ namespace osiris
 			conexion.Close ();
 						
 			TreeIter iter2;
-			if (store2.GetIterFirst(out iter2))
-			{
+			if (store2.GetIterFirst(out iter2)){
 				//Console.WriteLine(iter2);
 				combobox_tipo_admision.SetActiveIter (iter2);
 			}

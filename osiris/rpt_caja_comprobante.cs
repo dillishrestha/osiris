@@ -164,8 +164,7 @@ namespace osiris
 						cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText((string) lector["descripcion_admisiones"].ToString().Trim());	Pango.CairoHelper.ShowLayout (cr, layout);
 						comienzo_linea += separacion_linea;
 						cr.MoveTo(15*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText((string) lector["descripcion_grupo_producto"].ToString().Trim());	Pango.CairoHelper.ShowLayout (cr, layout);
-					}
-					
+					}					
 					while (lector.Read()){
 						if (toma_tipoadmisiones != (int) lector["idadmisiones"]){
 							comienzo_linea += separacion_linea;

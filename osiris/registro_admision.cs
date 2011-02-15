@@ -128,6 +128,7 @@ namespace osiris
 		[Widget] Gtk.Entry entry_religion_paciente = null;
 		[Widget] Gtk.Entry entry_alergia_paciente = null;
 		[Widget] Gtk.Entry entry_observacion_ingreso = null;
+		[Widget] Gtk.Entry entry_lugar_nacimiento = null;
 		
 		[Widget] Gtk.CheckButton checkbutton_consulta = null;
 		[Widget] Gtk.Entry entry_medico_cm = null;
@@ -313,8 +314,7 @@ namespace osiris
 			ResponseType miResultado = (ResponseType)msgBox.Run ();
 			msgBox.Destroy();
  
-			if (miResultado == ResponseType.Yes){
-			
+			if (miResultado == ResponseType.Yes){			
 				NpgsqlConnection conexion = new NpgsqlConnection(connectionString+nombrebd);
 				try{
 					conexion.Open();
@@ -1459,7 +1459,7 @@ namespace osiris
 							"colonia_paciente, codigo_postal_paciente, telefono_particular1_paciente,"+
 							"telefono_trabajo1_paciente, celular1_paciente, municipio_paciente, estado_paciente, "+
 							"osiris_his_paciente.id_empresa AS idempresapaciente, osiris_empresas.descripcion_empresa,"+
-							"religion_paciente,alegias_paciente "+
+							"religion_paciente,alegias_paciente,lugar_nacimiento_paciente "+
 							"FROM osiris_his_paciente, osiris_empresas WHERE osiris_his_paciente.id_empresa=osiris_empresas.id_empresa "+
 							"AND pid_paciente = '"+pidpaciente_.ToString()+"'"+
 							"AND activo = 'true' "+
@@ -1497,6 +1497,7 @@ namespace osiris
 					entry_telcelular.Text = (string) lector["celular1_paciente"];
 					entry_religion_paciente.Text = (string) lector["religion_paciente"];
 					entry_alergia_paciente.Text = (string) lector["alegias_paciente"];
+					entry_lugar_nacimiento.Text = (string) lector["lugar_nacimiento_paciente"];
 					
 					estadocivil = (string) lector["estado_civil_paciente"];
 					// Estado Civil
@@ -1910,7 +1911,7 @@ namespace osiris
                 					"celular1_paciente,email_paciente,estado_civil_paciente,"+
                 					"sexo_paciente,municipio_paciente,estado_paciente,ocupacion_paciente,"+
                 					"id_quienlocreo_paciente,pid_paciente,id_empresa,activo,"+
-									"religion_paciente,alegias_paciente) VALUES ('"+
+									"religion_paciente,alegias_paciente,lugar_nacimiento_paciente) VALUES ('"+
                 					DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"','"+
                 					entry_nombre_1.Text.ToUpper().Trim()+"','"+
                 					entry_nombre_2.Text.ToUpper().Trim()+"','"+
@@ -1937,7 +1938,8 @@ namespace osiris
                 					idempresa_paciente+"','"+
                 					"true"+"','"+
 									entry_religion_paciente.Text.ToUpper()+"','"+
-									entry_alergia_paciente.Text.ToUpper()+"');";
+									entry_alergia_paciente.Text.ToUpper()+"','"+
+									entry_lugar_nacimiento.Text.ToUpper()+"');";
                 	//Console.WriteLine("Grabo informacion del Paciente "+PidPaciente.ToString());
 					comando.ExecuteNonQuery();					comando.Dispose();
 					return true;
@@ -2587,6 +2589,7 @@ namespace osiris
 			entry_religion_paciente.Sensitive = valor;
 			entry_alergia_paciente.Sensitive = valor;
 			entry_observacion_ingreso.Sensitive = valor;
+			entry_lugar_nacimiento.Sensitive = valor;
 			
 			combobox_aseguradora.Sensitive = valor;
 			combobox_municipios.Sensitive = valor;

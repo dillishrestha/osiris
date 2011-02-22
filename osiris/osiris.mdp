@@ -73,7 +73,6 @@
     <File subtype="Code" buildaction="Compile" name="rpt_hoja_de_cargos.cs" />
     <File subtype="Code" buildaction="Compile" name="rpt_honorario_medicos.cs" />
     <File subtype="Code" buildaction="Compile" name="rpt_inv_subalmacenes.cs" />
-    <File subtype="Code" buildaction="Compile" name="rpt_lista_de_precios.cs" />
     <File subtype="Code" buildaction="Compile" name="rpt_lista_precios.cs" />
     <File subtype="Code" buildaction="Compile" name="rpt_mov_productos.cs" />
     <File subtype="Code" buildaction="Compile" name="rpt_notas_de_cargos.cs" />

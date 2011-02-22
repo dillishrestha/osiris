@@ -25,22 +25,28 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 // 
 //////////////////////////////////////////////////////////
-// Programa		: facturador.cs
-// Proposito	: Facturador general
-// Objeto		: tesoreria.cs
+// Programa		: 
+// Proposito	: 
+// Objeto		:
 //////////////////////////////////////////////////////////	
 using System;
-using Npgsql;
-using System.Data;
 using Gtk;
-using Glade;
-using Gnome;
-using System.Collections;
+using Npgsql;
+using Cairo;
+using Pango;
 
 namespace osiris
 {
 	public class imprime_formato_factura
 	{
+		private static int pangoScale = 1024;
+		private PrintOperation print;
+		private double fontSize = 8.0;
+		int escala_en_linux_windows;		// Linux = 1  Windows = 8
+		int comienzo_linea = 70;
+		int separacion_linea = 10;
+		int numpage = 1;
+		
 		string numerofactura = "";
 		Gtk.TreeView treeview_detalle_de_factura;
 		Gtk.TreeStore treeViewEngineDetaFact;
@@ -66,17 +72,9 @@ namespace osiris
 		string fechafactura = "";
 		string LoginEmpleado = "";
 		
-		// Declarando variable de fuente para la impresion
-		//Gnome.Font fuente6 = Gnome.Font.FindClosest("Luxi Sans", 6);
-		Gnome.Font fuente7 = Gnome.Font.FindClosest("Luxi Sans", 7);
-		Gnome.Font fuente8 = Gnome.Font.FindClosest("Luxi Sans", 8);//Bitstream Vera Sans
-		//Gnome.Font fuente9 = Gnome.Font.FindClosest("Luxi Sans", 9);
-		//Gnome.Font fuente10 = Gnome.Font.FindClosest("Luxi Sans", 10);
-		//Gnome.Font fuente11 = Gnome.Font.FindClosest("Luxi Sans", 11);
-		//Gnome.Font fuente12 = Gnome.Font.FindClosest("Luxi Sans", 12);
-		//Gnome.Font fuente36 = Gnome.Font.FindClosest("Luxi Sans", 36);
-		
 		protected Gtk.Window MyWin;
+		
+		class_public classpublic = new class_public();
 		
 		public imprime_formato_factura(string _numerofactura_,object _treeview_detalle_de_factura_,string _nombrecliente_,string _rfccliente_,
 										string _curpcliente_,string _cpcliente_,string _direccioncliente_,string _coloniacliente_,
@@ -110,32 +108,15 @@ namespace osiris
 			catidadenletras = _catidadenletras_;
 			fechafactura = _fechafactura_;
 			LoginEmpleado = _LoginEmpleado_;
+			escala_en_linux_windows = classpublic.escala_linux_windows;
 			
-			if(error_no_existe_ == false){	
-				Gnome.PrintJob    trabajo   = new Gnome.PrintJob(Gnome.PrintConfig.Default());
-	        	Gnome.PrintDialog dialogo   = new Gnome.PrintDialog(trabajo, "FORMATO DE FACTURA", 0);
-	        	
-	        	int respuesta = dialogo.Run ();
-	        	
-	        	if (respuesta == (int) PrintButtons.Cancel) 
-				{
-					dialogo.Hide (); 
-					dialogo.Dispose (); 
-					return;
-				}
-				Gnome.PrintContext ctx = trabajo.Context;
-	        	ComponerPagina(ctx, trabajo); 
-				trabajo.Close();
-	            switch (respuesta)
-	        	{
-					case (int) PrintButtons.Print:   
-	                trabajo.Print (); 
-	                break;
-	                case (int) PrintButtons.Preview:
-	                new PrintJobPreview(trabajo, "RESUMEN DE FACTURA").Show();
-	                break;
-	        	}
-				dialogo.Hide (); dialogo.Dispose ();
+			if(error_no_existe_ == false){
+				print = new PrintOperation ();
+				print.JobName = "Imprime Factura";	// Name of the report
+				print.BeginPrint += new BeginPrintHandler (OnBeginPrint);
+				print.DrawPage += new DrawPageHandler (OnDrawPage);
+				print.EndPrint += new EndPrintHandler (OnEndPrint);
+				print.Run(PrintOperationAction.PrintDialog, null);
 			}else{
 				MessageDialog msgBox = new MessageDialog (MyWin,DialogFlags.Modal,
 										MessageType.Info,ButtonsType.Ok,"La factura seleccionada NO EXISTE verifique...");
@@ -143,8 +124,31 @@ namespace osiris
 			}		
 		}
 		
-		void ComponerPagina (Gnome.PrintContext ContextoImp, Gnome.PrintJob trabajoImpresion)
+		private void OnBeginPrint (object obj, Gtk.BeginPrintArgs args)
 		{
+			print.NPages = 1;  // crea cantidad de copias del reporte			
+			// para imprimir horizontalmente el reporte
+			//print.PrintSettings.Orientation = PageOrientation.Landscape;
+			//Console.WriteLine(print.PrintSettings.Orientation.ToString());
+		}
+		
+		private void OnDrawPage (object obj, Gtk.DrawPageArgs args)
+		{			
+			PrintContext context = args.Context;			
+			ejecutar_consulta_reporte(context);
+		}
+						
+		void ejecutar_consulta_reporte(PrintContext context)
+		{
+			Cairo.Context cr = context.CairoContext;
+			Pango.Layout layout = context.CreatePangoLayout ();
+			string toma_descrip_prod = "";
+			Pango.FontDescription desc = Pango.FontDescription.FromString ("Sans");									
+			// cr.Rotate(90)  Imprimir Orizontalmente rota la hoja cambian las posiciones de las lineas y columna					
+			fontSize = 8.0;			layout = null;			layout = context.CreatePangoLayout ();
+			desc.Size = (int)(fontSize * pangoScale);		layout.FontDescription = desc;
+			
+			/*
 			int filas = 735;
 			ContextoImp.BeginPage("Pagina 1");
 			Gnome.Print.Setfont (ContextoImp,fuente8);
@@ -241,7 +245,13 @@ namespace osiris
 			ContextoImp.MoveTo(500, filas);		ContextoImp.Show(totalfactura.PadLeft(10));
 			filas -= (14*6);
 			ContextoImp.MoveTo(300, filas);		ContextoImp.Show(LoginEmpleado+"/"+numerofactura.ToString());
-			ContextoImp.ShowPage();			 
+			ContextoImp.ShowPage();
+			*/ 
+		}
+		
+		private void OnEndPrint (object obj, Gtk.EndPrintArgs args)
+		{
+			
 		}
 	}
 }

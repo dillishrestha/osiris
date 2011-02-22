@@ -800,14 +800,7 @@ namespace osiris
 		}
 	}
 	
-	//
-	// CLASE PARA IMPRIMIR LOS CARGOS EXTRAS DENTRO DE LOS PROCEDIMIENTOS
-	// 
-	
-	public class rpt_cargos_extras
-	{
-	}
-	
+		
 		/*
 		public string connectionString;
 		public string nombrebd;

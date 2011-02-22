@@ -3,14 +3,7 @@
 //      AUTOR:  ISRAEL (Programacion)
 // To change standard headers go to Edit->Preferences->Coding->Standard Headers
 //
-using System;
-using Npgsql;
-using System.Data;
-using Gtk;
-using Glade;
-using Gnome;
-using System.Collections;
-using GtkSharp;
+
 
 namespace osiris
 {
@@ -25,7 +18,7 @@ namespace osiris
 		// Declarando el treeview
 		Gtk.TreeView lista_resumen_productos;
 		Gtk.TreeStore treeViewEngineResumen;
-		string titulo = "REPORTE  MOVIMIENTOS DE PRODUCTOS POR PACIENTE";
+		string titulo = "MOVIMIENTOS DE PRODUCTOS POR PACIENTE";
 		int contador = 1;
 		int numpage = 1;
 		int filas = -75;
@@ -71,43 +64,42 @@ namespace osiris
 			entry_mes2= entry_mes2_;
 			entry_ano2 = entry_ano2_;
 			entry_total_aplicado = entry_total_aplicado_;
+			escala_en_linux_windows = classpublic.escala_linux_windows;
 			
-			Gnome.PrintJob    trabajo   = new Gnome.PrintJob (PrintConfig.Default ());
-			Gnome.PrintDialog dialogo   = new Gnome.PrintDialog (trabajo, titulopagina, 0);
-			int respuesta = dialogo.Run ();
-		       	            
-			if (respuesta == (int) PrintButtons.Cancel){  //boton Cancelar
-				dialogo.Hide (); 
-				dialogo.Dispose (); 
-				return;
-			}
-			Gnome.PrintContext ctx = trabajo.Context;
-			ComponerPagina(ctx, trabajo); 
-			trabajo.Close();
-			switch (respuesta){  //imprimir
-				case (int) PrintButtons.Print:   
-					trabajo.Print (); 
-					break;
-				    
-				case (int) PrintButtons.Preview:
-					new PrintJobPreview(trabajo, titulopagina).Show();
-					break;
-			}
-			dialogo.Hide (); dialogo.Dispose ();
+			print = new PrintOperation ();
+			print.JobName = "Movimiento de Productos por Paciente";	// Name of the report
+			print.BeginPrint += new BeginPrintHandler (OnBeginPrint);
+			print.DrawPage += new DrawPageHandler (OnDrawPage);
+			print.EndPrint += new EndPrintHandler (OnEndPrint);
+			print.Run(PrintOperationAction.PrintDialog, null);					
 		}  
-														
-		void ComponerPagina (Gnome.PrintContext ContextoImp, Gnome.PrintJob trabajoImpresion)
-		{      
+		
+		private void OnBeginPrint (object obj, Gtk.BeginPrintArgs args)
+		{
+			print.NPages = 1;  // crea cantidad de copias del reporte			
+			// para imprimir horizontalmente el reporte
+			//print.PrintSettings.Orientation = PageOrientation.Landscape;
+			//Console.WriteLine(print.PrintSettings.Orientation.ToString());
+		}
+		
+		private void OnDrawPage (object obj, Gtk.DrawPageArgs args)
+		{			
+			PrintContext context = args.Context;			
+			ejecutar_consulta_reporte(context);
+		}
+						
+		void ejecutar_consulta_reporte(PrintContext context)
+		{   
+			Cairo.Context cr = context.CairoContext;
+			Pango.Layout layout = context.CreatePangoLayout ();
 			string toma_descrip_prod = "";
-			string fechahoracreacion = ""; 
-		    			                
-			// Crear una fuente 
-			Gnome.Font fuente = Gnome.Font.FindClosest("Bitstream Vera Sans", 12);
-			Gnome.Font fuente1 = Gnome.Font.FindClosest("Bitstream Vera Sans", 6);
-			Gnome.Font fuente2 = Gnome.Font.FindClosest("Bitstream Vera Sans", 7);
-			Gnome.Font fuente5 = Gnome.Font.FindClosestFromWeightSlant("Bitstream Vera Sans", FontWeight.Bold ,false, 12);
-			
-			// ESTA FUNCION ES PARA QUE EL TEXTO SALGA EN NEGRITA
+			Pango.FontDescription desc = Pango.FontDescription.FromString ("Sans");									
+			// cr.Rotate(90)  Imprimir Orizontalmente rota la hoja cambian las posiciones de las lineas y columna					
+			fontSize = 8.0;			layout = null;			layout = context.CreatePangoLayout ();
+			desc.Size = (int)(fontSize * pangoScale);		layout.FontDescription = desc;      
+			string toma_descrip_prod = "";
+			string fechahoracreacion = "";      
+			/*
 			contador = 0;
 			numpage = 1;
 			
@@ -194,41 +186,8 @@ namespace osiris
 			ContextoImp.Show("CANTIDAD DEL TOTAL APLICADO: "   +entry_total_aplicado); 
 			ContextoImp.MoveTo(120, filas);	ContextoImp.Show(toma_descrip_prod);
 			ContextoImp.ShowPage();
-		}
-		
-		void salto_pagina(Gnome.PrintContext ContextoImp, Gnome.PrintJob trabajoImpresion)
-		{
-			Gnome.Font fuente2 = Gnome.Font.FindClosest("Bitstream Vera Sans", 7);
-			if (contador > 47 ){
-				numpage +=1; 
-				ContextoImp.Rotate(90);
-				ContextoImp.ShowPage();				
-				ContextoImp.BeginPage("Pagina "+numpage.ToString());
-				Gnome.Font fuente5 = Gnome.Font.FindClosestFromWeightSlant("Bitstream Vera Sans", FontWeight.Bold ,false, 12);
-				//Encabezado de pagina
-				ContextoImp.Rotate(90);
-				// Cambiar la fuente
-				Gnome.Print.Setfont(ContextoImp,fuente5);
-				ContextoImp.MoveTo(320.7, -40);	       ContextoImp.Show( titulo+"");
-				Gnome.Print.Setfont(ContextoImp,fuente2);
-				ContextoImp.MoveTo(95, -30);			ContextoImp.Show("Sistema Hospitalario OSIRIS");
-				ContextoImp.MoveTo(95, -40);			ContextoImp.Show("Direccion:");
-				ContextoImp.MoveTo(95, -50);			ContextoImp.Show("Conmutador:");
-				ContextoImp.MoveTo(445, -50);			ContextoImp.Show("PAGINA "+numpage);
-				ContextoImp.MoveTo(399, -60);			ContextoImp.Show("Fecha Impresion: "+DateTime.Now.ToString("dd-MM-yyyy HH:mm"));
-				ContextoImp.MoveTo(370, -70);			ContextoImp.Show("Rango de Fechas :  Inicio " +entry_dia1+ "/"+entry_mes1+ "/"+entry_ano1+   "  Termino "  +entry_dia2+ "/"+entry_mes2+ "/"+entry_ano2);
-				ContextoImp.MoveTo(95, -80);			ContextoImp.Show("Cantidad:");
-				ContextoImp.MoveTo(145, -80);			ContextoImp.Show("ID:");
-				ContextoImp.MoveTo(195, -80);			ContextoImp.Show("Descripción Producto:");
-				ContextoImp.MoveTo(380, -80);			ContextoImp.Show("Folio:");
-				ContextoImp.MoveTo(410, -80);			ContextoImp.Show("PID:");
-				ContextoImp.MoveTo(440, -80);			ContextoImp.Show("Nom.Paciente:");
-				ContextoImp.MoveTo(695, -80);			ContextoImp.Show("Departamento:");
-				ContextoImp.MoveTo(625, -80);			ContextoImp.Show("Fecha de Cargo");
-				filas = -90;
-				contador = 0;
-			}
-		}
+			*/
+		}		
 	}
 }
 		     

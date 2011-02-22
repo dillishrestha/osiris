@@ -28,6 +28,7 @@
 // Proposito	: 
 // Objeto		: 
 //////////////////////////////////////////////////////////
+
 using System;
 using Gtk;
 using Npgsql;
@@ -49,10 +50,7 @@ namespace osiris
 		
 		string tiporeporte = "SINALTA";
 		string titulo = "REPORTE DE PACIENTES SIN ALTA";
-		
-		int fila = -70;
-		int contador = 1;
-				
+						
 		decimal sumacuenta = 0;
 		decimal totabono = 0;
 		

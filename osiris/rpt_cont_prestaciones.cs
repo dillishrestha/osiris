@@ -1,24 +1,58 @@
+//////////////////////////////////////////////////////////
+// created on 08/02/2008 at 08:39 a
+// Sistema Hospitalario OSIRIS
+// Monterrey - Mexico
+//
+// Autor    	: Ing. Daniel Olivares (Programacion)
+//				 
+// 				  
+// Licencia		: GLP
+//////////////////////////////////////////////////////////
+//
+// proyect osiris is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 2 of the License, or
+// (at your option) any later version.
+// 
+// proyect osiris is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// 
+// You should have received a copy of the GNU General Public License
+// along with Foobar; if not, write to the Free Software
+// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+// 
+//////////////////////////////////////////////////////////
+// Programa		: 
+// Proposito	:
+// Objeto		:
+//////////////////////////////////////////////////////////
 using System;
 using Gtk;
-using Gnome;
 using Npgsql;
-using System.Data;
-using Glade;
-using System.Collections;
-using GtkSharp;
+using Cairo;
+using Pango;
 
 namespace osiris
 {
 	public class con_prest
 	{
-		public string connectionString = "Server=localhost;" +
-            	                         "Port=5432;" +
-                	                     "User ID=admin;" +
-                    	                 "Password=1qaz2wsx;";
+		private static int pangoScale = 1024;
+		private PrintOperation print;
+		private double fontSize = 8.0;
+		int escala_en_linux_windows;		// Linux = 1  Windows = 8
+		int comienzo_linea = 70;
+		int separacion_linea = 10;
+		int numpage = 1;
+		
+		public string connectionString;
         public string nombrebd;
     	public int PidPaciente;
 	    public int folioservicio;
 	    public string medico;
+		
+		class_public classpublic = new class_public();
     
 		public con_prest (int PidPaciente_ , int folioservicio_,string _nombrebd_,string doctor)
 		{
@@ -26,40 +60,46 @@ namespace osiris
 			PidPaciente = PidPaciente_;
    		 	folioservicio = folioservicio_;
    		 	medico = doctor;
-			Gnome.PrintJob    trabajo   = new Gnome.PrintJob (PrintConfig.Default ());
-   		    Gnome.PrintDialog dialogo   = new Gnome.PrintDialog (trabajo, "CONTRATO DE PRESTACIONES", 0);
-       		int respuesta = dialogo.Run ();
-
-			if (respuesta == (int) PrintButtons.Cancel) 
-			{
-				Console.WriteLine("Impresión cancelada");
-				dialogo.Hide (); 
-				dialogo.Dispose (); 
-				return;
-			}
-	        Gnome.PrintContext ctx = trabajo.Context;
-   	     	ComponerPagina(ctx, trabajo); 
-	       	trabajo.Close();
-	        switch (respuesta)
-	        {
-   	            case (int) PrintButtons.Print:   
-				trabajo.Print (); 
-           	       		break;
-                case (int) PrintButtons.Preview:
-                Console.WriteLine ("vista previa");
-				new PrintJobPreview(trabajo, "CONTRATO DE PRESTACIONES").Show();
-                        break;
-        	}
-			dialogo.Hide (); dialogo.Dispose ();
+			escala_en_linux_windows = classpublic.escala_linux_windows;
+			
+			print = new PrintOperation ();
+			print.JobName = "CONTRATO DE PRESTACIONES";	// Name of the report
+			print.BeginPrint += new BeginPrintHandler (OnBeginPrint);
+			print.DrawPage += new DrawPageHandler (OnDrawPage);
+			print.EndPrint += new EndPrintHandler (OnEndPrint);
+			print.Run(PrintOperationAction.PrintDialog, null);
+			
 		}
-      
-		void ComponerPagina (Gnome.PrintContext ContextoImp, Gnome.PrintJob trabajoImpresion)
+		
+		private void OnBeginPrint (object obj, Gtk.BeginPrintArgs args)
 		{
+			print.NPages = 1;  // crea cantidad de copias del reporte			
+			// para imprimir horizontalmente el reporte
+			//print.PrintSettings.Orientation = PageOrientation.Landscape;
+			//Console.WriteLine(print.PrintSettings.Orientation.ToString());
+		}
+		
+		private void OnDrawPage (object obj, Gtk.DrawPageArgs args)
+		{			
+			PrintContext context = args.Context;			
+			ejecutar_consulta_reporte(context);
+		}
+						
+		void ejecutar_consulta_reporte(PrintContext context)
+		{
+			Cairo.Context cr = context.CairoContext;
+			Pango.Layout layout = context.CreatePangoLayout ();
+			string toma_descrip_prod = "";
+			Pango.FontDescription desc = Pango.FontDescription.FromString ("Sans");									
+			// cr.Rotate(90)  Imprimir Orizontalmente rota la hoja cambian las posiciones de las lineas y columna					
+			fontSize = 8.0;			layout = null;			layout = context.CreatePangoLayout ();
+			desc.Size = (int)(fontSize * pangoScale);		layout.FontDescription = desc;
+			
+			/*
 			NpgsqlConnection conexion; 
        		conexion = new NpgsqlConnection (connectionString+nombrebd);
         	// Verifica que la base de datos este conectada
-        	try
-        	{
+        	try{
         		conexion.Open ();
         		NpgsqlCommand comando; 
         		comando = conexion.CreateCommand (); 
@@ -543,23 +583,20 @@ namespace osiris
 			    Gnome.Print.Setfont (ContextoImp, fuente1);
 			    ContextoImp.MoveTo(20, filatex-640);
       			ContextoImp.Show("____________________________");
-	      			/*int filas3=700;
-      			for (int i1=0; i1 < 35; i1++)
-				{
-				filas3-=20;
-				ContextoImp.MoveTo(588, filas3);
-      			ContextoImp.Show("|");
-				}
-    			lector.Close ();*/
+	      			
 				conexion.Close ();
 				//TERMINAN de funcionar la conexion con postgresql 
 				ContextoImp.ShowPage();
-				}
-			catch (NpgsqlException ex)
-			{
+			}catch (NpgsqlException ex){
 				Console.WriteLine ("PostgresSQL error: {0}",ex.Message);
 				return; 
 			}
+			*/
+		}
+		
+		private void OnEndPrint (object obj, Gtk.EndPrintArgs args)
+		{
+			
 		}
 	}
 }

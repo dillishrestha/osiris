@@ -312,6 +312,7 @@ namespace osiris
 			button_limpiar.Sensitive = true;
 			lista_de_inventario.Sensitive = true;
 			button_copia_productos.Sensitive = true;
+			button_busca_producto.Sensitive = true;
 			
 			NpgsqlConnection conexion;
 			conexion = new NpgsqlConnection (connectionString+nombrebd);

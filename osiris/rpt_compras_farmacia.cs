@@ -4,10 +4,11 @@
 // Monterrey - Mexico
 //
 // Autor    	: Ing. Jesus Buentello Garza (Programacion)
+//			  	  Ing. Daniel Olivares C. (Adecuaciones y mejoras) arcangeldoc@gmail.com 18/02/2011
+//				  Traspaso a GTKprint+Pango+Cairo
 //				 
 // 				  
 // Licencia		: GLP
-//////////////////////////////////////////////////////////
 //
 // proyect osiris is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -28,12 +29,14 @@
 // Proposito	: Reportes de compras farmacia
 // Objeto		: 
 //////////////////////////////////////////////////////////	
+
 using System;
-using Npgsql;
-using System.Data;
 using Gtk;
+using Npgsql;
 using Glade;
-using Gnome;
+using Cairo;
+using Pango;
+using Glade;
 
 namespace osiris
 {
@@ -55,29 +58,22 @@ namespace osiris
 		[Widget] Gtk.Entry entry_mes2;
 		[Widget] Gtk.Entry entry_ano2;
 		
-		string query_fechas = " ";
-		int fila = -70;
-		int contador = 1;
-		int numpage = 1;		
+		private static int pangoScale = 1024;
+		private PrintOperation print;
+		private double fontSize = 8.0;
+		int escala_en_linux_windows;		// Linux = 1  Windows = 8
+		int comienzo_linea = 70;
+		int separacion_linea = 10;
+		int numpage = 1;
 		
+		string query_fechas = " ";
+			
 		string LoginEmpleado;
 		string NomEmpleado;
 		string AppEmpleado;
 		string ApmEmpleado;
 		string nombrebd;
 		string connectionString;
-		
-		// Declarando variable de fuente para la impresion
-		// Declaracion de fuentes tipo Bitstream Vera sans
-		Gnome.Font fuente5 = Gnome.Font.FindClosest("Luxi Sans", 5);
-		Gnome.Font fuente6 = Gnome.Font.FindClosest("Luxi Sans", 6);
-		//Gnome.Font fuente7 = Gnome.Font.FindClosest("Luxi Sans", 7);
-		Gnome.Font fuente8 = Gnome.Font.FindClosest("Luxi Sans", 8);//Bitstream Vera Sans
-		//Gnome.Font fuente9 = Gnome.Font.FindClosest("Luxi Sans", 9);
-		//Gnome.Font fuente10 = Gnome.Font.FindClosest("Luxi Sans", 10);
-		//Gnome.Font fuente11 = Gnome.Font.FindClosest("Luxi Sans", 11);
-		Gnome.Font fuente12 = Gnome.Font.FindClosest("Luxi Sans", 12);
-		//Gnome.Font fuente36 = Gnome.Font.FindClosest("Luxi Sans", 36);
 		
 		private TreeStore treeViewEngineFarmacia;
 	
@@ -86,6 +82,7 @@ namespace osiris
 		protected Gtk.Window MyWin;
 		
 		class_conexion conexion_a_DB = new class_conexion();
+		class_public classpublic = new class_public();
 		
 		public rpt_compras_farmacia(string LoginEmp_, string NomEmpleado_, string AppEmpleado_, string ApmEmpleado_, string nombrebd_) 
 		{
@@ -95,6 +92,7 @@ namespace osiris
 			ApmEmpleado = ApmEmpleado_;
 			connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
 			nombrebd = conexion_a_DB._nombrebd;
+			escala_en_linux_windows = classpublic.escala_linux_windows;
 			
 			Glade.XML gxml = new Glade.XML (null, "costos.glade", "reporte_farmacia", null);
 			gxml.Autoconnect (this);        
@@ -360,176 +358,126 @@ namespace osiris
 		
 		void on_imprime_reporte_clicked (object sender, EventArgs args)
 		{
-			
-			Gnome.PrintJob    trabajo   = new Gnome.PrintJob ();
-			Gnome.PrintDialog dialogo = new Gnome.PrintDialog (trabajo, "Reporte de Farmacia", 0);
-						
-			int respuesta = dialogo.Run ();
-			if (respuesta == (int) Gnome.PrintButtons.Cancel){
-				dialogo.Hide (); 
-				dialogo.Dispose (); 
-				return;
-			}
-			Gnome.PrintContext ctx = trabajo.Context;
-			ComponerPagina2(ctx, trabajo); 
-			trabajo.Close();
-			switch (respuesta){
-				case (int) PrintButtons.Print:   
-					trabajo.Print (); 
-				break;
-				case (int) PrintButtons.Preview:
-					new PrintJobPreview(trabajo, "REPORTE FARMACIA").Show();
-				break;
-			}
-			dialogo.Hide (); dialogo.Dispose ();	
+			print = new PrintOperation ();
+			print.JobName = "Reporte de Farmacia";	// Name of the report
+			print.BeginPrint += new BeginPrintHandler (OnBeginPrint);
+			print.DrawPage += new DrawPageHandler (OnDrawPage);
+			print.EndPrint += new EndPrintHandler (OnEndPrint);
+			print.Run(PrintOperationAction.PrintDialog, null);
 		}
 		
-		void ComponerPagina2 (Gnome.PrintContext ContextoImp, Gnome.PrintJob trabajoImpresion)
+		private void OnBeginPrint (object obj, Gtk.BeginPrintArgs args)
 		{
+			print.NPages = 1;  // crea cantidad de copias del reporte			
+			// para imprimir horizontalmente el reporte
+			print.PrintSettings.Orientation = PageOrientation.Landscape;
+			//Console.WriteLine(print.PrintSettings.Orientation.ToString());
+		}
+		
+		private void OnDrawPage (object obj, Gtk.DrawPageArgs args)
+		{			
+			PrintContext context = args.Context;			
+			ejecutar_consulta_reporte(context);
+		}
+						
+		void ejecutar_consulta_reporte(PrintContext context)
+		{
+			Cairo.Context cr = context.CairoContext;
+			Pango.Layout layout = context.CreatePangoLayout ();
 			TreeIter iter;
-			fila = -90;
-			
-			contador = 0;
-			numpage = 1;
-			ContextoImp.BeginPage("Pagina 1");	
-			ContextoImp.Rotate(90);
-			imprime_encabezado(ContextoImp,trabajoImpresion);
-			Gnome.Print.Setfont (ContextoImp, fuente5);
-			
 			string toma_descrip_prod;
-			string toma_descrip_alm;
-			
+			string toma_descrip_alm;			
 			if (this.treeViewEngineFarmacia.GetIterFirst (out iter)){
-				
-				Gnome.Print.Setfont (ContextoImp, fuente5);
-				ContextoImp.MoveTo(30, fila);	ContextoImp.Show((string) this.treeViewEngineFarmacia.GetValue (iter,0));
-				ContextoImp.MoveTo(55, fila);	ContextoImp.Show((string) this.treeViewEngineFarmacia.GetValue (iter,1));
-				ContextoImp.MoveTo(90, fila);	ContextoImp.Show((string) this.treeViewEngineFarmacia.GetValue (iter,2));
-
-				toma_descrip_prod = (string) this.treeViewEngineFarmacia.GetValue (iter,3);
+				imprime_encabezado(cr,layout);
+				while (this.treeViewEngineFarmacia.IterNext(ref iter)){
 					
-				if(toma_descrip_prod.Length > 51){
-					toma_descrip_prod = toma_descrip_prod.Substring(0,50);
-				}  				
+					toma_descrip_alm = (string) this.treeViewEngineFarmacia.GetValue (iter,11);					
+					if(toma_descrip_alm.Length > 22){
+						toma_descrip_alm = toma_descrip_alm.Substring(0,21);					
+					}  
 					
-				ContextoImp.MoveTo(145, fila);		ContextoImp.Show(toma_descrip_prod);
-				ContextoImp.MoveTo(315, fila);	ContextoImp.Show((string) this.treeViewEngineFarmacia.GetValue (iter,4));
-				ContextoImp.MoveTo(350, fila);	ContextoImp.Show((string) this.treeViewEngineFarmacia.GetValue (iter,5));
-				ContextoImp.MoveTo(395, fila);	ContextoImp.Show((string) this.treeViewEngineFarmacia.GetValue (iter,6));
-				ContextoImp.MoveTo(425, fila);	ContextoImp.Show((string) this.treeViewEngineFarmacia.GetValue (iter,7));
-				ContextoImp.MoveTo(460, fila);	ContextoImp.Show((string) this.treeViewEngineFarmacia.GetValue (iter,8));
-				ContextoImp.MoveTo(497, fila);	ContextoImp.Show((string) this.treeViewEngineFarmacia.GetValue (iter,9));
-				ContextoImp.MoveTo(528, fila);	ContextoImp.Show((string) this.treeViewEngineFarmacia.GetValue (iter,10));
-				
-				
-				toma_descrip_alm = (string) this.treeViewEngineFarmacia.GetValue (iter,11);
-					
-				if(toma_descrip_alm.Length > 22){
-					toma_descrip_alm = toma_descrip_alm.Substring(0,21);
-					
-				}  				
-					
-				ContextoImp.MoveTo(562, fila);		ContextoImp.Show(toma_descrip_alm);
-								
-				//ContextoImp.MoveTo(585, fila);	ContextoImp.Show((string) this.treeViewEngineFarmacia.GetValue (iter,11));
-								
-				ContextoImp.MoveTo(645, fila);	ContextoImp.Show((string) this.treeViewEngineFarmacia.GetValue (iter,12));
-				ContextoImp.MoveTo(687, fila);	ContextoImp.Show((string) this.treeViewEngineFarmacia.GetValue (iter,13));
-
-				fila-=10;
-				contador+=1;
-				salto_pagina(ContextoImp,trabajoImpresion);		
+					toma_descrip_alm = (string) this.treeViewEngineFarmacia.GetValue (iter,11);					
+					if(toma_descrip_alm.Length > 22){
+						toma_descrip_alm = toma_descrip_alm.Substring(0,21);
+					}
+				}	
 			}
-			
-			while (this.treeViewEngineFarmacia.IterNext(ref iter)){
-				
-				Gnome.Print.Setfont (ContextoImp, fuente5);
-				ContextoImp.MoveTo(30, fila);	ContextoImp.Show((string) this.treeViewEngineFarmacia.GetValue (iter,0));
-				ContextoImp.MoveTo(55, fila);	ContextoImp.Show((string) this.treeViewEngineFarmacia.GetValue (iter,1));
-				ContextoImp.MoveTo(90, fila);	ContextoImp.Show((string) this.treeViewEngineFarmacia.GetValue (iter,2));
-
-				toma_descrip_prod = (string) this.treeViewEngineFarmacia.GetValue (iter,3);
-					
-				if(toma_descrip_prod.Length > 51){
-					toma_descrip_prod = toma_descrip_prod.Substring(0,50);
-				}  				
-					
-				ContextoImp.MoveTo(145, fila);		ContextoImp.Show(toma_descrip_prod);
-				ContextoImp.MoveTo(315, fila);	ContextoImp.Show((string) this.treeViewEngineFarmacia.GetValue (iter,4));
-				ContextoImp.MoveTo(350, fila);	ContextoImp.Show((string) this.treeViewEngineFarmacia.GetValue (iter,5));
-				ContextoImp.MoveTo(395, fila);	ContextoImp.Show((string) this.treeViewEngineFarmacia.GetValue (iter,6));
-				ContextoImp.MoveTo(425, fila);	ContextoImp.Show((string) this.treeViewEngineFarmacia.GetValue (iter,7));
-				ContextoImp.MoveTo(460, fila);	ContextoImp.Show((string) this.treeViewEngineFarmacia.GetValue (iter,8));
-				ContextoImp.MoveTo(497, fila);	ContextoImp.Show((string) this.treeViewEngineFarmacia.GetValue (iter,9));
-				ContextoImp.MoveTo(528, fila);	ContextoImp.Show((string) this.treeViewEngineFarmacia.GetValue (iter,10));
-				
-				
-				toma_descrip_alm = (string) this.treeViewEngineFarmacia.GetValue (iter,11);
-					
-				if(toma_descrip_alm.Length > 22){
-					toma_descrip_alm = toma_descrip_alm.Substring(0,21);
-
-				}  				
-					
-				ContextoImp.MoveTo(562, fila);		ContextoImp.Show(toma_descrip_alm);
-				
-				//ContextoImp.MoveTo(585, fila);	ContextoImp.Show((string) this.treeViewEngineFarmacia.GetValue (iter,11));
-				
-				ContextoImp.MoveTo(645, fila);	ContextoImp.Show((string) this.treeViewEngineFarmacia.GetValue (iter,12));
-				ContextoImp.MoveTo(687, fila);	ContextoImp.Show((string) this.treeViewEngineFarmacia.GetValue (iter,13));
-
-				fila-=10;
-				contador+=1;
-				salto_pagina(ContextoImp,trabajoImpresion);
-			}
-			ContextoImp.ShowPage();
 		}
 		
-		void salto_pagina(Gnome.PrintContext ContextoImp, Gnome.PrintJob trabajoImpresion)
+		void imprime_encabezado(Cairo.Context cr,Pango.Layout layout)
 		{
-	        if (contador > 48 ){
-	        	numpage +=1;        	contador=1;
-	        	fila = -90;
-	        	ContextoImp.ShowPage();
-				ContextoImp.BeginPage("Pagina "+numpage.ToString());
-
-				ContextoImp.Rotate(90);
-				imprime_encabezado(ContextoImp,trabajoImpresion);
-	     	}
+			//Gtk.Image image5 = new Gtk.Image();
+            //image5.Name = "image5";
+			//image5.Pixbuf = new Gdk.Pixbuf(System.IO.Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, "osiris.jpg"));
+			//image5.Pixbuf = new Gdk.Pixbuf("/opt/osiris/bin/OSIRISLogo.jpg");   // en Linux
+			//image5.Pixbuf.ScaleSimple(128, 128, Gdk.InterpType.Bilinear);
+			//Gdk.CairoHelper.SetSourcePixbuf(cr,image5.Pixbuf,1,-30);
+			//Gdk.CairoHelper.SetSourcePixbuf(cr,image5.Pixbuf.ScaleSimple(145, 50, Gdk.InterpType.Bilinear),1,1);
+			//Gdk.CairoHelper.SetSourcePixbuf(cr,image5.Pixbuf.ScaleSimple(180, 64, Gdk.InterpType.Hyper),1,1);
+			//cr.Fill();
+			//cr.Paint();
+			//cr.Restore();
+								
+			Pango.FontDescription desc = Pango.FontDescription.FromString ("Sans");								
+			//cr.Rotate(90);  //Imprimir Orizontalmente rota la hoja cambian las posiciones de las lineas y columna					
+			fontSize = 8.0;
+			desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;
+			layout.FontDescription.Weight = Weight.Bold;		// Letra negrita
+			cr.MoveTo(05*escala_en_linux_windows,05*escala_en_linux_windows);			layout.SetText(classpublic.nombre_empresa);			Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(05*escala_en_linux_windows,15*escala_en_linux_windows);			layout.SetText(classpublic.direccion_empresa);		Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(05*escala_en_linux_windows,25*escala_en_linux_windows);			layout.SetText(classpublic.telefonofax_empresa);	Pango.CairoHelper.ShowLayout (cr, layout);
+			fontSize = 6.0;
+			desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;
+			cr.MoveTo(650*escala_en_linux_windows,05*escala_en_linux_windows);			layout.SetText("Fech.Rpt:"+(string) DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));		Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(650*escala_en_linux_windows,15*escala_en_linux_windows);			layout.SetText("N° Page :"+numpage.ToString().Trim());		Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(05*escala_en_linux_windows,35*escala_en_linux_windows);			layout.SetText("Sistema Hospitalario OSIRIS");		Pango.CairoHelper.ShowLayout (cr, layout);
+			// Cambiando el tamaño de la fuente			
+			fontSize = 10.0;
+			desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;
+			cr.MoveTo(240*escala_en_linux_windows, 25*escala_en_linux_windows);			layout.SetText("REPORTE OCUPACION HOSPITALARIA");					Pango.CairoHelper.ShowLayout (cr, layout);
+						
+			// Creando el Cuadro de Titulos
+			cr.Rectangle (05*escala_en_linux_windows, 50*escala_en_linux_windows, 750*escala_en_linux_windows, 15*escala_en_linux_windows);
+			cr.FillExtents();  //. FillPreserve(); 
+			cr.SetSourceRGB (0, 0, 0);
+			cr.LineWidth = 0.5;
+			cr.Stroke();
+			
+			fontSize = 7.0;
+			desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;
+			layout.FontDescription.Weight = Weight.Bold;		// Letra negrita
+					
+			cr.MoveTo(09*escala_en_linux_windows,53*escala_en_linux_windows);			layout.SetText("Folio.");			Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(74*escala_en_linux_windows,53*escala_en_linux_windows);			layout.SetText("Orden");				Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(114*escala_en_linux_windows,53*escala_en_linux_windows);			layout.SetText("Codigo");	Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(300*escala_en_linux_windows,53*escala_en_linux_windows);			layout.SetText("Descripcion");	Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(400*escala_en_linux_windows,53*escala_en_linux_windows);			layout.SetText("CostoUni");	Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(480*escala_en_linux_windows,53*escala_en_linux_windows);			layout.SetText("Fecha");	Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(570*escala_en_linux_windows,53*escala_en_linux_windows);			layout.SetText("Surtir");	Pango.CairoHelper.ShowLayout (cr, layout);
+			//cr.MoveTo(570*escala_en_linux_windows,53*escala_en_linux_windows);			layout.SetText("Autoz");	Pango.CairoHelper.ShowLayout (cr, layout);
+			//cr.MoveTo(570*escala_en_linux_windows,53*escala_en_linux_windows);			layout.SetText("%Gana");	Pango.CairoHelper.ShowLayout (cr, layout);
+			//cr.MoveTo(570*escala_en_linux_windows,53*escala_en_linux_windows);			layout.SetText("SubAlmacen");	Pango.CairoHelper.ShowLayout (cr, layout);
+			//cr.MoveTo(570*escala_en_linux_windows,53*escala_en_linux_windows);			layout.SetText("Compro");	Pango.CairoHelper.ShowLayout (cr, layout);
+			//cr.MoveTo(570*escala_en_linux_windows,53*escala_en_linux_windows);			layout.SetText("Medico");	Pango.CairoHelper.ShowLayout (cr, layout);
+			
+			layout.FontDescription.Weight = Weight.Normal;		// Letra Normal
 		}
 		
-		void imprime_encabezado(Gnome.PrintContext ContextoImp,Gnome.PrintJob trabajoImpresion)
-		{        		
-      		// Cambiar la fuente
-			Gnome.Print.Setfont (ContextoImp, fuente6);
-			ContextoImp.MoveTo(65.5, -30);			ContextoImp.Show("Sistema Hospitalario OSIRIS");
-			ContextoImp.MoveTo(66, -30);			ContextoImp.Show("Sistema Hospitalario OSIRIS");
-			ContextoImp.MoveTo(65.5, -40);			ContextoImp.Show("Direccion: ");
-			ContextoImp.MoveTo(66, -40);			ContextoImp.Show("Direccion: ");
-			ContextoImp.MoveTo(65.5, -50);			ContextoImp.Show("Conmutador: ");
-			ContextoImp.MoveTo(66, -50);			ContextoImp.Show("Conmutador: ");
-
-			Gnome.Print.Setfont (ContextoImp, fuente12);
-			ContextoImp.MoveTo(66, -65);			ContextoImp.Show("REPORTE FARMACIA");
-			ContextoImp.MoveTo(66, -65);			ContextoImp.Show("REPORTE FARMACIA");
-						
-			Gnome.Print.Setfont (ContextoImp, fuente8);
-			ContextoImp.MoveTo(35, -80);			ContextoImp.Show("Folio");
-			ContextoImp.MoveTo(63, -80);			ContextoImp.Show("Orden");
-			ContextoImp.MoveTo(100, -80);			ContextoImp.Show("Codigo");
-			ContextoImp.MoveTo(175, -80);			ContextoImp.Show("Descripcion");
-			ContextoImp.MoveTo(325, -80);			ContextoImp.Show("CostoUni");
-			ContextoImp.MoveTo(365, -80);			ContextoImp.Show("Precio");
-			ContextoImp.MoveTo(400, -80);			ContextoImp.Show("Fecha");
-			ContextoImp.MoveTo(432, -80);			ContextoImp.Show("Surtir");
-			ContextoImp.MoveTo(460, -80);			ContextoImp.Show("Embalaje");
+		void salto_de_pagina(Cairo.Context cr,Pango.Layout layout)			
+		{
+			if(comienzo_linea >530){
+				cr.ShowPage();
+				Pango.FontDescription desc = Pango.FontDescription.FromString ("Sans");								
+				fontSize = 8.0;		desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;
+				comienzo_linea = 70;
+				numpage += 1;
+				imprime_encabezado(cr,layout);
+			}
+		}
 			
-			ContextoImp.MoveTo(500, -80);			ContextoImp.Show("Autoz");
-			ContextoImp.MoveTo(528, -80);			ContextoImp.Show("%Gana");
-			ContextoImp.MoveTo(566, -80);			ContextoImp.Show("SubAlmacen");
-			ContextoImp.MoveTo(643, -80);			ContextoImp.Show("Compro");
-			ContextoImp.MoveTo(698, -80);			ContextoImp.Show("Medico");
-      	}
+		private void OnEndPrint (object obj, Gtk.EndPrintArgs args)
+		{
+		}
 		
 		void on_cierraventanas_clicked (object sender, EventArgs args)	
 		{

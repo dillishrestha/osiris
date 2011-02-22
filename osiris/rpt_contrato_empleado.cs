@@ -1,16 +1,51 @@
+//////////////////////////////////////////////////////////
+// created on 08/02/2008 at 08:39 a
+// Sistema Hospitalario OSIRIS
+// Monterrey - Mexico
+//
+// Autor    	: Ing. Daniel Olivares (Programacion)
+//				 
+// 				  
+// Licencia		: GLP
+//////////////////////////////////////////////////////////
+//
+// proyect osiris is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 2 of the License, or
+// (at your option) any later version.
+// 
+// proyect osiris is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// 
+// You should have received a copy of the GNU General Public License
+// along with Foobar; if not, write to the Free Software
+// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+// 
+//////////////////////////////////////////////////////////
+// Programa		: 
+// Proposito	:
+// Objeto		:
+//////////////////////////////////////////////////////////
 using System;
 using Gtk;
-using Gnome;
 using Npgsql;
-using System.Data;
-using Glade;
-using System.Collections;
-using GtkSharp;
+using Cairo;
+using Pango;
 
 namespace osiris
 {
 	public class rpt_contrato_empleado
 	{
+		private static int pangoScale = 1024;
+		private PrintOperation print;
+		private double fontSize = 8.0;
+		int escala_en_linux_windows;		// Linux = 1  Windows = 8
+		int comienzo_linea = 70;
+		int separacion_linea = 10;
+		int numpage = 1;
+		
 		string tiempocontrato;
 	    string tiempoc;
 	    string tipocontrato ;
@@ -35,119 +70,77 @@ namespace osiris
 	    string tipopagosubstring;
 	    string nacionalidad;
 		
-		public rpt_contrato_empleado(string tipocontrato_ , 
-	                               string appaterno_, 
-	                               string apmaterno_,
-	                               string nom1_,
-	                               string nom2_,
-	                               string edad_,
-	                               string calle_,
-	                               string colonia_,
-	                               string numero_,
-	                               string funcion_,
-	                               string depto_,
-	                               string puesto_,
-	                               string jornada_,
-	                               string tiempocomida_,
-	                               string fechacontrato_,
-	                               string sueldo_,
-	                               string tipopago_,
-	                               string nacionalidad_
-	                               )
+		class_public classpublic = new class_public();
+		
+		public rpt_contrato_empleado(string tipocontrato_ , string appaterno_, string apmaterno_,string nom1_, string nom2_,
+	                               string edad_,string calle_,string colonia_,string numero_,string funcion_,string depto_,
+	                               string puesto_,string jornada_,string tiempocomida_,string fechacontrato_,string sueldo_,string tipopago_,
+	                               string nacionalidad_)
 		{
 		
-		tipocontrato = tipocontrato_;
-		appaterno = appaterno_;
-		apmaterno = apmaterno_;
-		nom1 = nom1_;
-		nom2 = nom2_;
-		edad = edad_;
-		nacionalidad = nacionalidad_;
-		//direccion = calle_+" #"+numero_+", Colonia: "+colonia_;
-		calle=calle_;
-		numero=numero_;
-		colonia=colonia_;
-		depto = depto_;
-		funcion = funcion_;
-		puesto = puesto_;
-		jornada = jornada_;
-		tiempocomida = tiempocomida_;
-		fechacontrato = fechacontrato_;
-		sueldo = sueldo_;
-		tipopago = tipopago_;
-		tipopagosubstring = tipopago.Substring( tipopago.IndexOf("(")+1 , tipopago.Length -  tipopago.IndexOf("(")-2 );
-		
-		if (tipopagosubstring == "QUINCENAL" )
-		{fechacobro = "Quince y ultimo del mes";}
-		if (tipopagosubstring == "SEMANAL" )
-		{fechacobro = "Sabados del mes";}
-		
-		
-		Console.WriteLine("clase imprimir");
-		Gnome.PrintJob    trabajo   = new Gnome.PrintJob (PrintConfig.Default ());
-   		Gnome.PrintDialog dialogo   = new Gnome.PrintDialog (trabajo, "CONTRATO DE EMPLEADO", 0);
-       	
-       	
-       	
-       	int respuesta = dialogo.Run ();
-
-			    if (respuesta == (int) PrintButtons.Cancel) 
-					{   //boton Cancelar
-						Console.WriteLine("Impresión cancelada");
-						dialogo.Hide (); 
-						dialogo.Dispose (); 
-						return;
-					}
-	        Gnome.PrintContext ctx = trabajo.Context;
-   	     	ComponerPagina(ctx, trabajo); 
-	       	trabajo.Close();
-			        switch (respuesta)
-			        {   //imprimir
-		   	            case (int) PrintButtons.Print:   
-						trabajo.Print (); 
-		           	    break;
-		           	    //vista previa
-		                case (int) PrintButtons.Preview:
-		                Console.WriteLine ("vista previa");
-		                
-						new PrintJobPreview(trabajo, "CONTRATO DE EMPLEADO").Show();
-						
-		                //dialogo.Icon = Gdk.Pixbuf.LoadFromResource("/home/egonzalez/Desktop/osiris/blam.png");
-		                
-		                break;
-		        	}
-			dialogo.Hide (); dialogo.Dispose ();
+			tipocontrato = tipocontrato_;
+			appaterno = appaterno_;
+			apmaterno = apmaterno_;
+			nom1 = nom1_;
+			nom2 = nom2_;
+			edad = edad_;
+			nacionalidad = nacionalidad_;
+			//direccion = calle_+" #"+numero_+", Colonia: "+colonia_;
+			calle=calle_;
+			numero=numero_;
+			colonia=colonia_;
+			depto = depto_;
+			funcion = funcion_;
+			puesto = puesto_;
+			jornada = jornada_;
+			tiempocomida = tiempocomida_;
+			fechacontrato = fechacontrato_;
+			sueldo = sueldo_;
+			tipopago = tipopago_;
+			tipopagosubstring = tipopago.Substring( tipopago.IndexOf("(")+1 , tipopago.Length -  tipopago.IndexOf("(")-2 );
+			escala_en_linux_windows = classpublic.escala_linux_windows;
+			
+			if (tipopagosubstring == "QUINCENAL" ){fechacobro = "Quince y ultimo del mes";}
+			if (tipopagosubstring == "SEMANAL" ){fechacobro = "Sabados del mes";}
+			
+				
+			print = new PrintOperation ();
+			print.JobName = "CONTRATO DE EMPLEADO";	// Name of the report
+			print.BeginPrint += new BeginPrintHandler (OnBeginPrint);
+			print.DrawPage += new DrawPageHandler (OnDrawPage);
+			print.EndPrint += new EndPrintHandler (OnEndPrint);
+			print.Run(PrintOperationAction.PrintDialog, null);
 		}
 		
+		private void OnBeginPrint (object obj, Gtk.BeginPrintArgs args)
+		{
+			print.NPages = 1;  // crea cantidad de copias del reporte			
+			// para imprimir horizontalmente el reporte
+			//print.PrintSettings.Orientation = PageOrientation.Landscape;
+			//Console.WriteLine(print.PrintSettings.Orientation.ToString());
+		}
 		
-		
-		void ComponerPagina (Gnome.PrintContext ContextoImp, Gnome.PrintJob trabajoImpresion)
-		{ 
-		
-		
-		
-		         
-		        ContextoImp.BeginPage("Pagina 1");
-			// Crear una fuente 
-				  
-				//Gnome.Font fuente = Gnome.Font.FindClosest("Bitstream Vera Sans", 12);
-				//Gnome.Font fuente1 = Gnome.Font.FindClosest("Bitstream Vera Sans", 36);
-				Gnome.Font fuente2 = Gnome.Font.FindClosest("Bitstream Vera Sans", 8);
-				Gnome.Font fuente3 = Gnome.Font.FindClosest("Bitstream Vera Sans", 10);
-				// ESTA FUNCION ES PARA QUE EL TEXTO SALGA EN NEGRITA
-				Gnome.Font fuente4 = Gnome.Font.FindClosestFromWeightSlant("Bitstream Vera Sans", FontWeight.Bold ,false, 12);
-				Gnome.Font fuente5 = Gnome.Font.FindClosestFromWeightSlant("Bitstream Vera Sans", FontWeight.Bold ,false, 10);
-				//Encabezado de pagina
-			 
+		private void OnDrawPage (object obj, Gtk.DrawPageArgs args)
+		{			
+			PrintContext context = args.Context;			
+			ejecutar_consulta_reporte(context);
+		}
+						
+		void ejecutar_consulta_reporte(PrintContext context)
+		{
+			Cairo.Context cr = context.CairoContext;
+			Pango.Layout layout = context.CreatePangoLayout ();
+			string toma_descrip_prod = "";
+			Pango.FontDescription desc = Pango.FontDescription.FromString ("Sans");									
+			// cr.Rotate(90)  Imprimir Orizontalmente rota la hoja cambian las posiciones de las lineas y columna					
+			fontSize = 8.0;			layout = null;			layout = context.CreatePangoLayout ();
+			desc.Size = (int)(fontSize * pangoScale);		layout.FontDescription = desc;
 			
-			    
+			/*
 			    Gnome.Print.Setfont (ContextoImp, fuente4);
 			    
 				ContextoImp.MoveTo(150, 750);
 			    ContextoImp.Show("CONTRATO INDIVIDUAL DE TRABAJO");
-			    
-			    
-			   // Console.WriteLine(this.tipocontrato.Substring(0,this.tipocontrato.Length));
 			    
 			   // if para tipo de contrato
 			    if (tipocontrato == "PRACTICAS")
@@ -390,10 +383,12 @@ namespace osiris
 		        ContextoImp.Show("GENERADOR DE NOMINAS");
 		        
 		        ContextoImp.ShowPage();
-        		
+		   */
 		}
 		
-		
-		
+		private void OnEndPrint (object obj, Gtk.EndPrintArgs args)
+		{
+			
+		}
 	}
 }

@@ -1,24 +1,30 @@
 
 using System;
-using Npgsql;
-using System.Data;
 using Gtk;
-using Glade;
-using Gnome;
+using Npgsql;
+using Cairo;
+using Pango;
 
 namespace osiris
 {
 
 	public class rpt_inv_subalmacenes
 	{
+		private static int pangoScale = 1024;
+		private PrintOperation print;
+		private double fontSize = 8.0;
+		int escala_en_linux_windows;		// Linux = 1  Windows = 8
+		int comienzo_linea = 70;
+		int separacion_linea = 10;
+		int numpage = 1;
+		
 		string titulo;
 		
 		int columna = 0;
 		int fila = -90;
 		int filas = 690;
 		int contador = 1;
-		int numpage = 1;
-		
+				
 		string connectionString;
 		string nombrebd;
 		
@@ -33,19 +39,8 @@ namespace osiris
 		string descsubalmacen;
 		int tipoalmacen;
 		
-		// Declarando variable de fuente para la impresion
-		// Declaracion de fuentes tipo Bitstream Vera sans
-		//Gnome.Font fuente5 = Gnome.Font.FindClosest("Luxi Sans", 5);
-		Gnome.Font fuente6 = Gnome.Font.FindClosest("Luxi Sans", 6);
-		Gnome.Font fuente7 = Gnome.Font.FindClosest("Luxi Sans", 7);
-		Gnome.Font fuente8 = Gnome.Font.FindClosest("Luxi Sans", 8);//Bitstream Vera Sans
-		Gnome.Font fuente9 = Gnome.Font.FindClosest("Luxi Sans", 9);
-		//Gnome.Font fuente10 = Gnome.Font.FindClosest("Luxi Sans", 10);
-		//Gnome.Font fuente11 = Gnome.Font.FindClosest("Luxi Sans", 11);
-		//Gnome.Font fuente12 = Gnome.Font.FindClosest("Luxi Sans", 12);
-		//Gnome.Font fuente36 = Gnome.Font.FindClosest("Luxi Sans", 36);
-				
 		class_conexion conexion_a_DB = new class_conexion();
+		class_public classpublic = new class_public();
 		
 		//Declaracion de ventana de error
 		protected Gtk.Window MyWinError;
@@ -55,35 +50,42 @@ namespace osiris
 		{
 			connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
 			nombrebd = conexion_a_DB._nombrebd;
+			escala_en_linux_windows = classpublic.escala_linux_windows;
 			
-			titulo = "REPORTE DE STOCK SUB-ALMACEN";
-			Gnome.PrintJob    trabajo   = new Gnome.PrintJob (PrintConfig.Default());
-        	Gnome.PrintDialog dialogo   = new Gnome.PrintDialog (trabajo, titulo, 0);
-        	int         respuesta = dialogo.Run ();
-        
-			if (respuesta == (int) Gnome.PrintButtons.Cancel){
-				dialogo.Hide (); 		dialogo.Dispose (); 
-				return;
-			}
-
-        	Gnome.PrintContext ctx = trabajo.Context;        
-        	ComponerPagina(ctx, trabajo); 
-        	trabajo.Close();
-             
-        	switch (respuesta)
-        	{
-                  case (int) Gnome.PrintButtons.Print:   
-                  		trabajo.Print (); 
-                  		break;
-                  case (int) Gnome.PrintButtons.Preview:
-                      	new Gnome.PrintJobPreview(trabajo, titulo).Show();
-                        break;
-        	}
-        	dialogo.Hide (); dialogo.Dispose ();
+			print = new PrintOperation ();
+			print.JobName = "Reporte de Stock";	// Name of the report
+			print.BeginPrint += new BeginPrintHandler (OnBeginPrint);
+			print.DrawPage += new DrawPageHandler (OnDrawPage);
+			print.EndPrint += new EndPrintHandler (OnEndPrint);
+			print.Run(PrintOperationAction.PrintDialog, null);
+					
 		}
 		
-		void ComponerPagina(Gnome.PrintContext ContextoImp, Gnome.PrintJob trabajoImpresion)
-		{	
+		private void OnBeginPrint (object obj, Gtk.BeginPrintArgs args)
+		{
+			print.NPages = 1;  // crea cantidad de copias del reporte			
+			// para imprimir horizontalmente el reporte
+			//print.PrintSettings.Orientation = PageOrientation.Landscape;
+			//Console.WriteLine(print.PrintSettings.Orientation.ToString());
+		}
+		
+		private void OnDrawPage (object obj, Gtk.DrawPageArgs args)
+		{			
+			PrintContext context = args.Context;			
+			ejecutar_consulta_reporte(context);
+		}
+						
+		void ejecutar_consulta_reporte(PrintContext context)
+		{   
+			Cairo.Context cr = context.CairoContext;
+			Pango.Layout layout = context.CreatePangoLayout ();
+			string toma_descrip_prod = "";
+			Pango.FontDescription desc = Pango.FontDescription.FromString ("Sans");									
+			// cr.Rotate(90)  Imprimir Orizontalmente rota la hoja cambian las posiciones de las lineas y columna					
+			fontSize = 8.0;			layout = null;			layout = context.CreatePangoLayout ();
+			desc.Size = (int)(fontSize * pangoScale);		layout.FontDescription = desc;
+			
+			/*
 			filas=690;
 			contador=1;
 			string tomovalor1 = "";
@@ -172,80 +174,50 @@ namespace osiris
 									MessageType.Error,ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
 					msgBoxError.Run ();		msgBoxError.Destroy();
 			}
-				
+			*/
 		}
 	 	
-		void imprime_encabezado(Gnome.PrintContext ContextoImp, Gnome.PrintJob trabajoImpresion)
-		{
-      		// Cambiar la fuente
-      		Gnome.Print.Setfont(ContextoImp,fuente9);								
-			ContextoImp.MoveTo(230, 730);			ContextoImp.Show("REPORTE DE STOCK");	
-			ContextoImp.MoveTo(325, 730);			ContextoImp.Show(descsubalmacen);
-			Gnome.Print.Setfont (ContextoImp, fuente6);
-			ContextoImp.MoveTo(19.7, 770);			ContextoImp.Show("Sistema Hospitalario OSIRIS");
-			ContextoImp.MoveTo(20, 770);			ContextoImp.Show("Sistema Hospitalario OSIRIS");
-			ContextoImp.MoveTo(19.7, 760);			ContextoImp.Show("Direccion: ");
-			ContextoImp.MoveTo(20, 760);			ContextoImp.Show("Direccion: ");
-			ContextoImp.MoveTo(19.7, 750);			ContextoImp.Show("Conmutador: ");
-			ContextoImp.MoveTo(20, 750);			ContextoImp.Show("Conmutador: ");
-			Gnome.Print.Setfont(ContextoImp,fuente7);
-			ContextoImp.MoveTo(230, 50);			ContextoImp.Show("PAGINA "+numpage+"  Fecha Impresion: "+DateTime.Now.ToString("dd-MM-yyyy"));
-			Gnome.Print.Setfont(ContextoImp,fuente8);
-			ContextoImp.MoveTo(25, 710);		ContextoImp.Show("FOLIO");
-			ContextoImp.MoveTo(110, 710);		ContextoImp.Show("DESCRIPCION");
-			ContextoImp.MoveTo(315, 710);		ContextoImp.Show("STOCK");
-			ContextoImp.MoveTo(355, 710);		ContextoImp.Show("MIN. STK");
-			ContextoImp.MoveTo(395, 710);		ContextoImp.Show("MAX. STK");
-			ContextoImp.MoveTo(440, 710);		ContextoImp.Show("P. REORDEN");
-			ContextoImp.MoveTo(500, 710);		ContextoImp.Show("FEC. ULT. SURTIDO");
-		}    
-      	
-      	void salto_pagina(Gnome.PrintContext ContextoImp, Gnome.PrintJob trabajoImpresion,int contador_)
-		{
-	        if (contador_ > 60 ){
-	        	numpage +=1;
-	        	ContextoImp.ShowPage();
-				ContextoImp.BeginPage("Pagina "+numpage.ToString());
-				imprime_encabezado(ContextoImp,trabajoImpresion);
-	     		Gnome.Print.Setfont (ContextoImp, fuente6);
-	        	contador=1;
-	        	filas=690;
-	        }
-		}
-	
+			
 		public void rpt_traspasos()
 		{
 			connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
 			nombrebd = conexion_a_DB._nombrebd;
 			
-			titulo = "REPORTE DE ENVIO ENTRE SUB-ALMACENES";
-			Gnome.PrintJob    trabajo   = new Gnome.PrintJob (PrintConfig.Default());
-        	Gnome.PrintDialog dialogo   = new Gnome.PrintDialog (trabajo, titulo, 0);
-        	int         respuesta = dialogo.Run ();
-        
-			if (respuesta == (int) Gnome.PrintButtons.Cancel){
-				dialogo.Hide (); 		dialogo.Dispose (); 
-				return;
-			}
-
-        	Gnome.PrintContext ctx = trabajo.Context;        
-        	ComponerPagina1(ctx, trabajo); 
-        	trabajo.Close();
-             
-        	switch (respuesta)
-        	{
-                  case (int) Gnome.PrintButtons.Print:   
-                  		trabajo.Print (); 
-                  		break;
-                  case (int) Gnome.PrintButtons.Preview:
-                      	new Gnome.PrintJobPreview(trabajo, titulo).Show();
-                        break;
-        	}
-        	dialogo.Hide (); dialogo.Dispose ();
+			escala_en_linux_windows = classpublic.escala_linux_windows;
+			
+			print = new PrintOperation ();
+			print.JobName = "Reporte de Stock";	// Name of the report
+			print.BeginPrint += new BeginPrintHandler (OnBeginPrint1);
+			print.DrawPage += new DrawPageHandler (OnDrawPage1);
+			print.EndPrint += new EndPrintHandler (OnEndPrint);
+			print.Run(PrintOperationAction.PrintDialog, null);
+			
 		}
 		
-		void ComponerPagina1(Gnome.PrintContext ContextoImp, Gnome.PrintJob trabajoImpresion)
-		{	
+		private void OnBeginPrint1 (object obj, Gtk.BeginPrintArgs args)
+		{
+			print.NPages = 1;  // crea cantidad de copias del reporte			
+			// para imprimir horizontalmente el reporte
+			//print.PrintSettings.Orientation = PageOrientation.Landscape;
+			//Console.WriteLine(print.PrintSettings.Orientation.ToString());
+		}
+		
+		private void OnDrawPage1 (object obj, Gtk.DrawPageArgs args)
+		{			
+			PrintContext context = args.Context;			
+			ejecutar_consulta_reporte1(context);
+		}
+						
+		void ejecutar_consulta_reporte1(PrintContext context)
+		{   
+			Cairo.Context cr = context.CairoContext;
+			Pango.Layout layout = context.CreatePangoLayout ();
+			string toma_descrip_prod = "";
+			Pango.FontDescription desc = Pango.FontDescription.FromString ("Sans");									
+			// cr.Rotate(90)  Imprimir Orizontalmente rota la hoja cambian las posiciones de las lineas y columna					
+			fontSize = 8.0;			layout = null;			layout = context.CreatePangoLayout ();
+			desc.Size = (int)(fontSize * pangoScale);		layout.FontDescription = desc;	
+			/*
 			filas=690;
 			contador=1;
 			string tomovalor1 = "";
@@ -276,12 +248,10 @@ namespace osiris
 				ContextoImp.BeginPage("Pagina 1");
 				imprime_encabezado(ContextoImp,trabajoImpresion);
 				Gnome.Print.Setfont (ContextoImp, fuente6);
-				if (lector.Read())
-				{
+				if (lector.Read()){
 					ContextoImp.MoveTo(15, filas);		ContextoImp.Show((string) lector["codProducto".Trim()]);
 					tomovalor1 = (string) lector["descripcion"];
-					if(tomovalor1.Length > 65)
-					{
+					if(tomovalor1.Length > 65){
 						tomovalor1 = tomovalor1.Substring(0,65); 
 					}
 					ContextoImp.MoveTo(65, filas);		ContextoImp.Show(tomovalor1);
@@ -299,8 +269,7 @@ namespace osiris
 				while (lector.Read()){
 					ContextoImp.MoveTo(15, filas);		ContextoImp.Show((string) lector["codProducto".Trim()]);
 					tomovalor1 = (string) lector["descripcion"];
-					if(tomovalor1.Length > 65)
-					{
+					if(tomovalor1.Length > 65){
 						tomovalor1 = tomovalor1.Substring(0,65); 
 					}
 					ContextoImp.MoveTo(65, filas);		ContextoImp.Show(tomovalor1);
@@ -325,7 +294,11 @@ namespace osiris
 									MessageType.Error,ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
 					msgBoxError.Run ();		msgBoxError.Destroy();
 			}
-				
+			*/
+		}
+		
+		private void OnEndPrint (object obj, Gtk.EndPrintArgs args)
+		{
 		}
 	}
 }

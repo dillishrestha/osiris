@@ -1,16 +1,52 @@
+//////////////////////////////////////////////////////////
+// created on 08/02/2008 at 08:39 a
+// Sistema Hospitalario OSIRIS
+// Monterrey - Mexico
+//
+// Autor    	: Ing. Daniel Olivares (Programacion)
+//				 
+// 				  
+// Licencia		: GLP
+//////////////////////////////////////////////////////////
+//
+// proyect osiris is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 2 of the License, or
+// (at your option) any later version.
+// 
+// proyect osiris is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// 
+// You should have received a copy of the GNU General Public License
+// along with Foobar; if not, write to the Free Software
+// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+// 
+//////////////////////////////////////////////////////////
+// Programa		: 
+// Proposito	:
+// Objeto		:
+//////////////////////////////////////////////////////////
+
 using System;
 using Gtk;
-using Gnome;
 using Npgsql;
-using System.Data;
-using Glade;
-using System.Collections;
-using GtkSharp;
+using Cairo;
+using Pango;
 
 namespace osiris
 {	
 	public class rpt_detalle_empleados
 	{
+		private static int pangoScale = 1024;
+		private PrintOperation print;
+		private double fontSize = 8.0;
+		int escala_en_linux_windows;		// Linux = 1  Windows = 8
+		int comienzo_linea = 70;
+		int separacion_linea = 10;
+		int numpage = 1;
+		
 		string contrato_empleado;
 		string appaterno;
 		string apmaterno;
@@ -51,6 +87,8 @@ namespace osiris
 		string tipo_pago_oculta;
 		string sueldo_actual_oculta;
 		string locker;
+		
+		class_public classpublic = new class_public();
 		
 		public rpt_detalle_empleados(string contrato_empleado_, string appaterno_, string apmaterno_,string nom1_,string nom2_,string dia_nac_,string mes_nac_,string anno_nac_,
 		                     string lugar_nac_,string rfc_empleado_,string curp_empleado_,string imss_empleado_,string infonavit_empleado_,
@@ -101,63 +139,41 @@ namespace osiris
 			tipo_pago_oculta = tipo_pago_oculta_;
 			sueldo_actual_oculta = sueldo_actual_oculta_;
 			locker = locker_;
+			escala_en_linux_windows = classpublic.escala_linux_windows;
 
-			Gnome.PrintJob    trabajo   = new Gnome.PrintJob (PrintConfig.Default ());
-			Gnome.PrintDialog dialogo   = new Gnome.PrintDialog (trabajo, "REGISTRO DE EMPLEADO", 0);
-
-			int respuesta = dialogo.Run ();
-       	            
-			if (respuesta == (int) PrintButtons.Cancel){
-				//boton Cancelar
-				Console.WriteLine("Impresión cancelada");
-				dialogo.Hide (); 
-				dialogo.Dispose (); 
-				return;
-			}
-
-			Gnome.PrintContext ctx = trabajo.Context;
-			ComponerPagina(ctx, trabajo); 
-			trabajo.Close();
-			switch (respuesta){   //imprimir
-				case (int) PrintButtons.Print:   
-					trabajo.Print (); 
-					break;
-			    case (int) PrintButtons.Preview://vista previa
-					new PrintJobPreview(trabajo, "REGISTRO DE EMPLEADO").Show();
-					break;
-			}
-			dialogo.Hide (); dialogo.Dispose ();
+			print = new PrintOperation ();
+			print.JobName = "REGISTRO DE EMPLEADO";	// Name of the report
+			print.BeginPrint += new BeginPrintHandler (OnBeginPrint);
+			print.DrawPage += new DrawPageHandler (OnDrawPage);
+			print.EndPrint += new EndPrintHandler (OnEndPrint);
+			print.Run(PrintOperationAction.PrintDialog, null);
 		}
 		
-		void ComponerPagina (Gnome.PrintContext ContextoImp, Gnome.PrintJob trabajoImpresion)
+		private void OnBeginPrint (object obj, Gtk.BeginPrintArgs args)
 		{
-		    ContextoImp.BeginPage("Pagina 1");
-			// Crear una fuente 
-				  
-			//Gnome.Font fuente = Gnome.Font.FindClosest("Bitstream Vera Sans", 12);
-			//Gnome.Font fuente1 = Gnome.Font.FindClosest("Bitstream Vera Sans", 36);
-			Gnome.Font fuente2 = Gnome.Font.FindClosest("Bitstream Vera Sans", 11);
-			//Gnome.Font fuente3 = Gnome.Font.FindClosest("Bitstream Vera Sans", 6);
-			// ESTA FUNCION ES PARA QUE EL TEXTO SALGA EN NEGRITA
-			Gnome.Font fuente4 = Gnome.Font.FindClosestFromWeightSlant("Bitstream Vera Sans", FontWeight.Bold ,false, 12);
-			//Encabezado de pagina
-			   
-			Gnome.Print.Setfont (ContextoImp, fuente4);
-			    
-    	   //ESTA FUNCION SIRVE PARA CREAR RECTANGULOS Y CUADROS:
-    	   //cud datos fam:
-			Gnome.Print.RectStroked(ContextoImp,20,410,555,20);
-		    //datos contrato:
-		    Gnome.Print.RectStroked(ContextoImp,20,525,555,20);
-		    //notas:  
-		    Gnome.Print.RectStroked(ContextoImp,20,325,555,20);
-		    //marco: 
-		    //Gnome.Print.RectStroked(ContextoImp,10,10,575,815);
-		    //LINEAS DE FIRMA:
-		    Gnome.Print.LineStroked(ContextoImp,20,215,280,215);
-		    Gnome.Print.LineStroked(ContextoImp,360,215,570,215);
-			Gnome.Print.LineStroked(ContextoImp,180,95,390,95);
+			print.NPages = 1;  // crea cantidad de copias del reporte			
+			// para imprimir horizontalmente el reporte
+			//print.PrintSettings.Orientation = PageOrientation.Landscape;
+			//Console.WriteLine(print.PrintSettings.Orientation.ToString());
+		}
+		
+		private void OnDrawPage (object obj, Gtk.DrawPageArgs args)
+		{			
+			PrintContext context = args.Context;			
+			ejecutar_consulta_reporte(context);
+		}
+						
+		void ejecutar_consulta_reporte(PrintContext context)
+		{
+			Cairo.Context cr = context.CairoContext;
+			Pango.Layout layout = context.CreatePangoLayout ();
+			string toma_descrip_prod = "";
+			Pango.FontDescription desc = Pango.FontDescription.FromString ("Sans");									
+			// cr.Rotate(90)  Imprimir Orizontalmente rota la hoja cambian las posiciones de las lineas y columna					
+			fontSize = 8.0;			layout = null;			layout = context.CreatePangoLayout ();
+			desc.Size = (int)(fontSize * pangoScale);		layout.FontDescription = desc;
 		    
+			/*	    
 			ContextoImp.MoveTo(150, 775);
 		    ContextoImp.Show("COORDINACIÓN DE SERVICIOS AL PERSONAL");
 		    ContextoImp.MoveTo(152, 760);
@@ -264,6 +280,12 @@ namespace osiris
 			ContextoImp.MoveTo(365,200); ContextoImp.Show("JEFE DE RECURSOS HUMANOS");
 			ContextoImp.MoveTo(200,80);	ContextoImp.Show("GENERADOR DE NOMINAS");
 			ContextoImp.ShowPage();
+			*/
+		}
+		
+		private void OnEndPrint (object obj, Gtk.EndPrintArgs args)
+		{
+			
 		}
 	}
 }

@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////
 // project created on 24/10/2006 at 10:20 a
-// Hospital Santa Cecilia
+// 
 // Monterrey - Mexico
 //
 // Autor    	: Ing. Jesus Buentello (Programacion) gjuanzz@gmail.com 
@@ -30,75 +30,69 @@
 /////////////////////////////////////////////////////////
 using System;
 using Gtk;
-using Gnome;
 using Npgsql;
-using Glade;
-using GtkSharp;
+using Cairo;
+using Pango;
 
 namespace osiris
 {
 	public class lista_de_precios
 	{
-		public string connectionString = "Server=localhost;" +
-        	    	                     "Port=5432;" +
-            	    	                 "User ID=admin;" +
-                	    	             "Password=1qaz2wsx;";
+		private static int pangoScale = 1024;
+		private PrintOperation print;
+		private double fontSize = 8.0;
+		int escala_en_linux_windows;		// Linux = 1  Windows = 8
+		int comienzo_linea = 70;
+		int separacion_linea = 10;
+		int numpage = 1;
+		
+		string connectionString;
   		
-  		public Gtk.ListStore treeViewEnginegrupos;
-		public Gtk.TreeView lista_grupo;
-		public Gtk.ListStore treeViewEnginegrupos1;
-		public Gtk.TreeView lista_grupo1;
-		public Gtk.ListStore treeViewEnginegrupos2;
-		public Gtk.TreeView lista_grupo2;	
+  		Gtk.ListStore treeViewEnginegrupos;
+		Gtk.TreeView lista_grupo;
+		Gtk.ListStore treeViewEnginegrupos1;
+		Gtk.TreeView lista_grupo1;
+		Gtk.ListStore treeViewEnginegrupos2;
+		Gtk.TreeView lista_grupo2;	
 		
-		public string nombrebd;
+		string nombrebd;
 		
-		public int id_tipopaciente;
-		public int id_empresa;
-		public int id_aseguradora;
-		public int filas=730;
-		public int contador = 1;
-		public int numpage = 1;
-		public string ivaaplica = "";
-		public int iva = 0;
-		public string datos = "";
+		int id_tipopaciente;
+		int id_empresa;
+		int id_aseguradora;
+		int filas=730;
+		int contador = 1;
+		string ivaaplica = "";
+		int iva = 0;
+		string datos = "";
 		
-		public bool checkbutton_especiales;
-		public bool checkbutton_tarjeta;
-		public bool radiobutton_desglosado;
-		public bool radiobutton_con_iva; 
-		public bool radiobutton_sin_iva;
-		[Widget] Gtk.Entry entry_empresa_aseguradora;
+		bool checkbutton_especiales;
+		bool checkbutton_tarjeta;
+		bool radiobutton_desglosado;
+		bool radiobutton_con_iva; 
+		bool radiobutton_sin_iva;
+		Gtk.Entry entry_empresa_aseguradora;
 		
-		public decimal precio_por_cantidad = 0;	
-		public decimal ivaproducto = 0;
-		public decimal precio_por_cantidad2 = 0;	
-		public decimal ivaproducto2 = 0;
-		public decimal total = 0;
-		public decimal total2 = 0;
-		public decimal descuento = 0;					
-		public decimal descuento_pesos = 0; 
-		public decimal total_desc = 0;
-		public decimal ivaproducto1 = 0;
-		public decimal total1 = 0;
-		public decimal descuento1 = 0;					
-		public decimal descuento_pesos1 = 0; 
-		public decimal total_desc1 = 0;
+		decimal precio_por_cantidad = 0;	
+		decimal ivaproducto = 0;
+		decimal precio_por_cantidad2 = 0;	
+		decimal ivaproducto2 = 0;
+		decimal total = 0;
+		decimal total2 = 0;
+		decimal descuento = 0;					
+		decimal descuento_pesos = 0; 
+		decimal total_desc = 0;
+		decimal ivaproducto1 = 0;
+		decimal total1 = 0;
+		decimal descuento1 = 0;					
+		decimal descuento_pesos1 = 0; 
+		decimal total_desc1 = 0;
 		
-		// Declarando variable de fuente para la impresion
-		// Declaracion de fuentes tipo Bitstream Vera sans
-		public Gnome.Font fuente5 = Gnome.Font.FindClosest("Luxi Sans", 5);
-		public Gnome.Font fuente6 = Gnome.Font.FindClosest("Luxi Sans", 6);
-		public Gnome.Font fuente7 = Gnome.Font.FindClosest("Luxi Sans", 7);
-		public Gnome.Font fuente8 = Gnome.Font.FindClosest("Luxi Sans", 8);//Bitstream Vera Sans
-		public Gnome.Font fuente9 = Gnome.Font.FindClosest("Luxi Sans", 9);
-		public Gnome.Font fuente10 = Gnome.Font.FindClosest("Luxi Sans", 10);
-		public Gnome.Font fuente11 = Gnome.Font.FindClosest("Luxi Sans", 11);
-		public Gnome.Font fuente12 = Gnome.Font.FindClosest("Luxi Sans", 12);
-		public Gnome.Font fuente36 = Gnome.Font.FindClosest("Luxi Sans", 36);
-			
 		//Declaracion de ventana de error
 		protected Gtk.Window MyWinError;
+		
+		class_conexion conexion_a_DB = new class_conexion();
+		class_public classpublic = new class_public();
 		
 		public lista_de_precios(string _nombrebd_ ,object treeview_Engine_grupos_,object treeview_Engine_grupos1_,object treeview_Engine_grupos2_,
 								object lista_grupo_,object lista_grupo1_,object lista_grupo2_,
@@ -116,7 +110,8 @@ namespace osiris
 			treeViewEnginegrupos2 = treeview_Engine_grupos2_ as Gtk.ListStore;			
 			lista_grupo2 = lista_grupo2_ as Gtk.TreeView; 
 			
-			nombrebd = _nombrebd_;
+			connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
+			nombrebd = conexion_a_DB._nombrebd;
 			checkbutton_especiales = checkbutton_especiales_;
 			checkbutton_tarjeta = checkbutton_tarjeta_;
 			id_tipopaciente = id_tipopaciente_;
@@ -124,95 +119,43 @@ namespace osiris
 			id_aseguradora = id_aseguradora_;
 			radiobutton_desglosado = radiobutton_desglosado_;
 			radiobutton_con_iva = radiobutton_con_iva_;
-			radiobutton_sin_iva = radiobutton_sin_iva_;
-			
+			radiobutton_sin_iva = radiobutton_sin_iva_;			
 			entry_empresa_aseguradora = entry_empresa_aseguradora_ as Gtk.Entry;
-			
-			Gnome.PrintJob    trabajo   = new Gnome.PrintJob(Gnome.PrintConfig.Default());
-        	Gnome.PrintDialog dialogo   = new Gnome.PrintDialog(trabajo, "LISTA_DE_PRECIOS", 0);
-        	
-        	int         respuesta = dialogo.Run ();
-        	
-        	if (respuesta == (int) PrintButtons.Cancel) 
-			{
-				dialogo.Hide (); 
-				dialogo.Dispose (); 
-				return;
-			}
-			Gnome.PrintContext ctx = trabajo.Context;
-        	ComponerPagina(ctx, trabajo); 
-			trabajo.Close();
-            switch (respuesta)
-        	{
-				case (int) PrintButtons.Print:   
-                trabajo.Print (); 
-                break;
-                case (int) PrintButtons.Preview:
-                new PrintJobPreview(trabajo, "LISTA DE PRECIOS").Show();
-                break;
-        	}
-			dialogo.Hide (); dialogo.Dispose ();
+			escala_en_linux_windows = classpublic.escala_linux_windows;
+			print = new PrintOperation ();
+			print.JobName = "Listas de Precios";	// Name of the report
+			print.BeginPrint += new BeginPrintHandler (OnBeginPrint);
+			print.DrawPage += new DrawPageHandler (OnDrawPage);
+			print.EndPrint += new EndPrintHandler (OnEndPrint);
+			print.Run(PrintOperationAction.PrintDialog, null);
+					
 		}
-      	
-		void imprime_encabezado(Gnome.PrintContext ContextoImp, Gnome.PrintJob trabajoImpresion)
-		{        		
-      		// Cambiar la fuente
-			Gnome.Print.Setfont (ContextoImp, fuente6);
-			ContextoImp.MoveTo(19.7, 770);			ContextoImp.Show("Hospital Santa Cecilia");
-			ContextoImp.MoveTo(20, 770);			ContextoImp.Show("Hospital Santa Cecilia");
-			ContextoImp.MoveTo(19.7, 760);			ContextoImp.Show("Direccion: Isacc Garza #200 Ote. Centro Monterrey, NL.");
-			ContextoImp.MoveTo(20, 760);			ContextoImp.Show("Direccion: Isacc Garza #200 Ote. Centro Monterrey, NL.");
-			ContextoImp.MoveTo(19.7, 750);			ContextoImp.Show("Conmutador:(81) 81-25-56-10");
-			ContextoImp.MoveTo(20, 750);			ContextoImp.Show("Conmutador:(81) 81-25-56-10");
-			Gnome.Print.Setfont (ContextoImp, fuente12);
-			ContextoImp.MoveTo(180.5, 740);			ContextoImp.Show("LISTA DE PRECIOS");
-			ContextoImp.MoveTo(180, 740);			ContextoImp.Show("LISTA DE PRECIOS");
-			ContextoImp.MoveTo(295, 740);			ContextoImp.Show("--");
-			if(this.checkbutton_tarjeta == true){
-			ContextoImp.MoveTo(305, 740);			ContextoImp.Show("Tarjeta de Descuentos");
-				}else{
-				ContextoImp.MoveTo(305, 740);			ContextoImp.Show(entry_empresa_aseguradora.Text);
-				}
-      		if(this.radiobutton_desglosado == true ){
-      			ContextoImp.MoveTo(350, 730);			ContextoImp.Show("Precio");
-      			ContextoImp.MoveTo(390, 730);			ContextoImp.Show("Iva");
-      			ContextoImp.MoveTo(425, 730);			ContextoImp.Show("Total");
-      			if(this.checkbutton_tarjeta == true){
-      				ContextoImp.MoveTo(465, 730);			ContextoImp.Show("% desc");
-      				ContextoImp.MoveTo(510, 730);			ContextoImp.Show("Desc");
-      				ContextoImp.MoveTo(550, 730);			ContextoImp.Show("T.total");
-      				}
-				contador+=1; 
-      			}
-      			
-      		if(this.radiobutton_sin_iva == true){	
-      			ContextoImp.MoveTo(350, 730);			ContextoImp.Show("Precio");
-      			contador+=1; 
-				}      	
-			if(this.radiobutton_con_iva == true){	
-      			ContextoImp.MoveTo(350, 730);			ContextoImp.Show("Precio");
-      			ContextoImp.MoveTo(390, 730);			ContextoImp.Show("Iva");
-      			ContextoImp.MoveTo(425, 730);			ContextoImp.Show("Total");
-      			contador+=1; 
-				}      	
-      		}
-      	
-		void salto_pagina(Gnome.PrintContext ContextoImp, Gnome.PrintJob trabajoImpresion,int contador_)
+		
+		private void OnBeginPrint (object obj, Gtk.BeginPrintArgs args)
 		{
-	        if (contador_ > 71 )
-	        {
-	        	numpage +=1;
-	        	ContextoImp.ShowPage();
-				ContextoImp.BeginPage("Pagina "+numpage.ToString());
-				imprime_encabezado(ContextoImp,trabajoImpresion);
-	     		Gnome.Print.Setfont (ContextoImp, fuente6);
-	        	contador=1;
-	        	filas=720;
-	        }
+			print.NPages = 1;  // crea cantidad de copias del reporte			
+			// para imprimir horizontalmente el reporte
+			//print.PrintSettings.Orientation = PageOrientation.Landscape;
+			//Console.WriteLine(print.PrintSettings.Orientation.ToString());
 		}
-	
-		void ComponerPagina (Gnome.PrintContext ContextoImp, Gnome.PrintJob trabajoImpresion)
-		{        		
+		
+		private void OnDrawPage (object obj, Gtk.DrawPageArgs args)
+		{			
+			PrintContext context = args.Context;			
+			ejecutar_consulta_reporte(context);
+		}
+						
+		void ejecutar_consulta_reporte(PrintContext context)
+		{   
+			Cairo.Context cr = context.CairoContext;
+			Pango.Layout layout = context.CreatePangoLayout ();
+			string toma_descrip_prod = "";
+			Pango.FontDescription desc = Pango.FontDescription.FromString ("Sans");									
+			// cr.Rotate(90)  Imprimir Orizontalmente rota la hoja cambian las posiciones de las lineas y columna					
+			fontSize = 8.0;			layout = null;			layout = context.CreatePangoLayout ();
+			desc.Size = (int)(fontSize * pangoScale);		layout.FontDescription = desc;        		
+			/*
+			
 			TreeIter iter;	
 			//variables para lectura de treviews por fila
 			string numeros_seleccionado = ""; 
@@ -575,6 +518,11 @@ namespace osiris
 				msgBoxError.Run ();
 				msgBoxError.Destroy();
 			}
+			*/
+		}
+		
+		private void OnEndPrint (object obj, Gtk.EndPrintArgs args)
+		{
 		}
 	}
 }

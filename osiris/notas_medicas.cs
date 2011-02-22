@@ -269,7 +269,6 @@ namespace osiris
 			col_03.AddAttribute (cellrt03, "text", 3);
 			//col_03.SortColumnId = (int) Column_notas.col_03;
 			
-			
 			treeview_listanotas.AppendColumn(col_00); // 0
 			treeview_listanotas.AppendColumn(col_01); // 1
 			treeview_listanotas.AppendColumn(col_02); // 2
@@ -347,23 +346,19 @@ namespace osiris
 			combobox_hora_nota.Clear();
 			CellRendererText cell2 = new CellRendererText();
 			combobox_hora_nota.PackStart(cell2, true);
-			combobox_hora_nota.AddAttribute(cell2,"text",0);
-	        
+			combobox_hora_nota.AddAttribute(cell2,"text",0);	        
 			ListStore store2 = new ListStore( typeof (string), typeof (int));
 			combobox_hora_nota.Model = store2;
 			for(int i = 1; i < (int)classpublic.horario_24_horas+1 ; i++){				
 				store2.AppendValues ((string)i.ToString("00").Trim());
 			}
-			combobox_hora_nota.Changed += new EventHandler (onComboBoxChanged_hora_minutos_cita);
-			
+			combobox_hora_nota.Changed += new EventHandler (onComboBoxChanged_hora_minutos_cita);			
 			combobox_minutos_nota.Clear();
 			CellRendererText cell3 = new CellRendererText();
 			combobox_minutos_nota.PackStart(cell3, true);
-			combobox_minutos_nota.AddAttribute(cell3,"text",0);
-	        
+			combobox_minutos_nota.AddAttribute(cell3,"text",0);	        
 			ListStore store3 = new ListStore( typeof (string), typeof (int));
-			combobox_minutos_nota.Model = store3;
-			
+			combobox_minutos_nota.Model = store3;			
 			for(int i = (int) 0; i < 60 ; i=i+(int) classpublic.intervalo_minutos){				
 				store3.AppendValues ((string)i.ToString("00").Trim());
 			}

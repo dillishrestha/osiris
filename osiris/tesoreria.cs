@@ -56,6 +56,7 @@ namespace osiris
 		[Widget] Gtk.Button button_rpt_abonos;
 		[Widget] Gtk.Button button_envio_de_facturas;
 		[Widget] Gtk.Button button_rpt_facturas_pendientes;
+		[Widget] Gtk.Button button_solicitud_material = null;
 		
 		//[Widget] Gtk.Button button_clientes;
 		
@@ -155,12 +156,13 @@ namespace osiris
 			button_rpt_abonos.Clicked += new EventHandler(on_button_button_rpt_abonos_clicked);
 			button_envio_de_facturas.Clicked += new EventHandler(on_button_envio_facturas_clicked);
 			button_rpt_facturas_pendientes.Clicked += new EventHandler(button_rpt_facturas_pendientes_clicked);
+			button_solicitud_material.Clicked += new EventHandler(on_button_solicitud_material_clicked);
 		}
 
 		
 		void on_button_caja_clicked(object sender, EventArgs args)
 		{
-			new osiris.caja_cobro(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
+			new osiris.caja_cobro(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,15);
 		}
 		
 		void on_button_facturador_clicked(object sender, EventArgs args)
@@ -181,6 +183,11 @@ namespace osiris
 		void on_button_envio_facturas_clicked(object sender, EventArgs args)
 		{
 			new osiris.envio_de_facturas(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
+		}
+		
+		void on_button_solicitud_material_clicked(object sender, EventArgs args)
+		{
+			new osiris.solicitud_material(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,14);
 		}
 
 		void button_rpt_facturas_pendientes_clicked(object sender, EventArgs args)

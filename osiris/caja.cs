@@ -281,6 +281,7 @@ namespace osiris
 		float totalhonorarios = 0;
 		string busqueda;
 		string tipobusqueda = "AND osiris_his_medicos.nombre1_medico LIKE '";
+		int idsubalmacen;
 		
 		// Sumas Totales para los calculos
 		float subtotal_al_15 = 0;
@@ -314,7 +315,7 @@ namespace osiris
 		protected Gtk.Window MyWinError;
 		protected Gtk.Window MyWin;
 		
-		public caja_cobro(string LoginEmp, string NomEmpleado_, string AppEmpleado_, string ApmEmpleado_, string nombrebd_ ) 
+		public caja_cobro(string LoginEmp, string NomEmpleado_, string AppEmpleado_, string ApmEmpleado_, string nombrebd_, int idsubalmacen_ ) 
 		{
 			LoginEmpleado = LoginEmp;
 			NomEmpleado = NomEmpleado_;
@@ -322,7 +323,8 @@ namespace osiris
 			ApmEmpleado = ApmEmpleado_;
 			connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
 			nombrebd = conexion_a_DB._nombrebd;
-			valoriva = float.Parse(classpublic.ivaparaaplicar);	
+			valoriva = float.Parse(classpublic.ivaparaaplicar);
+			idsubalmacen = idsubalmacen_;
 			
 			Glade.XML gxml = new Glade.XML (null, "caja.glade", "caja", null);
 			gxml.Autoconnect (this);

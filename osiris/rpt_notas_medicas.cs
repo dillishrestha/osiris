@@ -86,7 +86,7 @@ namespace osiris
 		
 		void imprime_encabezado(Cairo.Context cr,Pango.Layout layout)
 		{
-			
+			// 
 		}
 		
 		void salto_de_pagina(Cairo.Context cr,Pango.Layout layout)			

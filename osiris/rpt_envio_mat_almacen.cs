@@ -3,7 +3,7 @@
 // Monterrey - Mexico
 //
 // Autor    	: Ing. Jesus Buentello G. (Programacion)
-//				  Ing. Daniel Olivares C. (Adecuaciones y mejoras) arcangeldoc@gmail.com 05/05/2007
+//				  Ing. Daniel Olivares C. (Adecuaciones y mejoras) arcangeldoc@gmail.com 05/10/2010
 // Licencia		: GLP
 //////////////////////////////////////////////////////////
 //

@@ -4,18 +4,23 @@
 // To change standard headers go to Edit->Preferences->Coding->Standard Headers
 //
 using System;
-using Npgsql;
-using System.Data;
 using Gtk;
-using Glade;
-using Gnome;
-using System.Collections;
-using GtkSharp;
+using Npgsql;
+using Cairo;
+using Pango;
 
 namespace osiris
 {
 	public class rpt_historia_clinica
 	{
+		private static int pangoScale = 1024;
+		private PrintOperation print;
+		private double fontSize = 8.0;
+		int escala_en_linux_windows;		// Linux = 1  Windows = 8
+		int comienzo_linea = 70;
+		int separacion_linea = 10;
+		int numpage = 1;
+		
 		string connectionString;						
 		string nombrebd;
 		string LoginEmpleado;
@@ -114,6 +119,7 @@ namespace osiris
 		protected Gtk.Window MyWin;
 		
 		class_conexion conexion_a_DB = new class_conexion();
+		class_public classpublic = new class_public();
 		
 		public rpt_historia_clinica(string pid_paciente_,string nombre_paciente_,string nombrebd_,string fpp_,string fum_,string fup_,string edad_paciente_,string fecha_admision_,string fecha_nacimiento_)
 		{
@@ -127,64 +133,37 @@ namespace osiris
 			fecha_nacimiento = fecha_nacimiento_;
 			connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
 			nombrebd = conexion_a_DB._nombrebd;
+			escala_en_linux_windows = classpublic.escala_linux_windows;
 			
-			Gnome.PrintJob    trabajo   = new Gnome.PrintJob(Gnome.PrintConfig.Default());
-        	Gnome.PrintDialog dialogo   = new Gnome.PrintDialog(trabajo, "historia clinica del paciente", 0);
-        	
-        	int respuesta = dialogo.Run ();
-        	
-        	if (respuesta == (int) PrintButtons.Cancel) 
-			{
-				dialogo.Hide (); 
-				dialogo.Dispose (); 
-				return;
-			}
-			Gnome.PrintContext ctx = trabajo.Context;
-        	ComponerPagina(ctx, trabajo); 
-			trabajo.Close();
-            switch (respuesta)
-        	{
-				case (int) PrintButtons.Print:   
-                trabajo.Print (); 
-                break;
-                case (int) PrintButtons.Preview:
-                new PrintJobPreview(trabajo, "historia clinica del paciente").Show();
-                break;
-        	}
-			dialogo.Hide (); dialogo.Dispose ();		
+			print = new PrintOperation ();
+			print.JobName = "Imprime Historia Clinica Pagina-1";	// Name of the report
+			print.BeginPrint += new BeginPrintHandler (OnBeginPrint);
+			print.DrawPage += new DrawPageHandler (OnDrawPage);
+			print.EndPrint += new EndPrintHandler (OnEndPrint);
+			print.Run(PrintOperationAction.PrintDialog, null);
+			
 		}
-		void ComponerPagina (Gnome.PrintContext ContextoImp, Gnome.PrintJob trabajoImpresion)
+		
+		private void OnBeginPrint (object obj, Gtk.BeginPrintArgs args)
 		{
-			ContextoImp.BeginPage("Pagina 1");
-            
-			// Crear una fuente 
-			Gnome.Font fuente = Gnome.Font.FindClosest("Bitstream Vera Sans", 12);
-			Gnome.Font fuente1 = Gnome.Font.FindClosest("Bitstream Vera Sans", 6);
-			Gnome.Font fuente2 = Gnome.Font.FindClosest("Bitstream Vera Sans", 8);
-			Gnome.Font fuente3 = Gnome.Font.FindClosest("Bitstream Vera Sans", 7);
-			Gnome.Font fuente4 = Gnome.Font.FindClosest("Bitstream Vera Sans", 10);
-			Gnome.Font fuente5 = Gnome.Font.FindClosest("Bitstream Vera Sans", 9);
-			Gnome.Font fuente6 = Gnome.Font.FindClosest("Bitstream Vera Sans", 10);
-			
+			print.NPages = 1;  // crea cantidad de copias del reporte			
+			// para imprimir horizontalmente el reporte
+			//print.PrintSettings.Orientation = PageOrientation.Landscape;
+			//Console.WriteLine(print.PrintSettings.Orientation.ToString());
+		}
+		
+		private void OnDrawPage (object obj, Gtk.DrawPageArgs args)
+		{			
+			PrintContext context = args.Context;			
+			ejecutar_consulta_reporte(context);
+		}
+						
+		void ejecutar_consulta_reporte(PrintContext context)
+		{
+			/*
 			Gnome.Print.Setfont(ContextoImp,fuente4);
 			ContextoImp.MoveTo(488, 770);             ContextoImp.Show(""+pid_paciente);
 			Gnome.Print.Setfont(ContextoImp,fuente5);	
-			
-			/*ContextoImp.MoveTo(66, 680);           ContextoImp.Show("    "+nombre_paciente);
-			ContextoImp.MoveTo(445, 680);		ContextoImp.Show("    "+fecha_admision);
-			ContextoImp.MoveTo(76, 667);		ContextoImp.Show("                               " +fecha_nacimiento);
-			ContextoImp.MoveTo(248, 667);		ContextoImp.Show(""+ edad_paciente);
-			ContextoImp.MoveTo(215, 275);		ContextoImp.Show("                        "+fum);
-			ContextoImp.MoveTo(450, 275);		ContextoImp.Show(fpp);
-			ContextoImp.MoveTo(215, 250);		ContextoImp.Show("                   "+fup);
-			
-			/*ContextoImp.MoveTo(33, 680);		ContextoImp.Show("FICHA DE IDENTIDAD :");
-			ContextoImp.MoveTo(33, 610);		ContextoImp.Show("ANTECEDENTES HEREDO FAMILIAR :");
-			ContextoImp.MoveTo(33, 530);		ContextoImp.Show("ANTECEDENTES PERSONALES NO PATOLOGICOS :");
-			ContextoImp.MoveTo(33, 460);		ContextoImp.Show("ANTECEDENTES PERSONALES PATOLOGICOS :");
-			ContextoImp.MoveTo(33, 350);		ContextoImp.Show("ANTECEDENTES GINECO OBSTETRICIOS :");
-			ContextoImp.MoveTo(33, 200);		ContextoImp.Show("HISTORIA CLINICA PEDIATRICA :");
-			*/
 			
 			ContextoImp.MoveTo(33, 680);        ContextoImp.Show("Nombre:" +nombre_paciente);
 			ContextoImp.MoveTo(33.5, 680);      ContextoImp.Show("Nombre:");
@@ -297,7 +276,7 @@ namespace osiris
 					ocupacion = (string) lector1["ocupacion_paciente"];
 					residencia_actual = (string) lector1["direccion_paciente"];
 					
-					/*if(vivomuertopadre == "VIVO"){
+					if(vivomuertopadre == "VIVO"){
 						 ContextoImp.MoveTo(180, 600);		        ContextoImp.Show("       SI");
 					}else{
 						 ContextoImp.MoveTo(270, 600);		        ContextoImp.Show("       SI");
@@ -434,7 +413,7 @@ namespace osiris
 					ContextoImp.MoveTo(66, 161);		ContextoImp.Show("                                  "+inmunizaciones);
 					ContextoImp.MoveTo(90, 150);		ContextoImp.Show("                                    "+des_psicomotor);
 					ContextoImp.MoveTo(33, 137);		ContextoImp.Show("                     "+otros_hcp);
-					*/
+					
 					if(vivomuertopadre == "VIVO"){
 						 ContextoImp.MoveTo(170, 600);		        ContextoImp.Show("Vivo: SI");
 						 ContextoImp.MoveTo(170.5, 600);		    ContextoImp.Show("Vivo: ");
@@ -665,12 +644,26 @@ namespace osiris
 			conexion1.Close ();
 			
 			ContextoImp.ShowPage();
+			*/
+		}
+		
+		private void OnEndPrint (object obj, Gtk.EndPrintArgs args)
+		{
+			
 		}
 	}
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
+
 	public class imprime_pag2
 	{
+		private static int pangoScale = 1024;
+		private PrintOperation print;
+		private double fontSize = 8.0;
+		int escala_en_linux_windows;		// Linux = 1  Windows = 8
+		int comienzo_linea = 70;
+		int separacion_linea = 10;
+		int numpage = 1;
+		
 		string connectionString;		
 		string nombrebd;
 		string LoginEmpleado;
@@ -698,49 +691,56 @@ namespace osiris
 		string neurologico; 
 		string diagnosticos;
 		string plan_diag;
-		string nombre_plan_diag;
-		
+		string nombre_plan_diag;		
 		
 		//Declaracion de ventana de error:
 		protected Gtk.Window MyWinError;
 		protected Gtk.Window MyWin;
-		//,string ta_,string fc_,string fr_,string temp_,string pso_,string talla_
 		
 		class_conexion conexion_a_DB = new class_conexion();
+		class_public classpublic = new class_public();
 		
 		public imprime_pag2(string pid_paciente_,string nombrebd_)
 		{
 			pid_paciente = pid_paciente_;
 			connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
 			nombrebd = conexion_a_DB._nombrebd;
+			escala_en_linux_windows = classpublic.escala_linux_windows;
 			
-			Gnome.PrintJob    trabajo   = new Gnome.PrintJob(Gnome.PrintConfig.Default());
-        	Gnome.PrintDialog dialogo   = new Gnome.PrintDialog(trabajo, "historia clinica del paciente Pagina2", 0);
-        	
-        	int respuesta = dialogo.Run ();
-        	
-        	if (respuesta == (int) PrintButtons.Cancel) 
-			{
-				dialogo.Hide (); 
-				dialogo.Dispose (); 
-				return;
-			}
-			Gnome.PrintContext ctx = trabajo.Context;
-        	ComponerPagina(ctx, trabajo); 
-			trabajo.Close();
-            switch (respuesta)
-        	{
-				case (int) PrintButtons.Print:   
-                trabajo.Print (); 
-                break;
-                case (int) PrintButtons.Preview:
-                new PrintJobPreview(trabajo, "historia clinica del pacienteb Pagina2").Show();
-                break;
-        	}
-			dialogo.Hide (); dialogo.Dispose ();		
+			print = new PrintOperation ();
+			print.JobName = "Imprime Historia Clinica Pagina-1";	// Name of the report
+			print.BeginPrint += new BeginPrintHandler (OnBeginPrint);
+			print.DrawPage += new DrawPageHandler (OnDrawPage);
+			print.EndPrint += new EndPrintHandler (OnEndPrint);
+			print.Run(PrintOperationAction.PrintDialog, null);
 		}
-		void ComponerPagina (Gnome.PrintContext ContextoImp, Gnome.PrintJob trabajoImpresion)
+		
+		
+		private void OnBeginPrint (object obj, Gtk.BeginPrintArgs args)
 		{
+			print.NPages = 1;  // crea cantidad de copias del reporte			
+			// para imprimir horizontalmente el reporte
+			//print.PrintSettings.Orientation = PageOrientation.Landscape;
+			//Console.WriteLine(print.PrintSettings.Orientation.ToString());
+		}
+		
+		private void OnDrawPage (object obj, Gtk.DrawPageArgs args)
+		{			
+			PrintContext context = args.Context;			
+			ejecutar_consulta_reporte(context);
+		}
+						
+		void ejecutar_consulta_reporte(PrintContext context)
+		{
+			Cairo.Context cr = context.CairoContext;
+			Pango.Layout layout = context.CreatePangoLayout ();
+			string toma_descrip_prod = "";
+			Pango.FontDescription desc = Pango.FontDescription.FromString ("Sans");									
+			// cr.Rotate(90)  Imprimir Orizontalmente rota la hoja cambian las posiciones de las lineas y columna					
+			fontSize = 8.0;			layout = null;			layout = context.CreatePangoLayout ();
+			desc.Size = (int)(fontSize * pangoScale);		layout.FontDescription = desc;
+			
+			/*
 			ContextoImp.BeginPage("Pagina 1");
             
 			// Crear una fuente 
@@ -789,16 +789,6 @@ namespace osiris
 					plan_diag = (string) lector1["plan_diagnostico"];
 					nombre_plan_diag = (string) lector1["nombre_plan_diag"];
 					
-					/*if(habitus_ext.Length > 49){
-						habitusextrecortado = habitus_ext.Substring(0,46)  ; 
-					}else{
-						habitusextrecortado = habitus_ext;
-					}
-					if (cabeza.Length > 49){
-						cabezarecortado = cabeza.Substring(0,46)  ; 
-					}else{
-						cabezarecortado = cabeza;
-					}*/
 					
 					Gnome.Print.Setfont(ContextoImp,fuente3);
 				//PAGINA2:
@@ -835,7 +825,7 @@ namespace osiris
 					ContextoImp.MoveTo(28, 253);		ContextoImp.Show(diagnosticos);
 					//PLAN DIAGNOSTICO//////////////////////////////////////////////////////////
 					ContextoImp.MoveTo(28, 201);		ContextoImp.Show(plan_diag);
-					ContextoImp.MoveTo(66, 140);		ContextoImp.Show("      "+nombre_plan_diag);*/
+					ContextoImp.MoveTo(66, 140);		ContextoImp.Show("      "+nombre_plan_diag);
 						ContextoImp.MoveTo(33, 546);	ContextoImp.Show("TA: " +ta);
 						ContextoImp.MoveTo(33.5, 546);	ContextoImp.Show("TA: " +ta);
 						ContextoImp.MoveTo(100, 546);ContextoImp.Show("FC:  " +fc);
@@ -890,6 +880,12 @@ namespace osiris
 			conexion1.Close ();
 			
 			ContextoImp.ShowPage();
+			*/
+		}
+		
+		private void OnEndPrint (object obj, Gtk.EndPrintArgs args)
+		{
+			
 		}
 	}
 }

@@ -3,12 +3,24 @@
 //      AUTOR:  ISRAEL (Programacion)
 // To change standard headers go to Edit->Preferences->Coding->Standard Headers
 //
-
+using System;
+using Gtk;
+using Npgsql;
+using Cairo;
+using Pango;
 
 namespace osiris
 {
 	public class imprime_mov_productos
 	{
+		private static int pangoScale = 1024;
+		private PrintOperation print;
+		private double fontSize = 8.0;
+		int escala_en_linux_windows;		// Linux = 1  Windows = 8
+		int comienzo_linea = 70;
+		int separacion_linea = 10;
+		int numpage = 1;
+		
 		string connectionString;						
 		string nombrebd;
 		string LoginEmpleado;
@@ -20,7 +32,6 @@ namespace osiris
 		Gtk.TreeStore treeViewEngineResumen;
 		string titulo = "MOVIMIENTOS DE PRODUCTOS POR PACIENTE";
 		int contador = 1;
-		int numpage = 1;
 		int filas = -75;
 		string query1  = " ";
 		string query_fechas =" ";
@@ -48,6 +59,7 @@ namespace osiris
 		protected Gtk.Window MyWin;
 		
 		class_conexion conexion_a_DB = new class_conexion();
+		class_public classpublic = new class_public();
 		                                                                                                                   
 		public imprime_mov_productos(string entry_total_aplicado_,string entry_dia1_,string entry_mes1_,string entry_ano1_, string entry_dia2_,string entry_mes2_,string entry_ano2_  ,object _lista_resumen_productos_,object _treeViewEngineResumen_, string _query1_,  string _nombrebd_, string titulopagina_)
 		{
@@ -97,7 +109,6 @@ namespace osiris
 			// cr.Rotate(90)  Imprimir Orizontalmente rota la hoja cambian las posiciones de las lineas y columna					
 			fontSize = 8.0;			layout = null;			layout = context.CreatePangoLayout ();
 			desc.Size = (int)(fontSize * pangoScale);		layout.FontDescription = desc;      
-			string toma_descrip_prod = "";
 			string fechahoracreacion = "";      
 			/*
 			contador = 0;
@@ -187,7 +198,11 @@ namespace osiris
 			ContextoImp.MoveTo(120, filas);	ContextoImp.Show(toma_descrip_prod);
 			ContextoImp.ShowPage();
 			*/
-		}		
+		}
+		
+		private void OnEndPrint (object obj, Gtk.EndPrintArgs args)
+		{
+		}
 	}
 }
 		     

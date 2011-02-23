@@ -22,23 +22,29 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 // 
 //////////////////////////////////////////////////////////
-// Programa		: rpt_hoja_de_cargos.cs
-// Proposito	: Impresion de la hoja de cargos 
-// Objeto		: rpt_hoja_de_cargos.cs
+// Programa		: 
+// Proposito	:  
+// Objeto		:
 
 using System;
 using Gtk;
-using Gnome;
 using Npgsql;
-using System.Data;
 using Glade;
-using System.Collections;
-using GtkSharp;
+using Cairo;
+using Pango;
 
 namespace osiris
 {
 	public class notas_de_cargos
 	{
+		private static int pangoScale = 1024;
+		private PrintOperation print;
+		private double fontSize = 8.0;
+		int escala_en_linux_windows;		// Linux = 1  Windows = 8
+		int comienzo_linea = 70;
+		int separacion_linea = 10;
+		int numpage = 1;
+		
 		string connectionString;
         string nombrebd;
 		int PidPaciente = 0;
@@ -72,23 +78,12 @@ namespace osiris
 		int filas=635;
 		int contador = 1;
 		int contadorprod = 0;
-		int numpage = 1;
-						
-		// Declarando variable de fuente para la impresion
-		// Declaracion de fuentes tipo Bitstream Vera sans
-		Gnome.Font fuente6 = Gnome.Font.FindClosest("Bitstream Vera Sans", 6);
-		Gnome.Font fuente7 = Gnome.Font.FindClosest("Bitstream Vera Sans", 7);
-		Gnome.Font fuente8 = Gnome.Font.FindClosest("Bitstream Vera Sans", 8);
-		Gnome.Font fuente9 = Gnome.Font.FindClosest("Bitstream Vera Sans", 9);
-		Gnome.Font fuente10 = Gnome.Font.FindClosest("Bitstream Vera Sans", 10);
-		Gnome.Font fuente11 = Gnome.Font.FindClosest("Bitstream Vera Sans", 11);
-		Gnome.Font fuente12 = Gnome.Font.FindClosest("Bitstream Vera Sans", 12);
-		Gnome.Font fuente36 = Gnome.Font.FindClosest("Bitstream Vera Sans", 36);
-						
+								
 		//Declaracion de ventana de error
 		protected Gtk.Window MyWinError;
 		
 		class_conexion conexion_a_DB = new class_conexion();
+		class_public classpublic = new class_public();
 		
 		public notas_de_cargos ( int PidPaciente_ , int folioservicio_,string nombrebd_ ,string entry_fecha_admision_,string entry_fechahora_alta_,
 						string entry_nombre_paciente_,string entry_telefono_paciente_,string entry_doctor_,
@@ -102,6 +97,7 @@ namespace osiris
 			ApmEmpleado = ApmEmpleado_;
 			connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
 			nombrebd = conexion_a_DB._nombrebd;
+			escala_en_linux_windows = classpublic.escala_linux_windows;
 			
 			PidPaciente = PidPaciente_;//
 			folioservicio = folioservicio_;//
@@ -120,173 +116,114 @@ namespace osiris
 			empresapac = empresapac_;//
 			query_rango = query_;
 			
-			Gnome.PrintJob    trabajo   = new Gnome.PrintJob (PrintConfig.Default());
-        	Gnome.PrintDialog dialogo   = new Gnome.PrintDialog (trabajo, "HOJA DE CARGOS", 0);
-        	int         respuesta = dialogo.Run ();
-        	if (respuesta == (int) PrintButtons.Cancel) 
-			{
-				dialogo.Hide (); 
-				dialogo.Dispose (); 
-				return;
-			}
-			Gnome.PrintContext ctx = trabajo.Context;
-        	ComponerPagina(ctx, trabajo); 
-			trabajo.Close();
-            switch (respuesta)
-        	{
-				case (int) PrintButtons.Print:  trabajo.Print (); 
-                break;
-                case (int) PrintButtons.Preview: new PrintJobPreview(trabajo, "HOJA DE CARGOS").Show();
-                break;
-        	}
-			dialogo.Hide (); dialogo.Dispose ();
+			print = new PrintOperation ();
+			print.JobName = "Apuntes de Cargos";	// Name of the report
+			print.BeginPrint += new BeginPrintHandler (OnBeginPrint);
+			print.DrawPage += new DrawPageHandler (OnDrawPage);
+			print.EndPrint += new EndPrintHandler (OnEndPrint);
+			print.Run (PrintOperationAction.PrintDialog, null);			
 		}
-      	
-		void imprime_encabezado(Gnome.PrintContext ContextoImp, Gnome.PrintJob trabajoImpresion)
+		
+		private void OnBeginPrint (object obj, Gtk.BeginPrintArgs args)
 		{
-      		// Cambiar la fuente
-			Gnome.Print.Setfont (ContextoImp, fuente6);
-			ContextoImp.MoveTo(19.7, 770);			ContextoImp.Show("Sistema Hospitalario OSIRIS");
-			ContextoImp.MoveTo(20, 770);			ContextoImp.Show("Sistema Hospitalario OSIRIS");
-			ContextoImp.MoveTo(19.7, 760);			ContextoImp.Show("Direccion:");
-			ContextoImp.MoveTo(20, 760);			ContextoImp.Show("Direccion:");
-			ContextoImp.MoveTo(19.7, 750);			ContextoImp.Show("Conmutador:");
-			ContextoImp.MoveTo(20, 750);			ContextoImp.Show("Conmutador:");
-			
-			  			
-			Gnome.Print.Setfont (ContextoImp, fuente12);
-			ContextoImp.MoveTo(200.5, 740);			ContextoImp.Show("HOJA DE CARGOS");
-			ContextoImp.MoveTo(201, 740);			ContextoImp.Show("HOJA DE CARGOS");
-							
-			Gnome.Print.Setfont (ContextoImp, fuente10);
-			ContextoImp.MoveTo(470.5, 755);			ContextoImp.Show("FOLIO DE ATENCION");
-			ContextoImp.MoveTo(471, 755);			ContextoImp.Show("FOLIO DE ATENCION");
-							
-			Gnome.Print.Setfont (ContextoImp, fuente12);
-			Gnome.Print.Setrgbcolor(ContextoImp, 150,0,0);
-			ContextoImp.MoveTo(520.5,740 );			ContextoImp.Show( folioservicio.ToString());
-			ContextoImp.MoveTo(521, 740);			ContextoImp.Show( folioservicio.ToString());
-					
-			Gnome.Print.Setfont (ContextoImp, fuente36);
-			Gnome.Print.Setrgbcolor(ContextoImp, 0,0,0);
-			ContextoImp.MoveTo(20, 735);				ContextoImp.Show("____________________________");
-									    			
-			////////////DATOS GENERALES PACIENTE//////////////////
-			Gnome.Print.Setfont (ContextoImp, fuente10);
-			ContextoImp.MoveTo(224.5, 720);			ContextoImp.Show("DATOS GENERALES DEL PACIENTE");
-			ContextoImp.MoveTo(225, 720);			ContextoImp.Show("DATOS GENERALES DEL PACIENTE");
-			
-			Gnome.Print.Setfont (ContextoImp, fuente8);
-			ContextoImp.MoveTo(20.7, 720);			ContextoImp.Show("Fecha "+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
-			ContextoImp.MoveTo(20, 720);			ContextoImp.Show("Fecha "+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
-			
-			//ContextoImp.MoveTo(444.7, 720);			ContextoImp.Show("Pagina "+numpage.ToString());
-			//ContextoImp.MoveTo(445, 720);			ContextoImp.Show("Pagina "+numpage.ToString());
-					
-			ContextoImp.MoveTo(20, 710);			ContextoImp.Show("INGRESO: "+ fecha_admision.ToString());
-			ContextoImp.MoveTo(460, 710);			ContextoImp.Show("EGRESO: "+ fechahora_alta.ToString());
-			
-			Gnome.Print.Setfont (ContextoImp, fuente8);
-			ContextoImp.MoveTo(19.5, 700);			ContextoImp.Show("PID: "+PidPaciente.ToString()+"    Nombre: "+ nombre_paciente.ToString());
-			ContextoImp.MoveTo(20, 700);			ContextoImp.Show("PID: "+PidPaciente.ToString()+"    Nombre: "+ nombre_paciente.ToString());
-			
-			ContextoImp.MoveTo(349.5, 700);			ContextoImp.Show("F. de Nac: "+fecha_nacimiento.ToString());
-			ContextoImp.MoveTo(350, 700);			ContextoImp.Show("F. de Nac: "+fecha_nacimiento.ToString());
-			ContextoImp.MoveTo(529.5, 700);			ContextoImp.Show("Edad: "+edadpac.ToString());
-			ContextoImp.MoveTo(530, 700);			ContextoImp.Show("Edad: "+edadpac.ToString());
-			
-			ContextoImp.MoveTo(20, 690);			ContextoImp.Show("Direccion: "+dir_pac.ToString());
-			
-			ContextoImp.MoveTo(20, 670);			ContextoImp.Show("Tel. Pac.: "+telefono_paciente.ToString());
-			ContextoImp.MoveTo(450, 670);			ContextoImp.Show("Nº de habitacion:  ");
-			
-			if((string) aseguradora == "Asegurado")
-			{				
-				ContextoImp.MoveTo(19.5, 680);		ContextoImp.Show("Tipo de paciente:  "+tipo_paciente.ToString()+"      	Aseguradora: "+aseguradora.ToString()+"      Poliza: ");
-				ContextoImp.MoveTo(20, 680);		ContextoImp.Show("Tipo de paciente:  "+tipo_paciente.ToString()+"       Aseguradora: "+aseguradora.ToString()+"      Poliza: ");
+			print.NPages = 1;  // crea cantidad de copias del reporte			
+			// para imprimir horizontalmente el reporte
+			//print.PrintSettings.Orientation = PageOrientation.Landscape;
+			//Console.WriteLine(print.PrintSettings.Orientation.ToString());
+		}
+		
+		private void OnDrawPage (object obj, Gtk.DrawPageArgs args)
+		{			
+			PrintContext context = args.Context;
+			ejecutar_consulta_reporte(context);			
+		}
+		
+		void ejecutar_consulta_reporte(PrintContext context)
+		{
+			string descripcion_producto_aplicado;
+			int idgrupoproducto;
+			Cairo.Context cr = context.CairoContext;
+			Pango.Layout layout = context.CreatePangoLayout ();
+			Pango.FontDescription desc = Pango.FontDescription.FromString ("Sans");			
+			fontSize = 7.0;											layout = context.CreatePangoLayout ();		
+			desc.Size = (int)(fontSize * pangoScale);				layout.FontDescription = desc;
+			imprime_encabezado(cr,layout);
+		}
+		
+		void imprime_encabezado(Cairo.Context cr,Pango.Layout layout)
+		{
+			//Console.WriteLine("entra en la impresion del encabezado");
+			//Gtk.Image image5 = new Gtk.Image();
+		
+		    //image5.Name = "image5";
+			//image5.Pixbuf = new Gdk.Pixbuf(System.IO.Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, "osiris.jpg"));
+			//image5.Pixbuf = new Gdk.Pixbuf("/opt/osiris/bin/OSIRISLogo.jpg");   // en Linux
+			//image5.Pixbuf.ScaleSimple(128, 128, Gdk.InterpType.Bilinear);
+			//Gdk.CairoHelper.SetSourcePixbuf(cr,image5.Pixbuf,1,-30);
+			//Gdk.CairoHelper.SetSourcePixbuf(cr,image5.Pixbuf.ScaleSimple(145, 50, Gdk.InterpType.Bilinear),1,1);
+			//Gdk.CairoHelper.SetSourcePixbuf(cr,image5.Pixbuf.ScaleSimple(180, 64, Gdk.InterpType.Hyper),1,1);
+			//cr.Fill();
+			//cr.Paint();
+			//cr.Restore();
+								
+			Pango.FontDescription desc = Pango.FontDescription.FromString ("Sans");								
+			//cr.Rotate(90);  //Imprimir Orizontalmente rota la hoja cambian las posiciones de las lineas y columna					
+			fontSize = 8.0;
+			desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;
+			layout.FontDescription.Weight = Weight.Bold;		// Letra negrita
+			cr.MoveTo(05*escala_en_linux_windows,05*escala_en_linux_windows);			layout.SetText(classpublic.nombre_empresa);			Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(05*escala_en_linux_windows,15*escala_en_linux_windows);			layout.SetText(classpublic.direccion_empresa);		Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(480*escala_en_linux_windows,15*escala_en_linux_windows);			layout.SetText("FOLIO DE ATENCION");				Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(05*escala_en_linux_windows,25*escala_en_linux_windows);			layout.SetText(classpublic.telefonofax_empresa);	Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(510*escala_en_linux_windows,25*escala_en_linux_windows);			layout.SetText(folioservicio.ToString());			Pango.CairoHelper.ShowLayout (cr, layout);
+			fontSize = 6.0;
+			desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;
+			cr.MoveTo(479*escala_en_linux_windows,05*escala_en_linux_windows);			layout.SetText("Fech.Rpt:"+(string) DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));		Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(05*escala_en_linux_windows,35*escala_en_linux_windows);			layout.SetText("Sistema Hospitalario OSIRIS");		Pango.CairoHelper.ShowLayout (cr, layout);
+			// Cambiando el tamaño de la fuente			
+			fontSize = 10.0;
+			desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;
+			layout.FontDescription.Weight = Weight.Bold;		// Letra negrita
+			cr.MoveTo(225*escala_en_linux_windows, 25*escala_en_linux_windows);			layout.SetText("HOJA REGISTROS DE "+area);				Pango.CairoHelper.ShowLayout (cr, layout);
+			fontSize = 8.0;	
+			desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;
+			layout.FontDescription.Weight = Weight.Bold;		// Letra negrita
+			cr.MoveTo(220*escala_en_linux_windows,45*escala_en_linux_windows);			layout.SetText("DATOS GENERALES DEL PACIENTE");			Pango.CairoHelper.ShowLayout (cr, layout);
+			fontSize = 7.0;
+			desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;
+			layout.FontDescription.Weight = Weight.Normal;		// Letra negrita
+			cr.MoveTo(05*escala_en_linux_windows,55*escala_en_linux_windows);			layout.SetText("INGRESO:"+fecha_admision.Trim());	Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(465*escala_en_linux_windows,55*escala_en_linux_windows);			layout.SetText("EGRESO:"+fechahora_alta.Trim());	Pango.CairoHelper.ShowLayout (cr, layout);
+			layout.FontDescription.Weight = Weight.Bold;		// Letra negrita
+			cr.MoveTo(05*escala_en_linux_windows,65*escala_en_linux_windows);			layout.SetText("EXP.: "+PidPaciente.ToString()+"	Nombre Paciente:"+nombre_paciente.ToString());	Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(340*escala_en_linux_windows,65*escala_en_linux_windows);			layout.SetText("Fecha de Nacimiento: "+fecha_nacimiento.ToString());	Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(500*escala_en_linux_windows,65*escala_en_linux_windows);			layout.SetText("Edad: "+edadpac.ToString());							Pango.CairoHelper.ShowLayout (cr, layout);
+			layout.FontDescription.Weight = Weight.Normal;		// Letra normal
+			cr.MoveTo(05*escala_en_linux_windows,75*escala_en_linux_windows);			layout.SetText("Direccion: "+dir_pac.ToString());							Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(05*escala_en_linux_windows,85*escala_en_linux_windows);			layout.SetText("Tel. Pac.: "+telefono_paciente.ToString());					Pango.CairoHelper.ShowLayout (cr, layout);
+			//cr.MoveTo(400*escala_en_linux_windows,85*escala_en_linux_windows);			layout.SetText("Nº Hab/Sala: "+entry_id_habitacion.Trim());					Pango.CairoHelper.ShowLayout (cr, layout);
+			layout.FontDescription.Weight = Weight.Bold;		// Letra negrita
+			if((string) aseguradora == "Asegurado"){
+				cr.MoveTo(05*escala_en_linux_windows,95*escala_en_linux_windows);			layout.SetText("Tipo de paciente: "+tipo_paciente.ToString()+"	Aseguradora: "+aseguradora.ToString()+"	Poliza: ");					Pango.CairoHelper.ShowLayout (cr, layout);
 			}else{
-				ContextoImp.MoveTo(19.5, 680);		ContextoImp.Show("Tipo de paciente:  "+tipo_paciente.ToString()+"              Empresa: "+empresapac.ToString());
-				ContextoImp.MoveTo(20, 680);		ContextoImp.Show("Tipo de paciente:  "+tipo_paciente.ToString()+"              Empresa: "+empresapac.ToString());
-		 	}
-		 	
-			if(doctor.ToString() == " " || doctor.ToString() == "")
-			{
-				ContextoImp.MoveTo(20, 660);			ContextoImp.Show("Medico: ");
-				ContextoImp.MoveTo(250, 660);			ContextoImp.Show("Especialidad:");
-				ContextoImp.MoveTo(20, 650);			ContextoImp.Show("Cirugia/Diagnostico : "+cirugia.ToString());
-			}else{
-				ContextoImp.MoveTo(20, 660);			ContextoImp.Show("Medico: "+doctor.ToString()+"           Especialidad:  ");
-				ContextoImp.MoveTo(20, 650);			ContextoImp.Show("Cirugia/Diagnostico: "+cirugia.ToString());
+				cr.MoveTo(05*escala_en_linux_windows,95*escala_en_linux_windows);			layout.SetText("Tipo de paciente: "+tipo_paciente.ToString()+"	Empresa: "+empresapac.ToString());					Pango.CairoHelper.ShowLayout (cr, layout);
 			}
-	  }
-      
-      void genera_tabla(Gnome.PrintContext ContextoImp, Gnome.PrintJob trabajoImpresion)
-      {
-      	//////////////////DIBUJANDO TABLA (START DRAWING TABLE)////////////////////////
-		Gnome.Print.Setfont (ContextoImp, fuente36);
-		ContextoImp.MoveTo(20, 645);				ContextoImp.Show("____________________________");
-				
-		////COLUMNAS
-		int filasl = 617;
-		int filas2 = 635;
-		for (int i1=0; i1 < 28; i1++)//30 veces para tasmaño carta
-		{	
-            int columnas = 17;
-			Gnome.Print.Setfont (ContextoImp, fuente36);
-			ContextoImp.MoveTo(columnas-1, filasl-.8);		ContextoImp.Show("|");
-			ContextoImp.MoveTo(columnas+1, filasl-.8);		ContextoImp.Show("|");
-			ContextoImp.MoveTo(columnas+2, filasl-.8);		ContextoImp.Show("|");
-			ContextoImp.MoveTo(columnas+553, filasl);		ContextoImp.Show("|");
-			ContextoImp.MoveTo(columnas+554, filasl);		ContextoImp.Show("|");
-			ContextoImp.MoveTo(columnas+555, filasl);		ContextoImp.Show("|");
-			ContextoImp.MoveTo(columnas+556, filasl);		ContextoImp.Show("|");
-			filasl-=20;
+			layout.FontDescription.Weight = Weight.Normal;		// Letra normal
+			cr.MoveTo(05*escala_en_linux_windows,105*escala_en_linux_windows);			layout.SetText("Medico: "+doctor.ToString());					Pango.CairoHelper.ShowLayout (cr, layout);
+			//cr.MoveTo(250*escala_en_linux_windows,105*escala_en_linux_windows);			layout.SetText("Especialidad: "+entry_especialidad.ToString());	Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(05*escala_en_linux_windows,115*escala_en_linux_windows);			layout.SetText("Cirugia/Diagnostico: "+cirugia.ToString());		Pango.CairoHelper.ShowLayout (cr, layout);
+			// Creando el Cuadro de Titulos para colocar el nombre del usuario
+			cr.Rectangle (05*escala_en_linux_windows, 125*escala_en_linux_windows, 565*escala_en_linux_windows, 15*escala_en_linux_windows);
+			cr.FillExtents();  //. FillPreserve(); 
+			cr.SetSourceRGB (0, 0, 0);
+			cr.LineWidth = 0.5;
+			cr.Stroke();
+			cr.MoveTo(08*escala_en_linux_windows,128*escala_en_linux_windows);			layout.SetText("Usuario que realizo los cargos: "+LoginEmpleado+" -- "+NomEmpleado.Trim()+" "+AppEmpleado.Trim()+" "+ApmEmpleado.Trim());		Pango.CairoHelper.ShowLayout (cr, layout);			
 		}
-		filas2 = 635;
-		for(int i2=0; i2 < 57; i2++)//30 veces para tasmaño carta
-		{	
-			Gnome.Print.Setfont (ContextoImp, fuente11);
-			ContextoImp.MoveTo(75, filas2);						ContextoImp.Show("|");//52
-			filas2-=10;
+		
+		private void OnEndPrint (object obj, Gtk.EndPrintArgs args)
+		{
+			
 		}
-		filas2 = 635;
-		for(int i3=0; i3 < 37; i3++)//30 veces para tasmaño carta
-		{	
-			Gnome.Print.Setfont (ContextoImp, fuente7);
-			ContextoImp.MoveTo(20, filas2);
-			ContextoImp.Show("________________________________________________________________________________________________________________________________________________");
-			filas2-=15;
-		}
-		Gnome.Print.Setfont (ContextoImp, fuente36);
-		ContextoImp.MoveTo(20,73);		ContextoImp.Show("____________________________");
-		///FIN DE DIBUJO DE TABLA (END DRAWING TABLE)///////
-		Gnome.Print.Setfont (ContextoImp, fuente7);
-    }
-    
-    void imprime_titulo(Gnome.PrintContext ContextoImp, Gnome.PrintJob trabajoImpresion)
-    {
-    	Gnome.Print.Setfont (ContextoImp, fuente9);
-		//LUGAR DE CARGO
-		ContextoImp.MoveTo(210.5, filas);			ContextoImp.Show("Usuario: "+LoginEmpleado+" -- "+NomEmpleado+" "+AppEmpleado+" "+ApmEmpleado);//635
-		ContextoImp.MoveTo(211, filas);				ContextoImp.Show("Usuario: "+LoginEmpleado+" -- "+NomEmpleado+" "+AppEmpleado+" "+ApmEmpleado);//635
-		filas-=10;
-		Gnome.Print.Setfont (ContextoImp, fuente9);
-		ContextoImp.MoveTo(26.5, filas);			ContextoImp.Show("CANTIDAD");//64.5625
-		ContextoImp.MoveTo(27, filas);				ContextoImp.Show("CANTIDAD");//65,625
-		ContextoImp.MoveTo(210.5, filas);			ContextoImp.Show("DESCRIPCION DEL PRODUCTO");//107.5
-		ContextoImp.MoveTo(211, filas);				ContextoImp.Show("DESCRIPCION DEL PRODUCTO");//625
-		Gnome.Print.Setfont (ContextoImp, fuente9);
-	}
-	
-	void ComponerPagina (Gnome.PrintContext ContextoImp, Gnome.PrintJob trabajoImpresion)
-	{
-		ContextoImp.BeginPage("Pagina 1");
-		filas=635;
-        //VARIABLES
-        imprime_encabezado(ContextoImp,trabajoImpresion);
-     	genera_tabla(ContextoImp,trabajoImpresion);
-     	imprime_titulo(ContextoImp,trabajoImpresion);
-     	ContextoImp.ShowPage();
-    }
- }    
+	}    
 }

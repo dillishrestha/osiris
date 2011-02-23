@@ -1131,7 +1131,7 @@ namespace osiris
 						comando1.ExecuteNonQuery();
 	    	    	    comando1.Dispose();
 	    	    	    conexion1.Close();
-	    	    	    //this.button_alta_paciente.Sensitive = false;
+	    	    	    this.button_alta_paciente.Sensitive = false;
     	    			this.button_busca_producto.Sensitive = false;
 					}catch(NpgsqlException ex){
 						MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,

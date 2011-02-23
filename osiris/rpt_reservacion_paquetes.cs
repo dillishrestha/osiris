@@ -6,17 +6,23 @@
 // To change standard headers go to Edit->Preferences->Coding->Standard Headers
 //
 using System;
-using Npgsql;
-using System.Data;
 using Gtk;
-using Glade;
-using Gnome;
-using System.Collections;
+using Npgsql;
+using Cairo;
+using Pango;
 
 namespace osiris
 {
 	public class rpt_reservacion_paquete
 	{
+		private static int pangoScale = 1024;
+		private PrintOperation print;
+		private double fontSize = 8.0;
+		int escala_en_linux_windows;		// Linux = 1  Windows = 8
+		int comienzo_linea = 162;
+		int separacion_linea = 10;
+		int numpage = 1;
+		
 		string nombrebd;
 		string LoginEmpleado;
 		string NomEmp_;
@@ -33,10 +39,8 @@ namespace osiris
 		string cantidad_en_letras;
 		
 		string connectionString;
-		
-		// Declarando variable de fuente para la impresion
-		Gnome.Font fuente2 = Gnome.Font.FindClosest("Bitstream Vera Sans", 8);
-			
+					
+		class_public classpublic = new class_public();
 		
 		public rpt_reservacion_paquete(string entry_dia1_,string entry_mes1_,string entry_anno1_,string entry_nombre_paciente_,string entry_paq_pres_,string entry_precio_paquete_,string LoginEmp_, string NomEmpleado_, string AppEmpleado_, string ApmEmpleado_, string _nombrebd_) 
 		{
@@ -51,57 +55,43 @@ namespace osiris
     		AppEmpleado = AppEmpleado_;
     		ApmEmpleado = ApmEmpleado_;
     		nombrebd = _nombrebd_;
+			escala_en_linux_windows = classpublic.escala_linux_windows;
 			
-			Gnome.PrintJob    trabajo   = new Gnome.PrintJob(Gnome.PrintConfig.Default());
-        	Gnome.PrintDialog dialogo   = new Gnome.PrintDialog(trabajo, "RESERVACION", 0);
-        	
-        	int respuesta = dialogo.Run ();
-        	
-        	if (respuesta == (int) PrintButtons.Cancel) 
-			{
-				dialogo.Hide (); 
-				dialogo.Dispose (); 
-				return;
-			}
-			Gnome.PrintContext ctx = trabajo.Context;
-        	ComponerPagina(ctx, trabajo); 
-			trabajo.Close();
-            switch (respuesta)
-        	{
-				case (int) PrintButtons.Print:   
-                trabajo.Print (); 
-                break;
-                case (int) PrintButtons.Preview:
-                new PrintJobPreview(trabajo, "RESERVACION").Show();
-                break;
-        	}
-			dialogo.Hide (); dialogo.Dispose ();		
+			print = new PrintOperation ();
+			print.JobName = "Reservacion de Paquetes";
+			print.BeginPrint += new BeginPrintHandler (OnBeginPrint);
+			print.DrawPage += new DrawPageHandler (OnDrawPage);
+			print.EndPrint += new EndPrintHandler (OnEndPrint);
+			print.Run (PrintOperationAction.PrintDialog, null);				
 		}
 		
-		void ComponerPagina (Gnome.PrintContext ContextoImp, Gnome.PrintJob trabajoImpresion)
-		{ 
-			ContextoImp.BeginPage("Pagina 1");
-			
-           	cantidad_en_letras = "";    //traduce_numeros(entry_precio_paquete);
-		 	float preciopaqpresu = float.Parse(entry_precio_paquete);
-			
-			Gnome.Print.Setfont (ContextoImp, fuente2);          //Nombre del Usuario y/o demandante del servicio:  
-			//ContextoImp.MoveTo(20, 710);         ContextoImp.Show("                                                                                                                           "                         +        entry_nombre_paciente);
-			ContextoImp.MoveTo(325, 709);         ContextoImp.Show(entry_nombre_paciente);
-			                                                     //nombre del paquete: 
-			ContextoImp.MoveTo(190, 689);         ContextoImp.Show(entry_paq_pres);
-			                                                     //v.-precio y forma de pago: $                                      +
-			ContextoImp.MoveTo(195, 548);         ContextoImp.Show(preciopaqpresu.ToString("C"));                                                       //  + entry_precio_paquete);
-			                                                     //(________________________________)
-			ContextoImp.MoveTo(65, 538.6);       ContextoImp.Show(          cantidad_en_letras ); 
-			                                                     //En Monterrey N.L. a                    de       "             del
-			ContextoImp.MoveTo(392, 231);        ContextoImp.Show(entry_dia1);   
-			ContextoImp.MoveTo(440, 231);        ContextoImp.Show(entry_mes1);
-			ContextoImp.MoveTo(521, 231);        ContextoImp.Show(entry_anno1.Substring(3,1));
-			
-			
-			ContextoImp.ShowPage();							
+		private void OnBeginPrint (object obj, Gtk.BeginPrintArgs args)
+		{
+			print.NPages = 1;  // crea cantidad de copias del reporte			
+			// para imprimir horizontalmente el reporte
+			//print.PrintSettings.Orientation = PageOrientation.Landscape;
+			//Console.WriteLine(print.PrintSettings.Orientation.ToString());
+		}
+		
+		private void OnDrawPage (object obj, Gtk.DrawPageArgs args)
+		{			
+			PrintContext context = args.Context;
+			ejecutar_consulta_reporte(context);
+		}
+		
+		void ejecutar_consulta_reporte(PrintContext context)
+		{
+			Cairo.Context cr = context.CairoContext;
+			Pango.Layout layout = context.CreatePangoLayout ();
+			Pango.FontDescription desc = Pango.FontDescription.FromString ("Sans");									
+			// cr.Rotate(90)  Imprimir Orizontalmente rota la hoja cambian las posiciones de las lineas y columna					
+			fontSize = 8.0;			layout = null;			layout = context.CreatePangoLayout ();
+			desc.Size = (int)(fontSize * pangoScale);		layout.FontDescription = desc;						
 					
-		}				     
+		}
+		
+		private void OnEndPrint (object obj, Gtk.EndPrintArgs args)
+		{
+		}
 	}
 }

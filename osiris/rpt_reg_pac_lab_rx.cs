@@ -29,15 +29,13 @@
 // Proposito	:  
 // Objeto		: 
 //////////////////////////////////////////////////////////
+
 using System;
-using System.IO;
 using Gtk;
-using Gnome;
 using Npgsql;
-using System.Data;
+using Cairo;
+using Pango;
 using Glade;
-using System.Collections;
-using GtkSharp;
 
 namespace osiris
 {
@@ -98,9 +96,12 @@ namespace osiris
 		string tiporeporte = "REGLAB";
 		string titulo = "REPORTE DE REGISTRO DE PACIENTES DE LABORATORIO";
 		
-		int columna = 0;
-		int fila = -70;
-		int contador = 1;
+		private static int pangoScale = 1024;
+		private PrintOperation print;
+		private double fontSize = 8.0;
+		int escala_en_linux_windows;		// Linux = 1  Windows = 8
+		int comienzo_linea = 162;
+		int separacion_linea = 10;
 		int numpage = 1;
 		
 		string query_fechas = "";
@@ -115,7 +116,6 @@ namespace osiris
 		int id_tipoadmision = 0;
 		int id_tipopaciente = 0;
 		string busqueda = "";
-		int	filas = 684;
 		string query_tipo_paciente = "AND osiris_erp_movcargos.id_tipo_paciente > '0' ";
 		
 		string query_sexo = " "; 
@@ -124,23 +124,13 @@ namespace osiris
 		string query_solicitado;
 		string querytipo_reporte = "";
 		string nombredepartamento = "";
-				
-		// Declarando variable de fuente para la impresion
-		// Declaracion de fuentes tipo Bitstream Vera sans
-		Gnome.Font fuente6 = Gnome.Font.FindClosest("Bitstream Vera Sans", 6);
-		Gnome.Font fuente7 = Gnome.Font.FindClosest("Bitstream Vera Sans", 7);
-		Gnome.Font fuente8 = Gnome.Font.FindClosest("Bitstream Vera Sans", 8);
-		Gnome.Font fuente9 = Gnome.Font.FindClosest("Bitstream Vera Sans", 9);
-		Gnome.Font fuente10 = Gnome.Font.FindClosest("Bitstream Vera Sans", 10);
-		Gnome.Font fuente11 = Gnome.Font.FindClosest("Bitstream Vera Sans", 11);
-		Gnome.Font fuente12 = Gnome.Font.FindClosest("Bitstream Vera Sans", 12);
-		Gnome.Font fuente36 = Gnome.Font.FindClosest("Bitstream Vera Sans", 36);
 		
 		//Declaracion de ventana de error
 		protected Gtk.Window MyWinError;
 		protected Gtk.Window MyWin;
 		
 		class_conexion conexion_a_DB = new class_conexion();
+		class_public classpublic = new class_public();
 		
 		public rep_reg_pac_labo_rx(string _nombrebd_,string querytipo_reporte_,string nombredepartamento_)
 		{
@@ -148,6 +138,7 @@ namespace osiris
 			nombredepartamento = nombredepartamento_;
 			connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
 			nombrebd = conexion_a_DB._nombrebd;
+			escala_en_linux_windows = classpublic.escala_linux_windows;
 			
 			Glade.XML  gxml = new Glade.XML  (null, "laboratorio.glade", "busqueda_por_fecha", null);
 			gxml.Autoconnect  (this);	
@@ -217,8 +208,7 @@ namespace osiris
 				
 				NpgsqlDataReader lector = comando.ExecuteReader ();
 				store2.AppendValues ("", 0);
-               	while (lector.Read())
-				{
+               	while (lector.Read()){
 					store2.AppendValues ((string) lector["descripcion_admisiones"], (int) lector["id_tipo_admisiones"]);
 				}
 			}catch (NpgsqlException ex){
@@ -318,80 +308,43 @@ namespace osiris
 																			
 				msgBoxError.Run ();				msgBoxError.Destroy();
 			}else{
-				numpage = 1;
-				filas = 684;
-				contador = 1;
 				tipo_de_sexo(sender, a);
 				tipo_orden_query(sender, a);
-						
-						
-				Gnome.PrintJob    trabajo   = new Gnome.PrintJob (PrintConfig.Default());
-	        	Gnome.PrintDialog dialogo   = new Gnome.PrintDialog (trabajo, titulo, 0);
-	        	int         respuesta = dialogo.Run ();
-	        
-				if (respuesta == (int) Gnome.PrintButtons.Cancel){
-					dialogo.Hide (); 		dialogo.Dispose (); 
-					return;
-				}
-
-	        	Gnome.PrintContext ctx = trabajo.Context;        
-	        	ComponerPagina(ctx, trabajo); 
-	        	trabajo.Close();
-	             
-	        	switch (respuesta)
-	        	{
-	                  case (int) Gnome.PrintButtons.Print:   
-	                  		trabajo.Print (); 
-	                  		break;
-	                  case (int) Gnome.PrintButtons.Preview:
-	                      	new Gnome.PrintJobPreview(trabajo, titulo).Show();
-	                        break;
-	        	}
-	        	dialogo.Hide (); dialogo.Dispose ();
+				print = new PrintOperation ();
+				print.JobName = "Reporte de ";
+				print.BeginPrint += new BeginPrintHandler (OnBeginPrint);
+				print.DrawPage += new DrawPageHandler (OnDrawPage);
+				print.EndPrint += new EndPrintHandler (OnEndPrint);
+				print.Run (PrintOperationAction.PrintDialog, null);
         	}
 		}
 		
-		void tipo_de_sexo(object sender, EventArgs args)
+		private void OnBeginPrint (object obj, Gtk.BeginPrintArgs args)
 		{
-			if(radiobutton_ambos_sexos.Active == true){ 
-				query_sexo = " ";
-			}
-			if(radiobutton_femenino.Active == true){ 
-				query_sexo = "AND osiris_his_paciente.sexo_paciente = 'M' ";
-			}
-			if(radiobutton_masculino.Active == true){ 
-				query_sexo = "AND osiris_his_paciente.sexo_paciente = 'H' "; 
-			}
+			print.NPages = 1;  // crea cantidad de copias del reporte			
+			// para imprimir horizontalmente el reporte
+			print.PrintSettings.Orientation = PageOrientation.Landscape;
+			//Console.WriteLine(print.PrintSettings.Orientation.ToString());
 		}
 		
-		void tipo_orden_query(object sender, EventArgs args)
-		{
-			if(radiobutton_folio_servicio.Active == true){
-				query_orden = "osiris_erp_movcargos.folio_de_servicio ;" ; }
-			if(radiobutton_pid_paciente.Active == true){
-				query_orden = "osiris_erp_cobros_deta.pid_paciente ;"; }
-			if(radiobutton_nombres.Active == true){
-				query_orden = "nombre1_paciente || ' ' || nombre2_paciente || ' ' || apellido_paterno_paciente || ' ' || apellido_materno_paciente ;"; }
-			if(radiobutton_tipo_admision.Active == true){
-				query_orden = "id_tipo_paciente ;"; }
-			if(radiobutton_folio_lab.Active == true){
-				query_orden = "to_char(osiris_erp_cobros_deta.folio_interno_dep,'999999999999') ;";
-			}
+		private void OnDrawPage (object obj, Gtk.DrawPageArgs args)
+		{			
+			PrintContext context = args.Context;
+			ejecutar_consulta_reporte(context);
 		}
 		
-		void ComponerPagina (Gnome.PrintContext ContextoImp, Gnome.PrintJob trabajoImpresion)
-		{	
-			ContextoImp.BeginPage("Pagina 1");
-			ContextoImp.Rotate(90);
-			imprime_rpt_reg_pac_lab(ContextoImp,trabajoImpresion);
-			ContextoImp.ShowPage();
-		}
-		
-///////////////////////////////REPORTE DE PACIENTES DE LABORATORIO/////////////////////////////////////////////////////
-///////////////////////////////REPORTE DE PACIENTES DE LABORATORIO/////////////////////////////////////////////////////
-		
-		void imprime_rpt_reg_pac_lab(Gnome.PrintContext ContextoImp, Gnome.PrintJob trabajoImpresion)
+		void ejecutar_consulta_reporte(PrintContext context)
 		{
+			Cairo.Context cr = context.CairoContext;
+			Pango.Layout layout = context.CreatePangoLayout ();
+			Pango.FontDescription desc = Pango.FontDescription.FromString ("Sans");									
+			// cr.Rotate(90)  Imprimir Orizontalmente rota la hoja cambian las posiciones de las lineas y columna					
+			fontSize = 8.0;			layout = null;			layout = context.CreatePangoLayout ();
+			desc.Size = (int)(fontSize * pangoScale);		layout.FontDescription = desc;
+			
+			
+			
+			
 			if(this.checkbutton_todas_fechas.Active == false){
 				rango1 = entry_dia1.Text+"/"+entry_mes1.Text+"/"+entry_ano1.Text;
 				rango2 = entry_dia2.Text+"/"+entry_mes2.Text+"/"+entry_ano2.Text;
@@ -399,6 +352,7 @@ namespace osiris
 							"AND to_char(osiris_erp_cobros_deta.fechahora_creacion,'yyyy-MM-dd') <= '"+entry_ano2.Text+"-"+entry_mes2.Text+"-"+entry_dia2.Text+"' ";
 			}
 			
+			/*
 			NpgsqlConnection conexion; 
 			conexion = new NpgsqlConnection (connectionString+nombrebd);
             // Verifica que la base de datos este conectada
@@ -613,93 +567,41 @@ namespace osiris
 								MessageType.Error,ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
 				msgBoxError.Run ();		msgBoxError.Destroy();
 			}
+			*/
 		}
 		
-		void imprime_encabezado(Gnome.PrintContext ContextoImp, Gnome.PrintJob trabajoImpresion)
+		private void OnEndPrint (object obj, Gtk.EndPrintArgs args)
 		{
-      		// Cambiar la fuente
-			Gnome.Print.Setfont(ContextoImp,fuente6);
-			
-			ContextoImp.MoveTo(69.7,-30);			ContextoImp.Show("Sistema Hospitalario OSIRIS");//19.7, 770
-			ContextoImp.MoveTo(70, -30);			ContextoImp.Show("Sistema Hospitalario OSIRIS");
-			ContextoImp.MoveTo(69.7, -40);			ContextoImp.Show("Direccion:");
-			ContextoImp.MoveTo(70, -40);			ContextoImp.Show("Direccion:");
-			ContextoImp.MoveTo(69.7, -50);			ContextoImp.Show("Conmutador:");
-			ContextoImp.MoveTo(70, -50);			ContextoImp.Show("Conmutador:");
-			
-			Gnome.Print.Setfont(ContextoImp,fuente11);
-			ContextoImp.MoveTo(319.7, -30);			ContextoImp.Show(titulo);
-			ContextoImp.MoveTo(320, -30);			ContextoImp.Show(titulo);
-			Gnome.Print.Setfont(ContextoImp,fuente9);
-			ContextoImp.MoveTo(390.7, -40);			ContextoImp.Show("Filtro Tipo Paciente: "+tipopaciente);
-			ContextoImp.MoveTo(391, -40);			ContextoImp.Show("Filtro Tipo Paciente: "+tipopaciente);
-			Gnome.Print.Setfont(ContextoImp,fuente7);
-			ContextoImp.MoveTo(390, -50);			ContextoImp.Show("PAGINA "+numpage+"  Fecha Impresion: "+DateTime.Now.ToString("dd-MM-yyyy"));
-			ContextoImp.MoveTo(390, -50);			ContextoImp.Show("PAGINA "+numpage+"  Fecha Impresion: "+DateTime.Now.ToString("dd-MM-yyyy"));
-			if(rango1 == "" || rango2 == "") {
-				ContextoImp.MoveTo(580, -50);		ContextoImp.Show("");
-			}else{
-				if(rango1 == rango2) {
-					ContextoImp.MoveTo(580, -50);	ContextoImp.Show("FECHA: "+rango1);
-				}else{
-					ContextoImp.MoveTo(580, -50);	ContextoImp.Show("Rango del "+rango1+" al "+rango2);
-				}
+		}
+		
+		void tipo_de_sexo(object sender, EventArgs args)
+		{
+			if(radiobutton_ambos_sexos.Active == true){ 
+				query_sexo = " ";
 			}
-			//imprimo el titulo
-			imprime_titulo(ContextoImp,trabajoImpresion);
-
-			ContextoImp.Rotate(270);
-			ContextoImp.Rotate(90);//RESTAURO EL ORDEN A VERTICAL
-			Gnome.Print.Setfont(ContextoImp,fuente6);//RESTAURO FUENTE A TAMAÑO 6
-		}	
-						
-		void imprime_titulo(Gnome.PrintContext ContextoImp, Gnome.PrintJob trabajoImpresion)
-		{
-			Gnome.Print.Setfont(ContextoImp,fuente6);
-			ContextoImp.MoveTo(69.7, -65);					ContextoImp.Show("PACIENTES"); //| Fecha | Nº Atencion | Paciente | SubTotal al 15 | SubTotal al 0 | IVA | SubTotal Deducible | Coaseguro | Total | Hono. Medico");
-			ContextoImp.MoveTo(70, -65);					ContextoImp.Show("PACIENTES");
-			ContextoImp.MoveTo(147.7,-65);					ContextoImp.Show("REG.");
-			ContextoImp.MoveTo(148,-65);					ContextoImp.Show("REG.");//80,-70
-			ContextoImp.MoveTo(178.7,-65);					ContextoImp.Show("PID");
-			ContextoImp.MoveTo(178,-65);					ContextoImp.Show("PID");//80,-70
-			ContextoImp.MoveTo(217.7,-65);					ContextoImp.Show("NOMBRE");
-			ContextoImp.MoveTo(218,-65);					ContextoImp.Show("NOMBRE");//80,-70
-			ContextoImp.MoveTo(499.7,-65);					ContextoImp.Show("EDAD ");
-			ContextoImp.MoveTo(500,-65);					ContextoImp.Show("EDAD ");//120,-70
-			ContextoImp.MoveTo(459.7,-65);					ContextoImp.Show("SEXO");
-			ContextoImp.MoveTo(460,-65);					ContextoImp.Show("SEXO");//170,-70
-			ContextoImp.MoveTo(529.7,-65);					ContextoImp.Show("FECH. NAC.");  
-			ContextoImp.MoveTo(530,-65);					ContextoImp.Show("FECH. NAC.");//290,-70
-			//ContextoImp.MoveTo(405.7,-65);					ContextoImp.Show("PROCEDENCIA");
-			//ContextoImp.MoveTo(406,-65);					ContextoImp.Show("PROCEDENCIA");//360,-70
-			ContextoImp.MoveTo(592.7,-65);					ContextoImp.Show("MEDICO");
-			ContextoImp.MoveTo(593,-65);					ContextoImp.Show("MEDICO");//420,-70
-			ContextoImp.MoveTo(354.7,-65);					ContextoImp.Show("ESTUDIOS SOLICITADOS");
-			ContextoImp.MoveTo(355,-65);					ContextoImp.Show("ESTUDIOS SOLICITADOS");//
-			/*ContextoImp.MoveTo(622.7,-65);					ContextoImp.Show("CARGO");
-			ContextoImp.MoveTo(623,-65);					ContextoImp.Show("CARGO");//420,-70
-			ContextoImp.MoveTo(655.7,-65);					ContextoImp.Show("SOLICITADO");
-			ContextoImp.MoveTo(656,-65);					ContextoImp.Show("SOLICITADO");//420,-70
-			ContextoImp.MoveTo(715.7,-65);					ContextoImp.Show("OBSERVACIONES");
-			ContextoImp.MoveTo(716,-65);					ContextoImp.Show("OBSERVACIONES");//420,-70*/
-			Gnome.Print.Setfont(ContextoImp,fuente6);
-			ContextoImp.MoveTo(70, -66);					ContextoImp.Show   ("_______________________________________________________________________________________________"+
-																			"_______________________________________________________________________________________________");
-		} 
+			if(radiobutton_femenino.Active == true){ 
+				query_sexo = "AND osiris_his_paciente.sexo_paciente = 'M' ";
+			}
+			if(radiobutton_masculino.Active == true){ 
+				query_sexo = "AND osiris_his_paciente.sexo_paciente = 'H' "; 
+			}
+		}
 		
-		void salto_pagina(Gnome.PrintContext ContextoImp, Gnome.PrintJob trabajoImpresion)
+		void tipo_orden_query(object sender, EventArgs args)
 		{
-			if (contador > 50 ){
-	        	numpage += 1;
-				contador = 1;	
-	        	fila = -75;
-	        	ContextoImp.ShowPage();
-				ContextoImp.BeginPage("Pagina "+numpage.ToString());
-				ContextoImp.Rotate(90);
-				imprime_encabezado(ContextoImp,trabajoImpresion);
-	     	}
-	    }
-		
+			if(radiobutton_folio_servicio.Active == true){
+				query_orden = "osiris_erp_movcargos.folio_de_servicio ;" ; }
+			if(radiobutton_pid_paciente.Active == true){
+				query_orden = "osiris_erp_cobros_deta.pid_paciente ;"; }
+			if(radiobutton_nombres.Active == true){
+				query_orden = "nombre1_paciente || ' ' || nombre2_paciente || ' ' || apellido_paterno_paciente || ' ' || apellido_materno_paciente ;"; }
+			if(radiobutton_tipo_admision.Active == true){
+				query_orden = "id_tipo_paciente ;"; }
+			if(radiobutton_folio_lab.Active == true){
+				query_orden = "to_char(osiris_erp_cobros_deta.folio_interno_dep,'999999999999') ;";
+			}
+		}
+				
 		/////////////////Acciones del boton todos los tipos de pacientes
 		void on_checkbutton_todos_paciente_clicked(object sender, EventArgs args)
 		{

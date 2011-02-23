@@ -93,6 +93,11 @@ namespace osiris
 			Cairo.Context cr = context.CairoContext;
 			Pango.Layout layout = context.CreatePangoLayout ();
 			imprime_encabezado(cr,layout);
+			Pango.FontDescription desc = Pango.FontDescription.FromString ("Sans");									
+			// cr.Rotate(90)  Imprimir Orizontalmente rota la hoja cambian las posiciones de las lineas y columna					
+			fontSize = 8.0;			layout = null;			layout = context.CreatePangoLayout ();
+			desc.Size = (int)(fontSize * pangoScale);		layout.FontDescription = desc;
+			imprime_encabezado(cr,layout);
 		}
 		
 		void imprime_encabezado(Cairo.Context cr,Pango.Layout layout)

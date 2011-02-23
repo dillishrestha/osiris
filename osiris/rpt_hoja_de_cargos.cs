@@ -145,7 +145,8 @@ namespace osiris
 			nombrebd = conexion_a_DB._nombrebd;
 					
 			if((bool) valida_impresion_enfermera() == true){			
-				print = new PrintOperation ();						
+				print = new PrintOperation ();
+				print.JobName = "Reporte Cargos a Paciente";	// Name of the report
 				print.BeginPrint += new BeginPrintHandler (OnBeginPrint);
 				print.DrawPage += new DrawPageHandler (OnDrawPage);
 				print.EndPrint += new EndPrintHandler (OnEndPrint);

@@ -29,17 +29,25 @@
 // Proposito	:  
 // Objeto		: 
 //////////////////////////////////////////////////////////
+
 using System;
 using Gtk;
-using Gnome;
 using Npgsql;
-using System.Data;
-using Glade;
+using Cairo;
+using Pango;
 
 namespace osiris
 {
 	public class rpt_solicitud_cheque
 	{
+		private static int pangoScale = 1024;
+		private PrintOperation print;
+		private double fontSize = 8.0;
+		int escala_en_linux_windows;		// Linux = 1  Windows = 8
+		int comienzo_linea = 162;
+		int separacion_linea = 10;
+		int numpage = 1;
+		
 		string nombredoctor = "";
 		float hono_medico = 0;
 		float descuento_hono_medico = 0;
@@ -60,6 +68,7 @@ namespace osiris
 		{
 			connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
 			nombrebd = conexion_a_DB._nombrebd;
+			escala_en_linux_windows = classpublic.escala_linux_windows;
 			
 			folio_servicio = folio_servicio_;
 			nombre_paciente = nombre_paciente_;
@@ -70,34 +79,38 @@ namespace osiris
 			descuento_hono_medico = (hono_medico * 10 )  / 100;
 			total_descuento = hono_medico - descuento_hono_medico;
 			
-			Gnome.PrintJob    trabajo   = new Gnome.PrintJob (PrintConfig.Default ());
-   		    Gnome.PrintDialog dialogo   = new Gnome.PrintDialog (trabajo, "Solicitud de cheques", 0);
-       	    int respuesta = dialogo.Run ();
-
-			if (respuesta == (int) PrintButtons.Cancel){   //boton Cancelar
-				dialogo.Hide (); 
-				dialogo.Dispose (); 
-				return;
-			}
-	        Gnome.PrintContext ctx = trabajo.Context;
-   	     	ComponerPagina(ctx, trabajo); 
-	       	trabajo.Close();
-			switch (respuesta)
-			{   //imprimir
-				case (int) PrintButtons.Print:   
-					trabajo.Print (); 
-				break;
-				//vista previa
-				case (int) PrintButtons.Preview:
-					new PrintJobPreview(trabajo, "Solicitud de cheque").Show();
-				break;
-			}
-			dialogo.Hide (); dialogo.Dispose ();
+			print = new PrintOperation ();
+			print.JobName = "Solicitud de Cheques";
+			print.BeginPrint += new BeginPrintHandler (OnBeginPrint);
+			print.DrawPage += new DrawPageHandler (OnDrawPage);
+			print.EndPrint += new EndPrintHandler (OnEndPrint);
+			print.Run (PrintOperationAction.PrintDialog, null);
 		}
 		
-		void ComponerPagina (Gnome.PrintContext ContextoImp, Gnome.PrintJob trabajoImpresion)
-		{ 
-			for (int i1=0; i1 <= 1; i1++){
+		private void OnBeginPrint (object obj, Gtk.BeginPrintArgs args)
+		{
+			print.NPages = 1;  // crea cantidad de copias del reporte			
+			// para imprimir horizontalmente el reporte
+			//print.PrintSettings.Orientation = PageOrientation.Landscape;
+			//Console.WriteLine(print.PrintSettings.Orientation.ToString());
+		}
+		
+		private void OnDrawPage (object obj, Gtk.DrawPageArgs args)
+		{			
+			PrintContext context = args.Context;
+			ejecutar_consulta_reporte(context);
+		}
+		
+		void ejecutar_consulta_reporte(PrintContext context)
+		{
+			Cairo.Context cr = context.CairoContext;
+			Pango.Layout layout = context.CreatePangoLayout ();
+			Pango.FontDescription desc = Pango.FontDescription.FromString ("Sans");									
+			// cr.Rotate(90)  Imprimir Orizontalmente rota la hoja cambian las posiciones de las lineas y columna					
+			fontSize = 8.0;			layout = null;			layout = context.CreatePangoLayout ();
+			desc.Size = (int)(fontSize * pangoScale);		layout.FontDescription = desc;
+			
+			/*
 				ContextoImp.BeginPage("Pagina 1");
 				
 				cantidad_de_letras = classpublic.ConvertirCadena(total_descuento.ToString("F"),"PESO");
@@ -123,7 +136,11 @@ namespace osiris
 			    ContextoImp.MoveTo(370, 620);			ContextoImp.Show("Total:");
 			    ContextoImp.MoveTo(500, 620);			ContextoImp.Show(total_descuento.ToString("C"));
 				ContextoImp.ShowPage();
-			}
+			*/
+		}
+		
+		private void OnEndPrint (object obj, Gtk.EndPrintArgs args)
+		{
 		}
 	}
 }			

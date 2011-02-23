@@ -30,7 +30,6 @@
 /////////////////////////////////////////////////////////
 using System;
 using Gtk;
-using Gnome;
 using Npgsql;
 using Glade;
 using GtkSharp;

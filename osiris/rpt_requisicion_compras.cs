@@ -31,7 +31,6 @@
 using System;
 using Gtk;
 using Npgsql;
-using Glade;
 using Cairo;
 using Pango;
 

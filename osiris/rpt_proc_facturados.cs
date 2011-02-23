@@ -25,23 +25,29 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 // 
 //////////////////////////////////////////////////////////
-// Programa		: hscmty.cs
+// Programa		:
 // Proposito	:  
 // Objeto		: 
 //////////////////////////////////////////////////////////
 using System;
-using System.IO;
 using Gtk;
-using Gnome;
 using Npgsql;
-using System.Data;
 using Glade;
-using System.Collections;
+using Cairo;
+using Pango;
 
 namespace osiris
 {
 	public class reporte_porcedimientos_facturados
 	{
+		private static int pangoScale = 1024;
+		private PrintOperation print;
+		private double fontSize = 8.0;
+		int escala_en_linux_windows;		// Linux = 1  Windows = 8
+		int comienzo_linea = 162;
+		int separacion_linea = 10;
+		int numpage = 1;
+		
 		string connectionString;
         string nombrebd;
 		string LoginEmpleado;
@@ -51,39 +57,25 @@ namespace osiris
 		string tiporeporte = "NO FACTURADOS";
 		string titulo = "REPORTE DE PROCEDIMIENTOS NO FACTURADOS";
 		
-		int columna = 0;
-		int fila = -70;
-		int contador = 1;
-		int numpage = 1;
-		
 		string query_fechas = " ";
 		string query_cliente = " ";
 		string orden = " ";
 		string rango1 = "";
 		string rango2 = "";
 		bool pagados = false;
-				
-		// Declarando variable de fuente para la impresion
-		// Declaracion de fuentes tipo Bitstream Vera sans
-		Gnome.Font fuente6 = Gnome.Font.FindClosest("Bitstream Vera Sans", 6);
-		Gnome.Font fuente7 = Gnome.Font.FindClosest("Bitstream Vera Sans", 7);
-		//Gnome.Font fuente8 = Gnome.Font.FindClosest("Bitstream Vera Sans", 8);
-		//Gnome.Font fuente9 = Gnome.Font.FindClosest("Bitstream Vera Sans", 9);
-		Gnome.Font fuente10 = Gnome.Font.FindClosest("Bitstream Vera Sans", 10);
-		Gnome.Font fuente11 = Gnome.Font.FindClosest("Bitstream Vera Sans", 11);
-		//Gnome.Font fuente12 = Gnome.Font.FindClosest("Bitstream Vera Sans", 12);
-		Gnome.Font fuente36 = Gnome.Font.FindClosest("Bitstream Vera Sans", 36);
 		
 		//Declaracion de ventana de error
 		protected Gtk.Window MyWinError;
 		
 		class_conexion conexion_a_DB = new class_conexion();
+		class_public classpublic = new class_public();
 		
 		public reporte_porcedimientos_facturados (bool pagados_,string rango1_,string rango2_,string query_fechas_,string nombrebd_,string LoginEmpleado_,string NomEmpleado_,
 												string AppEmpleado_,string ApmEmpleado_,string tiporeporte_,string orden_,string query_cliente_)
 		{
 			connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
 			nombrebd = conexion_a_DB._nombrebd;
+			escala_en_linux_windows = classpublic.escala_linux_windows;
 			LoginEmpleado = LoginEmpleado_;
 			NomEmpleado = NomEmpleado_;
 			AppEmpleado = AppEmpleado_;
@@ -97,58 +89,48 @@ namespace osiris
 			pagados = pagados_;
 			Console.WriteLine(pagados);
  			
- 			if(pagados == true) { titulo = "REPORTE DE FFACTURAS NO PAGADAS"; }
+ 			if(pagados == true) { titulo = "REPORTE DE FACTURAS NO PAGADAS"; }
 
  			if(pagados == false) {
 				if(tiporeporte == "NO FACTURADOS") { titulo = "REPORTE DE PROCEDIMIENTOS NO FACTURADOS"; }
 				if(tiporeporte == "FACTURADOS") { titulo = "REPORTE DE PROCEDIMIENTOS FACTURADOS"; }
 			}
 			
-			Gnome.PrintJob    trabajo   = new Gnome.PrintJob (PrintConfig.Default());
-        	Gnome.PrintDialog dialogo   = new Gnome.PrintDialog (trabajo, titulo, 0);
-        	int         respuesta = dialogo.Run ();
-        
-			if (respuesta == (int) Gnome.PrintButtons.Cancel) 
-			{
-				dialogo.Hide (); 		dialogo.Dispose (); 
-				return;
-			}
-
-        	Gnome.PrintContext ctx = trabajo.Context;
-        
-        	ComponerPagina(ctx, trabajo); 
-
-        	trabajo.Close();
-             
-        	switch (respuesta)
-        	{
-                  case (int) Gnome.PrintButtons.Print:   
-                  		trabajo.Print (); 
-                  		break;
-                  case (int) Gnome.PrintButtons.Preview:
-                      	new Gnome.PrintJobPreview(trabajo, titulo).Show();
-                        break;
-        	}
-        	dialogo.Hide (); dialogo.Dispose ();
+			print = new PrintOperation ();
+			print.JobName = titulo;
+			print.BeginPrint += new BeginPrintHandler (OnBeginPrint);
+			print.DrawPage += new DrawPageHandler (OnDrawPage);
+			print.EndPrint += new EndPrintHandler (OnEndPrint);
+			print.Run (PrintOperationAction.PrintDialog, null);
 		}
 		
-		void ComponerPagina (Gnome.PrintContext ContextoImp, Gnome.PrintJob trabajoImpresion)
-		{	
-			ContextoImp.BeginPage("Pagina 1");
-			//imprime_encabezado(ContextoImp,trabajoImpresion,);
-			ContextoImp.Rotate(90);
-			if(tiporeporte == "NO FACTURADOS")	{	imprime_rpt_no_facturados(ContextoImp,trabajoImpresion);	}
-			if(tiporeporte == "FACTURADOS")		{	imprime_rpt_facturados(ContextoImp,trabajoImpresion); 		}		
-			ContextoImp.ShowPage();
+				
+		private void OnBeginPrint (object obj, Gtk.BeginPrintArgs args)
+		{
+			print.NPages = 1;  // crea cantidad de copias del reporte			
+			// para imprimir horizontalmente el reporte
+			print.PrintSettings.Orientation = PageOrientation.Landscape;
+			//Console.WriteLine(print.PrintSettings.Orientation.ToString());
 		}
 		
+		private void OnDrawPage (object obj, Gtk.DrawPageArgs args)
+		{			
+			PrintContext context = args.Context;
+			ejecutar_consulta_reporte(context);
+		}
 		
-		//////////////////////REPORTE PARA PROCEDIMIENTOS CERRADOS Y NO FACTURADOS/////////////////////////////////////
-		//////////////////////REPORTE PARA PROCEDIMIENTOS CERRADOS Y NO FACTURADOS/////////////////////////////////////
-		//////////////////////REPORTE PARA PROCEDIMIENTOS CERRADOS Y NO FACTURADOS/////////////////////////////////////
-		void imprime_rpt_no_facturados(Gnome.PrintContext ContextoImp, Gnome.PrintJob trabajoImpresion)
+		void ejecutar_consulta_reporte(PrintContext context)
 		{	
-		
+			Cairo.Context cr = context.CairoContext;
+			Pango.Layout layout = context.CreatePangoLayout ();
+			Pango.FontDescription desc = Pango.FontDescription.FromString ("Sans");									
+			// cr.Rotate(90)  Imprimir Orizontalmente rota la hoja cambian las posiciones de las lineas y columna					
+			fontSize = 8.0;			layout = null;			layout = context.CreatePangoLayout ();
+			desc.Size = (int)(fontSize * pangoScale);		layout.FontDescription = desc;
+			
+			/*
+			
+			// Cerrados y no Facturados
 			NpgsqlConnection conexion; 
 			conexion = new NpgsqlConnection (connectionString+nombrebd);
             
@@ -296,12 +278,13 @@ namespace osiris
 								MessageType.Error,ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
 				msgBoxError.Run ();		msgBoxError.Destroy();
 			}
+			*/
 		}
 		
-///////////////////////////////REPORTE PARA PROCEDIMIENTOS  FACTURADOS////////////////////////////////////////////////////////
-///////////////////////////////REPORTE PARA PROCEDIMIENTOS  FACTURADOS/////////////////////////////////////////////////////
-		void imprime_rpt_facturados(Gnome.PrintContext ContextoImp, Gnome.PrintJob trabajoImpresion)
+		void imprime_rpt_facturados()
 		{
+			/*
+			// Procedimientos Facturados
 			NpgsqlConnection conexion; 
 			conexion = new NpgsqlConnection (connectionString+nombrebd);
             
@@ -580,195 +563,59 @@ namespace osiris
 								MessageType.Error,ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
 				msgBoxError.Run ();		msgBoxError.Destroy();
 			}
+			*/
 		}
 		
-		void imprime_encabezado(Gnome.PrintContext ContextoImp, Gnome.PrintJob trabajoImpresion, string cliente)
+		private void OnEndPrint (object obj, Gtk.EndPrintArgs args)
 		{
-      		// Cambiar la fuente
-			Gnome.Print.Setfont(ContextoImp,fuente6);
-			
-			ContextoImp.MoveTo(69.7,-30);			ContextoImp.Show("Sistema Hospitalario OSIRIS");//19.7, 770
-			ContextoImp.MoveTo(70, -30);			ContextoImp.Show("Sistema Hospitalario OSIRIS");
-			ContextoImp.MoveTo(69.7, -40);			ContextoImp.Show("Direccion:");
-			ContextoImp.MoveTo(70, -40);			ContextoImp.Show("Direccion:");
-			ContextoImp.MoveTo(69.7, -50);			ContextoImp.Show("Conmutador:");
-			ContextoImp.MoveTo(70, -50);			ContextoImp.Show("Conmutador:");
-			
-			Gnome.Print.Setfont(ContextoImp,fuente11);
-			ContextoImp.MoveTo(319.7, -40);			ContextoImp.Show(titulo);
-			ContextoImp.MoveTo(320, -40);			ContextoImp.Show(titulo);
-			Gnome.Print.Setfont(ContextoImp,fuente7);
-			ContextoImp.MoveTo(390, -50);			ContextoImp.Show("PAGINA "+numpage+"  Fecha Impresion: "+DateTime.Now.ToString("dd-MM-yyyy"));
-			ContextoImp.MoveTo(390, -50);			ContextoImp.Show("PAGINA "+numpage+"  Fecha Impresion: "+DateTime.Now.ToString("dd-MM-yyyy"));
-			if(rango1 == "" || rango2 == "") {
-				ContextoImp.MoveTo(580, -50);		ContextoImp.Show("");
-			}else{
-				if(rango1 == rango2) {
-					ContextoImp.MoveTo(580, -50);	ContextoImp.Show("FECHA: "+rango1);
-				}else{
-					ContextoImp.MoveTo(580, -50);	ContextoImp.Show("Rango del "+rango1+" al "+rango2);
-				}
-			}
-			//imprimo el titulo
-			imprime_titulo(ContextoImp,trabajoImpresion,cliente);
-			
-			Gnome.Print.Setfont (ContextoImp, fuente36);
-			ContextoImp.Rotate(270);
-			ContextoImp.MoveTo(56, 810);			ContextoImp.Show("__________________________");
-			ContextoImp.MoveTo(56,70);				ContextoImp.Show("__________________________");
-			///termino de dibujo de tabla
-			ContextoImp.Rotate(90);//RESTAURO EL ORDEN A VERTICAL
-			Gnome.Print.Setfont(ContextoImp,fuente7);//RESTAURO FUENTE A TAMAÑO 7
-		}	
-		
-		void genera_columnas(Gnome.PrintContext ContextoImp, Gnome.PrintJob trabajoImpresion)
-		{
-			//Gnome.Print.Setfont (ContextoImp, fuente12);			
-			//ContextoImp.MoveTo(111,fila);					ContextoImp.Show("|	");
-			//ContextoImp.MoveTo(156.5,fila);					ContextoImp.Show("|	");
-			//ContextoImp.MoveTo(190,fila);					ContextoImp.Show("|	");
-			//ContextoImp.MoveTo(360,fila);					ContextoImp.Show("|	");	
-			//ContextoImp.MoveTo(425,fila);					ContextoImp.Show("|	");
-			//ContextoImp.MoveTo(490,fila);					ContextoImp.Show("| ");
-			//ContextoImp.MoveTo(555,fila);					ContextoImp.Show("|	");
-			//ContextoImp.MoveTo(620,fila);					ContextoImp.Show("|	");
-			//ContextoImp.MoveTo(685,fila);					ContextoImp.Show("|	");
-			//ContextoImp.MoveTo(750,fila);					ContextoImp.Show("|	");
-			//Gnome.Print.Setfont (ContextoImp, fuente7);
-		}
-		
-		void imprime_titulo(Gnome.PrintContext ContextoImp, Gnome.PrintJob trabajoImpresion,string cliente)
-		{
-			if(tiporeporte == "NO FACTURADOS")
-			{
-				Gnome.Print.Setfont(ContextoImp,fuente7);
-				ContextoImp.MoveTo(70.7, -65);					ContextoImp.Show("Nº ATENCION"); //| Fecha | Nº Atencion | Paciente | SubTotal al 15 | SubTotal al 0 | IVA | SubTotal Deducible | Coaseguro | Total | Hono. Medico");
-				ContextoImp.MoveTo(71, -65);					ContextoImp.Show("Nº ATENCION");
-				ContextoImp.MoveTo(119.7,-65);					ContextoImp.Show("PACIENTE");
-				ContextoImp.MoveTo(120,-65);					ContextoImp.Show("PACIENTE");//80,-70
-				ContextoImp.MoveTo(309.7,-65);					ContextoImp.Show("TIPO ");
-				ContextoImp.MoveTo(310,-65);					ContextoImp.Show("TIPO ");//120,-70
-				ContextoImp.MoveTo(379.7,-65);					ContextoImp.Show("EMPRESA");
-				ContextoImp.MoveTo(380,-65);					ContextoImp.Show("EMPRESA");//170,-70
-				ContextoImp.MoveTo(539.7,-65);					ContextoImp.Show("FECHA INGRESO");  
-				ContextoImp.MoveTo(540,-65);					ContextoImp.Show("FECHA INGRESO");//290,-70
-				ContextoImp.MoveTo(604.7,-65);					ContextoImp.Show("FECHA ENGRESO");
-				ContextoImp.MoveTo(605,-65);					ContextoImp.Show("FECHA ENGRESO");//360,-70
-				ContextoImp.MoveTo(679.7,-65);					ContextoImp.Show("TOTAL");
-				ContextoImp.MoveTo(680,-65);					ContextoImp.Show("TOTAL");//
-				ContextoImp.MoveTo(744.7,-65);					ContextoImp.Show("HONO. MEDICOS");
-				ContextoImp.MoveTo(745,-65);					ContextoImp.Show("HONO. MEDICOS");//420,-70
-				Gnome.Print.Setfont(ContextoImp,fuente7);
-				ContextoImp.MoveTo(70, -66);					ContextoImp.Show   ("_______________________________________________________________________________________________"+
-																					"_______________________________________________________________________________________________");
-			} 
-			if(tiporeporte == "FACTURADOS") 
-			{
-				Gnome.Print.Setfont(ContextoImp,fuente7);
-				ContextoImp.MoveTo(70, fila+10);					ContextoImp.Show   ("_______________________________________________________________________________________________"+
-																					"_______________________________________________________________________________________________");
-				Gnome.Print.Setfont(ContextoImp,fuente10);
-				ContextoImp.MoveTo(299.7, fila);				ContextoImp.Show(cliente.ToUpper());
-				ContextoImp.MoveTo(300, fila);					ContextoImp.Show(cliente.ToUpper());
-				contador+=1;
-				Gnome.Print.Setfont(ContextoImp,fuente7);
-				ContextoImp.MoveTo(70, fila-1);					ContextoImp.Show   ("_______________________________________________________________________________________________"+
-																					"_______________________________________________________________________________________________");
-				fila-=10;
-				Gnome.Print.Setfont(ContextoImp,fuente7);
-				ContextoImp.MoveTo(71.7, fila);					ContextoImp.Show("Nº FACT.");
-				ContextoImp.MoveTo(72, fila);					ContextoImp.Show("Nº FACT.");
-				ContextoImp.MoveTo(111.7,fila);					ContextoImp.Show("FECHA");
-				ContextoImp.MoveTo(112,fila);					ContextoImp.Show("FECHA");
-				ContextoImp.MoveTo(157.7,fila);					ContextoImp.Show("Nº ATEN");
-				ContextoImp.MoveTo(158,fila);					ContextoImp.Show("Nº ATEN");
-				ContextoImp.MoveTo(191.5,fila);					ContextoImp.Show("PACIENTE");
-				ContextoImp.MoveTo(192,fila);					ContextoImp.Show("PACIENTE");
-				ContextoImp.MoveTo(360.7,fila);					ContextoImp.Show("SUBTOTAL 15");
-				ContextoImp.MoveTo(361,fila);					ContextoImp.Show("SUBTOTAL 15");
-				ContextoImp.MoveTo(425.7,fila);					ContextoImp.Show("SUBTOTAL 0 ");  
-				ContextoImp.MoveTo(426,fila);					ContextoImp.Show("SUBTOTAL 0 ");
-				ContextoImp.MoveTo(490.7,fila);					ContextoImp.Show("IVA ");
-				ContextoImp.MoveTo(491,fila);					ContextoImp.Show("IVA ");
-				ContextoImp.MoveTo(555.7,fila);					ContextoImp.Show("DEDUCIBLE ");
-				ContextoImp.MoveTo(556,fila);					ContextoImp.Show("DEDUCIBLE ");
-				ContextoImp.MoveTo(620.7,fila);					ContextoImp.Show("COASEGURO ");
-				ContextoImp.MoveTo(621,fila);					ContextoImp.Show("COASEGURO ");
-				ContextoImp.MoveTo(685.7,fila);					ContextoImp.Show("TOTAL ");
-				ContextoImp.MoveTo(686,fila);					ContextoImp.Show("TOTAL ");
-				ContextoImp.MoveTo(750.7,fila);					ContextoImp.Show("HONO. MEDICO");
-				ContextoImp.MoveTo(751,fila);					ContextoImp.Show("HONO. MEDICO");
-				Gnome.Print.Setfont(ContextoImp,fuente7);
-				ContextoImp.MoveTo(70, fila);					ContextoImp.Show   ("_______________________________________________________________________________________________"+
-																			"_______________________________________________________________________________________________");
-				fila-=10;			contador+=1;
-			}
-		} 
-		
-		void salto_pagina(Gnome.PrintContext ContextoImp, Gnome.PrintJob trabajoImpresion,string cliente)
-		{
-			//Console.WriteLine("contador antes del if: "+contador_.ToString());
-	        if (contador > 50 )
-	        {
-	        	numpage +=1;        	contador=1;	
-	        	if(tiporeporte == "NO FACTURADOS") { fila=-75; }else{ fila =-65; }
-	        	ContextoImp.ShowPage();
-				ContextoImp.BeginPage("Pagina "+numpage.ToString());
-				ContextoImp.Rotate(90);
-				imprime_encabezado(ContextoImp,trabajoImpresion,cliente);
-	     	}
-	       //Console.WriteLine("contador despues del if: "+contador_.ToString());
 		}
 	}    
 
-///////////////////////////// REPORTE FACTURAS PAGADAS /////////////////////////////////////////////////
-///////////////////////////// REPORTE FACTURAS PAGADAS /////////////////////////////////////////////////
-///////////////////////////// REPORTE FACTURAS PAGADAS /////////////////////////////////////////////////
-
+	/// <summary>
+	/// Reporte de Facturas Pagadas
+	/// </summary>
 	public class reporte_facturas_pagadas
 	{		
-		public string connectionString;
-		public string nombrebd;
-		public string LoginEmpleado;
-		public string NomEmpleado;
-		public string AppEmpleado;
-		public string ApmEmpleado;
-		public string tiporeporte;
-		public string titulo;
+		private static int pangoScale = 1024;
+		private PrintOperation print;
+		private double fontSize = 8.0;
+		int escala_en_linux_windows;		// Linux = 1  Windows = 8
+		int comienzo_linea = 162;
+		int separacion_linea = 10;
+		int numpage = 1;
 		
-		public int columna = 0;
-		public int fila = -70;
-		public int contador = 1;
-		public int numpage = 1;
+		string connectionString;
+		string nombrebd;
+		string LoginEmpleado;
+		string NomEmpleado;
+		string AppEmpleado;
+		string ApmEmpleado;
+		string tiporeporte;
+		string titulo;
 		
-		public string query_fechas = " ";
-		public string query_cliente = " ";
-		public string orden = " ";
-		public string rango1 = "";
-		public string rango2 = "";
-		public string facturas_ = "";
-				
-		// Declarando variable de fuente para la impresion
-		// Declaracion de fuentes tipo Bitstream Vera sans
-		public Gnome.Font fuente6 = Gnome.Font.FindClosest("Bitstream Vera Sans", 6);
-		public Gnome.Font fuente7 = Gnome.Font.FindClosest("Bitstream Vera Sans", 7);
-		public Gnome.Font fuente8 = Gnome.Font.FindClosest("Bitstream Vera Sans", 8);
-		public Gnome.Font fuente9 = Gnome.Font.FindClosest("Bitstream Vera Sans", 9);
-		public Gnome.Font fuente10 = Gnome.Font.FindClosest("Bitstream Vera Sans", 10);
-		public Gnome.Font fuente11 = Gnome.Font.FindClosest("Bitstream Vera Sans", 11);
-		public Gnome.Font fuente12 = Gnome.Font.FindClosest("Bitstream Vera Sans", 12);
-		public Gnome.Font fuente36 = Gnome.Font.FindClosest("Bitstream Vera Sans", 36);
+		int columna = 0;
+		int fila = -70;
+		int contador = 1;
+		
+		string query_fechas = " ";
+		string query_cliente = " ";
+		string orden = " ";
+		string rango1 = "";
+		string rango2 = "";
+		string facturas_ = "";
 		
 		//Declaracion de ventana de error
 		protected Gtk.Window MyWinError;
 		
 		class_conexion conexion_a_DB = new class_conexion();
+		class_public classpublic = new class_public();
 		
 		public reporte_facturas_pagadas(string rango1_,string rango2_,string query_fechas_,string nombrebd_,string LoginEmpleado_,string NomEmpleado_,
 												string AppEmpleado_,string ApmEmpleado_,string tiporeporte_,string orden_,string query_cliente_,string _facturas_)
 		{
 			connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
 			nombrebd = conexion_a_DB._nombrebd;
+			escala_en_linux_windows = classpublic.escala_linux_windows;
 			LoginEmpleado = LoginEmpleado_;
 			NomEmpleado = NomEmpleado_;
 			AppEmpleado = AppEmpleado_;
@@ -782,47 +629,39 @@ namespace osiris
 			facturas_ = _facturas_;
 			
 			if(tiporeporte == "FACTURADOS") { titulo = "REPORTE FACTURAS PAGADAS"; }
-			
-			Gnome.PrintJob    trabajo   = new Gnome.PrintJob (PrintConfig.Default());
-			Gnome.PrintDialog dialogo   = new Gnome.PrintDialog (trabajo, titulo, 0);
-			int         respuesta = dialogo.Run ();
-        
-			if (respuesta == (int) Gnome.PrintButtons.Cancel) 
-			{
-				dialogo.Hide (); 		dialogo.Dispose (); 
-				return;
-			}
-
-			Gnome.PrintContext ctx = trabajo.Context;
-        
-			ComponerPagina(ctx, trabajo); 
-
-			trabajo.Close();
-             
-			switch (respuesta)
-			{
-				case (int) Gnome.PrintButtons.Print:   
-					trabajo.Print (); 
-                  		break;
-				case (int) Gnome.PrintButtons.Preview:
-					new Gnome.PrintJobPreview(trabajo, titulo).Show();
-				break;
-			}
-			dialogo.Hide (); dialogo.Dispose ();
+			print = new PrintOperation ();
+			print.JobName = titulo;
+			print.BeginPrint += new BeginPrintHandler (OnBeginPrint);
+			print.DrawPage += new DrawPageHandler (OnDrawPage);
+			print.EndPrint += new EndPrintHandler (OnEndPrint);
+			print.Run (PrintOperationAction.PrintDialog, null);	
 			
 		}
 		
-		void ComponerPagina (Gnome.PrintContext ContextoImp, Gnome.PrintJob trabajoImpresion)
-		{	
-			ContextoImp.BeginPage("Pagina 1");
-			ContextoImp.Rotate(90);
-		
-			if(tiporeporte == "FACTURADOS"){imprime_rpt_pagados(ContextoImp,trabajoImpresion);	}		
-			ContextoImp.ShowPage();
-		}
-		
-		void imprime_rpt_pagados(Gnome.PrintContext ContextoImp, Gnome.PrintJob trabajoImpresion)
+		private void OnBeginPrint (object obj, Gtk.BeginPrintArgs args)
 		{
+			print.NPages = 1;  // crea cantidad de copias del reporte			
+			// para imprimir horizontalmente el reporte
+			print.PrintSettings.Orientation = PageOrientation.Landscape;
+			//Console.WriteLine(print.PrintSettings.Orientation.ToString());
+		}
+		
+		private void OnDrawPage (object obj, Gtk.DrawPageArgs args)
+		{			
+			PrintContext context = args.Context;
+			ejecutar_consulta_reporte(context);
+		}
+		
+		void ejecutar_consulta_reporte(PrintContext context)
+		{
+			Cairo.Context cr = context.CairoContext;
+			Pango.Layout layout = context.CreatePangoLayout ();
+			Pango.FontDescription desc = Pango.FontDescription.FromString ("Sans");									
+			// cr.Rotate(90)  Imprimir Orizontalmente rota la hoja cambian las posiciones de las lineas y columna					
+			fontSize = 8.0;			layout = null;			layout = context.CreatePangoLayout ();
+			desc.Size = (int)(fontSize * pangoScale);		layout.FontDescription = desc;
+			
+			/*
 			string fechapago = "";
 			string nombre = "";
 			string folio = "";
@@ -1113,122 +952,11 @@ namespace osiris
 								MessageType.Error,ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
 				msgBoxError.Run ();		msgBoxError.Destroy();
 			}
+			*/
 		}
 		
-		void imprime_encabezado(Gnome.PrintContext ContextoImp, Gnome.PrintJob trabajoImpresion, string cliente)
+		private void OnEndPrint (object obj, Gtk.EndPrintArgs args)
 		{
-      		// Cambiar la fuente
-			Gnome.Print.Setfont(ContextoImp,fuente6);
-			ContextoImp.MoveTo(69.7,-30);			ContextoImp.Show("Sistema Hospitalario OSIRIS");//19.7, 770
-			ContextoImp.MoveTo(70, -30);			ContextoImp.Show("Sistema Hospitalario OSIRIS");
-			ContextoImp.MoveTo(69.7, -40);			ContextoImp.Show("Direccion: ");
-			ContextoImp.MoveTo(70, -40);			ContextoImp.Show("Direccion: ");
-			ContextoImp.MoveTo(69.7, -50);			ContextoImp.Show("Conmutador: ");
-			ContextoImp.MoveTo(70, -50);			ContextoImp.Show("Conmutador: ");
-			Gnome.Print.Setfont(ContextoImp,fuente11);
-			ContextoImp.MoveTo(319.7, -40);			ContextoImp.Show(titulo);
-			ContextoImp.MoveTo(320, -40);			ContextoImp.Show(titulo);
-			Gnome.Print.Setfont(ContextoImp,fuente7);
-			ContextoImp.MoveTo(390, -50);			ContextoImp.Show("PAGINA "+numpage+"  Fecha Impresion: "+DateTime.Now.ToString("dd-MM-yyyy"));
-			ContextoImp.MoveTo(390, -50);			ContextoImp.Show("PAGINA "+numpage+"  Fecha Impresion: "+DateTime.Now.ToString("dd-MM-yyyy"));
-			if(rango1 == "" || rango2 == "") {
-				ContextoImp.MoveTo(580, -50);		ContextoImp.Show("");
-			}else{
-				if(rango1 == rango2) {
-					ContextoImp.MoveTo(580, -50);	ContextoImp.Show("FECHA: "+rango1);
-				}else{
-					ContextoImp.MoveTo(580, -50);	ContextoImp.Show("Rango del "+rango1+" al "+rango2);
-				}
-			}
-			//imprimo el titulo
-			imprime_titulo(ContextoImp,trabajoImpresion,cliente);
-			/////////DIBUJANDO LA TABLA/////////
-			Gnome.Print.Setfont (ContextoImp, fuente36);
-			ContextoImp.MoveTo(68, -55);			ContextoImp.Show("_____________________________________");
-			ContextoImp.MoveTo(68, -575);			ContextoImp.Show("_____________________________________");
-			Gnome.Print.Setfont (ContextoImp, fuente11);
-			Gnome.Print.Setfont (ContextoImp, fuente36);
-			ContextoImp.Rotate(270);
-			ContextoImp.MoveTo(56, 810);			ContextoImp.Show("__________________________");
-			ContextoImp.MoveTo(56,70);				ContextoImp.Show("__________________________");
-			///termino de dibujo de tabla
-			ContextoImp.Rotate(90);//RESTAURO EL ORDEN A VERTICAL
-			Gnome.Print.Setfont(ContextoImp,fuente7);//RESTAURO FUENTE A TAMAÑO 7
-		}	
-		
-		void genera_columnas(Gnome.PrintContext ContextoImp, Gnome.PrintJob trabajoImpresion)
-		{
-			Gnome.Print.Setfont (ContextoImp, fuente12);			
-			ContextoImp.MoveTo(111,fila);					ContextoImp.Show("|	");
-			ContextoImp.MoveTo(156.5,fila);					ContextoImp.Show("|	");
-			ContextoImp.MoveTo(190,fila);					ContextoImp.Show("|	");
-			ContextoImp.MoveTo(360,fila);					ContextoImp.Show("|	");	
-			ContextoImp.MoveTo(425,fila);					ContextoImp.Show("|	");
-			ContextoImp.MoveTo(490,fila);					ContextoImp.Show("| ");
-			ContextoImp.MoveTo(555,fila);					ContextoImp.Show("|	");
-			ContextoImp.MoveTo(615,fila);					ContextoImp.Show("| ");
-			ContextoImp.MoveTo(665,fila);					ContextoImp.Show("|	");
-			Gnome.Print.Setfont (ContextoImp, fuente7);
-		}
-		
-		void imprime_titulo(Gnome.PrintContext ContextoImp, Gnome.PrintJob trabajoImpresion,string cliente)
-		{
-		
-				Gnome.Print.Setfont(ContextoImp,fuente7);
-				ContextoImp.MoveTo(70, fila+10);					ContextoImp.Show   ("_______________________________________________________________________________________________"+
-																					"_______________________________________________________________________________________________");
-				Gnome.Print.Setfont(ContextoImp,fuente10);
-				ContextoImp.MoveTo(299.7, fila);				ContextoImp.Show(cliente.ToUpper());
-				ContextoImp.MoveTo(300, fila);					ContextoImp.Show(cliente.ToUpper());
-				contador+=1;
-				Gnome.Print.Setfont(ContextoImp,fuente7);
-				ContextoImp.MoveTo(70, fila-1);					ContextoImp.Show   ("_______________________________________________________________________________________________"+
-																					"_______________________________________________________________________________________________");
-				fila-=10;
-				Gnome.Print.Setfont(ContextoImp,fuente7);
-				ContextoImp.MoveTo(71.9, fila);					ContextoImp.Show("Nº FACT.");
-				ContextoImp.MoveTo(72, fila);					ContextoImp.Show("Nº FACT.");
-				ContextoImp.MoveTo(111.9,fila);					ContextoImp.Show("|	FECHA");
-				ContextoImp.MoveTo(112,fila);					ContextoImp.Show("|	FECHA");
-				ContextoImp.MoveTo(157.9,fila);					ContextoImp.Show("|	Nº ATEN");
-				ContextoImp.MoveTo(158,fila);					ContextoImp.Show("|	Nº ATEN");
-				ContextoImp.MoveTo(191.9,fila);					ContextoImp.Show("|	PACIENTE");
-				ContextoImp.MoveTo(192,fila);					ContextoImp.Show("|	PACIENTE");
-				ContextoImp.MoveTo(360.7,fila);					ContextoImp.Show("| FECHA DE PAGO");
-				ContextoImp.MoveTo(361,fila);					ContextoImp.Show("| FECHA DE PAGO");
-				ContextoImp.MoveTo(426.9,fila);					ContextoImp.Show("|	SUB-TOTAL ");
-				ContextoImp.MoveTo(426,fila);					ContextoImp.Show("|	SUB-TOTAL ");
-				ContextoImp.MoveTo(490.9,fila);					ContextoImp.Show("|	HONO. MEDICO");
-				ContextoImp.MoveTo(490,fila);					ContextoImp.Show("|	HONO. MEDICO");
-				ContextoImp.MoveTo(560,fila);					ContextoImp.Show("|	TOTAL ");
-				ContextoImp.MoveTo(560.9,fila);					ContextoImp.Show("|	TOTAL ");
-			    ContextoImp.MoveTo(620,fila);					ContextoImp.Show("|	DEDUCIBLE ");
-			    ContextoImp.MoveTo(620.9,fila);					ContextoImp.Show("|	DEDUCIBLE ");
-			    ContextoImp.MoveTo(670,fila);					ContextoImp.Show("|	COASEGURO ");
-				ContextoImp.MoveTo(670.9,fila);					ContextoImp.Show("|	COASEGURO ");
-			
-	
-			
-			
-				Gnome.Print.Setfont(ContextoImp,fuente7);
-				ContextoImp.MoveTo(70, fila);					ContextoImp.Show   ("_______________________________________________________________________________________________"+
-																			"_______________________________________________________________________________________________");
-				fila-=10;			contador+=1;
-		}
-		
-		void salto_pagina(Gnome.PrintContext ContextoImp, Gnome.PrintJob trabajoImpresion,string cliente)
-		{
-			//Console.WriteLine("contador antes del if: "+contador_.ToString());
-	        if (contador > 50 )
-	        {
-	        	numpage +=1;        	contador=1;	
-	        	if(tiporeporte == "CERRADOS") { fila=-75; }else{ fila =-65; }
-	        	ContextoImp.ShowPage();
-				ContextoImp.BeginPage("Pagina "+numpage.ToString());
-				ContextoImp.Rotate(90);
-				imprime_encabezado(ContextoImp,trabajoImpresion,cliente);
-	     	}
-	       //Console.WriteLine("contador despues del if: "+contador_.ToString());
 		}
  	}   
 }

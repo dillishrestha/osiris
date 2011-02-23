@@ -44,6 +44,10 @@ namespace osiris
 		private static int pangoScale = 1024;
 		private PrintOperation print;
 		private double fontSize = 8.0;
+		int numpage = 1;		
+		int comienzo_linea = 0;
+		int separacion_linea = 10;  		
+		int escala_en_linux_windows;		// Linux = 1  Windows = 8
 		        
 		int PidPaciente = 0;
 		int folioservicio = 0;
@@ -67,11 +71,7 @@ namespace osiris
 		bool apl_desc;
 		
 		int contador = 1;
-		int numpage = 1;
 		
-		int comienzo_linea = 0;
-		int separacion_linea = 10;  		
-		int escala_en_linux_windows;		// Linux = 1  Windows = 8
 		
 		//query de rango de fechas
 		string query_todo = " ";

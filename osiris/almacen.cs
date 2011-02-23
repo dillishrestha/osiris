@@ -136,7 +136,7 @@ namespace osiris
 		
 		void on_button_envios_subalmacenes_clicked(object sender, EventArgs args)
 		{
-			new osiris.envio_de_materiales_subalmacenes(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
+			new osiris.envio_de_materiales_subalmacenes(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);	
 		}
 		
 		void on_button_analisis_devoluciones_clicked(object sender, EventArgs args)

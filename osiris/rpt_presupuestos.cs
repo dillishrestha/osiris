@@ -30,11 +30,10 @@
 /////////////////////////////////////////////////////////
 using System;
 using Gtk;
-using Gnome;
 using Npgsql;
-using System.Data;
 using Glade;
-using System.Collections;
+using Cairo;
+using Pango;
 
 namespace osiris
 {
@@ -61,6 +60,14 @@ namespace osiris
 		[Widget] Gtk.Button button_rep;
 		[Widget] Gtk.Button button_salir;
 				
+		private static int pangoScale = 1024;
+		private PrintOperation print;
+		private double fontSize = 8.0;
+		int escala_en_linux_windows;		// Linux = 1  Windows = 8
+		int comienzo_linea = 162;
+		int separacion_linea = 10;
+		int numpage = 1;
+		
 		string nombrebd;
 		string query_fechas = " ";
 		string rango1 = "";
@@ -69,7 +76,6 @@ namespace osiris
 		int columna = 0;
 		int fila = -80;
 		int contador = 1;
-		int numpage = 1;
 		
 		string titulo = "REPORTE PRESUPUESTOS";
 		
@@ -78,27 +84,17 @@ namespace osiris
 		//Declaracion de ventana de error
 		protected Gtk.Window MyWinError;
 		protected Gtk.Window MyWin;
-		
-		// Declarando variable de fuente para la impresion
-		// Declaracion de fuentes tipo Bitstream Vera sans
-		//Gnome.Font fuente5 = Gnome.Font.FindClosest("Luxi Sans", 5);
-		Gnome.Font fuente6 = Gnome.Font.FindClosest("Luxi Sans", 6);
-		Gnome.Font fuente7 = Gnome.Font.FindClosest("Luxi Sans", 7);
-		//Gnome.Font fuente8 = Gnome.Font.FindClosest("Luxi Sans", 8);//Bitstream Vera Sans
-		Gnome.Font fuente9 = Gnome.Font.FindClosest("Luxi Sans", 9);
-		//Gnome.Font fuente10 = Gnome.Font.FindClosest("Luxi Sans", 10);
-		//Gnome.Font fuente11 = Gnome.Font.FindClosest("Luxi Sans", 11);
-		//Gnome.Font fuente12 = Gnome.Font.FindClosest("Luxi Sans", 12);
-		//Gnome.Font fuente36 = Gnome.Font.FindClosest("Luxi Sans", 36);
-		
+				
 		string connectionString;
 		
 		class_conexion conexion_a_DB = new class_conexion();
+		class_public classpublic = new class_public();
 						
 		public rpt_presupuesto(string nombrebd_)
 		{
 			connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
 			nombrebd = conexion_a_DB._nombrebd;
+			escala_en_linux_windows = classpublic.escala_linux_windows;
 			
 			Glade.XML gxml = new Glade.XML (null, "almacen_costos_compras.glade", "envio_almacenes", null);
 			gxml.Autoconnect (this);
@@ -328,37 +324,7 @@ namespace osiris
 			conexion.Close ();
 		}    
             
-       void imprime_encabezado(Gnome.PrintContext ContextoImp, Gnome.PrintJob trabajoImpresion)
-		{
-      		// Cambiar la fuente
-      		Gnome.Print.Setfont(ContextoImp,fuente9);								
-			ContextoImp.MoveTo(230, -60);			ContextoImp.Show("REPORTE PRESUPUESTO GLOBAL");	
-			Gnome.Print.Setfont(ContextoImp,fuente6);
-			
-			ContextoImp.MoveTo(69.7,-30);			ContextoImp.Show("Sistema Hospitalario OSIRIS");//19.7, 770
-			ContextoImp.MoveTo(70, -30);			ContextoImp.Show("Sistema Hospitalario OSIRIS");
-			ContextoImp.MoveTo(69.7, -40);			ContextoImp.Show("Direccion: ");
-			ContextoImp.MoveTo(70, -40);			ContextoImp.Show("Direccion: ");
-			ContextoImp.MoveTo(69.7, -50);			ContextoImp.Show("Conmutador: ");
-			ContextoImp.MoveTo(70, -50);			ContextoImp.Show("Conmutador: ");
-									
-			Gnome.Print.Setfont(ContextoImp,fuente6);							
-			ContextoImp.MoveTo(65, -70);			ContextoImp.Show("Id");
-			ContextoImp.MoveTo(80, -70);			ContextoImp.Show("Fecha");
-			ContextoImp.MoveTo(120, -70);			ContextoImp.Show("Cirugia");
-			ContextoImp.MoveTo(300, -70);			ContextoImp.Show("Dias");
-			ContextoImp.MoveTo(355, -70);			ContextoImp.Show("$Total");
-			ContextoImp.MoveTo(390, -70);			ContextoImp.Show("$Convenido");
-			ContextoImp.MoveTo(430, -70);			ContextoImp.Show("Deposito min");
-			ContextoImp.MoveTo(500, -70);			ContextoImp.Show("Medico");
-			//ContextoImp.MoveTo(650, -70);			ContextoImp.Show("Med Provisional");						
-			
-			Gnome.Print.Setfont(ContextoImp,fuente7);
-			ContextoImp.MoveTo(390, -50);			ContextoImp.Show("PAGINA "+numpage+"  Fecha Impresion: "+DateTime.Now.ToString("dd-MM-yyyy"));
-			
-		}    
-            
-        void on_button_rep_clicked(object sender, EventArgs args)
+		void on_button_rep_clicked(object sender, EventArgs args)
 		{ 
 			contador = 1;	
 	        fila = -80;
@@ -374,36 +340,37 @@ namespace osiris
 							
 
 			}
-			
 			titulo = "REPORTE PRESUPUESTOS";
-					
-			Gnome.PrintJob    trabajo   = new Gnome.PrintJob (PrintConfig.Default());
-        	Gnome.PrintDialog dialogo   = new Gnome.PrintDialog (trabajo, titulo, 0);
-        	int         respuesta = dialogo.Run ();
-        
-			if (respuesta == (int) Gnome.PrintButtons.Cancel){
-				dialogo.Hide (); 		dialogo.Dispose (); 
-				return;
-			}
-
-        	Gnome.PrintContext ctx = trabajo.Context;        
-        	ComponerPagina(ctx, trabajo); 
-        	trabajo.Close();
-             
-        	switch (respuesta)
-        	{
-                  case (int) Gnome.PrintButtons.Print:   
-                  		trabajo.Print (); 
-                  		break;
-                  case (int) Gnome.PrintButtons.Preview:
-                      	new Gnome.PrintJobPreview(trabajo, titulo).Show();
-                        break;
-        	}
-        	dialogo.Hide (); dialogo.Dispose ();
+			print = new PrintOperation ();
+			print.JobName = titulo;
+			print.BeginPrint += new BeginPrintHandler (OnBeginPrint);
+			print.DrawPage += new DrawPageHandler (OnDrawPage);
+			print.EndPrint += new EndPrintHandler (OnEndPrint);
+			print.Run (PrintOperationAction.PrintDialog, null);	
 		}
 		
-		void ComponerPagina (Gnome.PrintContext ContextoImp, Gnome.PrintJob trabajoImpresion)
-		{  
+		private void OnBeginPrint (object obj, Gtk.BeginPrintArgs args)
+		{
+			print.NPages = 1;  // crea cantidad de copias del reporte			
+			// para imprimir horizontalmente el reporte
+			//print.PrintSettings.Orientation = PageOrientation.Landscape;
+			//Console.WriteLine(print.PrintSettings.Orientation.ToString());
+		}
+		
+		private void OnDrawPage (object obj, Gtk.DrawPageArgs args)
+		{			
+			PrintContext context = args.Context;
+			ejecutar_consulta_reporte(context);
+		}
+		
+		void ejecutar_consulta_reporte(PrintContext context)
+		{
+			Cairo.Context cr = context.CairoContext;
+			Pango.Layout layout = context.CreatePangoLayout ();
+			Pango.FontDescription desc = Pango.FontDescription.FromString ("Sans");									
+			// cr.Rotate(90)  Imprimir Orizontalmente rota la hoja cambian las posiciones de las lineas y columna					
+			fontSize = 8.0;			layout = null;			layout = context.CreatePangoLayout ();
+			desc.Size = (int)(fontSize * pangoScale);		layout.FontDescription = desc;  
 			TreeIter iter;	
 			 
 			string numeros_seleccionado = ""; 
@@ -434,7 +401,9 @@ namespace osiris
  			
  			if (variable_paso_02_1 > 0){
 	 				query_in_num = " AND osiris_his_presupuestos_enca.id_presupuesto IN ('"+numeros_seleccionado+"') ";  
-			}			
+			}
+			
+			/*
 		
 	        NpgsqlConnection conexion; 
 	        conexion = new NpgsqlConnection (connectionString+nombrebd);
@@ -565,20 +534,13 @@ namespace osiris
 						msgBoxError.Run ();
 						msgBoxError.Destroy();
 					}
-			}
-        void salto_pagina(Gnome.PrintContext ContextoImp, Gnome.PrintJob trabajoImpresion)
+					*/
+		}
+		
+		private void OnEndPrint (object obj, Gtk.EndPrintArgs args)
 		{
-		//Console.WriteLine("contador antes del if: "+contador.ToString());
-			if (contador > 45 ){
-	        	numpage +=1;        	contador=1;	
-	        	fila=-80;
-	        	ContextoImp.ShowPage();
-				ContextoImp.BeginPage("Pagina "+numpage.ToString());
-				ContextoImp.Rotate(90);
-				imprime_encabezado(ContextoImp,trabajoImpresion);
-	     	}
-	     }
-        
+		}
+		        
 		void on_cierraventanas_clicked (object sender, EventArgs args)
 		{
 			Widget win = (Widget) sender;

@@ -57,6 +57,7 @@ namespace osiris
 		[Widget] Gtk.TreeView treeview_listanotas = null;
 		[Widget] Gtk.ComboBox combobox_hora_nota = null;
 		[Widget] Gtk.ComboBox combobox_minutos_nota = null;
+		[Widget] Gtk.CheckButton checkbutton_selectall = null;
 		
 		TextBuffer buffer = new TextBuffer (null);
 		TextIter insertIter;
@@ -71,16 +72,21 @@ namespace osiris
 		string pidpaciente;
 		string folioservicio;
 		string nombredoctor;
+		string diagnosticoadmision;
 		
 		string hora_nota = "";
 		string minutos_nota = "";
 		
 		string sql_general = "SELECT notas_de_enfermeria,notas_de_evolucion,indicaciones_medicas,nombre1_paciente,nombre2_paciente,apellido_paterno_paciente,apellido_materno_paciente,"+
 							"to_char(to_number(to_char(age('"+DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss")+"',osiris_his_paciente.fecha_nacimiento_paciente),'yyyy') ,'9999'),'9999') AS edad," +
-							"to_char(fecha_anotacion,'yyyy-MM-dd') AS fechaanotacion,hora_anotacion AS horaanotacion,id_secuencia, "+
+							"to_char(osiris_his_paciente.fecha_nacimiento_paciente,'dd-mm-yyyy') AS fechanacimiento_pac,"+
+							"to_char(fecha_anotacion,'dd-MM-yyyy') AS fechaanotacion,hora_anotacion AS horaanotacion,osiris_his_informacion_medica.id_secuencia,"+
+							"alegias_paciente,osiris_his_paciente.pid_paciente,to_char(osiris_erp_cobros_enca.fechahora_creacion,'dd-mm-yyyy HH:mi') AS fechadeingreso,"+
+							"to_char(osiris_erp_cobros_enca.fecha_alta_paciente,'dd-mm-yyyy HH:mi') AS fechadeegreso,osiris_his_paciente.sexo_paciente,"+
 							"nombre1_empleado || ' ' || nombre2_empleado || ' ' || apellido_paterno_empleado || ' ' || apellido_materno_empleado AS nombreempleado "+
-							"FROM osiris_his_informacion_medica,osiris_his_paciente,osiris_empleado "+
+							"FROM osiris_his_informacion_medica,osiris_his_paciente,osiris_empleado,osiris_erp_cobros_enca "+
 									"WHERE osiris_his_informacion_medica.pid_paciente = osiris_his_paciente.pid_paciente "+
+									"AND osiris_his_informacion_medica.folio_de_servicio = osiris_erp_cobros_enca.folio_de_servicio "+
 									"AND id_empleado_creacion = login_empleado ";
 		string sql_pidpaciente;
 		string sql_folioservicio;
@@ -92,6 +98,7 @@ namespace osiris
 		TreeViewColumn col_01;		CellRendererText cellrt01;
 		TreeViewColumn col_02;		CellRendererText cellrt02;
 		TreeViewColumn col_03;		CellRendererText cellrt03;
+		TreeViewColumn col_04;		CellRendererText cellrt04;
 			
 		class_conexion conexion_a_DB = new class_conexion();
 		class_public classpublic = new class_public();
@@ -102,7 +109,7 @@ namespace osiris
 		
 		public notas_medicas (string LoginEmp, string NomEmpleado_, string AppEmpleado_, string ApmEmpleado_,
 		                      string title_window, string name_field_,string pidpaciente_,string folioservicio_,string iddoctor_,string nombredoctor_,string nombrepaciente_,
-		                      bool altapaciente_)
+		                      bool altapaciente_,string edadpaciente_, string diagnosticoadmision_)
 		{
 			connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
 			nombrebd = conexion_a_DB._nombrebd;
@@ -114,6 +121,7 @@ namespace osiris
 			pidpaciente = pidpaciente_;
 			folioservicio = folioservicio_;
 			nombredoctor = nombredoctor_;
+			diagnosticoadmision = diagnosticoadmision_;
 			
 			sql_pidpaciente = " AND osiris_his_informacion_medica.pid_paciente = '"+pidpaciente+"' ";
 			sql_folioservicio = " AND osiris_his_informacion_medica.folio_de_servicio = '"+folioservicio+"' ";
@@ -127,12 +135,14 @@ namespace osiris
 			button_salir.Clicked += new EventHandler(on_cierraventanas_clicked);
 			button_guardar.Clicked += new EventHandler(on_button_guardar_clicked);
 			button_imprimir_notas.Clicked += new EventHandler(on_button_imprimir_notas_clicked);
+			checkbutton_selectall.Clicked += new EventHandler(on_checkbutton_selectall_clicked);
 			entry_fechanotas.Text = (string) DateTime.Now.ToString("yyyy-MM-dd");
 			entry_pid_paciente.Text = (string) pidpaciente;
 			entry_nombre_paciente.Text = (string) nombrepaciente_;
 			entry_numerotencion.Text = (string) folioservicio;
 			entry_id_doctor.Text = (string) iddoctor_;
 			entry_doctor.Text = (string) nombredoctor_;
+			entry_edad_paciente.Text = (string) edadpaciente_;
 			switch (name_field){	
 				case "notas_de_evolucion":
 					textview1.ModifyBase(StateType.Normal, new Gdk.Color(255,243,169)); // Color Amarillo
@@ -158,7 +168,40 @@ namespace osiris
 		
 		void on_button_imprimir_notas_clicked (object sender, EventArgs args)
 		{
-			new osiris.rpt_notas_medicas(name_field);
+			string numeros_seleccionado = "";
+			string almacenes_seleccionados = ""; 
+			string variable_paso_03 = "";
+			int variable_paso_02_1 = 0;
+			string query_in_num = "";
+			
+			//poder elegir una fila del treeview
+			TreeIter iter;
+			if (treeViewEngineListaNotas.GetIterFirst (out iter)){			
+ 				if ((bool) treeview_listanotas.Model.GetValue (iter,0) == true){
+					numeros_seleccionado = (string) treeview_listanotas.Model.GetValue (iter,1);
+ 					variable_paso_02_1 += 1;		
+ 				}
+ 				while (treeViewEngineListaNotas.IterNext(ref iter)){
+ 					if ((bool) treeview_listanotas.Model.GetValue (iter,0) == true){
+						if (variable_paso_02_1 == 0){ 				    	
+ 							numeros_seleccionado = (string) treeview_listanotas.Model.GetValue (iter,1);
+ 							variable_paso_02_1 += 1;
+ 						}else{
+ 							variable_paso_03 = (string) treeview_listanotas.Model.GetValue (iter,1);
+ 							numeros_seleccionado = numeros_seleccionado.Trim() + "','" + variable_paso_03.Trim();
+ 						}
+ 					}
+ 				}
+ 			}
+			if (variable_paso_02_1 > 0){
+	 			query_in_num = " AND id_secuencia IN('"+numeros_seleccionado+"') ";
+			}
+			if ( treeViewEngineListaNotas.GetIterFirst (out iter)){
+				if (variable_paso_02_1 > 0){
+					Console.WriteLine(query_in_num);
+					new osiris.rpt_notas_medicas(folioservicio,name_field,sql_general+sql_pidpaciente+sql_folioservicio+sql_filtronotasblanco+query_in_num+" ORDER BY id_secuencia DESC;", diagnosticoadmision);
+				}
+			}
 		}
 		
 		void llenando_informacion()
@@ -179,7 +222,7 @@ namespace osiris
                	
 				// asigna el numero de folio de ingreso de paciente (FOLIO)
 				comando.CommandText = sql_general+sql_pidpaciente+sql_folioservicio+sql_filtronotasblanco+" ORDER BY id_secuencia DESC;";
-				//Console.WriteLine(comando.CommandText);					
+				Console.WriteLine(comando.CommandText);					
 				NpgsqlDataReader lector = comando.ExecuteReader ();
 				
 				if(lector.Read()){
@@ -196,6 +239,7 @@ namespace osiris
 						buffer.InsertWithTagsByName (ref insertIter, "Hora de Nota : "+(string) lector["horaanotacion"].ToString().Trim()+" \n\n", "bold");
 						buffer.Insert (ref insertIter, (string) lector[name_field].ToString().ToUpper()+"\n\n\n");
 						treeViewEngineListaNotas.AppendValues(false,
+						                                      (string) lector["id_secuencia"].ToString().Trim(),
 						                                      (string) lector["fechaanotacion"].ToString().Trim(),
 						                                      (string) lector["horaanotacion"].ToString().Trim(),
 						                                      (string) lector["nombreempleado"].ToString().Trim());
@@ -207,6 +251,7 @@ namespace osiris
 							buffer.InsertWithTagsByName (ref insertIter, "Hora de Nota : "+(string) lector["horaanotacion"].ToString().Trim()+" \n\n", "bold");
 							buffer.Insert (ref insertIter, (string) lector[name_field].ToString().ToUpper()+"\n\n\n");
 							treeViewEngineListaNotas.AppendValues(false,
+							                                      (string) lector["id_secuencia"].ToString().Trim(),
 							                                      (string) lector["fechaanotacion"].ToString().Trim(),
 							                                      (string) lector["horaanotacion"].ToString().Trim(),
 							                                      (string) lector["nombreempleado"].ToString().Trim());
@@ -241,7 +286,7 @@ namespace osiris
 			
 			col_00 = new TreeViewColumn();
 			cellrt00 = new CellRendererToggle();
-			col_00.Title = "Selcciona"; // titulo de la cabecera de la columna, si está visible
+			col_00.Title = "Selecciona"; // titulo de la cabecera de la columna, si está visible
 			col_00.PackStart(cellrt00, true);
 			col_00.AddAttribute (cellrt00, "active", 0);
 			cellrt00.Activatable = true;
@@ -250,29 +295,37 @@ namespace osiris
 			
 			col_01 = new TreeViewColumn();
 			cellrt01 = new CellRendererText();
-			col_01.Title = "Fecha Nota"; // titulo de la cabecera de la columna, si está visible
+			col_01.Title = "N° Nota"; // titulo de la cabecera de la columna, si está visible
 			col_01.PackStart(cellrt01, true);
 			col_01.AddAttribute (cellrt01, "text", 1);
 			//col_01.SortColumnId = (int) Column_notas.col_01;
 			
 			col_02 = new TreeViewColumn();
 			cellrt02 = new CellRendererText();
-			col_02.Title = "Hora Nota"; // titulo de la cabecera de la columna, si está visible
+			col_02.Title = "Fecha Nota"; // titulo de la cabecera de la columna, si está visible
 			col_02.PackStart(cellrt02, true);
 			col_02.AddAttribute (cellrt02, "text", 2);
-			//col_02.SortColumnId = (int) Column_notas.col_02;
+			//col_03.SortColumnId = (int) Column_notas.col_01;
 			
 			col_03 = new TreeViewColumn();
 			cellrt03 = new CellRendererText();
-			col_03.Title = "Quien Realizo"; // titulo de la cabecera de la columna, si está visible
+			col_03.Title = "Hora Nota"; // titulo de la cabecera de la columna, si está visible
 			col_03.PackStart(cellrt03, true);
 			col_03.AddAttribute (cellrt03, "text", 3);
+			//col_03.SortColumnId = (int) Column_notas.col_02;
+			
+			col_04 = new TreeViewColumn();
+			cellrt04 = new CellRendererText();
+			col_04.Title = "Quien Realizo"; // titulo de la cabecera de la columna, si está visible
+			col_04.PackStart(cellrt04, true);
+			col_04.AddAttribute (cellrt04, "text", 4);
 			//col_03.SortColumnId = (int) Column_notas.col_03;
 			
-			treeview_listanotas.AppendColumn(col_00); // 0
-			treeview_listanotas.AppendColumn(col_01); // 1
-			treeview_listanotas.AppendColumn(col_02); // 2
-			treeview_listanotas.AppendColumn(col_03); // 2
+			treeview_listanotas.AppendColumn(col_00);
+			treeview_listanotas.AppendColumn(col_01);
+			treeview_listanotas.AppendColumn(col_02);
+			treeview_listanotas.AppendColumn(col_03);
+			treeview_listanotas.AppendColumn(col_04);
 		}
 		
 		// Cuando seleccion el treeview de cargos extras para cargar los productos  
@@ -379,6 +432,28 @@ namespace osiris
 				}			
 				if(hora_minutos.Name.ToString() == "combobox_minutos_nota"){
 					minutos_nota = (string) hora_minutos.Model.GetValue(iter,0);
+				}
+			}
+		}
+		
+		//Seleccionar todos los del treeview, un check_button 
+		void on_checkbutton_selectall_clicked(object sender, EventArgs args)
+		{
+			if ((bool)checkbutton_selectall.Active == true){
+				TreeIter iter2;
+				if (treeViewEngineListaNotas.GetIterFirst (out iter2)){
+					treeview_listanotas.Model.SetValue(iter2,0,true);
+					while (treeViewEngineListaNotas.IterNext(ref iter2)){
+						treeview_listanotas.Model.SetValue(iter2,0,true);
+					}
+				}
+			}else{
+				TreeIter iter2;
+				if (treeViewEngineListaNotas.GetIterFirst (out iter2)){
+					treeview_listanotas.Model.SetValue(iter2,0,false);
+					while (treeViewEngineListaNotas.IterNext(ref iter2)){
+						treeview_listanotas.Model.SetValue(iter2,0,false);
+					}
 				}
 			}
 		}

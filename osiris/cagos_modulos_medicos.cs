@@ -2525,8 +2525,8 @@ namespace osiris
 		{
 			//if(button_busca_producto.Sensitive == true){
 				new osiris.notas_medicas(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,"Notas de Evolucion","notas_de_evolucion",
-			                         PidPaciente.ToString(),(string) entry_folio_servicio.Text, (string) entry_id_doctor.Text,(string) entry_doctor.Text,(string) entry_nombre_paciente.Text,
-			                         button_alta_paciente.Sensitive);
+			                         PidPaciente.ToString(),entry_folio_servicio.Text,entry_id_doctor.Text,entry_doctor.Text,entry_nombre_paciente.Text,
+			                         button_alta_paciente.Sensitive,entry_edad.Text.Trim(),entry_cirugia.Text.Trim());
 			//}else{
 			//	MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,MessageType.Info,ButtonsType.Close, "NO puede crear la nota de Evolucion, verifique....");
 			//	msgBoxError.Run ();	msgBoxError.Destroy();
@@ -2537,8 +2537,8 @@ namespace osiris
 		{
 			//if(button_busca_producto.Sensitive == true){
 				new osiris.notas_medicas(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,"Notas de Enfermeria","notas_de_enfermeria",
-			                         PidPaciente.ToString(),(string) entry_folio_servicio.Text, (string) entry_id_doctor.Text,(string) entry_doctor.Text,(string) entry_nombre_paciente.Text,
-			                         button_alta_paciente.Sensitive);
+			                         PidPaciente.ToString(),entry_folio_servicio.Text,entry_id_doctor.Text,entry_doctor.Text,entry_nombre_paciente.Text,
+			                         button_alta_paciente.Sensitive,entry_edad.Text.Trim(),entry_cirugia.Text.Trim());
 			//}else{
 			//	MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,MessageType.Info,ButtonsType.Close, "NO puede crear la nota de Enfermeria, verifique....");
 			//	msgBoxError.Run ();	msgBoxError.Destroy();	
@@ -2549,8 +2549,8 @@ namespace osiris
 		{
 			//if(button_busca_producto.Sensitive == true){
 				new osiris.notas_medicas(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,"Indicaciones Medicas","indicaciones_medicas",
-			                         PidPaciente.ToString(),(string) entry_folio_servicio.Text,(string) entry_id_doctor.Text,(string) entry_doctor.Text,(string) entry_nombre_paciente.Text,
-			                         button_alta_paciente.Sensitive);
+			                         PidPaciente.ToString(),entry_folio_servicio.Text,entry_id_doctor.Text,entry_doctor.Text,entry_nombre_paciente.Text,
+			                         button_alta_paciente.Sensitive,entry_edad.Text.Trim(),entry_cirugia.Text.Trim());
 			//}else{
 			//	MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,MessageType.Info,ButtonsType.Close, "NO puede crear Indicaciones Medicas, verifique....");
 			//	msgBoxError.Run ();	msgBoxError.Destroy();

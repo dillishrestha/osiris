@@ -1727,6 +1727,7 @@ namespace osiris
 				
 						//if (guado_el_abono == false){
 						if (pagodehonorario == true){
+							//entry_numero_comprobante.Text = (string) classpublic.lee_ultimonumero_registrado("osiris_erp_comprobante_servicio","numero_comprobante_servicio","");
 							descrippago = "PAGO DE HONORARIO MEDICO";
 							pago_sino = true;
 							sql_abonos_servicio = "INSERT INTO osiris_erp_abonos("+

@@ -6747,7 +6747,7 @@ Medicamento</property>
                                     <property name="visible">True</property>
                                     <property name="orientation">vertical</property>
                                     <child>
-                                      <widget class="GtkCheckButton" id="checkbutton1">
+                                      <widget class="GtkCheckButton" id="checkbutton_selectall">
                                         <property name="label" translatable="yes">Seleccionar todas la Notas</property>
                                         <property name="visible">True</property>
                                         <property name="can_focus">True</property>

@@ -51,6 +51,8 @@ namespace osiris
 		string departament;
 		string agrupacion_lab_rx;
 		string query_general;
+		string diagnostico_movcargo = "";
+		string nombrecirugia_movcargo = "";
 		
 		string connectionString;
         string nombrebd;
@@ -68,19 +70,18 @@ namespace osiris
 			departament = departament_;
 			agrupacion_lab_rx = agrupacion_lab_rx_;
 			
-			query_general = "SELECT osiris_erp_movcargos.folio_de_servicio,osiris_his_solicitudes_labrx.area_quien_solicita,osiris_his_solicitudes_labrx.folio_de_solicitud,"+
+			query_general = "SELECT osiris_his_solicitudes_labrx.area_quien_solicita,osiris_his_solicitudes_labrx.folio_de_solicitud,"+
 							"osiris_his_solicitudes_labrx.fechahora_solicitud,osiris_his_solicitudes_labrx.folio_de_servicio AS foliodeservicio,osiris_his_solicitudes_labrx.pid_paciente AS pidpaciente,"+
 							"osiris_his_solicitudes_labrx.id_quien_solicito,osiris_his_solicitudes_labrx.id_proveedor,osiris_his_solicitudes_labrx.id_producto,osiris_his_solicitudes_labrx.cantidad_solicitada,"+
 							"nombre1_paciente || ' ' || nombre2_paciente || ' ' || apellido_paterno_paciente || ' ' || apellido_materno_paciente AS nombre_completo,"+
 							"to_char(osiris_his_paciente.fecha_nacimiento_paciente, 'dd-MM-yyyy') AS fechanacpaciente, to_char(to_number(to_char(age('"+DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss")+"',osiris_his_paciente.fecha_nacimiento_paciente),'yyyy') ,'9999'),'9999') AS edadpaciente,"+
-							"osiris_his_paciente.sexo_paciente,osiris_erp_movcargos.descripcion_diagnostico_movcargos,osiris_erp_movcargos.nombre_de_cirugia,osiris_erp_cobros_enca.nombre_medico_tratante,"+
+							"osiris_his_paciente.sexo_paciente,osiris_erp_cobros_enca.nombre_medico_tratante,"+
 							"osiris_erp_cobros_enca.id_habitacion,osiris_his_habitaciones.descripcion_cuarto,osiris_his_habitaciones.numero_cuarto,osiris_empleado.login_empleado,"+
 							"nombre1_empleado || ' ' || nombre2_empleado || ' ' || apellido_paterno_empleado || ' ' || apellido_materno_empleado AS nombresolicitante,osiris_erp_proveedores.descripcion_proveedor,"+
 							"osiris_productos.descripcion_producto "+
-							"FROM osiris_his_solicitudes_labrx,osiris_his_paciente,osiris_erp_movcargos,osiris_erp_cobros_enca,osiris_his_habitaciones,osiris_empleado,osiris_erp_proveedores,osiris_productos "+
+							"FROM osiris_his_solicitudes_labrx,osiris_his_paciente,osiris_erp_cobros_enca,osiris_his_habitaciones,osiris_empleado,osiris_erp_proveedores,osiris_productos "+
 							"WHERE osiris_his_solicitudes_labrx.id_tipo_admisiones2 = '"+id_tipoadmisiones_.ToString().Trim()+"' "+
 							"AND osiris_his_solicitudes_labrx.pid_paciente = osiris_his_paciente.pid_paciente "+
-							"AND osiris_his_solicitudes_labrx.folio_de_servicio = osiris_erp_movcargos.folio_de_servicio " +
 							"AND osiris_his_solicitudes_labrx.folio_de_servicio = osiris_erp_cobros_enca.folio_de_servicio "+
 							"AND osiris_erp_cobros_enca.id_habitacion = osiris_his_habitaciones.id_habitacion "+
 							"AND osiris_his_solicitudes_labrx.id_quien_solicito = osiris_empleado.login_empleado "+
@@ -131,22 +132,22 @@ namespace osiris
 	        	NpgsqlCommand comando; 
 	        	comando = conexion.CreateCommand ();
 				comando.CommandText = query_general;
-				Console.WriteLine(comando.CommandText);
+				//Console.WriteLine(comando.CommandText);
 				NpgsqlDataReader lector = comando.ExecuteReader ();
 		       	if (lector.Read()){
 					if (lector["sexo_paciente"].ToString().Trim() == "H"){
-						sexopaciente = "HOMBRE";
+						sexopaciente = "MASCULINO";
 					}else{
-						sexopaciente = "MUJER";
+						sexopaciente = "FEMENINO";
 					}
 					comienzo_linea = 05;
+					buscar_en_movcargos(lector["foliodeservicio"].ToString().Trim());
 					imprime_encabezado(cr,layout);
 					comienzo_linea = 55;
-					
 					imprime_cuerpo(cr,layout, (string) lector["area_quien_solicita"],lector["folio_de_solicitud"].ToString().Trim(),
 					               lector["fechahora_solicitud"].ToString().Trim(),lector["foliodeservicio"].ToString().Trim(),lector["pidpaciente"].ToString().Trim(),
 					               lector["nombre_completo"].ToString().Trim(),lector["fechanacpaciente"].ToString().Trim(),lector["edadpaciente"].ToString().Trim(),
-					               sexopaciente,lector["descripcion_diagnostico_movcargos"].ToString().Trim(),lector["nombre_de_cirugia"].ToString().Trim(),lector["nombre_medico_tratante"].ToString().Trim(),
+					               sexopaciente,diagnostico_movcargo,nombrecirugia_movcargo,lector["nombre_medico_tratante"].ToString().Trim(),
 					               lector["descripcion_cuarto"].ToString().Trim()+" "+lector["numero_cuarto"].ToString().Trim(),lector["id_quien_solicito"].ToString().Trim(),
 					               lector["nombresolicitante"].ToString().Trim(),lector["descripcion_proveedor"].ToString().Trim());
 					               
@@ -160,7 +161,7 @@ namespace osiris
 					imprime_cuerpo(cr,layout, (string) lector["area_quien_solicita"],lector["folio_de_solicitud"].ToString().Trim(),
 					               lector["fechahora_solicitud"].ToString().Trim(),lector["foliodeservicio"].ToString().Trim(),lector["pidpaciente"].ToString().Trim(),
 					               lector["nombre_completo"].ToString().Trim(),lector["fechanacpaciente"].ToString().Trim(),lector["edadpaciente"].ToString().Trim(),
-					               sexopaciente,lector["descripcion_diagnostico_movcargos"].ToString().Trim(),lector["nombre_de_cirugia"].ToString().Trim(),lector["nombre_medico_tratante"].ToString().Trim(),
+					               sexopaciente,diagnostico_movcargo,nombrecirugia_movcargo,lector["nombre_medico_tratante"].ToString().Trim(),
 					               lector["descripcion_cuarto"].ToString().Trim()+" "+lector["numero_cuarto"].ToString().Trim(),lector["id_quien_solicito"].ToString().Trim(),
 					               lector["nombresolicitante"].ToString().Trim(),lector["descripcion_proveedor"].ToString().Trim());
 					linea_detalle2 = comienzo_linea;
@@ -302,7 +303,36 @@ namespace osiris
 			cr.SetSourceRGB (0, 0, 0);
 			cr.LineWidth = 0.1;
 			cr.Stroke();
-		}	
+		}
+		
+		void buscar_en_movcargos(string foliodeservicio)
+		{
+			NpgsqlConnection conexion; 
+	        conexion = new NpgsqlConnection (connectionString+nombrebd);
+	        // Verifica que la base de datos este conectada
+	        try{
+	 			conexion.Open ();
+	        	NpgsqlCommand comando; 
+	        	comando = conexion.CreateCommand (); 
+	           	comando.CommandText = "SELECT DISTINCT (osiris_erp_movcargos.folio_de_servicio),id_tipo_admisiones,osiris_erp_movcargos.id_tipo_paciente,pid_paciente,descripcion_tipo_paciente,descripcion_diagnostico_movcargos,nombre_de_cirugia "+
+					"FROM osiris_erp_movcargos,osiris_his_tipo_pacientes "+
+					"WHERE osiris_erp_movcargos.id_tipo_paciente = osiris_his_tipo_pacientes.id_tipo_paciente "+
+						"AND osiris_erp_movcargos.folio_de_servicio = '"+foliodeservicio+"';";
+	        	//Console.WriteLine(comando.CommandText);
+				NpgsqlDataReader lector = comando.ExecuteReader();
+				if (lector.Read()){
+					diagnostico_movcargo = lector["descripcion_diagnostico_movcargos"].ToString().Trim();
+					nombrecirugia_movcargo = lector["nombre_de_cirugia"].ToString().Trim();
+				}
+			}catch (NpgsqlException ex){
+				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+					MessageType.Warning, ButtonsType.Ok, "PostgresSQL error: {0}",ex.Message);
+					msgBoxError.Run ();
+					msgBoxError.Destroy();
+				Console.WriteLine ("PostgresSQL error: {0}",ex.Message);
+			}
+			conexion.Close();
+		}
 		
 		private void OnEndPrint (object obj, Gtk.EndPrintArgs args)
 		{

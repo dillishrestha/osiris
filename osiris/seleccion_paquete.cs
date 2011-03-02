@@ -56,10 +56,7 @@ namespace osiris
 		[Widget] Gtk.Button button_acepta;
 		[Widget] Gtk.Button button_salir;
 		
-		public string connectionString = "Server=192.168.1.4;" +
-							"Port=5432;" +
-							"User ID=admin1;" +
-							"Password=1qaz2wsx;";
+		public string connectionString;
 		public string nombrebd;
 	
     	    

@@ -170,7 +170,7 @@ namespace osiris
 					"osiris_empresas.id_empresa AS idempresa,descripcion_empresa,"+
 					"osiris_aseguradoras.id_aseguradora AS idaseguradora,descripcion_aseguradora,"+
 					"to_char(to_number(to_char(age('"+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"',osiris_his_paciente.fecha_nacimiento_paciente),'yyyy') ,'9999'),'9999') AS edad,"+
-					"to_char(to_number(to_char(age('"+DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss")+"',osiris_his_paciente.fecha_nacimiento_paciente),'MM'),'99'),'99') AS mesesedad "+
+					"to_char(to_number(to_char(age('"+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"',osiris_his_paciente.fecha_nacimiento_paciente),'MM'),'99'),'99') AS mesesedad "+
 					"FROM osiris_his_calendario_citaqx,osiris_his_paciente,osiris_his_tipo_pacientes,osiris_his_tipo_admisiones,osiris_his_medicos,osiris_his_tipo_especialidad,osiris_empresas,osiris_aseguradoras "+
 					"WHERE osiris_his_calendario_citaqx.pid_paciente = osiris_his_paciente.pid_paciente "+
 					"AND osiris_his_tipo_pacientes.id_tipo_paciente = osiris_his_calendario_citaqx.id_tipo_paciente "+

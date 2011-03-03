@@ -83,11 +83,13 @@ namespace osiris
 							"to_char(fecha_anotacion,'dd-MM-yyyy') AS fechaanotacion,hora_anotacion AS horaanotacion,osiris_his_informacion_medica.id_secuencia,"+
 							"alegias_paciente,osiris_his_paciente.pid_paciente,to_char(osiris_erp_cobros_enca.fechahora_creacion,'dd-mm-yyyy HH:mi') AS fechadeingreso,"+
 							"to_char(osiris_erp_cobros_enca.fecha_alta_paciente,'dd-mm-yyyy HH:mi') AS fechadeegreso,osiris_his_paciente.sexo_paciente,"+
+							"osiris_erp_cobros_enca.id_habitacion,osiris_his_habitaciones.descripcion_cuarto,osiris_his_habitaciones.numero_cuarto,"+
 							"nombre1_empleado || ' ' || nombre2_empleado || ' ' || apellido_paterno_empleado || ' ' || apellido_materno_empleado AS nombreempleado "+
-							"FROM osiris_his_informacion_medica,osiris_his_paciente,osiris_empleado,osiris_erp_cobros_enca "+
+							"FROM osiris_his_informacion_medica,osiris_his_paciente,osiris_empleado,osiris_erp_cobros_enca,osiris_his_habitaciones "+
 									"WHERE osiris_his_informacion_medica.pid_paciente = osiris_his_paciente.pid_paciente "+
 									"AND osiris_his_informacion_medica.folio_de_servicio = osiris_erp_cobros_enca.folio_de_servicio "+
-									"AND id_empleado_creacion = login_empleado ";
+									"AND id_empleado_creacion = login_empleado "+
+									"AND osiris_erp_cobros_enca.id_habitacion = osiris_his_habitaciones.id_habitacion ";
 		string sql_pidpaciente;
 		string sql_folioservicio;
 		string sql_filtronotasblanco;
@@ -199,7 +201,7 @@ namespace osiris
 			if ( treeViewEngineListaNotas.GetIterFirst (out iter)){
 				if (variable_paso_02_1 > 0){
 					Console.WriteLine(query_in_num);
-					new osiris.rpt_notas_medicas(folioservicio,name_field,sql_general+sql_pidpaciente+sql_folioservicio+sql_filtronotasblanco+query_in_num+" ORDER BY id_secuencia DESC;", diagnosticoadmision);
+					new osiris.rpt_notas_medicas(folioservicio,name_field,sql_general+sql_pidpaciente+sql_folioservicio+sql_filtronotasblanco+query_in_num+" ORDER BY to_char(fecha_anotacion,'yyyy-MM-dd'),hora_anotacion DESC;", diagnosticoadmision);
 				}
 			}
 		}
@@ -221,7 +223,7 @@ namespace osiris
 				comando = conexion.CreateCommand ();
                	
 				// asigna el numero de folio de ingreso de paciente (FOLIO)
-				comando.CommandText = sql_general+sql_pidpaciente+sql_folioservicio+sql_filtronotasblanco+" ORDER BY id_secuencia DESC;";
+				comando.CommandText = sql_general+sql_pidpaciente+sql_folioservicio+sql_filtronotasblanco+" ORDER BY to_char(fecha_anotacion,'yyyy-MM-dd'),hora_anotacion DESC;";
 				Console.WriteLine(comando.CommandText);					
 				NpgsqlDataReader lector = comando.ExecuteReader ();
 				

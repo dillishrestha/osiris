@@ -220,7 +220,7 @@ namespace osiris
         			NpgsqlCommand comando; 
         			comando = conexion.CreateCommand (); 
         			comando.CommandText = query_todo + query_rango_fechas + "ORDER BY  to_char(osiris_erp_cobros_deta.fechahora_creacion,'yyyy-MM-dd') ASC, osiris_erp_cobros_deta.id_tipo_admisiones ASC, osiris_productos.id_grupo_producto,osiris_erp_cobros_deta.id_secuencia; ";
-					Console.WriteLine(query_todo + query_rango_fechas + "ORDER BY  to_char(osiris_erp_cobros_deta.fechahora_creacion,'yyyy-MM-dd') ASC, osiris_erp_cobros_deta.id_tipo_admisiones ASC, osiris_productos.id_grupo_producto,osiris_erp_cobros_deta.id_secuencia; ");			
+					//Console.WriteLine(query_todo + query_rango_fechas + "ORDER BY  to_char(osiris_erp_cobros_deta.fechahora_creacion,'yyyy-MM-dd') ASC, osiris_erp_cobros_deta.id_tipo_admisiones ASC, osiris_productos.id_grupo_producto,osiris_erp_cobros_deta.id_secuencia; ");			
         			NpgsqlDataReader lector = comando.ExecuteReader ();
         			//Console.WriteLine("query proc cobr: "+comando.CommandText.ToString());
 					//}
@@ -242,7 +242,7 @@ namespace osiris
 					honorarios = decimal.Parse((string) lector["honorario"]);
 				
 					datos = (string) lector["descripcion_producto"];
-					subtotal = decimal.Parse((string) lector["ppcantidad"]);
+					subtotal = decimal.Parse((string) lector["cantidadaplicada"].ToString()) * decimal.Parse((string) lector["preciounitario"].ToString());
 					porcentajedes =  decimal.Parse((string) lector["porcdesc"]);
 					if((bool) lector["aplicar_iva"]== true) {
 						ivaprod = (subtotal*PorcentIVA)/100;
@@ -303,7 +303,7 @@ namespace osiris
 						honorarios = decimal.Parse((string) lector["honorario"]);
 				
 						datos = (string) lector["descripcion_producto"];
-						subtotal = decimal.Parse((string) lector["ppcantidad"]);
+						subtotal = decimal.Parse((string) lector["cantidadaplicada"].ToString()) * decimal.Parse((string) lector["preciounitario"].ToString());
 						porcentajedes =  decimal.Parse((string) lector["porcdesc"]);
 						if((bool) lector["aplicar_iva"]== true) {
 							ivaprod = (subtotal*PorcentIVA)/100;
@@ -329,19 +329,17 @@ namespace osiris
 							totaldesc = 0;
 						}
 						totaladm +=total;
-						subtotaldelmov +=total;
-						fcreacion = (string) lector["fechcreacion"];
-						
+						subtotaldelmov +=total;						
 						//imprime_linea_producto(context,(string) lector["idproducto"],(string) lector["cantidadaplicada"],datos,(string) lector["preciounitario"],subtotal,ivaprod,total);
 						contador+=1;
 						salto_pagina(cr,layout,contador);
 ///////////////////////////////// SI LA ADMISION SIGUE SIENDO LA MISMA HACE ESTO://////////////////////////////////////////						
 						if(idadmision_ == (int) lector["idadmisiones"] && fcreacion == (string) lector["fechcreacion"]) { //}else{
 							//Console.WriteLine("sigue en: "+(string) lector["descripcion_admisiones"]);
-						
+							fcreacion = (string) lector["fechcreacion"];
 							///VARIABLES
 							datos = (string) lector["descripcion_producto"];
-							sumaiva += ivaprod;
+							//sumaiva += ivaprod;
 							total = subtotal + ivaprod;
 							if(apl_desc == true && apl_desc_siempre == true && porcentajedes > 0){
 								descsiniva = (subtotal*(porcentajedes/100));
@@ -351,8 +349,7 @@ namespace osiris
 							}else{
 								descuento = decimal.Parse("0.00");
 							}
-							sumadesc +=descuento;
-        				
+							sumadesc +=descuento;        				
 							totaldesc +=descuento;
 							if (apl_desc == false){
 								totaldesc = 0;
@@ -410,7 +407,7 @@ namespace osiris
 								totaldesc = 0;
 							}											
 							totaladm += total;
-							subtotaldelmov +=total;
+							//subtotaldelmov +=total;
 							if(fcreacion != (string) lector["fechcreacion"]) {
 								fcreacion = (string) lector["fechcreacion"];
 							}
@@ -420,8 +417,7 @@ namespace osiris
 							imprime_titulo(cr,layout,(string) lector["descripcion_admisiones"],fcreacion);
 							contador+=1;
 							salto_pagina(cr,layout,contador);							
-							idadmision_ = (int) lector["idadmisiones"];        			    
-							
+							idadmision_ = (int) lector["idadmisiones"];
 							if (idproducto != (int) lector["id_grupo_producto"]){
 								idproducto = (int) lector["id_grupo_producto"];
 								imprime_subtitulo(cr,layout,(string) lector["descripcion_grupo_producto"]);
@@ -444,7 +440,7 @@ namespace osiris
 					
 					// Console.WriteLine("contador antes de los totales: "+contador.ToString());
 					// TOTAL QUE SE LE COBRARA AL PACIENTE O AL RESPONSABLE DEL PACIENTE
-					decimal totaldelmov =subtotaldelmov - deducible - coaseguro - totaldesc - totabono - totpago + honorarios;//desctotal;
+					decimal totaldelmov = subtotaldelmov - deducible - coaseguro - totaldesc - totabono - totpago + honorarios;//desctotal;
 					
 					comienzo_linea += separacion_linea;		    	
 					cr.MoveTo(382*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText("SUBTOTAL AL "+PorcentIVA.ToString()+"%");		Pango.CairoHelper.ShowLayout (cr, layout);	

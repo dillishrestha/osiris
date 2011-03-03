@@ -75,6 +75,8 @@ namespace osiris
 		string sexopaciente = "";
 		string alergiaconocida = "";
 		string diagnostico_admin = "";
+		string nombreempleadoreponsable = "";
+		string descripcioncuarto = "";
 		
 		//Declaracion de ventana de error
 		protected Gtk.Window MyWinError;
@@ -179,6 +181,12 @@ namespace osiris
 						sexopaciente = "FEMENINO";
 					}
 					alergiaconocida = (string) lector["alegias_paciente"].ToString().Trim();
+					descripcioncuarto = (string) lector["descripcion_cuarto"].ToString().Trim()+"/"+(string) lector["numero_cuarto"].ToString().Trim();
+					if(titulo_rpt == "NOTAS_DE_ENFERMERIA"){
+						nombreempleadoreponsable = (string) lector["nombreempleado"].ToString().Trim();
+					}else{
+						nombreempleadoreponsable = "";
+					}
 					imprime_encabezado(cr,layout);
 					fontSize = 7.0;			layout = null;			layout = context.CreatePangoLayout ();
 					desc.Size = (int)(fontSize * pangoScale);		layout.FontDescription = desc;
@@ -188,7 +196,9 @@ namespace osiris
 						cr.MoveTo(05*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);	layout.SetText("Fecha de Nota: "+(string) lector["fechaanotacion"].ToString().Trim()+"      "+"Hora de Nota : "+(string) lector["horaanotacion"].ToString().Trim()+"     Nº de NOTA :"+(string) lector["id_secuencia"].ToString().Trim());	Pango.CairoHelper.ShowLayout (cr, layout);
 						layout.FontDescription.Weight = Weight.Normal;		// Letra normal
 						comienzo_linea += separacion_linea;
-						comienzo_linea += separacion_linea;	
+						salto_de_pagina(cr,layout);
+						comienzo_linea += separacion_linea;
+						salto_de_pagina(cr,layout);
 						textnote = (string) lector[name_field].ToString().ToUpper(); 
 						words =  textnote.Split(delimiterChars); // Separa las Cadenas
 						// Recorre la variable
@@ -196,9 +206,16 @@ namespace osiris
 							if (s.Length > 0){
 								cr.MoveTo(05*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);	layout.SetText(s.ToString());	Pango.CairoHelper.ShowLayout (cr, layout);
 								comienzo_linea += separacion_linea;
+								salto_de_pagina(cr,layout);
 							}
 						}
 						comienzo_linea += separacion_linea;
+						salto_de_pagina(cr,layout);
+						comienzo_linea += separacion_linea;
+						salto_de_pagina(cr,layout);
+						cr.MoveTo(05*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);	layout.SetText("Nombre :"+nombreempleadoreponsable);	Pango.CairoHelper.ShowLayout (cr, layout);
+						comienzo_linea += separacion_linea;
+						salto_de_pagina(cr,layout);
 						cr.MoveTo(565*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);
 						cr.LineTo(05,comienzo_linea);		// Linea Horizontal 1
 						cr.FillExtents();  //. FillPreserve(); 
@@ -212,7 +229,9 @@ namespace osiris
 							cr.MoveTo(05*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);	layout.SetText("Fecha de Nota: "+(string) lector["fechaanotacion"].ToString().Trim()+"      "+"Hora de Nota : "+(string) lector["horaanotacion"].ToString().Trim()+"     Nº de NOTA :"+(string) lector["id_secuencia"].ToString().Trim());	Pango.CairoHelper.ShowLayout (cr, layout);
 							layout.FontDescription.Weight = Weight.Normal;		// Letra normal
 							comienzo_linea += separacion_linea;
+							salto_de_pagina(cr,layout);
 							comienzo_linea += separacion_linea;
+							salto_de_pagina(cr,layout);
 							textnote = (string) lector[name_field].ToString().ToUpper(); 
 							words =  textnote.Split(delimiterChars); // Separa las Cadenas
 							// Recorre la variable
@@ -220,12 +239,16 @@ namespace osiris
 								if (s.Length > 0){
 									cr.MoveTo(05*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);	layout.SetText(s.ToString());	Pango.CairoHelper.ShowLayout (cr, layout);
 									comienzo_linea += separacion_linea;
+									salto_de_pagina(cr,layout);
 								}
 							}
 							comienzo_linea += separacion_linea;
-							cr.MoveTo(05*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);	layout.SetText("Res".ToString());	Pango.CairoHelper.ShowLayout (cr, layout);
-
+							salto_de_pagina(cr,layout);
 							comienzo_linea += separacion_linea;
+							salto_de_pagina(cr,layout);
+							cr.MoveTo(05*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);	layout.SetText("Nombre :"+nombreempleadoreponsable);	Pango.CairoHelper.ShowLayout (cr, layout);
+							comienzo_linea += separacion_linea;
+							salto_de_pagina(cr,layout);
 							cr.MoveTo(565*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);
 							cr.LineTo(05,comienzo_linea);		// Linea Horizontal 1
 							cr.FillExtents();  //. FillPreserve(); 
@@ -302,8 +325,8 @@ namespace osiris
 			layout.FontDescription.Weight = Weight.Normal;		// Letra Normal
 			comienzo_linea += separacion_linea;
 			cr.MoveTo(08*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);		layout.SetText("Sexo: "+sexopaciente);		Pango.CairoHelper.ShowLayout (cr, layout);
-			cr.MoveTo(250*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);		layout.SetText("Alergico a: "+alergiaconocida);	Pango.CairoHelper.ShowLayout (cr, layout);
-			cr.MoveTo(450*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);		layout.SetText("Habitacion: ");	Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(200*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);		layout.SetText("Alergico a: "+alergiaconocida);	Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(420*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);		layout.SetText("Habitacion: "+descripcioncuarto);	Pango.CairoHelper.ShowLayout (cr, layout);
 			comienzo_linea += separacion_linea;
 			cr.MoveTo(08*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);		layout.SetText("Diagnostico: "+diagnostico_admin);	Pango.CairoHelper.ShowLayout (cr, layout);
 			comienzo_linea += separacion_linea;

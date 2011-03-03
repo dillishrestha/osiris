@@ -1627,6 +1627,7 @@ namespace osiris
 				
 				entry_referencia_inicial.Text = fecha_rango_1;
 				button_imprime_rangofecha.Clicked += new EventHandler(on_button_imprime_rangofecha_clicked);
+				checkbutton_impr_todo_proce.Clicked += new EventHandler(on_checkbutton_impr_todo_proce_clicked);
 				
 				// Sale de la ventana
 				button_salir.Clicked += new EventHandler(on_cierraventanas_clicked);
@@ -1661,6 +1662,26 @@ namespace osiris
 						cirugia,empresapac,id_tipopaciente,query);				
 			}			
 			rango_de_fecha.Destroy();
+		}
+		
+		void on_checkbutton_impr_todo_proce_clicked(object sender, EventArgs args)
+		{
+			if (checkbutton_impr_todo_proce.Active == true){
+				entry_dia1.Sensitive = false;
+				entry_dia2.Sensitive = false;				
+				entry_mes1.Sensitive = false;			
+				entry_mes2.Sensitive = false;				
+				entry_ano1.Sensitive = false;
+				entry_ano2.Sensitive = false;
+			}else{
+				entry_dia1.Sensitive = true;
+				entry_dia2.Sensitive = true;				
+				entry_mes1.Sensitive = true;			
+				entry_mes2.Sensitive = true;				
+				entry_ano1.Sensitive = true;
+				entry_ano2.Sensitive = true;
+			}
+				
 		}
 				
 		void on_button_compro_caja_clicked(object sender, EventArgs args)

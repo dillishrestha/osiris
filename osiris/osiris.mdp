@@ -146,6 +146,7 @@
     <File subtype="Code" buildaction="Compile" name="lista_ordenes_compra.cs" />
     <File subtype="Code" buildaction="Compile" name="envios_a_subalmacenes.cs" />
     <File subtype="Code" buildaction="Compile" name="rpt_notas_medicas.cs" />
+    <File subtype="Code" buildaction="Compile" name="class_crea_ods.cs" />
   </Contents>
   <References>
     <ProjectReference type="Gac" localcopy="True" refto="Mono.Cairo, Version=2.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756" />

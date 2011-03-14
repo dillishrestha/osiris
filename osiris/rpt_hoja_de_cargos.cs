@@ -140,7 +140,7 @@ namespace osiris
 			
 			sql_tipoadmision = " AND osiris_erp_cobros_deta.id_tipo_admisiones = '"+tipointernamiento.ToString()+"' ";
 			sql_numerofolio = " AND osiris_erp_cobros_deta.folio_de_servicio = '"+folioservicio.ToString()+"' ";			
-			sql_loginempleado =  "" ; // " AND id_empleado = '"+LoginEmpleado+"' ";
+			sql_loginempleado = " AND id_empleado = '"+LoginEmpleado+"' ";
 			connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
 			nombrebd = conexion_a_DB._nombrebd;
 					

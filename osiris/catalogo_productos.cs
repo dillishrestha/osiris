@@ -1019,7 +1019,7 @@ namespace osiris
 							"AND osiris_productos.id_grupo1_producto = osiris_grupo1_producto.id_grupo1_producto "+
 							"AND osiris_productos.id_grupo2_producto = osiris_grupo2_producto.id_grupo2_producto "+
 							query_tipo_busqueda;
-				//Console.WriteLine(comando.CommandText);
+				Console.WriteLine(comando.CommandText);
 				NpgsqlDataReader lector = comando.ExecuteReader ();
 				float calculodeiva;
 				float preciomasiva;

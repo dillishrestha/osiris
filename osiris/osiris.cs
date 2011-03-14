@@ -364,6 +364,8 @@ namespace osiris
 			button_terapia_neonatal.Hide();
 			//button_ginecologia.Hide();
 			//button_endoscopia.Hide();
+			
+			//new osiris.class_crea_ods();
 				
 			// Actulizando statusbar
 			statusbar_menu.Pop(0);

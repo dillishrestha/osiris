@@ -32,9 +32,6 @@ using Npgsql;
 using Gtk;
 using Glade;
 
-using System.Data;
-using System.Data.Odbc;
-
 namespace osiris
 {
 	public class herramientas_del_sistemas
@@ -163,6 +160,7 @@ namespace osiris
 		{
 			if(LoginEmpleado == "DOLIVARES" || LoginEmpleado == "ADMIN"){
 				
+				/*
 				NpgsqlConnection conexion; 
 				conexion = new NpgsqlConnection (connectionString+nombrebd);
 	        	// Verifica que la base de datos este conectada
@@ -239,10 +237,11 @@ namespace osiris
 					msgBoxError.Run ();		msgBoxError.Destroy();
 				}
 				conexion.Close();
+				*/
 			}else{ MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
 				  MessageType.Error,ButtonsType.Close,"NO esta autorizado para accesar");
 				  msgBoxError.Run ();			msgBoxError.Destroy(); 
-			}			
+			}		
 		}
 		
 		public string verifica_acceso()

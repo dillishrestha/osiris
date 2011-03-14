@@ -7180,7 +7180,7 @@ para Imprimir&lt;/b&gt;</property>
                                       </packing>
                                     </child>
                                     <child>
-                                      <widget class="GtkEntry" id="entry1">
+                                      <widget class="GtkEntry" id="entry_presion_arterial">
                                         <property name="visible">True</property>
                                         <property name="can_focus">True</property>
                                         <property name="invisible_char">&#x25CF;</property>
@@ -7199,7 +7199,7 @@ para Imprimir&lt;/b&gt;</property>
                                     <property name="visible">True</property>
                                     <child>
                                       <widget class="GtkLabel" id="label21">
-                                        <property name="width_request">140</property>
+                                        <property name="width_request">160</property>
                                         <property name="visible">True</property>
                                         <property name="label" translatable="yes">Pulso</property>
                                       </widget>
@@ -7208,10 +7208,15 @@ para Imprimir&lt;/b&gt;</property>
                                       </packing>
                                     </child>
                                     <child>
-                                      <widget class="GtkEntry" id="entry2">
+                                      <widget class="GtkSpinButton" id="spinbutton_pulso">
                                         <property name="visible">True</property>
                                         <property name="can_focus">True</property>
+                                        <property name="tooltip" translatable="yes">Ingresa aqui la temperatura del paciente</property>
                                         <property name="invisible_char">&#x25CF;</property>
+                                        <property name="adjustment">0 0 300 1 10 10</property>
+                                        <property name="climb_rate">1</property>
+                                        <property name="numeric">True</property>
+                                        <property name="wrap">True</property>
                                       </widget>
                                       <packing>
                                         <property name="position">1</property>
@@ -7236,10 +7241,15 @@ para Imprimir&lt;/b&gt;</property>
                                       </packing>
                                     </child>
                                     <child>
-                                      <widget class="GtkEntry" id="entry3">
+                                      <widget class="GtkSpinButton" id="spinbutton_frecrespiratoria">
                                         <property name="visible">True</property>
                                         <property name="can_focus">True</property>
+                                        <property name="max_length">500</property>
                                         <property name="invisible_char">&#x25CF;</property>
+                                        <property name="adjustment">0 0 90 1 10 10</property>
+                                        <property name="climb_rate">1</property>
+                                        <property name="numeric">True</property>
+                                        <property name="wrap">True</property>
                                       </widget>
                                       <packing>
                                         <property name="position">1</property>
@@ -7264,10 +7274,14 @@ para Imprimir&lt;/b&gt;</property>
                                       </packing>
                                     </child>
                                     <child>
-                                      <widget class="GtkEntry" id="entry4">
+                                      <widget class="GtkSpinButton" id="spinbutton_temperatura">
                                         <property name="visible">True</property>
                                         <property name="can_focus">True</property>
                                         <property name="invisible_char">&#x25CF;</property>
+                                        <property name="adjustment">0 0 50 1 10 10</property>
+                                        <property name="climb_rate">1</property>
+                                        <property name="digits">1</property>
+                                        <property name="numeric">True</property>
                                       </widget>
                                       <packing>
                                         <property name="position">1</property>
@@ -7283,7 +7297,7 @@ para Imprimir&lt;/b&gt;</property>
                                     <property name="visible">True</property>
                                     <child>
                                       <widget class="GtkLabel" id="label24">
-                                        <property name="width_request">140</property>
+                                        <property name="width_request">160</property>
                                         <property name="visible">True</property>
                                         <property name="label" translatable="yes">Sat. Oxigeno</property>
                                       </widget>
@@ -7292,10 +7306,11 @@ para Imprimir&lt;/b&gt;</property>
                                       </packing>
                                     </child>
                                     <child>
-                                      <widget class="GtkEntry" id="entry5">
+                                      <widget class="GtkSpinButton" id="spinbutton_sat_oxigeno">
                                         <property name="visible">True</property>
                                         <property name="can_focus">True</property>
                                         <property name="invisible_char">&#x25CF;</property>
+                                        <property name="adjustment">0 0 200 1 10 10</property>
                                       </widget>
                                       <packing>
                                         <property name="position">1</property>
@@ -7320,7 +7335,7 @@ para Imprimir&lt;/b&gt;</property>
                                       </packing>
                                     </child>
                                     <child>
-                                      <widget class="GtkEntry" id="entry6">
+                                      <widget class="GtkEntry" id="entry_diuresis">
                                         <property name="visible">True</property>
                                         <property name="can_focus">True</property>
                                         <property name="invisible_char">&#x25CF;</property>
@@ -7339,7 +7354,7 @@ para Imprimir&lt;/b&gt;</property>
                                     <property name="visible">True</property>
                                     <child>
                                       <widget class="GtkLabel" id="label26">
-                                        <property name="width_request">140</property>
+                                        <property name="width_request">160</property>
                                         <property name="visible">True</property>
                                         <property name="label" translatable="yes">Evacuacion</property>
                                       </widget>
@@ -7348,7 +7363,7 @@ para Imprimir&lt;/b&gt;</property>
                                       </packing>
                                     </child>
                                     <child>
-                                      <widget class="GtkEntry" id="entry7">
+                                      <widget class="GtkEntry" id="entry_evacuacion">
                                         <property name="visible">True</property>
                                         <property name="can_focus">True</property>
                                         <property name="invisible_char">&#x25CF;</property>
@@ -7367,7 +7382,7 @@ para Imprimir&lt;/b&gt;</property>
                                     <property name="visible">True</property>
                                     <child>
                                       <widget class="GtkLabel" id="label27">
-                                        <property name="width_request">140</property>
+                                        <property name="width_request">160</property>
                                         <property name="visible">True</property>
                                         <property name="label" translatable="yes">Hora</property>
                                       </widget>
@@ -7376,7 +7391,7 @@ para Imprimir&lt;/b&gt;</property>
                                       </packing>
                                     </child>
                                     <child>
-                                      <widget class="GtkComboBox" id="combobox1">
+                                      <widget class="GtkComboBox" id="combobox_hora_somato">
                                         <property name="width_request">30</property>
                                         <property name="visible">True</property>
                                       </widget>
@@ -7385,7 +7400,7 @@ para Imprimir&lt;/b&gt;</property>
                                       </packing>
                                     </child>
                                     <child>
-                                      <widget class="GtkComboBox" id="combobox2">
+                                      <widget class="GtkComboBox" id="combobox_minutos_somato">
                                         <property name="width_request">0</property>
                                         <property name="visible">True</property>
                                       </widget>
@@ -7408,6 +7423,7 @@ para Imprimir&lt;/b&gt;</property>
                                 </child>
                                 <child>
                                   <widget class="GtkFixed" id="fixed13">
+                                    <property name="height_request">20</property>
                                     <property name="visible">True</property>
                                   </widget>
                                   <packing>
@@ -7436,7 +7452,7 @@ para Imprimir&lt;/b&gt;</property>
                                 <property name="hscrollbar_policy">automatic</property>
                                 <property name="vscrollbar_policy">automatic</property>
                                 <child>
-                                  <widget class="GtkTreeView" id="treeview1">
+                                  <widget class="GtkTreeView" id="treeview_lista_somatometria">
                                     <property name="height_request">230</property>
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
@@ -7465,7 +7481,7 @@ para Imprimir&lt;/b&gt;</property>
                               </packing>
                             </child>
                             <child>
-                              <widget class="GtkButton" id="button_guardar1">
+                              <widget class="GtkButton" id="button_guardar_somato">
                                 <property name="width_request">90</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>

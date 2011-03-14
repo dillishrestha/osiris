@@ -203,10 +203,26 @@ namespace osiris
 						words =  textnote.Split(delimiterChars); // Separa las Cadenas
 						// Recorre la variable
 						foreach (string s in words){
-							if (s.Length > 0){
+							if (s.Length > 0 && s.Length <= 120){
 								cr.MoveTo(05*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);	layout.SetText(s.ToString());	Pango.CairoHelper.ShowLayout (cr, layout);
 								comienzo_linea += separacion_linea;
 								salto_de_pagina(cr,layout);
+							}else{
+								int inicio_string_linea = 0;
+								int total_string_x_lineas = 130;
+								for(int i=1; i <= s.Length/total_string_x_lineas; i++){
+									cr.MoveTo(05*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);	layout.SetText(s.ToString().Substring(inicio_string_linea, total_string_x_lineas));	Pango.CairoHelper.ShowLayout (cr, layout);
+									comienzo_linea += separacion_linea;
+									salto_de_pagina(cr,layout);
+									inicio_string_linea += total_string_x_lineas;
+								}
+								if(s.Length > (s.Length/total_string_x_lineas)*total_string_x_lineas){
+									Console.WriteLine(s.Length.ToString());
+									Console.WriteLine(inicio_string_linea);
+									cr.MoveTo(05*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);	layout.SetText(s.ToString().Substring(inicio_string_linea, (s.Length-inicio_string_linea)));	Pango.CairoHelper.ShowLayout (cr, layout);
+									comienzo_linea += separacion_linea;
+									salto_de_pagina(cr,layout);
+								}
 							}
 						}
 						comienzo_linea += separacion_linea;
@@ -236,10 +252,26 @@ namespace osiris
 							words =  textnote.Split(delimiterChars); // Separa las Cadenas
 							// Recorre la variable
 							foreach (string s in words){
-								if (s.Length > 0){
+								if (s.Length > 0 && s.Length <= 120){
 									cr.MoveTo(05*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);	layout.SetText(s.ToString());	Pango.CairoHelper.ShowLayout (cr, layout);
 									comienzo_linea += separacion_linea;
 									salto_de_pagina(cr,layout);
+								}else{
+									int inicio_string_linea = 0;
+									int total_string_x_lineas = 130;
+									for(int i=1; i <= s.Length/total_string_x_lineas; i++){
+										cr.MoveTo(05*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);	layout.SetText(s.ToString().Substring(inicio_string_linea, total_string_x_lineas));	Pango.CairoHelper.ShowLayout (cr, layout);
+										comienzo_linea += separacion_linea;
+										salto_de_pagina(cr,layout);
+										inicio_string_linea += total_string_x_lineas;
+									}
+									if(s.Length > (s.Length/total_string_x_lineas)*total_string_x_lineas){
+										Console.WriteLine(s.Length.ToString());
+										Console.WriteLine(inicio_string_linea);
+										cr.MoveTo(05*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);	layout.SetText(s.ToString().Substring(inicio_string_linea, (s.Length-inicio_string_linea)));	Pango.CairoHelper.ShowLayout (cr, layout);
+										comienzo_linea += separacion_linea;
+										salto_de_pagina(cr,layout);
+									}
 								}
 							}
 							comienzo_linea += separacion_linea;

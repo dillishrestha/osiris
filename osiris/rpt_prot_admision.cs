@@ -123,7 +123,7 @@ namespace osiris
 									"osiris_erp_cobros_enca.ocupacion_responsable,osiris_erp_cobros_enca.parentezco,osiris_erp_cobros_enca.empresa_labora_responsable, "+
 									"osiris_erp_cobros_enca.direccion_emp_responsable,osiris_erp_cobros_enca.telefono_emp_responsable,osiris_erp_cobros_enca.paciente_asegurado, "+
 									"osiris_erp_cobros_enca.numero_poliza,osiris_his_medicos.nombre_medico,osiris_his_medicos.id_especialidad,osiris_his_tipo_especialidad.descripcion_especialidad, osiris_his_medicos.cedula_medico, "+
-									"osiris_erp_movcargos.folio_de_servicio,to_char(fechahora_admision_registro,'dd-MM-yyyy') AS fecha_reg_adm, "+
+									"osiris_erp_movcargos.folio_de_servicio,to_char(osiris_erp_movcargos.fechahora_admision_registro,'dd-MM-yyyy') AS fecha_reg_adm, "+
 									"osiris_erp_cobros_enca.nombre_medico_tratante,"+
 									"to_char(fechahora_admision_registro,'HH24:mi:ss') AS hora_reg_adm,osiris_his_tipo_admisiones.descripcion_admisiones, "+
 									"osiris_his_tipo_cirugias.descripcion_cirugia,osiris_his_tipo_diagnosticos.id_diagnostico, "+

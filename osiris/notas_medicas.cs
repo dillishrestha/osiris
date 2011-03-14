@@ -61,6 +61,19 @@ namespace osiris
 		
 		TextBuffer buffer = new TextBuffer (null);
 		TextIter insertIter;
+		
+		// Somatometria
+		[Widget] Gtk.Entry entry_presion_arterial = null;
+		[Widget] Gtk.SpinButton spinbutton_pulso = null;
+		[Widget] Gtk.SpinButton spinbutton_frecrespiratoria = null;
+		[Widget] Gtk.SpinButton spinbutton_temperatura = null;
+		[Widget] Gtk.SpinButton spinbutton_sat_oxigeno = null;
+		[Widget] Gtk.Entry entry_diuresis = null;
+		[Widget] Gtk.Entry entry_evacuacion = null;
+		[Widget] Gtk.ComboBox combobox_hora_somato = null;
+		[Widget] Gtk.ComboBox combobox_minutos_somato = null;
+		[Widget] Gtk.TreeView treeview_lista_somatometria = null;
+		[Widget] Gtk.Button button_guardar_somato = null;
 			
 		string connectionString;
 		string nombrebd;
@@ -95,6 +108,7 @@ namespace osiris
 		string sql_filtronotasblanco;
 		
 		private TreeStore treeViewEngineListaNotas;
+		private TreeStore treeViewEngineSomatometria;
 		
 		TreeViewColumn col_00;		CellRendererToggle cellrt00;
 		TreeViewColumn col_01;		CellRendererText cellrt01;
@@ -164,8 +178,9 @@ namespace osiris
 				combobox_minutos_nota.Sensitive = false;
 			}
 			crea_treeview_notas();
+			crea_treeview_somatometria();
 			llena_horas_notas();
-			llenando_informacion();		
+			llenando_informacion();
 		}
 		
 		void on_button_imprimir_notas_clicked (object sender, EventArgs args)
@@ -268,7 +283,11 @@ namespace osiris
 	   			
 	       	}
        		conexion.Close ();
-			//buffer.InsertWithTagsByName (ref insertIter, "\nThis line has center justification.\n", "center");			
+			//buffer.InsertWithTagsByName (ref insertIter, "\nThis line has center justification.\n", "center");
+			
+			// Llenado de Somatometria
+			
+			
 		}
 		
 		void crea_treeview_notas()
@@ -328,6 +347,39 @@ namespace osiris
 			treeview_listanotas.AppendColumn(col_02);
 			treeview_listanotas.AppendColumn(col_03);
 			treeview_listanotas.AppendColumn(col_04);
+		}
+		
+		void crea_treeview_somatometria()
+		{
+			treeViewEngineSomatometria = new TreeStore(typeof(string),
+													typeof(string),
+			                                        typeof(string),
+													typeof(string),
+													typeof(string),
+													typeof(string),
+													typeof(string),
+													typeof(string));
+				
+			treeview_lista_somatometria.Model = treeViewEngineSomatometria;
+			treeview_lista_somatometria.RulesHint = true;
+			
+			col_01 = new TreeViewColumn();
+			cellrt01 = new CellRendererText();
+			col_01.Title = "Fecha"; // titulo de la cabecera de la columna, si está visible
+			col_01.PackStart(cellrt00, true);
+			col_01.AddAttribute (cellrt00, "text", 0);
+			//col_01.SortColumnId = (int) Column_notas.col_01;
+			
+			col_02 = new TreeViewColumn();
+			cellrt02 = new CellRendererText();
+			col_02.Title = "Hora"; // titulo de la cabecera de la columna, si está visible
+			col_02.PackStart(cellrt02, true);
+			col_02.AddAttribute (cellrt02, "text", 2);
+			//col_03.SortColumnId = (int) Column_notas.col_01;
+			
+			treeview_lista_somatometria.AppendColumn(col_01);
+			treeview_lista_somatometria.AppendColumn(col_02);
+			
 		}
 		
 		// Cuando seleccion el treeview de cargos extras para cargar los productos  
@@ -467,4 +519,6 @@ namespace osiris
 			win.Toplevel.Destroy();
 		}
 	}
+	
+	
 }

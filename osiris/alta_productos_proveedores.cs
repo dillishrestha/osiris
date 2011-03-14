@@ -993,7 +993,7 @@ namespace osiris
 								comando2.CommandText = "SELECT id_proveedor,codigo_producto_proveedor,codigo_de_barra FROM osiris_catalogo_productos_proveedores "+
 												"WHERE codigo_producto_proveedor = '"+(string) this.lista_precios_proveedor.Model.GetValue (iterSelected,4).ToString().Trim()+"' "+
 												"AND id_proveedor = '"+this.entry_id_proveedor.Text+"' ;";
-								Console.WriteLine("GUARDA     "+comando2.CommandText.ToString());
+								//Console.WriteLine("GUARDA     "+comando2.CommandText.ToString());
 								NpgsqlDataReader lector2 = comando2.ExecuteReader ();
 								
 								if(lector2.Read()){			
@@ -1010,7 +1010,7 @@ namespace osiris
 												                "id_quien_asigno_osiris = ' "+LoginEmpleado+" ' "+
 											                    "WHERE id_secuencia = '"+(string) lista_precios_proveedor.Model.GetValue (iterSelected,9)+"' "+
 							             					    "AND id_proveedor = '"+this.entry_id_proveedor.Text+"' ;";
-										Console.WriteLine(comando3.CommandText.ToString());
+										//Console.WriteLine(comando3.CommandText.ToString());
 										comando3.ExecuteNonQuery();
 										comando3.Dispose();
 										conexion3.Close();
@@ -1033,7 +1033,7 @@ namespace osiris
 								comando2.CommandText = "SELECT id_proveedor,codigo_producto_proveedor,codigo_de_barra FROM osiris_catalogo_productos_proveedores "+
 								                       "WHERE codigo_producto_proveedor = '"+(string) this.lista_precios_proveedor.Model.GetValue (iterSelected,4).ToString().Trim()+"' "+
 										               "AND id_proveedor = '"+this.entry_id_proveedor.Text+"' ;";
-								Console.WriteLine(comando2.CommandText.ToString());
+								//Console.WriteLine(comando2.CommandText.ToString());
 								NpgsqlDataReader lector2 = comando2.ExecuteReader ();
 								
 								if(lector2.Read()){			
@@ -1117,7 +1117,7 @@ namespace osiris
 											(string)this.lista_productos_agregados.Model.GetValue (iterSelected,3)+"','"+
 											(string)this.lista_productos_agregados.Model.GetValue (iterSelected,7)+"','"+
 											(string)this.lista_productos_agregados.Model.GetValue (iterSelected,2)+"');";
-											Console.WriteLine(comando.CommandText);
+											//Console.WriteLine(comando.CommandText);
 							comando.ExecuteNonQuery();
 							comando.Dispose();	
 						

@@ -240,6 +240,11 @@ namespace osiris
 						cr.Stroke();
 					}
 					while(lector.Read()){
+						if(titulo_rpt == "NOTAS_DE_ENFERMERIA"){
+							nombreempleadoreponsable = (string) lector["nombreempleado"].ToString().Trim();
+						}else{
+							nombreempleadoreponsable = "";
+						}
 						if((string) lector[name_field].ToString() != ""){
 							layout.FontDescription.Weight = Weight.Bold;		// Letra negrita
 							cr.MoveTo(05*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);	layout.SetText("Fecha de Nota: "+(string) lector["fechaanotacion"].ToString().Trim()+"      "+"Hora de Nota : "+(string) lector["horaanotacion"].ToString().Trim()+"     Nº de NOTA :"+(string) lector["id_secuencia"].ToString().Trim());	Pango.CairoHelper.ShowLayout (cr, layout);

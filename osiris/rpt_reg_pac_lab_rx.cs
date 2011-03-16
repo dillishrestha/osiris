@@ -342,9 +342,6 @@ namespace osiris
 			fontSize = 8.0;			layout = null;			layout = context.CreatePangoLayout ();
 			desc.Size = (int)(fontSize * pangoScale);		layout.FontDescription = desc;
 			
-			
-			
-			
 			if(this.checkbutton_todas_fechas.Active == false){
 				rango1 = entry_dia1.Text+"/"+entry_mes1.Text+"/"+entry_ano1.Text;
 				rango2 = entry_dia2.Text+"/"+entry_mes2.Text+"/"+entry_ano2.Text;
@@ -352,7 +349,7 @@ namespace osiris
 							"AND to_char(osiris_erp_cobros_deta.fechahora_creacion,'yyyy-MM-dd') <= '"+entry_ano2.Text+"-"+entry_mes2.Text+"-"+entry_dia2.Text+"' ";
 			}
 			
-			/*
+			
 			NpgsqlConnection conexion; 
 			conexion = new NpgsqlConnection (connectionString+nombrebd);
             // Verifica que la base de datos este conectada
@@ -400,174 +397,17 @@ namespace osiris
 				Console.WriteLine(comando.CommandText.ToString());			
 				NpgsqlDataReader lector = comando.ExecuteReader ();
 				
-				string tomovalor1 = "";
-				int pidpaciente = 0;
-				int contadorprocedimientos = 0;
-				decimal total = 0;
-				fila = -75;
-				string compara = "";
-				int contador_examenes = 1;
-				int contador_pacientes = 1;
-				
-				imprime_encabezado(ContextoImp,trabajoImpresion);
-				
 				if (lector.Read()){
-					ContextoImp.MoveTo(70,fila);					ContextoImp.Show(contador_pacientes.ToString().Trim());					
 					
-					compara = (string)lector ["folioservicio"];
-					
-					// imprime encabezado y detalle del examen
-					
-					tomovalor1 = (string)lector ["folioservicio"];
-					ContextoImp.MoveTo(140, fila);					ContextoImp.Show(tomovalor1.Trim());
-					
-					
-					tomovalor1 = (string)lector ["pidpaciente"];
-					ContextoImp.MoveTo(178, fila);					ContextoImp.Show(tomovalor1.Trim());
-					
-										
-					ContextoImp.MoveTo(500,fila);			ContextoImp.Show((string)lector ["edad"]);
-					ContextoImp.MoveTo(465,fila);			ContextoImp.Show((string)lector ["sexo_paciente"]);
-					ContextoImp.MoveTo(530,fila);			ContextoImp.Show((string)lector ["fecha_nac"]);
-					
-					tomovalor1 = (string) lector["nombre_completo"];
-					if(tomovalor1.Length > 37){
-						tomovalor1 = tomovalor1.Substring(0,37); 
-					}
-					ContextoImp.MoveTo(217,fila);			ContextoImp.Show(tomovalor1);
-					tomovalor1 = (string) lector["nombre_medico_tratante"];
-					if(tomovalor1.Length > 18){
-						tomovalor1 = tomovalor1.Substring(0,18); 
-					}
-					ContextoImp.MoveTo(593,fila);					ContextoImp.Show(tomovalor1);
-					
-					// segunda linea
-					 fila-=10;
-					 contador += 1;
-					contadorprocedimientos += 1;
-					salto_pagina(ContextoImp,trabajoImpresion);					
-					
-					ContextoImp.MoveTo(120,fila);					ContextoImp.Show(contador_examenes.ToString().Trim());
-					
-					tomovalor1 = (string)lector ["foliointernodep"];
-					ContextoImp.MoveTo(140,fila);					ContextoImp.Show(tomovalor1.Trim());
-					
-					ContextoImp.MoveTo(178,fila);			ContextoImp.Show((string)lector ["fecha_crea"]);
-					ContextoImp.MoveTo(243,fila);			ContextoImp.Show((string)lector ["fechahorasolicitud"]);
-					tomovalor1 = (string) lector["descripcion_producto"];
-					if(tomovalor1.Length > 40)
-					{
-						tomovalor1 = tomovalor1.Substring(0,40); 
-					}
-					ContextoImp.MoveTo(355, fila);			ContextoImp.Show(tomovalor1);
-					
-					tomovalor1 = (string) lector["descripcion_admisiones"];
-					if(tomovalor1.Length > 12)
-					{
-						tomovalor1 = tomovalor1.Substring(0,12); 
-					}
-					ContextoImp.MoveTo(506,fila);			ContextoImp.Show(tomovalor1);
+					while(lector.Read()){
+						
+					}					
 				}
-				 		
-				while(lector.Read()){
-					
-					if ((string) lector ["folioservicio"] == compara){
-						
-						// imprime solo el detalle
-						fila-=10;
-   					    tomovalor1 = (string) lector["descripcion_producto"];
-   					    if(tomovalor1.Length > 40){
-							tomovalor1 = tomovalor1.Substring(0,40); 
-						}
-						ContextoImp.MoveTo(355, fila);			ContextoImp.Show(tomovalor1);
-						
-						tomovalor1 = (string) lector["descripcion_admisiones"];
-						
-						if(tomovalor1.Length > 12)
-						{
-							tomovalor1 = tomovalor1.Substring(0,12); 
-						}
-						ContextoImp.MoveTo(506,fila);			ContextoImp.Show(tomovalor1);
-						contador_examenes += 1;						
-						contador += 1;
-						contadorprocedimientos += 1;
-						salto_pagina(ContextoImp,trabajoImpresion);
-						ContextoImp.MoveTo(120,fila);					ContextoImp.Show(contador_examenes.ToString().Trim());
-						
-						tomovalor1 = (string)lector ["foliointernodep"];
-						ContextoImp.MoveTo(140,fila);					ContextoImp.Show(tomovalor1.Trim());
-						
-						ContextoImp.MoveTo(178,fila);			ContextoImp.Show((string)lector ["fecha_crea"]);
-						ContextoImp.MoveTo(243,fila);			ContextoImp.Show((string)lector ["fechahorasolicitud"]);
-						
-					}else{
-						contador_examenes = 1;
-						contador_pacientes += 1;
-						fila -= 10;
-						ContextoImp.MoveTo(70,fila);					ContextoImp.Show(contador_pacientes.ToString().Trim());
-						compara = (string)lector ["folioservicio"];						
-						ContextoImp.MoveTo(140, fila);					ContextoImp.Show(compara.Trim());
-						tomovalor1 = (string)lector ["pidpaciente"];
-						ContextoImp.MoveTo(178, fila);					ContextoImp.Show(tomovalor1.Trim());
-												
-						ContextoImp.MoveTo(500,fila);			ContextoImp.Show((string)lector ["edad"]);
-						ContextoImp.MoveTo(465,fila);			ContextoImp.Show((string)lector ["sexo_paciente"]);
-						ContextoImp.MoveTo(530,fila);			ContextoImp.Show((string)lector ["fecha_nac"]);
-						tomovalor1 = (string) lector["nombre_completo"];
-						
-						if(tomovalor1.Length > 37){
-							tomovalor1 = tomovalor1.Substring(0,37); 
-						}
-						ContextoImp.MoveTo(217,fila);			ContextoImp.Show(tomovalor1);
-						
-						tomovalor1 = (string) lector["nombre_medico_tratante"];
-						if(tomovalor1.Length > 18){
-						tomovalor1 = tomovalor1.Substring(0,18); 
-						}
-						ContextoImp.MoveTo(593,fila);					ContextoImp.Show(tomovalor1);
-						// segunda linea
-						contador+=1;
-						contadorprocedimientos += 1;
-						salto_pagina(ContextoImp,trabajoImpresion);
-						fila-=10;
-						
-						ContextoImp.MoveTo(120,fila);					ContextoImp.Show(contador_examenes.ToString().Trim());
-						tomovalor1 = (string)lector ["foliointernodep"];
-						ContextoImp.MoveTo(140,fila);					ContextoImp.Show(tomovalor1.Trim());
-						
-						ContextoImp.MoveTo(178,fila);			ContextoImp.Show((string)lector ["fecha_crea"]);
-						ContextoImp.MoveTo(243,fila);			ContextoImp.Show((string)lector ["fechahorasolicitud"]);	
-						
-						tomovalor1 = (string) lector["descripcion_producto"];
-						if(tomovalor1.Length > 40){
-							tomovalor1 = tomovalor1.Substring(0,40); 
-						}
-						ContextoImp.MoveTo(355, fila);			ContextoImp.Show(tomovalor1);
-						
-						tomovalor1 = (string) lector["descripcion_admisiones"];
-						if(tomovalor1.Length > 12)
-						{
-							tomovalor1 = tomovalor1.Substring(0,12); 
-						}
-						ContextoImp.MoveTo(506,fila);			ContextoImp.Show(tomovalor1);
-						contador+=1;
-						contadorprocedimientos += 1;
-						salto_pagina(ContextoImp,trabajoImpresion);
-						
-						// imprime encabezado y detalle del examen
-							
-					}
-				}
-				ContextoImp.MoveTo(710,fila);				ContextoImp.Show("TOTAL DE ESTUDIOS:  "+contadorprocedimientos.ToString());
-				ContextoImp.MoveTo(710,fila);				ContextoImp.Show("TOTAL DE ESTUDIOS:  "+contadorprocedimientos.ToString());
-					
-				salto_pagina(ContextoImp,trabajoImpresion);				
 			}catch(NpgsqlException ex){
 				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
 								MessageType.Error,ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
 				msgBoxError.Run ();		msgBoxError.Destroy();
 			}
-			*/
 		}
 		
 		private void OnEndPrint (object obj, Gtk.EndPrintArgs args)
@@ -672,3 +512,158 @@ namespace osiris
 		}
 	}
 }
+
+
+
+/*
+					ContextoImp.MoveTo(70,fila);					ContextoImp.Show(contador_pacientes.ToString().Trim());					
+					
+					compara = (string)lector ["folioservicio"];
+					
+					// imprime encabezado y detalle del examen
+					
+					tomovalor1 = (string)lector ["folioservicio"];
+					ContextoImp.MoveTo(140, fila);					ContextoImp.Show(tomovalor1.Trim());
+					
+					
+					tomovalor1 = (string)lector ["pidpaciente"];
+					ContextoImp.MoveTo(178, fila);					ContextoImp.Show(tomovalor1.Trim());
+					
+										
+					ContextoImp.MoveTo(500,fila);			ContextoImp.Show((string)lector ["edad"]);
+					ContextoImp.MoveTo(465,fila);			ContextoImp.Show((string)lector ["sexo_paciente"]);
+					ContextoImp.MoveTo(530,fila);			ContextoImp.Show((string)lector ["fecha_nac"]);
+					
+					tomovalor1 = (string) lector["nombre_completo"];
+					if(tomovalor1.Length > 37){
+						tomovalor1 = tomovalor1.Substring(0,37); 
+					}
+					ContextoImp.MoveTo(217,fila);			ContextoImp.Show(tomovalor1);
+					tomovalor1 = (string) lector["nombre_medico_tratante"];
+					if(tomovalor1.Length > 18){
+						tomovalor1 = tomovalor1.Substring(0,18); 
+					}
+					ContextoImp.MoveTo(593,fila);					ContextoImp.Show(tomovalor1);
+					
+					// segunda linea
+					 fila-=10;
+					 contador += 1;
+					contadorprocedimientos += 1;
+					salto_pagina(ContextoImp,trabajoImpresion);					
+					
+					ContextoImp.MoveTo(120,fila);					ContextoImp.Show(contador_examenes.ToString().Trim());
+					
+					tomovalor1 = (string)lector ["foliointernodep"];
+					ContextoImp.MoveTo(140,fila);					ContextoImp.Show(tomovalor1.Trim());
+					
+					ContextoImp.MoveTo(178,fila);			ContextoImp.Show((string)lector ["fecha_crea"]);
+					ContextoImp.MoveTo(243,fila);			ContextoImp.Show((string)lector ["fechahorasolicitud"]);
+					tomovalor1 = (string) lector["descripcion_producto"];
+					if(tomovalor1.Length > 40)
+					{
+						tomovalor1 = tomovalor1.Substring(0,40); 
+					}
+					ContextoImp.MoveTo(355, fila);			ContextoImp.Show(tomovalor1);
+					
+					tomovalor1 = (string) lector["descripcion_admisiones"];
+					if(tomovalor1.Length > 12)
+					{
+						tomovalor1 = tomovalor1.Substring(0,12); 
+					}
+					ContextoImp.MoveTo(506,fila);			ContextoImp.Show(tomovalor1);
+				
+				 		
+					while(lector.Read()){
+						
+						if ((string) lector ["folioservicio"] == compara){
+							
+							// imprime solo el detalle
+							fila-=10;
+	   					    tomovalor1 = (string) lector["descripcion_producto"];
+	   					    if(tomovalor1.Length > 40){
+								tomovalor1 = tomovalor1.Substring(0,40); 
+							}
+							ContextoImp.MoveTo(355, fila);			ContextoImp.Show(tomovalor1);
+							
+							tomovalor1 = (string) lector["descripcion_admisiones"];
+							
+							if(tomovalor1.Length > 12)
+							{
+								tomovalor1 = tomovalor1.Substring(0,12); 
+							}
+							ContextoImp.MoveTo(506,fila);			ContextoImp.Show(tomovalor1);
+							contador_examenes += 1;						
+							contador += 1;
+							contadorprocedimientos += 1;
+							salto_pagina(ContextoImp,trabajoImpresion);
+							ContextoImp.MoveTo(120,fila);					ContextoImp.Show(contador_examenes.ToString().Trim());
+							
+							tomovalor1 = (string)lector ["foliointernodep"];
+							ContextoImp.MoveTo(140,fila);					ContextoImp.Show(tomovalor1.Trim());
+							
+							ContextoImp.MoveTo(178,fila);			ContextoImp.Show((string)lector ["fecha_crea"]);
+							ContextoImp.MoveTo(243,fila);			ContextoImp.Show((string)lector ["fechahorasolicitud"]);
+							
+						}else{
+							contador_examenes = 1;
+							contador_pacientes += 1;
+							fila -= 10;
+							ContextoImp.MoveTo(70,fila);					ContextoImp.Show(contador_pacientes.ToString().Trim());
+							compara = (string)lector ["folioservicio"];						
+							ContextoImp.MoveTo(140, fila);					ContextoImp.Show(compara.Trim());
+							tomovalor1 = (string)lector ["pidpaciente"];
+							ContextoImp.MoveTo(178, fila);					ContextoImp.Show(tomovalor1.Trim());
+													
+							ContextoImp.MoveTo(500,fila);			ContextoImp.Show((string)lector ["edad"]);
+							ContextoImp.MoveTo(465,fila);			ContextoImp.Show((string)lector ["sexo_paciente"]);
+							ContextoImp.MoveTo(530,fila);			ContextoImp.Show((string)lector ["fecha_nac"]);
+							tomovalor1 = (string) lector["nombre_completo"];
+							
+							if(tomovalor1.Length > 37){
+								tomovalor1 = tomovalor1.Substring(0,37); 
+							}
+							ContextoImp.MoveTo(217,fila);			ContextoImp.Show(tomovalor1);
+							
+							tomovalor1 = (string) lector["nombre_medico_tratante"];
+							if(tomovalor1.Length > 18){
+							tomovalor1 = tomovalor1.Substring(0,18); 
+							}
+							ContextoImp.MoveTo(593,fila);					ContextoImp.Show(tomovalor1);
+							// segunda linea
+							contador+=1;
+							contadorprocedimientos += 1;
+							salto_pagina(ContextoImp,trabajoImpresion);
+							fila-=10;
+							
+							ContextoImp.MoveTo(120,fila);					ContextoImp.Show(contador_examenes.ToString().Trim());
+							tomovalor1 = (string)lector ["foliointernodep"];
+							ContextoImp.MoveTo(140,fila);					ContextoImp.Show(tomovalor1.Trim());
+							
+							ContextoImp.MoveTo(178,fila);			ContextoImp.Show((string)lector ["fecha_crea"]);
+							ContextoImp.MoveTo(243,fila);			ContextoImp.Show((string)lector ["fechahorasolicitud"]);	
+							
+							tomovalor1 = (string) lector["descripcion_producto"];
+							if(tomovalor1.Length > 40){
+								tomovalor1 = tomovalor1.Substring(0,40); 
+							}
+							ContextoImp.MoveTo(355, fila);			ContextoImp.Show(tomovalor1);
+							
+							tomovalor1 = (string) lector["descripcion_admisiones"];
+							if(tomovalor1.Length > 12)
+							{
+								tomovalor1 = tomovalor1.Substring(0,12); 
+							}
+							ContextoImp.MoveTo(506,fila);			ContextoImp.Show(tomovalor1);
+							contador+=1;
+							contadorprocedimientos += 1;
+							salto_pagina(ContextoImp,trabajoImpresion);
+							
+							// imprime encabezado y detalle del examen
+								
+						}
+					}
+					ContextoImp.MoveTo(710,fila);				ContextoImp.Show("TOTAL DE ESTUDIOS:  "+contadorprocedimientos.ToString());
+					ContextoImp.MoveTo(710,fila);				ContextoImp.Show("TOTAL DE ESTUDIOS:  "+contadorprocedimientos.ToString());
+						
+					salto_pagina(ContextoImp,trabajoImpresion);
+					*/

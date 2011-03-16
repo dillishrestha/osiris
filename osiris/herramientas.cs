@@ -97,6 +97,7 @@ namespace osiris
 		
 		void on_button_cmb_tab_clicked(object sender, EventArgs args)
 		{
+			/*
 			// Cambios Tabla
 			string codigodelproducto = "";
 			float nvopreciopublico = 0;
@@ -153,7 +154,7 @@ namespace osiris
 				  MessageType.Error,ButtonsType.Close,"NO esta autorizado para accesar");
 				  msgBoxError.Run ();			msgBoxError.Destroy(); 
 			}
-			
+			*/
 		}
 				
 		void on_button_corrige_san_nicolas_clicked(object sender, EventArgs args)

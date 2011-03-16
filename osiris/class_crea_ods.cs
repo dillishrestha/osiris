@@ -2,12 +2,12 @@
 using System;
 using System.Xml;
 using System.IO;
-using NUnit.Framework;
-using AODL.Document.SpreadsheetDocuments;
-using AODL.Document.Content.Tables;
-using AODL.Document.TextDocuments;
-using AODL.Document.Styles;
-using AODL.Document.Content.Text;
+//using NUnit.Framework;
+//using AODL.Document.SpreadsheetDocuments;
+//using AODL.Document.Content.Tables;
+//using AODL.Document.TextDocuments;
+//using AODL.Document.Styles;
+//using AODL.Document.Content.Text;
 
 namespace osiris
 {
@@ -15,10 +15,10 @@ namespace osiris
 	{
 		public class_crea_ods ()
 		{
-			SpreadsheetDocument doc = new SpreadsheetDocument ();
-			doc.New ();
-			Table table = new Table (doc,"tab1","tab1");
-			
+			//SpreadsheetDocument doc = new SpreadsheetDocument ();
+			//doc.New ();
+			//Table table = new Table (doc,"tab1","tab1");
+			/*
 			for(int i=1; i<=1; i++)
 			{
 				for(int j=1; j<=6;j++)
@@ -34,6 +34,7 @@ namespace osiris
 					table.InsertCellAt (i, j, cell);
 				}
 			}
+			*/
 			/*
 			Assert.AreEqual(7, table.Rows[1].Cells.Count);
 			Assert.AreEqual(6, table.Rows[2].Cells.Count);
@@ -51,6 +52,7 @@ namespace osiris
 		}
 	}
 	
+	/*
 	public class AARunMeFirstAndOnce
 	{
 		private static string generatedFolder	= @"\generatedfiles\"; //System.Configuration.ConfigurationSettings.AppSettings["writefiles"];
@@ -66,4 +68,5 @@ namespace osiris
 			Directory.CreateDirectory(outPutFolder);
 		}
 	}
+	*/
 }

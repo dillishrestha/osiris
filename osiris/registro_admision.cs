@@ -199,6 +199,11 @@ namespace osiris
 		
 		[Widget] Gtk.ComboBox combobox_parent_responsable = null;
 		
+		
+		// Cambio para VENEZUELA
+		[Widget] Gtk.Label label37 = null;
+		[Widget] Gtk.Label label43 = null;		
+		
 		// Declaracion de variables publicas
 		int PidPaciente = 0;		 // Toma la actualizacion del pid del paciente
 		string nomnaciente;		 // Toma el valor del nombre completo del paciente
@@ -406,6 +411,10 @@ namespace osiris
 				// Sexo Paciente
 				radiobutton_masculino.Clicked += new EventHandler(on_cambioHM_clicked);
 				radiobutton_femenino.Clicked += new EventHandler(on_cambioHM_clicked);
+						
+				// Cambio para VENEZUELA
+				//label37.Text = "RIF";			// RFC
+				//label43.Text = "C.I.";		// CURP
 	        		
 			//}
 		}
@@ -1347,7 +1356,7 @@ namespace osiris
 			entry_pid_admision.Sensitive = false;
 			entry_paciente_admision.Sensitive = false;
 			
-			button_salir.Clicked += new EventHandler(on_cierraventanas_clicked); // esta sub-clase esta en hscmty.cs        
+			button_salir.Clicked += new EventHandler(on_cierraventanas_clicked); // esta sub-clase esta en hscmty.cs  			
 		}
 	    // Crea la lista de empresas que tienen convenio con el hospital
 	    void on_button_lista_empresas_clicked(object sender, EventArgs args)
@@ -2244,6 +2253,9 @@ namespace osiris
 					entry_pid_paciente.Text = PidPaciente.ToString();
 					entry_observacion_ingreso.Sensitive = true;
 					
+					// Cambio para VENEZUELA
+					//label37.Text = "RIF";			// RFC
+					//label43.Text = "C.I.";		// CURP					
 	 			}
 			}
 			if(opcion_ == "seleccion_no_admision"){
@@ -2252,6 +2264,10 @@ namespace osiris
 		        		        
 				// Muestra ventana de Glade
 				registro.Show();
+				
+				// Cambio para VENEZUELA
+				//label37.Text = "RIF";			// RFC
+				//label43.Text = "C.I.";		// CURP
 					
 				llena_Ventana_de_datos(pidpaciente_.ToString().Trim());
 				llena_inf_de_paciente(pidpaciente_.ToString().Trim());

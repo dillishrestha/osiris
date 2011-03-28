@@ -2,8 +2,6 @@
 <!DOCTYPE glade-interface SYSTEM "http://glade.gnome.org/glade-2.0.dtd">
 
 <glade-interface>
-<requires lib="gnome"/>
-
 <widget class="GtkWindow" id="menu_recursos_humanos">
   <property name="visible">True</property>
   <property name="title" translatable="yes">Menu de Recursos Humanos</property>

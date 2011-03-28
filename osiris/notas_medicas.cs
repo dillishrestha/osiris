@@ -89,6 +89,8 @@ namespace osiris
 		
 		string hora_nota = "";
 		string minutos_nota = "";
+		string hora_somatometria = "";
+		string minutos_somatometria = "";
 		
 		string sql_general = "SELECT notas_de_enfermeria,notas_de_evolucion,indicaciones_medicas,nombre1_paciente,nombre2_paciente,apellido_paterno_paciente,apellido_materno_paciente,"+
 							"to_char(to_number(to_char(age('"+DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss")+"',osiris_his_paciente.fecha_nacimiento_paciente),'yyyy') ,'9999'),'9999') AS edad," +
@@ -115,6 +117,7 @@ namespace osiris
 		TreeViewColumn col_02;		CellRendererText cellrt02;
 		TreeViewColumn col_03;		CellRendererText cellrt03;
 		TreeViewColumn col_04;		CellRendererText cellrt04;
+		TreeViewColumn col_05;		CellRendererText cellrt05;
 			
 		class_conexion conexion_a_DB = new class_conexion();
 		class_public classpublic = new class_public();
@@ -150,6 +153,7 @@ namespace osiris
 			notas_medicas_enfermeria.Title = title_window;
 			button_salir.Clicked += new EventHandler(on_cierraventanas_clicked);
 			button_guardar.Clicked += new EventHandler(on_button_guardar_clicked);
+			
 			button_imprimir_notas.Clicked += new EventHandler(on_button_imprimir_notas_clicked);
 			checkbutton_selectall.Clicked += new EventHandler(on_checkbutton_selectall_clicked);
 			entry_fechanotas.Text = (string) DateTime.Now.ToString("yyyy-MM-dd");
@@ -159,6 +163,11 @@ namespace osiris
 			entry_id_doctor.Text = (string) iddoctor_;
 			entry_doctor.Text = (string) nombredoctor_;
 			entry_edad_paciente.Text = (string) edadpaciente_;
+			
+			// action somatometria
+			button_guardar_somato.Clicked += new EventHandler(on_button_guardar_somato_clicked);
+			
+			// Cambiando el color del fondo para distinguir la ventana
 			switch (name_field){	
 				case "notas_de_evolucion":
 					textview1.ModifyBase(StateType.Normal, new Gdk.Color(255,243,169)); // Color Amarillo
@@ -288,6 +297,7 @@ namespace osiris
 			// Llenado de Somatometria
 			
 			
+			
 		}
 		
 		void crea_treeview_notas()
@@ -365,21 +375,44 @@ namespace osiris
 			
 			col_01 = new TreeViewColumn();
 			cellrt01 = new CellRendererText();
-			col_01.Title = "Fecha"; // titulo de la cabecera de la columna, si está visible
+			col_01.Title = "Fecha";
 			col_01.PackStart(cellrt00, true);
 			col_01.AddAttribute (cellrt00, "text", 0);
 			//col_01.SortColumnId = (int) Column_notas.col_01;
 			
 			col_02 = new TreeViewColumn();
 			cellrt02 = new CellRendererText();
-			col_02.Title = "Hora"; // titulo de la cabecera de la columna, si está visible
+			col_02.Title = "Hora";
 			col_02.PackStart(cellrt02, true);
-			col_02.AddAttribute (cellrt02, "text", 2);
-			//col_03.SortColumnId = (int) Column_notas.col_01;
+			col_02.AddAttribute (cellrt02, "text", 1);
+			//col_03.SortColumnId = (int) Column_notas.col_02;
+			
+			col_03 = new TreeViewColumn();
+			cellrt03 = new CellRendererText();
+			col_03.Title = "Tension Arterial";
+			col_03.PackStart(cellrt03, true);
+			col_03.AddAttribute (cellrt03, "text", 2);
+			//col_03.SortColumnId = (int) Column_notas.col_03;
+			
+			col_04 = new TreeViewColumn();
+			cellrt04 = new CellRendererText();
+			col_04.Title = "Pulso";
+			col_04.PackStart(cellrt04, true);
+			col_04.AddAttribute (cellrt04, "text", 3);
+			//col_03.SortColumnId = (int) Column_notas.col_04;
+			
+			col_05 = new TreeViewColumn();
+			cellrt05 = new CellRendererText();
+			col_05.Title = "Fr. Resp.";
+			col_05.PackStart(cellrt05, true);
+			col_05.AddAttribute (cellrt05, "text", 4);
+			//col_03.SortColumnId = (int) Column_notas.col_04;
 			
 			treeview_lista_somatometria.AppendColumn(col_01);
 			treeview_lista_somatometria.AppendColumn(col_02);
-			
+			treeview_lista_somatometria.AppendColumn(col_03);
+			treeview_lista_somatometria.AppendColumn(col_04);
+			treeview_lista_somatometria.AppendColumn(col_05);
 		}
 		
 		// Cuando seleccion el treeview de cargos extras para cargar los productos  
@@ -460,6 +493,7 @@ namespace osiris
 				store2.AppendValues ((string)i.ToString("00").Trim());
 			}
 			combobox_hora_nota.Changed += new EventHandler (onComboBoxChanged_hora_minutos_cita);			
+			
 			combobox_minutos_nota.Clear();
 			CellRendererText cell3 = new CellRendererText();
 			combobox_minutos_nota.PackStart(cell3, true);
@@ -470,6 +504,28 @@ namespace osiris
 				store3.AppendValues ((string)i.ToString("00").Trim());
 			}
 			combobox_minutos_nota.Changed += new EventHandler (onComboBoxChanged_hora_minutos_cita);
+			
+			combobox_hora_somato.Clear();
+			CellRendererText cell4 = new CellRendererText();
+			combobox_hora_somato.PackStart(cell4, true);
+			combobox_hora_somato.AddAttribute(cell4,"text",0);	        
+			ListStore store4 = new ListStore( typeof (string), typeof (int));
+			combobox_hora_somato.Model = store4;
+			for(int i = 1; i < (int)classpublic.horario_24_horas+1 ; i++){				
+				store4.AppendValues ((string)i.ToString("00").Trim());
+			}
+			combobox_hora_somato.Changed += new EventHandler (onComboBoxChanged_hora_minutos_cita);
+			
+			combobox_minutos_somato.Clear();
+			CellRendererText cell5 = new CellRendererText();
+			combobox_minutos_somato.PackStart(cell5, true);
+			combobox_minutos_somato.AddAttribute(cell5,"text",0);	        
+			ListStore store5 = new ListStore( typeof (string), typeof (int));
+			combobox_minutos_somato.Model = store5;			
+			for(int i = (int) 0; i < 60 ; i=i+(int) classpublic.intervalo_minutos){				
+				store5.AppendValues ((string)i.ToString("00").Trim());
+			}
+			combobox_minutos_somato.Changed += new EventHandler (onComboBoxChanged_hora_minutos_cita);
 		}
 		
 		void onComboBoxChanged_hora_minutos_cita(object sender, EventArgs args)
@@ -486,6 +542,12 @@ namespace osiris
 				}			
 				if(hora_minutos.Name.ToString() == "combobox_minutos_nota"){
 					minutos_nota = (string) hora_minutos.Model.GetValue(iter,0);
+				}
+				if(hora_minutos.Name.ToString() == "combobox_hora_somato"){				
+					hora_somatometria = (string) hora_minutos.Model.GetValue(iter,0);
+				}			
+				if(hora_minutos.Name.ToString() == "combobox_minutos_somato"){
+					minutos_somatometria = (string) hora_minutos.Model.GetValue(iter,0);
 				}
 			}
 		}
@@ -512,6 +574,60 @@ namespace osiris
 			}
 		}
 		
+		void on_button_guardar_somato_clicked(object sender, EventArgs args)
+		{
+			if(hora_somatometria != "" && minutos_somatometria != ""){
+				MessageDialog msgBox = new MessageDialog (MyWin,DialogFlags.Modal,
+											MessageType.Question,ButtonsType.YesNo,"¿ Esta seguro de Almacenar esta SOMATOMETRIA ?");
+				ResponseType miResultado = (ResponseType)
+				msgBox.Run ();				msgBox.Destroy();
+	 			if (miResultado == ResponseType.Yes){
+					NpgsqlConnection conexion; 
+					conexion = new NpgsqlConnection (connectionString+nombrebd);
+	            	try{
+						conexion.Open ();
+						NpgsqlCommand comando; 
+						comando = conexion.CreateCommand();
+						
+						comando.CommandText = "INSERT INTO osiris_his_somatometria (pid_paciente,folio_de_servicio,"+
+							"fechahora_creacion,id_empleado_creacion,hora_somatometria,"+
+							"tension_arterial,pulso,frecuencia_respiratoria,temperatura,saturacion_oxigeno,"+
+							"diuresis,evacuacion"+
+							") VALUES ('"+
+							(string) entry_pid_paciente.Text.ToString().Trim()+"','"+
+							(string) entry_numerotencion.Text.ToString().Trim()+"','"+
+							DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"','"+
+							LoginEmpleado+"','"+
+							hora_somatometria+":"+minutos_somatometria+"','"+
+							entry_presion_arterial.Text.Trim()+"','"+
+							spinbutton_pulso.Text.Trim()+"','"+
+							spinbutton_frecrespiratoria.Text.Trim()+"','"+
+							spinbutton_temperatura.Text.Trim()+"','"+
+							spinbutton_sat_oxigeno.Text.Trim()+"','"+
+							entry_diuresis.Text.Trim().ToUpper()+"','"+
+							entry_evacuacion.Text.Trim().ToUpper()								
+							+"')";
+						Console.WriteLine(comando.CommandText);
+						comando.ExecuteNonQuery();
+						comando.Dispose();						
+						MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,MessageType.Info,
+				 							ButtonsType.Close, "Los datos se guardaron con EXITO");
+						msgBoxError.Run ();			msgBoxError.Destroy();						
+					}catch (NpgsqlException ex){
+						MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.Modal,
+							MessageType.Error, 
+							ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
+						msgBoxError.Run ();					msgBoxError.Destroy();	   			
+		       		}
+	       			conexion.Close ();
+				}
+			}else{
+				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.Modal,
+									MessageType.Error,ButtonsType.Close,"La Somatometria no tiene hora o minutos, verifique...");
+				msgBoxError.Run ();						msgBoxError.Destroy();
+			}
+		}
+		
 		// cierra ventanas emergentes
 		void on_cierraventanas_clicked(object sender, EventArgs args)
 		{
@@ -519,6 +635,4 @@ namespace osiris
 			win.Toplevel.Destroy();
 		}
 	}
-	
-	
 }

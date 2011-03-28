@@ -289,6 +289,11 @@ namespace osiris
 	   [Widget] Gtk.Entry entry_edad_imp;
 	   [Widget] Gtk.Button button_imp_cont;
 	   [Widget] Gtk.Button button_imp_reg;
+		
+		
+		// Cambio para VENEZUELA
+		[Widget] Gtk.Label label9 = null;
+		[Widget] Gtk.Label label14_curp_empleado = null;
 	   
 	 private TreeStore treeViewEngineBusca;
 		
@@ -438,7 +443,11 @@ namespace osiris
 			//combobox_municipios.Changed += new EventHandler(onComboBoxChanged_municipios);
 				
 		   	// Sale de la ventana
-			button_salir.Clicked += new EventHandler(on_cierraventanas_clicked);	
+			button_salir.Clicked += new EventHandler(on_cierraventanas_clicked);
+			
+			// Cambio para VENEZUELA
+			//label9.Text = "RIF";					// RFC
+			//label14_curp_empleado.Text = "C.I.";	// CURP
 		}
 		
 		void edita_empleado()

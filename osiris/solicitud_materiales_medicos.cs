@@ -750,10 +750,10 @@ namespace osiris
 						"AND osiris_productos.id_grupo1_producto = osiris_grupo1_producto.id_grupo1_producto "+
 						"AND osiris_productos.id_grupo2_producto = osiris_grupo2_producto.id_grupo2_producto "+
 						"AND osiris_productos.cobro_activo = true "+
-						"AND osiris_grupo_producto.agrupacion = 'MD1' "+
-						"AND osiris_productos.id_grupo_producto <= '7' "+
+						//"AND osiris_grupo_producto.agrupacion IN(= 'MD1' "+
+						"AND osiris_productos.id_grupo_producto IN('4','5','6') "+
 						"AND osiris_productos.descripcion_producto LIKE '%"+entry_expresion.Text.ToUpper()+"%' ORDER BY descripcion_producto; ";
-				
+				Console.WriteLine(comando.CommandText);
 				NpgsqlDataReader lector = comando.ExecuteReader ();
 				float tomaprecio;
 				float calculodeiva;

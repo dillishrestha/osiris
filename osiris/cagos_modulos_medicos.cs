@@ -2059,12 +2059,10 @@ namespace osiris
 						"to_char(costo_producto,'999999999.99') AS costoproducto "+
 						//"FROM osiris_productos,osiris_grupo_producto,osiris_grupo1_producto,osiris_grupo2_producto "+
 						"FROM osiris_catalogo_almacenes,osiris_productos,osiris_grupo_producto,osiris_grupo1_producto,osiris_grupo2_producto "+
-						"WHERE osiris_productos.id_grupo_producto = osiris_grupo_producto.id_grupo_producto "+
-						
+						"WHERE osiris_productos.id_grupo_producto = osiris_grupo_producto.id_grupo_producto "+					
 						"AND osiris_productos.id_producto = osiris_catalogo_almacenes.id_producto "+
 						"AND osiris_catalogo_almacenes.id_almacen = '"+this.idsubalmacen.ToString().Trim()+"' "+
-						"AND osiris_catalogo_almacenes.eliminado = 'false' "+	
-						 
+						"AND osiris_catalogo_almacenes.eliminado = 'false' "+						 
 						"AND osiris_productos.id_grupo1_producto = osiris_grupo1_producto.id_grupo1_producto "+
 						"AND osiris_productos.id_grupo2_producto = osiris_grupo2_producto.id_grupo2_producto "+
 						"AND osiris_grupo_producto.agrupacion = 'MD1' "+
@@ -2082,6 +2080,7 @@ namespace osiris
 				while (lector.Read()){
 					calculodeiva = 0;
 					preciomasiva = 0;
+					//Console.WriteLine((string) lector["descripcion_producto"]);
 					
 					// Verificando que datos que sea del municipio de san nicolas para que cambie el precio convenido
 					// precio_producto_publico1
@@ -2089,10 +2088,10 @@ namespace osiris
 					//idempresa_paciente = San Nicolas
 				///////////////////////////////////////////////////////////
 					// ---- nuevo para las multiples listas de precio					
-					if (float.Parse((string) lector["preciopublico_cliente"]) > 0){
-							tomaprecio = float.Parse((string) lector["preciopublico_cliente"]);
-						}else{
-							tomaprecio = float.Parse((string) lector["preciopublico"]);
+					if (float.Parse((string) lector["preciopublico_cliente"].ToString().Trim()) > 0){
+						tomaprecio = float.Parse((string) lector["preciopublico_cliente"]);
+					}else{
+						tomaprecio = float.Parse((string) lector["preciopublico"]);
 					}					
 					////////////////****************************			
 					/////////////////////////////////////////////////////////////////////////
@@ -2100,12 +2099,10 @@ namespace osiris
 					
 					tomadescue = float.Parse((string) lector["porcentagesdesc"],System.Globalization.NumberStyles.Float,new System.Globalization.CultureInfo("es-MX"));
 					preciocondesc = tomaprecio;
-					if ((bool) lector["aplicar_iva"])
-					{
+					if ((bool) lector["aplicar_iva"]){
 						calculodeiva = (tomaprecio * valoriva)/100;
 					}
-					if ((bool) lector["aplica_descuento"])
-					{
+					if ((bool) lector["aplica_descuento"]){
 						preciocondesc = tomaprecio-((tomaprecio*tomadescue)/100);
 					}
 					preciomasiva = tomaprecio + calculodeiva; 

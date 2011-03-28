@@ -1835,7 +1835,7 @@ namespace osiris
 														"id_tipo_paciente,"+
 														"observaciones) "+
 													"VALUES ('"+
-														(string) entry_numero_comprobante.Text.Trim()+"','"+
+														(string) classpublic.lee_ultimonumero_registrado("osiris_erp_comprobante_servicio","numero_comprobante_servicio","")+"','"+
 														folioservicio+"','"+
 														this.PidPaciente.ToString().Trim()+"','"+
 														DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"','"+
@@ -1866,6 +1866,8 @@ namespace osiris
 						conexion = new NpgsqlConnection (connectionString+nombrebd);
 						// Verifica que la base de datos este conectado
 						try{
+							Console.WriteLine((string) classpublic.lee_ultimonumero_registrado("osiris_erp_comprobante_servicio","numero_comprobante_servicio",""));
+							entry_numero_comprobante.Text = (string) classpublic.lee_ultimonumero_registrado("osiris_erp_comprobante_servicio","numero_comprobante_servicio","");
 							conexion.Open ();
 							NpgsqlCommand comando; 
 							comando = conexion.CreateCommand ();

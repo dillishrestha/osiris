@@ -187,7 +187,7 @@ namespace osiris
 		
 		void on_button_solicitud_material_clicked(object sender, EventArgs args)
 		{
-			new osiris.solicitud_material(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,14);
+			new osiris.solicitud_material(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,16);
 		}
 
 		void button_rpt_facturas_pendientes_clicked(object sender, EventArgs args)

@@ -730,7 +730,9 @@ namespace osiris
 						"to_char(osiris_productos.precio_producto_publico,'999999999.99999') AS preciopublico,osiris_erp_comprobante_servicio.numero_comprobante_servicio AS numerorecibo,"+
 						"osiris_his_paciente.nombre1_paciente || ' ' || osiris_his_paciente.nombre2_paciente || ' ' || osiris_his_paciente.apellido_paterno_paciente || ' ' || osiris_his_paciente.apellido_materno_paciente AS nombre_completo, "+
 						"to_char(osiris_his_paciente.fecha_nacimiento_paciente, 'dd-MM-yyyy') AS fechanacpaciente, to_char(to_number(to_char(age('"+DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss")+"',osiris_his_paciente.fecha_nacimiento_paciente),'yyyy') ,'9999'),'9999') AS edadpaciente, "+
-					    "telefono_particular1_paciente,osiris_erp_comprobante_servicio.observaciones AS observacionesvarias,osiris_erp_comprobante_servicio.concepto_del_comprobante AS concepto_comprobante,"+
+					    "telefono_particular1_paciente,"+
+					    "osiris_erp_comprobante_servicio.observaciones || ' ' || osiris_erp_comprobante_servicio.observaciones2 || ' ' || osiris_erp_comprobante_servicio.observaciones3 AS observacionesvarias,"+
+					     "osiris_erp_comprobante_servicio.concepto_del_comprobante AS concepto_comprobante,"+
 						"osiris_erp_cobros_enca.id_empresa,descripcion_empresa,osiris_erp_cobros_enca.nombre_medico_encabezado "+
 					    //"to_char(monto_de_abono_procedimiento,'999999999.99') AS montodelabono "+
 				        "FROM osiris_erp_cobros_deta,osiris_his_tipo_admisiones,osiris_productos,osiris_grupo_producto,osiris_erp_comprobante_servicio,osiris_his_paciente,osiris_erp_cobros_enca,osiris_empresas "+

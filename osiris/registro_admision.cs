@@ -25,7 +25,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 // 
 //////////////////////////////////////////////////////////
-// Programa	 			: hscmty.cs
+// Programa	 			: 
 //
 // Programa de Clase	: registro_admision.cs
 //	  Nombre de Clase	: registro_paciente_busca					
@@ -2016,6 +2016,7 @@ namespace osiris
 		
 		public bool almacena_encabezado_de_cobro()
 		{
+			bool grabacion_sino = false;
 			NpgsqlConnection conexion; 
 			conexion = new NpgsqlConnection (connectionString+nombrebd );
 			
@@ -2087,14 +2088,15 @@ namespace osiris
 							this.entry_empresa.Text.ToString().Trim().ToUpper()+"');";
 				//Console.WriteLine("Graba Encabezado");
 				comando.ExecuteNonQuery();			comando.Dispose();
-				return true;
+				grabacion_sino = true;
 			}catch (NpgsqlException ex){
 	   			MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
 										MessageType.Error, ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
 				msgBoxError.Run ();				msgBoxError.Destroy();
-				return false;
+				grabacion_sino = false;
 			}
-			//conexion.Close ();		//return true;
+			conexion.Close ();
+			return grabacion_sino;
 		}
 		
 		// activa busqueda con boton busqueda

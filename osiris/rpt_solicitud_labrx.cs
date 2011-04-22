@@ -69,7 +69,7 @@ namespace osiris
 			nombrebd = conexion_a_DB._nombrebd;
 			departament = departament_;
 			agrupacion_lab_rx = agrupacion_lab_rx_;
-			
+						
 			query_general = "SELECT osiris_his_solicitudes_labrx.area_quien_solicita,osiris_his_solicitudes_labrx.folio_de_solicitud,"+
 							"osiris_his_solicitudes_labrx.fechahora_solicitud,osiris_his_solicitudes_labrx.folio_de_servicio AS foliodeservicio,osiris_his_solicitudes_labrx.pid_paciente AS pidpaciente,"+
 							"osiris_his_solicitudes_labrx.id_quien_solicito,osiris_his_solicitudes_labrx.id_proveedor,osiris_his_solicitudes_labrx.id_producto,osiris_his_solicitudes_labrx.cantidad_solicitada,"+

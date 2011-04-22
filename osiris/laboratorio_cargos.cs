@@ -343,8 +343,7 @@ namespace osiris
 			col_fecha_hora_hc.AddAttribute (cellr4, "text", 4);
 			col_fecha_hora_hc.SortColumnId = (int) Column_serv.col_fecha_hora_hc;
 			col_fecha_hora_hc.SetCellDataFunc(cellr4, new Gtk.TreeCellDataFunc(cambia_colores_fila));
-			
-        
+			        
 			TreeViewColumn col_asignado_hc = new TreeViewColumn();
 			CellRendererText cellr5 = new CellRendererText();
 			col_asignado_hc.Title = "Asignado a"; 
@@ -2389,7 +2388,9 @@ namespace osiris
 			combobox_quimicos_aut.PackStart(cell1, true);
 			combobox_quimicos_aut.AddAttribute(cell1,"text",0);
 	        
-			ListStore store1 = new ListStore( typeof (string), typeof (string),typeof(string));
+			ListStore store1 = new ListStore(typeof (string),
+			                                 typeof (string),
+			                                 typeof (string));
 			combobox_quimicos_aut.Model = store1;
 	        store1.AppendValues ("Seleccione un Quimico","0","0");
 	        store1.AppendValues ("Q.B.P. QUIMICO 1","2370632","1");
@@ -2431,7 +2432,12 @@ namespace osiris
 		
 		void crea_treeview_resultados()
 		{
-			treeViewEngineresultados = new ListStore(typeof(string),typeof(string),typeof(string),typeof(string),typeof(string),typeof(bool));
+			treeViewEngineresultados = new ListStore(typeof(string),
+			                                         typeof(string),
+			                                         typeof(string),
+			                                         typeof(string),
+			                                         typeof(string),
+			                                         typeof(bool));
 			lista_de_resultados.Model = treeViewEngineresultados;
 			lista_de_resultados.RulesHint = true;
 
@@ -2440,7 +2446,8 @@ namespace osiris
 			col_parametro.Title = "Parametro"; // titulo de la cabecera de la columna, si está visible
 			col_parametro.PackStart(cellr0, true);
 			col_parametro.AddAttribute (cellr0, "text", 0);
-			col_parametro.SortColumnId = (int) Column_resu.col_parametro ;
+			col_parametro.SortColumnId = (int) Column_resu.col_parametro;
+			col_parametro.Resizable = true;
 			cellr0.Editable = true;
 			cellr0.Edited += NumberCellEditedresultado0;
 						
@@ -2450,6 +2457,7 @@ namespace osiris
 			col_resultado.PackStart(cellr1, true);
 			col_resultado.AddAttribute (cellr1, "text", 1);
 			col_resultado.SortColumnId = (int) Column_resu.col_resultado;
+			col_resultado.Resizable = true;
 			cellr1.Editable = true;
 			cellr1.Edited += NumberCellEditedresultado1;
 						
@@ -2458,7 +2466,9 @@ namespace osiris
 			col_vr.Title = "Valor de Referencia"; // titulo de la cabecera de la columna, si está visible
 			col_vr.PackStart(cellr2, true);
 			col_vr.AddAttribute (cellr2, "text", 2);
+				
 			col_vr.SortColumnId = (int) Column_resu.col_vr;
+			col_vr.Resizable = true;
 			cellr2.Editable = true;
 			cellr2.Edited += NumberCellEditedresultado2;
 			
@@ -2467,7 +2477,8 @@ namespace osiris
 			col_selecciona.Title = "Selecciona"; // titulo de la cabecera de la columna, si está visible
 			col_selecciona.PackStart(cellr5, true);
 			col_selecciona.AddAttribute (cellr5, "active", 5);
-			cellr5.Activatable = true;
+			col_selecciona.Resizable = true;
+			cellr5.Activatable = true;		
 			cellr5.Toggled += selecciona_fila;			
 					
 			lista_de_resultados.AppendColumn(col_parametro);
@@ -2476,11 +2487,17 @@ namespace osiris
 			lista_de_resultados.AppendColumn(col_selecciona);
 			
 			if(this.resultados_editables == false){
-			    cellr0.Editable = false;	cellr1.Editable = false;		cellr2.Editable = false;
+			    cellr0.Editable = false;	
+				cellr1.Editable = false;		
+				cellr2.Editable = false;
 			}
 		}
 		
-		enum Column_resu {	col_parametro,	col_resultado,	col_vr,	}
+		enum Column_resu{
+			col_parametro,
+			col_resultado,
+			col_vr,
+		}
 		
 		// Cuando seleccion el treeview de cargos extras para cargar los productos  
 		void selecciona_fila(object sender, ToggledArgs args)
@@ -2514,7 +2531,7 @@ namespace osiris
 										"WHERE osiris_his_resultados_laboratorio.id_producto = '"+id_produ+"' "+
 										"AND osiris_his_resultados_laboratorio.folio_laboratorio = '"+this.numerosolicitud+"' "+
 										"ORDER BY osiris_his_resultados_laboratorio.id_secuencia;"; 
-					//Console.WriteLine("Query con valores guardados  "+comando.CommandText);
+					Console.WriteLine("Query con valores guardados  "+comando.CommandText);
 					NpgsqlDataReader lector = comando.ExecuteReader ();
 					if (lector.Read()){
 						if(this.resultados_editables == false){
@@ -2523,7 +2540,12 @@ namespace osiris
 							}
 						}
 						if(acceso_resultados == true){
-							treeViewEngineresultados.AppendValues((string) lector ["parametro"],(string)lector["resultado"],(string) lector ["valor_referencia"],(string) lector ["secuencia"],(string)lector["resultado"],true); 
+							treeViewEngineresultados.AppendValues((string) lector ["parametro"],
+							                                      (string)lector["resultado"],
+							                                      (string) lector ["valor_referencia"],
+							                                      (string) lector ["secuencia"],
+							                                      (string)lector["resultado"],
+							                                      true); 
 							entry_observaciones.Text = (string) lector ["observaciones_de_examen"];
 							if ((bool) lector ["validado"] == true){
 								this.button_validar_examen.Sensitive = false;
@@ -2545,13 +2567,18 @@ namespace osiris
 							msgBoxError.Run ();			msgBoxError.Destroy();
 						}
 					}else{
+						// check only si existe el resultado sino llena con los parametros
 						if(this.resultados_editables == true){
 							NpgsqlConnection conexion1; 		conexion1 = new NpgsqlConnection (connectionString+nombrebd);
 							try{
 								conexion1.Open ();
 								NpgsqlCommand comando1;			comando1 = conexion1.CreateCommand ();
-								comando1.CommandText = "SELECT parametro,valor_referencia,to_char(id_secuencia,'999999999') AS secuencia FROM osiris_his_examenes_laboratorio WHERE osiris_his_examenes_laboratorio.id_producto = '"+id_produ+"' "+"ORDER BY osiris_his_examenes_laboratorio.id_secuencia; "; 
+								comando1.CommandText = "SELECT parametro,valor_referencia,to_char(id_secuencia,'999999999') AS secuencia "+
+												"FROM osiris_his_examenes_laboratorio "+
+												"WHERE osiris_his_examenes_laboratorio.id_producto = '"+id_produ+"' "+
+												"ORDER BY osiris_his_examenes_laboratorio.id_secuencia_estudio,osiris_his_examenes_laboratorio.id_secuencia_parametros; "; 
 								NpgsqlDataReader lector1 = comando1.ExecuteReader ();
+								Console.WriteLine(comando1.CommandText);
 								if (lector1.Read()){
 									this.treeViewEngineresultados.AppendValues((string) lector1 ["parametro"],
 										" -- ",

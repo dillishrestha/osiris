@@ -1195,8 +1195,13 @@ namespace osiris
 						}
 						entry_cirugia.Text = (string) lector["nombre_de_cirugia"];
 						entry_diagnostico.Text = (string) lector["descripcion_diagnostico_movcargos"];
+						
+						
 						entry_tipo_paciente.Text = (string) lector["descripcion_tipo_paciente"];
 						entry_aseguradora.Text = (string) lector["descripcion_aseguradora"];
+						
+						
+						
 						entry_poliza.Text =  (string) lector["numero_poliza"];
 						id_tipopaciente = (int) lector["idtipopaciente"];
             			//int foliointernodep = (int) lector["folio_de_servicio_dep"];

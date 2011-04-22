@@ -36,7 +36,6 @@ using Npgsql;
 using Glade;
 using Cairo;
 using Pango;
-using Glade;
 
 namespace osiris
 {

@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <glade-interface>
   <!-- interface-requires gtk+ 2.6 -->
   <!-- interface-naming-policy toplevel-contextual -->
@@ -10,7 +10,6 @@
     <child>
       <widget class="GtkVBox" id="vbox10">
         <property name="visible">True</property>
-        <property name="orientation">vertical</property>
         <child>
           <widget class="GtkLabel" id="label4">
             <property name="visible">True</property>
@@ -33,7 +32,6 @@ Busqueda de Paciente</property>
                 <child>
                   <widget class="GtkVBox" id="vbox11">
                     <property name="visible">True</property>
-                    <property name="orientation">vertical</property>
                     <child>
                       <widget class="GtkHBox" id="hbox13">
                         <property name="visible">True</property>
@@ -49,7 +47,7 @@ Busqueda de Paciente</property>
                         <child>
                           <widget class="GtkEntry" id="entry_expresion">
                             <property name="visible">True</property>
-                            <property name="invisible_char">&#x25CF;</property>
+                            <property name="invisible_char">●</property>
                             <property name="width_chars">44</property>
                           </widget>
                           <packing>
@@ -121,7 +119,6 @@ Busqueda de Paciente</property>
                 <child>
                   <widget class="GtkVBox" id="vbox12">
                     <property name="visible">True</property>
-                    <property name="orientation">vertical</property>
                     <child>
                       <widget class="GtkButton" id="button_buscar_busqueda">
                         <property name="label">gtk-find</property>
@@ -202,14 +199,12 @@ Busqueda de Paciente</property>
     <child>
       <widget class="GtkVBox" id="vbox5">
         <property name="visible">True</property>
-        <property name="orientation">vertical</property>
         <child>
           <widget class="GtkHBox" id="hbox15">
             <property name="visible">True</property>
             <child>
               <widget class="GtkVBox" id="vbox6">
                 <property name="visible">True</property>
-                <property name="orientation">vertical</property>
                 <child>
                   <widget class="GtkFrame" id="frame9">
                     <property name="visible">True</property>
@@ -226,18 +221,16 @@ Busqueda de Paciente</property>
                             <child>
                               <widget class="GtkVBox" id="vbox33">
                                 <property name="visible">True</property>
-                                <property name="orientation">vertical</property>
                                 <child>
                                   <widget class="GtkVBox" id="vbox34">
                                     <property name="visible">True</property>
-                                    <property name="orientation">vertical</property>
                                     <child>
                                       <widget class="GtkHBox" id="hbox42">
                                         <property name="visible">True</property>
                                         <child>
                                           <widget class="GtkLabel" id="label103">
                                             <property name="visible">True</property>
-                                            <property name="label" translatable="yes">N&#xBA; Atencion </property>
+                                            <property name="label" translatable="yes">Nº Atencion </property>
                                           </widget>
                                           <packing>
                                             <property name="position">0</property>
@@ -308,7 +301,7 @@ Busqueda de Paciente</property>
                                         <child>
                                           <widget class="GtkLabel" id="label30">
                                             <property name="visible">True</property>
-                                            <property name="label" translatable="yes">N&#xBA; Factura</property>
+                                            <property name="label" translatable="yes">Nº Factura</property>
                                           </widget>
                                           <packing>
                                             <property name="position">7</property>
@@ -640,7 +633,6 @@ Busqueda de Paciente</property>
                                 <child>
                                   <widget class="GtkVBox" id="vbox7">
                                     <property name="visible">True</property>
-                                    <property name="orientation">vertical</property>
                                     <child>
                                       <widget class="GtkProgressBar" id="progressbar_status_llenado">
                                         <property name="width_request">1</property>
@@ -809,7 +801,6 @@ Busqueda de Paciente</property>
                             <child>
                               <widget class="GtkVBox" id="vbox37">
                                 <property name="visible">True</property>
-                                <property name="orientation">vertical</property>
                                 <child>
                                   <widget class="GtkScrolledWindow" id="scrolledwindow5">
                                     <property name="width_request">1</property>
@@ -1291,7 +1282,6 @@ Busqueda de Paciente</property>
             <child>
               <widget class="GtkVBox" id="vbox8">
                 <property name="visible">True</property>
-                <property name="orientation">vertical</property>
                 <child>
                   <widget class="GtkButton" id="button_graba_pago">
                     <property name="visible">True</property>
@@ -2311,7 +2301,7 @@ por Cobrar</property>
             <child>
               <widget class="GtkLabel" id="label12">
                 <property name="visible">True</property>
-                <property name="label" translatable="yes">Compa&#xF1;ia</property>
+                <property name="label" translatable="yes">Compañia</property>
               </widget>
               <packing>
                 <property name="top_attach">7</property>
@@ -2608,7 +2598,7 @@ donde se relizo el cargo</property>
                                       <widget class="GtkEntry" id="entry_expresion">
                                         <property name="width_request">624</property>
                                         <property name="visible">True</property>
-                                        <property name="invisible_char">&#x25CF;</property>
+                                        <property name="invisible_char">●</property>
                                         <property name="width_chars">44</property>
                                       </widget>
                                       <packing>
@@ -2629,7 +2619,7 @@ Hospital
 Ginecologia-Tococirugia
 Quirofano
 Terapia Intensiva Adulto
-Terapia Intensiva Ni&#xF1;os</property>
+Terapia Intensiva Niños</property>
                                           </widget>
                                           <packing>
                                             <property name="position">0</property>
@@ -2867,7 +2857,7 @@ Terapia Intensiva Ni&#xF1;os</property>
               <widget class="GtkLabel" id="label133">
                 <property name="width_request">50</property>
                 <property name="visible">True</property>
-                <property name="label" translatable="yes">A&#xF1;o</property>
+                <property name="label" translatable="yes">Año</property>
               </widget>
               <packing>
                 <property name="expand">False</property>
@@ -2957,7 +2947,7 @@ Terapia Intensiva Ni&#xF1;os</property>
               <widget class="GtkLabel" id="label134">
                 <property name="width_request">50</property>
                 <property name="visible">True</property>
-                <property name="label" translatable="yes">A&#xF1;o</property>
+                <property name="label" translatable="yes">Año</property>
               </widget>
               <packing>
                 <property name="expand">False</property>
@@ -3912,7 +3902,7 @@ Busqueda de Cliente
                               <widget class="GtkEntry" id="entry_expresion">
                                 <property name="width_request">503</property>
                                 <property name="visible">True</property>
-                                <property name="invisible_char">&#x25CF;</property>
+                                <property name="invisible_char">●</property>
                                 <property name="width_chars">44</property>
                               </widget>
                               <packing>
@@ -3958,7 +3948,7 @@ Busqueda de Cliente
                             </child>
                             <child>
                               <widget class="GtkRadioButton" id="radiobutton_num_client">
-                                <property name="label" translatable="yes">Por N&#xBA; de Cliente</property>
+                                <property name="label" translatable="yes">Por Nº de Cliente</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
                                 <property name="receives_default">False</property>
@@ -4071,7 +4061,6 @@ Busqueda de Cliente
     <child>
       <widget class="GtkVBox" id="vbox46">
         <property name="visible">True</property>
-        <property name="orientation">vertical</property>
         <child>
           <widget class="GtkLabel" id="label161">
             <property name="visible">True</property>
@@ -4100,7 +4089,6 @@ MENU DE TESORERIA
             <child>
               <widget class="GtkVBox" id="vbox47">
                 <property name="visible">True</property>
-                <property name="orientation">vertical</property>
                 <child>
                   <widget class="GtkButton" id="button_caja">
                     <property name="width_request">100</property>
@@ -6507,7 +6495,7 @@ Medico</property>
             <child>
               <widget class="GtkLabel" id="label221">
                 <property name="visible">True</property>
-                <property name="label" translatable="yes">N&#xBA; Recibos o Comprobante de Serv:</property>
+                <property name="label" translatable="yes">Nº Recibos o Comprobante de Serv:</property>
               </widget>
               <packing>
                 <property name="expand">False</property>
@@ -6903,7 +6891,7 @@ Busqueda de Medicos</property>
                             <child>
                               <widget class="GtkEntry" id="entry_expresion">
                                 <property name="visible">True</property>
-                                <property name="invisible_char">&#x25CF;</property>
+                                <property name="invisible_char">●</property>
                                 <property name="width_chars">44</property>
                               </widget>
                               <packing>
@@ -7323,7 +7311,7 @@ Agregando DEDUCIBLE a Factura
                             <property name="width_request">80</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
-                            <property name="invisible_char">&#x25CF;</property>
+                            <property name="invisible_char">●</property>
                           </widget>
                           <packing>
                             <property name="position">1</property>
@@ -7403,7 +7391,7 @@ Agregando DEDUCIBLE a Factura
                                         <property name="width_request">80</property>
                                         <property name="visible">True</property>
                                         <property name="can_focus">True</property>
-                                        <property name="invisible_char">&#x25CF;</property>
+                                        <property name="invisible_char">●</property>
                                       </widget>
                                       <packing>
                                         <property name="position">1</property>
@@ -7493,7 +7481,7 @@ Agregando DEDUCIBLE a Factura
                             <property name="width_request">200</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
-                            <property name="invisible_char">&#x25CF;</property>
+                            <property name="invisible_char">●</property>
                           </widget>
                           <packing>
                             <property name="position">3</property>
@@ -7973,7 +7961,7 @@ Agregando DEDUCIBLE a Factura
                       <widget class="GtkEntry" id="entry_dia1">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
-                        <property name="invisible_char">&#x25CF;</property>
+                        <property name="invisible_char">●</property>
                       </widget>
                       <packing>
                         <property name="position">2</property>
@@ -7994,7 +7982,7 @@ Agregando DEDUCIBLE a Factura
                       <widget class="GtkEntry" id="entry_mes1">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
-                        <property name="invisible_char">&#x25CF;</property>
+                        <property name="invisible_char">●</property>
                       </widget>
                       <packing>
                         <property name="position">4</property>
@@ -8003,7 +7991,7 @@ Agregando DEDUCIBLE a Factura
                     <child>
                       <widget class="GtkLabel" id="label260">
                         <property name="visible">True</property>
-                        <property name="label" translatable="yes">A&#xF1;o</property>
+                        <property name="label" translatable="yes">Año</property>
                       </widget>
                       <packing>
                         <property name="expand">False</property>
@@ -8012,10 +8000,10 @@ Agregando DEDUCIBLE a Factura
                       </packing>
                     </child>
                     <child>
-                      <widget class="GtkEntry" id="entry_a&#xF1;o1">
+                      <widget class="GtkEntry" id="entry_año1">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
-                        <property name="invisible_char">&#x25CF;</property>
+                        <property name="invisible_char">●</property>
                       </widget>
                       <packing>
                         <property name="position">6</property>
@@ -8056,7 +8044,7 @@ Agregando DEDUCIBLE a Factura
                       <widget class="GtkEntry" id="entry_dia2">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
-                        <property name="invisible_char">&#x25CF;</property>
+                        <property name="invisible_char">●</property>
                       </widget>
                       <packing>
                         <property name="position">2</property>
@@ -8077,7 +8065,7 @@ Agregando DEDUCIBLE a Factura
                       <widget class="GtkEntry" id="entry_mes2">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
-                        <property name="invisible_char">&#x25CF;</property>
+                        <property name="invisible_char">●</property>
                       </widget>
                       <packing>
                         <property name="position">4</property>
@@ -8086,7 +8074,7 @@ Agregando DEDUCIBLE a Factura
                     <child>
                       <widget class="GtkLabel" id="label256">
                         <property name="visible">True</property>
-                        <property name="label" translatable="yes">A&#xF1;o</property>
+                        <property name="label" translatable="yes">Año</property>
                       </widget>
                       <packing>
                         <property name="expand">False</property>
@@ -8095,10 +8083,10 @@ Agregando DEDUCIBLE a Factura
                       </packing>
                     </child>
                     <child>
-                      <widget class="GtkEntry" id="entry_a&#xF1;o2">
+                      <widget class="GtkEntry" id="entry_año2">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
-                        <property name="invisible_char">&#x25CF;</property>
+                        <property name="invisible_char">●</property>
                       </widget>
                       <packing>
                         <property name="position">6</property>
@@ -8127,7 +8115,7 @@ Agregando DEDUCIBLE a Factura
                       <widget class="GtkEntry" id="entry_expresion">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
-                        <property name="invisible_char">&#x25CF;</property>
+                        <property name="invisible_char">●</property>
                       </widget>
                       <packing>
                         <property name="position">1</property>
@@ -8417,7 +8405,7 @@ Agregando DEDUCIBLE a Factura
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="max_length">2</property>
-                    <property name="invisible_char">&#x25CF;</property>
+                    <property name="invisible_char">●</property>
                   </widget>
                   <packing>
                     <property name="position">1</property>
@@ -8440,7 +8428,7 @@ Agregando DEDUCIBLE a Factura
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="max_length">2</property>
-                    <property name="invisible_char">&#x25CF;</property>
+                    <property name="invisible_char">●</property>
                   </widget>
                   <packing>
                     <property name="position">3</property>
@@ -8449,7 +8437,7 @@ Agregando DEDUCIBLE a Factura
                 <child>
                   <widget class="GtkLabel" id="label278">
                     <property name="visible">True</property>
-                    <property name="label" translatable="yes">   A&#xF1;o   </property>
+                    <property name="label" translatable="yes">   Año   </property>
                   </widget>
                   <packing>
                     <property name="expand">False</property>
@@ -8463,7 +8451,7 @@ Agregando DEDUCIBLE a Factura
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="max_length">4</property>
-                    <property name="invisible_char">&#x25CF;</property>
+                    <property name="invisible_char">●</property>
                   </widget>
                   <packing>
                     <property name="position">5</property>
@@ -8631,7 +8619,6 @@ Agregando DEDUCIBLE a Factura
     <child>
       <widget class="GtkVBox" id="vbox55">
         <property name="visible">True</property>
-        <property name="orientation">vertical</property>
         <child>
           <widget class="GtkHBox" id="hbox124">
             <property name="visible">True</property>
@@ -8677,7 +8664,7 @@ Agregando DEDUCIBLE a Factura
               <widget class="GtkLabel" id="label209">
                 <property name="width_request">129</property>
                 <property name="visible">True</property>
-                <property name="label" translatable="yes">N&#xBA; Recibo de Caja</property>
+                <property name="label" translatable="yes">Nº Recibo de Caja</property>
               </widget>
               <packing>
                 <property name="expand">False</property>
@@ -8720,7 +8707,7 @@ Agregando DEDUCIBLE a Factura
                 <property name="width_request">40</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
-                <property name="invisible_char">&#x25CF;</property>
+                <property name="invisible_char">●</property>
               </widget>
               <packing>
                 <property name="position">1</property>
@@ -8743,7 +8730,7 @@ Agregando DEDUCIBLE a Factura
                 <property name="width_request">40</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
-                <property name="invisible_char">&#x25CF;</property>
+                <property name="invisible_char">●</property>
               </widget>
               <packing>
                 <property name="position">3</property>
@@ -8782,7 +8769,7 @@ Agregando DEDUCIBLE a Factura
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="max_length">2</property>
-                    <property name="invisible_char">&#x25CF;</property>
+                    <property name="invisible_char">●</property>
                   </widget>
                   <packing>
                     <property name="position">1</property>
@@ -8806,7 +8793,7 @@ Agregando DEDUCIBLE a Factura
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="max_length">2</property>
-                    <property name="invisible_char">&#x25CF;</property>
+                    <property name="invisible_char">●</property>
                   </widget>
                   <packing>
                     <property name="position">3</property>
@@ -8816,7 +8803,7 @@ Agregando DEDUCIBLE a Factura
                   <widget class="GtkLabel" id="label270">
                     <property name="width_request">40</property>
                     <property name="visible">True</property>
-                    <property name="label" translatable="yes">A&#xF1;o</property>
+                    <property name="label" translatable="yes">Año</property>
                   </widget>
                   <packing>
                     <property name="expand">False</property>
@@ -8830,7 +8817,7 @@ Agregando DEDUCIBLE a Factura
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="max_length">4</property>
-                    <property name="invisible_char">&#x25CF;</property>
+                    <property name="invisible_char">●</property>
                   </widget>
                   <packing>
                     <property name="position">5</property>
@@ -8969,7 +8956,6 @@ Agregando DEDUCIBLE a Factura
                 <child>
                   <widget class="GtkVBox" id="vbox1">
                     <property name="visible">True</property>
-                    <property name="orientation">vertical</property>
                     <child>
                       <widget class="GtkButton" id="button_imprimir">
                         <property name="width_request">90</property>
@@ -9098,7 +9084,6 @@ de Caja</property>
                 <child>
                   <widget class="GtkVBox" id="vbox2">
                     <property name="visible">True</property>
-                    <property name="orientation">vertical</property>
                     <child>
                       <widget class="GtkButton" id="button_imprimir_comp_serv">
                         <property name="width_request">90</property>
@@ -9238,7 +9223,7 @@ de Caja</property>
                 <property name="width_request">1</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
-                <property name="invisible_char">&#x25CF;</property>
+                <property name="invisible_char">●</property>
               </widget>
               <packing>
                 <property name="position">1</property>
@@ -9492,11 +9477,9 @@ de Caja</property>
     <child>
       <widget class="GtkVBox" id="vbox67">
         <property name="visible">True</property>
-        <property name="orientation">vertical</property>
         <child>
           <widget class="GtkVBox" id="vbox68">
             <property name="visible">True</property>
-            <property name="orientation">vertical</property>
             <child>
               <widget class="GtkHBox" id="hbox196">
                 <property name="visible">True</property>
@@ -9532,7 +9515,7 @@ de Caja</property>
                   <widget class="GtkEntry" id="entry_numero_comprobante">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
-                    <property name="invisible_char">&#x25CF;</property>
+                    <property name="invisible_char">●</property>
                   </widget>
                   <packing>
                     <property name="position">3</property>
@@ -9553,7 +9536,7 @@ de Caja</property>
                   <widget class="GtkEntry" id="entry_total_comprobante">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
-                    <property name="invisible_char">&#x25CF;</property>
+                    <property name="invisible_char">●</property>
                   </widget>
                   <packing>
                     <property name="position">5</property>
@@ -9625,7 +9608,7 @@ de Caja</property>
                 <child>
                   <widget class="GtkLabel" id="label294">
                     <property name="visible">True</property>
-                    <property name="label" translatable="yes">A&#xF1;o </property>
+                    <property name="label" translatable="yes">Año </property>
                   </widget>
                   <packing>
                     <property name="expand">False</property>
@@ -9720,7 +9703,7 @@ de Caja</property>
                   <widget class="GtkLabel" id="label1">
                     <property name="width_request">120</property>
                     <property name="visible">True</property>
-                    <property name="label" translatable="yes">Observacion</property>
+                    <property name="label" translatable="yes">Observacion/Oficio</property>
                   </widget>
                   <packing>
                     <property name="position">0</property>
@@ -9731,7 +9714,7 @@ de Caja</property>
                     <property name="width_request">580</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
-                    <property name="invisible_char">&#x25CF;</property>
+                    <property name="invisible_char">●</property>
                   </widget>
                   <packing>
                     <property name="position">1</property>
@@ -9740,6 +9723,64 @@ de Caja</property>
               </widget>
               <packing>
                 <property name="position">3</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="GtkHBox" id="hbox2">
+                <property name="visible">True</property>
+                <child>
+                  <widget class="GtkLabel" id="label3">
+                    <property name="width_request">0</property>
+                    <property name="visible">True</property>
+                    <property name="label" translatable="yes">Nomina</property>
+                  </widget>
+                  <packing>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <widget class="GtkEntry" id="entry_observaciones2">
+                    <property name="width_request">580</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="invisible_char">●</property>
+                  </widget>
+                  <packing>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+              </widget>
+              <packing>
+                <property name="position">4</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="GtkHBox" id="hbox3">
+                <property name="visible">True</property>
+                <child>
+                  <widget class="GtkLabel" id="label4">
+                    <property name="width_request">120</property>
+                    <property name="visible">True</property>
+                    <property name="label" translatable="yes">Departamento</property>
+                  </widget>
+                  <packing>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <widget class="GtkEntry" id="entry_observaciones3">
+                    <property name="width_request">580</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="invisible_char">●</property>
+                  </widget>
+                  <packing>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+              </widget>
+              <packing>
+                <property name="position">5</property>
               </packing>
             </child>
           </widget>
@@ -9916,7 +9957,7 @@ de Caja</property>
               <widget class="GtkEntry" id="entry_buscar">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
-                <property name="invisible_char">&#x25CF;</property>
+                <property name="invisible_char">●</property>
               </widget>
               <packing>
                 <property name="position">1</property>
@@ -10037,7 +10078,7 @@ de Caja</property>
                     <property name="width_request">5</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
-                    <property name="invisible_char">&#x25CF;</property>
+                    <property name="invisible_char">●</property>
                   </widget>
                   <packing>
                     <property name="position">2</property>
@@ -10048,7 +10089,7 @@ de Caja</property>
                     <property name="width_request">5</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
-                    <property name="invisible_char">&#x25CF;</property>
+                    <property name="invisible_char">●</property>
                   </widget>
                   <packing>
                     <property name="position">3</property>
@@ -10059,7 +10100,7 @@ de Caja</property>
                     <property name="width_request">5</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
-                    <property name="invisible_char">&#x25CF;</property>
+                    <property name="invisible_char">●</property>
                   </widget>
                   <packing>
                     <property name="position">4</property>
@@ -10092,7 +10133,7 @@ de Caja</property>
                     <property name="width_request">5</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
-                    <property name="invisible_char">&#x25CF;</property>
+                    <property name="invisible_char">●</property>
                   </widget>
                   <packing>
                     <property name="position">7</property>
@@ -10103,7 +10144,7 @@ de Caja</property>
                     <property name="width_request">5</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
-                    <property name="invisible_char">&#x25CF;</property>
+                    <property name="invisible_char">●</property>
                   </widget>
                   <packing>
                     <property name="position">8</property>
@@ -10114,7 +10155,7 @@ de Caja</property>
                     <property name="width_request">5</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
-                    <property name="invisible_char">&#x25CF;</property>
+                    <property name="invisible_char">●</property>
                   </widget>
                   <packing>
                     <property name="position">9</property>
@@ -10517,7 +10558,7 @@ de Caja</property>
                   <widget class="GtkEntry" id="entry_cantidad">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
-                    <property name="invisible_char">&#x25CF;</property>
+                    <property name="invisible_char">●</property>
                     <property name="text" translatable="yes">0</property>
                   </widget>
                   <packing>
@@ -10539,7 +10580,7 @@ de Caja</property>
                   <widget class="GtkEntry" id="entry_precio">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
-                    <property name="invisible_char">&#x25CF;</property>
+                    <property name="invisible_char">●</property>
                     <property name="text" translatable="yes">0</property>
                   </widget>
                   <packing>
@@ -10602,7 +10643,7 @@ de Caja</property>
               <widget class="GtkEntry" id="entry_descripcion">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
-                <property name="invisible_char">&#x25CF;</property>
+                <property name="invisible_char">●</property>
               </widget>
               <packing>
                 <property name="position">1</property>
@@ -10814,7 +10855,7 @@ de Caja</property>
                             <child>
                               <widget class="GtkLabel" id="label319">
                                 <property name="visible">True</property>
-                                <property name="label" translatable="yes">N&#xBA; de Nota Cred. </property>
+                                <property name="label" translatable="yes">Nº de Nota Cred. </property>
                               </widget>
                               <packing>
                                 <property name="expand">False</property>
@@ -11150,7 +11191,7 @@ de Caja</property>
                           <widget class="GtkEntry" id="entry_descripcion1">
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
-                            <property name="invisible_char">&#x25CF;</property>
+                            <property name="invisible_char">●</property>
                           </widget>
                           <packing>
                             <property name="position">1</property>
@@ -11179,7 +11220,7 @@ de Caja</property>
                           <widget class="GtkEntry" id="entry_descripcion2">
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
-                            <property name="invisible_char">&#x25CF;</property>
+                            <property name="invisible_char">●</property>
                           </widget>
                           <packing>
                             <property name="position">1</property>

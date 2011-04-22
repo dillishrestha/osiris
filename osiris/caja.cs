@@ -180,6 +180,10 @@ namespace osiris
 		[Widget] Gtk.Label label_comp_remision;
 		[Widget] Gtk.ComboBox combobox_formapago;
 		[Widget] Gtk.Label label283 = null;
+		[Widget] Gtk.Entry entry_observaciones2 = null;
+		[Widget] Gtk.Entry entry_observaciones3 = null;
+		[Widget] Gtk.ComboBox combobox_tipocomprobante = null;
+		[Widget] Gtk.Label label2 = null;
 		
 		/////// Ventana Alta de Paciente\\\\\\\\
 		[Widget] Gtk.Window causa_egreso;
@@ -1716,12 +1720,21 @@ namespace osiris
 				this.entry_ano1.IsEditable = false;
 				entry_hora_compr.IsEditable = false;
 				
+				CellRendererText cell3 = new CellRendererText();
+				combobox_tipocomprobante.PackStart(cell3, true);
+				combobox_tipocomprobante.AddAttribute(cell3,"text",0);
+	        
+				ListStore store5 = new ListStore( typeof (string), typeof (int));
+				combobox_tipocomprobante.Model = store5;
+				store5.AppendValues ("",0);
+				store5.AppendValues ("CONTROL DE CLINICA",0);
+				store5.AppendValues ("SILVIA OVALLE GALLARDO",1);				
+				
 				button_guardar_pago.Clicked += new EventHandler(on_button_guardar_pago_clicked);
 				button_salir.Clicked += new EventHandler(on_cierraventanas_clicked); // esta sub-clase esta en hscmty.cs
 				llenado_formapago();
 			}
-		}
-		
+		}		
 				
 		void on_button_guardar_pago_clicked(object sender, EventArgs args)
 		{
@@ -1732,11 +1745,8 @@ namespace osiris
 		{
 			string descrippago = "";
 			bool pago_sino = true;
-			string sql_abonos_servicio = "";
-			
-			if (entry_numero_comprobante.Text.Trim() != "" && idformadepago > 1){
-				Widget win = (Widget) sender;
-				win.Toplevel.Destroy();				
+			string sql_abonos_servicio = "";			
+			if (entry_numero_comprobante.Text.Trim() != "" && idformadepago > 1){								
 				// Actualiza informacion en pagos y abonos
 				if (idformadepago > 1 ){
 					MessageDialog msgBox = new MessageDialog (MyWin,DialogFlags.Modal,
@@ -1781,7 +1791,8 @@ namespace osiris
 	 											this.entry_numero_factura.Text+"','"+
 	 											(string) entry_numero_comprobante.Text.Trim()+"','"+
 												tipo_de_comprobante+"');";
-							
+							Widget win = (Widget) sender;
+							win.Toplevel.Destroy();
 						}
 						if(tipo_de_comprobante == "CAJA"){
 							descrippago = "PAGO DE PROCEDIMIENTO";
@@ -1818,8 +1829,9 @@ namespace osiris
 	 											(string) entry_numero_comprobante.Text.Trim()+"','"+
 												tipo_de_comprobante+"','"+
 												entry_observacion_egreso.Text.ToString().ToUpper().Trim()+"');";
-						}
-						
+							Widget win = (Widget) sender;
+							win.Toplevel.Destroy();
+						}						
 						if(tipo_de_comprobante == "SERVICIO"){
 							descrippago = "COMPROBANTE DE SERVICIO";
 							pago_sino = false;
@@ -1833,7 +1845,9 @@ namespace osiris
 														"id_quien_creo," +
 														"id_empresa,"+
 														"id_tipo_paciente,"+
-														"observaciones) "+
+														"observaciones," +
+														"observaciones2," +
+														"observaciones3) "+
 													"VALUES ('"+
 														(string) classpublic.lee_ultimonumero_registrado("osiris_erp_comprobante_servicio","numero_comprobante_servicio","")+"','"+
 														folioservicio+"','"+
@@ -1844,9 +1858,13 @@ namespace osiris
 														LoginEmpleado+"','"+
 														idempresa_paciente.ToString().Trim()+"','"+
 														id_tipopaciente.ToString()+"','"+
-														entry_observacion_egreso.Text.ToString().ToUpper().Trim()+"');";
-						}
-						
+														entry_observacion_egreso.Text.ToString().ToUpper().Trim()+"','"+
+														entry_observaciones2.Text.ToString().ToUpper().Trim()+"','"+
+														entry_observaciones3.Text.ToString().ToUpper().Trim()+
+														"');";
+							Widget win = (Widget) sender;
+							win.Toplevel.Destroy();
+						}						
 						if(tipo_de_comprobante == "PAGARE"){
 							descrippago = "COMPROBANTE DE PAGARE";
 							pago_sino = false;
@@ -1860,8 +1878,7 @@ namespace osiris
 														folioservicio+"','"+
 														this.PidPaciente.ToString().Trim()+"','"+
 														DateTime.Now.ToString("yyyy-MM-dd")+"');";
-						}
-						
+						}						
 	 					NpgsqlConnection conexion; 
 						conexion = new NpgsqlConnection (connectionString+nombrebd);
 						// Verifica que la base de datos este conectado
@@ -1949,7 +1966,7 @@ namespace osiris
 				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
 				MessageType.Error,ButtonsType.Close, "Falta comprobante de caja o la Forma de Pago....");
 				msgBoxError.Run ();				msgBoxError.Destroy();
-			}
+			}			
 		}
 		
 		void comprobante_de_caja_pago(string tipo_comprobante)
@@ -2005,7 +2022,8 @@ namespace osiris
 						"to_char(osiris_productos.precio_producto_publico,'999999999.99999') AS preciopublico,osiris_erp_comprobante_servicio.numero_comprobante_servicio AS numerorecibo,"+
 						"osiris_his_paciente.nombre1_paciente || ' ' || osiris_his_paciente.nombre2_paciente || ' ' || osiris_his_paciente.apellido_paterno_paciente || ' ' || osiris_his_paciente.apellido_materno_paciente AS nombre_completo, "+
 						"to_char(osiris_his_paciente.fecha_nacimiento_paciente, 'dd-MM-yyyy') AS fechanacpaciente, to_char(to_number(to_char(age('"+DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss")+"',osiris_his_paciente.fecha_nacimiento_paciente),'yyyy') ,'9999'),'9999') AS edadpaciente, "+
-					    "telefono_particular1_paciente,osiris_erp_comprobante_servicio.observaciones AS observacionesvarias,osiris_erp_comprobante_servicio.concepto_del_comprobante AS concepto_comprobante,"+
+					    "telefono_particular1_paciente,osiris_erp_comprobante_servicio.observaciones || ' ' || osiris_erp_comprobante_servicio.observaciones2 || ' ' || osiris_erp_comprobante_servicio.observaciones3 AS observacionesvarias," +
+					    "osiris_erp_comprobante_servicio.concepto_del_comprobante AS concepto_comprobante,"+
 						"osiris_erp_cobros_enca.id_empresa,descripcion_empresa,osiris_erp_cobros_enca.nombre_medico_encabezado "+
 					    //"to_char(monto_de_abono_procedimiento,'999999999.99') AS montodelabono "+
 				        "FROM osiris_erp_cobros_deta,osiris_his_tipo_admisiones,osiris_productos,osiris_grupo_producto,osiris_erp_comprobante_servicio,osiris_his_paciente,osiris_erp_cobros_enca,osiris_empresas "+
@@ -2072,6 +2090,9 @@ namespace osiris
 				this.entry_mes1.IsEditable = true;
 				this.entry_ano1.IsEditable = true;
 				entry_hora_compr.IsEditable = true;
+				
+				label2.Hide();
+				combobox_tipocomprobante.Hide();					
 				
 				button_guardar_pago.Clicked += new EventHandler(on_button_guardar_servicio_clicked);
 				button_salir.Clicked += new EventHandler(on_cierraventanas_clicked); // esta sub-clase esta en hscmty.cs
@@ -2755,7 +2776,7 @@ namespace osiris
 				toma_valor3 = (string) lista_de_servicios.Model.GetValue (iter,8);  // toma el descuento
 				
 				// verifica el codigo de admision no sea laboratorio
-				if ((int) lista_de_servicios.Model.GetValue (iter,13) != 400 ){  				
+				//if ((int) lista_de_servicios.Model.GetValue (iter,13) != 400 ){  				
 					if (!(bool) lista_de_servicios.Model.GetValue (iter,14)){
 									
 	 					treeViewEngineServicio.Remove (ref iter);
@@ -2879,11 +2900,11 @@ namespace osiris
 							msgBox.Run();	msgBox.Destroy();
 	 					}
 	 				}
- 				}else{
- 					MessageDialog msgBox = new MessageDialog (MyWin,DialogFlags.Modal,
-					MessageType.Error,ButtonsType.Ok,"No esta autorizado para esta opcion, verifique con LABORATORIO... ");
-					msgBox.Run();	msgBox.Destroy();
- 				}
+ 				//}else{
+ 				//	MessageDialog msgBox = new MessageDialog (MyWin,DialogFlags.Modal,
+				//	MessageType.Error,ButtonsType.Ok,"No esta autorizado para esta opcion, verifique con LABORATORIO... ");
+				//	msgBox.Run();	msgBox.Destroy();
+ 				//}
  			}
 		}
 		

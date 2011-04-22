@@ -5,7 +5,7 @@
 // Monterrey - Mexico
 //
 // Autor    	: Juan Antonio Peña Gonzalez (Programacion) gjuanzz@gmail.com
-//				  Ing. Daniel Olivares C. cambio a GTKPrint con Pango y Cairo arcangeldoc@gmail.com
+//				  Ing. Daniel Olivares C. ajuste varios a GTKPrint con Pango y Cairo arcangeldoc@gmail.com
 //				  Israel Peña cambio de gnomeprint a formato a Pango y Cairo
 //				  
 // Licencia		: GLP
@@ -27,7 +27,7 @@
 // 
 //////////////////////////////////////////////////////////
 // Programa		: 
-// Proposito	: Impresion del procedimiento de cobranza 
+// Proposito	: 
 // Objeto		: rpt_prot_admision.cs
 using System;
 using Gtk;
@@ -147,8 +147,7 @@ namespace osiris
         						
 				NpgsqlDataReader lector = comando.ExecuteReader ();
 				
-				if( (bool) lector.Read())
-				{
+				if( (bool) lector.Read()){
 					medico_tratante = (string) lector["nombre_medico_tratante"];
 					string edadpac = (string) lector["edad"];
 					string mesespac = (string) lector["mesesedad"];

@@ -1180,22 +1180,22 @@ namespace osiris
 				                                        typeof(string),typeof(string),typeof(string));
 				treeview_lista_solicitados.Model = treeViewEnginesolicitados;
 				treeview_lista_solicitados.RulesHint = true;
-				
+								
 				Gtk.TreeViewColumn col_request0 = new TreeViewColumn(); 	Gtk.CellRendererToggle cellrt0 = new CellRendererToggle();		
 				col_request0.Title = "Seleccion";
 				col_request0.PackStart(cellrt0, true);
 				col_request0.AddAttribute (cellrt0, "active", 0);
 				col_request0.Resizable = true;
 				col_request0.SortColumnId = (int) coldatos_request.col_request0;
-				cellrt0.Toggled += selecciona_examen; 
-				
+				cellrt0.Toggled += selecciona_examen;
+								
 				Gtk.TreeViewColumn col_request1 = new TreeViewColumn();		Gtk.CellRendererText cellrt1 = new Gtk.CellRendererText();		
 				col_request1.Title = "N° Atencion";
 				col_request1.PackStart(cellrt1, true);
 				col_request1.AddAttribute (cellrt1, "text", 1);
 				col_request1.Resizable = true;
 				col_request1.SortColumnId = (int) coldatos_request.col_request1;
-				
+							
 				Gtk.TreeViewColumn col_request2 = new TreeViewColumn();		Gtk.CellRendererText cellrt2 = new Gtk.CellRendererText();		
 				col_request2.Title = "Expediente";
 				col_request2.PackStart(cellrt2, true);
@@ -1244,7 +1244,9 @@ namespace osiris
 				col_request8.AddAttribute (cellrt8, "text", 8);
 				col_request8.Resizable = true;
 				col_request8.SortColumnId = (int) coldatos_request.col_request8;
-				
+				cellrt8.Editable = true;
+				cellrt8.Edited += NumberCellEdited_Autorizado;
+								
 				Gtk.TreeViewColumn col_request9 = new TreeViewColumn();		Gtk.CellRendererText cellrt9 = new Gtk.CellRendererText();		
 				col_request9.Title = "Fech.Hora Soli.";
 				col_request9.PackStart(cellrt9, true);
@@ -1440,7 +1442,7 @@ namespace osiris
 							   lector["descripcion_producto"].ToString().Trim(),
 							    false,
 				                lector["folio_de_solicitud"].ToString().Trim(),
-				                "Cantidad Solici",
+				                float.Parse(lector["cantidad_solicitada"].ToString().Trim()).ToString("F"),
 							    true,
 							    true);
 					}
@@ -1536,5 +1538,42 @@ namespace osiris
 			Widget win = (Widget) sender;
 			win.Toplevel.Destroy();
 		}
+		
+		void NumberCellEdited_Autorizado (object o, EditedArgs args)
+		{
+			Gtk.TreeIter iter;
+			bool esnumerico = false;
+			int var_paso = 0;
+			int largo_variable = args.NewText.ToString().Length;
+			string toma_variable = args.NewText.ToString();
+			
+			treeViewEnginesolicitados.GetIter (out iter, new Gtk.TreePath (args.Path));
+			
+			while (var_paso < largo_variable){				
+				if ((string) toma_variable.Substring(var_paso,1).ToString() == "." || 
+					(string) toma_variable.Substring(var_paso,1).ToString() == "0" ||
+					(string) toma_variable.Substring(var_paso,1).ToString() == "1" || 
+					(string) toma_variable.Substring(var_paso,1).ToString() == "2" ||
+					(string) toma_variable.Substring(var_paso,1).ToString() == "3" ||
+					(string) toma_variable.Substring(var_paso,1).ToString() == "4" ||
+					(string) toma_variable.Substring(var_paso,1).ToString() == "5" || 
+					(string) toma_variable.Substring(var_paso,1).ToString() == "6" || 
+					(string) toma_variable.Substring(var_paso,1).ToString() == "7" || 
+					(string) toma_variable.Substring(var_paso,1).ToString() == "8" ||
+					(string) toma_variable.Substring(var_paso,1).ToString() == "9") {
+					esnumerico = true;
+				}else{
+				 	esnumerico = false;
+				 	var_paso = largo_variable;
+				}
+				var_paso += 1;
+			}
+			if (esnumerico == true){		
+				treeViewEnginesolicitados.SetValue(iter,(int) coldatos_request.col_request8,args.NewText);
+				bool old = (bool) treeview_lista_solicitados.Model.GetValue (iter,0);
+				treeview_lista_solicitados.Model.SetValue(iter,0,!old);
+							
+			}
+ 		}
 	}	
 }

@@ -1728,7 +1728,11 @@ namespace osiris
 				combobox_tipocomprobante.Model = store5;
 				store5.AppendValues ("",0);
 				store5.AppendValues ("CONTROL DE CLINICA",0);
-				store5.AppendValues ("SILVIA OVALLE GALLARDO",1);				
+				store5.AppendValues ("OFTALMOLOGIA APLICADA",1);
+				store5.AppendValues ("OPTICA",2);
+				store5.AppendValues ("DENTAL",3);				
+				store5.AppendValues ("SILVIA OVALLE GALLARDO",4);
+				
 				
 				button_guardar_pago.Clicked += new EventHandler(on_button_guardar_pago_clicked);
 				button_salir.Clicked += new EventHandler(on_cierraventanas_clicked); // esta sub-clase esta en hscmty.cs

@@ -188,7 +188,7 @@ namespace osiris
 					}
 					cr.MoveTo(25*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText((string) this.lista_de_resultados.Model.GetValue (iter,0));		Pango.CairoHelper.ShowLayout (cr, layout);
 					cr.MoveTo(230*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText((string) this.lista_de_resultados.Model.GetValue (iter,1));		Pango.CairoHelper.ShowLayout (cr, layout);
-					cr.MoveTo(350*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText((string) this.lista_de_resultados.Model.GetValue (iter,2));		Pango.CairoHelper.ShowLayout (cr, layout);
+					cr.MoveTo(360*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText((string) this.lista_de_resultados.Model.GetValue (iter,2));		Pango.CairoHelper.ShowLayout (cr, layout);
 					cr.MoveTo(570*escala_en_linux_windows,(comienzo_linea+separacion_linea)*escala_en_linux_windows);
 					cr.LineTo(05,comienzo_linea+separacion_linea);		// Linea Horizontal 4
 					cr.Stroke();
@@ -204,7 +204,7 @@ namespace osiris
 						}
 						cr.MoveTo(25*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText((string) this.lista_de_resultados.Model.GetValue (iter,0));		Pango.CairoHelper.ShowLayout (cr, layout);
 						cr.MoveTo(230*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText((string) this.lista_de_resultados.Model.GetValue (iter,1));		Pango.CairoHelper.ShowLayout (cr, layout);
-						cr.MoveTo(350*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText((string) this.lista_de_resultados.Model.GetValue (iter,2));		Pango.CairoHelper.ShowLayout (cr, layout);
+						cr.MoveTo(360*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText((string) this.lista_de_resultados.Model.GetValue (iter,2));		Pango.CairoHelper.ShowLayout (cr, layout);
 						comienzo_linea += separacion_linea;
 					}
 				}

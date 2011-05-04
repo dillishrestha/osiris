@@ -183,10 +183,7 @@ namespace osiris
 			}
 			
 			crea_treeview_estudios();
-			crea_treeview_estudios_solicitados();
 			carga_estudios_solicitados();
-			// expand all rows after the treeview widget has been realized
-			treeview_estudios_solicitados.ExpandAll();
 			entry_numero_solicitud.ModifyBase(StateType.Normal, new Gdk.Color(0,255,0)); // Color Amarillo
 			
 			statusbar_solicitud_labrx.Pop(0);
@@ -560,85 +557,7 @@ namespace osiris
 			treeview_solicitud_labrx.AppendColumn(col_quiensolicita); 	// 7
 			treeview_solicitud_labrx.AppendColumn(col_foliointerno); 	// 8
 		}
-		
-		void crea_treeview_estudios_solicitados()
-		{
-			Gtk.CellRendererText text;
-			foreach (TreeViewColumn tvc in this.treeview_estudios_solicitados.Columns)
-			this.treeview_estudios_solicitados.RemoveColumn(tvc);
-			treeViewEngineEstudiosSoli = new TreeStore(typeof(string),
-													typeof(string),
-													typeof(string),
-													typeof(string),
-													typeof(string),
-													typeof(string),
-													typeof(string),
-													typeof(string),
-													typeof(string),
-													typeof(string),
-													typeof(string),
-													typeof(string),
-													typeof(string));
-			treeview_estudios_solicitados.Model = treeViewEngineEstudiosSoli;
-			treeview_estudios_solicitados.RulesHint = true;
-			treeview_estudios_solicitados.Selection.Mode = SelectionMode.Multiple;
-			
-			// column for holiday names
-			text = new CellRendererText ();
-			text.Xalign = 0.0f;
-			columns.Add (text);
-			TreeViewColumn column0 = new TreeViewColumn("N° Soli./Estudio", text,
-								    "text", Column.solicitud_estudio);
-			column0.Resizable = true;
-			column0.SortColumnId = (int) Column.solicitud_estudio;
-			treeview_estudios_solicitados.InsertColumn (column0, (int) Column.solicitud_estudio);
-			
-			text = new CellRendererText ();
-			text.Xalign = 0.0f;
-			columns.Add (text);
-			TreeViewColumn column1 = new TreeViewColumn("Cant.Soli", text,
-								    "text", Column.cant_solicitado);
-			column1.Resizable = true;
-			column1.SortColumnId = (int) Column.cant_solicitado;
-			treeview_estudios_solicitados.InsertColumn (column1, (int) Column.cant_solicitado);
-			
-			text = new CellRendererText ();
-			text.Xalign = 0.0f;
-			columns.Add (text);
-			TreeViewColumn column2 = new TreeViewColumn("Fecha Solicitud", text,
-								    "text", Column.col_fechasol);
-			column2.Resizable = true;
-			column2.SortColumnId = (int) Column.col_fechasol;
-			treeview_estudios_solicitados.InsertColumn (column2, (int) Column.col_fechasol);
-			
-			text = new CellRendererText ();
-			text.Xalign = 0.0f;
-			columns.Add (text);
-			TreeViewColumn column3 = new TreeViewColumn("Gabinete", text,
-								    "text", Column.col_gabinete);
-			column3.Resizable = true;
-			column3.SortColumnId = (int) Column.col_gabinete;
-			treeview_estudios_solicitados.InsertColumn (column3, (int) Column.col_gabinete);
-			
-			text = new CellRendererText ();
-			text.Xalign = 0.0f;
-			columns.Add (text);
-			TreeViewColumn column4 = new TreeViewColumn("Quien Solicito", text,
-								    "text", Column.col_quiensolicito);
-			column4.Resizable = true;
-			column4.SortColumnId = (int) Column.col_quiensolicito;
-			treeview_estudios_solicitados.InsertColumn (column4, (int) Column.col_quiensolicito);
-		}
-		
-		enum Column
-		{
-			solicitud_estudio,
-			cant_solicitado,
-			col_fechasol,
-			col_gabinete,
-			col_quiensolicito
-		}
-		
+				
 		private void ExpandRows (object obj, EventArgs args)
 		{
 			TreeView treeView = obj as TreeView;
@@ -1090,26 +1009,27 @@ namespace osiris
 		
 		void on_button_cargar_examen_clicked(object sender, EventArgs args)
 		{
-			TreeModel model;
-			TreeIter iterSelected;
- 			if (this.treeview_lista_solicitados.Selection.GetSelected(out model, out iterSelected)){
-				MessageDialog msgBox = new MessageDialog (MyWin,DialogFlags.Modal,
+			string sql_insert_cargo = "";
+			MessageDialog msgBox = new MessageDialog (MyWin,DialogFlags.Modal,
 										MessageType.Question,ButtonsType.YesNo,"¿ Esta seguro de cargar los Estudios Seleccionados");
-				ResponseType miResultado = (ResponseType)msgBox.Run ();
-				msgBox.Destroy();
-					
-			 	if (miResultado == ResponseType.Yes){
-					NpgsqlConnection conexion; 
-					conexion = new NpgsqlConnection (connectionString+nombrebd);
-    	        	// Verifica que la base de datos este conectada
-					try{
-						conexion.Open ();
-						NpgsqlCommand comando; 
-						comando = conexion.CreateCommand ();					
+			ResponseType miResultado = (ResponseType)msgBox.Run ();
+			msgBox.Destroy();
+			if (miResultado == ResponseType.Yes){
+				NpgsqlConnection conexion; 
+				conexion = new NpgsqlConnection (connectionString+nombrebd);
+	        	// Verifica que la base de datos este conectada
+				try{
+					conexion.Open ();
+					NpgsqlCommand comando; 
+					comando = conexion.CreateCommand ();
+					TreeIter iter;
+					if ( treeViewEnginesolicitados.GetIterFirst (out iter)){
 						if(checkbutton_px_solicitud.Active == false){
-							// View for request
-							/*
-							comando.CommandText = "INSERT INTO osiris_erp_cobros_deta("+
+							if((bool) treeview_lista_solicitados.Model.GetValue(iter,0) == true){
+								Console.WriteLine((string) treeview_lista_solicitados.Model.GetValue(iter,1));
+								sql_insert_cargo = "";
+									
+								/*"INSERT INTO osiris_erp_cobros_deta("+
 		 														"id_producto,"+
 		 														"folio_de_servicio,"+
 		 														"pid_paciente,"+
@@ -1127,7 +1047,7 @@ namespace osiris
 		 														"id_almacen,"+
 		 														"precio_costo) "+
 		 														"VALUES ('"+
-		 														double.Parse((string) treeview_lista_solicitados.Model.GetValue(iter,2))+"','"+//id_producto
+		 														double.Parse((string) treeview_lista_solicitados.Model.GetValue(iter,5))+"','"+//id_producto
 		 														folioservicio+"','"+//folio_de_servicio
 		 														int.Parse((string)entry_pid_paciente.Text)+"','"+//pid_paciente
 		 														(float) treeview_lista_solicitados.Model.GetValue(iter,1)+"','"+//cantidad_aplicada
@@ -1144,25 +1064,43 @@ namespace osiris
 		 														this.idsubalmacen.ToString().Trim()+"','"+
 		 														float.Parse((string)treeview_lista_solicitados.Model.GetValue(iter,17))+//precio_costo
 		 														"');";*/
-							comando.ExecuteNonQuery();
-							comando.Dispose();							
+								
+								
+							}
 						}else{
-							// View for patients
 							
 						}
-					}catch (NpgsqlException ex){
-						MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+						comando.CommandText = sql_insert_cargo;
+						comando.ExecuteNonQuery();  					comando.Dispose();
+						
+						// se debe actualizar el registro de la solicitud para que desaparezca de la lista
+						actualiza_solicitud("10");						
+						while ( treeViewEnginesolicitados.IterNext(ref iter)){
+							// revisando si la lista esta por solicitudes o sino por pacientes
+							if(checkbutton_px_solicitud.Active == false){
+								if((bool) treeview_lista_solicitados.Model.GetValue(iter,0) == true){
+									Console.WriteLine((string) treeview_lista_solicitados.Model.GetValue(iter,1));
+								}
+							}else{
+							
+							}
+							comando.CommandText = sql_insert_cargo;
+							comando.ExecuteNonQuery();  					comando.Dispose();
+						}						
+					}						
+				}catch (NpgsqlException ex){
+					MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
 															MessageType.Error, 
 															ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
-						msgBoxError.Run ();				conexion.Close();		
-					}
-					conexion.Close();
+					msgBoxError.Run ();				conexion.Close();		
 				}
-			}else{
-				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
-							MessageType.Error, ButtonsType.Close,"No hay solicitudes para cargar...","Solicitudes");
-				msgBoxError.Run ();						msgBoxError.Destroy();
+				conexion.Close();
 			}
+		}
+		
+		void actualiza_solicitud(string numero_secuencia)
+		{
+			
 		}
 			
 		void create_treeview_solicitudes(bool tipo_treeview)
@@ -1292,7 +1230,7 @@ namespace osiris
 				llenado_treeview_solicitudes((bool) checkbutton_px_solicitud.Active,treeViewEnginesolicitados);
 				
 			}else{
-				treeViewEnginesolicitados = new TreeStore(typeof(string),typeof(bool),typeof(string),typeof(string),
+				treeViewEnginesolicitados = new TreeStore(typeof(string),typeof(bool),typeof(string),typeof(string),typeof(string),
 				                                          typeof(bool),typeof(bool));
 				treeview_lista_solicitados.Model = treeViewEnginesolicitados;
 				treeview_lista_solicitados.RulesHint = true;
@@ -1339,7 +1277,17 @@ namespace osiris
 								    "text", Column.cantsolicitada);
 				column3.Resizable = true;
 				column3.SortColumnId = (int) Column.cantsolicitada;
-				treeview_lista_solicitados.InsertColumn (column3, (int) Column.cantsolicitada);				
+				treeview_lista_solicitados.InsertColumn (column3, (int) Column.cantsolicitada);
+				
+				text = new CellRendererText ();
+				text.Xalign = 0.0f;
+			 	columns.Add (text);
+				TreeViewColumn column4 = new TreeViewColumn("Cant.Autorizada", text,
+								    "text", Column.cantsolicitada);
+				column4.Resizable = true;
+				column4.SortColumnId = (int) Column.cantsolicitada;
+				
+				treeview_lista_solicitados.InsertColumn (column4, (int) Column.cantautorizada);
 				
 				llenado_treeview_solicitudes((bool) checkbutton_px_solicitud.Active,treeViewEnginesolicitados);			
 			}
@@ -1368,6 +1316,7 @@ namespace osiris
 			seleccion,
 			nro_solicitud,
 			cantsolicitada,
+			cantautorizada,
 			
 			Visible,
 			World,			
@@ -1435,6 +1384,7 @@ namespace osiris
 								    false,
 				                    null,
 				                    null,
+						            null,
 								    false,
 				                    false);
 				
@@ -1443,6 +1393,7 @@ namespace osiris
 							    false,
 				                lector["folio_de_solicitud"].ToString().Trim(),
 				                float.Parse(lector["cantidad_solicitada"].ToString().Trim()).ToString("F"),
+						        "0.00",
 							    true,
 							    true);
 					}
@@ -1472,6 +1423,7 @@ namespace osiris
 								    false,
 				                    null,
 				                    null,
+								    null,
 								    false,
 				                    false);
 								toma_pidpaciente = (int) lector["pidpaciente"];
@@ -1481,6 +1433,7 @@ namespace osiris
 							    	false,
 				                	lector["folio_de_solicitud"].ToString().Trim(),
 				                	"Cantidad Solici",
+								    "Cantidad Autorizada",
 							    	true,
 							    	true);
 							}else{
@@ -1489,6 +1442,7 @@ namespace osiris
 							    	false,
 				                	lector["folio_de_solicitud"].ToString().Trim(),
 				                	"Cantidad Solici",
+								    "Cantidad Autorizada",
 							    	true,
 							    	true);
 							}
@@ -1570,9 +1524,7 @@ namespace osiris
 			}
 			if (esnumerico == true){		
 				treeViewEnginesolicitados.SetValue(iter,(int) coldatos_request.col_request8,args.NewText);
-				bool old = (bool) treeview_lista_solicitados.Model.GetValue (iter,0);
-				treeview_lista_solicitados.Model.SetValue(iter,0,!old);
-							
+				bool old = (bool) treeview_lista_solicitados.Model.GetValue (iter,0);							
 			}
  		}
 	}	

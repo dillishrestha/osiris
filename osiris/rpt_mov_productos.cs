@@ -23,37 +23,20 @@ namespace osiris
 		
 		string connectionString;						
 		string nombrebd;
-		string LoginEmpleado;
-    	string NomEmpleado;
-    	string AppEmpleado;
-    	string ApmEmpleado;
+		
 		// Declarando el treeview
 		Gtk.TreeView lista_resumen_productos;
-		Gtk.TreeStore treeViewEngineResumen;
+		Gtk.TreeStore treeViewEngineResumen;		
+		
 		string titulo = "MOVIMIENTOS DE PRODUCTOS POR PACIENTE";
-		int contador = 1;
-		int filas = -75;
-		string query1  = " ";
-		string query_fechas =" ";
-		string CantidadAplicada;
-		string idproducto;
-	    string descripcionproducto;
-		string foliodeservicio;
-		string pidpaciente;
-		string nombrepaciente; 
-		string idtipoadmisiones;  
-		string descripcionadmisiones;
+		string query1  = "";
 		//public string fechahoracreacion;
-		string desripcionproductorecortado;
 		string entry_dia1;
 		string entry_mes1;
 		string entry_ano1; 
 		string entry_dia2;
 		string entry_mes2;
 		string entry_ano2; 
-		string entry_total_aplicado;
-		string nombrepacienterecortado;
-		string titulopagina;
 	 	//Declaracion de ventana de error:
 		protected Gtk.Window MyWinError;
 		protected Gtk.Window MyWin;
@@ -68,14 +51,12 @@ namespace osiris
 			query1  = _query1_;
 			connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
 			nombrebd = conexion_a_DB._nombrebd;
-			titulopagina = titulopagina_;
 			entry_dia1 = entry_dia1_; 
 			entry_mes1 = entry_mes1_;
 			entry_ano1 = entry_ano1_;
 			entry_dia2 = entry_dia2_; 
 			entry_mes2= entry_mes2_;
 			entry_ano2 = entry_ano2_;
-			entry_total_aplicado = entry_total_aplicado_;
 			escala_en_linux_windows = classpublic.escala_linux_windows;
 			
 			print = new PrintOperation ();
@@ -90,7 +71,7 @@ namespace osiris
 		{
 			print.NPages = 1;  // crea cantidad de copias del reporte			
 			// para imprimir horizontalmente el reporte
-			//print.PrintSettings.Orientation = PageOrientation.Landscape;
+			print.PrintSettings.Orientation = PageOrientation.Landscape;
 			//Console.WriteLine(print.PrintSettings.Orientation.ToString());
 		}
 		
@@ -107,97 +88,67 @@ namespace osiris
 			string toma_descrip_prod = "";
 			Pango.FontDescription desc = Pango.FontDescription.FromString ("Sans");									
 			// cr.Rotate(90)  Imprimir Orizontalmente rota la hoja cambian las posiciones de las lineas y columna					
-			fontSize = 8.0;			layout = null;			layout = context.CreatePangoLayout ();
-			desc.Size = (int)(fontSize * pangoScale);		layout.FontDescription = desc;      
-			string fechahoracreacion = "";      
-			/*
-			contador = 0;
-			numpage = 1;
-			
-			ContextoImp.BeginPage("Pagina "+numpage.ToString());
-			//Encabezado de pagina
-			ContextoImp.Rotate(90);
-			// Cambiar la fuente
-			Gnome.Print.Setfont(ContextoImp,fuente5);
-			ContextoImp.MoveTo(320.7, -40);	       ContextoImp.Show( titulo+"");
-			Gnome.Print.Setfont(ContextoImp,fuente2);
-			ContextoImp.MoveTo(95, -30);			ContextoImp.Show("Sistema Hospitalario OSIRIS");
-			ContextoImp.MoveTo(95, -40);			ContextoImp.Show("Direccion:");
-			ContextoImp.MoveTo(95, -50);			ContextoImp.Show("Conmutador:");
-			ContextoImp.MoveTo(445, -50);			ContextoImp.Show("PAGINA "+numpage);
-			ContextoImp.MoveTo(399, -60);			ContextoImp.Show("Fecha Impresion: "+DateTime.Now.ToString("dd-MM-yyyy HH:mm"));
-			ContextoImp.MoveTo(370, -70);			ContextoImp.Show("Rango de Fechas :  Inicio " +entry_dia1+ "/"+entry_mes1+ "/"+entry_ano1+   "  Termino "  +entry_dia2+ "/"+entry_mes2+ "/"+entry_ano2);
-			ContextoImp.MoveTo(95, -80);			ContextoImp.Show("Cantidad:");
-			ContextoImp.MoveTo(145, -80);			ContextoImp.Show("ID:");
-			ContextoImp.MoveTo(195, -80);			ContextoImp.Show("Descripción Producto:");
-			ContextoImp.MoveTo(380, -80);			ContextoImp.Show("Folio:");
-			ContextoImp.MoveTo(410, -80);			ContextoImp.Show("PID:");
-			ContextoImp.MoveTo(440, -80);			ContextoImp.Show("Nom.Paciente:");
-			ContextoImp.MoveTo(695, -80);			ContextoImp.Show("Departamento:");
-			ContextoImp.MoveTo(625, -80);			ContextoImp.Show("Fecha de Cargo");
-			
-			filas = -90;
-			
+			fontSize = 8.0;			layout = null;			layout = context.CreatePangoLayout();
+			desc.Size = (int)(fontSize * pangoScale);		layout.FontDescription = desc;
 			NpgsqlConnection conexion;
 			conexion = new NpgsqlConnection (connectionString+nombrebd);
-						            
 			// Verifica que la base de datos este conectada
 			try{
+				imprime_encabezado(cr,layout);
 				conexion.Open ();
 				NpgsqlCommand comando; 
 				comando = conexion.CreateCommand ();
-											
 				comando.CommandText = query1;
 				//Console.WriteLine(comando.CommandText.ToString());
-				NpgsqlDataReader lector = comando.ExecuteReader ();
-					                    
+				NpgsqlDataReader lector = comando.ExecuteReader();
 				while (lector.Read()){
-					CantidadAplicada = (string) lector["cantidadaplicada"];
-					idproducto  = (string) lector["idproducto"];
-					descripcionproducto = (string) lector["descripcion_producto"];
-					foliodeservicio = 	(string) lector["foliodeservicio"];
-					pidpaciente = (string) lector["pidpaciente"];
-					nombrepaciente =  (string) lector["nombre_paciente"];
-					descripcionadmisiones = (string) lector["descripcion_admisiones"];								
-					fechahoracreacion = (string) lector["fechahoracreacion"];
-						                   
-					if(descripcionproducto.Length > 49){
-						desripcionproductorecortado = descripcionproducto.Substring(0,46)  ; 
-					}else{
-						desripcionproductorecortado = descripcionproducto;
-					}
-					if (nombrepaciente.Length > 49){
-						nombrepacienterecortado = nombrepaciente.Substring(0,46)  ; 
-					}else{
-						nombrepacienterecortado = nombrepaciente;
-					}
-					Gnome.Print.Setfont(ContextoImp,fuente1);
-											
-					ContextoImp.MoveTo(95, filas);		ContextoImp.Show((CantidadAplicada).ToString().Trim());
-					ContextoImp.MoveTo(140, filas);		ContextoImp.Show(idproducto);
-					ContextoImp.MoveTo(195, filas);		ContextoImp.Show(desripcionproductorecortado);
-					ContextoImp.MoveTo(370, filas);		ContextoImp.Show(foliodeservicio);	
-					ContextoImp.MoveTo(400, filas);		ContextoImp.Show(pidpaciente);	
-					ContextoImp.MoveTo(440, filas);		ContextoImp.Show(nombrepacienterecortado);
-					ContextoImp.MoveTo(625, filas);		ContextoImp.Show(fechahoracreacion);
-					ContextoImp.MoveTo(695, filas);		ContextoImp.Show(descripcionadmisiones);			
-					contador += 1;
-					filas -= 10;
-					salto_pagina(ContextoImp,trabajoImpresion);
+					//CantidadAplicada = (string) lector["cantidadaplicada"];
+					//idproducto  = (string) lector["idproducto"];
+					//descripcionproducto = (string) lector["descripcion_producto"];
+					//foliodeservicio = 	(string) lector["foliodeservicio"];
+					//pidpaciente = (string) lector["pidpaciente"];
+					//nombrepaciente =  (string) lector["nombre_paciente"];
+					//descripcionadmisiones = (string) lector["descripcion_admisiones"];								
+					//fechahoracreacion = (string) lector["fechahoracreacion"];						                   
+					//if(descripcionproducto.Length > 49){
+						//desripcionproductorecortado = descripcionproducto.Substring(0,46)  ; 
+					//}else{
+						//desripcionproductorecortado = descripcionproducto;
+					//}
+					//if (nombrepaciente.Length > 49){
+					//	nombrepacienterecortado = nombrepaciente.Substring(0,46)  ; 
+					//}else{
+					//	nombrepacienterecortado = nombrepaciente;
+					//}
 				}
 			}catch (NpgsqlException ex){
 				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
 																MessageType.Error, 
 																ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
 				msgBoxError.Run ();		msgBoxError.Destroy();
-			}
-			conexion.Close ();
-			Gnome.Print.Setfont(ContextoImp,fuente);
-			ContextoImp.MoveTo(95,-580);
-			ContextoImp.Show("CANTIDAD DEL TOTAL APLICADO: "   +entry_total_aplicado); 
-			ContextoImp.MoveTo(120, filas);	ContextoImp.Show(toma_descrip_prod);
-			ContextoImp.ShowPage();
-			*/
+			}			
+			//ContextoImp.Show("CANTIDAD DEL TOTAL APLICADO: "   +entry_total_aplicado);			
+		}
+		
+		void imprime_encabezado(Cairo.Context cr,Pango.Layout layout)
+		{
+			Pango.FontDescription desc = Pango.FontDescription.FromString ("Sans");								
+			//cr.Rotate(90);  //Imprimir Orizontalmente rota la hoja cambian las posiciones de las lineas y columna					
+			fontSize = 8.0;
+			desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;
+			layout.FontDescription.Weight = Weight.Bold;		// Letra negrita
+			cr.MoveTo(05*escala_en_linux_windows,05*escala_en_linux_windows);			layout.SetText(classpublic.nombre_empresa);			Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(05*escala_en_linux_windows,15*escala_en_linux_windows);			layout.SetText(classpublic.direccion_empresa);		Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(05*escala_en_linux_windows,25*escala_en_linux_windows);			layout.SetText(classpublic.telefonofax_empresa);	Pango.CairoHelper.ShowLayout (cr, layout);
+			fontSize = 6.0;
+			desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;
+			cr.MoveTo(650*escala_en_linux_windows,05*escala_en_linux_windows);			layout.SetText("Fech.Rpt:"+(string) DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));		Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(650*escala_en_linux_windows,15*escala_en_linux_windows);			layout.SetText("N° Page :"+numpage.ToString().Trim());		Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(05*escala_en_linux_windows,35*escala_en_linux_windows);			layout.SetText("Sistema Hospitalario OSIRIS");		Pango.CairoHelper.ShowLayout (cr, layout);
+			// Cambiando el tamaño de la fuente			
+			fontSize = 10.0;
+			desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;
+			cr.MoveTo(290*escala_en_linux_windows, 25*escala_en_linux_windows);			layout.SetText(titulo);					Pango.CairoHelper.ShowLayout (cr, layout);	
 		}
 		
 		private void OnEndPrint (object obj, Gtk.EndPrintArgs args)

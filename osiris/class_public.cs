@@ -80,7 +80,15 @@ namespace osiris
 		const int gray50_height = 2;
 		const string gray50_bits = "\x02\x01";
 		
-		// Funcion de Encriptacion en MD5 para las contraseñas de usuarios
+		/// <summary>
+		/// Funcion de Encriptacion en MD5 para las contraseñas de usuarios 
+		/// </summary>
+		/// <param name="password">
+		/// A <see cref="System.String"/>
+		/// </param>
+		/// <returns>
+		/// A <see cref="System.String"/>
+		/// </returns>
 		public string CreatePasswordMD5(string password)
 		{
 			//SHA1CryptoServiceProvider sha1 = new SHA1CryptoServiceProvider();
@@ -133,6 +141,12 @@ namespace osiris
 			}
 		}
 		
+		/// <summary>
+		/// Funcion que retorna el nombre del Mes en castellano
+		/// </summary>
+		/// <returns>
+		/// A <see cref="System.String"/>
+		/// </returns>
 		public string nom_mes()
 		{
 			string mes = "";
@@ -175,6 +189,12 @@ namespace osiris
 			return(mes);
 		}
 		
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="buffer">
+		/// A <see cref="TextBuffer"/>
+		/// </param>
 		public void CreateTags (TextBuffer buffer)
 		{
 			// Create a bunch of tags. Note that it's also possible to
@@ -318,6 +338,18 @@ namespace osiris
 			buffer.TagTable.Add (tag);
 		}
 		
+		/// <summary>
+		/// Convierte un numero a una cadena numerica
+		/// </summary>
+		/// <param name="sNumero">
+		/// A <see cref="System.String"/>
+		/// </param>
+		/// <param name="descriptipomoneda_">
+		/// A <see cref="System.String"/>
+		/// </param>
+		/// <returns>
+		/// A <see cref="System.String"/>
+		/// </returns>
 		public string ConvertirCadena (string sNumero, string descriptipomoneda_) {
 			double dNumero;
 			double dNumAux = 0;

@@ -2296,7 +2296,7 @@ namespace osiris
 		public string id_produ = "";
 		public string tipoexamen = "";
 		public string quimicoaut = "";
-		public string idquimico = "";
+		public string idquimico = "0";
 		public string cedulaquimico = "";
 		public string numerosolicitud;
 		public string fechasolicitud;
@@ -2393,12 +2393,12 @@ namespace osiris
 			                                 typeof (string));
 			combobox_quimicos_aut.Model = store1;
 	        store1.AppendValues ("Seleccione un Quimico","0","0");
-	        store1.AppendValues ("Q.B.P. QUIMICO 1","2370632","1");
-            store1.AppendValues ("Q.F.B. QUIMICO 2","4829293","2");
-            store1.AppendValues ("Q.F.B. QUIMICO 3","N000319","3");
-            store1.AppendValues ("Q.C.B. QUIMICO 4","N000362","4");
-            store1.AppendValues ("Q.C.B. QUIMICO 5","4738901","5");
-            store1.AppendValues ("Q.C.B. QUIMICO 6","N000","6");
+	        store1.AppendValues ("Q.C.B. MYRNA GUADALUPE MARTINEZ GONZALEZ","2113615","1");
+            //store1.AppendValues ("Q.F.B. QUIMICO 2","4829293","2");
+            //store1.AppendValues ("Q.F.B. QUIMICO 3","N000319","3");
+            //store1.AppendValues ("Q.C.B. QUIMICO 4","N000362","4");
+            //store1.AppendValues ("Q.C.B. QUIMICO 5","4738901","5");
+            //store1.AppendValues ("Q.C.B. QUIMICO 6","N000","6");
             
             TreeIter iter1;
 			if (store1.GetIterFirst(out iter1)) {
@@ -2867,22 +2867,28 @@ namespace osiris
 			}
 		}
 		
-				
 		void on_button_imprimir_clicked(object sender, EventArgs args)
 		{
-			new osiris.imprime_resultadolab(this.lista_de_resultados,this.treeViewEngineresultados,LoginEmpleado,this.nombrebd,this.dir_pac,this.edadpac,this.empresapac,
+			if( int.Parse(idquimico) > 0){
+				new osiris.imprime_resultadolab(this.lista_de_resultados,this.treeViewEngineresultados,LoginEmpleado,this.nombrebd,this.dir_pac,this.edadpac,this.empresapac,
 											this.entry_folio_laboratorio_res.Text,this.entry_fecha_solicitud_res.Text,
 											this.PidPaciente,nombpaciente,this.quimicoaut,this.folioservicio,
 											this.fecha_nacimiento,this.tipoexamen,tipo_paciente,this.entry_hora_solicitud_res.Text,this.sexopaciente,this.procedencia,
 											this.medicotratante,this.nombre_estudio,this.entry_observaciones.Text,this.cedulaquimico
-											);			
+											);
+			}else{
+				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+				MessageType.Info,ButtonsType.Close,"Seleccione un Quimico...");
+				msgBoxError.Run ();	msgBoxError.Destroy();
+			}
+				
 		}
 		
 		public bool Verificacion_de_valores()
 		{
 			bool valor;
 			if(entry_fecha_solicitud_res.Text.Trim() == "" || entry_folio_laboratorio_res.Text.Trim() == "" ||
-				entry_hora_solicitud_res.Text.Trim() == "" || idquimico.ToString().Trim() == ""){
+				entry_hora_solicitud_res.Text.Trim() == "" || idquimico.ToString().Trim() == "0"){
 				valor = false;
 				return valor;
 			}else{

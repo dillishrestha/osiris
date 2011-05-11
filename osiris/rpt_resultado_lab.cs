@@ -223,10 +223,23 @@ namespace osiris
 			comienzo_linea += separacion_linea;
 			comienzo_linea += separacion_linea;
 			cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText("Observaciones: "+observa);		Pango.CairoHelper.ShowLayout (cr, layout);			
-			//comienzo_linea += separacion_linea;
-			//comienzo_linea += separacion_linea;
-			//cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText("Hallazgos: ");		Pango.CairoHelper.ShowLayout (cr, layout);			
-
+			
+			cr.MoveTo(300*escala_en_linux_windows,640*escala_en_linux_windows);		layout.SetText("Quimico: ");		Pango.CairoHelper.ShowLayout (cr, layout);			
+			cr.MoveTo(300*escala_en_linux_windows,650*escala_en_linux_windows);		layout.SetText(quimicoautorizado);	Pango.CairoHelper.ShowLayout (cr, layout);			
+			cr.MoveTo(300*escala_en_linux_windows,660*escala_en_linux_windows);		layout.SetText("Ced.Prof. "+cedulaquimico);		Pango.CairoHelper.ShowLayout (cr, layout);			
+			
+			Gtk.Image image5 = new Gtk.Image();
+            image5.Name = "image5";
+			//image5.Pixbuf = new Gdk.Pixbuf(System.IO.Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, "osiris.jpg"));
+			image5.Pixbuf = new Gdk.Pixbuf("/opt/osiris/bin/firma_quimica.png");   // en Linux
+			//image5.Pixbuf.ScaleSimple(128, 128, Gdk.InterpType.Bilinear);
+			//Gdk.CairoHelper.SetSourcePixbuf(cr,image5.Pixbuf,05,comienzo_linea*escala_en_linux_windows);
+			//Gdk.CairoHelper.SetSourcePixbuf(cr,image5.Pixbuf.ScaleSimple(145, 50, Gdk.InterpType.Bilinear),1,1);
+			Gdk.CairoHelper.SetSourcePixbuf(cr,image5.Pixbuf.ScaleSimple(130, 91, Gdk.InterpType.Bilinear),300*escala_en_linux_windows,650*escala_en_linux_windows);
+			cr.Fill();
+			cr.Paint();
+			//cr.Restore();
+			
 		}
 		
 		void imprime_encabezado(Cairo.Context cr,Pango.Layout layout)
@@ -316,70 +329,7 @@ namespace osiris
 			cr.MoveTo(400*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText("Habitacion: ");		Pango.CairoHelper.ShowLayout (cr, layout);
 			comienzo_linea += separacion_linea;
 			cr.MoveTo(07*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText("Departamento quien Solicita: "+procedencia);	Pango.CairoHelper.ShowLayout (cr, layout);
-			comienzo_linea += separacion_linea;	
-			/*			    	
-			Gnome.Print.Setfont (ContextoImp, fuente2);
-			ContextoImp.MoveTo(225.5, linea);
-			ContextoImp.Show("RESULTADOS DE LABORATORIO");
-			ContextoImp.MoveTo(225, linea);
-			ContextoImp.Show("RESULTADOS DE LABORATORIO");
-	    
-	    	Gnome.Print.Setfont (ContextoImp, fuente3);
-	    
-			ContextoImp.MoveTo(490, linea);					ContextoImp.Show("Folio LAB. "+this.folio_laboratorio.Trim() );
-			ContextoImp.MoveTo(490, linea-10);				ContextoImp.Show("PID "+PidPaciente.ToString().Trim());
-		
-			Gnome.Print.Setfont (ContextoImp, fuente5);
-			ContextoImp.MoveTo(20, linea-13);  				ContextoImp.Show("____________________________");
-    	
-    		Gnome.Print.Setfont (ContextoImp, fuente4);
-    		ContextoImp.MoveTo(239.5, linea-25);		
-    		ContextoImp.Show("DATOS GENERALES DEL PACIENTE");
-    		ContextoImp.MoveTo(240, linea-25);		
-    		ContextoImp.Show("DATOS GENERALES DEL PACIENTE");
-    												
-			ContextoImp.MoveTo(19.5, linea-35.5);		ContextoImp.Show("Tipo de paciente:  "+this.tipo_paciente);
-			ContextoImp.MoveTo(20, linea-35);			ContextoImp.Show("Tipo de paciente:  "+this.tipo_paciente);
-			ContextoImp.MoveTo(250, linea-35);			ContextoImp.Show("Folio Atencion: "+this.folioservicio.ToString().Trim());
-			ContextoImp.MoveTo(250.5, linea-35);		ContextoImp.Show("Folio Atencion: "+this.folioservicio.ToString().Trim());
-			ContextoImp.MoveTo(420, linea-35);			ContextoImp.Show("Fecha/Hora Solicitud: "+this.fecha_solucitud+" / "+this.hora_solicitud_estudio);
-													
-			ContextoImp.MoveTo(20, linea-45);			ContextoImp.Show("Nombre Paciente: "+nombre_paciente);
-											
-			ContextoImp.MoveTo(290, linea-45);			ContextoImp.Show("F. de Nac.: "+fecha_nac);
-			ContextoImp.MoveTo(420, linea-45);			ContextoImp.Show("Fecha/Hora Reporte: "+DateTime.Now.ToString("dd-MM-yyyy HH:mm"));
-			
-			ContextoImp.MoveTo(20, linea-55);			ContextoImp.Show("Tipo de Examen: "+this.tipo_examen);
-			ContextoImp.MoveTo(290, linea-55);			ContextoImp.Show("Edad : "+this.edadpac);
-			
-			if(sexopaciente == "H"){
-				ContextoImp.MoveTo(420, linea-55);		ContextoImp.Show("Sexo: Masculino");
-			}else{
-				ContextoImp.MoveTo(420, linea-55);		ContextoImp.Show("Sexo: Femenino");
-			}
-			
-			ContextoImp.MoveTo(20, linea-65);			ContextoImp.Show("Direccion : "+dir_paciente);
-			ContextoImp.MoveTo(420, linea-65);			ContextoImp.Show("Solicitado : "+this.procedencia);
-			
-			ContextoImp.MoveTo(20, linea-75);			ContextoImp.Show("Nombre del Medico : "+this.medicotratante);
-			ContextoImp.MoveTo(420,linea-75);			ContextoImp.Show("Habitacion : ");
-			
-			ContextoImp.MoveTo(20,linea-8);			ContextoImp.Show("Observacion :"+this.observa);
-			
-			Gnome.Print.Setfont (ContextoImp, fuente4);
-			ContextoImp.MoveTo(100, 161); 		ContextoImp.Show("----------------------------------------------------------");
-			ContextoImp.MoveTo(100, 153);		ContextoImp.Show("  Q.B.P. DANIEL OLIVARES");
-			ContextoImp.MoveTo(100, 145);		ContextoImp.Show("     CED. PROFESIONAL 1234567");
-			ContextoImp.MoveTo(100, 137);		ContextoImp.Show("               AUTORIZA");
-			
-			ContextoImp.MoveTo(350, 161);		ContextoImp.Show("----------------------------------------------------------");
-			ContextoImp.MoveTo(350, 153);		ContextoImp.Show(" "+this.quimicoautorizado);
-			ContextoImp.MoveTo(350, 145);		ContextoImp.Show("     CED. PROFESIONAL "+this.cedulaquimico);
-			ContextoImp.MoveTo(350, 137);		ContextoImp.Show("               REALIZA");
-			ContextoImp.ShowPage();
-			*/
-			
-			
+			comienzo_linea += separacion_linea;
 		}
 		
 		private void OnEndPrint (object obj, Gtk.EndPrintArgs args)

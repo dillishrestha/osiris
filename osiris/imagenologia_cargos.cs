@@ -887,7 +887,7 @@ namespace osiris
 					//toma_a_pagar = sub_total - totaldescuento;
 					
  				}else{
- 					if (LoginEmpleado =="DOLIVARES" || LoginEmpleado =="HVARGAS" || LoginEmpleado =="JPENA"){
+ 					if (LoginEmpleado =="ADMIN" ){
  						MessageDialog msgBox = new MessageDialog (MyWin,DialogFlags.Modal,
 						MessageType.Question,ButtonsType.YesNo,"¿ Desea DEVOLVER este producto ?");
 						ResponseType miResultado = (ResponseType)msgBox.Run ();
@@ -1835,8 +1835,9 @@ namespace osiris
 						"AND osiris_grupo_producto.agrupacion3 = 'IMG' "+
 						"AND osiris_productos.cobro_activo = 'true' "+
 						"AND osiris_productos.descripcion_producto LIKE '%"+entry_expresion.Text.ToUpper().Trim()+"%' ORDER BY descripcion_producto;";
-		
+				Console.WriteLine(comando.CommandText);
 				NpgsqlDataReader lector = comando.ExecuteReader ();
+				
 				
 				float tomaprecio;
 				float calculodeiva;
@@ -1844,8 +1845,7 @@ namespace osiris
 				float tomadescue;
 				float preciocondesc;
 							
-				while (lector.Read())
-				{
+				while (lector.Read()){
 					calculodeiva = 0;
 					preciomasiva = 0;
 					///////////////////////////////////////////////////////////

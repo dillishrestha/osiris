@@ -48,6 +48,7 @@ namespace osiris
 		[Widget] Gtk.Button button_selecciona_ordencompra = null;
 		[Widget] Gtk.Button button_busca_orden_compra = null;
 		[Widget] Gtk.Entry entry_fecha_orden_compra = null;
+		[Widget] Gtk.Entry entry_estatus_oc = null;
 		[Widget] Gtk.Entry entry_id_quien_hizo = null;
 		[Widget] Gtk.Entry entry_num_factura_proveedor = null;
 		[Widget] Gtk.Entry entry_id_proveedor = null;
@@ -103,6 +104,8 @@ namespace osiris
 		TreeViewColumn col_cant_recibida;
 		TreeViewColumn col_idproducto_provee;
 		TreeViewColumn col_empaqueproducto;
+		TreeViewColumn col_loteproducto;
+		TreeViewColumn col_caducidadproducto;
 				
 		//declaracion de columnas y celdas de treeview de busqueda
 		TreeViewColumn col_idproducto;			CellRendererText cellrt0;
@@ -183,12 +186,26 @@ namespace osiris
 				button_quitar_producto.Sensitive = true;
 				button_busca_proveedor.Sensitive = true;
 				entry_fecha_orden_compra.Text = DateTime.Now.ToString("yyyy-MM-dd");//("dd-MM-yyyy");
+				// Desactivando las ordenes de Compra
+				entry_orden_de_compra.Sensitive = false;
+				button_selecciona_ordencompra.Sensitive = false;
+				button_busca_orden_compra.Sensitive = false;
+				entry_fecha_orden_compra.Sensitive = false;
+				entry_id_quien_hizo.Sensitive = false;
+				entry_estatus_oc.Sensitive = false;
 			}else{
 				button_busca_proveedor.Sensitive = false;
 				button_busca_producto.Sensitive = false;
 				button_quitar_producto.Sensitive = false;
 				button_busca_proveedor.Sensitive = false;
 				entry_fecha_orden_compra.Text = "";
+				// Desactiv las ordenes de Compra
+				entry_orden_de_compra.Sensitive = true;
+				button_selecciona_ordencompra.Sensitive = true;
+				button_busca_orden_compra.Sensitive = true;
+				entry_fecha_orden_compra.Sensitive = true;
+				entry_id_quien_hizo.Sensitive = true;
+				entry_estatus_oc.Sensitive = true;
 		 	}
 		}
 		
@@ -198,6 +215,8 @@ namespace osiris
 														typeof(string),
 														typeof(string),
 														typeof(string),
+			                                             typeof(string),
+			                                             typeof(string),
 			                                             typeof(string),
 			                                             typeof(string),
 			                                             typeof(string),
@@ -279,6 +298,22 @@ namespace osiris
 			col_empaqueproducto.AddAttribute (cellrt4, "text", 8);
 			col_empaqueproducto.SortColumnId = (int) col_productos_recibidos.col_empaqueproducto;
 			
+			col_loteproducto = new TreeViewColumn();
+			cellrt5 = new CellRendererText();
+			col_loteproducto.Title = "Lote";
+			col_loteproducto.PackStart(cellrt5, true);
+			col_loteproducto.AddAttribute (cellrt5, "text", 9);
+			col_loteproducto.SortColumnId = (int) col_productos_recibidos.col_loteproducto;
+			cellrt5.Editable = true;
+			
+			col_caducidadproducto = new TreeViewColumn();
+			cellrt6 = new CellRendererText();
+			col_caducidadproducto.Title = "Caducidad";
+			col_caducidadproducto.PackStart(cellrt6, true);
+			col_caducidadproducto.AddAttribute (cellrt6, "text", 10);
+			col_caducidadproducto.SortColumnId = (int) col_productos_recibidos.col_caducidadproducto;
+			cellrt6.Editable = true;
+			
 			lista_productos_a_recibir.AppendColumn(col_recibido);				// 0
 			lista_productos_a_recibir.AppendColumn(col_numerofactura);			// 1
 			lista_productos_a_recibir.AppendColumn(col_cant_ordencompra);		// 2
@@ -288,6 +323,8 @@ namespace osiris
 			lista_productos_a_recibir.AppendColumn(col_idproducto);				// 6
 			lista_productos_a_recibir.AppendColumn(col_desc_producto);			// 7
 			lista_productos_a_recibir.AppendColumn(col_empaqueproducto);		// 8
+			lista_productos_a_recibir.AppendColumn(col_loteproducto);			// 9
+			lista_productos_a_recibir.AppendColumn(col_caducidadproducto);		// 10
 		}
 		
 		enum col_productos_recibidos{
@@ -299,7 +336,9 @@ namespace osiris
 			col_idproducto_provee,
 			col_idproducto,
 			col_desc_producto,
-			col_empaqueproducto
+			col_empaqueproducto,
+			col_loteproducto,
+			col_caducidadproducto
 		}
 		
 		// Cuando seleccion campos para la autorizacion de compras  

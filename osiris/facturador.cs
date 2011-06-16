@@ -1635,6 +1635,7 @@ namespace osiris
 											"mail_cliente,contacto_cliente,telefono_contacto_cliente,dias_credito_cliente,fechahora_creacion_cliente,"+
 											"cliente_activo,id_quien_creo,cp_cliente FROM osiris_erp_clientes WHERE cliente_activo = 'true';";
 				}
+				Console.WriteLine(comando.CommandText);
 				NpgsqlDataReader lector = comando.ExecuteReader ();
 				while (lector.Read()){
 					//Console.WriteLine((string) lector["rfc_cliente"]);

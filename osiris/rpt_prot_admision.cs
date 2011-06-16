@@ -195,25 +195,26 @@ namespace osiris
 					cr.MoveTo(58*escala_en_linux_windows, numero_linea*escala_en_linux_windows);						layout.SetText("________________________________");					Pango.CairoHelper.ShowLayout (cr, layout);
 					
 					if((int) lector["idempresa_enca"] == 1){
-						cr.MoveTo(310*escala_en_linux_windows, numero_linea*escala_en_linux_windows);				layout.SetText("Nombre de la Empresa:  "+(string) lector["nombre_empresa_encabezado"]);		Pango.CairoHelper.ShowLayout (cr, layout);
+						cr.MoveTo(310*escala_en_linux_windows, numero_linea*escala_en_linux_windows);				layout.SetText("Labora en:  "+(string) lector["nombre_empresa_encabezado"]);		Pango.CairoHelper.ShowLayout (cr, layout);
 					}else{
-						cr.MoveTo(310*escala_en_linux_windows, numero_linea*escala_en_linux_windows);				layout.SetText("Nombre de la Empresa:  "+(string) lector["descripcion_empresa"]);			Pango.CairoHelper.ShowLayout (cr, layout);
+						cr.MoveTo(310*escala_en_linux_windows, numero_linea*escala_en_linux_windows);				layout.SetText("Labora en:  "+(string) lector["descripcion_empresa"]);			Pango.CairoHelper.ShowLayout (cr, layout);
 					}
 					
-					cr.MoveTo(411*escala_en_linux_windows, numero_linea*escala_en_linux_windows);					layout.SetText("___________________________________");
+					cr.MoveTo(360*escala_en_linux_windows, numero_linea*escala_en_linux_windows);					layout.SetText("___________________________________");
+					Pango.CairoHelper.ShowLayout (cr, layout);
 					
 					numero_linea += separacionlineas;
-					Pango.CairoHelper.ShowLayout (cr, layout);
-					cr.MoveTo(20*escala_en_linux_windows, numero_linea*escala_en_linux_windows);						layout.SetText("Dirección Empresa:  "+(string) lector["direccion_empresa"]);
-					Pango.CairoHelper.ShowLayout (cr, layout);
-					cr.MoveTo(90*escala_en_linux_windows, numero_linea*escala_en_linux_windows);						layout.SetText("______________________________________");
-					Pango.CairoHelper.ShowLayout (cr, layout);
-					cr.MoveTo(310*escala_en_linux_windows, numero_linea*escala_en_linux_windows);					layout.SetText("Tel. de la Empresa:  "+(string) lector["telefono1_empresa"]);
-					Pango.CairoHelper.ShowLayout (cr, layout);
-					cr.MoveTo(380*escala_en_linux_windows, numero_linea*escala_en_linux_windows);					layout.SetText("_________________________");
-					Pango.CairoHelper.ShowLayout (cr, layout);
-					numero_linea += separacionlineas;
+					//cr.MoveTo(20*escala_en_linux_windows, numero_linea*escala_en_linux_windows);						layout.SetText("Dirección Empresa:  "+(string) lector["direccion_empresa"]);
+					//Pango.CairoHelper.ShowLayout (cr, layout);
+					//cr.MoveTo(90*escala_en_linux_windows, numero_linea*escala_en_linux_windows);						layout.SetText("______________________________________");
+					//Pango.CairoHelper.ShowLayout (cr, layout);
+					//cr.MoveTo(310*escala_en_linux_windows, numero_linea*escala_en_linux_windows);					layout.SetText("Tel. de la Empresa:  "+(string) lector["telefono1_empresa"]);
+					//Pango.CairoHelper.ShowLayout (cr, layout);
+					//cr.MoveTo(380*escala_en_linux_windows, numero_linea*escala_en_linux_windows);					layout.SetText("_________________________");
+					//Pango.CairoHelper.ShowLayout (cr, layout);
+					//numero_linea += separacionlineas;
 					layout.FontDescription.Weight = Weight.Bold;
+					//layout.FontDescription.
 					cr.MoveTo(20*escala_en_linux_windows, numero_linea*escala_en_linux_windows);						layout.SetText("Tipo de paciente:  "+(string) lector["descripcion_tipo_paciente"]);
 					Pango.CairoHelper.ShowLayout (cr, layout);
 					cr.MoveTo(90*escala_en_linux_windows, numero_linea*escala_en_linux_windows);						layout.SetText("______________________________");
@@ -261,11 +262,11 @@ namespace osiris
 					cr.MoveTo(37*escala_en_linux_windows, numero_linea*escala_en_linux_windows);						layout.SetText("_________________");
 					Pango.CairoHelper.ShowLayout (cr, layout);
 					numero_linea += separacionlineas;
-					cr.MoveTo(20*escala_en_linux_windows, numero_linea*escala_en_linux_windows);						layout.SetText("Ocupación del responsable:  "+(string) lector["ocupacion_responsable"]);
-					Pango.CairoHelper.ShowLayout (cr, layout);
-					cr.MoveTo(126*escala_en_linux_windows, numero_linea*escala_en_linux_windows);					layout.SetText("__________________________________");
-					Pango.CairoHelper.ShowLayout (cr, layout);
-					cr.MoveTo(350*escala_en_linux_windows, numero_linea*escala_en_linux_windows);					layout.SetText("Parentesco:  "+(string) lector["parentezco"]);
+					//cr.MoveTo(20*escala_en_linux_windows, numero_linea*escala_en_linux_windows);						layout.SetText("Ocupación del responsable:  "+(string) lector["ocupacion_responsable"]);
+					//Pango.CairoHelper.ShowLayout (cr, layout);
+					//cr.MoveTo(126*escala_en_linux_windows, numero_linea*escala_en_linux_windows);					layout.SetText("__________________________________");
+					//Pango.CairoHelper.ShowLayout (cr, layout);
+					cr.MoveTo(20*escala_en_linux_windows, numero_linea*escala_en_linux_windows);					layout.SetText("Parentesco:  "+(string) lector["parentezco"]);
 					Pango.CairoHelper.ShowLayout (cr, layout);
 					cr.MoveTo(393*escala_en_linux_windows, numero_linea*escala_en_linux_windows);					layout.SetText("________________________");
 					Pango.CairoHelper.ShowLayout (cr, layout);
@@ -278,15 +279,15 @@ namespace osiris
 					Pango.CairoHelper.ShowLayout (cr, layout);
 					cr.MoveTo(406*escala_en_linux_windows, numero_linea*escala_en_linux_windows);					layout.SetText("________________________");
 					Pango.CairoHelper.ShowLayout (cr, layout);
-					numero_linea += separacionlineas;
-					cr.MoveTo(20*escala_en_linux_windows, numero_linea*escala_en_linux_windows);						layout.SetText("Responsable de la cuenta(Aseguradora y/o membresia):  "+(string) lector["descripcion_aseguradora"]);
-					Pango.CairoHelper.ShowLayout (cr, layout);
-					cr.MoveTo(224*escala_en_linux_windows, numero_linea*escala_en_linux_windows);					layout.SetText("__________________________________________");
-					Pango.CairoHelper.ShowLayout (cr, layout);
-					cr.MoveTo(450*escala_en_linux_windows, numero_linea*escala_en_linux_windows);					layout.SetText("Nº de poliza:  "+(string) lector["numero_poliza"]);
-					Pango.CairoHelper.ShowLayout (cr, layout);
-					cr.MoveTo(498*escala_en_linux_windows, numero_linea*escala_en_linux_windows);					layout.SetText("____________________");
-					Pango.CairoHelper.ShowLayout (cr, layout);
+					//numero_linea += separacionlineas;
+					//cr.MoveTo(20*escala_en_linux_windows, numero_linea*escala_en_linux_windows);						layout.SetText("Responsable de la cuenta(Aseguradora y/o membresia):  "+(string) lector["descripcion_aseguradora"]);
+					//Pango.CairoHelper.ShowLayout (cr, layout);
+					//cr.MoveTo(224*escala_en_linux_windows, numero_linea*escala_en_linux_windows);					layout.SetText("__________________________________________");
+					//Pango.CairoHelper.ShowLayout (cr, layout);
+					//cr.MoveTo(450*escala_en_linux_windows, numero_linea*escala_en_linux_windows);					layout.SetText("Nº de poliza:  "+(string) lector["numero_poliza"]);
+					//Pango.CairoHelper.ShowLayout (cr, layout);
+					//cr.MoveTo(498*escala_en_linux_windows, numero_linea*escala_en_linux_windows);					layout.SetText("____________________");
+					//Pango.CairoHelper.ShowLayout (cr, layout);
 					numero_linea += separacionlineas;
 					cr.MoveTo(20*escala_en_linux_windows, numero_linea*escala_en_linux_windows);						layout.SetText("Dirección:  "+(string) lector["direccion_emp_responsable"]);
 					Pango.CairoHelper.ShowLayout (cr, layout);
@@ -346,6 +347,10 @@ namespace osiris
 					Pango.CairoHelper.ShowLayout (cr, layout);
 					cr.MoveTo(75*escala_en_linux_windows, 422*escala_en_linux_windows);						layout.SetText("________________________________");
 					Pango.CairoHelper.ShowLayout (cr, layout);
+					cr.MoveTo(20*escala_en_linux_windows, 444*escala_en_linux_windows);						layout.SetText("Motivo de Ingreso: "+(string) lector["descripcion_diagnostico_movcargos"]);
+					Pango.CairoHelper.ShowLayout (cr, layout);
+					
+					/*
 					layout.FontDescription.Weight = Weight.Bold;
 					cr.MoveTo(220*escala_en_linux_windows, 453*escala_en_linux_windows);					layout.SetText("PARA SER LLENADO POR EL MEDICO TRATANTE");
 					Pango.CairoHelper.ShowLayout (cr, layout);
@@ -415,14 +420,17 @@ namespace osiris
 					cr.MoveTo(435*escala_en_linux_windows, 677*escala_en_linux_windows);					layout.SetText("FIRMA DE MEDICO TRATANTE");
 					Pango.CairoHelper.ShowLayout (cr, layout);
 					cr.MoveTo(400*escala_en_linux_windows, 668*escala_en_linux_windows);						layout.SetText("____________________________________");
-		    		Pango.CairoHelper.ShowLayout (cr, layout);
+					Pango.CairoHelper.ShowLayout (cr, layout);
+					*/
 		    		cr.MoveTo(220*escala_en_linux_windows, 735*escala_en_linux_windows);						layout.SetText("Nombre y Firma Paciente o responsable");
 		    		Pango.CairoHelper.ShowLayout (cr, layout);
 		    		//cr.MoveTo(250*escala_en_linux_windows, 700*escala_en_linux_windows);			    		layout.SetText("verificacion de datos");
 					//Pango.CairoHelper.ShowLayout (cr, layout);
 					cr.MoveTo(20*escala_en_linux_windows, 724*escala_en_linux_windows);						layout.SetText("____________________________________________________________________________________________________________________________");
 					Pango.CairoHelper.ShowLayout (cr, layout);
-					cr.MoveTo(480*escala_en_linux_windows, 760*escala_en_linux_windows) ;					layout.SetText("Sistema Hospitalario OSIRIS");
+					cr.MoveTo(20*escala_en_linux_windows, 760*escala_en_linux_windows) ;					layout.SetText("REV.00");
+					Pango.CairoHelper.ShowLayout (cr, layout);
+					cr.MoveTo(480*escala_en_linux_windows, 760*escala_en_linux_windows) ;					layout.SetText("FI-7.5.1/01");
 					Pango.CairoHelper.ShowLayout (cr, layout);
 					
 					/*string varpaso = (string) lector["descripcion_admisiones"];
@@ -457,7 +465,7 @@ namespace osiris
 			//image5.Pixbuf.ScaleSimple(128, 128, Gdk.InterpType.Bilinear);
 			//Gdk.CairoHelper.SetSourcePixbuf(cr,image5.Pixbuf,1,-30);
 			//Gdk.CairoHelper.SetSourcePixbuf(cr,image5.Pixbuf.ScaleSimple(145, 50, Gdk.InterpType.Bilinear),1,1);
-			Gdk.CairoHelper.SetSourcePixbuf(cr,image5.Pixbuf.ScaleSimple(180, 64, Gdk.InterpType.Hyper),1,1);
+			Gdk.CairoHelper.SetSourcePixbuf(cr,image5.Pixbuf,1,1);
 			cr.Fill();
 			//cr.Restore();	
 			cr.Paint();

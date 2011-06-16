@@ -1292,7 +1292,7 @@ namespace osiris
 				llenado_treeview_solicitudes((bool) checkbutton_px_solicitud.Active,treeViewEnginesolicitados);
 				
 			}else{
-				treeViewEnginesolicitados = new TreeStore(typeof(string),typeof(bool),typeof(string),typeof(string),
+				treeViewEnginesolicitados = new TreeStore(typeof(string),typeof(bool),typeof(string),typeof(string),typeof(string),
 				                                          typeof(bool),typeof(bool));
 				treeview_lista_solicitados.Model = treeViewEnginesolicitados;
 				treeview_lista_solicitados.RulesHint = true;
@@ -1349,7 +1349,7 @@ namespace osiris
 				column4.Resizable = true;
 				column4.SortColumnId = (int) Column.cantautorizada;
 				text.Editable = true;
-				text.Edited += NumberCellEdited_Autorizado;
+				text.Edited += NumberCellEdited_Autorizado_1;
 				treeview_lista_solicitados.InsertColumn (column4, (int) Column.cantautorizada);
 				
 				llenado_treeview_solicitudes((bool) checkbutton_px_solicitud.Active,treeViewEnginesolicitados);			
@@ -1458,8 +1458,7 @@ namespace osiris
 						        "0.00",             
 							    true,
 							    true);
-					}
-					
+					}					
 					while((bool) lector.Read()){					
 						// llenado de lista de solicitudes
 						if(tipo_treeview == false){
@@ -1555,14 +1554,15 @@ namespace osiris
 			win.Toplevel.Destroy();
 		}
 		
-		void NumberCellEdited_Autorizado (object o, EditedArgs args)
+		void NumberCellEdited_Autorizado (object sender, EditedArgs args)
 		{
 			Gtk.TreeIter iter;
+			Gtk.CellRendererText  cellobj = (Gtk.CellRendererText) sender;
 			bool esnumerico = false;
 			int var_paso = 0;
 			int largo_variable = args.NewText.ToString().Length;
 			string toma_variable = args.NewText.ToString();
-			
+						
 			treeViewEnginesolicitados.GetIter (out iter, new Gtk.TreePath (args.Path));
 			
 			while (var_paso < largo_variable){				
@@ -1586,7 +1586,44 @@ namespace osiris
 			}
 			if (esnumerico == true){		
 				treeViewEnginesolicitados.SetValue(iter,(int) coldatos_request.col_request8,args.NewText);
-				bool old = (bool) treeview_lista_solicitados.Model.GetValue (iter,0);							
+				//bool old = (bool) treeview_lista_solicitados.Model.GetValue (iter,0);							
+			}
+			
+		}
+		
+		void NumberCellEdited_Autorizado_1 (object sender, EditedArgs args)
+		{
+			Gtk.TreeIter iter;
+			//Gtk.CellRendererText  cellobj = (Gtk.CellRendererText) sender;
+			bool esnumerico = false;
+			int var_paso = 0;
+			int largo_variable = args.NewText.ToString().Length;
+			string toma_variable = args.NewText.ToString();
+						
+			treeViewEnginesolicitados.GetIter (out iter, new Gtk.TreePath (args.Path));
+			
+			while (var_paso < largo_variable){				
+				if ((string) toma_variable.Substring(var_paso,1).ToString() == "." || 
+					(string) toma_variable.Substring(var_paso,1).ToString() == "0" ||
+					(string) toma_variable.Substring(var_paso,1).ToString() == "1" || 
+					(string) toma_variable.Substring(var_paso,1).ToString() == "2" ||
+					(string) toma_variable.Substring(var_paso,1).ToString() == "3" ||
+					(string) toma_variable.Substring(var_paso,1).ToString() == "4" ||
+					(string) toma_variable.Substring(var_paso,1).ToString() == "5" || 
+					(string) toma_variable.Substring(var_paso,1).ToString() == "6" || 
+					(string) toma_variable.Substring(var_paso,1).ToString() == "7" || 
+					(string) toma_variable.Substring(var_paso,1).ToString() == "8" ||
+					(string) toma_variable.Substring(var_paso,1).ToString() == "9") {
+					esnumerico = true;
+				}else{
+				 	esnumerico = false;
+				 	var_paso = largo_variable;
+				}
+				var_paso += 1;
+			}
+			if (esnumerico == true){
+				treeViewEnginesolicitados.SetValue(iter,(int) Column.cantautorizada,args.NewText);
+				//bool old = (bool) treeview_lista_solicitados.Model.GetValue (iter,1);							
 			}
  		}
 	}	

@@ -825,8 +825,7 @@ namespace osiris
 					this.entry_iva.Text = calculo_iva.ToString("F").Replace(",",".");
 					entry_precio_publico.Text = "0";
 				}				
-				precio_sin_iva.Text = precio_pub.ToString("F").Replace(",",".");
-				
+				precio_sin_iva.Text = precio_pub.ToString("F").Replace(",",".");				
 			}else{
 				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
 								MessageType.Info, 

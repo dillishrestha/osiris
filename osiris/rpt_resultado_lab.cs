@@ -132,7 +132,7 @@ namespace osiris
 		private void OnBeginPrint (object obj, Gtk.BeginPrintArgs args)
 		{
 			print.NPages = 1;  // crea cantidad de copias del reporte			
-			// para imprimir horizontalmente el reporte
+			//para imprimir horizontalmente el reporte
 			//print.PrintSettings.Orientation = PageOrientation.Landscape;
 			//Console.WriteLine(print.PrintSettings.Orientation.ToString());
 		}
@@ -224,9 +224,9 @@ namespace osiris
 			comienzo_linea += separacion_linea;
 			cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText("Observaciones: "+observa);		Pango.CairoHelper.ShowLayout (cr, layout);			
 			
-			cr.MoveTo(300*escala_en_linux_windows,640*escala_en_linux_windows);		layout.SetText("Quimico: ");		Pango.CairoHelper.ShowLayout (cr, layout);			
-			cr.MoveTo(300*escala_en_linux_windows,650*escala_en_linux_windows);		layout.SetText(quimicoautorizado);	Pango.CairoHelper.ShowLayout (cr, layout);			
-			cr.MoveTo(300*escala_en_linux_windows,660*escala_en_linux_windows);		layout.SetText("Ced.Prof. "+cedulaquimico);		Pango.CairoHelper.ShowLayout (cr, layout);			
+			cr.MoveTo(300*escala_en_linux_windows,660*escala_en_linux_windows);		layout.SetText("Quimico: ");		Pango.CairoHelper.ShowLayout (cr, layout);			
+			cr.MoveTo(300*escala_en_linux_windows,670*escala_en_linux_windows);		layout.SetText(quimicoautorizado);	Pango.CairoHelper.ShowLayout (cr, layout);			
+			cr.MoveTo(300*escala_en_linux_windows,680*escala_en_linux_windows);		layout.SetText("Ced.Prof. "+cedulaquimico);		Pango.CairoHelper.ShowLayout (cr, layout);			
 			
 			Gtk.Image image5 = new Gtk.Image();
             image5.Name = "image5";
@@ -235,7 +235,7 @@ namespace osiris
 			//image5.Pixbuf.ScaleSimple(128, 128, Gdk.InterpType.Bilinear);
 			//Gdk.CairoHelper.SetSourcePixbuf(cr,image5.Pixbuf,05,comienzo_linea*escala_en_linux_windows);
 			//Gdk.CairoHelper.SetSourcePixbuf(cr,image5.Pixbuf.ScaleSimple(145, 50, Gdk.InterpType.Bilinear),1,1);
-			Gdk.CairoHelper.SetSourcePixbuf(cr,image5.Pixbuf.ScaleSimple(130, 91, Gdk.InterpType.Bilinear),300*escala_en_linux_windows,650*escala_en_linux_windows);
+			Gdk.CairoHelper.SetSourcePixbuf(cr,image5.Pixbuf.ScaleSimple(130, 91, Gdk.InterpType.Bilinear),300*escala_en_linux_windows,500*escala_en_linux_windows);
 			cr.Fill();
 			cr.Paint();
 			//cr.Restore();

@@ -600,7 +600,6 @@ namespace osiris
 			if ((int) folioservicio > 0){ 
 				TreeIter iter; TreeModel model;
 				if (lista_de_servicios.Selection.GetSelected (out model, out iter)){
-					
 					new osiris.resultados_lab(false,LoginEmpleado,NomEmpleados,
 											(string)lista_de_servicios.Model.GetValue (iter,2),		// Id del producto seleccionado
 											(string) lista_de_servicios.Model.GetValue (iter,18),    // id de la secuencia
@@ -610,7 +609,7 @@ namespace osiris
 											(string) lista_de_servicios.Model.GetValue (iter,19), 	// Fecha de solicitud de examen
 											(string) lista_de_servicios.Model.GetValue (iter,20),	// numero de folio del departamento
 											sexopaciente,
-											(string) lista_de_servicios.Model.GetValue (iter,6),
+											descripinternamiento,	// Procedencia del Estudio
 											this.entry_doctor.Text.Trim(),
 											(string) lista_de_servicios.Model.GetValue (iter,0));
 					

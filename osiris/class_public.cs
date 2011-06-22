@@ -44,10 +44,10 @@ namespace osiris
 		public string idUsuario = "";
 		
 		// Informacion de la Empresa
-		public string nombre_empresa = "MEDICA NORESTE ION"; //"P R A C T I M E D"; "MEDICA NORESTE ION"
-		public string nombre_empresa2 = "MEDICA NORESTE ION";  //"MEDICA NORESTE ION";
-		public string direccion_empresa = "Jose Angel Conchello 2880, Col. Victora"; //"Loma Grande 2703, Col. Loma de San Francisco"; //"Jose Angel Conchello 2880, Col. Victora"
-		public string telefonofax_empresa = "Telefono: (01)(81) 8351-3610"; //"Telefono: (01)(81) 8040-6060"; // "Telefono: (01)(81) 8351-3610"
+		public string nombre_empresa = "P R A C T I M E D"; //"P R A C T I M E D"; "MEDICA NORESTE ION"
+		public string nombre_empresa2 = "P R A C T I M E D";  //"MEDICA NORESTE ION";
+		public string direccion_empresa = "Loma Grande 2703, Col. Loma de San Francisco"; //"Loma Grande 2703, Col. Loma de San Francisco"; //"Jose Angel Conchello 2880, Col. Victora"
+		public string telefonofax_empresa = "Telefono: (01)(81) 8040-6060"; //"Telefono: (01)(81) 8040-6060"; // "Telefono: (01)(81) 8351-3610"
 		public string version_sistema = "Sistema Hospitalario OSIRIS ver. 1.0";
 		
 		public string ivaparaaplicar = "16.00";
@@ -392,8 +392,7 @@ namespace osiris
 			
 			dNumAux = dNumero % 1000;	
 			sResultado += Numeros (dNumAux, 1);
-			
-			
+						
 			//Enseguida verificamos si contiene punto, si es así, los convertimos a texto.
 			sAux = dNumero.ToString();
 
@@ -414,6 +413,7 @@ namespace osiris
 			return Regex.Replace(sResultado,"  *"," ").Trim();
 		}		
 		
+		/*
 		private string ConvertirCadena_ (double dNumero) {
 			double dNumAux = 0;
 			char x;
@@ -463,7 +463,7 @@ namespace osiris
 				sResultado += sAux[i].ToString();
 			
 			return sResultado;
-		}
+		}*/
 		
 		private string Numeros (double dNumAux, double dFactor) {
 			double dCociente = dNumAux / dFactor;
@@ -516,10 +516,10 @@ namespace osiris
 				else
 					iNumero = int.Parse (sNumero[0].ToString());
                 	if (iNumero == 1){
-                    	if (dNumAux <= 1999999 & dNumAux >= 1000000)
+                    	//if (dNumAux <= 1999999 & dNumAux >= 1000000)
                         	sTexto += "un ";
-                    	else
-                        	sTexto += " ";
+                    	//else
+                        //	sTexto += " ";
                 	}else
                     	sTexto += this.sUnidades[iNumero] + " ";
                     

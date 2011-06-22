@@ -42,7 +42,7 @@ namespace osiris
         private PrintOperation print;
         private double fontSize = 8.0;
         int escala_en_linux_windows;        // Linux = 1  Windows = 8
-        int comienzo_linea = 70;
+        int comienzo_linea = 90;
         int separacion_linea = 10;
         int numpage = 1;
        
@@ -70,12 +70,6 @@ namespace osiris
             query1  = _query1_;
             connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
             nombrebd = conexion_a_DB._nombrebd;
-            entry_dia1 = entry_dia1_;
-            entry_mes1 = entry_mes1_;
-            entry_ano1 = entry_ano1_;
-            entry_dia2 = entry_dia2_;
-            entry_mes2= entry_mes2_;
-            entry_ano2 = entry_ano2_;
             escala_en_linux_windows = classpublic.escala_linux_windows;
            
             print = new PrintOperation ();
@@ -193,6 +187,21 @@ namespace osiris
             cr.MoveTo(290*escala_en_linux_windows, 25*escala_en_linux_windows);            layout.SetText(titulo);                    Pango.CairoHelper.ShowLayout (cr, layout);
 			fontSize = 6.0;
             desc.Size = (int)(fontSize * pangoScale);                    layout.FontDescription = desc;
+            cr.MoveTo(05*escala_en_linux_windows,60*escala_en_linux_windows);            layout.SetText("Codigo");        Pango.CairoHelper.ShowLayout (cr, layout);
+					
+			//cr.MoveTo(750*escala_en_linux_windows, 60*escala_en_linux_windows);
+			//cr.LineTo(05,60);		// Linea Horizontal 1
+			//cr.FillExtents();  //. FillPreserve(); 
+			//cr.SetSourceRGB (0, 0, 0);
+			//cr.LineWidth = 0.3;
+			//cr.Stroke();
+						
+			// Creacion del 
+			cr.Rectangle (05*escala_en_linux_windows, 60*escala_en_linux_windows, 750*escala_en_linux_windows, 25*escala_en_linux_windows);
+			cr.FillExtents();  //. FillPreserve(); 
+			cr.SetSourceRGB (0, 0, 0);
+			cr.LineWidth = 0.3;
+			cr.Stroke();
         }
        
         void salto_de_pagina(Cairo.Context cr,Pango.Layout layout)           

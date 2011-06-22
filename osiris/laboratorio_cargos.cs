@@ -2355,9 +2355,9 @@ namespace osiris
 			gxml.Autoconnect (this);		resultados_laboratorio.Show();
 			if(this.resultados_editables == false) {
 				button_guardar.Sensitive = false;
-				button_imprimir.Sensitive = false;
-				combobox_quimicos_aut.Sensitive = false;
-				combobox_tipo_examen.Sensitive = false;
+				//button_imprimir.Sensitive = false;
+				//combobox_quimicos_aut.Sensitive = false;
+				//combobox_tipo_examen.Sensitive = false;
 				button_validar_examen.Sensitive = false;			
 			}
 						

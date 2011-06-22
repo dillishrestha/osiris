@@ -350,7 +350,9 @@ namespace osiris
 					cr.MoveTo(20*escala_en_linux_windows, 444*escala_en_linux_windows);						layout.SetText("Motivo de Ingreso: "+(string) lector["descripcion_diagnostico_movcargos"]);
 					Pango.CairoHelper.ShowLayout (cr, layout);
 					
-					/*
+					
+					
+					
 					layout.FontDescription.Weight = Weight.Bold;
 					cr.MoveTo(220*escala_en_linux_windows, 453*escala_en_linux_windows);					layout.SetText("PARA SER LLENADO POR EL MEDICO TRATANTE");
 					Pango.CairoHelper.ShowLayout (cr, layout);
@@ -421,17 +423,22 @@ namespace osiris
 					Pango.CairoHelper.ShowLayout (cr, layout);
 					cr.MoveTo(400*escala_en_linux_windows, 668*escala_en_linux_windows);						layout.SetText("____________________________________");
 					Pango.CairoHelper.ShowLayout (cr, layout);
-					*/
+					
 		    		cr.MoveTo(220*escala_en_linux_windows, 735*escala_en_linux_windows);						layout.SetText("Nombre y Firma Paciente o responsable");
 		    		Pango.CairoHelper.ShowLayout (cr, layout);
 		    		//cr.MoveTo(250*escala_en_linux_windows, 700*escala_en_linux_windows);			    		layout.SetText("verificacion de datos");
 					//Pango.CairoHelper.ShowLayout (cr, layout);
 					cr.MoveTo(20*escala_en_linux_windows, 724*escala_en_linux_windows);						layout.SetText("____________________________________________________________________________________________________________________________");
 					Pango.CairoHelper.ShowLayout (cr, layout);
-					cr.MoveTo(20*escala_en_linux_windows, 760*escala_en_linux_windows) ;					layout.SetText("REV.00");
-					Pango.CairoHelper.ShowLayout (cr, layout);
-					cr.MoveTo(480*escala_en_linux_windows, 760*escala_en_linux_windows) ;					layout.SetText("FI-7.5.1/01");
-					Pango.CairoHelper.ShowLayout (cr, layout);
+					
+					
+					
+					
+					
+					//cr.MoveTo(20*escala_en_linux_windows, 760*escala_en_linux_windows) ;					layout.SetText("REV.00");
+					//Pango.CairoHelper.ShowLayout (cr, layout);
+					//cr.MoveTo(480*escala_en_linux_windows, 760*escala_en_linux_windows) ;					layout.SetText("FI-7.5.1/01");
+					//Pango.CairoHelper.ShowLayout (cr, layout);
 					
 					/*string varpaso = (string) lector["descripcion_admisiones"];
 					while ((bool) lector.Read()){

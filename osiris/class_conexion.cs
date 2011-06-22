@@ -2,6 +2,9 @@ using System;
 
 namespace osiris
 {
+	/// <summary>
+	/// 
+	/// </summary>
 	class class_conexion
 	{
 		public string _url_servidor = "Server=192.168.1.10;";

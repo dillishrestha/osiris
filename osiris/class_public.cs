@@ -45,7 +45,7 @@ namespace osiris
 		
 		// Informacion de la Empresa
 		public string nombre_empresa = "P R A C T I M E D"; //"P R A C T I M E D"; "MEDICA NORESTE ION"
-		public string nombre_empresa2 = "P R A C T I M E D";  //"MEDICA NORESTE ION";
+		public string nombre_empresa2 = "MEDICA NORESTE ION";  //"MEDICA NORESTE ION";
 		public string direccion_empresa = "Loma Grande 2703, Col. Loma de San Francisco"; //"Loma Grande 2703, Col. Loma de San Francisco"; //"Jose Angel Conchello 2880, Col. Victora"
 		public string telefonofax_empresa = "Telefono: (01)(81) 8040-6060"; //"Telefono: (01)(81) 8040-6060"; // "Telefono: (01)(81) 8351-3610"
 		public string version_sistema = "Sistema Hospitalario OSIRIS ver. 1.0";
@@ -837,5 +837,72 @@ namespace osiris
 		{
 			return palabra.Replace("DEL ", String.Empty).Replace("LAS ", String.Empty).Replace("DE ", String.Empty).Replace("LA ", String.Empty).Replace("Y ", String.Empty).Replace("A ", String.Empty);
 		}
-	}
+		
+		/*
+		public void genera_ods()
+		{
+			
+			XComponentContext oStrap = uno.util.Bootstrap.bootstrap();
+			XMultiServiceFactory oServMan = (XMultiServiceFactory)oStrap.getServiceManager();
+			XComponentLoader oDesk = (XComponentLoader)oServMan.createInstance("com.sun.star.frame.Desktop");
+			
+			string url = @"private:factory/scalc";
+			
+			PropertyValue[] propVals = {
+                new PropertyValue {
+                    Name = "Hidden",
+                    Value = new uno.Any("writer8")
+                }
+            };
+			           			
+			XComponent oComp = oDesk.loadComponentFromURL(url, "_blank", 0, propVals);
+			// it works fine until here. New empty Calc document is opened.
+			
+			XSpreadsheetDocument oDoc = (XSpreadsheetDocument)oComp;
+			XSpreadsheets oSheets = oDoc.getSheets();
+			XIndexAccess oSheetsIA = (XIndexAccess)oSheets;
+			XSpreadsheet oSheet = (XSpreadsheet)oSheetsIA.getByIndex(0).Value; // this is the line vhen i got invalid cast exception
+			
+			XCell oCell;
+			oCell = oSheet.getCellByPosition( 1, 0 ); //B1
+			oCell.setValue(200);
+			           
+			string fileName = @"data.ods";
+			((XStorable) oComp).storeToURL(fileName, propVals);
+			
+			oComp.dispose();
+			oComp = null;
+			
+			
+			/*
+			XComponentContext oStrap = uno.util.Bootstrap.bootstrap();
+            XMultiServiceFactory oServMan = (XMultiServiceFactory)oStrap.getServiceManager();
+            XComponentLoader desktop = (XComponentLoader)oServMan.createInstance("com.sun.star.frame.Desktop");
+            string url = @"private:factory/scalc";
+            PropertyValue[] loadProps = new PropertyValue[1];
+            loadProps[0] = new PropertyValue();
+            loadProps[0].Name = "Hidden";
+            loadProps[0].Value = new uno.Any(true);
+            //PropertyValue[] loadProps = new PropertyValue[0];
+            XComponent document = desktop.loadComponentFromURL(url, "_blank", 0, loadProps);
+			
+			XSpreadsheets oSheets = ((XSpreadsheetDocument)document).getSheets();
+            XIndexAccess oSheetsIA = (XIndexAccess) oSheets;
+            XSpreadsheet sheet = (XSpreadsheet) oSheetsIA.getByIndex(0).Value;
+            XCell cell = sheet.getCellByPosition( 0, 0 ); //A1
+            ((XText)cell).setString("Cost");
+            cell = sheet.getCellByPosition( 1, 0 ); //B1
+            cell.setValue(200);
+            cell = sheet.getCellByPosition( 1, 2 ); //B3
+            cell.setFormula("=B1 * 1.175");
+						
+			PropertyValue[] propVals = new PropertyValue[1];
+            propVals[0] = new PropertyValue();
+            propVals[0].Name = "FilterName";
+            propVals[0].Value = new uno.Any("calc8");
+            ((XStorable) document ).storeAsURL(@"file:ejemplo.ods", propVals);
+		
+		}
+		*/
+	}	
 }

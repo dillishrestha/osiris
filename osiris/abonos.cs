@@ -697,15 +697,16 @@ namespace osiris
 						"to_char(osiris_his_paciente.fecha_nacimiento_paciente, 'dd-MM-yyyy') AS fechanacpaciente, to_char(to_number(to_char(age('"+DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss")+"',osiris_his_paciente.fecha_nacimiento_paciente),'yyyy') ,'9999'),'9999') AS edadpaciente, "+
 					    "telefono_particular1_paciente,osiris_erp_abonos.observaciones AS observacionesvarias,osiris_erp_abonos.concepto_del_abono AS concepto_comprobante,"+
 						"osiris_erp_cobros_enca.id_empresa,descripcion_empresa,osiris_erp_cobros_enca.nombre_medico_encabezado,"+
-					    "to_char(monto_de_abono_procedimiento,'999999999.99') AS montodelabono "+
-				        "FROM osiris_erp_cobros_deta,osiris_his_tipo_admisiones,osiris_productos,osiris_grupo_producto,osiris_erp_abonos,osiris_his_paciente,osiris_erp_cobros_enca,osiris_empresas "+
+					    "to_char(monto_de_abono_procedimiento,'999999999.99') AS montodelabono,descripcion_tipo_comprobante "+
+				        "FROM osiris_erp_cobros_deta,osiris_his_tipo_admisiones,osiris_productos,osiris_grupo_producto,osiris_erp_abonos,osiris_his_paciente,osiris_erp_cobros_enca,osiris_empresas,osiris_erp_tipo_comprobante "+
 						"WHERE osiris_erp_cobros_deta.id_tipo_admisiones = osiris_his_tipo_admisiones.id_tipo_admisiones "+
 						"AND osiris_erp_cobros_deta.id_producto = osiris_productos.id_producto  "+ 
 						"AND osiris_productos.id_grupo_producto = osiris_grupo_producto.id_grupo_producto "+
 						"AND osiris_erp_cobros_deta.pid_paciente = osiris_his_paciente.pid_paciente "+
 				        "AND osiris_erp_cobros_enca.id_empresa = osiris_empresas.id_empresa "+
 					    "AND osiris_erp_cobros_enca.folio_de_servicio = osiris_erp_cobros_deta.folio_de_servicio "+
-						"AND osiris_erp_cobros_deta.eliminado = 'false' ",nombrecajero );
+						"AND osiris_erp_cobros_deta.eliminado = 'false' "+
+				        "AND osiris_erp_tipo_comprobante.id_tipo_comprobante = osiris_erp_abonos.id_tipo_comprobante ",nombrecajero );
 				}
 			}
 				

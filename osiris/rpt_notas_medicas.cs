@@ -54,8 +54,8 @@ namespace osiris
 		
 		PrintContext context;
 		
-		private static double headerHeight = (10*72/25.4);
-		private static double headerGap = (3*72/25.4);
+		//private static double headerHeight = (10*72/25.4);
+		//private static double headerGap = (3*72/25.4);
 		
 		Pango.FontDescription desc = Pango.FontDescription.FromString ("Sans");
 		string titulo_rpt;
@@ -349,6 +349,7 @@ namespace osiris
 			layout.Justify =  false;
 			cr.MoveTo(width/2,45*escala_en_linux_windows);	layout.SetText(titulo_rpt);	Pango.CairoHelper.ShowLayout (cr, layout);
 			//cr.MoveTo(225*escala_en_linux_windows, 35*escala_en_linux_windows);			layout.SetText(titulo_rpt);				Pango.CairoHelper.ShowLayout (cr, layout);
+			
 			fontSize = 7.0;			layout = null;			layout = context.CreatePangoLayout ();
 			desc.Size = (int)(fontSize * pangoScale);		layout.FontDescription = desc;
 			layout.FontDescription.Weight = Weight.Normal;		// Letra negrita

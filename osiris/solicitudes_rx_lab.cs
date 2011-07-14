@@ -1087,11 +1087,7 @@ namespace osiris
 		
 		void on_togglebutton_por_paciente_clicked(object sender, EventArgs args)
 		{
-			if(togglebutton_por_paciente.Active == true){
-				create_treeview_solicitudes((bool) togglebutton_por_paciente.Active);
-			}else{
-				create_treeview_solicitudes((bool) togglebutton_por_paciente.Active);
-			}
+			create_treeview_solicitudes((bool) togglebutton_por_paciente.Active);
 		}
 		
 		void on_changetab_clicked(object sender, EventArgs args)
@@ -1122,9 +1118,8 @@ namespace osiris
 		
 		void on_button_cargar_examen_clicked(object sender, EventArgs args)
 		{
-			TreeModel model;
-			TreeIter iterSelected;
- 			if (this.treeview_lista_solicitados.Selection.GetSelected(out model, out iterSelected)){
+			TreeIter iter;
+ 			//if (this.treeview_lista_solicitados.Selection.GetSelected(out model, out iterSelected)){
 				MessageDialog msgBox = new MessageDialog (MyWin,DialogFlags.Modal,
 										MessageType.Question,ButtonsType.YesNo,"¿ Esta seguro de cargar los Estudios Seleccionados");
 				ResponseType miResultado = (ResponseType)msgBox.Run ();
@@ -1137,25 +1132,24 @@ namespace osiris
 					try{
 						conexion.Open ();
 						NpgsqlCommand comando; 
-						comando = conexion.CreateCommand ();					
+						comando = conexion.CreateCommand ();
+						// actualizan la lista de producto por numero de solicitud
 						if(togglebutton_por_paciente.Active == false){
-							Console.WriteLine("Treeview es por estudios");
-							
-							
-							
-							
-							
-								// View for request
-									
-								//comando.CommandText = "INSERT INTO osiris_erp_cobros_deta("+
-								//						"id_producto,"+
-			 					//						"folio_de_servicio,"+
-			 					//						"pid_paciente,"+
-								//						") VALUES ('"+
-			 					//						double.Parse((string) treeview_lista_solicitados.Model.GetValue(iter,2))+//id_producto		
-								//						"');";
-								/*
-								comando.CommandText = "INSERT INTO osiris_erp_cobros_deta("+
+							Console.WriteLine("Treeview es por estudios");							
+							if (treeViewEnginesolicitados.GetIterFirst(out iter)){
+								if ((bool)treeview_lista_solicitados.Model.GetValue (iter,0) == true){
+								
+								
+									//Console.WriteLine(treeview_lista_solicitados.Model.GetValue(iter,1)+ " - "+treeview_lista_solicitados.Model.GetValue(iter,13));
+									//comando.CommandText = "INSERT INTO osiris_erp_cobros_deta("+
+									//						"id_producto,"+
+				 					//						"folio_de_servicio,"+
+				 					//						"pid_paciente,"+
+									//						") VALUES ('"+
+				 					//						double.Parse((string) treeview_lista_solicitados.Model.GetValue(iter,2))+//id_producto		
+									//						"');";
+									/*
+									comando.CommandText = "INSERT INTO osiris_erp_cobros_deta("+
 			 														"id_producto,"+
 			 														"folio_de_servicio,"+
 			 														"pid_paciente,"+
@@ -1190,13 +1184,71 @@ namespace osiris
 			 														this.idsubalmacen.ToString().Trim()+"','"+
 			 														float.Parse((string)treeview_lista_solicitados.Model.GetValue(iter,17))+//precio_costo
 			 														"');";*/
-							//}else{
 								
-							//}
-							comando.ExecuteNonQuery();
-							comando.Dispose();							
+								
+								}								
+								while (treeViewEnginesolicitados.IterNext(ref iter)){									
+									if ((bool)treeview_lista_solicitados.Model.GetValue (iter,0) == true){
+										//Console.WriteLine(treeview_lista_solicitados.Model.GetValue(iter,1)+ " - "+treeview_lista_solicitados.Model.GetValue(iter,13));
+										//comando.CommandText = "INSERT INTO osiris_erp_cobros_deta("+
+										//						"id_producto,"+
+					 					//						"folio_de_servicio,"+
+					 					//						"pid_paciente,"+
+										//						") VALUES ('"+
+					 					//						double.Parse((string) treeview_lista_solicitados.Model.GetValue(iter,2))+//id_producto		
+										//						"');";
+										/*
+										comando.CommandText = "INSERT INTO osiris_erp_cobros_deta("+
+			 														"id_producto,"+
+			 														"folio_de_servicio,"+
+			 														"pid_paciente,"+
+			 														"cantidad_aplicada,"+
+			 														"id_tipo_admisiones,"+
+			 														"precio_producto, "+
+			 														//"precio_por_cantidad,"+
+			 														"iva_producto,"+
+			 														"precio_costo_unitario,"+
+			 														"porcentage_utilidad,"+
+			 														"porcentage_descuento,"+
+			 														"id_empleado,"+
+			 														"fechahora_creacion,"+
+			 														"porcentage_iva,"+
+			 														"id_almacen,"+
+			 														"precio_costo) "+
+			 														"VALUES ('"+
+			 														double.Parse((string) treeview_lista_solicitados.Model.GetValue(iter,2))+"','"+//id_producto
+			 														folioservicio+"','"+//folio_de_servicio
+			 														int.Parse((string)entry_pid_paciente.Text)+"','"+//pid_paciente
+			 														(float) treeview_lista_solicitados.Model.GetValue(iter,1)+"','"+//cantidad_aplicada
+			 														(int)treeview_lista_solicitados.Model.GetValue(iter,13)+"','"+//id_tipo_admisiones
+			 														double.Parse((string)treeview_lista_solicitados.Model.GetValue(iter,6))+"','"+//precio_producto
+			 														//double.Parse((string)lista_de_servicios.Model.GetValue(iter,7))+"','"+//precio_por_cantidad
+			 														double.Parse((string)treeview_lista_solicitados.Model.GetValue(iter,8))+"','"+//iva_producto
+			 														double.Parse((string)treeview_lista_solicitados.Model.GetValue(iter,15))+"','"+//precio_costo_unitario
+			 														float.Parse((string)treeview_lista_solicitados.Model.GetValue(iter,16))+"','"+//porcentage_utilidad
+			 														float.Parse((string) treeview_lista_solicitados.Model.GetValue(iter,10))+"','"+//porcentage_descuento
+			 														LoginEmpleado+"','"+//id_empleado
+			 														DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"','"+//fechahora_creacion
+			 														valoriva+"','"+//porcentage_iva
+			 														this.idsubalmacen.ToString().Trim()+"','"+
+			 														float.Parse((string)treeview_lista_solicitados.Model.GetValue(iter,17))+//precio_costo
+			 														"');";*/
+									}								
+									comando.ExecuteNonQuery();
+									comando.Dispose();
+									/*
+									comando.CommandText = "UPDATE osiris_erp_cobros_enca "+
+										"SET bloqueo_de_folio = 'true' ,"+
+										"historial_de_bloqueo = historial_de_bloqueo ||'"+LoginEmpleado+" "+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"\n' "+
+				 						"WHERE  folio_de_servicio =  '"+this.folioservicio+"';";
+									comando.ExecuteNonQuery();
+					        		comando.Dispose();
+					        		*/
+								}
+							}						
 						}else{
 							// View for patients
+							// Es por la lista de pacientes
 							
 						}
 					}catch (NpgsqlException ex){
@@ -1207,11 +1259,11 @@ namespace osiris
 					}
 					conexion.Close();
 				}
-			}else{
-				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
-							MessageType.Error, ButtonsType.Close,"No hay solicitudes para cargar...","Solicitudes");
-				msgBoxError.Run ();						msgBoxError.Destroy();
-			}
+			//}else{
+			//	MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+			//				MessageType.Error, ButtonsType.Close,"No hay solicitudes para cargar...","Solicitudes");
+			//	msgBoxError.Run ();						msgBoxError.Destroy();
+			//}
 		}
 			
 		void create_treeview_solicitudes(bool tipo_treeview)
@@ -1524,7 +1576,8 @@ namespace osiris
 						                                       lector["fechahorasolicitud"].ToString().Trim(),
 						                                       lector["area_quien_solicita"].ToString().Trim(),
 						                                       lector["id_quien_solicito"].ToString().Trim(),
-						                                       lector["descripcion_proveedor"].ToString().Trim());
+						                                       lector["descripcion_proveedor"].ToString().Trim(),
+						                                       lector["id_secuencia"].ToString().Trim());
 						}
 					
 						// llenado por paciente

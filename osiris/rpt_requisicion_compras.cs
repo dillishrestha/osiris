@@ -169,6 +169,7 @@ namespace osiris
 					cr.MoveTo(140*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText((string) this.lista_requisicion_productos.Model.GetValue (iter,1).ToString().Trim());					Pango.CairoHelper.ShowLayout (cr, layout);
 					contador += 1;
 					comienzo_linea += separacion_linea;
+					salto_de_pagina(cr,layout);
 				}
 			}
 		}
@@ -337,7 +338,21 @@ namespace osiris
 			cr.MoveTo(587*escala_en_linux_windows, 515*escala_en_linux_windows);			layout.SetText("Fecha y Hora Recibido en Dep. Compras");					Pango.CairoHelper.ShowLayout (cr, layout);
 			
 			cr.MoveTo(55*escala_en_linux_windows, 565*escala_en_linux_windows);			layout.SetText("SOLICITANTE");					Pango.CairoHelper.ShowLayout (cr, layout);			
+			fontSize = 7.0;
+			desc.Size = (int)(fontSize * pangoScale);			layout.FontDescription = desc;
 		}
+		
+		void salto_de_pagina(Cairo.Context cr,Pango.Layout layout)           
+        {
+            if(comienzo_linea >510){
+                cr.ShowPage();
+                Pango.FontDescription desc = Pango.FontDescription.FromString ("Sans");                               
+                fontSize = 8.0;        desc.Size = (int)(fontSize * pangoScale);                    layout.FontDescription = desc;
+                comienzo_linea = 162;
+                numpage += 1;
+                imprime_encabezado(cr,layout);				
+            }
+        }
 		
 		private void OnEndPrint (object obj, Gtk.EndPrintArgs args)
 		{

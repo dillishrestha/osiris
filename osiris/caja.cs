@@ -268,6 +268,8 @@ namespace osiris
 		bool aplicar_siempre = false;
 		
 		string tipodereporte = "";
+		//string tipo_comprobante = "";
+		string idtipocomprobante = "";
 
 		string id_produ = "";
 		string desc_produ = "";
@@ -1726,19 +1728,47 @@ namespace osiris
 	        
 				ListStore store5 = new ListStore( typeof (string), typeof (int));
 				combobox_tipocomprobante.Model = store5;
-				store5.AppendValues ("",0);
-				store5.AppendValues ("CONTROL DE CLINICA",0);
-				store5.AppendValues ("OFTALMOLOGIA APLICADA",1);
-				store5.AppendValues ("OPTICA",2);
-				store5.AppendValues ("DENTAL",3);				
-				store5.AppendValues ("SILVIA OVALLE GALLARDO",4);
 				
+				NpgsqlConnection conexion; 
+				conexion = new NpgsqlConnection (connectionString+nombrebd);
+	            // Verifica que la base de datos este conectada
+				try{
+					conexion.Open ();
+					NpgsqlCommand comando; 
+					comando = conexion.CreateCommand ();
+	               	comando.CommandText = "SELECT * FROM osiris_erp_tipo_comprobante "+
+	               						"WHERE activo = true "+	
+	               						"ORDER BY id_tipo_comprobante;";
+					
+					NpgsqlDataReader lector = comando.ExecuteReader ();
+	               	while (lector.Read()){
+						store5.AppendValues ((string) lector["descripcion_tipo_comprobante"],
+										 	(int) lector["id_tipo_comprobante"] );
+					}
+				}catch (NpgsqlException ex){
+					MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+											MessageType.Error,ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
+					msgBoxError.Run ();				msgBoxError.Destroy();
+				}
+				conexion.Close ();
 				
+				combobox_tipocomprobante.Changed += new EventHandler(onComboBoxChanged_tipocomprobante);
 				button_guardar_pago.Clicked += new EventHandler(on_button_guardar_pago_clicked);
 				button_salir.Clicked += new EventHandler(on_cierraventanas_clicked); // esta sub-clase esta en hscmty.cs
 				llenado_formapago();
 			}
-		}		
+		}
+		
+		void onComboBoxChanged_tipocomprobante(object sender, EventArgs args)
+		{
+			ComboBox combobox_tipocomprobante = sender as ComboBox;
+			if (sender == null)	{	return;	}
+			TreeIter iter;			
+			if (combobox_tipocomprobante.GetActiveIter (out iter)){
+				idtipocomprobante = combobox_tipocomprobante.Model.GetValue(iter,1).ToString().Trim();								
+				entry_numero_comprobante.Text = (string) classpublic.lee_ultimonumero_registrado("osiris_erp_abonos","numero_recibo_caja"," WHERE id_tipo_comprobante = '"+combobox_tipocomprobante.Model.GetValue(iter,1).ToString().Trim()+"' ");
+			}
+		}
 				
 		void on_button_guardar_pago_clicked(object sender, EventArgs args)
 		{
@@ -1749,7 +1779,8 @@ namespace osiris
 		{
 			string descrippago = "";
 			bool pago_sino = true;
-			string sql_abonos_servicio = "";			
+			string sql_abonos_servicio = "";
+			int numerodecomprobante = 0;
 			if (entry_numero_comprobante.Text.Trim() != "" && idformadepago > 1){								
 				// Actualiza informacion en pagos y abonos
 				if (idformadepago > 1 ){
@@ -1758,11 +1789,9 @@ namespace osiris
 								ResponseType miResultado = (ResponseType) msgBox.Run ();
 					msgBox.Destroy();
 	 				//Console.WriteLine(miResultado.ToString());
-	 				if (miResultado == ResponseType.Yes){
-				
+	 				if (miResultado == ResponseType.Yes){				
 						//if (guado_el_abono == false){
 						if (pagodehonorario == true){
-							//entry_numero_comprobante.Text = (string) classpublic.lee_ultimonumero_registrado("osiris_erp_comprobante_servicio","numero_comprobante_servicio","");
 							descrippago = "PAGO DE HONORARIO MEDICO";
 							pago_sino = true;
 							sql_abonos_servicio = "INSERT INTO osiris_erp_abonos("+
@@ -1780,7 +1809,7 @@ namespace osiris
 				 								"numero_factura,"+
 				 								"numero_recibo_caja,"+
 												"tipo_comprobante) "+
-				 								"VALUES ('"+
+												"VALUES ('"+
 				 								(string) this.entry_total_comprobante.Text.Trim()+"','"+
 				 								folioservicio+"','"+
 												this.PidPaciente.ToString().Trim()+"','"+
@@ -1799,6 +1828,7 @@ namespace osiris
 							win.Toplevel.Destroy();
 						}
 						if(tipo_de_comprobante == "CAJA"){
+							numerodecomprobante = int.Parse((string) classpublic.lee_ultimonumero_registrado("osiris_erp_abonos","numero_recibo_caja","WHERE id_tipo_comprobante = '"+idtipocomprobante.ToString().Trim()+"'"));
 							descrippago = "PAGO DE PROCEDIMIENTO";
 							pago_sino = true;
 							sql_abonos_servicio = "INSERT INTO osiris_erp_abonos("+
@@ -1816,7 +1846,10 @@ namespace osiris
 				 								"numero_factura,"+
 				 								"numero_recibo_caja,"+
 												"tipo_comprobante,"+
-												"observaciones) "+
+												"id_tipo_comprobante,"+
+												"observaciones," +
+												"observaciones2," +
+												"observaciones3) "+
 				 								"VALUES ('"+
 				 								(string) this.entry_total_comprobante.Text.Trim()+"','"+
 				 								folioservicio+"','"+
@@ -1829,16 +1862,19 @@ namespace osiris
 	 											DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"','"+
 	 											pagodehonorario+"','"+
 	 											pago_sino.ToString()+"','"+
-	 											this.entry_numero_factura.Text+"','"+
-	 											(string) entry_numero_comprobante.Text.Trim()+"','"+
+	 											this.entry_numero_factura.Text.Trim()+"','"+
+	 											numerodecomprobante.ToString().Trim()+"','"+
 												tipo_de_comprobante+"','"+
-												entry_observacion_egreso.Text.ToString().ToUpper().Trim()+"');";
-							Widget win = (Widget) sender;
-							win.Toplevel.Destroy();
+												idtipocomprobante+"','"+
+												entry_observacion_egreso.Text.ToString().ToUpper().Trim()+"','"+
+												entry_observaciones2.Text.ToString().ToUpper().Trim()+"','"+
+												entry_observaciones3.Text.ToString().ToUpper().Trim()+
+														"');";
 						}						
-						if(tipo_de_comprobante == "SERVICIO"){
+						if(tipo_de_comprobante == "SERVICIO"){							
 							descrippago = "COMPROBANTE DE SERVICIO";
 							pago_sino = false;
+							numerodecomprobante = int.Parse((string) classpublic.lee_ultimonumero_registrado("osiris_erp_comprobante_servicio","numero_comprobante_servicio",""));
 							sql_abonos_servicio = "INSERT INTO osiris_erp_comprobante_servicio("+
 														"numero_comprobante_servicio,"+
 														"folio_de_servicio,"+
@@ -1853,7 +1889,7 @@ namespace osiris
 														"observaciones2," +
 														"observaciones3) "+
 													"VALUES ('"+
-														(string) classpublic.lee_ultimonumero_registrado("osiris_erp_comprobante_servicio","numero_comprobante_servicio","")+"','"+
+														numerodecomprobante.ToString().Trim()+"','"+
 														folioservicio+"','"+
 														this.PidPaciente.ToString().Trim()+"','"+
 														DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"','"+
@@ -1866,8 +1902,7 @@ namespace osiris
 														entry_observaciones2.Text.ToString().ToUpper().Trim()+"','"+
 														entry_observaciones3.Text.ToString().ToUpper().Trim()+
 														"');";
-							Widget win = (Widget) sender;
-							win.Toplevel.Destroy();
+							
 						}						
 						if(tipo_de_comprobante == "PAGARE"){
 							descrippago = "COMPROBANTE DE PAGARE";
@@ -1882,18 +1917,17 @@ namespace osiris
 														folioservicio+"','"+
 														this.PidPaciente.ToString().Trim()+"','"+
 														DateTime.Now.ToString("yyyy-MM-dd")+"');";
-						}						
+						}
+						
 	 					NpgsqlConnection conexion; 
 						conexion = new NpgsqlConnection (connectionString+nombrebd);
 						// Verifica que la base de datos este conectado
 						try{
-							Console.WriteLine((string) classpublic.lee_ultimonumero_registrado("osiris_erp_comprobante_servicio","numero_comprobante_servicio",""));
-							entry_numero_comprobante.Text = (string) classpublic.lee_ultimonumero_registrado("osiris_erp_comprobante_servicio","numero_comprobante_servicio","");
 							conexion.Open ();
 							NpgsqlCommand comando; 
 							comando = conexion.CreateCommand ();
 				 			comando.CommandText = sql_abonos_servicio;
-							Console.WriteLine(comando.CommandText);
+							//Console.WriteLine(comando.CommandText);
 	 											
 			 				comando.ExecuteNonQuery();    	    	       	comando.Dispose();
 			 				if (pagodehonorario == true){
@@ -1937,10 +1971,12 @@ namespace osiris
 											"SET pagado = 'true',"+	
 											"total_pago = '"+(string) this.entry_total_comprobante.Text.Trim()+"' "+							
 											"WHERE  folio_de_servicio =  '"+this.folioservicio+"';";
+										//Console.WriteLine(comando1.CommandText);
 						 				comando1.ExecuteNonQuery();    	    	       	comando1.Dispose();
-						 			
+										Widget win = (Widget) sender;
+										win.Toplevel.Destroy();					 			
 						 				cierre_de_procedimiento();				 			
-						 				comprobante_de_caja_pago("CAJA");
+						 				comprobante_de_caja_pago("CAJA",numerodecomprobante);
 						 							 			 	  
 				 					}catch(NpgsqlException ex){
 					   					MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
@@ -1949,9 +1985,11 @@ namespace osiris
 					       			}
 					       			conexion1.Close();
 								}									
-								if(tipo_de_comprobante == "SERVICIO"){						       								 			
+								if(tipo_de_comprobante == "SERVICIO"){
+									Widget win = (Widget) sender;
+									win.Toplevel.Destroy();
 						 			cierre_de_procedimiento();				 			
-						 			comprobante_de_caja_pago("SERVICIO");
+						 			comprobante_de_caja_pago("SERVICIO",numerodecomprobante);
 						       	}					
 							}
 						}catch(NpgsqlException ex){
@@ -1973,11 +2011,11 @@ namespace osiris
 			}			
 		}
 		
-		void comprobante_de_caja_pago(string tipo_comprobante)
+		void comprobante_de_caja_pago(string tipo_comprobante,int numerodecomprobante)
 		{
 			// rpt_caja-comprobante.cs
-			if (tipo_comprobante == "CAJA"){			
-				new caja_comprobante (int.Parse(entry_numero_comprobante.Text.ToString()), "CAJA", folioservicio,"SELECT osiris_erp_cobros_deta.folio_de_servicio AS foliodeservicio,osiris_erp_cobros_deta.pid_paciente AS pidpaciente, "+ 
+			if (tipo_comprobante == "CAJA"){
+				new caja_comprobante (numerodecomprobante, "CAJA", folioservicio,"SELECT osiris_erp_cobros_deta.folio_de_servicio AS foliodeservicio,osiris_erp_cobros_deta.pid_paciente AS pidpaciente, "+ 
 						"osiris_his_tipo_admisiones.descripcion_admisiones,aplicar_iva, "+
 						"osiris_his_tipo_admisiones.id_tipo_admisiones AS idadmisiones,"+
 						"osiris_grupo_producto.descripcion_grupo_producto, "+
@@ -1996,19 +2034,20 @@ namespace osiris
 						"osiris_his_paciente.nombre1_paciente || ' ' || osiris_his_paciente.nombre2_paciente || ' ' || osiris_his_paciente.apellido_paterno_paciente || ' ' || osiris_his_paciente.apellido_materno_paciente AS nombre_completo, "+
 						"to_char(osiris_his_paciente.fecha_nacimiento_paciente, 'dd-MM-yyyy') AS fechanacpaciente, to_char(to_number(to_char(age('"+DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss")+"',osiris_his_paciente.fecha_nacimiento_paciente),'yyyy') ,'9999'),'9999') AS edadpaciente, "+
 					    "telefono_particular1_paciente,osiris_erp_abonos.observaciones AS observacionesvarias,osiris_erp_abonos.concepto_del_abono AS concepto_comprobante,"+
-						"osiris_erp_cobros_enca.id_empresa,descripcion_empresa,,osiris_erp_cobros_enca.nombre_medico_encabezado,"+
-					    "to_char(monto_de_abono_procedimiento,'999999999.99') AS montodelabono "+
-				        "FROM osiris_erp_cobros_deta,osiris_his_tipo_admisiones,osiris_productos,osiris_grupo_producto,osiris_erp_abonos,osiris_his_paciente,osiris_erp_cobros_enca,osiris_empresas "+
+						"osiris_erp_cobros_enca.id_empresa,descripcion_empresa,osiris_erp_cobros_enca.nombre_medico_encabezado,"+
+					    "to_char(monto_de_abono_procedimiento,'999999999.99') AS montodelabono,descripcion_tipo_comprobante "+
+				        "FROM osiris_erp_cobros_deta,osiris_his_tipo_admisiones,osiris_productos,osiris_grupo_producto,osiris_erp_abonos,osiris_his_paciente,osiris_erp_cobros_enca,osiris_empresas,osiris_erp_tipo_comprobante "+
 						"WHERE osiris_erp_cobros_deta.id_tipo_admisiones = osiris_his_tipo_admisiones.id_tipo_admisiones "+
 						"AND osiris_erp_cobros_deta.id_producto = osiris_productos.id_producto  "+ 
 						"AND osiris_productos.id_grupo_producto = osiris_grupo_producto.id_grupo_producto "+
 						"AND osiris_erp_cobros_deta.pid_paciente = osiris_his_paciente.pid_paciente "+
 				        "AND osiris_erp_cobros_enca.id_empresa = osiris_empresas.id_empresa "+
 					    "AND osiris_erp_cobros_enca.folio_de_servicio = osiris_erp_cobros_deta.folio_de_servicio "+
-						"AND osiris_erp_cobros_deta.eliminado = 'false' ", NomEmpleado );
+						"AND osiris_erp_cobros_deta.eliminado = 'false' "+
+				        "AND osiris_erp_tipo_comprobante.id_tipo_comprobante = osiris_erp_abonos.id_tipo_comprobante ", NomEmpleado );
 			}
 			if (tipo_comprobante == "SERVICIO"){			
-				new caja_comprobante (int.Parse(entry_numero_comprobante.Text.ToString()), "SERVICIO", folioservicio,"SELECT osiris_erp_cobros_deta.folio_de_servicio AS foliodeservicio,osiris_erp_cobros_deta.pid_paciente AS pidpaciente, "+ 
+				new caja_comprobante (numerodecomprobante, "SERVICIO", folioservicio,"SELECT osiris_erp_cobros_deta.folio_de_servicio AS foliodeservicio,osiris_erp_cobros_deta.pid_paciente AS pidpaciente, "+ 
 						"osiris_his_tipo_admisiones.descripcion_admisiones,aplicar_iva, "+
 						"osiris_his_tipo_admisiones.id_tipo_admisiones AS idadmisiones,"+
 						"osiris_grupo_producto.descripcion_grupo_producto, "+

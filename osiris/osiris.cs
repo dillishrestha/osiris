@@ -145,7 +145,15 @@ namespace osiris
 		{	
 			connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
 			nombrebd = conexion_a_DB._nombrebd;
-			pantalla_login();			
+			pantalla_login();
+			
+			//crea_file_ods file_ods = new osiris.crea_file_ods();		
+			//unoidl.com.sun.star.lang.XComponent archivo_ods = file_ods.openCalcSheet();						
+			//file_ods.writeToSheet(archivo_ods);
+			//file_ods.saveCalcSheet(archivo_ods);
+			
+			//classpublic.genera_ods();
+			
 			//verifica_usuariopasswd();			
 		}
 		

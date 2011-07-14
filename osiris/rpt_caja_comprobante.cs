@@ -57,6 +57,8 @@ namespace osiris
 		string empresapac = "";
 		string nombreempleado = "";
 		
+		PrintContext context;
+		
 		string sql_compcaja = "";
 						//"AND to_char(osiris_erp_movcargos.fechahora_admision_registro,'dd') >= '"+DateTime.Now.ToString("dd")+"'  AND to_char(osiris_erp_movcargos.fechahora_admision_registro,'dd') <= '"+DateTime.Now.ToString("dd")+"' "+
 						//"AND to_char(osiris_erp_movcargos.fechahora_admision_registro,'MM') >= '"+DateTime.Now.ToString("MM")+"' AND to_char(osiris_erp_movcargos.fechahora_admision_registro,'MM') <= '"+DateTime.Now.ToString("MM")+"' "+
@@ -81,7 +83,7 @@ namespace osiris
 			sql_compcaja = sql_consulta_;
 			nombreempleado = nombreempleado_;
 			
-			Console.WriteLine(tipocomprobante);
+			//Console.WriteLine(tipocomprobante);
 			
 			if (tipocomprobante == "CAJA"){			
 				sql_numerocomprobante = "AND osiris_erp_abonos.numero_recibo_caja = '"+numero_comprobante.ToString().Trim()+"' ";
@@ -111,7 +113,7 @@ namespace osiris
 		
 		private void OnDrawPage (object obj, Gtk.DrawPageArgs args)
 		{			
-			PrintContext context = args.Context;			
+			context = args.Context;			
 			ejecutar_consulta_reporte(context);			
 		}
 		
@@ -143,7 +145,8 @@ namespace osiris
 				NpgsqlDataReader lector = comando.ExecuteReader();
 				if (lector.Read()){
 					if (tipocomprobante == "CAJA"){
-						toma_valor_total = float.Parse((string) lector["montodelabono"]);		
+						toma_valor_total = float.Parse((string) lector["montodelabono"]);
+						tipocomprobante = tipocomprobante+"_"+ (string) lector["descripcion_tipo_comprobante"];
 					}
 					toma_tipoadmisiones = (int) lector["idadmisiones"];
 					toma_grupoproducto = (int) lector["id_grupo_producto"];
@@ -154,6 +157,9 @@ namespace osiris
 					                   toma_valor_total,lector["nombre_medico_encabezado"].ToString().Trim());
 					comienzo_linea += separacion_linea;
 					comienzo_linea += separacion_linea;
+					fontSize = 8.0;			layout = null;			layout = context.CreatePangoLayout ();
+					desc.Size = (int)(fontSize * pangoScale);		layout.FontDescription = desc;
+					layout.FontDescription.Weight = Weight.Normal;		// Letra normal
 					if ((int) lector["idadmisiones"] == 300 || (int) lector["idadmisiones"] == 400 || (int) lector["idadmisiones"] == 950 || (int) lector["idadmisiones"] == 960){	
 						cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText((string) lector["descripcion_admisiones"].ToString().Trim());	Pango.CairoHelper.ShowLayout (cr, layout);
 						comienzo_linea += separacion_linea;
@@ -226,12 +232,22 @@ namespace osiris
 			desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;
 			layout.FontDescription.Weight = Weight.Bold;		// Letra negrita
 			layout.Alignment = Pango.Alignment.Center;
-			cr.MoveTo(225*escala_en_linux_windows, 35*escala_en_linux_windows);			layout.SetText("COMPROBANTE "+tipocomprobante);				Pango.CairoHelper.ShowLayout (cr, layout);
-			layout.FontDescription.Weight = Weight.Normal;		// Letra normal
-			layout.Alignment = Pango.Alignment.Left;
+			
+			double width = context.Width;
+			layout.Width = (int) width;
+			layout.Alignment = Pango.Alignment.Center;
+			//layout.Wrap = Pango.WrapMode.Word;
+			//layout.SingleParagraphMode = true;
+			layout.Justify =  false;
+			cr.MoveTo(width/2,45*escala_en_linux_windows);	layout.SetText("COMPROBANTE_"+tipocomprobante);	Pango.CairoHelper.ShowLayout (cr, layout);
+			
+			fontSize = 10.0;			layout = null;			layout = context.CreatePangoLayout ();
+			desc.Size = (int)(fontSize * pangoScale);		layout.FontDescription = desc;
+			layout.FontDescription.Weight = Weight.Bold;		// Letra negrita
 			cr.MoveTo(479*escala_en_linux_windows, 25*escala_en_linux_windows);			layout.SetText("N° Folio "+numerocomprobante);				Pango.CairoHelper.ShowLayout (cr, layout);
-			fontSize = 8.0;		
-			desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;
+			
+			fontSize = 9.0;			layout = null;			layout = context.CreatePangoLayout ();
+			desc.Size = (int)(fontSize * pangoScale);		layout.FontDescription = desc;
 			layout.FontDescription.Weight = Weight.Bold;		// Letra negrita
 			cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText("N° Atencion: "+numerodeatencion);	Pango.CairoHelper.ShowLayout (cr, layout);
 			layout.FontDescription.Weight = Weight.Normal;		// Letra normal
@@ -256,10 +272,10 @@ namespace osiris
 				layout.FontDescription.Weight = Weight.Bold;		// Letra negrita
 				cr.MoveTo(350*escala_en_linux_windows,comienzo_linea+(separacion_linea*23)*escala_en_linux_windows);		layout.SetText("T O T A L : "+tomavalortotal.ToString("C"));	Pango.CairoHelper.ShowLayout (cr, layout);		
 			}
-			fontSize = 8.0;		
-			desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;
+			
+			fontSize = 8.0;			layout = null;			layout = context.CreatePangoLayout ();
+			desc.Size = (int)(fontSize * pangoScale);		layout.FontDescription = desc;
 			layout.FontDescription.Weight = Weight.Normal;		// Letra normal
-		
 		}
 				
 		private void OnEndPrint (object obj, Gtk.EndPrintArgs args)
@@ -280,7 +296,7 @@ namespace osiris
 					"FROM osiris_erp_movcargos,osiris_his_tipo_pacientes "+
 					"WHERE osiris_erp_movcargos.id_tipo_paciente = osiris_his_tipo_pacientes.id_tipo_paciente "+
 						"AND osiris_erp_movcargos.folio_de_servicio = '"+foliodeservicio+"';";
-	        	Console.WriteLine(comando.CommandText);
+	        	//Console.WriteLine(comando.CommandText);
 				NpgsqlDataReader lector = comando.ExecuteReader();
 				if (lector.Read()){
 					tipo_paciente = lector["descripcion_tipo_paciente"].ToString().Trim();					

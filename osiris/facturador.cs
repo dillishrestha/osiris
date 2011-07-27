@@ -502,7 +502,7 @@ namespace osiris
 					
 		 			//Console.WriteLine(((float.Parse((string)lector["honorariomedico"])+float.Parse((string) lector["subtotal_15"])+float.Parse((string) lector["subtotal_0"])+float.Parse((string) lector["ivaal_15"]))-(float.Parse((string) lector["deducible_"])+float.Parse((string) lector["valorcoaseguro"]))).ToString("C").Trim());
 		 									     
-		 			cantidad_en_letras = classpublic.ConvertirCadena(((float.Parse((string)lector["honorariomedico"])+float.Parse((string) lector["subtotal_15"])+float.Parse((string) lector["subtotal_0"])+float.Parse((string) lector["ivaal_15"]))-(float.Parse((string) lector["deducible_"])+float.Parse((string) lector["valorcoaseguro"]))).ToString().Trim(),"Peso");
+		 			cantidad_en_letras = class_public.ConvertirCadena(((float.Parse((string)lector["honorariomedico"])+float.Parse((string) lector["subtotal_15"])+float.Parse((string) lector["subtotal_0"])+float.Parse((string) lector["ivaal_15"]))-(float.Parse((string) lector["deducible_"])+float.Parse((string) lector["valorcoaseguro"]))).ToString().Trim(),"Peso");
 		 			
 		 			entry_status_factura.Text = "";
 		 			
@@ -671,7 +671,7 @@ namespace osiris
 								
 				entry_total_factura.Text = total_de_la_factura.ToString("C").PadLeft(10);
 				
-				cantidad_en_letras = classpublic.ConvertirCadena(total_de_la_factura.ToString("F").Trim(),"Peso");
+				cantidad_en_letras = class_public.ConvertirCadena(total_de_la_factura.ToString("F").Trim(),"Peso");
 				
 				deducible_coaseguro.Destroy();
 		}
@@ -688,7 +688,7 @@ namespace osiris
 								
 			entry_total_factura.Text = total_de_la_factura.ToString("C").PadLeft(10);
 				
-			cantidad_en_letras = classpublic.ConvertirCadena(total_de_la_factura.ToString("F").Trim(),"Peso");
+			cantidad_en_letras = class_public.ConvertirCadena(total_de_la_factura.ToString("F").Trim(),"Peso");
 			
 			deducible_coaseguro.Destroy();
 		}
@@ -832,7 +832,7 @@ namespace osiris
 			this.entry_subtotal.Text = subtotales.ToString("C");
 			this.entry_total_factura.Text = subtotales.ToString("C");
 				
-			cantidad_en_letras = classpublic.ConvertirCadena(subtotales.ToString("F").Trim(),"Peso");
+			cantidad_en_letras = class_public.ConvertirCadena(subtotales.ToString("F").Trim(),"Peso");
 			
 			checkbutton_iva.Active = false;
 			checkbutton_detalle.Active = false;
@@ -879,7 +879,7 @@ namespace osiris
 					this.entry_subtotal.Text = subtotales.ToString("C");
 					this.entry_total_factura.Text = subtotales.ToString("C");				
 					
-					cantidad_en_letras = classpublic.ConvertirCadena(subtotales.ToString("F").Trim(),"Peso");
+					cantidad_en_letras = class_public.ConvertirCadena(subtotales.ToString("F").Trim(),"Peso");
 				}
 			}
 		}
@@ -2048,7 +2048,7 @@ namespace osiris
 												
 					entry_total_factura.Text = total_de_la_factura.ToString("C").PadLeft(10);
 					
-					cantidad_en_letras = classpublic.ConvertirCadena(total_de_la_factura.ToString("F").Trim(),"Peso");
+					cantidad_en_letras = class_public.ConvertirCadena(total_de_la_factura.ToString("F").Trim(),"Peso");
 					//Console.WriteLine(cantidad_en_letras);
 					
 					treeViewEngineDetaFact.AppendValues("","","","");
@@ -2437,7 +2437,7 @@ namespace osiris
 								
 								entry_total_factura.Text = total_de_la_factura.ToString("C").PadLeft(10);
 								
-								cantidad_en_letras = classpublic.ConvertirCadena(total_de_la_factura.ToString("F").Trim(),"Peso");
+								cantidad_en_letras = class_public.ConvertirCadena(total_de_la_factura.ToString("F").Trim(),"Peso");
 								//Console.WriteLine(cantidad_en_letras);
 					        
 					        }else{
@@ -2460,7 +2460,7 @@ namespace osiris
 								
 								entry_total_factura.Text = total_de_la_factura.ToString("C").PadLeft(10);
 								
-								cantidad_en_letras = classpublic.ConvertirCadena(total_de_la_factura.ToString("F").Trim(),"Peso");
+								cantidad_en_letras = class_public.ConvertirCadena(total_de_la_factura.ToString("F").Trim(),"Peso");
 								//Console.WriteLine(cantidad_en_letras);
 							}
 							conexion.Close ();

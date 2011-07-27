@@ -94,6 +94,7 @@ namespace osiris
     	//Declaracion de ventana de error
 		protected Gtk.Window MyWinError;
 		protected Gtk.Window MyWin;
+		private MessageDialog msgBox;
 		
 		//declaracion de treeview aseguradoras
 		private TreeStore treeViewEngineaseguradoras;
@@ -155,7 +156,13 @@ namespace osiris
 		
 		void on_button_catalogo_productos_clicked (object sender, EventArgs args)
 		{
-			new osiris.catalogo_productos_nuevos(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
+			if(LoginEmpleado == "ADMIN"){
+				new osiris.catalogo_productos_nuevos(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
+			}else{
+				msgBox = new MessageDialog (MyWin,DialogFlags.Modal,
+										MessageType.Error,ButtonsType.Ok,"No tiene Autorizacion para esta opcion, verifique...");
+				ResponseType miResultado = (ResponseType) msgBox.Run ();				msgBox.Destroy();
+			}
 		}
 		void on_button_nuevos_productos_clicked(object sender, EventArgs args)
 		{

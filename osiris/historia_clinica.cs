@@ -11,6 +11,7 @@ using Npgsql;
 using System.Data;
 using Gtk;
 using Glade;
+using SmartXLS;
 
 namespace osiris
 {
@@ -50,6 +51,7 @@ namespace osiris
 		[Widget] Gtk.SpinButton spinbutton_edad_padre;
 		[Widget] Gtk.SpinButton spinbutton_edad_madre;
 		[Widget] Gtk.Entry entry_enfermedad_padre;
+		
 		[Widget] Gtk.Entry entry_enfermedad_madre;
 		[Widget] Gtk.Entry entry_enfermedad_hermanos;
 		[Widget] Gtk.Entry entry_enfermedad_hijos;
@@ -153,6 +155,7 @@ namespace osiris
 		[Widget] Gtk.Entry entry_plan_diag;
 		[Widget] Gtk.Entry entry_nombre_plan_diag;
 		
+		[Widget] Gtk.Statusbar statusbar5 = null;
 		string fecha_admision;
 		string fecha_nacimiento;
 		
@@ -276,14 +279,23 @@ namespace osiris
 			this.entry_pid_paciente.Text = pid_paciente_.Trim();
 			this.entry_edad_paciente.Text = edad_.Trim();
 			
+			
+			
 			//llenado de los ComboBox Antecedentes Heredo Familiar:
 			llenado_padre(0,"");
 			llenado_madre(0,"");
 			
+			
+			// llenado de Combobox positivo Negativo
+			
+			llenado_positivo_negativo(1,"POSITIVO",combobox_tabaquismo);
+			llenado_positivo_negativo(1,"POSITIVO",combobox_alcoholismo);
+			llenado_positivo_negativo(1,"NEGATIVO",combobox_drogas);
+			
 			//llenado de los ComboBox Antecedentes Personales NO Patologicos  
-			llenado_tabaquismo(0,"");
-			llenado_alcoholismo(0,"");
-			llenado_drogas(0,"");
+			//llenado_tabaquismo(0,"");
+			//llenado_alcoholismo(0,"");
+			//llenado_drogas(0,"");
 			
 			//llenado de los ComboBox Antecedentes Personales Patologicos
 			llenado_cronicodegenerativos(0,"");
@@ -477,10 +489,13 @@ namespace osiris
 					//llenado de los ComboBox Antecedentes Heredo Familiar:
 					llenado_padre(1,vivomuertopadre);
 					llenado_madre(1,vivomuertomadre);
-					//llenado de los ComboBox Antecedentes Personales NO Patologicos  
-					llenado_tabaquismo(1,pntabaquismo);
-					llenado_alcoholismo(1,pnalcoholismo);
-					llenado_drogas(1,pndrogas);
+					//llenado de los ComboBox Antecedentes Personales NO Patologicos 
+					llenado_positivo_negativo(1,pntabaquismo,combobox_tabaquismo);
+					llenado_positivo_negativo(1,pnalcoholismo,combobox_alcoholismo);
+					llenado_positivo_negativo(1,pnalcoholismo,combobox_drogas);
+					//llenado_tabaquismo(1,pntabaquismo);
+					//llenado_alcoholismo(1,pnalcoholismo);
+					//llenado_drogas(1,pndrogas);
 					//llenado de los ComboBox Antecedentes Personales Patologicos
 					llenado_cronicodegenerativos(1,pncronicodegenerativos);
 					llenado_hospitalizaciones(1,pnhospitalizaciones);
@@ -567,111 +582,57 @@ namespace osiris
 			if (combobox_vivomuerto_madre.GetActiveIter (out iter1)){
 				vivomuertomadre = (string) combobox_vivomuerto_madre.Model.GetValue(iter1,0);
 			}
+		}		
+		
+		void llenado_positivo_negativo(int tipodellenado,string descrip_defaul,object obj)
+		{
+			Gtk.ComboBox combobox_pos_neg = (Gtk.ComboBox) obj;
+			//Gtk.ComboBox combobox_pos_neg = obj as Gtk.ComboBox;
+			combobox_pos_neg.Clear();
+			CellRendererText cell = new CellRendererText();
+			combobox_pos_neg.PackStart(cell, true);
+			combobox_pos_neg.AddAttribute(cell,"text",0);
+	        
+			ListStore store = new ListStore( typeof (string));
+			combobox_pos_neg.Model = store;
+			
+			if ((int) tipodellenado == 1){
+				store.AppendValues ((string) descrip_defaul);
+			}
+	        
+			store.AppendValues ("");
+			store.AppendValues ("Positivo");
+			store.AppendValues ("Negativo");
+			
+	       TreeIter iter;
+			if (store.GetIterFirst(out iter)){
+				combobox_pos_neg.SetActiveIter (iter);
+			}
+			combobox_pos_neg.Changed += new EventHandler (onComboBoxChanged_positivo_negativo);
+			
 		}
 		/////////LLENADO DE COMBOS: Antecedentes Personales NO Patologicos (Positivo o Negativo)/////////////////////////////////////
-		void llenado_tabaquismo(int tipodellenado, string pntabaquismo)
-		{
-			combobox_tabaquismo.Clear();
-			CellRendererText cell = new CellRendererText();
-			combobox_tabaquismo.PackStart(cell, true);
-			combobox_tabaquismo.AddAttribute(cell,"text",0);
-	        
-			ListStore store = new ListStore( typeof (string));
-			combobox_tabaquismo.Model = store;
-			
-			if ((int) tipodellenado == 1){
-				store.AppendValues ((string) pntabaquismo);
-			}
-	        
-			store.AppendValues ("");
-			store.AppendValues ("Positivo");
-			store.AppendValues ("Negativo");
-			
-	       TreeIter iter;
-			if (store.GetIterFirst(out iter))
-			{
-				combobox_tabaquismo.SetActiveIter (iter);
-			}
-			combobox_tabaquismo.Changed += new EventHandler (onComboBoxChanged_positivo_negativo_tab);
-		}
-		void onComboBoxChanged_positivo_negativo_tab (object sender, EventArgs args)
-		{
-			ComboBox combobox_tabaquismo = sender as ComboBox;
-			if (sender == null){	return; }
-			TreeIter iter;
-			if (combobox_tabaquismo.GetActiveIter (out iter)){
-				pntabaquismo = (string) combobox_tabaquismo.Model.GetValue(iter,0);
-			}
-		}
-		void llenado_alcoholismo(int tipodellenado, string pnalcoholismo)
-		{
-			combobox_alcoholismo.Clear();
-			CellRendererText cell = new CellRendererText();
-			combobox_alcoholismo.PackStart(cell, true);
-			combobox_alcoholismo.AddAttribute(cell,"text",0);
-	        
-			ListStore store = new ListStore( typeof (string));
-			combobox_alcoholismo.Model = store;
-			
-			if ((int) tipodellenado == 1){
-				store.AppendValues ((string) pnalcoholismo);
-			}
-	        
-			store.AppendValues ("");
-			store.AppendValues ("Positivo");
-			store.AppendValues ("Negativo");
-			
-	       TreeIter iter;
-			if (store.GetIterFirst(out iter))
-			{
-				combobox_alcoholismo.SetActiveIter (iter);
-			}
-			combobox_alcoholismo.Changed += new EventHandler (onComboBoxChanged_positivo_negativo_alco);
-		}
-		void onComboBoxChanged_positivo_negativo_alco (object sender, EventArgs args)
-		{
-			ComboBox combobox_alcoholismo = sender as ComboBox;
-			if (sender == null){	return; }
-			TreeIter iter;
-			if (combobox_alcoholismo.GetActiveIter (out iter)){
-				pnalcoholismo = (string) combobox_alcoholismo.Model.GetValue(iter,0);
-			}
-		}
 		
-		void llenado_drogas(int tipodellenado, string pndrogas)
+		void onComboBoxChanged_positivo_negativo (object sender, EventArgs args)
 		{
-			combobox_drogas.Clear();
-			CellRendererText cell = new CellRendererText();
-			combobox_drogas.PackStart(cell, true);
-			combobox_drogas.AddAttribute(cell,"text",0);
-				        
-			ListStore store = new ListStore( typeof (string));
-			combobox_drogas.Model = store;
-			
-			if ((int) tipodellenado == 1){
-				store.AppendValues ((string) pndrogas);
-			}
-	        
-			store.AppendValues ("");
-			store.AppendValues ("Positivo");
-			store.AppendValues ("Negativo");
-			
-	       TreeIter iter;
-			if (store.GetIterFirst(out iter))
-			{
-				combobox_drogas.SetActiveIter (iter);
-			}
-			combobox_drogas.Changed += new EventHandler (onComboBoxChanged_positivo_negativo_drogas);
-		}
-		void onComboBoxChanged_positivo_negativo_drogas (object sender, EventArgs args)
-		{
-			ComboBox combobox_drogas = sender as ComboBox;
+			ComboBox onComboBoxChanged = sender as ComboBox;
 			if (sender == null){	return; }
 			TreeIter iter;
-			if (combobox_drogas.GetActiveIter (out iter)){
-				pndrogas = (string) combobox_drogas.Model.GetValue(iter,0);
+			if (onComboBoxChanged.GetActiveIter (out iter)){
+				switch (onComboBoxChanged.Name.ToString()){	
+					case "combobox_tabaquismo":
+						pntabaquismo = (string) onComboBoxChanged.Model.GetValue(iter,0);
+					break;
+					case "combobox_alcoholismo":
+						pnalcoholismo = (string) onComboBoxChanged.Model.GetValue(iter,0);
+					break;
+					case "combobox_drogas":
+						pndrogas = (string) onComboBoxChanged.Model.GetValue(iter,0);
+					break;
+				}				
 			}
 		}
+				
         ///////////LLENADO DE COMBOS: Antecedentes Personales Patologicos (Positivo o Negativo)/////////////////////////////////////
 		void llenado_cronicodegenerativos(int tipodellenado, string pncronicodegenerativos)
 		{

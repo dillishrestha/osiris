@@ -56,6 +56,7 @@ namespace osiris
 		string tipo_paciente = "";
 		string empresapac = "";
 		string nombreempleado = "";
+		string titulo_comprobante = "";
 		
 		PrintContext context;
 		
@@ -146,7 +147,7 @@ namespace osiris
 				if (lector.Read()){
 					if (tipocomprobante == "CAJA"){
 						toma_valor_total = float.Parse((string) lector["montodelabono"]);
-						tipocomprobante = tipocomprobante+"_"+ (string) lector["descripcion_tipo_comprobante"];
+						titulo_comprobante = tipocomprobante+"_"+ (string) lector["descripcion_tipo_comprobante"];
 					}
 					toma_tipoadmisiones = (int) lector["idadmisiones"];
 					toma_grupoproducto = (int) lector["id_grupo_producto"];
@@ -239,14 +240,14 @@ namespace osiris
 			//layout.Wrap = Pango.WrapMode.Word;
 			//layout.SingleParagraphMode = true;
 			layout.Justify =  false;
-			cr.MoveTo(width/2,45*escala_en_linux_windows);	layout.SetText("COMPROBANTE_"+tipocomprobante);	Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(width/2,45*escala_en_linux_windows);	layout.SetText("COMPROBANTE_"+titulo_comprobante);	Pango.CairoHelper.ShowLayout (cr, layout);
 			
-			fontSize = 10.0;			layout = null;			layout = context.CreatePangoLayout ();
+			fontSize = 9.0;			layout = null;			layout = context.CreatePangoLayout ();
 			desc.Size = (int)(fontSize * pangoScale);		layout.FontDescription = desc;
 			layout.FontDescription.Weight = Weight.Bold;		// Letra negrita
 			cr.MoveTo(479*escala_en_linux_windows, 25*escala_en_linux_windows);			layout.SetText("N° Folio "+numerocomprobante);				Pango.CairoHelper.ShowLayout (cr, layout);
 			
-			fontSize = 9.0;			layout = null;			layout = context.CreatePangoLayout ();
+			fontSize = 8.0;			layout = null;			layout = context.CreatePangoLayout ();
 			desc.Size = (int)(fontSize * pangoScale);		layout.FontDescription = desc;
 			layout.FontDescription.Weight = Weight.Bold;		// Letra negrita
 			cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText("N° Atencion: "+numerodeatencion);	Pango.CairoHelper.ShowLayout (cr, layout);
@@ -262,17 +263,26 @@ namespace osiris
 			comienzo_linea += separacion_linea;
 			cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText("Doctor: "+doctor_admision);	Pango.CairoHelper.ShowLayout (cr, layout);		
 			
+			if (tipocomprobante == "CAJA"){
+				
+				fontSize = 7.0;		
+				desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;
+				layout.FontDescription.Weight = Weight.Normal;
+				// numeros en letras
+				cr.MoveTo(05*escala_en_linux_windows,comienzo_linea+(separacion_linea*22)*escala_en_linux_windows);		layout.SetText((string) class_public.ConvertirCadena(tomavalortotal.ToString(),"PESO").ToUpper());	Pango.CairoHelper.ShowLayout (cr, layout);		
+				fontSize = 8.0;		
+				desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;
+				layout.FontDescription.Weight = Weight.Bold;		// Letra negrita
+				cr.MoveTo(400*escala_en_linux_windows,comienzo_linea+(separacion_linea*22)*escala_en_linux_windows);		layout.SetText("T O T A L : "+tomavalortotal.ToString("C"));	Pango.CairoHelper.ShowLayout (cr, layout);		
+			}
+			fontSize = 8.0;		
+			desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;
+			layout.FontDescription.Weight = Weight.Normal;		// Letra normal
+			
 			cr.MoveTo(05*escala_en_linux_windows,comienzo_linea+(separacion_linea*23)*escala_en_linux_windows);		layout.SetText("Concepto    : "+conceptocomprobante);	Pango.CairoHelper.ShowLayout (cr, layout);		
 			cr.MoveTo(05*escala_en_linux_windows,comienzo_linea+(separacion_linea*24)*escala_en_linux_windows);		layout.SetText("Observacion : "+observacionescomprobante);	Pango.CairoHelper.ShowLayout (cr, layout);		
 			cr.MoveTo(05*escala_en_linux_windows,comienzo_linea+(separacion_linea*25)*escala_en_linux_windows);		layout.SetText("Atendio por : "+nombreempleado);	Pango.CairoHelper.ShowLayout (cr, layout);		
 
-			if (tipocomprobante == "CAJA"){
-				fontSize = 9.0;		
-				desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;
-				layout.FontDescription.Weight = Weight.Bold;		// Letra negrita
-				cr.MoveTo(350*escala_en_linux_windows,comienzo_linea+(separacion_linea*23)*escala_en_linux_windows);		layout.SetText("T O T A L : "+tomavalortotal.ToString("C"));	Pango.CairoHelper.ShowLayout (cr, layout);		
-			}
-			
 			fontSize = 8.0;			layout = null;			layout = context.CreatePangoLayout ();
 			desc.Size = (int)(fontSize * pangoScale);		layout.FontDescription = desc;
 			layout.FontDescription.Weight = Weight.Normal;		// Letra normal

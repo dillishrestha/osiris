@@ -2044,6 +2044,7 @@ namespace osiris
 				        "AND osiris_erp_cobros_enca.id_empresa = osiris_empresas.id_empresa "+
 					    "AND osiris_erp_cobros_enca.folio_de_servicio = osiris_erp_cobros_deta.folio_de_servicio "+
 						"AND osiris_erp_cobros_deta.eliminado = 'false' "+
+				        "AND osiris_erp_abonos.folio_de_servicio = osiris_erp_cobros_deta.folio_de_servicio "+
 				        "AND osiris_erp_tipo_comprobante.id_tipo_comprobante = osiris_erp_abonos.id_tipo_comprobante ", NomEmpleado );
 			}
 			if (tipo_comprobante == "SERVICIO"){			

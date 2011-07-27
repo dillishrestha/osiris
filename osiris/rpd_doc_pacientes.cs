@@ -178,15 +178,22 @@ namespace osiris
 		bool tipomedico = true;
 		
 		string LoginEmpleado;
+		string NomEmpleado;
+		string AppEmpleado;
+		string ApmEmpleado;
+		string NomEmpleados;
 			
 		string connectionString;
 		string nombrebd;
 		
 		class_conexion conexion_a_DB = new class_conexion();
 		
-		public impr_doc_pacientes(string LoginEmp, string NomEmpleado, string AppEmpleado, string ApmEmpleado, string nombrebd_,string folioserv_,int control)//,string entry_nombre_medico) 
+		public impr_doc_pacientes(string LoginEmp, string NomEmpleado_, string AppEmpleado_, string ApmEmpleado_, string nombrebd_,string folioserv_,int control)//,string entry_nombre_medico) 
 		{
 			LoginEmpleado = LoginEmp;
+			NomEmpleado = NomEmpleado_;
+			AppEmpleado = AppEmpleado_;
+			ApmEmpleado = ApmEmpleado_;
 			connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
 			nombrebd = conexion_a_DB._nombrebd;
 									
@@ -363,7 +370,7 @@ namespace osiris
 		
 		void on_button_historia_clinica_clicked(object sender, EventArgs args)
 		{
-			//new osiris.historia_clinica(entry_nombre_paciente.Text,entry_pid_paciente.Text,"",LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,entry_fecha_admision.Text,entry_fecha_nacimiento.Text);
+			new osiris.historia_clinica(entry_nombre_paciente.Text,entry_pid_paciente.Text,"edad",LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,entry_fecha_admision.Text,"entry_fecha_nacimiento.Text");
 		}
 		
 		void on_radio_clicked (object sender, EventArgs args)

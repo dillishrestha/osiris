@@ -44,10 +44,10 @@ namespace osiris
 		public string idUsuario = "";
 		
 		// Informacion de la Empresa
-		public string nombre_empresa = "P R A C T I M E D"; //"P R A C T I M E D"; "MEDICA NORESTE ION"
+		public string nombre_empresa = "MEDICA NORESTE ION"; //"P R A C T I M E D"; "MEDICA NORESTE ION"
 		public string nombre_empresa2 = "MEDICA NORESTE ION";  //"MEDICA NORESTE ION";
-		public string direccion_empresa = "Loma Grande 2703, Col. Loma de San Francisco"; //"Loma Grande 2703, Col. Loma de San Francisco"; //"Jose Angel Conchello 2880, Col. Victora"
-		public string telefonofax_empresa = "Telefono: (01)(81) 8040-6060"; //"Telefono: (01)(81) 8040-6060"; // "Telefono: (01)(81) 8351-3610"
+		public string direccion_empresa = "Jose Angel Conchello 2880, Col. Victora"; //"Loma Grande 2703, Col. Loma de San Francisco"; //"Jose Angel Conchello 2880, Col. Victora"
+		public string telefonofax_empresa = "Telefono: (01)(81) 8351-3610"; //"Telefono: (01)(81) 8040-6060"; // "Telefono: (01)(81) 8351-3610"
 		public string version_sistema = "Sistema Hospitalario OSIRIS ver. 1.0";
 		
 		public string ivaparaaplicar = "16.00";
@@ -350,199 +350,143 @@ namespace osiris
 		/// <returns>
 		/// A <see cref="System.String"/>
 		/// </returns>
-		public string ConvertirCadena (string sNumero, string descriptipomoneda_) {
-			double dNumero;
-			double dNumAux = 0;
-			char x;
-			string sAux;			
-			
-			sResultado = " ";
-			try {
-				dNumero = Convert.ToDouble (sNumero);
-			}catch{				
-				return "";
-			}
-			
-			if (dNumero > 999999999999)
-				return "";
-			
-			if (dNumero > 999999999){
-				dNumAux = dNumero % 1000000000000;
-				sResultado += Numeros (dNumAux, 1000000000) + " mil ";
-			}
-			
-			if (dNumero > 999999){
-				dNumAux = dNumero % 1000000000;
-                if (dNumero <= 1999999 & dNumero >= 1000000)
-                    sResultado += Numeros(dNumAux, 1000000) + " millon ";
-                else
-				    sResultado += Numeros (dNumAux, 1000000) + " millones ";
-			}
-			
-			if (dNumero > 999) {
-				dNumAux = dNumero % 1000000;
-                if (dNumAux >= 1000){
-                    if (dNumero < 2000){
-                        sResultado += "mil ";
-                    }else{
-                        sResultado += Numeros(dNumAux, 1000) + " mil ";
-                    }
-                }
-			}
-			
-			dNumAux = dNumero % 1000;	
-			sResultado += Numeros (dNumAux, 1);
-						
-			//Enseguida verificamos si contiene punto, si es así, los convertimos a texto.
-			sAux = dNumero.ToString();
-
-            if (sAux.IndexOf(".") >= 0){
-                sResultado += descriptipomoneda_+" "+"con " + ObtenerDecimales(sAux);
-            }else{
-                sResultado += descriptipomoneda_+" "+"con 00/100";
-            }
-			
-			//Las siguientes líneas convierten el primer caracter a mayúscula.
-			sAux = sResultado;
-			x = char.ToUpper (sResultado[1]);
-			sResultado = x.ToString ();
-			
-			for (int i = 2; i<sAux.Length; i++)
-				sResultado += sAux[i].ToString();
-			
-			return Regex.Replace(sResultado,"  *"," ").Trim();
-		}		
 		
-		/*
-		private string ConvertirCadena_ (double dNumero) {
-			double dNumAux = 0;
-			char x;
-			string sAux;			
-			
-			sResultado = " ";
-						
-			if (dNumero > 999999999999)
+       public static string ConvertirCadena(string num,string moneda)
+       {
+
+			string res, dec = "";
+           	Int64 entero;
+           	int decimales;
+           	double nro;
+
+           	try{
+               nro = Convert.ToDouble(num);
+           	}catch{
 				return "";
-			
-			if (dNumero > 999999999) {
-				dNumAux = dNumero % 1000000000000;
-				sResultado += Numeros (dNumAux, 1000000000) + " mil ";
+           }
+
+           	entero = Convert.ToInt64(Math.Truncate(nro));
+           	decimales = Convert.ToInt32(Math.Round((nro - entero) * 100, 2));
+			//if (decimales > 0){
+               dec = " "+moneda+" CON " + decimales.ToString() + "/100";
+			//}
+			res = class_public.NumeroALetras(Convert.ToDouble(entero)) + dec;
+
+           return res;
+       }
+
+		private static string NumeroALetras(double value)
+		{
+
+			string Num2Text = "";
+
+           value = Math.Truncate(value);
+ 
+           if (value == 0) Num2Text = "CERO";
+
+           else if (value == 1) Num2Text = "UNO";
+
+           else if (value == 2) Num2Text = "DOS";
+
+           else if (value == 3) Num2Text = "TRES";
+
+           else if (value == 4) Num2Text = "CUATRO";
+
+           else if (value == 5) Num2Text = "CINCO";
+
+           else if (value == 6) Num2Text = "SEIS";
+
+           else if (value == 7) Num2Text = "SIETE";
+
+           else if (value == 8) Num2Text = "OCHO";
+
+           else if (value == 9) Num2Text = "NUEVE";
+
+           else if (value == 10) Num2Text = "DIEZ";
+
+           else if (value == 11) Num2Text = "ONCE";
+
+           else if (value == 12) Num2Text = "DOCE";
+
+           else if (value == 13) Num2Text = "TRECE";
+
+           else if (value == 14) Num2Text = "CATORCE";
+
+           else if (value == 15) Num2Text = "QUINCE";
+
+           else if (value < 20) Num2Text = "DIECI" + NumeroALetras(value - 10);
+
+           else if (value == 20) Num2Text = "VEINTE";
+
+           else if (value < 30) Num2Text = "VEINTI" + NumeroALetras(value - 20);
+
+           else if (value == 30) Num2Text = "TREINTA";
+
+           else if (value == 40) Num2Text = "CUARENTA";
+
+           else if (value == 50) Num2Text = "CINCUENTA";
+
+           else if (value == 60) Num2Text = "SESENTA";
+
+           else if (value == 70) Num2Text = "SETENTA";
+
+           else if (value == 80) Num2Text = "OCHENTA";
+
+           else if (value == 90) Num2Text = "NOVENTA";
+
+           else if (value < 100) Num2Text = NumeroALetras(Math.Truncate(value / 10) * 10) + " Y " + NumeroALetras(value % 10);
+
+           else if (value == 100) Num2Text = "CIEN";
+
+           else if (value < 200) Num2Text = "CIENTO " + NumeroALetras(value - 100);
+
+           else if ((value == 200) || (value == 300) || (value == 400) || (value == 600) || (value == 800)) Num2Text = NumeroALetras(Math.Truncate(value / 100)) + "CIENTOS";
+
+           else if (value == 500) Num2Text = "QUINIENTOS";
+
+           else if (value == 700) Num2Text = "SETECIENTOS";
+
+           else if (value == 900) Num2Text = "NOVECIENTOS";
+
+           else if (value < 1000) Num2Text = NumeroALetras(Math.Truncate(value / 100) * 100) + " " + NumeroALetras(value % 100);
+
+           else if (value == 1000) Num2Text = "MIL";
+
+           else if (value < 2000) Num2Text = "MIL " + NumeroALetras(value % 1000);
+
+           else if (value < 1000000)
+
+           {
+               Num2Text = NumeroALetras(Math.Truncate(value / 1000)) + " MIL";
+               if ((value % 1000) > 0) Num2Text = Num2Text + " " + NumeroALetras(value % 1000);
 			}
-			
-			if (dNumero > 999999){
-				dNumAux = dNumero % 1000000000;
-				sResultado += Numeros (dNumAux, 1000000) + " millones ";
-			}
-			
-			if (dNumero > 999){
-				dNumAux = dNumero % 1000000;
-				sResultado += Numeros (dNumAux, 1000) + " mil ";
-			}
-			
-			dNumAux = dNumero % 1000;	
-			sResultado += Numeros (dNumAux, 1);
-			
-			
-			//Enseguida verificamos si contiene punto, si es así, los convertimos a texto.
-			sAux = dNumero.ToString();
+ 
+           else if (value == 1000000) Num2Text = "UN MILLON";
 
-            if (sAux.IndexOf(".") >= 0){
-                sResultado += "con " + ObtenerDecimales(sAux);
-            }else{
-                sResultado += "con 00/100";
-            }
-			
-			//Las siguientes líneas convierten el primer caracter a mayúscula.
-            sResultado = sResultado.TrimStart();
-            sResultado = sResultado.TrimEnd();
-			sAux = sResultado;
-			x = char.ToUpper (sResultado[0]);
-			sResultado = x.ToString ();
-			
-			for (int i = 1; i<sAux.Length; i++)
-				sResultado += sAux[i].ToString();
-			
-			return sResultado;
-		}*/
-		
-		private string Numeros (double dNumAux, double dFactor) {
-			double dCociente = dNumAux / dFactor;
-			double dNumero = 0;
-			int iNumero = 0;
-			string sNumero = "";
-			string sTexto = "";
+           else if (value < 2000000) Num2Text = "UN MILLON " + NumeroALetras(value % 1000000);
 
-            if (dCociente < 101 & dCociente >=100){
-                dNumero = dCociente / 100;
-                sNumero = dNumero.ToString();
-                iNumero = int.Parse(sNumero[0].ToString());
-                sTexto += this.sCentenas[iNumero] + " ";
-            }
+           else if (value < 1000000000000)
 
-			if (dCociente >= 101){
-				dNumero = dCociente / 100;
-				sNumero = dNumero.ToString();
-				iNumero = int.Parse (sNumero[0].ToString());
-				sTexto  +=  this.sCentenas [iNumero+1] + " ";
-			}
-			
-			dCociente = dCociente % 100;
-			if (dCociente >= 30){
-				dNumero = dCociente / 10;			
-				sNumero = dNumero.ToString();
-				iNumero = int.Parse (sNumero[0].ToString());
-				if (iNumero > 0)
-					sTexto  += this.sDecenas [iNumero] + " ";
-							
-					dNumero = dCociente % 10;
-					sNumero = dNumero.ToString();
-					iNumero = int.Parse (sNumero[0].ToString());
-                	if (iNumero > 0){
-                    	if (iNumero == 1){
-                        	sTexto += "y uno ";
-                    	}else{
-                        	sTexto += "y " + this.sUnidades[iNumero] + " ";
-                        
-                    	}
-                	}
-			}else{
-				dNumero = dCociente;	
-				sNumero = dNumero.ToString();
-				if (sNumero.Length > 1)
-					if (sNumero[1] != '.')
-						iNumero = int.Parse (sNumero[0].ToString() + sNumero[1].ToString());
-					else
-						iNumero = int.Parse (sNumero[0].ToString());
-				else
-					iNumero = int.Parse (sNumero[0].ToString());
-                	if (iNumero == 1){
-                    	//if (dNumAux <= 1999999 & dNumAux >= 1000000)
-                        	sTexto += "un ";
-                    	//else
-                        //	sTexto += " ";
-                	}else
-                    	sTexto += this.sUnidades[iNumero] + " ";
-                    
-			}			
-			return sTexto;
-		}			
+           {
 
-		private string ObtenerDecimales (string sNumero) {
-			string[] sNumPuntos;
-			string sTexto = "";
-			double dNumero = 0;
-			double dauxNumero =0;
-			dauxNumero = double.Parse(sNumero);
+               Num2Text = NumeroALetras(Math.Truncate(value / 1000000)) + " MILLONES ";
 
-            sNumero = dauxNumero.ToString("####0.00");
-			sNumPuntos = sNumero.Split('.');
-						
-			dNumero = Convert.ToDouble(sNumPuntos[1]);
-			//sTexto = "punto " + Numeros(dNumero,1);
-			sTexto = sNumPuntos[1]+"/100";
-			
-			return sTexto;
-		}	
+               if ((value - Math.Truncate(value / 1000000) * 1000000) > 0) Num2Text = Num2Text + " " + NumeroALetras(value - Math.Truncate(value / 1000000) * 1000000);
+
+           }
+
+           else if (value == 1000000000000) Num2Text = "UN BILLON";
+
+           else if (value < 2000000000000) Num2Text = "UN BILLON " + NumeroALetras(value - Math.Truncate(value / 1000000000000) * 1000000000000);
+
+           else
+           {
+               Num2Text = NumeroALetras(Math.Truncate(value / 1000000000000)) + " BILLONES";
+               if ((value - Math.Truncate(value / 1000000000000) * 1000000000000) > 0) Num2Text = Num2Text + " " + NumeroALetras(value - Math.Truncate(value / 1000000000000) * 1000000000000);
+           }
+			return Num2Text;
+		}
+	
 	
 		/// <summary>
 		/// Calcula el RFC de una persona física su homoclave incluida.

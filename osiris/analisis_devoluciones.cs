@@ -74,7 +74,7 @@ namespace osiris
 		//Declaracion de ventana de error
 		protected Gtk.Window MyWinError;
 		
-		public analisis_devoluciones(string LoginEmp, string NomEmpleado_, string AppEmpleado_, string ApmEmpleado_, string nombrebd_ )
+		public analisis_devoluciones(string LoginEmp, string NomEmpleado_, string AppEmpleado_, string ApmEmpleado_, string nombrebd_ ,string numeroatencion_)
 		{
 			LoginEmpleado = LoginEmp;
 			NomEmpleado = NomEmpleado_; 
@@ -102,6 +102,11 @@ namespace osiris
 			button_salir.Clicked += new EventHandler(on_cierraventanas_clicked);
 			
 			crea_treeview_analisis();
+			
+			if (numeroatencion_ != ""){
+				entry_folio_servicio.Text = numeroatencion_;
+				llenado_de_devoluciones();
+			}
 		}
 		
 		void crea_treeview_analisis()
@@ -348,7 +353,7 @@ namespace osiris
 		
 		void on_button_imprimir_mov_clicked(object obj, EventArgs args)
 		{
-			
+			new osiris.rpt_analisis_devoluciones();
 		}
 		
 		void llenado_de_devoluciones()
@@ -367,6 +372,8 @@ namespace osiris
 			conexion = new NpgsqlConnection (connectionString+nombrebd);
 			NpgsqlConnection conexion1;
 			conexion1 = new NpgsqlConnection (connectionString+nombrebd);
+			
+			informacion_paciente();
 			
 			// Cargos desde el stock del sub-almacen
 			// Verifica que la base de datos este conectada
@@ -614,6 +621,36 @@ namespace osiris
 	   			
 	       	}
        		conexion.Close ();			
+		}
+		
+		void informacion_paciente()
+		{
+			NpgsqlConnection conexion;
+			conexion = new NpgsqlConnection (connectionString+nombrebd);
+			try{
+				conexion.Open ();
+				NpgsqlCommand comando; 
+				comando = conexion.CreateCommand ();
+				
+				// asigna el numero de folio de ingreso de paciente (FOLIO)
+				comando.CommandText = "SELECT *,osiris_erp_cobros_enca.pid_paciente AS pidpaciente FROM osiris_erp_cobros_enca,osiris_his_paciente WHERE osiris_erp_cobros_enca.pid_paciente = osiris_his_paciente.pid_paciente AND osiris_erp_cobros_enca.folio_de_servicio = '"+entry_folio_servicio.Text.Trim()+"';";
+				NpgsqlDataReader lector = comando.ExecuteReader ();
+				if(lector.Read()){
+					entry_pid_paciente.Text = lector["pidpaciente"].ToString().Trim();
+					entry_nombre_paciente.Text = lector["nombre1_paciente"].ToString().Trim()+ " "+
+									lector["nombre2_paciente"].ToString().Trim()+ " "+
+									lector["apellido_paterno_paciente"].ToString().Trim()+ " "+
+									lector["apellido_materno_paciente"].ToString().Trim();
+					
+				}
+			}catch (NpgsqlException ex){
+				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.Modal,
+						MessageType.Error, 
+						ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
+				msgBoxError.Run ();				msgBoxError.Destroy();
+	   			
+	       	}
+       		conexion.Close ();	
 		}
 		
 		void on_cierraventanas_clicked (object obj, EventArgs args)

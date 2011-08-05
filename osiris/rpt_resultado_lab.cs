@@ -231,14 +231,15 @@ namespace osiris
 			Gtk.Image image5 = new Gtk.Image();
             image5.Name = "image5";
 			//image5.Pixbuf = new Gdk.Pixbuf(System.IO.Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, "osiris.jpg"));
-			image5.Pixbuf = new Gdk.Pixbuf("/opt/osiris/bin/firma_quimica.png");   // en Linux
+			image5.Pixbuf = new Gdk.Pixbuf("/opt/osiris/bin/firma_quimica.jpg");   // en Linux
 			//image5.Pixbuf.ScaleSimple(128, 128, Gdk.InterpType.Bilinear);
 			//Gdk.CairoHelper.SetSourcePixbuf(cr,image5.Pixbuf,05,comienzo_linea*escala_en_linux_windows);
 			//Gdk.CairoHelper.SetSourcePixbuf(cr,image5.Pixbuf.ScaleSimple(145, 50, Gdk.InterpType.Bilinear),1,1);
-			Gdk.CairoHelper.SetSourcePixbuf(cr,image5.Pixbuf.ScaleSimple(130, 91, Gdk.InterpType.Bilinear),300*escala_en_linux_windows,500*escala_en_linux_windows);
+			//Gdk.CairoHelper.SetSourcePixbuf(cr,image5.Pixbuf.ScaleSimple(130, 91, Gdk.InterpType.Bilinear),300*escala_en_linux_windows,570*escala_en_linux_windows);
+			Gdk.CairoHelper.SetSourcePixbuf(cr,image5.Pixbuf,300*escala_en_linux_windows,570*escala_en_linux_windows);
 			cr.Fill();
 			cr.Paint();
-			//cr.Restore();
+			cr.Restore();
 			
 		}
 		

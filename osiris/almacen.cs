@@ -141,7 +141,7 @@ namespace osiris
 		
 		void on_button_analisis_devoluciones_clicked(object sender, EventArgs args)
 		{
-			new osiris.analisis_devoluciones(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
+			new osiris.analisis_devoluciones(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,"");
 		}
 		
 		void on_button_productos_enviados_clicked(object sender, EventArgs args)

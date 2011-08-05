@@ -669,7 +669,7 @@ namespace osiris
 										"AND eliminado = 'false' "+
 										"AND folio_de_servicio = '"+folioservicio+"' "+
 										"AND id_tipo_admisiones2 = '"+id_tipoadmisiones.ToString().Trim()+"';";
-				Console.WriteLine(comando.CommandText);
+				//Console.WriteLine(comando.CommandText);
 				NpgsqlDataReader lector = comando.ExecuteReader ();
 				if((bool) lector.Read()){
 					toma_numerosolicitud = (int) lector["folio_de_solicitud"];

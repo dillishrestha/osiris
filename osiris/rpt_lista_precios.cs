@@ -24,9 +24,9 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 // 
 //////////////////////////////////////////////////////////
-// Programa		: hscmty.cs
-// Proposito	: Impresion de listas de precios 
-// Objeto		: rpt_lista_precios.cs
+// Programa		: 
+// Proposito	: 
+// Objeto		: 
 /////////////////////////////////////////////////////////
 using System;
 using Gtk;

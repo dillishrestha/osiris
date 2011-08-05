@@ -104,6 +104,7 @@ namespace osiris
 									"WHERE osiris_his_informacion_medica.pid_paciente = osiris_his_paciente.pid_paciente "+
 									"AND osiris_his_informacion_medica.folio_de_servicio = osiris_erp_cobros_enca.folio_de_servicio "+
 									"AND id_empleado_creacion = login_empleado "+
+									"AND osiris_his_informacion_medica.eliminado = 'false' "+
 									"AND osiris_erp_cobros_enca.id_habitacion = osiris_his_habitaciones.id_habitacion ";
 		string sql_pidpaciente;
 		string sql_folioservicio;

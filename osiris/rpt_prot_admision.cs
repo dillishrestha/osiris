@@ -60,7 +60,7 @@ namespace osiris
 		class_conexion conexion_a_DB = new class_conexion();
 		class_public classpublic = new class_public();
 	
-		public protocolo_admision ( int PidPaciente_ , int folioservicio_,string nombrebd_,string medico_tratante_)
+		public protocolo_admision (int PidPaciente_,int folioservicio_,string nombrebd_,string medico_tratante_)
 		{
 			PidPaciente = PidPaciente_;
 			folioservicio = folioservicio_;
@@ -353,7 +353,7 @@ namespace osiris
 					
 					
 					
-					/*				
+								
 					layout.FontDescription.Weight = Weight.Bold;
 					cr.MoveTo(220*escala_en_linux_windows, 453*escala_en_linux_windows);					layout.SetText("PARA SER LLENADO POR EL MEDICO TRATANTE");
 					Pango.CairoHelper.ShowLayout (cr, layout);
@@ -431,15 +431,16 @@ namespace osiris
 					//Pango.CairoHelper.ShowLayout (cr, layout);
 					cr.MoveTo(20*escala_en_linux_windows, 724*escala_en_linux_windows);						layout.SetText("____________________________________________________________________________________________________________________________");
 					Pango.CairoHelper.ShowLayout (cr, layout);					
-					*/
 					
 					
 					
 					
+					/*
 					cr.MoveTo(20*escala_en_linux_windows, 760*escala_en_linux_windows) ;					layout.SetText("REV.00");
 					Pango.CairoHelper.ShowLayout (cr, layout);
 					cr.MoveTo(480*escala_en_linux_windows, 760*escala_en_linux_windows) ;					layout.SetText("FI-7.5.1/01");
 					Pango.CairoHelper.ShowLayout (cr, layout);
+					*/
 					
 					//string varpaso = (string) lector["descripcion_admisiones"];
 					//while ((bool) lector.Read()){

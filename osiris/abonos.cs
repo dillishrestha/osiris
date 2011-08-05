@@ -58,6 +58,7 @@ namespace osiris
 		[Widget] Gtk.TreeView treeview_lista_comprserv  = null;
 		[Widget] Gtk.Statusbar statusbar_abonos = null;
 		[Widget] Gtk.ComboBox combobox_formapago = null;
+		[Widget] Gtk.ComboBox combobox_tipocomprobante = null;
 		[Widget] Gtk.Button button_imprimir_comp_serv = null;
 		
 		int PidPaciente;
@@ -89,7 +90,8 @@ namespace osiris
 		string paquete;
 		string descripcion;
 		string nombrebd;		
-		string connectionString;		
+		string connectionString;
+		string idtipocomprobante = "";
 		
 		//Declaracion de ventana de error
 		protected Gtk.Window MyWinError;
@@ -105,7 +107,8 @@ namespace osiris
 		CellRendererText cellrt8;
 		
 		class_conexion conexion_a_DB = new class_conexion();
-				
+		class_public classpublic = new class_public();
+		
 		public abonos (	int PidPaciente_ ,int folioservicio_,string nombrebd_ ,string entry_fecha_admision_,
 						string entry_fechahora_alta_,string entry_numero_factura_,string entry_nombre_paciente_,
 						string entry_telefono_paciente_,string entry_doctor_,string entry_tipo_paciente_,
@@ -140,6 +143,7 @@ namespace osiris
 			crea_treeview_comprserv();
 			llenando_lista_de_abonos();
 			llenando_lista_comprobante();
+			llenado_tipo_comprobante();
 			
 			//llenando_lista_de_pagares();
 			
@@ -167,9 +171,59 @@ namespace osiris
 			entry_concepto_abono.Sensitive = false;
 			button_guardar.Sensitive = false;
 			combobox_formapago.Sensitive = false;
+			combobox_tipocomprobante.Sensitive = false;
+			
+			entry_presupuesto.Text = "0";
+			entry_paquete.Text = "0";
 			statusbar_abonos.Pop(0);
 			statusbar_abonos.Push(1, "login: "+LoginEmpleado+"  |Usuario: "+nombrecajero);
 			statusbar_abonos.HasResizeGrip = false;
+		}
+		
+		void llenado_tipo_comprobante()
+		{
+			
+			CellRendererText cell3 = new CellRendererText();
+			combobox_tipocomprobante.PackStart(cell3, true);
+			combobox_tipocomprobante.AddAttribute(cell3,"text",0);
+        
+			ListStore store5 = new ListStore( typeof (string), typeof (int));
+			combobox_tipocomprobante.Model = store5;
+			
+			NpgsqlConnection conexion; 
+			conexion = new NpgsqlConnection (connectionString+nombrebd);
+            // Verifica que la base de datos este conectada
+			try{
+				conexion.Open ();
+				NpgsqlCommand comando; 
+				comando = conexion.CreateCommand ();
+               	comando.CommandText = "SELECT * FROM osiris_erp_tipo_comprobante "+
+               						"WHERE activo = true "+	
+               						"ORDER BY id_tipo_comprobante;";
+				
+				NpgsqlDataReader lector = comando.ExecuteReader ();
+               	while (lector.Read()){
+					store5.AppendValues ((string) lector["descripcion_tipo_comprobante"],
+									 	(int) lector["id_tipo_comprobante"] );
+				}
+			}catch (NpgsqlException ex){
+				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+										MessageType.Error,ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
+				msgBoxError.Run ();				msgBoxError.Destroy();
+			}
+			conexion.Close ();			
+			combobox_tipocomprobante.Changed += new EventHandler(onComboBoxChanged_tipocomprobante);
+		}
+		
+		void onComboBoxChanged_tipocomprobante(object sender, EventArgs args)
+		{
+			ComboBox combobox_tipocomprobante = sender as ComboBox;
+			if (sender == null)	{	return;	}
+			TreeIter iter;			
+			if (combobox_tipocomprobante.GetActiveIter (out iter)){
+				idtipocomprobante = combobox_tipocomprobante.Model.GetValue(iter,1).ToString().Trim();								
+				entry_recibo_caja.Text = (string) classpublic.lee_ultimonumero_registrado("osiris_erp_abonos","numero_recibo_caja"," WHERE id_tipo_comprobante = '"+combobox_tipocomprobante.Model.GetValue(iter,1).ToString().Trim()+"' ");
+			}
 		}
 		
 		void crea_treeview_abonos()
@@ -181,7 +235,8 @@ namespace osiris
 												typeof(string),//4
 												typeof(string),//5
 												typeof(string),//6
-												typeof(string));//7
+			                                    typeof(string),//7
+												typeof(string));//8
 			
 			lista_abonos.Model = treeViewEngineabonos;
 						
@@ -224,25 +279,32 @@ namespace osiris
 			col_recibo.AddAttribute (cellrt4, "text", 4); // la siguiente columna será 5
 			col_recibo.SortColumnId = (int) Col_proveedores.col_recibo;
 			
-			TreeViewColumn col_presu = new TreeViewColumn();
+			TreeViewColumn col_tipocomprobante = new TreeViewColumn();
 			CellRendererText cellrt5 = new CellRendererText();
+			col_tipocomprobante.Title = "Tipo Comprante";
+			col_tipocomprobante.PackStart(cellrt5, true);
+			col_tipocomprobante.AddAttribute (cellrt5, "text", 5); // la siguiente columna será 5
+			col_tipocomprobante.SortColumnId = (int) Col_proveedores.col_tipocomprobante;
+			
+			TreeViewColumn col_presu = new TreeViewColumn();
+			CellRendererText cellrt6 = new CellRendererText();
 			col_presu.Title = "Id Presupuesto";
-			col_presu.PackStart(cellrt5, true);
-			col_presu.AddAttribute (cellrt5, "text", 5); // la siguiente columna será 6
+			col_presu.PackStart(cellrt6, true);
+			col_presu.AddAttribute (cellrt6, "text", 6); // la siguiente columna será 6
 			col_presu.SortColumnId = (int) Col_proveedores.col_presu;
 			
 			TreeViewColumn col_paq = new TreeViewColumn();
-			CellRendererText cellrt6 = new CellRendererText();
+			CellRendererText cellrt7 = new CellRendererText();
 			col_paq.Title = "Id Paquete";
-			col_paq.PackStart(cellrt6, true);
-			col_paq.AddAttribute (cellrt6, "text", 6); // la siguiente columna será 7
+			col_paq.PackStart(cellrt7, true);
+			col_paq.AddAttribute (cellrt7, "text", 7); // la siguiente columna será 7
 			col_paq.SortColumnId = (int) Col_proveedores.col_paq;
 			
 			TreeViewColumn col_forma_pago = new TreeViewColumn();
-			CellRendererText cellrt7 = new CellRendererText();
+			CellRendererText cellrt8 = new CellRendererText();
 			col_forma_pago.Title = "Forma de Pago";
-			col_forma_pago.PackStart(cellrt7, true);
-			col_forma_pago.AddAttribute (cellrt7, "text", 7); // la siguiente columna será 8
+			col_forma_pago.PackStart(cellrt8, true);
+			col_forma_pago.AddAttribute (cellrt8, "text", 8); // la siguiente columna será 8
 			col_forma_pago.SortColumnId = (int) Col_proveedores.col_forma_pago;
 			
             lista_abonos.AppendColumn(col_abono);
@@ -250,6 +312,7 @@ namespace osiris
 			lista_abonos.AppendColumn(col_concepto);
 			lista_abonos.AppendColumn(col_id_creo);
 			lista_abonos.AppendColumn(col_recibo);
+			lista_abonos.AppendColumn(col_tipocomprobante);
 			lista_abonos.AppendColumn(col_presu);
 			lista_abonos.AppendColumn(col_paq);
 			lista_abonos.AppendColumn(col_forma_pago);
@@ -264,7 +327,8 @@ namespace osiris
 												typeof(string),//4
 												typeof(string),//5
 												typeof(string),//6
-												typeof(string));//7
+												typeof(string),
+			                                    typeof(string));//8
 			
 			treeview_lista_comprserv.Model = treeViewEngincomprserv;
 			
@@ -344,6 +408,7 @@ namespace osiris
 			col_concepto,
 			col_id_creo,
 			col_recibo,
+			col_tipocomprobante,
 			col_presu,
 			col_paq,
 			col_forma_pago
@@ -382,11 +447,12 @@ namespace osiris
 								"id_paquete, "+
 								"osiris_erp_abonos.id_forma_de_pago, "+ 
 								"to_char(id_paquete,'9999999999') AS paquete, "+
-								"osiris_erp_forma_de_pago.id_forma_de_pago,descripcion_forma_de_pago AS descripago "+
-								"FROM osiris_erp_abonos,osiris_erp_forma_de_pago "+
+								"osiris_erp_forma_de_pago.id_forma_de_pago,descripcion_forma_de_pago AS descripago,descripcion_tipo_comprobante "+
+								"FROM osiris_erp_abonos,osiris_erp_forma_de_pago,osiris_erp_tipo_comprobante "+
 								"WHERE osiris_erp_abonos.folio_de_servicio = '"+this.folioservicio.ToString()+"' "+
 								"AND osiris_erp_abonos.id_forma_de_pago = osiris_erp_forma_de_pago.id_forma_de_pago "+
 								"AND osiris_erp_abonos.eliminado = 'false' "+
+								"AND osiris_erp_abonos.id_tipo_comprobante = osiris_erp_tipo_comprobante.id_tipo_comprobante "+
 								"ORDER BY osiris_erp_abonos.folio_de_servicio;";
 				Console.WriteLine(comando.CommandText);
 				NpgsqlDataReader lector = comando.ExecuteReader ();
@@ -396,9 +462,10 @@ namespace osiris
 													(string) lector["concepto_del_abono"],//2
 													(string) lector["id_quien_creo"],//3
 													(string) lector["recibocaja"],//4
-													(string) lector["presupuesto"],//5
-													(string) lector["paquete"],//6
-													(string) lector["descripago"]);//7
+					                                (string) lector["descripcion_tipo_comprobante"],//5   
+													(string) lector["presupuesto"],//6
+													(string) lector["paquete"],//7
+													(string) lector["descripago"]);//8
 					total += decimal.Parse((string) lector["abono"]);
 					entry_total_abonos.Text = total.ToString("F");
 				}
@@ -424,7 +491,7 @@ namespace osiris
 					comando.CommandText = "SELECT to_char(numero_comprobante_servicio,'99999999999') AS reciboservicio," +
 										"to_char(osiris_erp_comprobante_servicio.fecha_comprobante,'yyyy-MM-dd') AS fechacomprobante,concepto_del_comprobante "+
 									"FROM osiris_erp_comprobante_servicio "+
-									"WHERE osiris_erp_comprobante_servicio.eliminado = 'false' " +
+									"WHERE osiris_erp_comprobante_servicio.eliminado = 'false' "+
 									"AND osiris_erp_comprobante_servicio.folio_de_servicio = '"+this.folioservicio.ToString()+"' ";
 				//Console.WriteLine(comando.CommandText);
 				NpgsqlDataReader lector = comando.ExecuteReader ();
@@ -470,6 +537,7 @@ namespace osiris
 					button_imprimir.Sensitive = true;
 					this.button_resumen.Sensitive = true;
 					this.combobox_formapago.Sensitive = true;
+					combobox_tipocomprobante.Sensitive = true;
 				}else{
 					checkbutton_nuevo_abono.Active = false;
 				}
@@ -495,13 +563,14 @@ namespace osiris
 		 				comando4.CommandText = "SELECT numero_recibo_caja,folio_de_servicio "+
 										"FROM osiris_erp_abonos "+
 										"WHERE numero_recibo_caja = '"+this.entry_recibo_caja.Text+"' "+
+										"AND id_tipo_comprobante = '"+idtipocomprobante+"' "+
 										"LIMIT 1 ;";
 		 					
 	 					NpgsqlDataReader lector4 = comando4.ExecuteReader ();
 								
-               			if(lector4.Read()){
+               			if(lector4.Read() || (string) idtipocomprobante == "1"){
                				MessageDialog msgBox6 = new MessageDialog (MyWin,DialogFlags.Modal,
-							MessageType.Info,ButtonsType.Ok,"Este recibo de caja ya existe... verifique...");
+							MessageType.Info,ButtonsType.Ok,"Este recibo de caja ya existe o no tiene tipo de Comprobante, verifique...");
 							msgBox6.Run ();msgBox6.Destroy();
                			}else{
 		               		NpgsqlConnection conexion;
@@ -521,6 +590,8 @@ namespace osiris
 													"id_presupuesto, "+//8
 													"id_paquete ,"+//9
 													"id_forma_de_pago,"+
+													"id_tipo_comprobante,"+
+													
 													"folio_de_servicio )"+
 													"VALUES ('"+
 			 										(string) this.entry_monto_abono.Text.Trim().ToUpper()+"','"+//2
@@ -531,8 +602,9 @@ namespace osiris
 			 										(string) this.entry_ano.Text+" "+this.entry_mes.Text+" "+this.entry_dia.Text+"','"+//7
 			 										(string) this.entry_presupuesto.Text.Trim().ToUpper()+"','"+//8
 			 										(string) this.entry_paquete.Text.Trim().ToUpper()+"','"+//9
-			 										idformadepago.ToString()+"','"+
-			 										folioservicio+//"','"+//10
+													idformadepago.ToString()+"','"+
+			 										idtipocomprobante+"','"+
+													folioservicio+//"','"+//10
 			 										"');";
 		 						comando.ExecuteNonQuery();    	    	       	comando.Dispose();
 		 						

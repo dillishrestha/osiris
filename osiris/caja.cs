@@ -754,7 +754,7 @@ namespace osiris
 		
 		void on_button_abre_folio_clicked(object sender, EventArgs args)
 		{
-			if(LoginEmpleado == "DOLIVARES" || LoginEmpleado =="ADMIN" || LoginEmpleado =="MARGARITAZ" || LoginEmpleado =="IESPINOZAF"){
+			if(LoginEmpleado == "DOLIVARES" || LoginEmpleado =="ADMIN" || LoginEmpleado =="MARGARITAZ" || LoginEmpleado =="IESPINOZAF" || LoginEmpleado =="ZBAEZH"){
 				MessageDialog msgBox = new MessageDialog (MyWin,DialogFlags.Modal,
 							MessageType.Question,ButtonsType.YesNo,"¿ Esta seguro de Abrir este Nº de Atencion ?");
 				ResponseType miResultado = (ResponseType)msgBox.Run ();
@@ -1828,7 +1828,7 @@ namespace osiris
 							win.Toplevel.Destroy();
 						}
 						if(tipo_de_comprobante == "CAJA"){
-							numerodecomprobante = int.Parse((string) classpublic.lee_ultimonumero_registrado("osiris_erp_abonos","numero_recibo_caja","WHERE id_tipo_comprobante = '"+idtipocomprobante.ToString().Trim()+"'"));
+							//numerodecomprobante = int.Parse((string) classpublic.lee_ultimonumero_registrado("osiris_erp_abonos","numero_recibo_caja","WHERE id_tipo_comprobante = '"+idtipocomprobante.ToString().Trim()+"'"));
 							descrippago = "PAGO DE PROCEDIMIENTO";
 							pago_sino = true;
 							sql_abonos_servicio = "INSERT INTO osiris_erp_abonos("+

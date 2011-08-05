@@ -74,6 +74,7 @@ namespace osiris
 		[Widget] Gtk.TreeView lista_cargos_extras = null;
 		//[Widget] Gtk.ProgressBar progressbar_status_llenado;
 		[Widget] Gtk.Button button_quitar_aplicados = null;
+		[Widget] Gtk.Button button_devoluciones = null;
 		[Widget] Gtk.Button button_actualizar = null;
 		[Widget] Gtk.Button button_buscar_paciente = null;
 		[Widget] Gtk.Button button_selec_folio = null;
@@ -335,6 +336,7 @@ namespace osiris
 			button_solicitud_lab.Clicked += new EventHandler(on_solicitud_labrx_clicked);
 			button_solicitud_rx.Clicked += new EventHandler(on_solicitud_labrx_clicked);
 			button_solicitud_vision.Clicked += new EventHandler(on_solicitud_labrx_clicked);
+			button_devoluciones.Clicked += new EventHandler(on_button_devoluciones_clicked);
 			// Desactivando Botones de operacion se activa cuando selecciona una atencion
 			button_busca_producto.Sensitive = false;
 			button_removerItem.Sensitive = false;
@@ -343,13 +345,19 @@ namespace osiris
 			button_quitar_aplicados.Sensitive = false;
 			button_actualizar.Sensitive = false;
 			//this.button_alta_paciente.Sensitive = false;
-			this.button_hoja_cargos.Sensitive = false;
-			this.button_notas_de_cargos.Sensitive = false;
+			button_hoja_cargos.Sensitive = false;
+			button_notas_de_cargos.Sensitive = false;
+			button_devoluciones.Sensitive = false;
 			
 			statusbar_caja.Pop(0);
 			statusbar_caja.Push(1, "login: "+LoginEmpleado+"  |Usuario: "+NomEmpleado+" "+AppEmpleado+" "+ApmEmpleado);
 			statusbar_caja.HasResizeGrip = false;
 	    }
+		
+		void on_button_devoluciones_clicked(object obj, EventArgs args)
+		{
+			new analisis_devoluciones(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,entry_folio_servicio.Text);
+		}
 		
 		void on_solicitud_labrx_clicked(object obj, EventArgs args)
 		{
@@ -1458,6 +1466,7 @@ namespace osiris
 			lista_de_servicios.Sensitive = true;
 			lista_cargos_extras.Sensitive = true;
 			entry_descrip_cirugia.Sensitive = true;
+			button_devoluciones.Sensitive = true;
 			
 			button_removerItem.Sensitive = true;
 			button_graba_pago.Sensitive = true;

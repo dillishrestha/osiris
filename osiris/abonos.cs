@@ -56,6 +56,8 @@ namespace osiris
 		[Widget] Gtk.Button button_resumen = null;
 		[Widget] Gtk.TreeView lista_abonos = null;
 		[Widget] Gtk.TreeView treeview_lista_comprserv  = null;
+		[Widget] Gtk.TreeView treeview_lista_pagare = null;
+		
 		[Widget] Gtk.Statusbar statusbar_abonos = null;
 		[Widget] Gtk.ComboBox combobox_formapago = null;
 		[Widget] Gtk.ComboBox combobox_tipocomprobante = null;
@@ -98,7 +100,8 @@ namespace osiris
 		protected Gtk.Window MyWin;
 		
 		TreeStore treeViewEngineabonos;
-		TreeStore treeViewEngincomprserv;
+		TreeStore treeViewEnginecomprserv;
+		TreeStore treeViewEnginepagare;
 		//Declarando las celdas
 		CellRendererText cellr0;		CellRendererText cellrt1;
 		CellRendererText cellrt2;		CellRendererText cellrt3;
@@ -141,8 +144,10 @@ namespace osiris
 	        abonar_procedimientos.Show();
 			crea_treeview_abonos();
 			crea_treeview_comprserv();
+			crea_treeview_pagare();
 			llenando_lista_de_abonos();
 			llenando_lista_comprobante();
+			llenando_lista_pagare();
 			llenado_tipo_comprobante();
 			
 			//llenando_lista_de_pagares();
@@ -320,7 +325,7 @@ namespace osiris
 		
 		void crea_treeview_comprserv()
 		{
-			treeViewEngincomprserv = new TreeStore(typeof(string),//0
+			treeViewEnginecomprserv = new TreeStore(typeof(string),//0
 												typeof(string),//1
 												typeof(string),//2
 												typeof(string),//3
@@ -330,7 +335,7 @@ namespace osiris
 												typeof(string),
 			                                    typeof(string));//8
 			
-			treeview_lista_comprserv.Model = treeViewEngincomprserv;
+			treeview_lista_comprserv.Model = treeViewEnginecomprserv;
 			
 			treeview_lista_comprserv.RulesHint = true;
 			
@@ -400,6 +405,87 @@ namespace osiris
 			treeview_lista_comprserv.AppendColumn(col_forma_pago);
 		}
 		
+		void crea_treeview_pagare()
+		{
+			treeViewEnginepagare = new TreeStore(typeof(string),//0
+												typeof(string),//1
+												typeof(string),//2
+												typeof(string),//3
+												typeof(string),//4
+												typeof(string),//5
+												typeof(string),//6
+												typeof(string),
+			                                    typeof(string));//8
+			
+			treeview_lista_pagare.Model = treeViewEnginepagare;
+			
+			treeview_lista_pagare.RulesHint = true;
+			
+			TreeViewColumn col_abono = new TreeViewColumn();
+			cellr0 = new CellRendererText();
+			col_abono.Title = "N° Comp.Pagare";
+			col_abono.PackStart(cellr0, true);
+			col_abono.AddAttribute (cellr0, "text", 0);
+			col_abono.SortColumnId = (int) Col_proveedores.col_abono;
+			
+			TreeViewColumn col_fecha_abono = new TreeViewColumn();
+			CellRendererText cellrt1 = new CellRendererText();
+			col_fecha_abono.Title = "Fech.Pagare";
+			col_fecha_abono.PackStart(cellrt1, true);
+			col_fecha_abono.AddAttribute (cellrt1, "text", 1);
+			col_fecha_abono.SortColumnId = (int) Col_proveedores.col_fecha_abono;
+			
+			TreeViewColumn col_concepto = new TreeViewColumn();
+			CellRendererText cellrt2 = new CellRendererText();
+			col_concepto.Title = "Concepto";
+			col_concepto.PackStart(cellrt2, true);
+			col_concepto.AddAttribute (cellrt2, "text", 2);
+			col_concepto.SortColumnId = (int) Col_proveedores.col_concepto;
+			
+			TreeViewColumn col_id_creo = new TreeViewColumn();
+			CellRendererText cellrt3 = new CellRendererText();
+			col_id_creo.Title = "Id Quien Creo";
+			col_id_creo.PackStart(cellrt3, true);
+			col_id_creo.AddAttribute (cellrt3, "text", 3);
+			col_id_creo.SortColumnId = (int) Col_proveedores.col_id_creo;
+			
+			TreeViewColumn col_recibo = new TreeViewColumn();
+			CellRendererText cellrt4 = new CellRendererText();
+			col_recibo.Title = "No. Pagare";
+			col_recibo.PackStart(cellrt4, true);
+			col_recibo.AddAttribute (cellrt4, "text", 4);
+			col_recibo.SortColumnId = (int) Col_proveedores.col_recibo;
+			
+			TreeViewColumn col_presu = new TreeViewColumn();
+			CellRendererText cellrt5 = new CellRendererText();
+			col_presu.Title = "Id Presupuesto";
+			col_presu.PackStart(cellrt5, true);
+			col_presu.AddAttribute (cellrt5, "text", 5);
+			col_presu.SortColumnId = (int) Col_proveedores.col_presu;
+			
+			TreeViewColumn col_paq = new TreeViewColumn();
+			CellRendererText cellrt6 = new CellRendererText();
+			col_paq.Title = "Id Paquete";
+			col_paq.PackStart(cellrt6, true);
+			col_paq.AddAttribute (cellrt6, "text", 6);
+			col_paq.SortColumnId = (int) Col_proveedores.col_paq;
+			
+			TreeViewColumn col_forma_pago = new TreeViewColumn();
+			CellRendererText cellrt7 = new CellRendererText();
+			col_forma_pago.Title = "Observaciones";
+			col_forma_pago.PackStart(cellrt7, true);
+			col_forma_pago.AddAttribute (cellrt7, "text", 7);
+			col_forma_pago.SortColumnId = (int) Col_proveedores.col_forma_pago;			
+			
+			treeview_lista_pagare.AppendColumn(col_abono);
+			treeview_lista_pagare.AppendColumn(col_fecha_abono);
+			treeview_lista_pagare.AppendColumn(col_concepto);
+			treeview_lista_pagare.AppendColumn(col_id_creo);
+			treeview_lista_pagare.AppendColumn(col_recibo);
+			treeview_lista_pagare.AppendColumn(col_presu);
+			treeview_lista_pagare.AppendColumn(col_paq);
+			treeview_lista_pagare.AppendColumn(col_forma_pago);
+		}
 		
 		enum Col_proveedores
 		{
@@ -480,7 +566,7 @@ namespace osiris
 		void llenando_lista_comprobante()
 		{
 			decimal total = 0;
-			treeViewEngincomprserv.Clear();	// Limpia el treeview cuando realiza una nueva busqueda
+			treeViewEnginecomprserv.Clear();	// Limpia el treeview cuando realiza una nueva busqueda
 			NpgsqlConnection conexion; 
 			conexion = new NpgsqlConnection (connectionString+nombrebd);
 	        // Verifica que la base de datos este conectada
@@ -496,7 +582,43 @@ namespace osiris
 				//Console.WriteLine(comando.CommandText);
 				NpgsqlDataReader lector = comando.ExecuteReader ();
 				while (lector.Read()){	
-					treeViewEngincomprserv.AppendValues ((string) lector["reciboservicio"],
+					treeViewEnginecomprserv.AppendValues ((string) lector["reciboservicio"],
+					                                   (string) lector["fechacomprobante"],
+					                                   (string) lector["concepto_del_comprobante"],
+					                                   " ",
+					                                   " ",
+					                                   " ");
+					//total += decimal.Parse((string) lector["abono"]);
+					// entry_total_abonos.Text = total.ToString();
+				}
+			}catch (NpgsqlException ex){
+   				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+								MessageType.Error,ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
+				msgBoxError.Run ();			msgBoxError.Destroy();
+			}
+			conexion.Close ();
+		}
+		
+		void llenando_lista_pagare()
+		{
+			decimal total = 0;
+			treeViewEnginepagare.Clear();	// Limpia el treeview cuando realiza una nueva busqueda
+			NpgsqlConnection conexion; 
+			conexion = new NpgsqlConnection (connectionString+nombrebd);
+	        // Verifica que la base de datos este conectada
+			try{
+				conexion.Open ();
+				NpgsqlCommand comando; 
+				comando = conexion.CreateCommand ();
+					comando.CommandText = "SELECT to_char(numero_comprobante_pagare,'99999999999') AS reciboservicio," +
+										"to_char(osiris_erp_comprobante_pagare.fecha_comprobante,'yyyy-MM-dd') AS fechacomprobante,concepto_del_comprobante "+
+									"FROM osiris_erp_comprobante_pagare "+
+									"WHERE osiris_erp_comprobante_pagare.eliminado = 'false' "+
+									"AND osiris_erp_comprobante_pagare.folio_de_servicio = '"+this.folioservicio.ToString()+"' ";
+				//Console.WriteLine(comando.CommandText);
+				NpgsqlDataReader lector = comando.ExecuteReader ();
+				while (lector.Read()){	
+					treeViewEnginepagare.AppendValues ((string) lector["reciboservicio"],
 					                                   (string) lector["fechacomprobante"],
 					                                   (string) lector["concepto_del_comprobante"],
 					                                   " ",
@@ -591,7 +713,6 @@ namespace osiris
 													"id_paquete ,"+//9
 													"id_forma_de_pago,"+
 													"id_tipo_comprobante,"+
-													
 													"folio_de_servicio )"+
 													"VALUES ('"+
 			 										(string) this.entry_monto_abono.Text.Trim().ToUpper()+"','"+//2

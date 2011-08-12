@@ -67,15 +67,6 @@ namespace osiris
 		//Declaracion de ventana de error y mensaje
 		protected Gtk.Window MyWinError;
 		
-		// Cantidad en Letras
-		private string[] sUnidades = {"", "un", "dos", "tres", "cuatro", "cinco", "seis", "siete", "ocho", "nueve", "diez", 
-									"once", "doce", "trece", "catorce", "quince", "dieciseis", "diecisiete", "dieciocho", "diecinueve", "veinte", 
-									"veintiún", "veintidos", "veintitres", "veinticuatro", "veinticinco", "veintiseis", "veintisiete", "veintiocho", "veintinueve"};		
-		private string[] sDecenas = {"", "diez", "veinte", "treinta", "cuarenta", "cincuenta", "sesenta", "setenta", "ochenta", "noventa"};		
-		private string[] sCentenas = {"","cien", "ciento", "doscientos", "trescientos", "cuatrocientos", "quinientos", "seiscientos", "setecientos", "ochocientos", "novecientos"};		
-		
-		private string sResultado = "";
-		
 		const int gray50_width = 2;
 		const int gray50_height = 2;
 		const string gray50_bits = "\x02\x01";

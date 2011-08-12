@@ -93,7 +93,7 @@ namespace osiris
 				sql_numerocomprobante = "AND osiris_erp_comprobante_servicio.numero_comprobante_servicio = '"+numero_comprobante.ToString().Trim()+"' ";
 			}
 			if (tipocomprobante == "PAGARE"){
-				sql_numerocomprobante = "AND osiris_erp_pagares.numero_comprobante_servicio = '"+numero_comprobante.ToString().Trim()+"' ";
+				sql_numerocomprobante = "AND osiris_erp_comprobante_pagare.numero_comprobante_pagare = '"+numero_comprobante.ToString().Trim()+"' ";
 			}
 			sql_foliodeservicio = "AND osiris_erp_cobros_deta.folio_de_servicio = '"+folioservicio_.ToString()+"' ";
 			print = new PrintOperation ();

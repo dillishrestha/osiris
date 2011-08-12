@@ -353,7 +353,9 @@ namespace osiris
 		
 		void on_button_imprimir_mov_clicked(object obj, EventArgs args)
 		{
-			new osiris.rpt_analisis_devoluciones();
+			object[] parametros_objetos = {lista_cargos_desde_stock,lista_solicitado_no_cargado,lista_solicitados_y_cargados,
+											treeViewEngine1,treeViewEngine2,treeViewEngine3};
+			new osiris.rpt_analisis_devoluciones(parametros_objetos);
 		}
 		
 		void llenado_de_devoluciones()
@@ -456,7 +458,7 @@ namespace osiris
 					}
 				}else{
 					MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,MessageType.Error,
-			 							ButtonsType.Close, "Este numero de atencion no tiene cargo verifique");
+			 							ButtonsType.Close, "Este numero de atencion tiene solo cargos desde STOCK de Sub-Almacene");
 					msgBoxError.Run ();			msgBoxError.Destroy();
 				}
 			}catch (NpgsqlException ex){
@@ -541,13 +543,18 @@ namespace osiris
 						//Console.WriteLine(comando1.CommandText);					
 						lector1 = comando1.ExecuteReader ();
 						if(lector1.Read() == false){
-							treeViewEngine2.AppendValues(toma_idproducto,toma_descripcionproducto,"0.00",toma_productosaplicados,toma_productosaplicados,toma_subalmacen);
+							treeViewEngine2.AppendValues(toma_idproducto,
+							                             toma_descripcionproducto,
+							                             "0.00",
+							                             toma_productosaplicados,
+							                             toma_productosaplicados,
+							                             toma_subalmacen);
 						}
 						conexion1.Close();
 					}
 				}else{
 					MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,MessageType.Error,
-			 							ButtonsType.Close, "Este numero de atencion no tiene cargo verifique");
+			 							ButtonsType.Close, "Este numero de atencion tiene solo cargos desde STOCK de Sub-Almacene");
 					msgBoxError.Run ();			msgBoxError.Destroy();
 				}
 			}catch (NpgsqlException ex){

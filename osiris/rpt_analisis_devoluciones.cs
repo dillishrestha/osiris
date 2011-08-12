@@ -45,6 +45,7 @@ namespace osiris
 		int comienzo_linea = 70;
 		int separacion_linea = 10;
 		int numpage = 1;
+		Pango.FontDescription desc;
 		
 		string LoginEmpleado;
 		string NomEmpleado;
@@ -54,12 +55,13 @@ namespace osiris
 		string nombrebd;
 		string connectionString;
 		
-		Gtk.ListStore treeViewEnginegrupos;
-		Gtk.TreeView lista_grupo;
-		Gtk.ListStore treeViewEnginegrupos1;
-		Gtk.TreeView lista_grupo1;
-		Gtk.ListStore treeViewEnginegrupos2;
-		Gtk.TreeView lista_grupo2;
+		Gtk.TreeView lista_cargos_desde_stock = null;
+		Gtk.TreeView lista_solicitado_no_cargado = null;
+		Gtk.TreeView lista_solicitados_y_cargados = null;
+		
+		private TreeStore treeViewEngine1;
+		private TreeStore treeViewEngine2;
+		private TreeStore treeViewEngine3;
 		
 		//Declaracion de ventana de error
 		protected Gtk.Window MyWinError;
@@ -67,20 +69,18 @@ namespace osiris
 		class_conexion conexion_a_DB = new class_conexion();
 		class_public classpublic = new class_public();
 		
-		public rpt_analisis_devoluciones ()
+		public rpt_analisis_devoluciones (object[] args)
 		{
-			/*
-			treeViewEnginegrupos = treeview_Engine_grupos_ as Gtk.ListStore;
-			lista_grupo = lista_grupo_ as Gtk.TreeView;
-			
-			treeViewEnginegrupos1 = treeview_Engine_grupos1_ as Gtk.ListStore;
-			lista_grupo1 = lista_grupo1_ as Gtk.TreeView;
-			
-			treeViewEnginegrupos2 = treeview_Engine_grupos2_ as Gtk.ListStore;			
-			lista_grupo2 = lista_grupo2_ as Gtk.TreeView; 
-			*/
 			connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
 			nombrebd = conexion_a_DB._nombrebd;
+			escala_en_linux_windows = classpublic.escala_linux_windows;
+			
+			lista_cargos_desde_stock = (object) args[0] as Gtk.TreeView;
+			lista_solicitado_no_cargado = (object) args[1] as Gtk.TreeView;
+			lista_solicitados_y_cargados = (object) args[2] as Gtk.TreeView;		
+			treeViewEngine1 = (object) args[3] as Gtk.TreeStore;
+			treeViewEngine2 = (object) args[4] as Gtk.TreeStore;
+			treeViewEngine3 = (object) args[5] as Gtk.TreeStore;
 			
 			print = new PrintOperation ();
 			print.JobName = "Devolucion de Productos";	// Name of the report
@@ -107,7 +107,71 @@ namespace osiris
 		void ejecutar_consulta_reporte(PrintContext context)
 		{   
 			Cairo.Context cr = context.CairoContext;
-			Pango.Layout layout = context.CreatePangoLayout ();
+			Pango.Layout layout = context.CreatePangoLayout();
+			imprime_encabezado(cr,layout);
+			desc = Pango.FontDescription.FromString ("Sans");	
+			fontSize = 7.0;			layout = null;			layout = context.CreatePangoLayout ();
+			desc.Size = (int)(fontSize * pangoScale);		layout.FontDescription = desc;
+			
+			TreeIter iter;
+			if (treeViewEngine1.GetIterFirst (out iter)){
+				layout.FontDescription.Weight = Weight.Bold;		// Letra negrita
+				cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText("Producto Cargados Desde el Stock del Sub-Almacen (sin solicitud)");	Pango.CairoHelper.ShowLayout (cr, layout);
+				
+				comienzo_linea += separacion_linea;
+				layout.FontDescription.Weight = Weight.Normal;		// Letra normal
+				cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText((string) lista_cargos_desde_stock.Model.GetValue (iter,0));	Pango.CairoHelper.ShowLayout (cr, layout);
+				comienzo_linea += separacion_linea;
+				while (treeViewEngine1.IterNext(ref iter)){
+					
+					cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText((string) lista_cargos_desde_stock.Model.GetValue (iter,0));	Pango.CairoHelper.ShowLayout (cr, layout);
+					comienzo_linea += separacion_linea;
+					salto_de_pagina(cr,layout);
+				}
+			}
+		}
+		
+		void imprime_encabezado(Cairo.Context cr,Pango.Layout layout)
+		{
+			Pango.FontDescription desc = Pango.FontDescription.FromString ("Sans");								
+			//cr.Rotate(90);  //Imprimir Orizontalmente rota la hoja cambian las posiciones de las lineas y columna					
+			fontSize = 8.0;
+			desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;
+			layout.FontDescription.Weight = Weight.Bold;		// Letra negrita
+			cr.MoveTo(05*escala_en_linux_windows,05*escala_en_linux_windows);			layout.SetText(classpublic.nombre_empresa);			Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(05*escala_en_linux_windows,15*escala_en_linux_windows);			layout.SetText(classpublic.direccion_empresa);		Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(05*escala_en_linux_windows,25*escala_en_linux_windows);			layout.SetText(classpublic.telefonofax_empresa);	Pango.CairoHelper.ShowLayout (cr, layout);
+			fontSize = 6.0;
+			desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;
+			cr.MoveTo(479*escala_en_linux_windows,05*escala_en_linux_windows);			layout.SetText("Fech.Rpt:"+(string) DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));		Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(479*escala_en_linux_windows,15*escala_en_linux_windows);			layout.SetText("N° Page :"+numpage.ToString().Trim());		Pango.CairoHelper.ShowLayout (cr, layout);
+
+			cr.MoveTo(05*escala_en_linux_windows,35*escala_en_linux_windows);			layout.SetText("Sistema Hospitalario OSIRIS");		Pango.CairoHelper.ShowLayout (cr, layout);
+			// Cambiando el tamaño de la fuente			
+			fontSize = 10.0;		
+			desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;
+			layout.FontDescription.Weight = Weight.Bold;		// Letra negrita
+			layout.Alignment = Pango.Alignment.Center;
+			
+			double width = context.Width;
+			layout.Width = (int) width;
+			layout.Alignment = Pango.Alignment.Center;
+			//layout.Wrap = Pango.WrapMode.Word;
+			//layout.SingleParagraphMode = true;
+			layout.Justify =  false;
+			cr.MoveTo(width/2,45*escala_en_linux_windows);	layout.SetText("DEVOLUCIONES");	Pango.CairoHelper.ShowLayout (cr, layout);
+		}
+		
+		void salto_de_pagina(Cairo.Context cr,Pango.Layout layout)			
+		{
+			if(comienzo_linea > 530){
+				cr.ShowPage();
+				desc = Pango.FontDescription.FromString ("Sans");								
+				fontSize = 8.0;		desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;
+				comienzo_linea = 70;
+				numpage += 1;
+				imprime_encabezado(cr,layout);
+			}
 		}
 		
 		private void OnEndPrint (object obj, Gtk.EndPrintArgs args)

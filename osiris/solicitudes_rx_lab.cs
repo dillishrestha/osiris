@@ -401,7 +401,7 @@ namespace osiris
 												(string) this.treeview_solicitud_labrx.Model.GetValue(iter,10).ToString().Trim()+"','"+
 												(string) descripinternamiento+"','"+
 												id_tipoadmisiones.ToString().Trim()+"');";
-						Console.WriteLine(comando.CommandText);
+						//Console.WriteLine(comando.CommandText);
 						comando.ExecuteNonQuery();
 						comando.Dispose();					
 						while (this.treeViewEngineEstudios.IterNext(ref iter)){
@@ -908,7 +908,7 @@ namespace osiris
 						"AND osiris_productos.cobro_activo = 'true' "+
 						"AND osiris_productos.descripcion_producto LIKE '%"+entry_expresion.Text.ToUpper().Trim()+"%' ORDER BY descripcion_producto;";
 					
-				Console.WriteLine(comando.CommandText);				
+				//Console.WriteLine(comando.CommandText);				
 				NpgsqlDataReader lector = comando.ExecuteReader ();										
 				while (lector.Read()){
 					calculodeiva = 0;
@@ -1135,7 +1135,7 @@ namespace osiris
 						comando = conexion.CreateCommand ();
 						// actualizan la lista de producto por numero de solicitud
 						if(togglebutton_por_paciente.Active == false){
-							Console.WriteLine("Treeview es por estudios");							
+							//Console.WriteLine("Treeview es por estudios");							
 							if (treeViewEnginesolicitados.GetIterFirst(out iter)){
 								if ((bool)treeview_lista_solicitados.Model.GetValue (iter,0) == true){
 								
@@ -1521,7 +1521,7 @@ namespace osiris
 										"AND status = 'false' "+
 										"AND eliminado = 'false' "+
 										"AND id_tipo_admisiones2 = '"+idtipoadmisiones.ToString().Trim()+"' "+queryorder;
-				Console.WriteLine(comando.CommandText);
+				//Console.WriteLine(comando.CommandText);
 				NpgsqlDataReader lector = comando.ExecuteReader ();
 				if((bool) lector.Read()){
 					toma_pidpaciente = (int) lector["pidpaciente"];
@@ -1660,7 +1660,7 @@ namespace osiris
 		void NumberCellEdited_Autorizado (object sender, EditedArgs args)
 		{
 			Gtk.TreeIter iter;
-			Gtk.CellRendererText  cellobj = (Gtk.CellRendererText) sender;
+			//Gtk.CellRendererText  cellobj = (Gtk.CellRendererText) sender;
 			bool esnumerico = false;
 			int var_paso = 0;
 			int largo_variable = args.NewText.ToString().Length;

@@ -274,6 +274,12 @@ namespace osiris
 			this.entry_perinatales.KeyPressEvent += onKeyPressEventactual;
 		
 			llenado_enf_familiares(0,"",combobox_enfermedad_padre);
+			llenado_enf_familiares(0,"",combobox_enfermedad_madre);
+			llenado_enf_familiares(0,"",combobox_enfermedad_hermanos);
+			llenado_enf_familiares(0,"",combobox_enfermedad_hijos);
+			llenado_enf_familiares(0,"",combobox_enfermedad_apaternos);
+			llenado_enf_familiares(0,"",combobox_enfermedad_amaternos);
+			
 			//entrys id enfermedad (sirve para ingresar el id de la enfermedad y solo se pueda con numeros)
 			/*this.entry_idenf_padre.KeyPressEvent += onKeyPressEventactual;
 		    this.entry_idenf_madre.KeyPressEvent += onKeyPressEventactual;
@@ -365,8 +371,8 @@ namespace osiris
 				NpgsqlDataReader lector1 = comando1.ExecuteReader ();
 					   
 				if(lector1.Read()){
-				this.button_guardar.Sensitive = false;                       this.entry_nombre_paciente.Sensitive = false;			        this.entry_pid_paciente.Sensitive = false;        this.entry_edad_paciente.Sensitive = false;
-				this.button_editar_his_clin.Sensitive = true;                this.button_imprimir.Sensitive = true;                         this.button_imprimir_p2.Sensitive = true;
+				button_guardar.Sensitive = false;                       this.entry_nombre_paciente.Sensitive = false;			        this.entry_pid_paciente.Sensitive = false;        this.entry_edad_paciente.Sensitive = false;
+				button_editar_his_clin.Sensitive = true;                this.button_imprimir.Sensitive = true;                         this.button_imprimir_p2.Sensitive = true;
 			//Antecedentes Heredo Familiar:     
 				//this.combobox_enfermedad_padre.Sensitive = false;               this.entry_enfermedad_madre.Sensitive = false;                 this.entry_enfermedad_amaternos.Sensitive = false; 
 				//this.entry_enfermedad_hermanos.Sensitive = false;            this.entry_enfermedad_hijos.Sensitive = false;                 this.entry_enfermedad_apaternos.Sensitive = false;             
@@ -374,98 +380,98 @@ namespace osiris
 			 //Antecedentes Personales NO Patologicos:
 				//this.entry_tipo_casahabit.Sensitive = false;                 this.entry_observaciones.Sensitive = false;           
 			 //Antecedentes Personales Patologicos:
-				this.entry_otros_app.Sensitive = false;                      this.entry_medicamentos.Sensitive = false;
+				entry_otros_app.Sensitive = false;                      this.entry_medicamentos.Sensitive = false;
 			    ////entrys nuevos:
-				this.entry_cronicodegenerativo.Sensitive = false;
-		        this.entry_alergicos.Sensitive = false;
-		        this.entry_obs_hospi.Sensitive = false;
-		        this.entry_traumaticos.Sensitive = false;
-		        this.entry_quirurgicos.Sensitive = false;
-		        this.entry_neurologicos.Sensitive = false;
+				entry_cronicodegenerativo.Sensitive = false;
+		        entry_alergicos.Sensitive = false;
+		        entry_obs_hospi.Sensitive = false;
+		        entry_traumaticos.Sensitive = false;
+		        entry_quirurgicos.Sensitive = false;
+		        entry_neurologicos.Sensitive = false;
 			//Pagina 2: Antecedentes Gineco Obstetricios:                           
-				this.entry_ivsa.Sensitive = false;                           this.entry_ritmo.Sensitive = false;                            this.entry_fum.Sensitive = false;                  this.entry_fpp.Sensitive = false;                           
-				this.entry_pap.Sensitive = false;                            this.entry_contracepcion.Sensitive = false;                    this.entry_otros_ago.Sensitive = false;            this.entry_fup.Sensitive = false;
+				entry_ivsa.Sensitive = false;                           this.entry_ritmo.Sensitive = false;                            this.entry_fum.Sensitive = false;                  this.entry_fpp.Sensitive = false;                           
+				entry_pap.Sensitive = false;                            this.entry_contracepcion.Sensitive = false;                    this.entry_otros_ago.Sensitive = false;            this.entry_fup.Sensitive = false;
 			 //Historia Clinica Pediatrica:                     
-				this.entry_perinatales.Sensitive = false;                    this.entry_peso.Sensitive = false;                             this.entry_patologicos.Sensitive = false;          this.entry_alumbramiento.Sensitive = false; 
-				this.entry_infecciones.Sensitive = false;                    this.entry_alergias.Sensitive = false;                         this.entry_hospitalizaciones.Sensitive = false;    this.entry_traumatismos.Sensitive = false; 
-				this.entry_cirugias.Sensitive = false;                       this.entry_inmunizaciones.Sensitive = false;                   this.entry_des_psicomotor.Sensitive = false;       this.entry_otros_hcp.Sensitive = false; 
+				entry_perinatales.Sensitive = false;                    this.entry_peso.Sensitive = false;                             this.entry_patologicos.Sensitive = false;          this.entry_alumbramiento.Sensitive = false; 
+				entry_infecciones.Sensitive = false;                    this.entry_alergias.Sensitive = false;                         this.entry_hospitalizaciones.Sensitive = false;    this.entry_traumatismos.Sensitive = false; 
+				entry_cirugias.Sensitive = false;                       this.entry_inmunizaciones.Sensitive = false;                   this.entry_des_psicomotor.Sensitive = false;       this.entry_otros_hcp.Sensitive = false; 
 			 //Pagina 3: Motivo de Ingreso:
-				this.entry_motivoingreso.Sensitive = false;                  this.entry_padecimientoactual.Sensitive = false;               this.entry_ta.Sensitive = false;                   this.entry_fc.Sensitive = false; 
-				this.entry_fr.Sensitive = false;                             this.entry_temp.Sensitive = false;                             this.entry_pso.Sensitive = false;                  this.entry_talla.Sensitive = false; 
-				this.entry_habitus_ext.Sensitive = false;                    this.entry_cabeza.Sensitive = false;                           this.entry_cuello.Sensitive = false;               this.entry_torax.Sensitive = false; 
-				this.entry_abdomen.Sensitive = false;                        this.entry_extremidades.Sensitive = false;                     this.entry_genitourinario.Sensitive = false;       this.entry_neurologico.Sensitive = false; 
-				this.entry_diagnosticos.Sensitive = false;                   this.entry_plan_diag.Sensitive = false;                        this.entry_nombre_plan_diag.Sensitive = false; 			
+				entry_motivoingreso.Sensitive = false;                  this.entry_padecimientoactual.Sensitive = false;               this.entry_ta.Sensitive = false;                   this.entry_fc.Sensitive = false; 
+				entry_fr.Sensitive = false;                             this.entry_temp.Sensitive = false;                             this.entry_pso.Sensitive = false;                  this.entry_talla.Sensitive = false; 
+				entry_habitus_ext.Sensitive = false;                    this.entry_cabeza.Sensitive = false;                           this.entry_cuello.Sensitive = false;               this.entry_torax.Sensitive = false; 
+				entry_abdomen.Sensitive = false;                        this.entry_extremidades.Sensitive = false;                     this.entry_genitourinario.Sensitive = false;       this.entry_neurologico.Sensitive = false; 
+				entry_diagnosticos.Sensitive = false;                   this.entry_plan_diag.Sensitive = false;                        this.entry_nombre_plan_diag.Sensitive = false; 			
              //combobox:			
 				combobox_vivomuerto_padre.Sensitive = false;                 combobox_vivomuerto_madre.Sensitive = false;       
 				combobox_alcoholismo.Sensitive = false;                      combobox_tabaquismo.Sensitive = false;                         combobox_drogas.Sensitive = false;
 				combobox_traumaticos.Sensitive = false;                      combobox_alergicos.Sensitive = false;                          combobox_neurologicos.Sensitive = false;      
 				combobox_hospitalizaciones.Sensitive = false;                combobox_cronico_degenerativos.Sensitive = false;              combobox_quirurgicos.Sensitive = false;       
 			 //spinbuttons:
-				this.spinbutton_a.Sensitive = false;                         this.spinbutton_c.Sensitive = false;                           this.spinbutton_ed_madre.Sensitive = false;                         this.spinbutton_g.Sensitive = false;                         this.spinbutton_nomuertos_hijos.Sensitive = false;
-				this.spinbutton_edad_gestional.Sensitive = false;            this.spinbutton_edad_madre.Sensitive = false;                  this.spinbutton_edad_padre.Sensitive = false;                       this.spinbutton_menarca.Sensitive = false;                  this.spinbutton_novivos_amaternos.Sensitive = false;
-				this.spinbutton_no_embarazo.Sensitive = false;               this.spinbutton_nomuertos_amaternos.Sensitive = false;         this.spinbutton_nomuertos_apaternos.Sensitive = false;              this.spinbutton_nomuertos_hermanos.Sensitive = false;        this.spinbutton_novivos_apaternos.Sensitive = false;
-				this.spinbutton_novivos_hermanos.Sensitive = false;          this.spinbutton_novivos_hijos.Sensitive = false;               this.spinbutton_p.Sensitive = false;
-			//id_quien_actualizo,fechahora_actualizacion(UPDATE)
+				spinbutton_a.Sensitive = false;                         this.spinbutton_c.Sensitive = false;                           this.spinbutton_ed_madre.Sensitive = false;                         this.spinbutton_g.Sensitive = false;                         this.spinbutton_nomuertos_hijos.Sensitive = false;
+				spinbutton_edad_gestional.Sensitive = false;            this.spinbutton_edad_madre.Sensitive = false;                  this.spinbutton_edad_padre.Sensitive = false;                       this.spinbutton_menarca.Sensitive = false;                  this.spinbutton_novivos_amaternos.Sensitive = false;
+				spinbutton_no_embarazo.Sensitive = false;               this.spinbutton_nomuertos_amaternos.Sensitive = false;         this.spinbutton_nomuertos_apaternos.Sensitive = false;              this.spinbutton_nomuertos_hermanos.Sensitive = false;        this.spinbutton_novivos_apaternos.Sensitive = false;
+				spinbutton_novivos_hermanos.Sensitive = false;          this.spinbutton_novivos_hijos.Sensitive = false;               this.spinbutton_p.Sensitive = false;
+				//id_quien_actualizo,fechahora_actualizacion(UPDATE)
 				
-				    //entrys:
-					//entry_enfermedad_padre.Text = (string) lector1["descripcion_enfermedad_padre"];
-					//entry_enfermedad_madre.Text = (string) lector1["descripcion_enfermedad_madre"].ToString().Trim();
-					//entry_enfermedad_hermanos.Text = (string) lector1["descripcion_enfermedad_hermanos"].ToString().Trim();
-					//entry_enfermedad_hijos.Text = (string) lector1["descripcion_enfermedad_hijos"].ToString().Trim();
-					//entry_enfermedad_apaternos.Text = (string) lector1["descripcion_enfermedad_apaternos"].ToString().Trim();
-					//entry_enfermedad_amaternos.Text = (string) lector1["descripcion_enfermedad_amaternos"].ToString().Trim();
-					entry_otros_ahf.Text = (string) lector1["observaciones_heredo_familiar"].ToString().Trim();
-					entry_tipo_casahabit.Text = (string) lector1["tipo_casahabitacion"].ToString().Trim();
-					entry_observaciones.Text = (string) lector1["no_patologicos_observaciones"].ToString().Trim();
-					entry_medicamentos.Text = (string) lector1["medicamentos_actuales"].ToString().Trim();
-					entry_otros_app.Text = (string) lector1["observaciones_patologicos"].ToString().Trim();
-	                entry_ivsa.Text = (string) lector1["ginecoobstetricios_ivsa"].ToString().Trim();
-	                entry_ritmo.Text = (string) lector1["ginecoobstetricios_ritmo"].ToString().Trim();
-	                entry_contracepcion.Text = (string) lector1["ginecoobstetricios_contracepcion"].ToString().Trim();
-	                entry_pap.Text = (string) lector1["ginecoobstetricios_pap"].ToString().Trim();
-	                entry_otros_ago.Text = (string) lector1["ginecoobstetricios_otros"].ToString().Trim();
-	                entry_fum.Text = (string) lector1["ginecoobstetricios_fum"].ToString().Trim();
-	                entry_fup.Text = (string) lector1["ginecoobstetricios_fup"].ToString().Trim();
-	                entry_fpp.Text = (string) lector1["ginecoobstetricios_fpp"].ToString().Trim();
-	                entry_perinatales.Text = (string) lector1["hcpediatrica_perinatales"].ToString().Trim();
-	                entry_peso.Text = (string) lector1["hcpediatrica_peso"].ToString().Trim(); 						
-					entry_patologicos.Text = (string) lector1["hcpediatrica_patologicos"].ToString().Trim();
-					entry_alumbramiento.Text = (string) lector1["hcpediatrica_alumbramiento"].ToString().Trim();
-				    entry_infecciones.Text = (string) lector1["hcpediatrica_infecciones"].ToString().Trim();	
-					entry_cirugias.Text = (string) lector1["hcpediatrica_cirugias"].ToString().Trim();	
-					entry_alergias.Text = (string) lector1["hcpediatrica_alergias"].ToString().Trim();	
-					entry_hospitalizaciones.Text = (string) lector1["hcpediatrica_hospitalizaciones"].ToString().Trim();	
-					entry_traumatismos.Text = (string) lector1["hcpediatrica_traumatismos"].ToString().Trim();	
-					entry_inmunizaciones.Text = (string) lector1["hcpediatrica_inmunizaciones"].ToString().Trim();	
-					entry_des_psicomotor.Text = (string) lector1["hcpediatrica_des_psicomotor"].ToString().Trim();	
-					entry_otros_hcp.Text = (string) lector1["hcpediatrica_otros"].ToString().Trim();
-					//pagina3	
-					entry_motivoingreso.Text = (string) lector1["motivo_de_ingreso"].ToString().Trim();	
-					entry_padecimientoactual.Text = (string) lector1["padecimiento_actual"].ToString().Trim();	
-					entry_ta.Text = (string) lector1["psesion_arterial"].ToString().Trim();	
-					entry_fc.Text = (string) lector1["frecuencia_cardiaca"].ToString().Trim();	
-					entry_fr.Text = (string) lector1["frecuencia_respiratoria"].ToString().Trim();	
-					entry_temp.Text = (string) lector1["temperatura"].ToString().Trim();
-				    entry_pso.Text = (string) lector1["peso"].ToString().Trim();
-				    entry_talla.Text = (string) lector1["talla"].ToString().Trim();
-				    entry_habitus_ext.Text = (string) lector1["habitus_exterior"].ToString().Trim();
-				    entry_cabeza.Text = (string) lector1["cabeza"].ToString().Trim();	 	
-	                entry_cuello.Text = (string) lector1["cuello"].ToString().Trim();							
-					entry_torax.Text = (string) lector1["torax"].ToString().Trim();	
-					entry_abdomen.Text = (string) lector1["abdomen"].ToString().Trim();	
-					entry_extremidades.Text = (string) lector1["extremidades"].ToString().Trim();	
-					entry_genitourinario.Text = (string) lector1["genitourinario"].ToString().Trim();	
-					entry_neurologico.Text = (string) lector1["neurologico"].ToString().Trim();	
-					entry_diagnosticos.Text = (string) lector1["diagnosticos"].ToString().Trim();	
-					entry_plan_diag.Text = (string) lector1["plan_diagnostico"].ToString().Trim();
-					entry_nombre_plan_diag.Text = (string) lector1["nombre_plan_diag"].ToString().Trim();
-					//entrys nuevos
-					this.entry_cronicodegenerativo.Text = (string) lector1["observaciones_cdegenerativos"].ToString();
-		        	this.entry_alergicos.Text = (string) lector1["observaciones_alergicos"].ToString();
-		       	 	this.entry_obs_hospi.Text = (string) lector1["observaciones_hosp"].ToString();
-		        	this.entry_traumaticos.Text = (string) lector1["observaciones_traumaticos"].ToString();
-		        	this.entry_quirurgicos.Text = (string) lector1["observaciones_quirur"].ToString();
-		       	    this.entry_neurologicos.Text = (string) lector1["observaciones_neurolog"].ToString();
+				//entrys:
+				//entry_enfermedad_padre.Text = (string) lector1["descripcion_enfermedad_padre"];
+				//entry_enfermedad_madre.Text = (string) lector1["descripcion_enfermedad_madre"].ToString().Trim();
+				//entry_enfermedad_hermanos.Text = (string) lector1["descripcion_enfermedad_hermanos"].ToString().Trim();
+				//entry_enfermedad_hijos.Text = (string) lector1["descripcion_enfermedad_hijos"].ToString().Trim();
+				//entry_enfermedad_apaternos.Text = (string) lector1["descripcion_enfermedad_apaternos"].ToString().Trim();
+				//entry_enfermedad_amaternos.Text = (string) lector1["descripcion_enfermedad_amaternos"].ToString().Trim();
+				entry_otros_ahf.Text = (string) lector1["observaciones_heredo_familiar"].ToString().Trim();
+				entry_tipo_casahabit.Text = (string) lector1["tipo_casahabitacion"].ToString().Trim();
+				entry_observaciones.Text = (string) lector1["no_patologicos_observaciones"].ToString().Trim();
+				entry_medicamentos.Text = (string) lector1["medicamentos_actuales"].ToString().Trim();
+				entry_otros_app.Text = (string) lector1["observaciones_patologicos"].ToString().Trim();
+	            entry_ivsa.Text = (string) lector1["ginecoobstetricios_ivsa"].ToString().Trim();
+	            entry_ritmo.Text = (string) lector1["ginecoobstetricios_ritmo"].ToString().Trim();
+	            entry_contracepcion.Text = (string) lector1["ginecoobstetricios_contracepcion"].ToString().Trim();
+	            entry_pap.Text = (string) lector1["ginecoobstetricios_pap"].ToString().Trim();
+	            entry_otros_ago.Text = (string) lector1["ginecoobstetricios_otros"].ToString().Trim();
+	            entry_fum.Text = (string) lector1["ginecoobstetricios_fum"].ToString().Trim();
+	            entry_fup.Text = (string) lector1["ginecoobstetricios_fup"].ToString().Trim();
+	            entry_fpp.Text = (string) lector1["ginecoobstetricios_fpp"].ToString().Trim();
+	            entry_perinatales.Text = (string) lector1["hcpediatrica_perinatales"].ToString().Trim();
+	            entry_peso.Text = (string) lector1["hcpediatrica_peso"].ToString().Trim(); 						
+				entry_patologicos.Text = (string) lector1["hcpediatrica_patologicos"].ToString().Trim();
+				entry_alumbramiento.Text = (string) lector1["hcpediatrica_alumbramiento"].ToString().Trim();
+				entry_infecciones.Text = (string) lector1["hcpediatrica_infecciones"].ToString().Trim();	
+				entry_cirugias.Text = (string) lector1["hcpediatrica_cirugias"].ToString().Trim();	
+				entry_alergias.Text = (string) lector1["hcpediatrica_alergias"].ToString().Trim();	
+				entry_hospitalizaciones.Text = (string) lector1["hcpediatrica_hospitalizaciones"].ToString().Trim();	
+				entry_traumatismos.Text = (string) lector1["hcpediatrica_traumatismos"].ToString().Trim();	
+				entry_inmunizaciones.Text = (string) lector1["hcpediatrica_inmunizaciones"].ToString().Trim();	
+				entry_des_psicomotor.Text = (string) lector1["hcpediatrica_des_psicomotor"].ToString().Trim();	
+				entry_otros_hcp.Text = (string) lector1["hcpediatrica_otros"].ToString().Trim();
+				//pagina3	
+				entry_motivoingreso.Text = (string) lector1["motivo_de_ingreso"].ToString().Trim();	
+				entry_padecimientoactual.Text = (string) lector1["padecimiento_actual"].ToString().Trim();	
+				entry_ta.Text = (string) lector1["psesion_arterial"].ToString().Trim();	
+				entry_fc.Text = (string) lector1["frecuencia_cardiaca"].ToString().Trim();	
+				entry_fr.Text = (string) lector1["frecuencia_respiratoria"].ToString().Trim();	
+				entry_temp.Text = (string) lector1["temperatura"].ToString().Trim();
+				entry_pso.Text = (string) lector1["peso"].ToString().Trim();
+				entry_talla.Text = (string) lector1["talla"].ToString().Trim();
+				entry_habitus_ext.Text = (string) lector1["habitus_exterior"].ToString().Trim();
+				entry_cabeza.Text = (string) lector1["cabeza"].ToString().Trim();	 	
+	            entry_cuello.Text = (string) lector1["cuello"].ToString().Trim();							
+				entry_torax.Text = (string) lector1["torax"].ToString().Trim();	
+				entry_abdomen.Text = (string) lector1["abdomen"].ToString().Trim();	
+				entry_extremidades.Text = (string) lector1["extremidades"].ToString().Trim();	
+				entry_genitourinario.Text = (string) lector1["genitourinario"].ToString().Trim();	
+				entry_neurologico.Text = (string) lector1["neurologico"].ToString().Trim();	
+				entry_diagnosticos.Text = (string) lector1["diagnosticos"].ToString().Trim();	
+				entry_plan_diag.Text = (string) lector1["plan_diagnostico"].ToString().Trim();
+				entry_nombre_plan_diag.Text = (string) lector1["nombre_plan_diag"].ToString().Trim();
+				//entrys nuevos
+				entry_cronicodegenerativo.Text = (string) lector1["observaciones_cdegenerativos"].ToString();
+		        entry_alergicos.Text = (string) lector1["observaciones_alergicos"].ToString();
+		       	entry_obs_hospi.Text = (string) lector1["observaciones_hosp"].ToString();
+		        entry_traumaticos.Text = (string) lector1["observaciones_traumaticos"].ToString();
+		        entry_quirurgicos.Text = (string) lector1["observaciones_quirur"].ToString();
+		       	entry_neurologicos.Text = (string) lector1["observaciones_neurolog"].ToString();
 					//spinbuttons:
 					this.spinbutton_edad_madre.Text = (string) lector1["madre_edad"].ToString();
 					this.spinbutton_edad_padre.Text = (string) lector1["padre_edad"].ToString();

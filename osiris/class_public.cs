@@ -45,7 +45,7 @@ namespace osiris
 		
 		// Informacion de la Empresa
 		public string nombre_empresa = "MEDICA NORESTE ION"; //"P R A C T I M E D"; "MEDICA NORESTE ION"
-		public string nombre_empresa2 = "MEDICA NORESTE ION";  //"MEDICA NORESTE ION";
+		public string nombre_empresa2 = "MEDICA NORESTE ION ";  //"MEDICA NORESTE ION";
 		public string direccion_empresa = "Jose Angel Conchello 2880, Col. Victora"; //"Loma Grande 2703, Col. Loma de San Francisco"; //"Jose Angel Conchello 2880, Col. Victora"
 		public string telefonofax_empresa = "Telefono: (01)(81) 8351-3610"; //"Telefono: (01)(81) 8040-6060"; // "Telefono: (01)(81) 8351-3610"
 		public string version_sistema = "Sistema Hospitalario OSIRIS ver. 1.0";
@@ -133,7 +133,7 @@ namespace osiris
 		}
 		
 		/// <summary>
-		/// Funcion que retorna el nombre del Mes en castellano
+		/// Devuelve el nombre del Mes en castellano
 		/// </summary>
 		/// <returns>
 		/// A <see cref="System.String"/>

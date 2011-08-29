@@ -60,6 +60,7 @@ namespace osiris
 		[Widget] Gtk.Label label_almacen_destino;
 		[Widget] Gtk.Label numtraspaso;
 		[Widget] Gtk.Entry entry_numero_de_traspaso;
+		[Widget] Gtk.Entry entry_filter = null;
 		[Widget] Gtk.Statusbar statusbar_inv_sub_hosp;
 		
 		string connectionString;
@@ -95,8 +96,9 @@ namespace osiris
 		protected Gtk.Window MyWinError;
 		protected Gtk.Window MyWin;
 		
-		private TreeStore treeViewEngineBusca;
-		private TreeStore treeViewEngineBusca2;
+		private ListStore treeViewEngineBusca;
+		private ListStore treeViewEngineBusca2;
+		Gtk.TreeModelFilter filter;
 		
 		//declaracion de columnas y celdas de treeview de busqueda
 		TreeViewColumn col_descrip;		CellRendererText cellrt0;
@@ -134,7 +136,7 @@ namespace osiris
 			Glade.XML gxml = new Glade.XML (null, "hospitalizacion.glade", "inventario_sub_almacenes", null);
 			gxml.Autoconnect (this);
 			inventario_sub_almacenes.Show();
-			Console.WriteLine(descsubalmacen+"   almacen");
+			//Console.WriteLine(descsubalmacen+"   almacen");
 			button_salir.Clicked += new EventHandler(on_cierraventanas_clicked);
 			button_imprimir.Clicked += new EventHandler(imprime_reporte_stock);
 			button_imprime_traspaso.Clicked += new EventHandler(imprime_reporte_traspaso);
@@ -165,6 +167,7 @@ namespace osiris
 				this.checkbutton_ajuste_de_articulos.Hide();  
 				this.query_stock = "";
 				crea_treeview_inventarios();
+				entry_filter.Changed += OnFilterEntryTextChanged;
 				//INVENTARIO SUB ALMACENES 
 			}
 			
@@ -249,7 +252,7 @@ namespace osiris
 		
 		void crea_treeview_traspaso()
 		{			
-			treeViewEngineBusca2 = new TreeStore(typeof(bool),
+			treeViewEngineBusca2 = new ListStore(typeof(bool),
 												typeof(string),
 			                                    typeof(string),
 			                                    typeof(string),
@@ -553,7 +556,7 @@ namespace osiris
 		
 		void crea_treeview_inventarios()
 		{			
-			treeViewEngineBusca = new TreeStore(typeof(string),
+			treeViewEngineBusca = new ListStore(typeof(string),
 												typeof(string),
 												typeof(string),
 												typeof(string),
@@ -654,7 +657,42 @@ namespace osiris
 			lista_almacenes.AppendColumn(col_fecha);
 			lista_almacenes.AppendColumn(col_embalaje);
 			lista_almacenes.AppendColumn(col_quitar);
-			lista_almacenes.AppendColumn(col_es_stock);
+			lista_almacenes.AppendColumn(col_es_stock);						
+		}
+		
+		void OnFilterEntryTextChanged (object o, System.EventArgs args)
+		{
+			// Since the filter text changed, tell the filter to re-determine which rows to display
+			filter.Refilter ();
+		}
+	 
+		bool FilterTree (Gtk.TreeModel model, Gtk.TreeIter iter)
+		{
+			return true;
+			/*
+			string artistName = model.GetValue (iter, 0).ToString ();	 
+			if (entry_filter.Text == "")
+				return true;	 
+			if (artistName.IndexOf (entry_filter.Text) > -1)
+				return true;
+			else
+				return false;
+			*/			
+		}
+		
+		
+		bool FilterTree2 (Gtk.TreeModel model, Gtk.TreeIter iter)
+		{
+			return true;
+			/*
+			string artistName = model.GetValue (iter, 4).ToString ();	 
+			if (entry_filter.Text == "")
+				return true;	 
+			if (artistName.IndexOf (entry_filter.Text) > -1)
+				return true;
+			else
+				return false;
+			*/			
 		}
 		
 		enum Col_inv_sub_almacen
@@ -747,12 +785,12 @@ namespace osiris
 							query_stock+
 							" AND osiris_catalogo_almacenes.id_almacen = '"+idsubalmacen.ToString().Trim()+"' "+
 							"ORDER BY descripcion_producto; ";
-				Console.WriteLine(comando.CommandText);
+				//Console.WriteLine(comando.CommandText);
 				NpgsqlDataReader lector = comando.ExecuteReader ();
 				string tienestock = "";
 				while (lector.Read()){
 					tienestock = Convert.ToString((bool) lector["tiene_stock"]);
-					Console.WriteLine(tienestock);
+					//Console.WriteLine(tienestock);
 					if(this.tipoalmacen==1){
 						treeViewEngineBusca.AppendValues ((string) lector["descripcion_producto"],
 														(string) lector["stockactual"], 
@@ -772,7 +810,7 @@ namespace osiris
 						this.col_maximo.SetCellDataFunc(cellrt4, new Gtk.TreeCellDataFunc(cambia_colores_fila_productos));
 						this.col_reorden.SetCellDataFunc(cellrt5, new Gtk.TreeCellDataFunc(cambia_colores_fila_productos));
 						this.col_fecha.SetCellDataFunc(cellrt6, new Gtk.TreeCellDataFunc(cambia_colores_fila_productos));
-						this.col_embalaje.SetCellDataFunc(cellrt7, new Gtk.TreeCellDataFunc(cambia_colores_fila_productos));														
+						this.col_embalaje.SetCellDataFunc(cellrt7, new Gtk.TreeCellDataFunc(cambia_colores_fila_productos));						
 					}
 				
 					if(this.tipoalmacen==2){
@@ -797,7 +835,23 @@ namespace osiris
 																(string) lector["maxstock"],
 																(string) lector["reorden"]);
 					}	
-				}				
+				}
+				if(tipoalmacen == 1){
+					filter = new Gtk.TreeModelFilter (treeViewEngineBusca, null);
+					filter.VisibleFunc = new Gtk.TreeModelFilterVisibleFunc (FilterTree);
+					lista_almacenes.Model = filter;
+				}
+				if(tipoalmacen == 2){
+					filter = new Gtk.TreeModelFilter (treeViewEngineBusca2, null);
+					filter.VisibleFunc = new Gtk.TreeModelFilterVisibleFunc (FilterTree2);
+					lista_almacenes.Model = filter;
+				}
+				if(tipoalmacen == 3){
+					filter = new Gtk.TreeModelFilter (treeViewEngineBusca2, null);
+					filter.VisibleFunc = new Gtk.TreeModelFilterVisibleFunc (FilterTree2);
+					lista_almacenes.Model = filter;
+				}
+					
 			}catch (NpgsqlException ex){
 		   		Console.WriteLine ("PostgresSQL error: {0}",ex.Message);
 		   		MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,

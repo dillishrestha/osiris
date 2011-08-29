@@ -571,7 +571,7 @@ namespace osiris
 			button_recursos_humanos.Sensitive = false;
 			button_nutricion.Sensitive = false;
 			button_herramientas.Sensitive = false;
-			button_proveedores.Sensitive = false;
+			button_proveedores.Sensitive = true;
 			
 			// opciones generales
 			button_medicos.Sensitive = false;

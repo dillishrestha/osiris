@@ -1345,7 +1345,7 @@ namespace osiris
 		
 		// busco un paciente pantalla de ingreso de nuevo paciente
 		void on_button_buscar_paciente_clicked(object sender, EventArgs args)
-	    	{
+	    {
 			Glade.XML gxml = new Glade.XML (null, "laboratorio.glade", "busca_paciente", null);
 			gxml.Autoconnect (this);
 			crea_treeview_busqueda("paciente");

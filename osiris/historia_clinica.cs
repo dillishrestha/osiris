@@ -92,12 +92,6 @@ namespace osiris
 		[Widget] Gtk.ComboBox combobox_drogas;
 		
 		//Antecedentes Personales Patologicos     
-		[Widget] Gtk.ComboBox combobox_cronico_degenerativos;
-        [Widget] Gtk.ComboBox combobox_hospitalizaciones;
-        [Widget] Gtk.ComboBox combobox_quirurgicos;
-        [Widget] Gtk.ComboBox combobox_alergicos;
-        [Widget] Gtk.ComboBox combobox_traumaticos;
-        [Widget] Gtk.ComboBox combobox_neurologicos;  
 		[Widget] Gtk.Entry entry_medicamentos;
 		[Widget] Gtk.Entry entry_otros_app;
 		//entrys nuevos:
@@ -312,12 +306,7 @@ namespace osiris
 			llenado_positivo_negativo(1,"POSITIVO",combobox_alcoholismo);
 			llenado_positivo_negativo(1,"NEGATIVO",combobox_drogas);			
 			//llenado de los ComboBox Antecedentes Personales Patologicos
-			llenado_positivo_negativo(1,"NEGATIVO",combobox_cronico_degenerativos);
-			llenado_positivo_negativo(1,"NEGATIVO",combobox_hospitalizaciones);
-			llenado_positivo_negativo(1,"NEGATIVO",combobox_quirurgicos);
-			llenado_positivo_negativo(1,"NEGATIVO",combobox_alergicos);
-			llenado_positivo_negativo(1,"NEGATIVO",combobox_traumaticos);
-			llenado_positivo_negativo(1,"NEGATIVO",combobox_neurologicos);					
+							
 			//SpinButtons Antecedentes Heredo Familiar:
 			spinbutton_edad_madre.SetRange(0, 150);
 			spinbutton_edad_padre.SetRange(0, 150);
@@ -404,8 +393,7 @@ namespace osiris
              //combobox:			
 				combobox_vivomuerto_padre.Sensitive = false;                 combobox_vivomuerto_madre.Sensitive = false;       
 				combobox_alcoholismo.Sensitive = false;                      combobox_tabaquismo.Sensitive = false;                         combobox_drogas.Sensitive = false;
-				combobox_traumaticos.Sensitive = false;                      combobox_alergicos.Sensitive = false;                          combobox_neurologicos.Sensitive = false;      
-				combobox_hospitalizaciones.Sensitive = false;                combobox_cronico_degenerativos.Sensitive = false;              combobox_quirurgicos.Sensitive = false;       
+				 
 			 //spinbuttons:
 				spinbutton_a.Sensitive = false;                         this.spinbutton_c.Sensitive = false;                           this.spinbutton_ed_madre.Sensitive = false;                         this.spinbutton_g.Sensitive = false;                         this.spinbutton_nomuertos_hijos.Sensitive = false;
 				spinbutton_edad_gestional.Sensitive = false;            this.spinbutton_edad_madre.Sensitive = false;                  this.spinbutton_edad_padre.Sensitive = false;                       this.spinbutton_menarca.Sensitive = false;                  this.spinbutton_novivos_amaternos.Sensitive = false;
@@ -513,12 +501,6 @@ namespace osiris
 					llenado_positivo_negativo(1,pnalcoholismo,combobox_alcoholismo);
 					llenado_positivo_negativo(1,pnalcoholismo,combobox_drogas);
 					//llenado de los ComboBox Antecedentes Personales Patologicos
-					llenado_positivo_negativo(1,pncronicodegenerativos,combobox_cronico_degenerativos);
-					llenado_positivo_negativo(1,pnhospitalizaciones,combobox_hospitalizaciones);
-					llenado_positivo_negativo(1,pnquirurgicos,combobox_quirurgicos);
-					llenado_positivo_negativo(1,pnalergicos,combobox_alergicos);
-					llenado_positivo_negativo(1,pntraumaticos,combobox_traumaticos);
-					llenado_positivo_negativo(1,pnneurologicos,combobox_neurologicos);
 				}
 			}catch (NpgsqlException ex){
 				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
@@ -679,9 +661,6 @@ namespace osiris
 		{         //Pagina 1:
 			if( this.entry_pid_paciente.Text == ""  ||                 this.entry_nombre_paciente.Text == "" ||                      this.entry_edad_paciente.Text == ""   ||           
 			    Convert.ToString(combobox_vivomuerto_padre) == "" ||    Convert.ToString(combobox_vivomuerto_madre) == "" || 
-			    Convert.ToString(combobox_traumaticos) == "" ||         Convert.ToString(combobox_alergicos) == ""  ||                Convert.ToString(combobox_neurologicos) == "" ||
-			    Convert.ToString(combobox_hospitalizaciones) == "" ||   Convert.ToString(combobox_cronico_degenerativos) == ""  ||    Convert.ToString(combobox_quirurgicos) == "" ||
-                //Spinbuttons:
 			    this.spinbutton_ed_madre.Text == "" ||                  this.spinbutton_edad_madre.Text == " " ||
 			    this.spinbutton_edad_padre.Text == "" ||                                     
 			    //Pagina 2: Motivo de Ingreso:
@@ -1073,8 +1052,7 @@ namespace osiris
 			   Convert.ToString(combobox_alcoholismo) == "" ||         Convert.ToString(combobox_tabaquismo) == "" ||                Convert.ToString(combobox_drogas) == "" ||               this.entry_tipo_casahabit.Text == "" ||              
 			   this.entry_observaciones.Text == "" || 
 			   //Antecedentes Personales Patologicos:
-			   Convert.ToString(combobox_traumaticos) == "" ||         Convert.ToString(combobox_alergicos) == ""  ||                Convert.ToString(combobox_neurologicos) == "" ||         this.entry_otros_app.Text == "" ||
-			   Convert.ToString(combobox_hospitalizaciones) == "" ||   Convert.ToString(combobox_cronico_degenerativos) == ""  ||    Convert.ToString(combobox_quirurgicos) == "" ||          this.entry_medicamentos.Text == "" ||
+			   this.entry_medicamentos.Text == "" ||
 			   //Historia Clinica Pediatrica:                     
 			   this.entry_perinatales.Text == "" ||                    this.entry_peso.Text == "" ||                                 this.entry_patologicos.Text == "" ||                     this.entry_alumbramiento.Text == "" ||
 			   this.entry_infecciones.Text == "" ||                    this.entry_alergias.Text == "" ||                             this.entry_hospitalizaciones.Text == "" ||               this.entry_traumatismos.Text == "" ||
@@ -1105,8 +1083,8 @@ namespace osiris
 			   Convert.ToString(combobox_alcoholismo) == "" ||         Convert.ToString(combobox_tabaquismo) == "" ||                Convert.ToString(combobox_drogas) == "" ||               this.entry_tipo_casahabit.Text == "" ||              
 			   this.entry_observaciones.Text == "" || 
 			   //Antecedentes Personales Patologicos:
-			   Convert.ToString(combobox_traumaticos) == "" ||         Convert.ToString(combobox_alergicos) == ""  ||                Convert.ToString(combobox_neurologicos) == "" ||         this.entry_otros_app.Text == "" ||
-			   Convert.ToString(combobox_hospitalizaciones) == "" ||   Convert.ToString(combobox_cronico_degenerativos) == ""  ||    Convert.ToString(combobox_quirurgicos) == "" ||          this.entry_medicamentos.Text == "" ||
+			   entry_otros_app.Text == "" ||
+			   entry_medicamentos.Text == "" ||
 			   //Historia Clinica Pediatrica:                     
 			   this.entry_perinatales.Text == "" ||                    this.entry_peso.Text == "" ||                                 this.entry_patologicos.Text == "" ||                     this.entry_alumbramiento.Text == "" ||
 			   this.entry_infecciones.Text == "" ||                    this.entry_alergias.Text == "" ||                             this.entry_hospitalizaciones.Text == "" ||               this.entry_traumatismos.Text == "" ||
@@ -1164,8 +1142,7 @@ namespace osiris
              //combobox:			
 			 combobox_vivomuerto_padre.Sensitive = true;                 combobox_vivomuerto_madre.Sensitive = true;       
 			 combobox_alcoholismo.Sensitive = true;                      combobox_tabaquismo.Sensitive = true;                         combobox_drogas.Sensitive = true;
-			 combobox_traumaticos.Sensitive = true;                      combobox_alergicos.Sensitive = true;                          combobox_neurologicos.Sensitive = true;     
-			 combobox_hospitalizaciones.Sensitive = true;                combobox_cronico_degenerativos.Sensitive = true;              combobox_quirurgicos.Sensitive = true;      
+			 
 			 //spinbuttons:
 			 this.spinbutton_a.Sensitive = true;                         this.spinbutton_c.Sensitive = true;                           this.spinbutton_ed_madre.Sensitive = true;                         this.spinbutton_g.Sensitive =true;                          this.spinbutton_nomuertos_hijos.Sensitive = true;
 			 this.spinbutton_edad_gestional.Sensitive = true;            this.spinbutton_edad_madre.Sensitive = true;                  this.spinbutton_edad_padre.Sensitive = true;                       this.spinbutton_menarca.Sensitive = true;                   this.spinbutton_novivos_amaternos.Sensitive = true;
@@ -1208,8 +1185,7 @@ namespace osiris
 			//combobox:			
 			combobox_vivomuerto_padre.Sensitive = false;                 combobox_vivomuerto_madre.Sensitive = false;       
 			combobox_alcoholismo.Sensitive = false;                      combobox_tabaquismo.Sensitive = false;                         combobox_drogas.Sensitive = false;
-			combobox_traumaticos.Sensitive = false;                      combobox_alergicos.Sensitive = false;                          combobox_neurologicos.Sensitive = false;      
-			combobox_hospitalizaciones.Sensitive = false;                combobox_cronico_degenerativos.Sensitive = false;              combobox_quirurgicos.Sensitive = false;       
+			      
 			//spinbuttons:
 			this.spinbutton_a.Sensitive = false;                         this.spinbutton_c.Sensitive = false;                           this.spinbutton_ed_madre.Sensitive = false;                         this.spinbutton_g.Sensitive = false;                         this.spinbutton_nomuertos_hijos.Sensitive = false;
 			this.spinbutton_edad_gestional.Sensitive = false;            this.spinbutton_edad_madre.Sensitive = false;                  this.spinbutton_edad_padre.Sensitive = false;                       this.spinbutton_menarca.Sensitive = false;                  this.spinbutton_novivos_amaternos.Sensitive = false;
@@ -1237,4 +1213,3 @@ namespace osiris
 		}
 	}
 }
-

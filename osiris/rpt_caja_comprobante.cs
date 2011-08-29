@@ -142,12 +142,14 @@ namespace osiris
 	        	NpgsqlCommand comando; 
 	        	comando = conexion.CreateCommand (); 
 	           	comando.CommandText = sql_compcaja+sql_numerocomprobante+sql_foliodeservicio+sql_orderquery;
-	        	Console.WriteLine(comando.CommandText);
+	        	//Console.WriteLine(comando.CommandText);
 				NpgsqlDataReader lector = comando.ExecuteReader();
 				if (lector.Read()){
 					if (tipocomprobante == "CAJA"){
 						toma_valor_total = float.Parse((string) lector["montodelabono"]);
 						titulo_comprobante = tipocomprobante+"_"+ (string) lector["descripcion_tipo_comprobante"];
+					}else{
+						titulo_comprobante = tipocomprobante;
 					}
 					toma_tipoadmisiones = (int) lector["idadmisiones"];
 					toma_grupoproducto = (int) lector["id_grupo_producto"];
@@ -275,6 +277,20 @@ namespace osiris
 				layout.FontDescription.Weight = Weight.Bold;		// Letra negrita
 				cr.MoveTo(400*escala_en_linux_windows,comienzo_linea+(separacion_linea*22)*escala_en_linux_windows);		layout.SetText("T O T A L : "+tomavalortotal.ToString("C"));	Pango.CairoHelper.ShowLayout (cr, layout);		
 			}
+			
+			if (tipocomprobante == "PAGARE"){
+				
+				fontSize = 7.0;		
+				desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;
+				layout.FontDescription.Weight = Weight.Normal;
+				// numeros en letras
+				cr.MoveTo(05*escala_en_linux_windows,comienzo_linea+(separacion_linea*22)*escala_en_linux_windows);		layout.SetText((string) class_public.ConvertirCadena(tomavalortotal.ToString(),"PESO").ToUpper());	Pango.CairoHelper.ShowLayout (cr, layout);		
+				fontSize = 8.0;		
+				desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;
+				layout.FontDescription.Weight = Weight.Bold;		// Letra negrita
+				cr.MoveTo(300*escala_en_linux_windows,comienzo_linea+(separacion_linea*22)*escala_en_linux_windows);		layout.SetText("VALOR TOTAL DEL PAGARE: "+tomavalortotal.ToString("C"));	Pango.CairoHelper.ShowLayout (cr, layout);		
+			}
+			
 			fontSize = 8.0;		
 			desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;
 			layout.FontDescription.Weight = Weight.Normal;		// Letra normal

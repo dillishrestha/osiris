@@ -1535,9 +1535,8 @@ Busqueda de Paciente</property>
                         <child>
                           <widget class="GtkEntry" id="entry_expresion">
                             <property name="visible">True</property>
-                            <property name="can_focus">False</property>
+                            <property name="can_focus">True</property>
                             <property name="invisible_char">●</property>
-                            <property name="width_chars">44</property>
                             <property name="primary_icon_activatable">False</property>
                             <property name="secondary_icon_activatable">False</property>
                             <property name="primary_icon_sensitive">True</property>
@@ -1701,7 +1700,7 @@ Busqueda de Paciente</property>
             <property name="can_focus">False</property>
             <child>
               <widget class="GtkTreeView" id="lista_de_Pacientes">
-                <property name="width_request">300</property>
+                <property name="width_request">600</property>
                 <property name="height_request">227</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
@@ -2653,7 +2652,7 @@ Terapia Intensiva Niños</property>
                                         </child>
                                         <child>
                                           <widget class="GtkEntry" id="entry_folio_servicio">
-                                            <property name="width_request">0</property>
+                                            <property name="width_request">100</property>
                                             <property name="visible">True</property>
                                             <property name="can_focus">True</property>
                                             <property name="invisible_char">●</property>
@@ -2671,6 +2670,7 @@ Terapia Intensiva Niños</property>
                                         <child>
                                           <widget class="GtkButton" id="button_selec_folio">
                                             <property name="label" translatable="yes">Seleccionar</property>
+                                            <property name="width_request">75</property>
                                             <property name="visible">True</property>
                                             <property name="can_focus">False</property>
                                             <property name="receives_default">False</property>
@@ -2685,6 +2685,60 @@ Terapia Intensiva Niños</property>
                                           </packing>
                                         </child>
                                         <child>
+                                          <widget class="GtkButton" id="button_quitar_aplicados1">
+                                            <property name="width_request">110</property>
+                                            <property name="visible">True</property>
+                                            <property name="can_focus">True</property>
+                                            <property name="receives_default">True</property>
+                                            <property name="use_action_appearance">False</property>
+                                            <child>
+                                              <widget class="GtkAlignment" id="alignment3">
+                                                <property name="visible">True</property>
+                                                <property name="can_focus">False</property>
+                                                <property name="xscale">0</property>
+                                                <property name="yscale">0</property>
+                                                <child>
+                                                  <widget class="GtkHBox" id="hbox9">
+                                                    <property name="visible">True</property>
+                                                    <property name="can_focus">False</property>
+                                                    <property name="spacing">2</property>
+                                                    <child>
+                                                      <widget class="GtkImage" id="image8">
+                                                        <property name="visible">True</property>
+                                                        <property name="can_focus">False</property>
+                                                        <property name="stock">gtk-add</property>
+                                                      </widget>
+                                                      <packing>
+                                                        <property name="expand">False</property>
+                                                        <property name="fill">False</property>
+                                                        <property name="position">0</property>
+                                                      </packing>
+                                                    </child>
+                                                    <child>
+                                                      <widget class="GtkLabel" id="label3">
+                                                        <property name="visible">True</property>
+                                                        <property name="can_focus">False</property>
+                                                        <property name="label" translatable="yes">Venta Publico</property>
+                                                        <property name="use_underline">True</property>
+                                                      </widget>
+                                                      <packing>
+                                                        <property name="expand">False</property>
+                                                        <property name="fill">False</property>
+                                                        <property name="position">1</property>
+                                                      </packing>
+                                                    </child>
+                                                  </widget>
+                                                </child>
+                                              </widget>
+                                            </child>
+                                          </widget>
+                                          <packing>
+                                            <property name="expand">True</property>
+                                            <property name="fill">True</property>
+                                            <property name="position">3</property>
+                                          </packing>
+                                        </child>
+                                        <child>
                                           <widget class="GtkLabel" id="label104">
                                             <property name="width_request">76</property>
                                             <property name="visible">True</property>
@@ -2694,12 +2748,12 @@ Terapia Intensiva Niños</property>
                                           <packing>
                                             <property name="expand">True</property>
                                             <property name="fill">True</property>
-                                            <property name="position">3</property>
+                                            <property name="position">4</property>
                                           </packing>
                                         </child>
                                         <child>
                                           <widget class="GtkEntry" id="entry_ingreso">
-                                            <property name="width_request">115</property>
+                                            <property name="width_request">100</property>
                                             <property name="visible">True</property>
                                             <property name="can_focus">False</property>
                                             <property name="editable">False</property>
@@ -2711,7 +2765,7 @@ Terapia Intensiva Niños</property>
                                           <packing>
                                             <property name="expand">True</property>
                                             <property name="fill">True</property>
-                                            <property name="position">4</property>
+                                            <property name="position">5</property>
                                           </packing>
                                         </child>
                                         <child>
@@ -2724,7 +2778,7 @@ Terapia Intensiva Niños</property>
                                           <packing>
                                             <property name="expand">True</property>
                                             <property name="fill">True</property>
-                                            <property name="position">5</property>
+                                            <property name="position">6</property>
                                           </packing>
                                         </child>
                                         <child>
@@ -2741,7 +2795,7 @@ Terapia Intensiva Niños</property>
                                           <packing>
                                             <property name="expand">True</property>
                                             <property name="fill">True</property>
-                                            <property name="position">6</property>
+                                            <property name="position">7</property>
                                           </packing>
                                         </child>
                                         <child>
@@ -2753,7 +2807,7 @@ Terapia Intensiva Niños</property>
                                           <packing>
                                             <property name="expand">True</property>
                                             <property name="fill">True</property>
-                                            <property name="position">7</property>
+                                            <property name="position">8</property>
                                           </packing>
                                         </child>
                                         <child>
@@ -2770,7 +2824,7 @@ Terapia Intensiva Niños</property>
                                           <packing>
                                             <property name="expand">True</property>
                                             <property name="fill">True</property>
-                                            <property name="position">8</property>
+                                            <property name="position">9</property>
                                           </packing>
                                         </child>
                                       </widget>
@@ -3354,15 +3408,68 @@ Terapia Intensiva Niños</property>
                                       </packing>
                                     </child>
                                     <child>
-                                      <widget class="GtkFixed" id="fixed5">
-                                        <property name="height_request">120</property>
+                                      <widget class="GtkButton" id="button_exportar_xls">
+                                        <property name="visible">True</property>
+                                        <property name="can_focus">True</property>
+                                        <property name="receives_default">True</property>
+                                        <property name="use_action_appearance">False</property>
+                                        <child>
+                                          <widget class="GtkAlignment" id="alignment4">
+                                            <property name="visible">True</property>
+                                            <property name="can_focus">False</property>
+                                            <property name="xscale">0</property>
+                                            <property name="yscale">0</property>
+                                            <child>
+                                              <widget class="GtkHBox" id="hbox10">
+                                                <property name="visible">True</property>
+                                                <property name="can_focus">False</property>
+                                                <property name="spacing">2</property>
+                                                <child>
+                                                  <widget class="GtkImage" id="image9">
+                                                    <property name="visible">True</property>
+                                                    <property name="can_focus">False</property>
+                                                    <property name="stock">gtk-save-as</property>
+                                                  </widget>
+                                                  <packing>
+                                                    <property name="expand">False</property>
+                                                    <property name="fill">False</property>
+                                                    <property name="position">0</property>
+                                                  </packing>
+                                                </child>
+                                                <child>
+                                                  <widget class="GtkLabel" id="label4">
+                                                    <property name="visible">True</property>
+                                                    <property name="can_focus">False</property>
+                                                    <property name="label" translatable="yes">_Exportar</property>
+                                                    <property name="use_underline">True</property>
+                                                  </widget>
+                                                  <packing>
+                                                    <property name="expand">False</property>
+                                                    <property name="fill">False</property>
+                                                    <property name="position">1</property>
+                                                  </packing>
+                                                </child>
+                                              </widget>
+                                            </child>
+                                          </widget>
+                                        </child>
+                                      </widget>
+                                      <packing>
+                                        <property name="expand">False</property>
+                                        <property name="fill">False</property>
+                                        <property name="position">4</property>
+                                      </packing>
+                                    </child>
+                                    <child>
+                                      <widget class="GtkFixed" id="fixed1">
+                                        <property name="height_request">30</property>
                                         <property name="visible">True</property>
                                         <property name="can_focus">False</property>
                                       </widget>
                                       <packing>
                                         <property name="expand">True</property>
                                         <property name="fill">True</property>
-                                        <property name="position">4</property>
+                                        <property name="position">5</property>
                                       </packing>
                                     </child>
                                   </widget>
@@ -4383,18 +4490,6 @@ Paciente</property>
                   </packing>
                 </child>
                 <child>
-                  <widget class="GtkFixed" id="fixed1">
-                    <property name="height_request">20</property>
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                  </widget>
-                  <packing>
-                    <property name="expand">True</property>
-                    <property name="fill">True</property>
-                    <property name="position">6</property>
-                  </packing>
-                </child>
-                <child>
                   <widget class="GtkButton" id="button_costeo_procedimiento">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
@@ -4445,7 +4540,7 @@ Proced.</property>
                   <packing>
                     <property name="expand">False</property>
                     <property name="fill">False</property>
-                    <property name="position">7</property>
+                    <property name="position">6</property>
                   </packing>
                 </child>
                 <child>
@@ -4499,7 +4594,7 @@ Cargos Extras</property>
                   <packing>
                     <property name="expand">False</property>
                     <property name="fill">False</property>
-                    <property name="position">8</property>
+                    <property name="position">7</property>
                   </packing>
                 </child>
                 <child>
@@ -4553,7 +4648,7 @@ Cargos Extras</property>
                   <packing>
                     <property name="expand">False</property>
                     <property name="fill">False</property>
-                    <property name="position">9</property>
+                    <property name="position">8</property>
                   </packing>
                 </child>
                 <child>
@@ -4607,7 +4702,7 @@ Cargos Extras</property>
                   <packing>
                     <property name="expand">False</property>
                     <property name="fill">False</property>
-                    <property name="position">10</property>
+                    <property name="position">9</property>
                   </packing>
                 </child>
                 <child>
@@ -4660,7 +4755,7 @@ Cargos Extras</property>
                   <packing>
                     <property name="expand">False</property>
                     <property name="fill">False</property>
-                    <property name="position">11</property>
+                    <property name="position">10</property>
                   </packing>
                 </child>
                 <child>
@@ -4714,7 +4809,7 @@ Factura</property>
                   <packing>
                     <property name="expand">False</property>
                     <property name="fill">False</property>
-                    <property name="position">12</property>
+                    <property name="position">11</property>
                   </packing>
                 </child>
                 <child>
@@ -4768,7 +4863,7 @@ Caja</property>
                   <packing>
                     <property name="expand">False</property>
                     <property name="fill">False</property>
-                    <property name="position">13</property>
+                    <property name="position">12</property>
                   </packing>
                 </child>
                 <child>
@@ -4822,7 +4917,7 @@ Caja</property>
                   <packing>
                     <property name="expand">False</property>
                     <property name="fill">False</property>
-                    <property name="position">14</property>
+                    <property name="position">13</property>
                   </packing>
                 </child>
                 <child>
@@ -4875,17 +4970,108 @@ Caja</property>
                   <packing>
                     <property name="expand">False</property>
                     <property name="fill">False</property>
+                    <property name="position">14</property>
+                  </packing>
+                </child>
+                <child>
+                  <widget class="GtkButton" id="button_pase_quirofano">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="use_action_appearance">False</property>
+                    <child>
+                      <widget class="GtkAlignment" id="alignment2">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="xscale">0</property>
+                        <property name="yscale">0</property>
+                        <child>
+                          <widget class="GtkHBox" id="hbox2">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="spacing">2</property>
+                            <child>
+                              <widget class="GtkImage" id="image6">
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <property name="stock">gtk-print</property>
+                              </widget>
+                              <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">False</property>
+                                <property name="position">0</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <widget class="GtkLabel" id="label2">
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <property name="label" translatable="yes">Pase a QX.</property>
+                                <property name="use_underline">True</property>
+                              </widget>
+                              <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">False</property>
+                                <property name="position">1</property>
+                              </packing>
+                            </child>
+                          </widget>
+                        </child>
+                      </widget>
+                    </child>
+                  </widget>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">False</property>
                     <property name="position">15</property>
                   </packing>
                 </child>
                 <child>
                   <widget class="GtkButton" id="button_salir">
-                    <property name="label">gtk-quit</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
                     <property name="use_action_appearance">False</property>
-                    <property name="use_stock">True</property>
+                    <child>
+                      <widget class="GtkAlignment" id="alignment5">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="xscale">0</property>
+                        <property name="yscale">0</property>
+                        <child>
+                          <widget class="GtkHBox" id="hbox11">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="spacing">2</property>
+                            <child>
+                              <widget class="GtkImage" id="image10">
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <property name="stock">gtk-quit</property>
+                              </widget>
+                              <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">False</property>
+                                <property name="position">0</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <widget class="GtkLabel" id="label5">
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <property name="label" translatable="yes">_Salir</property>
+                                <property name="use_underline">True</property>
+                              </widget>
+                              <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">False</property>
+                                <property name="position">1</property>
+                              </packing>
+                            </child>
+                          </widget>
+                        </child>
+                      </widget>
+                    </child>
                   </widget>
                   <packing>
                     <property name="expand">False</property>
@@ -6423,7 +6609,7 @@ por Cobrar</property>
                   <widget class="GtkLabel" id="label_pago">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="label" translatable="yes">  Valor del Comprobante $</property>
+                    <property name="label" translatable="yes">Monto Total $ </property>
                   </widget>
                   <packing>
                     <property name="expand">False</property>

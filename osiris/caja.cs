@@ -90,14 +90,16 @@ namespace osiris
 		[Widget] Gtk.Button button_compro_caja;
 		[Widget] Gtk.Button button_compro_serv;
 		[Widget] Gtk.Button button_pagare = null;
+		[Widget] Gtk.Button button_pase_quirofano = null;
 		[Widget] Gtk.Button button_bloquea_cuenta;
 		[Widget] Gtk.Button button_alta_paciente;
 		[Widget] Gtk.Button button_abonar;
 		[Widget] Gtk.Button button_abre_folio;
 		[Widget] Gtk.Button button_compara_extras;
-		//[Widget] Gtk.Button button_costeo_procedimiento;
+		[Widget] Gtk.Button button_costeo_procedimiento;
 				
 		[Widget] Gtk.Button button_cierre_cuenta;
+		[Widget] Gtk.Button button_exportar_xls = null; 
 		
 		[Widget] Gtk.Entry entry_subtotal_al_15;
 		[Widget] Gtk.Entry entry_subtotal_al_0;
@@ -389,6 +391,8 @@ namespace osiris
 			button_compara_extras.Clicked += new EventHandler(on_button_compara_extras_clicked);
 			// Traspasa cargos de un folio a otros mientras sea el mismo paciente
 			button_traspasa_productos.Clicked += new EventHandler(on_button_traspasa_productos_clicked);
+			// exportar a xls
+			button_exportar_xls.Clicked += new EventHandler(on_button_exportar_xls_clicked);
 			// Sale de la ventana
 			button_salir.Clicked += new EventHandler(on_cierraventanas_clicked);
 						
@@ -407,11 +411,16 @@ namespace osiris
 			button_procedimiento_totales.Sensitive = false;
 			button_abre_folio.Sensitive = false;
 			button_traspasa_productos.Sensitive = false;
-						
+			button_costeo_procedimiento.Sensitive = false;
+			button_compara_extras.Sensitive = false;
 			button_compro_caja.Sensitive = false;
 			button_compro_serv.Sensitive = false;
+			button_pase_quirofano.Sensitive = false;
+			button_pagare.Sensitive = false;
+			button_pase_quirofano.Sensitive = false;
 			button_quitar_aplicados.Sensitive = false;
 			button_actualizar.Sensitive = false;
+			button_exportar_xls.Sensitive = false;
 						
 			statusbar_caja.Pop(0);
 			statusbar_caja.Push(1, "login: "+LoginEmpleado+"  |Usuario: "+NomEmpleado+" "+AppEmpleado+" "+ApmEmpleado);
@@ -425,6 +434,18 @@ namespace osiris
 			//string  prueba;
 			//prueba=this.folioservicio.ToString();
 			//prueba=int.Parse("787878");
+		}
+		
+		void on_button_exportar_xls_clicked(object sender, EventArgs args)
+		{
+			if(LoginEmpleado == "DOLIVARES" || LoginEmpleado =="ADMIN" || LoginEmpleado =="MARGARITAZ" || LoginEmpleado =="IESPINOZAF" || LoginEmpleado =="ZBAEZH"){
+				// class_crea_ods.cs
+				new osiris.class_traslate_spreadsheet(folioservicio.ToString().Trim());
+			}else{
+				MessageDialog msgBox = new MessageDialog (MyWin,DialogFlags.Modal,
+									MessageType.Info,ButtonsType.Ok,"No tiene Permiso para esta Opcion");
+				msgBox.Run ();msgBox.Destroy();
+			}
 		}
 		
 		void on_button_traspasa_productos_clicked(object sender, EventArgs args)
@@ -703,7 +724,7 @@ namespace osiris
 			        button_compro_caja.Sensitive = false;
 					button_compro_serv.Sensitive = false;
 					button_abre_folio.Sensitive = true;
-			        
+					button_pagare.Sensitive = true;			        
 				}catch (NpgsqlException ex){
 				   	MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
 										MessageType.Error, 
@@ -1909,7 +1930,7 @@ namespace osiris
 						if(tipo_de_comprobante == "PAGARE"){
 							//Console.WriteLine("entre a guardar el pagare");
 							descrippago = "COMPROBANTE DE PAGARE";
-							numerodecomprobante = int.Parse((string) classpublic.lee_ultimonumero_registrado("osiris_erp_comprobante_servicio","numero_comprobante_servicio",""));
+							numerodecomprobante = int.Parse((string) classpublic.lee_ultimonumero_registrado("osiris_erp_comprobante_pagare","numero_comprobante_pagare",""));
 							pago_sino = false;
 							sql_abonos_servicio = "INSERT INTO osiris_erp_comprobante_pagare("+
 														"numero_comprobante_pagare,"+
@@ -1923,7 +1944,8 @@ namespace osiris
 														"id_tipo_paciente,"+
 														"observaciones," +
 														"observaciones2," +
-														"observaciones3) "+
+														"observaciones3,"+
+														"monto_pagare) "+
 													"VALUES ('"+
 														numerodecomprobante.ToString().Trim()+"','"+
 														folioservicio+"','"+
@@ -1936,7 +1958,8 @@ namespace osiris
 														id_tipopaciente.ToString()+"','"+
 														entry_observacion_egreso.Text.ToString().ToUpper().Trim()+"','"+
 														entry_observaciones2.Text.ToString().ToUpper().Trim()+"','"+
-														entry_observaciones3.Text.ToString().ToUpper().Trim()+
+														entry_observaciones3.Text.ToString().ToUpper().Trim()+"','"+
+														entry_total_comprobante.Text.ToString().Trim()+
 														"');";
 						}
 						
@@ -2190,6 +2213,7 @@ namespace osiris
 				}
 				if(tipoopcion=="PAGARE"){				
 					entry_numero_comprobante.Text = (string) classpublic.lee_ultimonumero_registrado("osiris_erp_comprobante_pagare","numero_comprobante_pagare","");
+					
 				}
 				entry_dia1.Text = DateTime.Now.ToString("dd");
 				entry_mes1.Text = DateTime.Now.ToString("MM");
@@ -3132,7 +3156,7 @@ namespace osiris
 					button_procedimiento_totales.Sensitive = false;
 					button_compro_caja.Sensitive = false;
 					button_compro_serv.Sensitive = false;
-					button_pagare.Sensitive = false;
+					button_pagare.Sensitive = true;
 					button_quitar_aplicados.Sensitive = true;
 					button_actualizar.Sensitive = true;
 					button_abre_folio.Sensitive = false;
@@ -3247,17 +3271,20 @@ namespace osiris
 									if (procedimiento_cerrado == false){
 									
 										button_busca_producto.Sensitive = true;
+										button_pase_quirofano.Sensitive = true;
 										if ((bool) lector ["alta_paciente"] == false){
 											button_cierre_cuenta.Sensitive = false;
 											// habilitando boton para poder realizar mas cargos
 											if ((bool) lector ["bloqueo_de_folio"] == false){
 												button_busca_producto.Sensitive = true;
+												button_pase_quirofano.Sensitive = true;
 												if(LoginEmpleado =="DOLIVARES" || LoginEmpleado =="ADMIN" || LoginEmpleado =="IESPINOZAF"){
 													button_busca_producto.Sensitive = true;
 												}else{
 													button_cierre_cuenta.Sensitive = false;
 													button_bloquea_cuenta.Sensitive = false;
 													button_busca_producto.Sensitive = true;
+													button_pase_quirofano.Sensitive = true;
 												}
 											}else{
 												if(LoginEmpleado =="DOLIVARES" || LoginEmpleado =="ADMIN" || LoginEmpleado =="IESPINOZAF" ){													
@@ -3281,7 +3308,9 @@ namespace osiris
 											button_compro_caja.Sensitive = true;
 											button_compro_serv.Sensitive = true;
 											button_pagare.Sensitive = true;
+											button_pase_quirofano.Sensitive = true;
 											button_traspasa_productos.Sensitive = true;
+											button_exportar_xls.Sensitive = true;
 											MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
 												MessageType.Error,ButtonsType.Close,"Ya se dio el ALTA a este paciente, CIERRE la \n"+
 																					"cuenta de este paciente para no hacer mas cargos");
@@ -3296,6 +3325,9 @@ namespace osiris
 										button_alta_paciente.Sensitive = false;
 										button_procedimiento_totales.Sensitive = true;
 										button_traspasa_productos.Sensitive = true;
+										button_exportar_xls.Sensitive = true;
+										button_pase_quirofano.Sensitive = false;
+										button_pagare.Sensitive = false;
 										MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
 										MessageType.Error,ButtonsType.Close,"Este procedimiento se encuentra CERRADO \n"+
 																		"NO podra agregar mas cargos a esta cuenta...");
@@ -3310,6 +3342,9 @@ namespace osiris
 									button_alta_paciente.Sensitive = false;
 									agregarmasabonos = false;
 									button_traspasa_productos.Sensitive = false;
+									button_exportar_xls.Sensitive = true;
+									button_pase_quirofano.Sensitive = false;
+									button_pagare.Sensitive = false;
 									//button_quitar_aplicados.Sensitive = false;
 									//button_abonar.Sensitive = false;
 									MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,									
@@ -3330,6 +3365,7 @@ namespace osiris
 								button_abre_folio.Sensitive = false;
 								button_honorario_medico.Sensitive = true;
 								button_traspasa_productos.Sensitive = false;
+								button_exportar_xls.Sensitive = true;
 								//button_abonar.Sensitive = false;
 								MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
 								MessageType.Error, ButtonsType.Close, "Este procedimiento se encuentra FACTURADO \n"+
@@ -3348,6 +3384,8 @@ namespace osiris
 							button_alta_paciente.Sensitive = false;
 							button_traspasa_productos.Sensitive = false;
 							button_abonar.Sensitive = false;
+							button_exportar_xls.Sensitive = false;
+							button_pagare.Sensitive = false;
 							MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
 							MessageType.Error,ButtonsType.Close,"Este procedimiento se encuentra CANCELADO \n"+
 																"NO podra agregar mas cargos a esta cuenta");

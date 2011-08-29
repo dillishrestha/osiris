@@ -423,23 +423,23 @@ namespace osiris
 			
 			TreeViewColumn col_abono = new TreeViewColumn();
 			cellr0 = new CellRendererText();
-			col_abono.Title = "N° Comp.Pagare";
+			col_abono.Title = "$ Pagare"; // titulo de la cabecera de la columna, si está visible
 			col_abono.PackStart(cellr0, true);
-			col_abono.AddAttribute (cellr0, "text", 0);
+			col_abono.AddAttribute (cellr0, "text", 0);    // la siguiente columna será 1
 			col_abono.SortColumnId = (int) Col_proveedores.col_abono;
 			
 			TreeViewColumn col_fecha_abono = new TreeViewColumn();
 			CellRendererText cellrt1 = new CellRendererText();
 			col_fecha_abono.Title = "Fech.Pagare";
 			col_fecha_abono.PackStart(cellrt1, true);
-			col_fecha_abono.AddAttribute (cellrt1, "text", 1);
+			col_fecha_abono.AddAttribute (cellrt1, "text", 1); // la siguiente columna será 2
 			col_fecha_abono.SortColumnId = (int) Col_proveedores.col_fecha_abono;
 			
 			TreeViewColumn col_concepto = new TreeViewColumn();
 			CellRendererText cellrt2 = new CellRendererText();
-			col_concepto.Title = "Concepto";
+			col_concepto.Title = "Fech.Vencimiento";
 			col_concepto.PackStart(cellrt2, true);
-			col_concepto.AddAttribute (cellrt2, "text", 2);
+			col_concepto.AddAttribute (cellrt2, "text", 2); // la siguiente columna será 3
 			col_concepto.SortColumnId = (int) Col_proveedores.col_concepto;
 			
 			TreeViewColumn col_id_creo = new TreeViewColumn();
@@ -451,31 +451,31 @@ namespace osiris
 			
 			TreeViewColumn col_recibo = new TreeViewColumn();
 			CellRendererText cellrt4 = new CellRendererText();
-			col_recibo.Title = "No. Pagare";
+			col_recibo.Title = "No.Rec.Pagare";
 			col_recibo.PackStart(cellrt4, true);
 			col_recibo.AddAttribute (cellrt4, "text", 4);
 			col_recibo.SortColumnId = (int) Col_proveedores.col_recibo;
 			
 			TreeViewColumn col_presu = new TreeViewColumn();
-			CellRendererText cellrt5 = new CellRendererText();
-			col_presu.Title = "Id Presupuesto";
-			col_presu.PackStart(cellrt5, true);
-			col_presu.AddAttribute (cellrt5, "text", 5);
+			CellRendererText cellrt6 = new CellRendererText();
+			col_presu.Title = "Observacion 1";
+			col_presu.PackStart(cellrt6, true);
+			col_presu.AddAttribute (cellrt6, "text", 5);
 			col_presu.SortColumnId = (int) Col_proveedores.col_presu;
 			
 			TreeViewColumn col_paq = new TreeViewColumn();
-			CellRendererText cellrt6 = new CellRendererText();
-			col_paq.Title = "Id Paquete";
-			col_paq.PackStart(cellrt6, true);
-			col_paq.AddAttribute (cellrt6, "text", 6);
+			CellRendererText cellrt7 = new CellRendererText();
+			col_paq.Title = "Observacion 2";
+			col_paq.PackStart(cellrt7, true);
+			col_paq.AddAttribute (cellrt7, "text", 6);
 			col_paq.SortColumnId = (int) Col_proveedores.col_paq;
 			
 			TreeViewColumn col_forma_pago = new TreeViewColumn();
-			CellRendererText cellrt7 = new CellRendererText();
-			col_forma_pago.Title = "Observaciones";
-			col_forma_pago.PackStart(cellrt7, true);
-			col_forma_pago.AddAttribute (cellrt7, "text", 7);
-			col_forma_pago.SortColumnId = (int) Col_proveedores.col_forma_pago;			
+			CellRendererText cellrt8 = new CellRendererText();
+			col_forma_pago.Title = "Observacion 3";
+			col_forma_pago.PackStart(cellrt8, true);
+			col_forma_pago.AddAttribute (cellrt8, "text", 7);
+			col_forma_pago.SortColumnId = (int) Col_proveedores.col_forma_pago;
 			
 			treeview_lista_pagare.AppendColumn(col_abono);
 			treeview_lista_pagare.AppendColumn(col_fecha_abono);

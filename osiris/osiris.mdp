@@ -171,8 +171,10 @@
     <ProjectReference type="Gac" localcopy="True" refto="pango-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
     <ProjectReference type="Gac" localcopy="True" refto="atk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
     <ProjectReference type="Gac" localcopy="True" refto="System.Xml, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-    <ProjectReference type="Gac" localcopy="True" refto="nunit.core.interfaces, Version=2.4.7.0, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77" />
     <ProjectReference specificVersion="False" type="Assembly" localcopy="True" refto="../dll/SX.dll" />
+    <ProjectReference specificVersion="False" type="Assembly" localcopy="True" refto="../dll/AODL.dll" />
+    <ProjectReference type="Gac" localcopy="True" refto="nunit.framework, Version=2.4.7.0, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77" />
+    <ProjectReference specificVersion="False" type="Assembly" localcopy="True" refto="../dll/ICSharpCode.SharpZipLib.dll" />
   </References>
   <DeploymentInformation strategy="File" />
 </Project>

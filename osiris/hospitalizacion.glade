@@ -3454,7 +3454,7 @@ Busqueda de Productos</property>
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
                                     <child>
-                                      <widget class="GtkTreeView" id="treeview1">
+                                      <widget class="GtkTreeView" id="lista_de_servicios">
                                         <property name="width_request">740</property>
                                         <property name="height_request">225</property>
                                         <property name="visible">True</property>
@@ -5417,9 +5417,10 @@ Medicas</property>
                   </packing>
                 </child>
                 <child>
-                  <widget class="GtkFixed" id="fixed67">
+                  <widget class="GtkLabel" id="label1">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
+                    <property name="label" translatable="yes">Filtrar</property>
                   </widget>
                   <packing>
                     <property name="expand">True</property>
@@ -5428,9 +5429,14 @@ Medicas</property>
                   </packing>
                 </child>
                 <child>
-                  <widget class="GtkFixed" id="fixed68">
+                  <widget class="GtkEntry" id="entry_filter">
                     <property name="visible">True</property>
-                    <property name="can_focus">False</property>
+                    <property name="can_focus">True</property>
+                    <property name="invisible_char">●</property>
+                    <property name="primary_icon_activatable">False</property>
+                    <property name="secondary_icon_activatable">False</property>
+                    <property name="primary_icon_sensitive">True</property>
+                    <property name="secondary_icon_sensitive">True</property>
                   </widget>
                   <packing>
                     <property name="expand">True</property>

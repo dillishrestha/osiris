@@ -88,6 +88,7 @@ namespace osiris
 			gxml.Autoconnect (this);
 	        // Muestra ventana de Glade
 			resumen_devoluciones.Show();
+			resumen_devoluciones.Title = "Analisis de Devoluciones";
 			statusbar_analisisdevol.Pop(0);
 			statusbar_analisisdevol.Push(1, "login: "+LoginEmpleado+"  |Usuario: "+NomEmpleado+" "+AppEmpleado+" "+ApmEmpleado);
 			statusbar_analisisdevol.HasResizeGrip = false;
@@ -355,7 +356,7 @@ namespace osiris
 		{
 			object[] parametros_objetos = {lista_cargos_desde_stock,lista_solicitado_no_cargado,lista_solicitados_y_cargados,
 											treeViewEngine1,treeViewEngine2,treeViewEngine3};
-			new osiris.rpt_analisis_devoluciones(parametros_objetos);
+			new osiris.rpt_analisis_devoluciones(parametros_objetos, entry_folio_servicio.Text.Trim(),entry_pid_paciente.Text.Trim(),entry_nombre_paciente.Text.Trim());
 		}
 		
 		void llenado_de_devoluciones()

@@ -36,7 +36,16 @@ using Npgsql;
 using System.Data;
 using Gtk;
 using Glade;
-using SmartXLS;
+using SmartXLS;			// libreria para crear archivo xls es de paga
+// libreria creada con el proyecto AODL 1.4 que usa 
+using AODL;
+using AODL.Document.SpreadsheetDocuments;
+using AODL.Document.Content;
+using AODL.Document.Content.Tables;
+using AODL.Document;
+using AODL.Package;
+using AODL.Document.Collections;
+using NUnit.Framework;
 
 namespace osiris
 {
@@ -174,6 +183,10 @@ namespace osiris
 		[Widget] Gtk.Entry entry_plan_diag;
 		[Widget] Gtk.Entry entry_nombre_plan_diag;
 		
+		[Widget] Gtk.ComboBox combobox_craneo = null;
+		[Widget] Gtk.ComboBox combobox_cara = null;
+		[Widget] Gtk.Button button_exportar_xls = null;
+		
 		[Widget] Gtk.Statusbar statusbar5 = null;
 		string fecha_admision;
 		string fecha_nacimiento;
@@ -211,6 +224,16 @@ namespace osiris
 		protected Gtk.Window MyWin;	
 		class_conexion conexion_a_DB = new class_conexion();
 		
+		string[] args_causa_de_muerte = {"","DIABETES","HIPERTENSION","ENF. DEL CORAZON","ENF. DE PULMONES","CANCER O LEUCEMIA","EMBOLIA","ENF. MENTALES"};
+		int[] args_id_causa_de_muerte = {1,2,3,4,5,6,7,8};
+		
+		string[] args_vivo_muerto = {"","VIVO","MUERTO"};
+		string[] args_si_no = {"","SI","NO"};
+		string[] args_normal_anormal = {"","NORMAL","ANORMAL"};
+		int[] args_id_array = {0,1,2};
+		
+	
+		
 		public historia_clinica(string nombre_paciente_,string pid_paciente_,string edad_,string LoginEmp, string NomEmpleado_, string AppEmpleado_, string ApmEmpleado_, string nombrebd_,string fecha_admision_,string fecha_nacimiento_ ) 
 		{
 			nombre_paciente = nombre_paciente_;
@@ -233,6 +256,8 @@ namespace osiris
 			button_salir.Clicked += new EventHandler(on_cierraventanas_clicked);
 			//Guarda datos de la reservacion
 			button_guardar.Clicked += new EventHandler(on_button_guardar_clicked);
+			// exportar a xls
+			button_exportar_xls.Clicked += new EventHandler(on_button_exportar_xls_clicked);
 			//Imprimir:
 			button_imprimir.Clicked += new EventHandler(on_button_imprimir_historia_clinica_clicked);
 			this.button_imprimir_p2.Clicked += new EventHandler(on_button_imprimir_p2_clicked);
@@ -267,12 +292,13 @@ namespace osiris
 			this.entry_peso.KeyPressEvent += onKeyPressEventactual;
 			this.entry_perinatales.KeyPressEvent += onKeyPressEventactual;
 		
-			llenado_enf_familiares(0,"",combobox_enfermedad_padre);
-			llenado_enf_familiares(0,"",combobox_enfermedad_madre);
-			llenado_enf_familiares(0,"",combobox_enfermedad_hermanos);
-			llenado_enf_familiares(0,"",combobox_enfermedad_hijos);
-			llenado_enf_familiares(0,"",combobox_enfermedad_apaternos);
-			llenado_enf_familiares(0,"",combobox_enfermedad_amaternos);
+			//llenado_combobox(0,"",combobox_enfermedad_padre,args_causa_de_muerte,args_id_causa_de_muerte);
+			llenado_combobox(0,"",combobox_enfermedad_padre,args_causa_de_muerte,args_id_causa_de_muerte);			
+			llenado_combobox(0,"",combobox_enfermedad_madre,args_causa_de_muerte,args_id_causa_de_muerte);
+			llenado_combobox(0,"",combobox_enfermedad_hermanos,args_causa_de_muerte,args_id_causa_de_muerte);
+			llenado_combobox(0,"",combobox_enfermedad_hijos,args_causa_de_muerte,args_id_causa_de_muerte);
+			llenado_combobox(0,"",combobox_enfermedad_apaternos,args_causa_de_muerte,args_id_causa_de_muerte);
+			llenado_combobox(0,"",combobox_enfermedad_amaternos,args_causa_de_muerte,args_id_causa_de_muerte);
 			
 			//entrys id enfermedad (sirve para ingresar el id de la enfermedad y solo se pueda con numeros)
 			/*this.entry_idenf_padre.KeyPressEvent += onKeyPressEventactual;
@@ -299,13 +325,16 @@ namespace osiris
 			this.entry_pid_paciente.Text = pid_paciente_.Trim();
 			this.entry_edad_paciente.Text = edad_.Trim();					
 			//llenado de los ComboBox Antecedentes Heredo Familiar:
-			llenado_vivomuerto(1,"VIVO",combobox_vivomuerto_padre);
-			llenado_vivomuerto(1,"VIVO",combobox_vivomuerto_madre);			
+			llenado_combobox(1,"VIVO",combobox_vivomuerto_padre,args_vivo_muerto,args_id_array);
+			llenado_combobox(1,"VIVO",combobox_vivomuerto_madre,args_vivo_muerto,args_id_array);			
 			// llenado de Combobox positivo Negativo			
-			llenado_positivo_negativo(1,"POSITIVO",combobox_tabaquismo);
-			llenado_positivo_negativo(1,"POSITIVO",combobox_alcoholismo);
-			llenado_positivo_negativo(1,"NEGATIVO",combobox_drogas);			
-			//llenado de los ComboBox Antecedentes Personales Patologicos
+			llenado_combobox(1,"SI",combobox_tabaquismo,args_si_no,args_id_array);
+			llenado_combobox(1,"SI",combobox_alcoholismo,args_si_no,args_id_array);
+			llenado_combobox(1,"NO",combobox_drogas,args_si_no,args_id_array);			
+			// llenado combobox exploracion fisica
+			llenado_combobox(1,"NORMAL",combobox_craneo,args_normal_anormal,args_id_array);
+			llenado_combobox(1,"NORMAL",combobox_cara,args_normal_anormal,args_id_array);
+			
 							
 			//SpinButtons Antecedentes Heredo Familiar:
 			spinbutton_edad_madre.SetRange(0, 150);
@@ -339,6 +368,12 @@ namespace osiris
 			if(int.Parse(spinbutton_novivos_apaternos.Text.ToString()) > 1 ){
 				spinbutton_novivos_apaternos.Text = "0";
 			}
+		}
+		
+		void on_button_exportar_xls_clicked(object sender, EventArgs args)
+		{
+			// class_crea_ods.cs
+			new osiris.export_xls_sigma();		
 		}
 		
 		void muestra_datos_paciente()
@@ -480,9 +515,7 @@ namespace osiris
 					this.spinbutton_edad_gestional.Text = (string) lector1["hcpediatrica_edadgestional"].ToString();
 					this.spinbutton_no_embarazo.Text = (string) lector1["hcpediatrica_noembarazo"].ToString();
 					// Asignando Variables
-				    // tipodellenado;
-					//Console.WriteLine(vivomuertopadre);
-					vivomuertopadre = (string) lector1["padre_v_m"];
+				   	vivomuertopadre = (string) lector1["padre_v_m"];
 					vivomuertomadre = (string) lector1["madre_v_m"];
 					pntabaquismo = (string) lector1["tabaquismo_p_n"];
 					pnalcoholismo = (string) lector1["alcoholismo_p_n"];
@@ -494,12 +527,12 @@ namespace osiris
 					pntraumaticos = (string) lector1["traumaticos_p_n"];
 					pnneurologicos = (string) lector1["neurologicos_p_n"];					
 					//llenado de los ComboBox Antecedentes Heredo Familiar:
-					llenado_vivomuerto(1,vivomuertopadre,combobox_vivomuerto_padre);
-					llenado_vivomuerto(1,vivomuertomadre,combobox_vivomuerto_madre);
+					llenado_combobox(1,vivomuertopadre,combobox_vivomuerto_padre,args_vivo_muerto,args_id_array);
+					llenado_combobox(1,vivomuertomadre,combobox_vivomuerto_madre,args_vivo_muerto,args_id_array);
 					//llenado de los ComboBox Antecedentes Personales NO Patologicos 
-					llenado_positivo_negativo(1,pntabaquismo,combobox_tabaquismo);
-					llenado_positivo_negativo(1,pnalcoholismo,combobox_alcoholismo);
-					llenado_positivo_negativo(1,pnalcoholismo,combobox_drogas);
+					llenado_combobox(1,pntabaquismo,combobox_tabaquismo,args_si_no,args_id_array);
+					llenado_combobox(1,pnalcoholismo,combobox_alcoholismo,args_si_no,args_id_array);
+					llenado_combobox(1,pnalcoholismo,combobox_drogas,args_si_no,args_id_array);
 					//llenado de los ComboBox Antecedentes Personales Patologicos
 				}
 			}catch (NpgsqlException ex){
@@ -510,72 +543,31 @@ namespace osiris
 			conexion1.Close ();
 		}
 		
-		/////////LLENADO DE COMBOS: Antecedentes Heredo Familiar:////////////////////////////////////////////////////////////
-		void llenado_vivomuerto( int tipodellenado, string vivomuerto, object obj )
+		void llenado_combobox(int tipodellenado,string descrip_defaul,object obj,string[] args_array,int[] args_id_array)
 		{
-			Gtk.ComboBox combobox_vivomuerto = (Gtk.ComboBox) obj;
+			
+			Gtk.ComboBox combobox_llenado = (Gtk.ComboBox) obj;
 			//Gtk.ComboBox combobox_pos_neg = obj as Gtk.ComboBox;
-			combobox_vivomuerto.Clear();			
-			combobox_vivomuerto.Clear();
+			combobox_llenado.Clear();
 			CellRendererText cell = new CellRendererText();
-			combobox_vivomuerto.PackStart(cell, true);
-			combobox_vivomuerto.AddAttribute(cell,"text",0);	        
-			ListStore store1 = new ListStore( typeof (string));
-			combobox_vivomuerto.Model = store1;			
+			combobox_llenado.PackStart(cell, true);
+			combobox_llenado.AddAttribute(cell,"text",0);	        
+			ListStore store = new ListStore( typeof (string),typeof (int));
+			combobox_llenado.Model = store;			
 			if ((int) tipodellenado == 1){
-				store1.AppendValues ((string) vivomuerto );
-			}	        
-			store1.AppendValues ("");
-			store1.AppendValues ("VIVO");
-			store1.AppendValues ("MUERTO");
-			TreeIter iter1;
-			if (store1.GetIterFirst(out iter1)){
-				combobox_vivomuerto.SetActiveIter (iter1);
+				store.AppendValues ((string) descrip_defaul,0);
 			}
-			combobox_vivomuerto.Changed += new EventHandler (onComboBoxChanged_vivomuerto);
-		}
-		void onComboBoxChanged_vivomuerto (object sender, EventArgs args)
-		{
-			ComboBox combobox_vivomuerto = sender as ComboBox;
-			if (sender == null){return;}
-			TreeIter iter1;
-			if (combobox_vivomuerto.GetActiveIter (out iter1)){
-				if(combobox_vivomuerto.Name.ToString() == "combobox_vivomuerto_padre"){
-					vivomuertopadre = (string) combobox_vivomuerto.Model.GetValue(iter1,0);
-					//Console.WriteLine("vivomuertopadre = "+vivomuertopadre);
-				}
-				if(combobox_vivomuerto.Name.ToString() == "combobox_vivomuerto_madre"){
-					vivomuertomadre = (string) combobox_vivomuerto.Model.GetValue(iter1,0);
-					//Console.WriteLine("vivomuertomadre = "+vivomuertomadre);
-				}
+			for (int colum_field = 0; colum_field < args_array.Length; colum_field++){
+				store.AppendValues (args_array[colum_field],args_id_array[colum_field]);
 			}
-		}
-						
-		void llenado_positivo_negativo(int tipodellenado,string descrip_defaul,object obj)
-		{
-			Gtk.ComboBox combobox_pos_neg = (Gtk.ComboBox) obj;
-			//Gtk.ComboBox combobox_pos_neg = obj as Gtk.ComboBox;
-			combobox_pos_neg.Clear();
-			CellRendererText cell = new CellRendererText();
-			combobox_pos_neg.PackStart(cell, true);
-			combobox_pos_neg.AddAttribute(cell,"text",0);	        
-			ListStore store = new ListStore( typeof (string));
-			combobox_pos_neg.Model = store;			
-			if ((int) tipodellenado == 1){
-				store.AppendValues ((string) descrip_defaul);
-			}	        
-			store.AppendValues ("");
-			store.AppendValues ("POSITIVO");
-			store.AppendValues ("NEGATIVO");
 			TreeIter iter;
 			if (store.GetIterFirst(out iter)){
-				combobox_pos_neg.SetActiveIter (iter);
+				combobox_llenado.SetActiveIter (iter);
 			}
-			combobox_pos_neg.Changed += new EventHandler (onComboBoxChanged_positivo_negativo);			
+			combobox_llenado.Changed += new EventHandler (onComboBoxChanged_llenado);			
 		}
-		/////////LLENADO DE COMBOS: Antecedentes Personales NO Patologicos (Positivo o Negativo)/////////////////////////////////////
 		
-		void onComboBoxChanged_positivo_negativo (object sender, EventArgs args)
+		void onComboBoxChanged_llenado (object sender, EventArgs args)
 		{
 			ComboBox onComboBoxChanged = sender as ComboBox;
 			if (sender == null){	return; }
@@ -591,67 +583,14 @@ namespace osiris
 				case "combobox_drogas":
 					pndrogas = (string) onComboBoxChanged.Model.GetValue(iter,0);
 					break;
-				case "combobox_cronico_degenerativos":
-					pncronicodegenerativos = (string) onComboBoxChanged.Model.GetValue(iter,0);
+				case "combobox_vivomuerto_padre":
+					vivomuertopadre = (string) onComboBoxChanged.Model.GetValue(iter,0);
+					//Console.WriteLine("vivomuertopadre = "+vivomuertopadre);
 					break;
-				case "combobox_hospitalizaciones":
-					pnhospitalizaciones = (string) onComboBoxChanged.Model.GetValue(iter,0);
+				case "combobox_vivomuerto_madre":
+					vivomuertomadre = (string) onComboBoxChanged.Model.GetValue(iter,0);
+					//Console.WriteLine("vivomuertomadre = "+vivomuertomadre);
 					break;
-				case "combobox_quirurgicos":
-					pnquirurgicos = (string) onComboBoxChanged.Model.GetValue(iter,0);
-					break;
-				case "combobox_alergicos":
-					pnalergicos = (string) onComboBoxChanged.Model.GetValue(iter,0);
-					break;
-				case "combobox_traumaticos":
-					pntraumaticos = (string) onComboBoxChanged.Model.GetValue(iter,0);
-					break;
-				case "combobox_neurologicos":
-					pnneurologicos = (string) onComboBoxChanged.Model.GetValue(iter,0);
-					break;
-				}				
-			}
-		}
-		
-		void llenado_enf_familiares(int tipodellenado,string descrip_defaul,object obj)
-		{
-			Gtk.ComboBox combobox_enffamiliares = (Gtk.ComboBox) obj;
-			//Gtk.ComboBox combobox_enffamiliares = obj as Gtk.ComboBox;
-			combobox_enffamiliares.Clear();
-			CellRendererText cell = new CellRendererText();
-			combobox_enffamiliares.PackStart(cell, true);
-			combobox_enffamiliares.AddAttribute(cell,"text",0);	        
-			ListStore store = new ListStore( typeof (string), typeof (int));
-			combobox_enffamiliares.Model = store;			
-			if ((int) tipodellenado == 1){
-				store.AppendValues ((string) descrip_defaul, 0);
-			}	        
-			store.AppendValues ("",0);
-			store.AppendValues ("DIABETES",1);
-			store.AppendValues ("HIPERTENSION",2);
-			store.AppendValues ("ENF. DEL CORAZON",3);
-			store.AppendValues ("ENF. DE PULMONES",4);
-			store.AppendValues ("CANCER O LEUCEMIA",5);
-			store.AppendValues ("EMBOLIA",6);
-			store.AppendValues ("ENF. MENTALES",7);
-			TreeIter iter;
-			if (store.GetIterFirst(out iter)){
-				combobox_enffamiliares.SetActiveIter (iter);
-			}
-			combobox_enffamiliares.Changed += new EventHandler (onComboBoxChanged_enffamiliares);			
-		}
-		
-		void onComboBoxChanged_enffamiliares (object sender, EventArgs args)
-		{
-			ComboBox combobox_enffamiliares = sender as ComboBox;
-			if (sender == null){return;}
-			TreeIter iter1;
-			if (combobox_enffamiliares.GetActiveIter (out iter1)){
-				if(combobox_enffamiliares.Name.ToString() == "combobox_vivomuerto_padre"){
-					//vivomuertopadre = (string) combobox_enffamiliares.Model.GetValue(iter1,1);
-				}
-				if(combobox_enffamiliares.Name.ToString() == "combobox_vivomuerto_madre"){
-					//vivomuertomadre = (string) combobox_enffamiliares.Model.GetValue(iter1,1);
 				}
 			}
 		}
@@ -1210,6 +1149,61 @@ namespace osiris
 		{
 			Widget win = (Widget) sender;
 			win.Toplevel.Destroy();
+		}
+	}
+	
+	// usando la libreria XS.dl
+	public class export_xls_sigma
+	{
+		public export_xls_sigma()
+		{
+			WorkBook book = new WorkBook();
+		
+            try{                
+				book.read("formato_de_historia_clinica_Institucional.xls");
+				book.Sheet = 0;
+			
+				book.setText(1, 1, "PRACTIMED");
+				book.setText(3, 1, "DANIEL OLIVARES CUEVAS");
+				
+				// book.setSheetName(1, "Ex Ingreso IPAS");	// Coloca el nombre de la hoja
+                book.Sheet = 1;			// numero de hoja actual comienza en 0
+				Console.WriteLine(book.Sheet.ToString());
+				//book.NumSheets = 1;
+		    	book.setText(6, 0, "sheet2");
+                
+                book.Sheet = 2;
+				Console.WriteLine(book.Sheet.ToString());
+                book.setText(5, 1, "sheet3");
+                book.setText(6, 1, "sheet3");
+
+
+            //        book.setText(1, 4, "Mar");
+		    //        book.setText(1, 5, "Apr");
+		    //        book.setText(2, 1, "Practimed 1");
+		    //        book.setText(3, 1, "Practimed 2");
+		    //        book.setText(4, 1, "Practimed 3");
+		    //        book.setText(5, 1, "Practimed 4");
+		    //        book.setText(6, 1, "Practimed 5");
+		    //        book.setText(7, 1, "Total");
+		    //        book.setFormula(2, 2, "RAND()*100");
+		    //        book.setSelection(2, 2, 2, 5);
+		    //        book.editCopyRight();
+		    //        book.setSelection(2, 2, 6, 5);
+		    //        book.editCopyDown();
+		    //        book.setFormula(7, 2, "SUM(C3:C7)");
+		    //        book.setSelection("C8:F8");
+		    //        book.editCopyRight();
+			
+				book.Sheet = 0;
+				book.write("template_historia_clinica_sigma.xls");
+			 
+            }catch (System.Exception ex){
+                Console.Error.WriteLine(ex);
+            }
+
+            // SE USA PARA ABRIR LA APLICACION
+            System.Diagnostics.Process.Start("template_historia_clinica_sigma.xls");
 		}
 	}
 }

@@ -25,11 +25,9 @@ namespace osiris
 		protected Gtk.Window MyWinError;
 		protected Gtk.Window MyWin;
 		
-		public class_traslate_spreadsheet (string numeroatencion_)
+		public class_traslate_spreadsheet (string query_sql,string[] args_names_field,string[] args_type_field)
 		{
-			int files_field = 0;
-			string[] args_names_field = {"foliodeservicio","descripcion_producto","idproducto","cantidadaplicada","preciounitario","ppcantidad","fechcreacion","descripcion_admisiones","descripcion_grupo_producto"};
-			string[] args_type_field = {"float","string","string","float","float","float","string","string","string"};
+			int files_field = 0;			
 			connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
 			nombrebd = conexion_a_DB._nombrebd;			
 			//Create new spreadsheet open document (.ods) 
@@ -44,20 +42,7 @@ namespace osiris
 				conexion.Open ();
 				NpgsqlCommand comando; 
 				comando = conexion.CreateCommand ();
-				comando.CommandText = "SELECT osiris_erp_cobros_deta.folio_de_servicio AS foliodeservicio,descripcion_producto,to_char(osiris_erp_cobros_deta.id_producto,'999999999999') AS idproducto, "+
-					"to_char(osiris_erp_cobros_deta.cantidad_aplicada,'99999.99') AS cantidadaplicada,to_char(osiris_erp_cobros_deta.precio_producto,'99999999.99') AS preciounitario,"+
-						"to_char(osiris_erp_cobros_deta.cantidad_aplicada * osiris_erp_cobros_deta.precio_producto,'99999999.99') AS ppcantidad,"+
-						"to_char(osiris_erp_cobros_deta.fechahora_creacion,'dd-MM-yyyy HH24:mi:ss') AS fechcreacion, osiris_his_tipo_admisiones.descripcion_admisiones,"+
-						"osiris_erp_cobros_deta.id_tipo_admisiones AS idtipoadmision,descripcion_grupo_producto,osiris_productos.aplicar_iva," +
-						"to_char(osiris_erp_cobros_deta.id_secuencia,'9999999999') AS secuencia " +
-						"FROM osiris_erp_cobros_deta,osiris_productos,osiris_his_tipo_admisiones,osiris_grupo_producto " +
-						"WHERE osiris_erp_cobros_deta.id_producto = osiris_productos.id_producto " +
-						"AND osiris_erp_cobros_deta.id_tipo_admisiones = osiris_his_tipo_admisiones.id_tipo_admisiones " +
-						"AND osiris_productos.id_grupo_producto = osiris_grupo_producto.id_grupo_producto " +
-						"AND osiris_erp_cobros_deta.eliminado = false " +
-						"AND osiris_erp_cobros_deta.folio_de_servicio IN('"+numeroatencion_+"') " +
-						"ORDER BY to_char(osiris_erp_cobros_deta.fechahora_creacion,'yyyy-MM-dd HH24:mm:ss'),osiris_erp_cobros_deta.id_tipo_admisiones ASC," +
-						 "osiris_productos.id_grupo_producto;";
+				comando.CommandText = query_sql;
 				comando.ExecuteNonQuery();    comando.Dispose();
 				//Console.WriteLine(comando.CommandText);
 				NpgsqlDataReader lector = comando.ExecuteReader ();

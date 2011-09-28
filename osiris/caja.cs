@@ -33,6 +33,7 @@ using Npgsql;
 using Gtk;
 using Glade;
 using System.Collections;
+using GLib;
 
 namespace osiris
 {
@@ -72,7 +73,7 @@ namespace osiris
 		
 		[Widget] Gtk.TreeView lista_de_servicios;
 		[Widget] Gtk.TreeView lista_cargos_extras;
-		[Widget] Gtk.ProgressBar progressbar_status_llenado;
+		
 		[Widget] Gtk.Button button_quitar_aplicados;
 		[Widget] Gtk.Button button_actualizar;
 		[Widget] Gtk.Button button_buscar_paciente;
@@ -99,7 +100,9 @@ namespace osiris
 		[Widget] Gtk.Button button_costeo_procedimiento;
 				
 		[Widget] Gtk.Button button_cierre_cuenta;
-		[Widget] Gtk.Button button_exportar_xls = null; 
+		[Widget] Gtk.Button button_exportar_xls = null;
+		[Widget] Gtk.Button button_venta_publico = null;
+		[Widget] Gtk.HBox hbox4 = null;
 		
 		[Widget] Gtk.Entry entry_subtotal_al_15;
 		[Widget] Gtk.Entry entry_subtotal_al_0;
@@ -215,7 +218,7 @@ namespace osiris
 		private TreeStore treeViewEngineMedicos;
 		
 		private ArrayList arraycargosextras;		// Para editar cargos extras
-		
+				
 		// Declaracion de variables publicas  
 		int folioservicio = 0;	        		// Toma el valor de numero de atencion de paciente
 		int PidPaciente = 0;		   				// Toma la actualizacion del pid del paciente
@@ -324,6 +327,70 @@ namespace osiris
 		protected Gtk.Window MyWinError;
 		protected Gtk.Window MyWin;
 		
+		[Widget] Gtk.ProgressBar progressbar_status_llenado;
+		
+		struct ProgressData {
+			public Gtk.Window window;			
+			//public Gtk.ProgressBar pbar;
+			public uint timer;
+			public bool activity_mode;
+			public bool stop_progressData;
+		}
+ 
+		ProgressData pdata;
+ 
+		/* Update the value of the progress bar so that we get
+	 	* some movement */
+		bool progress_timeout()
+		{
+			double new_val;
+	 
+			if (!pdata.activity_mode)
+				progressbar_status_llenado.Pulse();
+			else {
+				/* Calculate the value of the progress bar using the
+				 * value range set in the adjustment object */
+				new_val = progressbar_status_llenado.Fraction + 0.01;
+				if (new_val > 1.0)
+					new_val = 0.0;	 
+				/* Set the new value */
+				progressbar_status_llenado.Fraction = new_val;
+			}	 
+			/* As this is a timeout function, return TRUE so that it
+			 * continues to get called */
+	 		if(pdata.stop_progressData == true){
+				return true;
+			}else{
+				progressbar_status_llenado.Fraction = 0.0;
+				return false;
+			}
+		}
+		
+		bool progress_timeoff()
+		{
+			double new_val;
+	 
+			if (!pdata.activity_mode)
+				progressbar_status_llenado.Pulse();
+			else {
+				/* Calculate the value of the progress bar using the
+				 * value range set in the adjustment object */
+				new_val = progressbar_status_llenado.Fraction + 0.01;
+				if (new_val > 1.0)
+					new_val = 0.0;	 
+				/* Set the new value */
+				progressbar_status_llenado.Fraction = new_val;
+			}	 
+			/* As this is a timeout function, return TRUE so that it
+			 * continues to get called */
+	 		if(pdata.stop_progressData == true){
+				return true;
+			}else{
+				progressbar_status_llenado.Fraction = 0.0;
+				return false;
+			}
+		}
+		
 		public caja_cobro(string LoginEmp, string NomEmpleado_, string AppEmpleado_, string ApmEmpleado_, string nombrebd_, int idsubalmacen_ ) 
 		{
 			LoginEmpleado = LoginEmp;
@@ -393,9 +460,11 @@ namespace osiris
 			button_traspasa_productos.Clicked += new EventHandler(on_button_traspasa_productos_clicked);
 			// exportar a xls
 			button_exportar_xls.Clicked += new EventHandler(on_button_exportar_xls_clicked);
+			// admitir paciente venta la publico
+			button_venta_publico.Clicked += new EventHandler(on_button_venta_publico_clicked);
 			// Sale de la ventana
 			button_salir.Clicked += new EventHandler(on_cierraventanas_clicked);
-						
+									
 			// Desactivando Botones de operacion se activa cuando selecciona una atencion
 			button_busca_producto.Sensitive = false;
 			button_removerItem.Sensitive = false;
@@ -439,13 +508,35 @@ namespace osiris
 		void on_button_exportar_xls_clicked(object sender, EventArgs args)
 		{
 			if(LoginEmpleado == "DOLIVARES" || LoginEmpleado =="ADMIN" || LoginEmpleado =="MARGARITAZ" || LoginEmpleado =="IESPINOZAF" || LoginEmpleado =="ZBAEZH"){
+				string query_sql = "SELECT osiris_erp_cobros_deta.folio_de_servicio AS foliodeservicio,descripcion_producto,to_char(osiris_erp_cobros_deta.id_producto,'999999999999') AS idproducto, "+
+					"to_char(osiris_erp_cobros_deta.cantidad_aplicada,'99999.99') AS cantidadaplicada,to_char(osiris_erp_cobros_deta.precio_producto,'99999999.99') AS preciounitario,"+
+						"to_char(osiris_erp_cobros_deta.cantidad_aplicada * osiris_erp_cobros_deta.precio_producto,'99999999.99') AS ppcantidad,"+
+						"to_char(osiris_erp_cobros_deta.fechahora_creacion,'dd-MM-yyyy HH24:mi:ss') AS fechcreacion, osiris_his_tipo_admisiones.descripcion_admisiones,"+
+						"osiris_erp_cobros_deta.id_tipo_admisiones AS idtipoadmision,descripcion_grupo_producto,osiris_productos.aplicar_iva," +
+						"to_char(osiris_erp_cobros_deta.id_secuencia,'9999999999') AS secuencia " +
+						"FROM osiris_erp_cobros_deta,osiris_productos,osiris_his_tipo_admisiones,osiris_grupo_producto " +
+						"WHERE osiris_erp_cobros_deta.id_producto = osiris_productos.id_producto " +
+						"AND osiris_erp_cobros_deta.id_tipo_admisiones = osiris_his_tipo_admisiones.id_tipo_admisiones " +
+						"AND osiris_productos.id_grupo_producto = osiris_grupo_producto.id_grupo_producto " +
+						"AND osiris_erp_cobros_deta.eliminado = false " +
+						"AND osiris_erp_cobros_deta.folio_de_servicio IN('"+folioservicio.ToString().Trim()+"') " +
+						"ORDER BY to_char(osiris_erp_cobros_deta.fechahora_creacion,'yyyy-MM-dd HH24:mm:ss'),osiris_erp_cobros_deta.id_tipo_admisiones ASC," +
+						 "osiris_productos.id_grupo_producto;";
+				string[] args_names_field = {"foliodeservicio","descripcion_producto","idproducto","cantidadaplicada","preciounitario","ppcantidad","fechcreacion","descripcion_admisiones","descripcion_grupo_producto"};
+				string[] args_type_field = {"float","string","string","float","float","float","string","string","string"};
+				
 				// class_crea_ods.cs
-				new osiris.class_traslate_spreadsheet(folioservicio.ToString().Trim());
+				new osiris.class_traslate_spreadsheet(query_sql,args_names_field,args_type_field);
 			}else{
 				MessageDialog msgBox = new MessageDialog (MyWin,DialogFlags.Modal,
 									MessageType.Info,ButtonsType.Ok,"No tiene Permiso para esta Opcion");
 				msgBox.Run ();msgBox.Destroy();
 			}
+		}
+		
+		void on_button_venta_publico_clicked(object sender, EventArgs args)
+		{
+			new osiris.registro_paciente_busca("selecciona",LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,"17249");
 		}
 		
 		void on_button_traspasa_productos_clicked(object sender, EventArgs args)
@@ -813,6 +904,8 @@ namespace osiris
 		       			this.button_abonar.Sensitive = true;
 		       			this.button_quitar_aplicados.Sensitive = true;
 		       			this.button_traspasa_productos.Sensitive = true;
+						button_pagare.Sensitive = true;
+						button_pase_quirofano.Sensitive = true;
 				        	
 				    }catch (NpgsqlException ex){
 					   	MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
@@ -1729,6 +1822,7 @@ namespace osiris
 				Glade.XML gxml = new Glade.XML (null, "caja.glade", "comprobante_pago", null);
 				gxml.Autoconnect (this);
 				comprobante_pago.Show();
+				hbox4.Hide();
 				
 				entry_numero_comprobante.KeyPressEvent += onKeyPressEvent;
 				entry_total_comprobante.KeyPressEvent += onKeyPressEvent;
@@ -1789,7 +1883,7 @@ namespace osiris
 			if (combobox_tipocomprobante.GetActiveIter (out iter)){
 				idtipocomprobante = combobox_tipocomprobante.Model.GetValue(iter,1).ToString().Trim();								
 				entry_numero_comprobante.Text = (string) classpublic.lee_ultimonumero_registrado("osiris_erp_abonos","numero_recibo_caja"," WHERE id_tipo_comprobante = '"+combobox_tipocomprobante.Model.GetValue(iter,1).ToString().Trim()+"' ");
-				numerodecomprobante = int.Parse(entry_numero_comprobante.Text);
+				//numerodecomprobante = int.Parse(entry_numero_comprobante.Text);
 			}
 		}
 				
@@ -1852,6 +1946,7 @@ namespace osiris
 						}
 						if(tipo_de_comprobante == "CAJA"){
 							//numerodecomprobante = int.Parse((string) classpublic.lee_ultimonumero_registrado("osiris_erp_abonos","numero_recibo_caja","WHERE id_tipo_comprobante = '"+idtipocomprobante.ToString().Trim()+"'"));
+							numerodecomprobante = int.Parse(entry_numero_comprobante.Text);
 							descrippago = "PAGO DE PROCEDIMIENTO";
 							pago_sino = true;
 							sql_abonos_servicio = "INSERT INTO osiris_erp_abonos("+
@@ -1945,7 +2040,8 @@ namespace osiris
 														"observaciones," +
 														"observaciones2," +
 														"observaciones3,"+
-														"monto_pagare) "+
+														"monto_pagare,"+
+														"fecha_vencimiento_pagare) "+
 													"VALUES ('"+
 														numerodecomprobante.ToString().Trim()+"','"+
 														folioservicio+"','"+
@@ -1959,10 +2055,11 @@ namespace osiris
 														entry_observacion_egreso.Text.ToString().ToUpper().Trim()+"','"+
 														entry_observaciones2.Text.ToString().ToUpper().Trim()+"','"+
 														entry_observaciones3.Text.ToString().ToUpper().Trim()+"','"+
-														entry_total_comprobante.Text.ToString().Trim()+
+														entry_total_comprobante.Text.ToString().Trim()+"','"+
+														entry_ano2.Text.Trim()+"-"+entry_mes2.Text.Trim()+"-"+entry_dia2.Text.Trim()+
 														"');";
 						}
-						
+						bool error = false;
 	 					NpgsqlConnection conexion; 
 						conexion = new NpgsqlConnection (connectionString+nombrebd);
 						// Verifica que la base de datos este conectado
@@ -1971,9 +2068,18 @@ namespace osiris
 							NpgsqlCommand comando; 
 							comando = conexion.CreateCommand ();
 				 			comando.CommandText = sql_abonos_servicio;
-							//Console.WriteLine(comando.CommandText);
-	 											
-			 				comando.ExecuteNonQuery();    	    	       	comando.Dispose();
+							Console.WriteLine(comando.CommandText);											
+			 				if(tipo_de_comprobante == "PAGARE"){
+								// validando que la fecha vencimiento del pagare sea mayo a la de la transaccion
+								if(float.Parse(DateTime.Now.ToString("yyyy")+DateTime.Now.ToString("MM")+DateTime.Now.ToString("dd")) < float.Parse(entry_ano2.Text.Trim()+entry_mes2.Text.Trim()+entry_dia2.Text.Trim())){
+									comando.ExecuteNonQuery();    	    	       	comando.Dispose();
+								}else{
+									error = true;
+								}
+							}else{
+								comando.ExecuteNonQuery();    	    	       	comando.Dispose();
+							}							
+							
 			 				if (pagodehonorario == true){
 								// Marca el pago del honorario en la tabla de honorarios medicos
 						       	NpgsqlConnection conexion1; 
@@ -2036,10 +2142,16 @@ namespace osiris
 						 			comprobante_de_caja_pago("SERVICIO",numerodecomprobante);
 						       	}
 								if(tipo_de_comprobante == "PAGARE"){
-									Widget win = (Widget) sender;
-									win.Toplevel.Destroy();
-						 			//cierre_de_procedimiento();				 			
-						 			comprobante_de_caja_pago("PAGARE",numerodecomprobante);
+									if(error == false){
+										Widget win = (Widget) sender;
+										win.Toplevel.Destroy();
+						 				//cierre_de_procedimiento();				 			
+						 				comprobante_de_caja_pago("PAGARE",numerodecomprobante);
+									}else{
+										MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+										MessageType.Error,ButtonsType.Close, "Verifique la fecha del vencimiento del PAGARE debe ser mayor a la de Hoy....");
+										msgBoxError.Run ();				msgBoxError.Destroy();
+									}
 						       	}
 							}
 						}catch(NpgsqlException ex){
@@ -2150,8 +2262,8 @@ namespace osiris
 						"to_char(osiris_his_paciente.fecha_nacimiento_paciente, 'dd-MM-yyyy') AS fechanacpaciente, to_char(to_number(to_char(age('"+DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss")+"',osiris_his_paciente.fecha_nacimiento_paciente),'yyyy') ,'9999'),'9999') AS edadpaciente, "+
 					    "telefono_particular1_paciente,osiris_erp_comprobante_pagare.observaciones || ' ' || osiris_erp_comprobante_pagare.observaciones2 || ' ' || osiris_erp_comprobante_pagare.observaciones3 AS observacionesvarias," +
 					    "osiris_erp_comprobante_pagare.concepto_del_comprobante AS concepto_comprobante,"+
-						"osiris_erp_cobros_enca.id_empresa,descripcion_empresa,osiris_erp_cobros_enca.nombre_medico_encabezado "+
-					    //"to_char(monto_de_abono_procedimiento,'999999999.99') AS montodelabono "+
+						"osiris_erp_cobros_enca.id_empresa,descripcion_empresa,osiris_erp_cobros_enca.nombre_medico_encabezado,"+
+					    "to_char(monto_pagare,'999999999.99') AS montodelabono "+
 				        "FROM osiris_erp_cobros_deta,osiris_his_tipo_admisiones,osiris_productos,osiris_grupo_producto,osiris_erp_comprobante_pagare,osiris_his_paciente,osiris_erp_cobros_enca,osiris_empresas "+
 						"WHERE osiris_erp_cobros_deta.id_tipo_admisiones = osiris_his_tipo_admisiones.id_tipo_admisiones "+
 						"AND osiris_erp_cobros_deta.id_producto = osiris_productos.id_producto  "+ 
@@ -2201,19 +2313,24 @@ namespace osiris
 				pagodehonorario = false;
 				Glade.XML gxml = new Glade.XML (null, "caja.glade", "comprobante_pago", null);
 				gxml.Autoconnect (this);
-				comprobante_pago.Title = "Comprobante de Servicio";
+				
 				comprobante_pago.Show();
-								
+																
 				entry_numero_comprobante.KeyPressEvent += onKeyPressEvent;
 				entry_total_comprobante.KeyPressEvent += onKeyPressEvent;
 				entry_total_comprobante.Text = this.entry_a_pagar.Text;
 				
 				if(tipoopcion=="SERVICIO"){
 					entry_numero_comprobante.Text = (string) classpublic.lee_ultimonumero_registrado("osiris_erp_comprobante_servicio","numero_comprobante_servicio","");
+					comprobante_pago.Title = "Comprobante de Servicio";
+					hbox4.Hide();
 				}
-				if(tipoopcion=="PAGARE"){				
+				if(tipoopcion=="PAGARE"){
+					comprobante_pago.Title = "Comprobante de Pagare";
 					entry_numero_comprobante.Text = (string) classpublic.lee_ultimonumero_registrado("osiris_erp_comprobante_pagare","numero_comprobante_pagare","");
-					
+					entry_dia2.Text = DateTime.Now.ToString("dd");
+					entry_mes2.Text = DateTime.Now.ToString("MM");
+					entry_ano2.Text = DateTime.Now.ToString("yyyy");
 				}
 				entry_dia1.Text = DateTime.Now.ToString("dd");
 				entry_mes1.Text = DateTime.Now.ToString("MM");
@@ -3143,6 +3260,10 @@ namespace osiris
 				NpgsqlDataReader lector = comando.ExecuteReader ();				
 				bool procedimiento_cerrado = false;
 				if(lector.Read()){
+					pdata.timer = GLib.Timeout.Add(100, new GLib.TimeoutHandler (progress_timeout) );
+					pdata.stop_progressData = true;
+					progressbar_status_llenado.Pulse();
+					
 					button_removerItem.Sensitive = true;
 					button_graba_pago.Sensitive = true;
 					button_aplica_cargos.Sensitive = true;
@@ -3161,6 +3282,7 @@ namespace osiris
 					button_actualizar.Sensitive = true;
 					button_abre_folio.Sensitive = false;
 					button_traspasa_productos.Sensitive = true;
+					button_exportar_xls.Sensitive = true;
 								
 					entry_ingreso.Text = (string) lector["fecha_ingreso"];
 					entry_egreso.Text = (string) lector["fecha_egreso"];
@@ -3482,11 +3604,10 @@ namespace osiris
 				string toma_descrip_prod;
 				float totaldeabonos = float.Parse((string) entry_total_abonos_caja.Text);
 				float totaldepago = float.Parse((string) this.entry_ultimo_pago.Text);
+								
 				while (lector.Read()){
-					progressbar_status_llenado.Pulse();
-					
-					if (!(bool) lector["eliminado"]){
-					
+						//progressbar_status_llenado.Pulse();
+						if (!(bool) lector["eliminado"]){					
 						toma_cantaplicada = float.Parse((string) lector["cantidadaplicada"]);
 						if ((bool) lector["aplicar_iva"]){	
 							calculo_del_iva_producto = (float.Parse((string) lector["ppcantidad_"])*float.Parse((string) lector["porcentageiva"]))/100;
@@ -3596,6 +3717,8 @@ namespace osiris
 				msgBoxError.Run ();				msgBoxError.Destroy();
 			}
 			conexion.Close ();
+			pdata.timer = 0;
+			pdata.stop_progressData = false;
 		}
 		
 		// busco un paciente pantalla de ingreso de nuevo paciente

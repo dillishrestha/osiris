@@ -574,7 +574,7 @@ namespace osiris
 				conexion.Open ();
 				NpgsqlCommand comando; 
 				comando = conexion.CreateCommand ();
-					comando.CommandText = "SELECT to_char(numero_comprobante_servicio,'99999999999') AS reciboservicio," +
+					comando.CommandText = "SELECT to_char(numero_comprobante_servicio,'99999999999') AS reciboservicio,id_quien_creo," +
 										"to_char(osiris_erp_comprobante_servicio.fecha_comprobante,'yyyy-MM-dd') AS fechacomprobante,concepto_del_comprobante "+
 									"FROM osiris_erp_comprobante_servicio "+
 									"WHERE osiris_erp_comprobante_servicio.eliminado = 'false' "+
@@ -585,7 +585,7 @@ namespace osiris
 					treeViewEnginecomprserv.AppendValues ((string) lector["reciboservicio"],
 					                                   (string) lector["fechacomprobante"],
 					                                   (string) lector["concepto_del_comprobante"],
-					                                   " ",
+					                                   (string) lector["id_quien_creo"],
 					                                   " ",
 					                                   " ");
 					//total += decimal.Parse((string) lector["abono"]);
@@ -610,19 +610,22 @@ namespace osiris
 				conexion.Open ();
 				NpgsqlCommand comando; 
 				comando = conexion.CreateCommand ();
-					comando.CommandText = "SELECT to_char(numero_comprobante_pagare,'99999999999') AS reciboservicio," +
-										"to_char(osiris_erp_comprobante_pagare.fecha_comprobante,'yyyy-MM-dd') AS fechacomprobante,concepto_del_comprobante "+
+					comando.CommandText = "SELECT to_char(numero_comprobante_pagare,'99999999999') AS reciboservicio,id_quien_creo," +
+										"to_char(osiris_erp_comprobante_pagare.fecha_comprobante,'yyyy-MM-dd') AS fechacomprobante,"+
+										"to_char(osiris_erp_comprobante_pagare.monto_pagare,'9999999999.99') AS montopagare, "+
+										"to_char(osiris_erp_comprobante_pagare.fecha_vencimiento_pagare,'yyyy-MM-dd') AS fechavencimientopagare,"+
+										"concepto_del_comprobante "+
 									"FROM osiris_erp_comprobante_pagare "+
 									"WHERE osiris_erp_comprobante_pagare.eliminado = 'false' "+
 									"AND osiris_erp_comprobante_pagare.folio_de_servicio = '"+this.folioservicio.ToString()+"' ";
 				//Console.WriteLine(comando.CommandText);
 				NpgsqlDataReader lector = comando.ExecuteReader ();
 				while (lector.Read()){	
-					treeViewEnginepagare.AppendValues ((string) lector["reciboservicio"],
+					treeViewEnginepagare.AppendValues ((string) lector["montopagare"],
 					                                   (string) lector["fechacomprobante"],
-					                                   (string) lector["concepto_del_comprobante"],
-					                                   " ",
-					                                   " ",
+					                                   (string) lector["fechavencimientopagare"],
+					                                   (string) lector["id_quien_creo"],
+					                                   (string) lector["reciboservicio"],
 					                                   " ");
 					//total += decimal.Parse((string) lector["abono"]);
 					// entry_total_abonos.Text = total.ToString();

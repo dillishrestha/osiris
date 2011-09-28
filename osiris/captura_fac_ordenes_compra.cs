@@ -39,8 +39,7 @@ namespace osiris
 {
 	public class factura_orden_compra
 	{
-		[Widget] Gtk.Button button_salir = null;
-		
+		[Widget] Gtk.Button button_salir = null;		
 		//Declarando ventana de captura de facturas de ordenes de compra
 		[Widget] Gtk.Window captura_facturas_orden_compra = null;
 		[Widget] Gtk.CheckButton checkbutton_factura_sin_orden = null;
@@ -680,20 +679,17 @@ namespace osiris
 				float preciocondesc;
 				float tomaprecio;
 				float tomadescue;
-				float valoriva = float.Parse(classpublic.ivaparaaplicar);
-							
+				float valoriva = float.Parse(classpublic.ivaparaaplicar);							
 				while (lector.Read()){
 					calculodeiva = 0;
 					preciomasiva = 0;
 					tomaprecio = float.Parse((string) lector["preciopublico"],System.Globalization.NumberStyles.Float,new System.Globalization.CultureInfo("es-MX"));
 					tomadescue = float.Parse((string) lector["porcentagesdesc"],System.Globalization.NumberStyles.Float,new System.Globalization.CultureInfo("es-MX"));
 					preciocondesc = tomaprecio;
-					if ((bool) lector["aplicar_iva"])
-					{
+					if ((bool) lector["aplicar_iva"]){
 						calculodeiva = (tomaprecio * valoriva)/100;
 					}
-					if ((bool) lector["aplica_descuento"])
-					{
+					if ((bool) lector["aplica_descuento"]){
 						preciocondesc = tomaprecio-((tomaprecio*tomadescue)/100);
 					}
 					preciomasiva = tomaprecio + calculodeiva;

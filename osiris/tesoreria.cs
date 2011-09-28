@@ -41,24 +41,27 @@ namespace osiris
 	{
 		// Boton general para salir de las ventanas
 		// Todas la ventanas en glade este boton debe estra declarado identico
-		[Widget] Gtk.Button button_salir;
+		[Widget] Gtk.Button button_salir = null;
 		
 		// Declarando ventana principal de Hospitalizacion
-		[Widget] Gtk.Window menu_tesoreria;
-		[Widget] Gtk.Button button_caja;
-		[Widget] Gtk.Button button_facturador;
-		[Widget] Gtk.Button button_clientes;
+		[Widget] Gtk.Window menu_tesoreria = null;
+		[Widget] Gtk.Button button_caja = null;
+		[Widget] Gtk.Button button_facturador = null;
+		[Widget] Gtk.Button button_clientes = null;
+		[Widget] Gtk.Button button_envio_de_facturas = null;
+		[Widget] Gtk.Button button_solicitud_material = null;
+		[Widget] Gtk.Button button_exportar = null;
+		[Widget] Gtk.Button button_reportes = null;
+		
+		// Ventana de Reportes
+		[Widget] Gtk.Window reportes_caja = null;
 		[Widget] Gtk.Button button_proc_facturados;
 		[Widget] Gtk.Button button_proc_no_facturados;
 		[Widget] Gtk.Button button_rpt_honorarios_medicos;
 		[Widget] Gtk.Button button_rpt_facturas_pagadas;
 		[Widget] Gtk.Button button_reporte_de_cerrados;
 		[Widget] Gtk.Button button_rpt_abonos;
-		[Widget] Gtk.Button button_envio_de_facturas;
 		[Widget] Gtk.Button button_rpt_facturas_pendientes;
-		[Widget] Gtk.Button button_solicitud_material = null;
-		
-		//[Widget] Gtk.Button button_clientes;
 		
 		//declarando la ventana de rango de fechas
 		[Widget] Gtk.Window rango_de_fecha;
@@ -141,22 +144,16 @@ namespace osiris
 			Glade.XML gxml = new Glade.XML (null, "caja.glade", "menu_tesoreria", null);
 			gxml.Autoconnect (this);        
 			////// Muestra ventana de Glade
-			menu_tesoreria.Show();
-			
-			////// Sale de la ventana
-			button_salir.Clicked += new EventHandler(on_cierraventanas_clicked);
+			menu_tesoreria.Show();			
 			button_caja.Clicked += new EventHandler(on_button_caja_clicked);
 			button_clientes.Clicked += new EventHandler(on_button_clientes_clicked);
-			button_proc_facturados.Clicked += new EventHandler(on_button_proc_facturados_clicked);
-			button_proc_no_facturados.Clicked += new EventHandler(on_button_proc_no_facturados_clicked);
-			button_rpt_honorarios_medicos.Clicked += new EventHandler(on_button_rpt_honorarios_medicos_cliked);
-			button_rpt_facturas_pagadas.Clicked += new EventHandler(on_button_button_rpt_facturas_pagadas_clicked);
 			button_facturador.Clicked += new EventHandler(on_button_facturador_clicked);
-			button_reporte_de_cerrados.Clicked += new EventHandler(on_button_reporte_de_cerrados_clicked);
-			button_rpt_abonos.Clicked += new EventHandler(on_button_button_rpt_abonos_clicked);
 			button_envio_de_facturas.Clicked += new EventHandler(on_button_envio_facturas_clicked);
-			button_rpt_facturas_pendientes.Clicked += new EventHandler(button_rpt_facturas_pendientes_clicked);
+			button_exportar.Clicked += new EventHandler(on_button_exportar_clicked);
 			button_solicitud_material.Clicked += new EventHandler(on_button_solicitud_material_clicked);
+			button_reportes.Clicked += new EventHandler(on_button_reportes_clicked);				
+			////// Sale de la ventana
+			button_salir.Clicked += new EventHandler(on_cierraventanas_clicked);			
 		}
 
 		
@@ -175,11 +172,6 @@ namespace osiris
 			new osiris.catalogos_generales("cliente",LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
 		}
 		
-		void on_button_button_rpt_abonos_clicked(object sender, EventArgs args)
-		{
-			new osiris.reporte_de_abonos(nombrebd);	
-		}
-		
 		void on_button_envio_facturas_clicked(object sender, EventArgs args)
 		{
 			new osiris.envio_de_facturas(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
@@ -189,7 +181,75 @@ namespace osiris
 		{
 			new osiris.solicitud_material(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,16);
 		}
-
+		
+		void on_button_exportar_clicked(object sender, EventArgs args)
+		{
+			if(LoginEmpleado == "DOLIVARES" || LoginEmpleado =="ADMIN" || LoginEmpleado =="MARGARITAZ" || LoginEmpleado =="IESPINOZAF" || LoginEmpleado =="ZBAEZH"){
+				string query_sql = "SELECT osiris_erp_cobros_deta.folio_de_servicio AS foliodeservicio,osiris_erp_cobros_deta.pid_paciente AS pidpaciente, "+
+					"osiris_his_tipo_admisiones.descripcion_admisiones,aplicar_iva, osiris_his_tipo_admisiones.id_tipo_admisiones AS idadmisiones,"+
+						"osiris_grupo_producto.descripcion_grupo_producto, osiris_productos.id_grupo_producto,  to_char(osiris_erp_cobros_deta.porcentage_descuento,'999.99') AS porcdesc," +
+						 "to_char(osiris_erp_cobros_enca.fechahora_creacion,'dd-mm-yyyy') AS fechcreacion,to_char(osiris_erp_cobros_enca.fechahora_creacion,'HH:mm') AS horacreacion," +
+						 "to_char(osiris_erp_cobros_deta.id_producto,'999999999999') AS idproducto,descripcion_producto, to_char(osiris_erp_cobros_deta.cantidad_aplicada,'99999999.99') AS cantidadaplicada," +
+						 "to_char(osiris_erp_cobros_deta.precio_producto,'9999999.99') AS preciounitario, ltrim(to_char(osiris_erp_cobros_deta.precio_producto,'9999999.99')) AS preciounitarioprod," +
+						 "to_char(osiris_erp_cobros_deta.iva_producto,'999999.99') AS ivaproducto," +
+						 "to_char(osiris_erp_cobros_deta.cantidad_aplicada * osiris_erp_cobros_deta.precio_producto,'99999999.99') AS ppcantidad," +
+						 "to_char(osiris_productos.precio_producto_publico,'999999999.99999') AS preciopublico,osiris_erp_comprobante_servicio.numero_comprobante_servicio AS numerorecibo," +
+						 "osiris_his_paciente.nombre1_paciente || ' ' || osiris_his_paciente.nombre2_paciente || ' ' || osiris_his_paciente.apellido_paterno_paciente || ' ' || osiris_his_paciente.apellido_materno_paciente AS nombre_paciente," +
+						 "to_char(osiris_his_paciente.fecha_nacimiento_paciente, 'dd-MM-yyyy') AS fechanacpaciente,to_char(to_number(to_char(age('2011-01-20 05:25:11',osiris_his_paciente.fecha_nacimiento_paciente),'yyyy') ,'9999'),'9999') AS edadpaciente," +
+						 "telefono_particular1_paciente,osiris_erp_comprobante_servicio.observaciones AS nro_oficio,osiris_erp_comprobante_servicio.observaciones2 AS nro_nomina,osiris_erp_comprobante_servicio.observaciones3 AS departamento," +
+						 "osiris_erp_comprobante_servicio.concepto_del_comprobante AS concepto_comprobante,osiris_erp_cobros_enca.id_empresa,descripcion_empresa,osiris_erp_cobros_enca.nombre_medico_encabezado AS medico_tratante " +
+						 "FROM osiris_erp_cobros_deta,osiris_his_tipo_admisiones,osiris_productos,osiris_grupo_producto,osiris_erp_comprobante_servicio,osiris_his_paciente,osiris_erp_cobros_enca,osiris_empresas " +
+						 "WHERE osiris_erp_cobros_deta.id_tipo_admisiones = osiris_his_tipo_admisiones.id_tipo_admisiones " +
+						 "AND osiris_erp_cobros_deta.id_producto = osiris_productos.id_producto " +
+						 "AND osiris_productos.id_grupo_producto = osiris_grupo_producto.id_grupo_producto " +
+						 "AND osiris_erp_cobros_deta.pid_paciente = osiris_his_paciente.pid_paciente " +
+						 "AND osiris_erp_cobros_enca.id_empresa = osiris_empresas.id_empresa " +
+						 "AND osiris_erp_cobros_enca.folio_de_servicio = osiris_erp_cobros_deta.folio_de_servicio " +
+						 "AND osiris_erp_comprobante_servicio.folio_de_servicio = osiris_erp_cobros_deta.folio_de_servicio " +
+						 "AND osiris_erp_cobros_deta.eliminado = 'false' " +
+						
+						 "AND osiris_erp_comprobante_servicio.id_tipo_paciente = '500' " +
+						 "AND to_char(osiris_erp_cobros_enca.fechahora_creacion,'MM') = '08' " +
+						 "AND to_char(osiris_erp_cobros_enca.fechahora_creacion,'yyyy') = '2011' " +
+						 "AND osiris_erp_comprobante_servicio.id_empresa = '23' " +
+						
+						
+						 "ORDER BY osiris_erp_cobros_deta.folio_de_servicio ASC;";
+				string[] args_names_field = {"foliodeservicio","pidpaciente","descripcion_admisiones","descripcion_grupo_producto","fechcreacion","idproducto","descripcion_producto",
+										"cantidadaplicada","preciounitario","numerorecibo","nombre_paciente","nro_oficio","nro_nomina","departamento","medico_tratante"};
+				string[] args_type_field = {"float","float","string","string","string","float","string","float","float","float","string","string","string","string","string"};
+				
+				// class_crea_ods.cs
+				new osiris.class_traslate_spreadsheet(query_sql,args_names_field,args_type_field);
+			}else{
+				MessageDialog msgBox = new MessageDialog (MyWinError,DialogFlags.Modal,
+									MessageType.Info,ButtonsType.Ok,"No tiene Permiso para esta Opcion");
+				msgBox.Run ();msgBox.Destroy();
+			}
+		}
+		
+		void on_button_reportes_clicked(object sender, EventArgs args)
+		{
+			Glade.XML gxml = new Glade.XML (null, "caja.glade", "reportes_caja", null);
+			gxml.Autoconnect (this);        
+			////// Muestra ventana de Glade
+			reportes_caja.Show();			
+			button_proc_facturados.Clicked += new EventHandler(on_button_proc_facturados_clicked);
+			button_proc_no_facturados.Clicked += new EventHandler(on_button_proc_no_facturados_clicked);
+			button_rpt_honorarios_medicos.Clicked += new EventHandler(on_button_rpt_honorarios_medicos_cliked);
+			button_rpt_facturas_pagadas.Clicked += new EventHandler(on_button_button_rpt_facturas_pagadas_clicked);
+			button_reporte_de_cerrados.Clicked += new EventHandler(on_button_reporte_de_cerrados_clicked);
+			button_rpt_abonos.Clicked += new EventHandler(on_button_button_rpt_abonos_clicked);
+			button_rpt_facturas_pendientes.Clicked += new EventHandler(button_rpt_facturas_pendientes_clicked);
+			////// Sale de la ventana
+			button_salir.Clicked += new EventHandler(on_cierraventanas_clicked);
+		}
+				
+		void on_button_button_rpt_abonos_clicked(object sender, EventArgs args)
+		{
+			new osiris.reporte_de_abonos(nombrebd);	
+		}
+		
 		void button_rpt_facturas_pendientes_clicked(object sender, EventArgs args)
 		{
 			this.facturas_ = "AND osiris_erp_factura_enca.pagada = 'false' " ;
@@ -204,6 +264,8 @@ namespace osiris
 			pagados = true;
 			on_button_button_rpt_facturas();
 		}
+		
+		
 		
 		void on_button_button_rpt_facturas()
 		{	

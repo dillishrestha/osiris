@@ -837,19 +837,19 @@ namespace osiris
 					}	
 				}
 				if(tipoalmacen == 1){
-					filter = new Gtk.TreeModelFilter (treeViewEngineBusca, null);
-					filter.VisibleFunc = new Gtk.TreeModelFilterVisibleFunc (FilterTree);
-					lista_almacenes.Model = filter;
+					//filter = new Gtk.TreeModelFilter (treeViewEngineBusca, null);
+					//filter.VisibleFunc = new Gtk.TreeModelFilterVisibleFunc (FilterTree);
+					//lista_almacenes.Model = filter;
 				}
 				if(tipoalmacen == 2){
-					filter = new Gtk.TreeModelFilter (treeViewEngineBusca2, null);
-					filter.VisibleFunc = new Gtk.TreeModelFilterVisibleFunc (FilterTree2);
-					lista_almacenes.Model = filter;
+					//filter = new Gtk.TreeModelFilter (treeViewEngineBusca2, null);
+					//filter.VisibleFunc = new Gtk.TreeModelFilterVisibleFunc (FilterTree2);
+					//lista_almacenes.Model = filter;
 				}
 				if(tipoalmacen == 3){
-					filter = new Gtk.TreeModelFilter (treeViewEngineBusca2, null);
-					filter.VisibleFunc = new Gtk.TreeModelFilterVisibleFunc (FilterTree2);
-					lista_almacenes.Model = filter;
+					//filter = new Gtk.TreeModelFilter (treeViewEngineBusca2, null);
+					//filter.VisibleFunc = new Gtk.TreeModelFilterVisibleFunc (FilterTree2);
+					//lista_almacenes.Model = filter;
 				}
 					
 			}catch (NpgsqlException ex){

@@ -149,6 +149,9 @@ namespace osiris
 						toma_valor_total = float.Parse((string) lector["montodelabono"]);
 						titulo_comprobante = tipocomprobante+"_"+ (string) lector["descripcion_tipo_comprobante"];
 					}else{
+						if (tipocomprobante == "PAGARE"){
+							toma_valor_total = float.Parse((string) lector["montodelabono"]);
+						}
 						titulo_comprobante = tipocomprobante;
 					}
 					toma_tipoadmisiones = (int) lector["idadmisiones"];

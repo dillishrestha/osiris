@@ -161,6 +161,16 @@ namespace osiris
 				layout.FontDescription.Weight = Weight.Normal;
 				comienzo_linea += separacion_linea;
 				salto_de_pagina(cr,layout);
+				descripcion_producto_aplicado = (string) lista_solicitado_no_cargado.Model.GetValue (iter,1).ToString().Trim();
+				if(descripcion_producto_aplicado.Length > 62) { descripcion_producto_aplicado = descripcion_producto_aplicado.Substring(0,62); }
+				cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText((string) lista_solicitado_no_cargado.Model.GetValue (iter,0));	Pango.CairoHelper.ShowLayout (cr, layout);
+				cr.MoveTo(70*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText(descripcion_producto_aplicado);	Pango.CairoHelper.ShowLayout (cr, layout);
+				cr.MoveTo(360*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText((string) lista_solicitado_no_cargado.Model.GetValue (iter,2).ToString().Trim());	Pango.CairoHelper.ShowLayout (cr, layout);	
+				cr.MoveTo(400*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText((string) lista_solicitado_no_cargado.Model.GetValue (iter,3).ToString().Trim());	Pango.CairoHelper.ShowLayout (cr, layout);
+				cr.MoveTo(440*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText((string) lista_solicitado_no_cargado.Model.GetValue (iter,4).ToString().Trim());	Pango.CairoHelper.ShowLayout (cr, layout);
+				cr.MoveTo(500*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText((string) lista_solicitado_no_cargado.Model.GetValue (iter,5).ToString().Trim());	Pango.CairoHelper.ShowLayout (cr, layout);
+				comienzo_linea += separacion_linea;
+				salto_de_pagina(cr,layout);
 				while (treeViewEngine2.IterNext(ref iter)){
 					descripcion_producto_aplicado = (string) lista_solicitado_no_cargado.Model.GetValue (iter,1).ToString().Trim();
 					if(descripcion_producto_aplicado.Length > 62) { descripcion_producto_aplicado = descripcion_producto_aplicado.Substring(0,62); }

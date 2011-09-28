@@ -243,7 +243,7 @@ namespace osiris
                 cr.ShowPage();
                 Pango.FontDescription desc = Pango.FontDescription.FromString ("Sans");                               
                 fontSize = 8.0;        desc.Size = (int)(fontSize * pangoScale);                    layout.FontDescription = desc;
-                comienzo_linea = 70;
+                comienzo_linea = 90;
                 numpage += 1;
                 imprime_encabezado(cr,layout);
             }

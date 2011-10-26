@@ -185,6 +185,7 @@ namespace osiris
 		void on_button_exportar_clicked(object sender, EventArgs args)
 		{
 			if(LoginEmpleado == "DOLIVARES" || LoginEmpleado =="ADMIN" || LoginEmpleado =="MARGARITAZ" || LoginEmpleado =="IESPINOZAF" || LoginEmpleado =="ZBAEZH"){
+				/*
 				string query_sql = "SELECT osiris_erp_cobros_deta.folio_de_servicio AS foliodeservicio,osiris_erp_cobros_deta.pid_paciente AS pidpaciente, "+
 					"osiris_his_tipo_admisiones.descripcion_admisiones,aplicar_iva, osiris_his_tipo_admisiones.id_tipo_admisiones AS idadmisiones,"+
 						"osiris_grupo_producto.descripcion_grupo_producto, osiris_productos.id_grupo_producto,  to_char(osiris_erp_cobros_deta.porcentage_descuento,'999.99') AS porcdesc," +
@@ -208,10 +209,10 @@ namespace osiris
 						 "AND osiris_erp_comprobante_servicio.folio_de_servicio = osiris_erp_cobros_deta.folio_de_servicio " +
 						 "AND osiris_erp_cobros_deta.eliminado = 'false' " +
 						
-						 "AND osiris_erp_comprobante_servicio.id_tipo_paciente = '500' " +
-						 "AND to_char(osiris_erp_cobros_enca.fechahora_creacion,'MM') = '08' " +
+						 "AND osiris_erp_comprobante_servicio.id_tipo_paciente = '102' " +
+						 "AND to_char(osiris_erp_cobros_enca.fechahora_creacion,'MM') = '10' " +
 						 "AND to_char(osiris_erp_cobros_enca.fechahora_creacion,'yyyy') = '2011' " +
-						 "AND osiris_erp_comprobante_servicio.id_empresa = '23' " +
+						 "AND osiris_erp_comprobante_servicio.id_empresa = '31' " +
 						
 						
 						 "ORDER BY osiris_erp_cobros_deta.folio_de_servicio ASC;";
@@ -221,6 +222,8 @@ namespace osiris
 				
 				// class_crea_ods.cs
 				new osiris.class_traslate_spreadsheet(query_sql,args_names_field,args_type_field);
+				*/
+				new osiris.rptAdmision(nombrebd,"archivo");  // rpt_rep1_admision.cs
 			}else{
 				MessageDialog msgBox = new MessageDialog (MyWinError,DialogFlags.Modal,
 									MessageType.Info,ButtonsType.Ok,"No tiene Permiso para esta Opcion");

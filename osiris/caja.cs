@@ -2350,7 +2350,7 @@ namespace osiris
 					button_guardar_pago.Clicked += new EventHandler(on_button_guardar_pagare_clicked);
 				}
 				
-				button_salir.Clicked += new EventHandler(on_cierraventanas_clicked); // esta sub-clase esta en hscmty.cs
+				button_salir.Clicked += new EventHandler(on_cierraventanas_clicked);
 				combobox_formapago.Hide();
 				label283.Hide();
 				//llenado_formapago();

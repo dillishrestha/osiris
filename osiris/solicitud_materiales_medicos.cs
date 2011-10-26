@@ -99,6 +99,7 @@ namespace osiris
 		string connectionString;		
 		float valoriva;
 		int idalmacen;    // Esta variable almacena el codigo del almacen de esta clase, se recibe como parametro de la clase
+		string filtro_query_alta = "AND osiris_erp_cobros_enca.alta_paciente = 'false' "; // solo caja podra pedir por paciente 
 		
 		int ultimasolicitud;		// Toma el ultimo numero de solictud
 		
@@ -177,6 +178,10 @@ namespace osiris
 			statusbar_hospital.HasResizeGrip = false;			
 			//entry_folio_servicio.Text = "ejemplo";			
 			crea_treeview_solicitud();
+			Console.WriteLine(idalmacen_.ToString());
+			if (idalmacen_ == 16){
+				filtro_query_alta = " ";
+			}
 		}
 
 		void on_button_busca_producto_clicked(object sender, EventArgs args)
@@ -253,9 +258,8 @@ namespace osiris
 									"to_char(to_number(to_char(age('"+DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss")+"',osiris_his_paciente.fecha_nacimiento_paciente),'MM'),'99'),'99') AS mesesedad,"+
 									"to_char(fechahora_registro_paciente,'dd-MM-yyyy HH:mi:ss') AS fech_creacion,activo FROM osiris_his_paciente,osiris_erp_cobros_enca WHERE activo = 'true' "+
 										"AND osiris_his_paciente.pid_paciente = osiris_erp_cobros_enca.pid_paciente "+
-										"AND osiris_erp_cobros_enca.alta_paciente = false "+
-										"AND osiris_erp_cobros_enca.cancelado = false "+
-										"AND osiris_erp_cobros_enca.alta_paciente = 'false' "+
+										"AND osiris_erp_cobros_enca.cancelado = 'false' "+
+										filtro_query_alta+
 										"AND osiris_erp_cobros_enca.pagado = 'false' "+
 										"AND osiris_erp_cobros_enca.cerrado = 'false' "+
 										"AND osiris_erp_cobros_enca.reservacion = 'false' ",															
@@ -265,9 +269,8 @@ namespace osiris
 									"to_char(to_number(to_char(age('"+DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss")+"',osiris_his_paciente.fecha_nacimiento_paciente),'MM'),'99'),'99') AS mesesedad,"+
 									"to_char(fechahora_registro_paciente,'dd-MM-yyyy HH:mi:ss') AS fech_creacion,activo FROM osiris_his_paciente,osiris_erp_cobros_enca WHERE activo = 'true' "+
 										"AND osiris_his_paciente.pid_paciente = osiris_erp_cobros_enca.pid_paciente "+
-										"AND osiris_erp_cobros_enca.alta_paciente = false "+
-										"AND osiris_erp_cobros_enca.cancelado = false "+
-										"AND osiris_erp_cobros_enca.alta_paciente = 'false' "+
+										"AND osiris_erp_cobros_enca.cancelado = 'false' "+
+										filtro_query_alta+
 										"AND osiris_erp_cobros_enca.pagado = 'false' "+
 										"AND osiris_erp_cobros_enca.cerrado = 'false' "+
 										"AND osiris_erp_cobros_enca.reservacion = 'false' "+
@@ -278,9 +281,8 @@ namespace osiris
 									"to_char(to_number(to_char(age('"+DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss")+"',osiris_his_paciente.fecha_nacimiento_paciente),'MM'),'99'),'99') AS mesesedad,"+
 									"to_char(fechahora_registro_paciente,'dd-MM-yyyy HH:mi:ss') AS fech_creacion,activo FROM osiris_his_paciente,osiris_erp_cobros_enca WHERE activo = 'true' "+
 										"AND osiris_his_paciente.pid_paciente = osiris_erp_cobros_enca.pid_paciente "+
-										"AND osiris_erp_cobros_enca.alta_paciente = false "+
-										"AND osiris_erp_cobros_enca.cancelado = false "+
-										"AND osiris_erp_cobros_enca.alta_paciente = 'false' "+
+										"AND osiris_erp_cobros_enca.cancelado = 'false' "+
+										filtro_query_alta+
 										"AND osiris_erp_cobros_enca.pagado = 'false' "+
 										"AND osiris_erp_cobros_enca.cerrado = 'false' "+
 										"AND osiris_erp_cobros_enca.reservacion = 'false' "+
@@ -291,9 +293,8 @@ namespace osiris
 									"to_char(to_number(to_char(age('"+DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss")+"',osiris_his_paciente.fecha_nacimiento_paciente),'MM'),'99'),'99') AS mesesedad,"+
 									"to_char(fechahora_registro_paciente,'dd-MM-yyyy HH:mi:ss') AS fech_creacion,activo FROM osiris_his_paciente,osiris_erp_cobros_enca WHERE activo = 'true' "+
 										"AND osiris_his_paciente.pid_paciente = osiris_erp_cobros_enca.pid_paciente "+
-										"AND osiris_erp_cobros_enca.alta_paciente = false "+
-										"AND osiris_erp_cobros_enca.cancelado = false "+
-										"AND osiris_erp_cobros_enca.alta_paciente = 'false' "+
+										"AND osiris_erp_cobros_enca.cancelado = 'false' "+
+										filtro_query_alta+
 										"AND osiris_erp_cobros_enca.pagado = 'false' "+
 										"AND osiris_erp_cobros_enca.cerrado = 'false' "+
 										"AND osiris_erp_cobros_enca.reservacion = 'false' "+

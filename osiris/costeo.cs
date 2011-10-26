@@ -1169,8 +1169,8 @@ namespace osiris
 		
 		void on_cierraventanas_clicked (object sender, EventArgs args)
 		{
-				Widget win = (Widget) sender;
-				win.Toplevel.Destroy();
+			Widget win = (Widget) sender;
+			win.Toplevel.Destroy();
 		}	
 
 	}

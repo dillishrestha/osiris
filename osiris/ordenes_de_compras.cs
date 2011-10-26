@@ -702,6 +702,7 @@ namespace osiris
 			col_precio_prod_hsc.PackStart(cellr8, true);
 			col_precio_prod_hsc.AddAttribute (cellr8, "text", 8);
 			col_precio_prod_hsc.SortColumnId = (int) col_ordencompra.col_precio_prod_hsc;
+			cellr8.Editable = true;
 			
 			TreeViewColumn col_embalaje = new TreeViewColumn();
 			CellRendererText cellr9 = new CellRendererText();

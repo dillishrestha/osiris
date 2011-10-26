@@ -44,7 +44,7 @@ namespace osiris
 				comando = conexion.CreateCommand ();
 				comando.CommandText = query_sql;
 				comando.ExecuteNonQuery();    comando.Dispose();
-				//Console.WriteLine(comando.CommandText);
+				Console.WriteLine(comando.CommandText);
 				NpgsqlDataReader lector = comando.ExecuteReader ();
 				// Creando los nombres de ancabezado de los campos
 				for (int colum_field = 0; colum_field < args_names_field.Length; colum_field++){					
@@ -140,8 +140,8 @@ namespace osiris
 				book.setText(0, 6, "fechcreacion");
 				book.setText(0, 7, "descripcion_admisiones");
 				book.setText(0, 8, "idtipoadmision");
-				book.setText(0, 8, "descripcion_grupo_producto");
-				book.setText(0, 8, "aplicar_iva");
+				book.setText(0, 9, "descripcion_grupo_producto");
+				book.setText(0, 10, "aplicar_iva");
 				
 				NpgsqlConnection conexion; 
 				conexion = new NpgsqlConnection (connectionString+nombrebd);
@@ -170,7 +170,7 @@ namespace osiris
 					while (lector.Read()){
 						book.setNumber(number_file, 0, int.Parse(numeroatencion_));
 						book.setText(number_file, 1, (string) lector["descripcion_producto"]);
-						book.setText(number_file, 1, (string) lector["idproducto"]);	
+						book.setText(number_file, 2, (string) lector["idproducto"]);	
 						number_file++;
 					}
 					conexion.Close();
@@ -194,4 +194,3 @@ namespace osiris
 		}		
 	}
 }
-

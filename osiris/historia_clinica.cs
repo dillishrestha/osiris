@@ -123,6 +123,7 @@ namespace osiris
 		[Widget] Gtk.SpinButton spinbutton_a;
 		[Widget] Gtk.Entry entry_pap;
 		[Widget] Gtk.Entry entry_otros_ago;
+		[Widget] Gtk.Frame frame27 = null;
 		
 		//fechas:
 		[Widget] Gtk.Entry entry_fum;
@@ -183,16 +184,65 @@ namespace osiris
 		[Widget] Gtk.Entry entry_plan_diag;
 		[Widget] Gtk.Entry entry_nombre_plan_diag;
 		
-		[Widget] Gtk.ComboBox combobox_craneo = null;
-		[Widget] Gtk.ComboBox combobox_cara = null;
+		[Widget] Gtk.ComboBox combobox_cabeza_craneo = null;
+		[Widget] Gtk.ComboBox combobox_cabeza_cara = null;
+		[Widget] Gtk.ComboBox combobox_nariz_mucosa = null;
+		[Widget] Gtk.ComboBox combobox_nariz_cornetes = null;
+		[Widget] Gtk.ComboBox combobox_nariz_polipos = null;   // si no
+		[Widget] Gtk.ComboBox combobox_nariz_septum = null;
+		[Widget] Gtk.ComboBox combobox_cuello_cilindrico = null;
+		[Widget] Gtk.ComboBox combobox_cuello_traquea = null;
+		[Widget] Gtk.ComboBox combobox_cuello_movilidad = null;
+		[Widget] Gtk.ComboBox combobox_cuello_ganglios = null; // si no
+		[Widget] Gtk.ComboBox combobox_oido_timpano_der = null;
+		[Widget] Gtk.ComboBox combobox_oido_timpano_izq = null;
+		[Widget] Gtk.ComboBox combobox_oido_condaud_der = null;
+		[Widget] Gtk.ComboBox combobox_oido_condaud_izq = null;
+		[Widget] Gtk.ComboBox combobox_oido_pabellon_der = null;
+		[Widget] Gtk.ComboBox combobox_oido_pabellon_izq = null;
+		[Widget] Gtk.ComboBox combobox_ojos_pupilas_der = null;
+		[Widget] Gtk.ComboBox combobox_ojos_pupilas_izq = null;
+		[Widget] Gtk.ComboBox combobox_ojos_cornea_der = null;
+		[Widget] Gtk.ComboBox combobox_ojos_cornea_izq = null;
+		[Widget] Gtk.ComboBox combobox_ojos_idencolor_der = null;
+		[Widget] Gtk.ComboBox combobox_ojos_idencolor_izq = null;
+		[Widget] Gtk.ComboBox combobox_ojos_movolcular_der = null;
+		[Widget] Gtk.ComboBox combobox_ojos_movolcular_izq = null;
+		[Widget] Gtk.ComboBox combobox_ojos_refolcular_der = null;
+		[Widget] Gtk.ComboBox combobox_ojos_refolcular_izq = null;
+		[Widget] Gtk.ComboBox combobox_ojos_ptregion_der = null;
+		[Widget] Gtk.ComboBox combobox_ojos_ptregion_izq = null;		
+		[Widget] Gtk.ComboBox combobox_cavoral_encias = null;
+		[Widget] Gtk.ComboBox combobox_cavoral_mucosa = null;
+		[Widget] Gtk.ComboBox combobox_cavoral_paladar = null;
+		[Widget] Gtk.ComboBox combobox_cavoral_lengua = null;
+		[Widget] Gtk.ComboBox combobox_cavoral_amigdalas = null;
+		[Widget] Gtk.ComboBox combobox_cavoral_dentadura = null;
+		[Widget] Gtk.ComboBox combobox_torax_simetria = null;
+		[Widget] Gtk.ComboBox combobox_torax_amplexacion = null;
+		[Widget] Gtk.ComboBox combobox_torax_ventilacion = null;
+		[Widget] Gtk.ComboBox combobox_torax_amplexion = null;
+		[Widget] Gtk.ComboBox combobox_torax_murmullo = null;
+		[Widget] Gtk.ComboBox combobox_areacard_ritmo = null;
+		[Widget] Gtk.ComboBox combobox_areacard_intensidad = null;
+		[Widget] Gtk.ComboBox combobox_areacard_ruidos = null;
+		[Widget] Gtk.ComboBox combobox_areacard_soplos = null;
+		[Widget] Gtk.ComboBox combobox_collumb_conformacion = null;
+		[Widget] Gtk.ComboBox combobox_collumb_arcosmov = null;
+		[Widget] Gtk.ComboBox combobox_collumb_marcha = null;
+		[Widget] Gtk.ComboBox combobox_collumb_puntdoloroso = null;
+		
+		//combobox_abdomen_conformacion = null;
+		//combobox_abdomen_peristalsis
+		
 		[Widget] Gtk.Button button_exportar_xls = null;
 		
 		[Widget] Gtk.Statusbar statusbar5 = null;
 		string fecha_admision;
 		string fecha_nacimiento;
 		
-		string vivomuertopadre = ""; 
-		string vivomuertomadre = ""; 
+		string vivomuertopadre = "VIVO"; 
+		string vivomuertomadre = "VIVO"; 
 		string pntabaquismo = "";
 		string pnalcoholismo = "";
 		string pndrogas = "";
@@ -202,6 +252,8 @@ namespace osiris
 		string pnalergicos = "";
 		string pntraumaticos = "";
 		string pnneurologicos = "";
+		string enfermedad_padre = "";
+		string enfermedad_madre = "";
 		
 		//public int tipodellenado;
 		bool editando = false;
@@ -225,14 +277,11 @@ namespace osiris
 		class_conexion conexion_a_DB = new class_conexion();
 		
 		string[] args_causa_de_muerte = {"","DIABETES","HIPERTENSION","ENF. DEL CORAZON","ENF. DE PULMONES","CANCER O LEUCEMIA","EMBOLIA","ENF. MENTALES"};
-		int[] args_id_causa_de_muerte = {1,2,3,4,5,6,7,8};
-		
 		string[] args_vivo_muerto = {"","VIVO","MUERTO"};
 		string[] args_si_no = {"","SI","NO"};
 		string[] args_normal_anormal = {"","NORMAL","ANORMAL"};
-		int[] args_id_array = {0,1,2};
-		
-	
+		string[] args_conformacion = {"","PLANO","GLOBOSO","CONCAVO"};
+		int[] args_id_array = {0,1,2,3,4,5,6,7,8};
 		
 		public historia_clinica(string nombre_paciente_,string pid_paciente_,string edad_,string LoginEmp, string NomEmpleado_, string AppEmpleado_, string ApmEmpleado_, string nombrebd_,string fecha_admision_,string fecha_nacimiento_ ) 
 		{
@@ -293,12 +342,12 @@ namespace osiris
 			this.entry_perinatales.KeyPressEvent += onKeyPressEventactual;
 		
 			//llenado_combobox(0,"",combobox_enfermedad_padre,args_causa_de_muerte,args_id_causa_de_muerte);
-			llenado_combobox(0,"",combobox_enfermedad_padre,args_causa_de_muerte,args_id_causa_de_muerte);			
-			llenado_combobox(0,"",combobox_enfermedad_madre,args_causa_de_muerte,args_id_causa_de_muerte);
-			llenado_combobox(0,"",combobox_enfermedad_hermanos,args_causa_de_muerte,args_id_causa_de_muerte);
-			llenado_combobox(0,"",combobox_enfermedad_hijos,args_causa_de_muerte,args_id_causa_de_muerte);
-			llenado_combobox(0,"",combobox_enfermedad_apaternos,args_causa_de_muerte,args_id_causa_de_muerte);
-			llenado_combobox(0,"",combobox_enfermedad_amaternos,args_causa_de_muerte,args_id_causa_de_muerte);
+			llenado_combobox(0,"",combobox_enfermedad_padre,args_causa_de_muerte,args_id_array);			
+			llenado_combobox(0,"",combobox_enfermedad_madre,args_causa_de_muerte,args_id_array);
+			llenado_combobox(0,"",combobox_enfermedad_hermanos,args_causa_de_muerte,args_id_array);
+			llenado_combobox(0,"",combobox_enfermedad_hijos,args_causa_de_muerte,args_id_array);
+			llenado_combobox(0,"",combobox_enfermedad_apaternos,args_causa_de_muerte,args_id_array);
+			llenado_combobox(0,"",combobox_enfermedad_amaternos,args_causa_de_muerte,args_id_array);
 			
 			//entrys id enfermedad (sirve para ingresar el id de la enfermedad y solo se pueda con numeros)
 			/*this.entry_idenf_padre.KeyPressEvent += onKeyPressEventactual;
@@ -308,22 +357,23 @@ namespace osiris
 		    this.entry_idenf_apaternos.KeyPressEvent += onKeyPressEventactual;
 		    this.entry_idenf_amaternos.KeyPressEvent += onKeyPressEventactual; */			
 			// Buscar Enfermedades/id Enfermedades
-			this.button_buscar1.Sensitive = false;
-			this.button_buscar2.Sensitive = false;
-			this.button_buscar3.Sensitive = false;
-			this.button_buscar4.Sensitive = false;
-			this.button_buscar5.Sensitive = false;
-			this.button_buscar6.Sensitive = false;
-			this.entry_idenf_padre.Sensitive = false;
-			this.entry_idenf_madre.Sensitive = false;
-			this.entry_idenf_hermanos.Sensitive = false;
-			this.entry_idenf_hijos.Sensitive = false;
-			this.entry_idenf_apaternos.Sensitive = false;
-			this.entry_idenf_amaternos.Sensitive = false;			
+			button_buscar1.Sensitive = false;
+			button_buscar2.Sensitive = false;
+			button_buscar3.Sensitive = false;
+			button_buscar4.Sensitive = false;
+			button_buscar5.Sensitive = false;
+			button_buscar6.Sensitive = false;
+			entry_idenf_padre.Sensitive = false;
+			entry_idenf_madre.Sensitive = false;
+			entry_idenf_hermanos.Sensitive = false;
+			entry_idenf_hijos.Sensitive = false;
+			entry_idenf_apaternos.Sensitive = false;
+			entry_idenf_amaternos.Sensitive = false;
+			frame27.Sensitive = false;
 			// (trayendo las variables del programa urgencias: nombre, pid y edad)
-			this.entry_nombre_paciente.Text = nombre_paciente_;
-			this.entry_pid_paciente.Text = pid_paciente_.Trim();
-			this.entry_edad_paciente.Text = edad_.Trim();					
+			entry_nombre_paciente.Text = nombre_paciente_;
+			entry_pid_paciente.Text = pid_paciente_.Trim();
+			entry_edad_paciente.Text = edad_.Trim();					
 			//llenado de los ComboBox Antecedentes Heredo Familiar:
 			llenado_combobox(1,"VIVO",combobox_vivomuerto_padre,args_vivo_muerto,args_id_array);
 			llenado_combobox(1,"VIVO",combobox_vivomuerto_madre,args_vivo_muerto,args_id_array);			
@@ -332,10 +382,62 @@ namespace osiris
 			llenado_combobox(1,"SI",combobox_alcoholismo,args_si_no,args_id_array);
 			llenado_combobox(1,"NO",combobox_drogas,args_si_no,args_id_array);			
 			// llenado combobox exploracion fisica
-			llenado_combobox(1,"NORMAL",combobox_craneo,args_normal_anormal,args_id_array);
-			llenado_combobox(1,"NORMAL",combobox_cara,args_normal_anormal,args_id_array);
+			llenado_combobox(1,"NORMAL",combobox_cabeza_craneo,args_normal_anormal,args_id_array);
+			llenado_combobox(1,"NORMAL",combobox_cabeza_cara,args_normal_anormal,args_id_array);
 			
-							
+			llenado_combobox(1,"NORMAL",combobox_nariz_mucosa,args_normal_anormal,args_id_array);
+			llenado_combobox(1,"NORMAL",combobox_nariz_cornetes,args_normal_anormal,args_id_array);
+			llenado_combobox(1,"NO",combobox_nariz_polipos,args_si_no,args_id_array);
+			llenado_combobox(1,"NORMAL",combobox_nariz_septum,args_normal_anormal,args_id_array);
+			
+			llenado_combobox(1,"NORMAL",combobox_cuello_cilindrico,args_normal_anormal,args_id_array);
+			llenado_combobox(1,"NORMAL",combobox_cuello_traquea,args_normal_anormal,args_id_array);
+			llenado_combobox(1,"NORMAL",combobox_cuello_movilidad,args_normal_anormal,args_id_array);
+			llenado_combobox(1,"NO",combobox_cuello_ganglios,args_si_no,args_id_array);
+			
+			llenado_combobox(1,"NORMAL",combobox_oido_timpano_der,args_normal_anormal,args_id_array);
+			llenado_combobox(1,"NORMAL",combobox_oido_timpano_izq,args_normal_anormal,args_id_array);
+			llenado_combobox(1,"NORMAL",combobox_oido_condaud_der,args_normal_anormal,args_id_array);
+			llenado_combobox(1,"NORMAL",combobox_oido_condaud_izq,args_normal_anormal,args_id_array);
+			llenado_combobox(1,"NORMAL",combobox_oido_pabellon_der,args_normal_anormal,args_id_array);
+			llenado_combobox(1,"NORMAL",combobox_oido_pabellon_izq,args_normal_anormal,args_id_array);
+			
+			llenado_combobox(1,"NORMAL",combobox_ojos_pupilas_der,args_normal_anormal,args_id_array);
+			llenado_combobox(1,"NORMAL",combobox_ojos_pupilas_izq,args_normal_anormal,args_id_array);
+			llenado_combobox(1,"NORMAL",combobox_ojos_cornea_der,args_normal_anormal,args_id_array);
+			llenado_combobox(1,"NORMAL",combobox_ojos_cornea_izq,args_normal_anormal,args_id_array);
+			llenado_combobox(1,"NORMAL",combobox_ojos_idencolor_der,args_normal_anormal,args_id_array);
+			llenado_combobox(1,"NORMAL",combobox_ojos_idencolor_izq,args_normal_anormal,args_id_array);
+			llenado_combobox(1,"NORMAL",combobox_ojos_movolcular_der,args_normal_anormal,args_id_array);
+			llenado_combobox(1,"NORMAL",combobox_ojos_movolcular_izq,args_normal_anormal,args_id_array);
+			llenado_combobox(1,"NORMAL",combobox_ojos_refolcular_der,args_normal_anormal,args_id_array);
+			llenado_combobox(1,"NORMAL",combobox_ojos_refolcular_izq,args_normal_anormal,args_id_array);
+			llenado_combobox(1,"NORMAL",combobox_ojos_ptregion_der,args_normal_anormal,args_id_array);
+			llenado_combobox(1,"NORMAL",combobox_ojos_ptregion_izq,args_normal_anormal,args_id_array);
+			
+			llenado_combobox(1,"NORMAL",combobox_cavoral_encias,args_normal_anormal,args_id_array);
+			llenado_combobox(1,"NORMAL",combobox_cavoral_mucosa,args_normal_anormal,args_id_array);
+			llenado_combobox(1,"NORMAL",combobox_cavoral_paladar,args_normal_anormal,args_id_array);
+			llenado_combobox(1,"NORMAL",combobox_cavoral_lengua,args_normal_anormal,args_id_array);
+			llenado_combobox(1,"NORMAL",combobox_cavoral_amigdalas,args_normal_anormal,args_id_array);
+			llenado_combobox(1,"NORMAL",combobox_cavoral_dentadura,args_normal_anormal,args_id_array);
+			
+			llenado_combobox(1,"NORMAL",combobox_torax_simetria,args_normal_anormal,args_id_array);
+			llenado_combobox(1,"NORMAL",combobox_torax_amplexacion,args_normal_anormal,args_id_array);
+			llenado_combobox(1,"NORMAL",combobox_torax_ventilacion,args_normal_anormal,args_id_array);
+			llenado_combobox(1,"NORMAL",combobox_torax_amplexion,args_normal_anormal,args_id_array);
+			llenado_combobox(1,"NO",combobox_torax_murmullo,args_si_no,args_id_array);
+			
+			llenado_combobox(1,"NORMAL",combobox_areacard_ritmo,args_normal_anormal,args_id_array);
+			llenado_combobox(1,"NORMAL",combobox_areacard_intensidad,args_normal_anormal,args_id_array);
+			llenado_combobox(1,"NORMAL",combobox_areacard_ruidos,args_normal_anormal,args_id_array);
+			llenado_combobox(1,"NO",combobox_areacard_soplos,args_si_no,args_id_array);
+			
+			llenado_combobox(1,"NORMAL",combobox_collumb_conformacion,args_normal_anormal,args_id_array);
+			llenado_combobox(1,"NORMAL",combobox_collumb_arcosmov,args_normal_anormal,args_id_array);
+			llenado_combobox(1,"NORMAL",combobox_collumb_marcha,args_normal_anormal,args_id_array);
+			llenado_combobox(1,"NO",combobox_collumb_puntdoloroso,args_si_no,args_id_array);
+			
 			//SpinButtons Antecedentes Heredo Familiar:
 			spinbutton_edad_madre.SetRange(0, 150);
 			spinbutton_edad_padre.SetRange(0, 150);
@@ -372,8 +474,7 @@ namespace osiris
 		
 		void on_button_exportar_xls_clicked(object sender, EventArgs args)
 		{
-			// class_crea_ods.cs
-			new osiris.export_xls_sigma();		
+			export_xls_sigma();		
 		}
 		
 		void muestra_datos_paciente()
@@ -386,9 +487,9 @@ namespace osiris
 				NpgsqlCommand comando1;
 				comando1 = conexion1.CreateCommand ();
 				comando1.CommandText ="SELECT * "+
-					                  "FROM osiris_his_historia_clinica,osiris_his_paciente "+
+					                  "FROM osiris_his_paciente,osiris_his_hc_hfamiliar "+
 						              "WHERE osiris_his_paciente.historia_clinica = 'true' "+
-						              "AND osiris_his_historia_clinica.pid_paciente = '"+this.entry_pid_paciente.Text+"';";
+						              "AND osiris_his_hc_hfamiliar.pid_paciente = '"+this.entry_pid_paciente.Text+"';";
 				
 			    Console.WriteLine(comando1.CommandText.ToString());
 				
@@ -544,8 +645,7 @@ namespace osiris
 		}
 		
 		void llenado_combobox(int tipodellenado,string descrip_defaul,object obj,string[] args_array,int[] args_id_array)
-		{
-			
+		{			
 			Gtk.ComboBox combobox_llenado = (Gtk.ComboBox) obj;
 			//Gtk.ComboBox combobox_pos_neg = obj as Gtk.ComboBox;
 			combobox_llenado.Clear();
@@ -590,6 +690,12 @@ namespace osiris
 				case "combobox_vivomuerto_madre":
 					vivomuertomadre = (string) onComboBoxChanged.Model.GetValue(iter,0);
 					//Console.WriteLine("vivomuertomadre = "+vivomuertomadre);
+					break;
+				case "combobox_enfermedad_padre":
+					enfermedad_padre = (string) onComboBoxChanged.Model.GetValue(iter,0);
+					break;
+				case "combobox_enfermedad_madre":
+					enfermedad_madre = (string) onComboBoxChanged.Model.GetValue(iter,0);
 					break;
 				}
 			}
@@ -1150,21 +1256,62 @@ namespace osiris
 			Widget win = (Widget) sender;
 			win.Toplevel.Destroy();
 		}
-	}
 	
-	// usando la libreria XS.dl
-	public class export_xls_sigma
-	{
-		public export_xls_sigma()
+	
+		public void export_xls_sigma()
 		{
 			WorkBook book = new WorkBook();
 		
             try{                
-				book.read("formato_de_historia_clinica_Institucional.xls");
+				book.read("template_de_historia_clinica_institucional.xls");
 				book.Sheet = 0;
 			
 				book.setText(1, 1, "PRACTIMED");
-				book.setText(3, 1, "DANIEL OLIVARES CUEVAS");
+				book.setText(3, 1, entry_nombre_paciente.Text.Trim().ToUpper());
+				if (vivomuertopadre == "VIVO"){
+					book.setText(12, 1, "X");
+				}else{
+					book.setText(12, 2, "X");
+				}
+				switch (enfermedad_padre){
+				case "DIABETES":					book.setText(12, 3, "X");
+					break;
+				case "HIPERTENSION":				book.setText(12, 5, "X");
+					break;
+				case "ENF. DEL CORAZON":			book.setText(12, 7, "X");
+					break;
+				case "ENF. DE PULMONES":			book.setText(12, 9, "X");
+					break;
+				case "CANCER O LEUCEMIA":			book.setText(12, 11, "X");
+					break;
+				case "EMBOLIA":						book.setText(12, 13, "X");
+					break;
+				case "ENF. MENTALES":				book.setText(12, 15, "X");
+					break;
+				}
+				
+				if(vivomuertomadre == "VIVO"){
+					book.setText(13, 1, "X");
+				}else{
+					book.setText(13, 2, "X");
+				}
+				switch (enfermedad_madre){
+				case "DIABETES":					book.setText(13, 3, "X");
+					break;
+				case "HIPERTENSION":				book.setText(13, 5, "X");
+					break;
+				case "ENF. DEL CORAZON":			book.setText(13, 7, "X");
+					break;
+				case "ENF. DE PULMONES":			book.setText(13, 9, "X");
+					break;
+				case "CANCER O LEUCEMIA":			book.setText(13, 11, "X");
+					break;
+				case "EMBOLIA":						book.setText(13, 13, "X");
+					break;
+				case "ENF. MENTALES":				book.setText(13, 15, "X");
+					break;
+				}
+				
 				
 				// book.setSheetName(1, "Ex Ingreso IPAS");	// Coloca el nombre de la hoja
                 book.Sheet = 1;			// numero de hoja actual comienza en 0
@@ -1196,14 +1343,14 @@ namespace osiris
 		    //        book.editCopyRight();
 			
 				book.Sheet = 0;
-				book.write("template_historia_clinica_sigma.xls");
+				book.write("formato_historia_clinica_sigma.xls");
 			 
             }catch (System.Exception ex){
                 Console.Error.WriteLine(ex);
             }
 
             // SE USA PARA ABRIR LA APLICACION
-            System.Diagnostics.Process.Start("template_historia_clinica_sigma.xls");
+            System.Diagnostics.Process.Start("formato_historia_clinica_sigma.xls");
 		}
 	}
 }

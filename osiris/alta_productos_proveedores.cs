@@ -39,15 +39,14 @@ namespace osiris
 		
 		//nuevos productos
 		[Widget] Gtk.Window alta_producto = null;
-		[Widget] Gtk.Button button_nuevo_producto = null;
-		[Widget] Gtk.CheckButton checkbutton_nuevo_producto = null;
 		[Widget] Gtk.Entry entry_tipo_unidad = null;
 		[Widget] Gtk.Entry entry_embalaje = null;
 		[Widget] Gtk.Entry entry_codigo = null;
 		[Widget] Gtk.Entry entry_cod_barras = null;
 		[Widget] Gtk.Button button_busca_provedor = null;
 		[Widget] Gtk.Button button_guarda = null;
-		[Widget] Gtk.Button button_editar = null;		
+		[Widget] Gtk.Button button_guardar2 = null;
+		[Widget] Gtk.ToggleButton togglebutton_editar = null;		
 		[Widget] Gtk.Button button_salir = null;
 		[Widget] Gtk.Entry entry_id_proveedor = null;
 		[Widget] Gtk.Entry entry_nombre_proveedor = null;
@@ -59,10 +58,11 @@ namespace osiris
 		[Widget] Gtk.Button button_aprobar = null;
 		[Widget] Gtk.Entry entry_clave = null;
 		[Widget] Gtk.TreeView lista_precios_proveedor = null;
-		[Widget] Gtk.CheckButton checkbutton_aprobar = null;
+		//[Widget] Gtk.CheckButton checkbutton_aprobar = null;
 		[Widget] Gtk.Label label_titulo_cantidad = null;
 		[Widget] Gtk.ComboBox combobox_tipo_unidad = null;
 		[Widget] Gtk.Statusbar statusbar_alta_producto = null;
+		[Widget] Gtk.Notebook notebook1 = null;
 		
 		/////// Ventana Busqueda de productos\\\\\\\\
 		[Widget] Gtk.TreeView lista_de_producto = null;
@@ -84,11 +84,7 @@ namespace osiris
 		string NomEmpleado;
 		string AppEmpleado;
 		string ApmEmpleado;
-		string codigohscmty = "";
-		string variable = "";
 		string tipounidadproducto = "";
-		string combo = "";
-		bool edita = false;
 		string secuencial = "";
 		
 		int id_provedor;
@@ -136,39 +132,19 @@ namespace osiris
 			crea_lista_productos_agregados();
 			crea_treeview_autoriza();
 			button_busca_provedor.Clicked += new EventHandler(on_busca_provedor_clicked);
-			this.button_guarda.Clicked += new EventHandler(on_button_guarda_clicked);
-			this.checkbutton_nuevo_producto.Clicked += new EventHandler(on_checkbutton_nuevo_producto);
-			this.checkbutton_aprobar.Clicked += new EventHandler(on_checkbutton_aprobar);
+			button_guarda.Clicked += new EventHandler(on_button_guarda_clicked);
+			button_guardar2.Clicked += new EventHandler(on_button_guarda2_clicked);
 			button_selecciona.Clicked += new EventHandler(on_button_selecciona_clicked);
-			this.button_agrega.Clicked += new EventHandler(on_button_agrega_clicked);
-			this.button_quita.Clicked += new EventHandler(on_button_quitar_aplicados_clicked);
+			button_agrega.Clicked += new EventHandler(on_button_agrega_clicked);
+			button_quita.Clicked += new EventHandler(on_button_quitar_aplicados_clicked);
 			button_salir.Clicked += new EventHandler(on_cierraventanas_clicked);
-			this.button_aprobar.Clicked += new EventHandler(on_button_aprobar_clicked);
-			this.entry_id_proveedor.KeyPressEvent += onKeyPressEvent_enter_provedor;
-			this.button_editar.Clicked += new EventHandler(on_editar_producto_clicked);
-			this.entry_embalaje.KeyPressEvent += onKeyPressEvent_enter_valida;
-			this.entry_precio.KeyPressEvent += onKeyPressEvent_enter_valida;
-			
+			button_aprobar.Clicked += new EventHandler(on_button_aprobar_clicked);
+			entry_id_proveedor.KeyPressEvent += onKeyPressEvent_enter_provedor;
+			togglebutton_editar.Clicked += new EventHandler(on_togglebutton_editar_clicked);
+			entry_embalaje.KeyPressEvent += onKeyPressEvent_enter_valida;
+			entry_precio.KeyPressEvent += onKeyPressEvent_enter_valida;
+			entry_nombre_proveedor.IsEditable = false;			
 			llena_combo_tipounidad();
-
-			this.button_editar.Sensitive = false;
-			this.entry_clave.Sensitive = false;
-			this.button_aprobar.Sensitive = false;
-			this.button_agrega.Sensitive = false;
-			this.button_quita.Sensitive = false;
-			this.entry_producto.Sensitive = false;
-			entry_precio.Sensitive = false;
-			entry_embalaje.Sensitive = false;
-			entry_codigo.Sensitive = false;
-			entry_cod_barras.Sensitive = false;
-			this.button_selecciona.Sensitive = false;
-			this.lista_productos_agregados.Sensitive = false;
-			this.lista_precios_proveedor.Sensitive = false;
-			this.entry_nombre_proveedor.Sensitive = false;
-			this.entry_id_proveedor. Sensitive = false;
-			this.button_busca_provedor.Sensitive = false;
-			this.button_guarda.Sensitive = false;
-			this.checkbutton_aprobar.Active = true;
 			statusbar_alta_producto.Pop(0);
 			statusbar_alta_producto.Push(1, "login: "+LoginEmpleado+"  |Usuario: "+NomEmpleado+" "+AppEmpleado+" "+ApmEmpleado);
 			statusbar_alta_producto.HasResizeGrip = false;
@@ -177,20 +153,8 @@ namespace osiris
 		[GLib.ConnectBefore ()]   	  // Esto es indispensable para que funcione    
 		void onKeyPressEvent_enter_provedor(object o, Gtk.KeyPressEventArgs args)
 		{
-			
-			if (args.Event.Key == Gdk.Key.Return || args.Event.Key == Gdk.Key.KP_Enter){
-				
-				if(this.checkbutton_nuevo_producto.Active == true){
-					this.entry_id_proveedor.Sensitive = false;
-					this.entry_nombre_proveedor.Sensitive = false;
-					llenando_lista_de_aprobados();
-
-				}
-
-				if(this.checkbutton_aprobar.Active == true){
-					llenando_lista_de_aprobados();
-				}
-				
+			if (args.Event.Key == Gdk.Key.Return || args.Event.Key == Gdk.Key.KP_Enter){				
+				llenando_lista_de_aprobados();
 				NpgsqlConnection conexion; 
 				conexion = new NpgsqlConnection (connectionString+nombrebd);
 				// Verifica que la base de datos este conectada
@@ -211,8 +175,7 @@ namespace osiris
 								"ORDER BY descripcion_proveedor;";
 				
 					NpgsqlDataReader lector = comando.ExecuteReader ();
-					if (lector.Read())
-					{	
+					if (lector.Read()){	
 						this.entry_nombre_proveedor.Text = (string) lector["descripcion_proveedor"];//12
 					}
 				}catch (NpgsqlException ex){
@@ -224,8 +187,7 @@ namespace osiris
 		
 			}
 			string misDigitos = ".0123456789ﾰﾱﾲﾳﾴﾵﾶﾷﾸﾹﾮｔｒｓｑ（）";
-			if (Array.IndexOf(misDigitos.ToCharArray(), Convert.ToChar(args.Event.Key)) == -1 && args.Event.Key != Gdk.Key.BackSpace)
-			{
+			if (Array.IndexOf(misDigitos.ToCharArray(), Convert.ToChar(args.Event.Key)) == -1 && args.Event.Key != Gdk.Key.BackSpace){
 				args.RetVal = true;
 			}
 		}
@@ -272,86 +234,43 @@ namespace osiris
 		
 		void on_button_quitar_aplicados_clicked (object sender, EventArgs args)
 		{
-		
+			TreeIter iter;
+			TreeModel model;
 			MessageDialog msgBox = new MessageDialog (MyWin,DialogFlags.Modal,
 									MessageType.Question,ButtonsType.YesNo,"¿ Esta seguro de Eliminar este producto?");
 			ResponseType miResultado = (ResponseType)msgBox.Run ();
 			msgBox.Destroy();
 		 	if (miResultado == ResponseType.Yes){
-		 	
-				if(this.checkbutton_aprobar.Active == false && this.checkbutton_nuevo_producto.Active == true)
-				{
-					TreeIter iter;
-					TreeModel model;
-					if (this.checkbutton_nuevo_producto.Active == true){
-						if (this.lista_productos_agregados.Selection.GetSelected (out model, out iter)) {
-							this.treeViewEngineproductos.Remove (ref iter); 					
-						}
-					}
-				}
+		 		if (lista_precios_proveedor.Selection.GetSelected (out model, out iter)) {
+					
+					NpgsqlConnection conexion3; 
+					conexion3 = new NpgsqlConnection (connectionString+nombrebd);
 				
-				//eliminar un producto que ya estaba guardado
-				if(this.checkbutton_aprobar.Active == true && this.checkbutton_nuevo_producto.Active == false)
-				{
-
-					TreeIter iter;
-					TreeModel model;
-					NpgsqlConnection conexion2; 
-					conexion2 = new NpgsqlConnection (connectionString+nombrebd);
 					try{
-						conexion2.Open ();
-						NpgsqlCommand comando2; 
-						comando2 = conexion2.CreateCommand();
-						if (this.treeViewEngineaprobados.GetIterFirst(out iter)){
-							if (this.lista_precios_proveedor.Selection.GetSelected (out model, out iter)) {
-								//if ((bool)lista_precios_proveedor.Model.GetValue (iter,0) == true){	
-								comando2.CommandText = "SELECT id_proveedor,codigo_producto_proveedor,codigo_de_barra FROM osiris_catalogo_productos_proveedores "+
-							     	                   "WHERE codigo_producto_proveedor = '"+(string) this.lista_precios_proveedor.Model.GetValue (iter,3)+"' "+
-								    	               "AND id_proveedor = '"+this.entry_id_proveedor.Text+"' ;";
+						conexion3.Open ();
+						NpgsqlCommand comando3; 
+						comando3 = conexion3.CreateCommand();
+						comando3.CommandText =  "UPDATE osiris_catalogo_productos_proveedores SET eliminado = 'true',"+
+		     			                        "fecha_eliminado = '"+DateTime.Now.ToString("yyyy-MM-dd")+"', "+
+						                        "id_quien_elimino = ' "+LoginEmpleado+" ' "+
+					                            //"WHERE codigo_producto_proveedor = '"+(string) lista_precios_proveedor.Model.GetValue (iter,3)+"' "+
+												"WHERE id_secuencia = '"+(string) lista_precios_proveedor.Model.GetValue (iter,9)+"' "+
+	             					            "AND id_proveedor = '"+this.entry_id_proveedor.Text+"' ;";
+						comando3.ExecuteNonQuery(); 
+						comando3.Dispose();
+						conexion3.Close();
 
-								//Console.WriteLine(comando2.CommandText.ToString());
-								NpgsqlDataReader lector2 = comando2.ExecuteReader ();
-								
-								if(lector2.Read()){			
-									NpgsqlConnection conexion3; 
-									conexion3 = new NpgsqlConnection (connectionString+nombrebd);
-								
-									try{
-										conexion3.Open ();
-										NpgsqlCommand comando3; 
-										comando3 = conexion3.CreateCommand();
-										comando3.CommandText =  "UPDATE osiris_catalogo_productos_proveedores SET eliminado = 'true',"+
-						     			                        "fecha_eliminado = '"+DateTime.Now.ToString("yyyy-MM-dd")+"', "+
-										                        "id_quien_elimino = ' "+LoginEmpleado+" ' "+
-									                            //"WHERE codigo_producto_proveedor = '"+(string) lista_precios_proveedor.Model.GetValue (iter,3)+"' "+
-																"WHERE id_secuencia = '"+(string) lista_precios_proveedor.Model.GetValue (iter,9)+"' "+
-					             					            "AND id_proveedor = '"+this.entry_id_proveedor.Text+"' ;";
-										comando3.ExecuteNonQuery(); 
-										comando3.Dispose();
-										conexion3.Close();
+						treeViewEngineaprobados.Remove (ref iter); 					
 
-										this.treeViewEngineaprobados.Remove (ref iter); 					
-
-									}catch (NpgsqlException ex){
-										MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
-										                                               MessageType.Error, 
-										                                               ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
-										msgBoxError.Run ();
-									}
-									conexion3.Close();
-								}
-							}	
-						}
 					}catch (NpgsqlException ex){
 						MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
 						                                               MessageType.Error, 
 						                                               ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
 						msgBoxError.Run ();
 					}
-					conexion2.Close();		
+					conexion3.Close();
 				}
-			}
-						
+			}						
 		}
 		
 		void on_button_agrega_clicked(object sender, EventArgs args)	
@@ -396,107 +315,6 @@ namespace osiris
 
 		}
 		
-		void on_checkbutton_nuevo_producto(object sender, EventArgs args)		
-		{
-			this.entry_producto.Text = "";
-			entry_precio.Text = "";
-			entry_embalaje.Text = "";
-			entry_codigo.Text = "";
-			entry_cod_barras.Text = "";
-			this.entry_clave.Text = "";
-			this.entry_id_proveedor.Text = "";
-			this.entry_nombre_proveedor.Text = "";
-			this.treeViewEngineaprobados.Clear();
-			this.treeViewEngineproductos.Clear();
-			
-			if(this.checkbutton_nuevo_producto.Active == true)
-			{
-				
-				this.entry_id_proveedor.Sensitive = true;
-				this.entry_id_proveedor.Sensitive = true;
-				this.button_busca_provedor.Sensitive = true;
-				this.button_guarda.Sensitive = false;
-				entry_precio.Sensitive = true;
-				entry_embalaje.Sensitive = true;
-				entry_codigo.Sensitive = true;
-				entry_cod_barras.Sensitive = true;
-				this.entry_clave.Sensitive = true;
-				this.button_aprobar.Sensitive = false;
-				this.lista_productos_agregados.Sensitive = true;
-				this.entry_producto.Sensitive = true;
-				this.checkbutton_aprobar.Sensitive = false;
-				this.button_agrega.Sensitive = true;
-				this.button_quita.Sensitive = true;
-				this.entry_id_proveedor.Sensitive = true;
-				this.entry_nombre_proveedor.Sensitive = true;
-				this.button_selecciona.Sensitive = true;
-				this.button_editar.Sensitive = false;
-				this.entry_embalaje.Text = "1";
-				//this.entry_precio.Text = "1";
-			}else{
-				this.button_guarda.Sensitive = false;
-				entry_precio.Sensitive = false;
-				entry_embalaje.Sensitive = false;
-				entry_codigo.Sensitive = false;
-				entry_cod_barras.Sensitive = false;
-				this.button_quita.Sensitive = false;
-				this.entry_clave.Sensitive = false;
-				this.button_aprobar.Sensitive = false;
-				this.lista_productos_agregados.Sensitive = false;
-				this.entry_producto.Sensitive = false;
-				this.checkbutton_aprobar.Sensitive = true;
-				this.button_agrega.Sensitive = false;
-				this.entry_id_proveedor.Sensitive = true;
-				this.entry_nombre_proveedor.Sensitive = true;
-				this.entry_id_proveedor.Sensitive = false;
-				this.entry_nombre_proveedor.Sensitive = false;
-				this.button_busca_provedor.Sensitive = false;	
-				this.button_selecciona.Sensitive = false;
-				this.button_editar.Sensitive = true;
-				this.entry_embalaje.Text = "";
-			//	this.entry_precio.Text = "";
-				
-				
-			}
-		}
-		void on_checkbutton_aprobar(object sender, EventArgs args)	
-		{
-			entry_id_proveedor.Text = "";
-			entry_nombre_proveedor.Text = "";
-			entry_producto.Text = "";
-			entry_precio.Text = "";
-			entry_embalaje.Text = "";
-			entry_codigo.Text = "";
-			entry_cod_barras.Text = "";
-			entry_clave.Text = "";
-			treeViewEngineaprobados.Clear();
-			treeViewEngineproductos.Clear();
-						
-			if(this.checkbutton_aprobar.Active == true){				
-				this.button_quita.Sensitive = true;
-				this.button_selecciona.Sensitive = true;
-				this.lista_precios_proveedor.Sensitive = true;
-				this.button_guarda.Sensitive = true;
-				this.button_aprobar.Sensitive = true;
-				this.checkbutton_nuevo_producto.Sensitive = false;
-				this.entry_id_proveedor.Sensitive = true;
-				this.entry_nombre_proveedor.Sensitive = true;
-				this.button_busca_provedor.Sensitive = true;
-				this.button_editar.Sensitive = true;				
-			}else{
-				this.button_quita.Sensitive = false;
-				this.button_selecciona.Sensitive = false;
-				this.lista_precios_proveedor.Sensitive = false;
-				this.button_guarda.Sensitive = false;
-				this.button_aprobar.Sensitive = false;
-				this.checkbutton_nuevo_producto.Sensitive = true;
-				this.entry_id_proveedor.Sensitive = false;
-				this.entry_nombre_proveedor.Sensitive = false;
-				this.button_busca_provedor.Sensitive = false;
-				this.button_editar.Sensitive = false;				
-			}
-		}
-				
 		void on_busca_provedor_clicked (object sender, EventArgs args)
 		{
 			// Los parametros de del SQL siempre es primero cuando busca todo y la otra por expresion
@@ -774,14 +592,7 @@ namespace osiris
 				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
 						                                   MessageType.Info,ButtonsType.Close, "Debe seleccionar un Proveedor... verifique...");
 				msgBoxError.Run ();			msgBoxError.Destroy();			
-			}else{			
-				if(this.checkbutton_nuevo_producto.Active == true){
-					//this.entry_id_proveedor.Sensitive = false;
-					this.entry_nombre_proveedor.Sensitive = false;
-				}
-				
-				llenando_lista_de_aprobados();
-				
+			}else{
 				NpgsqlConnection conexion; 
 				conexion = new NpgsqlConnection (connectionString+nombrebd);
 				// Verifica que la base de datos este conectada
@@ -797,13 +608,14 @@ namespace osiris
 								"osiris_erp_proveedores.id_forma_de_pago, descripcion_forma_de_pago AS descripago "+
 								"FROM osiris_erp_proveedores, osiris_erp_forma_de_pago "+
 								"WHERE osiris_erp_proveedores.id_forma_de_pago = osiris_erp_forma_de_pago.id_forma_de_pago "+
-							    "AND id_proveedor = '"+(string) this.entry_id_proveedor.Text+"' "+
+							    "AND id_proveedor = '"+(string) entry_id_proveedor.Text+"' "+
 								"ORDER BY descripcion_proveedor;";
 				
 					NpgsqlDataReader lector = comando.ExecuteReader ();
 					if (lector.Read()){	
-						this.entry_nombre_proveedor.Text = (string) lector["descripcion_proveedor"];//12
-					}
+						this.entry_nombre_proveedor.Text = (string) lector["descripcion_proveedor"];
+						llenando_lista_de_aprobados();
+					}					
 				}catch (NpgsqlException ex){
 					MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
 					                                               MessageType.Error,ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
@@ -815,11 +627,8 @@ namespace osiris
 			
 		void llenando_lista_de_aprobados()
 		{
-			this.treeViewEngineaprobados.Clear();
-			
-			id_provedor = Convert.ToInt16(this.entry_id_proveedor.Text);
-			
-		
+			this.treeViewEngineaprobados.Clear();			
+			id_provedor = Convert.ToInt16(this.entry_id_proveedor.Text);		
 			NpgsqlConnection conexion; 
 			conexion = new NpgsqlConnection (connectionString+nombrebd);
             
@@ -935,156 +744,54 @@ namespace osiris
 		
 		void on_button_guarda_clicked (object sender, EventArgs args)
 		{			
-			if(edita == true){				
-				NpgsqlConnection conexion3; 
-				conexion3 = new NpgsqlConnection (connectionString+nombrebd);
-				try{
-					conexion3.Open ();
-					NpgsqlCommand comando3; 
-					comando3 = conexion3.CreateCommand();
-					comando3.CommandText =  "UPDATE osiris_catalogo_productos_proveedores SET clave = '"+this.entry_clave.Text+"', "+
-											    "descripcion_producto = '"+this.entry_producto.Text+"', "+
-											    "precio_costo = '"+this.entry_precio.Text+"', "+
-											    "cantidad_de_embalaje = '"+this.entry_embalaje.Text+"', "+
-											    "codigo_de_barra = '"+this.entry_cod_barras.Text+"', "+
-							                    "precio_costo_unitario = '"+Convert.ToString(float.Parse(this.entry_precio.Text)/float.Parse(this.entry_embalaje.Text))+"', "+
-	                                            "tipo_unidad_producto = '"+tipounidadproducto.ToString().ToUpper()+"', "+
-	                                            "codigo_producto_proveedor 	 = '"+this.entry_codigo.Text.ToUpper()+"', "+
-												"historial_movimientos = historial_movimientos || '"+this.entry_precio.Text.Trim()+";"+this.entry_embalaje.Text.Trim()+";"+LoginEmpleado+";"+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"\n' "+
-										/*	    "fecha_asigno_osiris = '"+DateTime.Now.ToString("yyyy-MM-dd")+"', "+
-								                "id_quien_asigno_osiris = ' "+LoginEmpleado+" ' "+*/
-							                    "WHERE id_secuencia = '"+this.secuencial+"' "+
-							                    "AND codigo_producto_proveedor = '"+this.entry_codigo.Text+"' ;"; 
-							                    //Console.WriteLine("este "+comando3.CommandText.ToString());
-
-					comando3.ExecuteNonQuery();
-					comando3.Dispose();
-					conexion3.Close();
-					edita = false;
-				}catch (NpgsqlException ex){
-					MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
-						                                               MessageType.Error, 
-						                                               ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
-					msgBoxError.Run ();
-				}
-				conexion3.Close();
-			}
-				
-			TreeIter iterSelected;
-			//TreeModel model;
-			TreeIter iter;
-			
-			MessageDialog msgBox1 = new MessageDialog (MyWin,DialogFlags.Modal,
-									MessageType.Question,ButtonsType.YesNo,"¿ Esta seguro que desea Guardar ?");
-			ResponseType miResultado = (ResponseType)msgBox1.Run ();
-			msgBox1.Destroy();
-		 	if (miResultado == ResponseType.Yes){
-				if(this.checkbutton_nuevo_producto.Active == false && this.checkbutton_aprobar.Active == true){
-					NpgsqlConnection conexion2; 
-					conexion2 = new NpgsqlConnection (connectionString+nombrebd);					
+			if(togglebutton_editar.Active == true){
+				MessageDialog msgBox1 = new MessageDialog (MyWin,DialogFlags.Modal,
+										MessageType.Question,ButtonsType.YesNo,"¿ Esta seguro de Actualizar la Informacion ?");
+				ResponseType miResultado = (ResponseType)msgBox1.Run ();
+				msgBox1.Destroy();
+			 	if (miResultado == ResponseType.Yes){
+					NpgsqlConnection conexion3; 
+					conexion3 = new NpgsqlConnection (connectionString+nombrebd);
 					try{
-						conexion2.Open ();
-						NpgsqlCommand comando2; 
-						comando2 = conexion2.CreateCommand();
-						
-						if (this.treeViewEngineaprobados.GetIterFirst(out iterSelected)){
-							if ((bool)lista_precios_proveedor.Model.GetValue (iterSelected,0) == true){		
-								
-								comando2.CommandText = "SELECT id_proveedor,codigo_producto_proveedor,codigo_de_barra FROM osiris_catalogo_productos_proveedores "+
-												"WHERE codigo_producto_proveedor = '"+(string) this.lista_precios_proveedor.Model.GetValue (iterSelected,4).ToString().Trim()+"' "+
-												"AND id_proveedor = '"+this.entry_id_proveedor.Text+"' ;";
-								//Console.WriteLine("GUARDA     "+comando2.CommandText.ToString());
-								NpgsqlDataReader lector2 = comando2.ExecuteReader ();
-								
-								if(lector2.Read()){			
-									NpgsqlConnection conexion3; 
-									conexion3 = new NpgsqlConnection (connectionString+nombrebd);
-									try{
-										conexion3.Open ();
-										NpgsqlCommand comando3; 
-										comando3 = conexion3.CreateCommand();
-										comando3.CommandText =  "UPDATE osiris_catalogo_productos_proveedores SET "+
-																"id_producto  = '"+(string) this.lista_precios_proveedor.Model.GetValue (iterSelected,7)+"', "+
-											                    "descripcion_producto_osiris = '"+(string) this.lista_precios_proveedor.Model.GetValue (iterSelected,8)+"', "+ 
-											                    "fecha_asigno_osiris = '"+DateTime.Now.ToString("yyyy-MM-dd")+"', "+
-												                "id_quien_asigno_osiris = ' "+LoginEmpleado+" ' "+
-											                    "WHERE id_secuencia = '"+(string) lista_precios_proveedor.Model.GetValue (iterSelected,9)+"' "+
-							             					    "AND id_proveedor = '"+this.entry_id_proveedor.Text+"' ;";
-										//Console.WriteLine(comando3.CommandText.ToString());
-										comando3.ExecuteNonQuery();
-										comando3.Dispose();
-										conexion3.Close();
-										
-									}catch (NpgsqlException ex){
-										MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
-										                                               MessageType.Error, 
-										                                               ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
-										msgBoxError.Run ();
-									}
-									conexion3.Close();
-								}	
-								
-							}
-						}	
-						
-						while (treeViewEngineaprobados.IterNext(ref iterSelected))
-						{							
-							if ((bool)lista_precios_proveedor.Model.GetValue (iterSelected,0) == true){
-								comando2.CommandText = "SELECT id_proveedor,codigo_producto_proveedor,codigo_de_barra FROM osiris_catalogo_productos_proveedores "+
-								                       "WHERE codigo_producto_proveedor = '"+(string) this.lista_precios_proveedor.Model.GetValue (iterSelected,4).ToString().Trim()+"' "+
-										               "AND id_proveedor = '"+this.entry_id_proveedor.Text+"' ;";
-								//Console.WriteLine(comando2.CommandText.ToString());
-								NpgsqlDataReader lector2 = comando2.ExecuteReader ();
-								
-								if(lector2.Read()){			
-									NpgsqlConnection conexion3; 
-									conexion3 = new NpgsqlConnection (connectionString+nombrebd);
-								
-									try{
-										conexion3.Open ();
-										NpgsqlCommand comando3; 
-										comando3 = conexion3.CreateCommand();
-										comando3.CommandText =  "UPDATE osiris_catalogo_productos_proveedores SET "+
-																"id_producto  = '"+(string) this.lista_precios_proveedor.Model.GetValue (iterSelected,7)+"', "+
-											                    "descripcion_producto_osiris = '"+(string) this.lista_precios_proveedor.Model.GetValue (iterSelected,8).ToString().Trim()+"', "+
-											                    "fecha_asigno_osiris = '"+DateTime.Now.ToString("yyyy-MM-dd")+"', "+
-												                "id_quien_asigno_osiris = ' "+LoginEmpleado+" ' "+
-											                    "WHERE id_secuencia = '"+(string) lista_precios_proveedor.Model.GetValue (iterSelected,9)+"' "+
-							             					    "AND id_proveedor = '"+this.entry_id_proveedor.Text+"' ;";
-										//Console.WriteLine(comando3.CommandText.ToString());
-										comando3.ExecuteNonQuery();
-										comando3.Dispose();
-										conexion3.Close();
-									
-									}catch (NpgsqlException ex){
-										MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
-										                                               MessageType.Error, 
-										                                               ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
-										msgBoxError.Run ();
-									}
-									conexion3.Close();
-								}	
-							}
-						}
-						
-						MessageDialog msgBox = new MessageDialog (MyWin,DialogFlags.Modal,
-						                                          MessageType.Info,ButtonsType.Ok,"Los codigos se Actualizaron ");
-						msgBox.Run ();
-						msgBox.Destroy();
-						
+						conexion3.Open ();
+						NpgsqlCommand comando3; 
+						comando3 = conexion3.CreateCommand();
+						comando3.CommandText =  "UPDATE osiris_catalogo_productos_proveedores SET clave = '"+this.entry_clave.Text+"', "+
+												    "descripcion_producto = '"+this.entry_producto.Text+"', "+
+												    "precio_costo = '"+this.entry_precio.Text+"', "+
+												    "cantidad_de_embalaje = '"+this.entry_embalaje.Text+"', "+
+												    "codigo_de_barra = '"+this.entry_cod_barras.Text+"', "+
+								                    "precio_costo_unitario = '"+Convert.ToString(float.Parse(this.entry_precio.Text)/float.Parse(this.entry_embalaje.Text))+"', "+
+		                                            "tipo_unidad_producto = '"+tipounidadproducto.ToString().ToUpper()+"', "+
+		                                            "codigo_producto_proveedor 	 = '"+this.entry_codigo.Text.ToUpper()+"', "+
+													"historial_movimientos = historial_movimientos || '"+this.entry_precio.Text.Trim()+";"+this.entry_embalaje.Text.Trim()+";"+LoginEmpleado+";"+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"\n' "+
+											/*	    "fecha_asigno_osiris = '"+DateTime.Now.ToString("yyyy-MM-dd")+"', "+
+									                "id_quien_asigno_osiris = ' "+LoginEmpleado+" ' "+*/
+								                    "WHERE id_secuencia = '"+this.secuencial+"' "+
+								                    "AND codigo_producto_proveedor = '"+this.entry_codigo.Text+"' ;"; 
+								                    //Console.WriteLine("este "+comando3.CommandText.ToString());
+	
+						comando3.ExecuteNonQuery();
+						comando3.Dispose();
+						conexion3.Close();
+						togglebutton_editar.Active = false;	
 					}catch (NpgsqlException ex){
 						MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
-						                                               MessageType.Error, 
-						                                               ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
+							                                               MessageType.Error, 
+							                                               ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
 						msgBoxError.Run ();
-						msgBoxError.Destroy();
 					}
-					conexion2.Close();
-				
+					conexion3.Close();
 				}
+			}else{
+				TreeIter iterSelected;
+				TreeIter iter;
+				MessageDialog msgBox1 = new MessageDialog (MyWin,DialogFlags.Modal,
+									MessageType.Question,ButtonsType.YesNo,"¿ Esta seguro que desea Guardar ?");
+				ResponseType miResultado = (ResponseType)msgBox1.Run ();
+				msgBox1.Destroy();
+			 	if (miResultado == ResponseType.Yes){
 				
-				if(this.checkbutton_nuevo_producto.Active == true && this.checkbutton_aprobar.Active == false)
-				{ 			
 					NpgsqlConnection conexion; 
 					conexion = new NpgsqlConnection (connectionString+nombrebd);
 				  
@@ -1150,10 +857,6 @@ namespace osiris
 								comando.Dispose();		
 							}
 						}
-						
-						//Console.WriteLine(comando.CommandText.ToString());
-						//Console.WriteLine("INSERT en catagologo");
-
 						MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
 						                                               MessageType.Info,ButtonsType.Close, " Los Productos se Grabaron Correctamente ");
 						msgBoxError.Run ();			msgBoxError.Destroy();
@@ -1165,126 +868,182 @@ namespace osiris
 						msgBoxError.Run ();
 						msgBoxError.Destroy();
 					}
-					conexion.Close();		
+					conexion.Close();
 				}
 			}
-			///  Limpiando variables despuez de guardar  ///
-			if(edita == true){
-				llenando_lista_de_aprobados();
-				entry_producto.Text = "";
-				entry_precio.Text = "";
-				entry_embalaje.Text = "";
-				entry_codigo.Text = "";
-				entry_cod_barras.Text = "";
-				entry_clave.Text = "";
-			}else{
-				//entry_id_proveedor.Text = "";
-				//entry_nombre_proveedor.Text = "";
-				entry_producto.Text = "";
-				entry_precio.Text = "";
-				entry_embalaje.Text = "";
-				entry_codigo.Text = "";
-				entry_cod_barras.Text = "";
-				entry_clave.Text = "";
-				//treeViewEngineaprobados.Clear();
-				treeViewEngineproductos.Clear();
-				
+					
+		}
+		
+		/// <summary>
+		/// Enlasa los codigos de productos del proveedor con los codigos de OSIRIS
+		/// </summary>
+		void on_button_guarda2_clicked(object sender, EventArgs args)
+		{
+			TreeIter iterSelected;
+			TreeIter iter;
+			
+			MessageDialog msgBox1 = new MessageDialog (MyWin,DialogFlags.Modal,
+									MessageType.Question,ButtonsType.YesNo,"¿ Esta seguro que desea Guardar ?");
+			ResponseType miResultado = (ResponseType)msgBox1.Run ();
+			msgBox1.Destroy();
+		 	if (miResultado == ResponseType.Yes){
+				NpgsqlConnection conexion2; 
+				conexion2 = new NpgsqlConnection (connectionString+nombrebd);					
+				try{
+					conexion2.Open ();
+					NpgsqlCommand comando2; 
+					comando2 = conexion2.CreateCommand();
+					
+					if (this.treeViewEngineaprobados.GetIterFirst(out iterSelected)){
+						if ((bool)lista_precios_proveedor.Model.GetValue (iterSelected,0) == true){		
+							
+							comando2.CommandText = "SELECT id_proveedor,codigo_producto_proveedor,codigo_de_barra FROM osiris_catalogo_productos_proveedores "+
+											"WHERE codigo_producto_proveedor = '"+(string) this.lista_precios_proveedor.Model.GetValue (iterSelected,4).ToString().Trim()+"' "+
+											"AND id_proveedor = '"+entry_id_proveedor.Text+"' ;";
+							//Console.WriteLine("GUARDA     "+comando2.CommandText.ToString());
+							NpgsqlDataReader lector2 = comando2.ExecuteReader ();
+							
+							if(lector2.Read()){			
+								NpgsqlConnection conexion3; 
+								conexion3 = new NpgsqlConnection (connectionString+nombrebd);
+								try{
+									conexion3.Open ();
+									NpgsqlCommand comando3; 
+									comando3 = conexion3.CreateCommand();
+									comando3.CommandText =  "UPDATE osiris_catalogo_productos_proveedores SET "+
+															"id_producto  = '"+(string) this.lista_precios_proveedor.Model.GetValue (iterSelected,7)+"', "+
+										                    "descripcion_producto_osiris = '"+(string) this.lista_precios_proveedor.Model.GetValue (iterSelected,8)+"', "+ 
+										                    "fecha_asigno_osiris = '"+DateTime.Now.ToString("yyyy-MM-dd")+"', "+
+											                "id_quien_asigno_osiris = ' "+LoginEmpleado+" ' "+
+										                    "WHERE id_secuencia = '"+(string) lista_precios_proveedor.Model.GetValue (iterSelected,9)+"' "+
+						             					    "AND id_proveedor = '"+entry_id_proveedor.Text+"' ;";
+									//Console.WriteLine(comando3.CommandText.ToString());
+									comando3.ExecuteNonQuery();
+									comando3.Dispose();
+									conexion3.Close();
+									
+								}catch (NpgsqlException ex){
+									MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+									                                               MessageType.Error, 
+									                                               ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
+									msgBoxError.Run ();
+								}
+								conexion3.Close();
+							}	
+							
+						}
+					}					
+					while (treeViewEngineaprobados.IterNext(ref iterSelected)){							
+						if ((bool)lista_precios_proveedor.Model.GetValue (iterSelected,0) == true){
+							comando2.CommandText = "SELECT id_proveedor,codigo_producto_proveedor,codigo_de_barra FROM osiris_catalogo_productos_proveedores "+
+							                       "WHERE codigo_producto_proveedor = '"+(string) this.lista_precios_proveedor.Model.GetValue (iterSelected,4).ToString().Trim()+"' "+
+									               "AND id_proveedor = '"+this.entry_id_proveedor.Text+"' ;";
+							//Console.WriteLine(comando2.CommandText.ToString());
+							NpgsqlDataReader lector2 = comando2.ExecuteReader ();						
+							if(lector2.Read()){			
+								NpgsqlConnection conexion3; 
+								conexion3 = new NpgsqlConnection (connectionString+nombrebd);							
+								try{
+									conexion3.Open ();
+									NpgsqlCommand comando3; 
+									comando3 = conexion3.CreateCommand();
+									comando3.CommandText =  "UPDATE osiris_catalogo_productos_proveedores SET "+
+															"id_producto  = '"+(string) this.lista_precios_proveedor.Model.GetValue (iterSelected,7)+"', "+
+										                    "descripcion_producto_osiris = '"+(string) this.lista_precios_proveedor.Model.GetValue (iterSelected,8).ToString().Trim()+"', "+
+										                    "fecha_asigno_osiris = '"+DateTime.Now.ToString("yyyy-MM-dd")+"', "+
+											                "id_quien_asigno_osiris = ' "+LoginEmpleado+" ' "+
+										                    "WHERE id_secuencia = '"+(string) lista_precios_proveedor.Model.GetValue (iterSelected,9)+"' "+
+						             					    "AND id_proveedor = '"+this.entry_id_proveedor.Text+"' ;";
+									//Console.WriteLine(comando3.CommandText.ToString());
+									comando3.ExecuteNonQuery();
+									comando3.Dispose();
+									conexion3.Close();
+								
+								}catch (NpgsqlException ex){
+									MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+									                                               MessageType.Error, 
+									                                               ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
+									msgBoxError.Run ();
+								}
+								conexion3.Close();
+							}	
+						}
+					}
+					MessageDialog msgBox = new MessageDialog (MyWin,DialogFlags.Modal,
+					                                          MessageType.Info,ButtonsType.Ok,"Los codigos se Actualizaron ");
+					msgBox.Run ();
+					msgBox.Destroy();					
+				}catch (NpgsqlException ex){
+					MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+					                                               MessageType.Error, 
+					                                               ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
+					msgBoxError.Run ();					msgBoxError.Destroy();
+				}
+				conexion2.Close();
 			}
 		}
 		
-		void on_editar_producto_clicked (object sender, EventArgs args)
+		void on_togglebutton_editar_clicked (object sender, EventArgs args)
 		{
-			this.button_aprobar.Sensitive = false;
-			edita = true;
-			this.entry_codigo.Sensitive = false;
-			this.entry_producto.Sensitive = true;
-			entry_precio.Sensitive = true;
-			entry_embalaje.Sensitive = true;
-			entry_codigo.Sensitive = false;
-			entry_cod_barras.Sensitive = true;
-			this.entry_clave.Sensitive = true;
-			this.entry_id_proveedor.Sensitive = false;
-			this.entry_nombre_proveedor.Sensitive = false;
-			
-			TreeModel model;
-			TreeIter iter;
-			string codigo = "";
-			if (this.lista_precios_proveedor.Selection.GetSelected(out model, out iter)){
-				codigo = (string) model.GetValue(iter, 9);
-				//jbuConsole.WriteLine(codigo);
-			}
-			
-			NpgsqlConnection conexion; 
-			conexion = new NpgsqlConnection (connectionString+nombrebd);
-            
-			// Verifica que la base de datos este conectada
-			try{
-				conexion.Open ();
-				NpgsqlCommand comando; 
-				comando = conexion.CreateCommand ();
-               	comando.CommandText = "SELECT osiris_catalogo_productos_proveedores.id_proveedor,"+
-					                "osiris_catalogo_productos_proveedores.descripcion_producto,"+
-						            "to_char(osiris_catalogo_productos_proveedores.precio_costo, '999999.999') AS preciocosto,"+
-							        "to_char(osiris_catalogo_productos_proveedores.id_secuencia, '999999') AS secuencia,"+
-						            "to_char(osiris_catalogo_productos_proveedores.cantidad_de_embalaje, '99999') AS cantidadembalaje,"+
-						            "osiris_catalogo_productos_proveedores.clave,"+
-						            "osiris_catalogo_productos_proveedores.codigo_producto_proveedor,"+
-						            "osiris_catalogo_productos_proveedores.codigo_de_barra,"+
-						
-               						"osiris_catalogo_productos_proveedores.tipo_unidad_producto "+
-               						"FROM osiris_catalogo_productos_proveedores "+
-               						"WHERE id_secuencia = '"+codigo+"' "+
-               						"AND id_proveedor  = '"+this.entry_id_proveedor.Text+"' ;"; 
-               						
-				//Console.WriteLine(comando.CommandText);
-				
-				NpgsqlDataReader lector = comando.ExecuteReader ();
-				if(lector.Read()){	
-										
-					this.secuencial = (string) lector["secuencia"];			
-					this.entry_producto.Text = (string) lector["descripcion_producto"].ToString().ToUpper();
-					this.entry_precio.Text = (string) lector["preciocosto"];
-					this.entry_embalaje.Text = (string) lector["cantidadembalaje"];
-					this.entry_codigo.Text = (string) lector["codigo_producto_proveedor"].ToString().ToUpper();
-					this.entry_cod_barras.Text = (string) lector["codigo_de_barra"];		
-					this.entry_clave.Text = (string) lector["clave"].ToString().ToUpper();	
-					//this.combobox_tipo_unidad = (string) lector["tipo_unidad_producto"];	
+			if(togglebutton_editar.Active == true){
+				button_agrega.Sensitive = false;
+				TreeModel model;
+				TreeIter iter;
+				string codigo = "";
+				notebook1.CurrentPage = 1;			
+				if (this.lista_precios_proveedor.Selection.GetSelected(out model, out iter)){
+					codigo = (string) model.GetValue(iter, 9);
+					//jbuConsole.WriteLine(codigo);
+				}		
+				NpgsqlConnection conexion; 
+				conexion = new NpgsqlConnection (connectionString+nombrebd);
+	            
+				// Verifica que la base de datos este conectada
+				try{
+					conexion.Open ();
+					NpgsqlCommand comando; 
+					comando = conexion.CreateCommand ();
+	               	comando.CommandText = "SELECT osiris_catalogo_productos_proveedores.id_proveedor,"+
+						                "osiris_catalogo_productos_proveedores.descripcion_producto,"+
+							            "to_char(osiris_catalogo_productos_proveedores.precio_costo, '999999.999') AS preciocosto,"+
+								        "to_char(osiris_catalogo_productos_proveedores.id_secuencia, '999999') AS secuencia,"+
+							            "to_char(osiris_catalogo_productos_proveedores.cantidad_de_embalaje, '99999') AS cantidadembalaje,"+
+							            "osiris_catalogo_productos_proveedores.clave,"+
+							            "osiris_catalogo_productos_proveedores.codigo_producto_proveedor,"+
+							            "osiris_catalogo_productos_proveedores.codigo_de_barra,"+
+							
+	               						"osiris_catalogo_productos_proveedores.tipo_unidad_producto "+
+	               						"FROM osiris_catalogo_productos_proveedores "+
+	               						"WHERE id_secuencia = '"+codigo+"' "+
+	               						"AND id_proveedor  = '"+this.entry_id_proveedor.Text+"' ;"; 
+	               						
+					//Console.WriteLine(comando.CommandText);
 					
-					llena_combo_tipounidad();
-					//relleno de tipo de empleado
-	 				combobox_tipo_unidad.Clear();
-	 				CellRendererText cell33 = new CellRendererText();
-					combobox_tipo_unidad.PackStart(cell33, true);
-					combobox_tipo_unidad.AddAttribute(cell33,"text",0);
-	        
-					ListStore store33 = new ListStore( typeof (string));
-					combobox_tipo_unidad.Model = store33;
-	        		
-					store33.AppendValues ((string) lector["tipo_unidad_producto"]);
-					store33.AppendValues ("PIEZA");
-					store33.AppendValues ("KILO");
-					store33.AppendValues ("LITRO");
-					store33.AppendValues ("GRAMO");
-					store33.AppendValues ("METRO");
-					store33.AppendValues ("CENTIMETRO");
-					store33.AppendValues ("CAJA");
-					store33.AppendValues ("PULGADA");
-					store33.AppendValues ("FRASCO");
-					store33.AppendValues ("BOTE");
-					store33.AppendValues ("GALON");
-	 				
-					TreeIter iter33;
-					if (store33.GetIterFirst(out iter33)){
-						combobox_tipo_unidad.SetActiveIter (iter33);
-					}
-				}				
-			}catch (NpgsqlException ex){
-				Console.WriteLine ("PostgresSQL error: {0}",ex.Message);
-				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
-				                                               MessageType.Info,ButtonsType.Close, "PostgresSQL error: {0} ",ex.Message);
-				msgBoxError.Run ();					msgBoxError.Destroy();
+					NpgsqlDataReader lector = comando.ExecuteReader ();
+					if(lector.Read()){	
+											
+						this.secuencial = (string) lector["secuencia"];			
+						this.entry_producto.Text = (string) lector["descripcion_producto"].ToString().ToUpper();
+						this.entry_precio.Text = (string) lector["preciocosto"];
+						this.entry_embalaje.Text = (string) lector["cantidadembalaje"];
+						this.entry_codigo.Text = (string) lector["codigo_producto_proveedor"].ToString().ToUpper();
+						this.entry_cod_barras.Text = (string) lector["codigo_de_barra"];		
+						this.entry_clave.Text = (string) lector["clave"].ToString().ToUpper();	
+						//this.combobox_tipo_unidad = (string) lector["tipo_unidad_producto"];	
+						
+						llena_combo_tipounidad();
+						
+					}				
+				}catch (NpgsqlException ex){
+					Console.WriteLine ("PostgresSQL error: {0}",ex.Message);
+					MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+					                                               MessageType.Info,ButtonsType.Close, "PostgresSQL error: {0} ",ex.Message);
+					msgBoxError.Run ();					msgBoxError.Destroy();
+				}
+				conexion.Close ();
+			}else{
+				button_agrega.Sensitive = true;
 			}
-			conexion.Close ();			
 		}
 		
 		void on_button_aprobar_clicked (object sender, EventArgs args)

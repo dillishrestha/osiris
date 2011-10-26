@@ -4538,6 +4538,7 @@ Cargos</property>
                                             <property name="can_focus">False</property>
                                             <child>
                                               <widget class="GtkCheckButton" id="checkbutton13">
+                                                <property name="width_request">115</property>
                                                 <property name="visible">True</property>
                                                 <property name="can_focus">True</property>
                                                 <property name="receives_default">False</property>
@@ -4603,7 +4604,7 @@ Cargos</property>
                                             </child>
                                             <child>
                                               <widget class="GtkEntry" id="entry_quirurgicos">
-                                                <property name="width_request">304</property>
+                                                <property name="width_request">300</property>
                                                 <property name="visible">True</property>
                                                 <property name="can_focus">True</property>
                                                 <property name="invisible_char">●</property>
@@ -4632,6 +4633,7 @@ Cargos</property>
                                             <property name="can_focus">False</property>
                                             <child>
                                               <widget class="GtkCheckButton" id="checkbutton14">
+                                                <property name="width_request">115</property>
                                                 <property name="visible">True</property>
                                                 <property name="can_focus">True</property>
                                                 <property name="receives_default">False</property>
@@ -4697,7 +4699,7 @@ Cargos</property>
                                             </child>
                                             <child>
                                               <widget class="GtkEntry" id="entry_neurologicos">
-                                                <property name="width_request">296</property>
+                                                <property name="width_request">300</property>
                                                 <property name="visible">True</property>
                                                 <property name="can_focus">True</property>
                                                 <property name="invisible_char">●</property>
@@ -4730,6 +4732,7 @@ Cargos</property>
                                                 <property name="can_focus">False</property>
                                                 <child>
                                                   <widget class="GtkCheckButton" id="checkbutton15">
+                                                    <property name="width_request">115</property>
                                                     <property name="visible">True</property>
                                                     <property name="can_focus">True</property>
                                                     <property name="receives_default">False</property>
@@ -4795,7 +4798,7 @@ Cargos</property>
                                                 </child>
                                                 <child>
                                                   <widget class="GtkEntry" id="entry_obs_hospi">
-                                                    <property name="width_request">287</property>
+                                                    <property name="width_request">300</property>
                                                     <property name="visible">True</property>
                                                     <property name="can_focus">True</property>
                                                     <property name="invisible_char">●</property>
@@ -4831,6 +4834,7 @@ Cargos</property>
                                             <property name="can_focus">False</property>
                                             <child>
                                               <widget class="GtkCheckButton" id="checkbutton16">
+                                                <property name="width_request">115</property>
                                                 <property name="visible">True</property>
                                                 <property name="can_focus">True</property>
                                                 <property name="receives_default">False</property>
@@ -4896,7 +4900,7 @@ Cargos</property>
                                             </child>
                                             <child>
                                               <widget class="GtkEntry" id="entry_obs_hospi1">
-                                                <property name="width_request">287</property>
+                                                <property name="width_request">300</property>
                                                 <property name="visible">True</property>
                                                 <property name="can_focus">True</property>
                                                 <property name="invisible_char">●</property>
@@ -4925,6 +4929,7 @@ Cargos</property>
                                             <property name="can_focus">False</property>
                                             <child>
                                               <widget class="GtkCheckButton" id="checkbutton17">
+                                                <property name="width_request">115</property>
                                                 <property name="visible">True</property>
                                                 <property name="can_focus">True</property>
                                                 <property name="receives_default">False</property>
@@ -4990,7 +4995,7 @@ Cargos</property>
                                             </child>
                                             <child>
                                               <widget class="GtkEntry" id="entry_alergicos">
-                                                <property name="width_request">340</property>
+                                                <property name="width_request">300</property>
                                                 <property name="visible">True</property>
                                                 <property name="can_focus">True</property>
                                                 <property name="invisible_char">●</property>
@@ -5019,6 +5024,7 @@ Cargos</property>
                                             <property name="can_focus">False</property>
                                             <child>
                                               <widget class="GtkCheckButton" id="checkbutton18">
+                                                <property name="width_request">115</property>
                                                 <property name="visible">True</property>
                                                 <property name="can_focus">True</property>
                                                 <property name="receives_default">False</property>
@@ -5084,7 +5090,7 @@ Cargos</property>
                                             </child>
                                             <child>
                                               <widget class="GtkEntry" id="entry_cronicodegenerativo">
-                                                <property name="width_request">281</property>
+                                                <property name="width_request">300</property>
                                                 <property name="visible">True</property>
                                                 <property name="can_focus">True</property>
                                                 <property name="invisible_char">●</property>
@@ -5113,6 +5119,7 @@ Cargos</property>
                                             <property name="can_focus">False</property>
                                             <child>
                                               <widget class="GtkCheckButton" id="checkbutton49">
+                                                <property name="width_request">115</property>
                                                 <property name="visible">True</property>
                                                 <property name="can_focus">True</property>
                                                 <property name="receives_default">False</property>
@@ -8424,7 +8431,7 @@ Pediatrica</property>
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
                                     <property name="label" translatable="yes">Exploracion
-por Aparatos</property>
+Fisica IPAS</property>
                                   </widget>
                                   <packing>
                                     <property name="position">1</property>
@@ -8440,7 +8447,7 @@ por Aparatos</property>
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
                                     <property name="label" translatable="yes">Exploracion
-por Aparatos</property>
+Fisica IPAS</property>
                                   </widget>
                                   <packing>
                                     <property name="position">2</property>
@@ -8718,7 +8725,7 @@ por Aparatos</property>
                                                             </packing>
                                                             </child>
                                                             <child>
-                                                            <widget class="GtkComboBox" id="combobox_craneo">
+                                                            <widget class="GtkComboBox" id="combobox_cabeza_craneo">
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">False</property>
                                                             </widget>
@@ -8769,7 +8776,7 @@ por Aparatos</property>
                                                             </packing>
                                                             </child>
                                                             <child>
-                                                            <widget class="GtkComboBox" id="combobox_cara">
+                                                            <widget class="GtkComboBox" id="combobox_cabeza_cara">
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">False</property>
                                                             </widget>
@@ -8854,7 +8861,7 @@ por Aparatos</property>
                                                             </packing>
                                                             </child>
                                                             <child>
-                                                            <widget class="GtkComboBox" id="combobox3">
+                                                            <widget class="GtkComboBox" id="combobox_cuello_cilindrico">
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">False</property>
                                                             </widget>
@@ -8905,7 +8912,7 @@ por Aparatos</property>
                                                             </packing>
                                                             </child>
                                                             <child>
-                                                            <widget class="GtkComboBox" id="combobox4">
+                                                            <widget class="GtkComboBox" id="combobox_cuello_traquea">
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">False</property>
                                                             </widget>
@@ -8956,7 +8963,7 @@ por Aparatos</property>
                                                             </packing>
                                                             </child>
                                                             <child>
-                                                            <widget class="GtkComboBox" id="combobox5">
+                                                            <widget class="GtkComboBox" id="combobox_cuello_movilidad">
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">False</property>
                                                             </widget>
@@ -9007,7 +9014,7 @@ por Aparatos</property>
                                                             </packing>
                                                             </child>
                                                             <child>
-                                                            <widget class="GtkComboBox" id="combobox6">
+                                                            <widget class="GtkComboBox" id="combobox_cuello_ganglios">
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">False</property>
                                                             </widget>
@@ -9116,7 +9123,7 @@ por Aparatos</property>
                                                             </packing>
                                                             </child>
                                                             <child>
-                                                            <widget class="GtkComboBox" id="combobox10">
+                                                            <widget class="GtkComboBox" id="combobox_nariz_mucosa">
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">False</property>
                                                             </widget>
@@ -9167,7 +9174,7 @@ por Aparatos</property>
                                                             </packing>
                                                             </child>
                                                             <child>
-                                                            <widget class="GtkComboBox" id="combobox11">
+                                                            <widget class="GtkComboBox" id="combobox_nariz_cornetes">
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">False</property>
                                                             </widget>
@@ -9218,7 +9225,7 @@ por Aparatos</property>
                                                             </packing>
                                                             </child>
                                                             <child>
-                                                            <widget class="GtkComboBox" id="combobox12">
+                                                            <widget class="GtkComboBox" id="combobox_nariz_polipos">
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">False</property>
                                                             </widget>
@@ -9269,7 +9276,7 @@ por Aparatos</property>
                                                             </packing>
                                                             </child>
                                                             <child>
-                                                            <widget class="GtkComboBox" id="combobox13">
+                                                            <widget class="GtkComboBox" id="combobox_nariz_septum">
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">False</property>
                                                             </widget>
@@ -9368,7 +9375,7 @@ por Aparatos</property>
                                                             </packing>
                                                             </child>
                                                             <child>
-                                                            <widget class="GtkComboBox" id="combobox7">
+                                                            <widget class="GtkComboBox" id="combobox_oido_timpano_der">
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">False</property>
                                                             </widget>
@@ -9391,7 +9398,7 @@ por Aparatos</property>
                                                             </packing>
                                                             </child>
                                                             <child>
-                                                            <widget class="GtkComboBox" id="combobox56">
+                                                            <widget class="GtkComboBox" id="combobox_oido_timpano_izq">
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">False</property>
                                                             </widget>
@@ -9454,7 +9461,7 @@ por Aparatos</property>
                                                             </packing>
                                                             </child>
                                                             <child>
-                                                            <widget class="GtkComboBox" id="combobox8">
+                                                            <widget class="GtkComboBox" id="combobox_oido_condaud_der">
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">False</property>
                                                             </widget>
@@ -9477,7 +9484,7 @@ por Aparatos</property>
                                                             </packing>
                                                             </child>
                                                             <child>
-                                                            <widget class="GtkComboBox" id="combobox57">
+                                                            <widget class="GtkComboBox" id="combobox_oido_condaud_izq">
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">False</property>
                                                             </widget>
@@ -9540,7 +9547,7 @@ por Aparatos</property>
                                                             </packing>
                                                             </child>
                                                             <child>
-                                                            <widget class="GtkComboBox" id="combobox9">
+                                                            <widget class="GtkComboBox" id="combobox_oido_pabellon_der">
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">False</property>
                                                             </widget>
@@ -9563,7 +9570,7 @@ por Aparatos</property>
                                                             </packing>
                                                             </child>
                                                             <child>
-                                                            <widget class="GtkComboBox" id="combobox58">
+                                                            <widget class="GtkComboBox" id="combobox_oido_pabellon_izq">
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">False</property>
                                                             </widget>
@@ -9690,7 +9697,7 @@ por Aparatos</property>
                                                             </packing>
                                                             </child>
                                                             <child>
-                                                            <widget class="GtkComboBox" id="combobox44">
+                                                            <widget class="GtkComboBox" id="combobox_ojos_pupilas_der">
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">False</property>
                                                             </widget>
@@ -9713,7 +9720,7 @@ por Aparatos</property>
                                                             </packing>
                                                             </child>
                                                             <child>
-                                                            <widget class="GtkComboBox" id="combobox45">
+                                                            <widget class="GtkComboBox" id="combobox_ojos_pupilas_izq">
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">False</property>
                                                             </widget>
@@ -9777,7 +9784,7 @@ por Aparatos</property>
                                                             </packing>
                                                             </child>
                                                             <child>
-                                                            <widget class="GtkComboBox" id="combobox46">
+                                                            <widget class="GtkComboBox" id="combobox_ojos_cornea_der">
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">False</property>
                                                             </widget>
@@ -9800,7 +9807,7 @@ por Aparatos</property>
                                                             </packing>
                                                             </child>
                                                             <child>
-                                                            <widget class="GtkComboBox" id="combobox47">
+                                                            <widget class="GtkComboBox" id="combobox_ojos_cornea_izq">
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">False</property>
                                                             </widget>
@@ -9965,7 +9972,7 @@ por Aparatos</property>
                                                             </packing>
                                                             </child>
                                                             <child>
-                                                            <widget class="GtkComboBox" id="combobox48">
+                                                            <widget class="GtkComboBox" id="combobox_ojos_idencolor_der">
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">False</property>
                                                             </widget>
@@ -9988,7 +9995,7 @@ por Aparatos</property>
                                                             </packing>
                                                             </child>
                                                             <child>
-                                                            <widget class="GtkComboBox" id="combobox52">
+                                                            <widget class="GtkComboBox" id="combobox_ojos_idencolor_izq">
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">False</property>
                                                             </widget>
@@ -10052,7 +10059,7 @@ por Aparatos</property>
                                                             </packing>
                                                             </child>
                                                             <child>
-                                                            <widget class="GtkComboBox" id="combobox49">
+                                                            <widget class="GtkComboBox" id="combobox_ojos_movolcular_der">
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">False</property>
                                                             </widget>
@@ -10075,7 +10082,7 @@ por Aparatos</property>
                                                             </packing>
                                                             </child>
                                                             <child>
-                                                            <widget class="GtkComboBox" id="combobox53">
+                                                            <widget class="GtkComboBox" id="combobox_ojos_movolcular_izq">
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">False</property>
                                                             </widget>
@@ -10139,7 +10146,7 @@ por Aparatos</property>
                                                             </packing>
                                                             </child>
                                                             <child>
-                                                            <widget class="GtkComboBox" id="combobox50">
+                                                            <widget class="GtkComboBox" id="combobox_ojos_refolcular_der">
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">False</property>
                                                             </widget>
@@ -10162,7 +10169,7 @@ por Aparatos</property>
                                                             </packing>
                                                             </child>
                                                             <child>
-                                                            <widget class="GtkComboBox" id="combobox54">
+                                                            <widget class="GtkComboBox" id="combobox_ojos_refolcular_izq">
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">False</property>
                                                             </widget>
@@ -10226,7 +10233,7 @@ por Aparatos</property>
                                                             </packing>
                                                             </child>
                                                             <child>
-                                                            <widget class="GtkComboBox" id="combobox51">
+                                                            <widget class="GtkComboBox" id="combobox_ojos_ptregion_der">
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">False</property>
                                                             </widget>
@@ -10249,7 +10256,7 @@ por Aparatos</property>
                                                             </packing>
                                                             </child>
                                                             <child>
-                                                            <widget class="GtkComboBox" id="combobox55">
+                                                            <widget class="GtkComboBox" id="combobox_ojos_ptregion_izq">
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">False</property>
                                                             </widget>
@@ -10355,7 +10362,7 @@ por Aparatos</property>
                                                             </packing>
                                                             </child>
                                                             <child>
-                                                            <widget class="GtkComboBox" id="combobox14">
+                                                            <widget class="GtkComboBox" id="combobox_cavoral_encias">
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">False</property>
                                                             </widget>
@@ -10406,7 +10413,7 @@ por Aparatos</property>
                                                             </packing>
                                                             </child>
                                                             <child>
-                                                            <widget class="GtkComboBox" id="combobox15">
+                                                            <widget class="GtkComboBox" id="combobox_cavoral_mucosa">
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">False</property>
                                                             </widget>
@@ -10457,7 +10464,7 @@ por Aparatos</property>
                                                             </packing>
                                                             </child>
                                                             <child>
-                                                            <widget class="GtkComboBox" id="combobox16">
+                                                            <widget class="GtkComboBox" id="combobox_cavoral_paladar">
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">False</property>
                                                             </widget>
@@ -10508,7 +10515,7 @@ por Aparatos</property>
                                                             </packing>
                                                             </child>
                                                             <child>
-                                                            <widget class="GtkComboBox" id="combobox17">
+                                                            <widget class="GtkComboBox" id="combobox_cavoral_lengua">
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">False</property>
                                                             </widget>
@@ -10559,7 +10566,7 @@ por Aparatos</property>
                                                             </packing>
                                                             </child>
                                                             <child>
-                                                            <widget class="GtkComboBox" id="combobox18">
+                                                            <widget class="GtkComboBox" id="combobox_cavoral_amigdalas">
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">False</property>
                                                             </widget>
@@ -10610,7 +10617,7 @@ por Aparatos</property>
                                                             </packing>
                                                             </child>
                                                             <child>
-                                                            <widget class="GtkComboBox" id="combobox19">
+                                                            <widget class="GtkComboBox" id="combobox_cavoral_dentadura">
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">False</property>
                                                             </widget>
@@ -10733,7 +10740,7 @@ por Aparatos</property>
                                                             </packing>
                                                             </child>
                                                             <child>
-                                                            <widget class="GtkComboBox" id="combobox20">
+                                                            <widget class="GtkComboBox" id="combobox_torax_simetria">
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">False</property>
                                                             </widget>
@@ -10773,7 +10780,7 @@ por Aparatos</property>
                                                             </packing>
                                                             </child>
                                                             <child>
-                                                            <widget class="GtkComboBox" id="combobox21">
+                                                            <widget class="GtkComboBox" id="combobox_torax_amplexion">
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">False</property>
                                                             </widget>
@@ -10824,7 +10831,7 @@ por Aparatos</property>
                                                             </packing>
                                                             </child>
                                                             <child>
-                                                            <widget class="GtkComboBox" id="combobox22">
+                                                            <widget class="GtkComboBox" id="combobox_torax_amplexacion">
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">False</property>
                                                             </widget>
@@ -10855,7 +10862,7 @@ por Aparatos</property>
                                                             <widget class="GtkLabel" id="label121">
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">False</property>
-                                                            <property name="label" translatable="yes">Mulmullo</property>
+                                                            <property name="label" translatable="yes">Murmullo</property>
                                                             </widget>
                                                             <packing>
                                                             <property name="expand">True</property>
@@ -10864,7 +10871,7 @@ por Aparatos</property>
                                                             </packing>
                                                             </child>
                                                             <child>
-                                                            <widget class="GtkComboBox" id="combobox23">
+                                                            <widget class="GtkComboBox" id="combobox_torax_murmullo">
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">False</property>
                                                             </widget>
@@ -10915,7 +10922,7 @@ por Aparatos</property>
                                                             </packing>
                                                             </child>
                                                             <child>
-                                                            <widget class="GtkComboBox" id="combobox24">
+                                                            <widget class="GtkComboBox" id="combobox_torax_ventilacion">
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">False</property>
                                                             </widget>
@@ -11028,7 +11035,7 @@ por Aparatos</property>
                                                             </packing>
                                                             </child>
                                                             <child>
-                                                            <widget class="GtkComboBox" id="combobox25">
+                                                            <widget class="GtkComboBox" id="combobox_areacard_ritmo">
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">False</property>
                                                             </widget>
@@ -11079,7 +11086,7 @@ por Aparatos</property>
                                                             </packing>
                                                             </child>
                                                             <child>
-                                                            <widget class="GtkComboBox" id="combobox26">
+                                                            <widget class="GtkComboBox" id="combobox_areacard_intensidad">
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">False</property>
                                                             </widget>
@@ -11130,7 +11137,7 @@ por Aparatos</property>
                                                             </packing>
                                                             </child>
                                                             <child>
-                                                            <widget class="GtkComboBox" id="combobox27">
+                                                            <widget class="GtkComboBox" id="combobox_areacard_ruidos">
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">False</property>
                                                             </widget>
@@ -11181,7 +11188,7 @@ por Aparatos</property>
                                                             </packing>
                                                             </child>
                                                             <child>
-                                                            <widget class="GtkComboBox" id="combobox28">
+                                                            <widget class="GtkComboBox" id="combobox_areacard_soplos">
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">False</property>
                                                             </widget>
@@ -11268,7 +11275,7 @@ por Aparatos</property>
                                                             </packing>
                                                             </child>
                                                             <child>
-                                                            <widget class="GtkComboBox" id="combobox29">
+                                                            <widget class="GtkComboBox" id="combobox_collumb_conformacion">
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">False</property>
                                                             </widget>
@@ -11319,7 +11326,7 @@ por Aparatos</property>
                                                             </packing>
                                                             </child>
                                                             <child>
-                                                            <widget class="GtkComboBox" id="combobox30">
+                                                            <widget class="GtkComboBox" id="combobox_collumb_arcosmov">
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">False</property>
                                                             </widget>
@@ -11370,7 +11377,7 @@ por Aparatos</property>
                                                             </packing>
                                                             </child>
                                                             <child>
-                                                            <widget class="GtkComboBox" id="combobox31">
+                                                            <widget class="GtkComboBox" id="combobox_collumb_marcha">
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">False</property>
                                                             </widget>
@@ -11421,7 +11428,7 @@ por Aparatos</property>
                                                             </packing>
                                                             </child>
                                                             <child>
-                                                            <widget class="GtkComboBox" id="combobox32">
+                                                            <widget class="GtkComboBox" id="combobox_collumb_puntdoloroso">
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">False</property>
                                                             </widget>
@@ -11547,7 +11554,7 @@ por Aparatos</property>
                                                             </packing>
                                                             </child>
                                                             <child>
-                                                            <widget class="GtkComboBox" id="combobox33">
+                                                            <widget class="GtkComboBox" id="combobox_abdomen_conformacion">
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">False</property>
                                                             </widget>
@@ -11598,7 +11605,7 @@ por Aparatos</property>
                                                             </packing>
                                                             </child>
                                                             <child>
-                                                            <widget class="GtkComboBox" id="combobox34">
+                                                            <widget class="GtkComboBox" id="combobox_abdomen_peristalsis">
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">False</property>
                                                             </widget>
@@ -13101,7 +13108,7 @@ por Aparatos</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
                                 <property name="label" translatable="yes">Exploracion
-     Fisica</property>
+Fisica IPAS</property>
                               </widget>
                               <packing>
                                 <property name="tab_fill">False</property>
@@ -13116,7 +13123,7 @@ por Aparatos</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
                                 <property name="label" translatable="yes">Exploracion
-     Fisica</property>
+Fisica IPAS</property>
                               </widget>
                               <packing>
                                 <property name="position">1</property>
@@ -13132,7 +13139,7 @@ por Aparatos</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
                                 <property name="label" translatable="yes">Exploracion
-     Fisica</property>
+Fisica IPAS</property>
                               </widget>
                               <packing>
                                 <property name="position">2</property>

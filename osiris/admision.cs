@@ -99,7 +99,7 @@ namespace osiris
 			////// Muestra ventana de Glade
 			menu_admision.Show();
 			button_reg_admision.Clicked += new EventHandler(on_button_reg_admision_clicked);
-			button_reportes_regadmin.Clicked += new EventHandler( on_button_reportes_regadmin_clicked);
+			button_reportes_regadmin.Clicked += new EventHandler(on_button_reportes_regadmin_click);
 			button_imprime_prot.Clicked += new EventHandler(on_button_imprime_prot_clicked);
 			button_paquetes.Clicked += new EventHandler(on_button_paquetes_clicked);
 			button_presupuestos.Clicked += new EventHandler(on_button_presupuestos_clicked);
@@ -190,9 +190,9 @@ namespace osiris
 			new osiris.impr_doc_pacientes(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,folioserv,2);  // rpd_doc_pacientes.cs
 		}
 		
-		void on_button_reportes_regadmin_clicked (object sender, EventArgs args)
+		void on_button_reportes_regadmin_click(object sender, EventArgs args)
 		{
-			new osiris.rptAdmision(nombrebd);  // rpt_rep1_admision.cs
+			new osiris.rptAdmision(nombrebd,"impresora");  // rpt_rep1_admision.cs
 		}
 		
 		void on_button_cambia_datos_paciente_clicked (object sender, EventArgs args)

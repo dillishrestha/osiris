@@ -232,9 +232,22 @@ namespace osiris
 		[Widget] Gtk.ComboBox combobox_collumb_marcha = null;
 		[Widget] Gtk.ComboBox combobox_collumb_puntdoloroso = null;
 		
-		//combobox_abdomen_conformacion = null;
-		//combobox_abdomen_peristalsis
+		[Widget] Gtk.ComboBox combobox_abdomen_conformacion = null;
+		[Widget] Gtk.ComboBox combobox_abdomen_peristalsis = null;
+		[Widget] Gtk.ComboBox combobox_abdomen_visceromegalias = null;
+		[Widget] Gtk.ComboBox combobox_abdomen_hernias = null;
+		[Widget] Gtk.ComboBox combobox_abdomen_exostisis = null;
+		[Widget] Gtk.ComboBox combobox_abdomen_auscultacion = null;
+		[Widget] Gtk.Entry entry_abdomen_nt_conformacion = null;
+		[Widget] Gtk.Entry entry_abdomen_nt_peristalsis = null;
+		[Widget] Gtk.Entry entry_abdomen_nt_visceromagalias = null;
+		[Widget] Gtk.Entry entry_abdomen_nt_hernias = null;
+		[Widget] Gtk.Entry entry_abdomen_nt_exostisis = null;
+		[Widget] Gtk.Entry entry_abdomen_nt_auscultacion = null;
+		[Widget] Gtk.Entry entry_abdomen_otros = null;
 		
+		//combobox_mienbrtorax_der = null;
+		//combobox_mienbrtorax_izq = null;
 		[Widget] Gtk.Button button_exportar_xls = null;
 		
 		[Widget] Gtk.Statusbar statusbar5 = null;
@@ -437,6 +450,14 @@ namespace osiris
 			llenado_combobox(1,"NORMAL",combobox_collumb_arcosmov,args_normal_anormal,args_id_array);
 			llenado_combobox(1,"NORMAL",combobox_collumb_marcha,args_normal_anormal,args_id_array);
 			llenado_combobox(1,"NO",combobox_collumb_puntdoloroso,args_si_no,args_id_array);
+			llenado_combobox(1,"NO",combobox_collumb_puntdoloroso,args_si_no,args_id_array);
+			
+			llenado_combobox(1,"GLOBOSO",combobox_abdomen_conformacion,args_conformacion,args_id_array);
+			llenado_combobox(1,"NORMAL",combobox_abdomen_peristalsis,args_normal_anormal,args_id_array);
+			llenado_combobox(1,"NO",combobox_abdomen_visceromegalias,args_si_no,args_id_array);
+			llenado_combobox(1,"NO",combobox_abdomen_hernias,args_si_no,args_id_array);
+			llenado_combobox(1,"NO",combobox_abdomen_exostisis,args_si_no,args_id_array);
+			llenado_combobox(1,"NO",combobox_abdomen_auscultacion,args_si_no,args_id_array);
 			
 			//SpinButtons Antecedentes Heredo Familiar:
 			spinbutton_edad_madre.SetRange(0, 150);

@@ -56,7 +56,7 @@ namespace osiris
 		public int horario_cita_inicio = 1;		// 7 am
 		public int horario_cita_termino = 20;	// 8 pm
 		public int horario_24_horas = 24; 		// media moche
-		public int intervalo_minutos = 05;
+		public int intervalo_minutos = 10;		// intervalo de minutos para las consultas
 		
 		// variable para la conexion---> los valores estan en facturador.cs
 		string connectionString = "";

@@ -127,6 +127,7 @@ namespace osiris
 		[Widget] Gtk.Entry entry_telcelular = null;
 		[Widget] Gtk.Entry entry_religion_paciente = null;
 		[Widget] Gtk.Entry entry_alergia_paciente = null;
+		[Widget] Gtk.Label label8 = null;
 		[Widget] Gtk.Entry entry_observacion_ingreso = null;
 		[Widget] Gtk.Entry entry_lugar_nacimiento = null;
 		
@@ -370,6 +371,8 @@ namespace osiris
 	        	
 	        		// activa boton de grabacion de informacion
 				button_grabar.Clicked += new EventHandler(on_graba_informacion_clicked);
+				//
+				label8.Text = "Serv.Medico :";
 	        	
 				// Activa boton de responsable
 				button_responsable.Clicked += new EventHandler(on_button_responsable_clicked);
@@ -757,6 +760,12 @@ namespace osiris
 										this.button_grabar.Sensitive = false;
 										grabainternamiento =  false;
 										graba_admision("VIS-",960);
+										entry_folio_paciente.Text = folioservicio.ToString();}
+									if (idtipointernamiento == 970){// OPTICA
+										this.button_admision.Sensitive = false;
+										this.button_grabar.Sensitive = false;
+										grabainternamiento =  false;
+										graba_admision("OPT-",970);
 										entry_folio_paciente.Text = folioservicio.ToString();}
 				        		}
 							}//if de checkeo de internamiento
@@ -1415,7 +1424,7 @@ namespace osiris
 				NpgsqlCommand comando; 
 				comando = conexion.CreateCommand ();
 				
-				if ((string) entry_expresion.Text.ToUpper() == "*")				{
+				if ((string) entry_expresion.Text.ToUpper() == "*"){
 					comando.CommandText = "SELECT * FROM osiris_empresas "+
 								"ORDER BY descripcion_empresa;";
 				}else{
@@ -1424,7 +1433,7 @@ namespace osiris
 								"ORDER BY descripcion_empresa;";
 				}
 				NpgsqlDataReader lector = comando.ExecuteReader ();
-				while (lector.Read())				{
+				while (lector.Read()){
 					treeViewEngineBuscaEmpresa.AppendValues ((int) lector["id_empresa"],//TreeIter iter = 
 											(string)lector["descripcion_empresa"]);
 				}					
@@ -1688,7 +1697,7 @@ namespace osiris
 			if ((string) entry_nombre_1.Text.Trim() == "" || (string) entry_apellido_paterno.Text.Trim() == "" ||	
 				(string) entry_apellido_materno.Text.Trim() == "" || (string) entry_dia_nacimiento.Text.Trim() == "" ||
 				(string) entry_mes_nacimiento.Text.Trim() == "" || (string) entry_ano_nacimiento.Text.Trim() == "" ||
-			    (string) entry_religion_paciente.Text.Trim() == "" || entry_alergia_paciente.Text.Trim() == "" ||
+			    (string) entry_religion_paciente.Text.Trim() == "" || entry_alergia_paciente.Text.Trim() == "" || entry_observacion_ingreso.Text.Trim() == "" ||
 				(string) entry_rfc.Text.Trim() =="" || grabarespocuenta == false || id_tipopaciente == 0 || (string) this.entry_empresa.Text.ToString().Trim() == ""){
 				return false;
 			}else{
@@ -2205,6 +2214,7 @@ namespace osiris
 		        		        
 					// Muestra ventana de Glade
 					registro.Show();
+					label8.Text = "Serv.Medico :";
 					
 					llena_Ventana_de_datos(PidPaciente.ToString().Trim());
 					llena_inf_de_paciente(PidPaciente.ToString().Trim());
@@ -2276,7 +2286,7 @@ namespace osiris
 				// Cambio para VENEZUELA
 				//label37.Text = "RIF";			// RFC
 				//label43.Text = "C.I.";		// CURP
-					
+				label8.Text = "Serv.Medico :";	
 				llena_Ventana_de_datos(pidpaciente_.ToString().Trim());
 				llena_inf_de_paciente(pidpaciente_.ToString().Trim());
 				activa_los_entry(false);

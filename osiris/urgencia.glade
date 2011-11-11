@@ -8222,9 +8222,17 @@ Pediatrica</property>
                                             <property name="can_focus">False</property>
                                             <property name="left_padding">12</property>
                                             <child>
-                                              <widget class="GtkTextView" id="textview1">
+                                              <widget class="GtkScrolledWindow" id="scrolledwindow2">
                                                 <property name="visible">True</property>
                                                 <property name="can_focus">True</property>
+                                                <property name="hscrollbar_policy">automatic</property>
+                                                <property name="vscrollbar_policy">automatic</property>
+                                                <child>
+                                                  <widget class="GtkTextView" id="textview1">
+                                                    <property name="visible">True</property>
+                                                    <property name="can_focus">True</property>
+                                                  </widget>
+                                                </child>
                                               </widget>
                                             </child>
                                           </widget>
@@ -8253,9 +8261,17 @@ Pediatrica</property>
                                             <property name="can_focus">False</property>
                                             <property name="left_padding">12</property>
                                             <child>
-                                              <widget class="GtkTextView" id="textview2">
+                                              <widget class="GtkScrolledWindow" id="scrolledwindow3">
                                                 <property name="visible">True</property>
                                                 <property name="can_focus">True</property>
+                                                <property name="hscrollbar_policy">automatic</property>
+                                                <property name="vscrollbar_policy">automatic</property>
+                                                <child>
+                                                  <widget class="GtkTextView" id="textview2">
+                                                    <property name="visible">True</property>
+                                                    <property name="can_focus">True</property>
+                                                  </widget>
+                                                </child>
                                               </widget>
                                             </child>
                                           </widget>
@@ -8288,9 +8304,17 @@ Pediatrica</property>
                                             <property name="can_focus">False</property>
                                             <property name="left_padding">12</property>
                                             <child>
-                                              <widget class="GtkTextView" id="textview3">
+                                              <widget class="GtkScrolledWindow" id="scrolledwindow4">
                                                 <property name="visible">True</property>
                                                 <property name="can_focus">True</property>
+                                                <property name="hscrollbar_policy">automatic</property>
+                                                <property name="vscrollbar_policy">automatic</property>
+                                                <child>
+                                                  <widget class="GtkTextView" id="textview3">
+                                                    <property name="visible">True</property>
+                                                    <property name="can_focus">True</property>
+                                                  </widget>
+                                                </child>
                                               </widget>
                                             </child>
                                           </widget>
@@ -8323,9 +8347,17 @@ Pediatrica</property>
                                             <property name="can_focus">False</property>
                                             <property name="left_padding">12</property>
                                             <child>
-                                              <widget class="GtkTextView" id="textview4">
+                                              <widget class="GtkScrolledWindow" id="scrolledwindow5">
                                                 <property name="visible">True</property>
                                                 <property name="can_focus">True</property>
+                                                <property name="hscrollbar_policy">automatic</property>
+                                                <property name="vscrollbar_policy">automatic</property>
+                                                <child>
+                                                  <widget class="GtkTextView" id="textview4">
+                                                    <property name="visible">True</property>
+                                                    <property name="can_focus">True</property>
+                                                  </widget>
+                                                </child>
                                               </widget>
                                             </child>
                                           </widget>
@@ -8358,9 +8390,17 @@ Pediatrica</property>
                                             <property name="can_focus">False</property>
                                             <property name="left_padding">12</property>
                                             <child>
-                                              <widget class="GtkTextView" id="textview5">
+                                              <widget class="GtkScrolledWindow" id="scrolledwindow6">
                                                 <property name="visible">True</property>
                                                 <property name="can_focus">True</property>
+                                                <property name="hscrollbar_policy">automatic</property>
+                                                <property name="vscrollbar_policy">automatic</property>
+                                                <child>
+                                                  <widget class="GtkTextView" id="textview5">
+                                                    <property name="visible">True</property>
+                                                    <property name="can_focus">True</property>
+                                                  </widget>
+                                                </child>
                                               </widget>
                                             </child>
                                           </widget>
@@ -8395,9 +8435,17 @@ Pediatrica</property>
                                             <property name="can_focus">False</property>
                                             <property name="left_padding">12</property>
                                             <child>
-                                              <widget class="GtkTextView" id="textview6">
+                                              <widget class="GtkScrolledWindow" id="scrolledwindow7">
                                                 <property name="visible">True</property>
                                                 <property name="can_focus">True</property>
+                                                <property name="hscrollbar_policy">automatic</property>
+                                                <property name="vscrollbar_policy">automatic</property>
+                                                <child>
+                                                  <widget class="GtkTextView" id="textview6">
+                                                    <property name="visible">True</property>
+                                                    <property name="can_focus">True</property>
+                                                  </widget>
+                                                </child>
                                               </widget>
                                             </child>
                                           </widget>
@@ -11565,7 +11613,7 @@ Fisica IPAS</property>
                                                             </packing>
                                                             </child>
                                                             <child>
-                                                            <widget class="GtkEntry" id="entry73">
+                                                            <widget class="GtkEntry" id="entry_abdomen_nt_conformacion">
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">True</property>
                                                             <property name="invisible_char">●</property>
@@ -11616,7 +11664,7 @@ Fisica IPAS</property>
                                                             </packing>
                                                             </child>
                                                             <child>
-                                                            <widget class="GtkEntry" id="entry74">
+                                                            <widget class="GtkEntry" id="entry_abdomen_nt_peristalsis">
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">True</property>
                                                             <property name="invisible_char">●</property>
@@ -11656,7 +11704,7 @@ Fisica IPAS</property>
                                                             </packing>
                                                             </child>
                                                             <child>
-                                                            <widget class="GtkComboBox" id="combobox35">
+                                                            <widget class="GtkComboBox" id="combobox_abdomen_visceromegalias">
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">False</property>
                                                             </widget>
@@ -11667,7 +11715,7 @@ Fisica IPAS</property>
                                                             </packing>
                                                             </child>
                                                             <child>
-                                                            <widget class="GtkEntry" id="entry75">
+                                                            <widget class="GtkEntry" id="entry_abdomen_nt_visceromagalias">
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">True</property>
                                                             <property name="invisible_char">●</property>
@@ -11707,7 +11755,7 @@ Fisica IPAS</property>
                                                             </packing>
                                                             </child>
                                                             <child>
-                                                            <widget class="GtkComboBox" id="combobox36">
+                                                            <widget class="GtkComboBox" id="combobox_abdomen_hernias">
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">False</property>
                                                             </widget>
@@ -11718,7 +11766,7 @@ Fisica IPAS</property>
                                                             </packing>
                                                             </child>
                                                             <child>
-                                                            <widget class="GtkEntry" id="entry76">
+                                                            <widget class="GtkEntry" id="entry_abdomen_nt_hernias">
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">True</property>
                                                             <property name="invisible_char">●</property>
@@ -11758,7 +11806,7 @@ Fisica IPAS</property>
                                                             </packing>
                                                             </child>
                                                             <child>
-                                                            <widget class="GtkComboBox" id="combobox37">
+                                                            <widget class="GtkComboBox" id="combobox_abdomen_exostisis">
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">False</property>
                                                             </widget>
@@ -11769,7 +11817,7 @@ Fisica IPAS</property>
                                                             </packing>
                                                             </child>
                                                             <child>
-                                                            <widget class="GtkEntry" id="entry77">
+                                                            <widget class="GtkEntry" id="entry_abdomen_nt_exostisis">
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">True</property>
                                                             <property name="invisible_char">●</property>
@@ -11809,7 +11857,7 @@ Fisica IPAS</property>
                                                             </packing>
                                                             </child>
                                                             <child>
-                                                            <widget class="GtkComboBox" id="combobox43">
+                                                            <widget class="GtkComboBox" id="combobox_abdomen_auscultacion">
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">False</property>
                                                             </widget>
@@ -11820,7 +11868,7 @@ Fisica IPAS</property>
                                                             </packing>
                                                             </child>
                                                             <child>
-                                                            <widget class="GtkEntry" id="entry85">
+                                                            <widget class="GtkEntry" id="entry_abdomen_nt_auscultacion">
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">True</property>
                                                             <property name="invisible_char">●</property>
@@ -11860,7 +11908,7 @@ Fisica IPAS</property>
                                                             </packing>
                                                             </child>
                                                             <child>
-                                                            <widget class="GtkEntry" id="entry78">
+                                                            <widget class="GtkEntry" id="entry_abdomen_otros">
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">True</property>
                                                             <property name="invisible_char">●</property>
@@ -11958,9 +12006,10 @@ Fisica IPAS</property>
                                                             </packing>
                                                             </child>
                                                             <child>
-                                                            <widget class="GtkComboBox" id="combobox38">
+                                                            <widget class="GtkLabel" id="label194">
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">False</property>
+                                                            <property name="label" translatable="yes">Der.</property>
                                                             </widget>
                                                             <packing>
                                                             <property name="expand">True</property>
@@ -11969,7 +12018,42 @@ Fisica IPAS</property>
                                                             </packing>
                                                             </child>
                                                             <child>
-                                                            <widget class="GtkEntry" id="entry80">
+                                                            <widget class="GtkComboBox" id="combobox_mienbrtorax_der">
+                                                            <property name="visible">True</property>
+                                                            <property name="can_focus">False</property>
+                                                            </widget>
+                                                            <packing>
+                                                            <property name="expand">True</property>
+                                                            <property name="fill">True</property>
+                                                            <property name="position">2</property>
+                                                            </packing>
+                                                            </child>
+                                                            <child>
+                                                            <widget class="GtkLabel" id="label195">
+                                                            <property name="visible">True</property>
+                                                            <property name="can_focus">False</property>
+                                                            <property name="label" translatable="yes">Izq.</property>
+                                                            </widget>
+                                                            <packing>
+                                                            <property name="expand">True</property>
+                                                            <property name="fill">True</property>
+                                                            <property name="position">3</property>
+                                                            </packing>
+                                                            </child>
+                                                            <child>
+                                                            <widget class="GtkComboBox" id="combobox_mienbrtorax_izq">
+                                                            <property name="visible">True</property>
+                                                            <property name="can_focus">False</property>
+                                                            </widget>
+                                                            <packing>
+                                                            <property name="expand">True</property>
+                                                            <property name="fill">True</property>
+                                                            <property name="position">4</property>
+                                                            </packing>
+                                                            </child>
+                                                            <child>
+                                                            <widget class="GtkEntry" id="entry73">
+                                                            <property name="width_request">50</property>
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">True</property>
                                                             <property name="invisible_char">●</property>
@@ -11982,7 +12066,7 @@ Fisica IPAS</property>
                                                             <packing>
                                                             <property name="expand">True</property>
                                                             <property name="fill">True</property>
-                                                            <property name="position">2</property>
+                                                            <property name="position">5</property>
                                                             </packing>
                                                             </child>
                                                             </widget>
@@ -12244,7 +12328,7 @@ Fisica IPAS</property>
                                                           <widget class="GtkLabel" id="label132">
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">False</property>
-                                                            <property name="label" translatable="yes">&lt;b&gt;&lt;small&gt;MIEMBREO TORACICOS&lt;/small&gt;&lt;/b&gt;</property>
+                                                            <property name="label" translatable="yes">&lt;b&gt;&lt;small&gt;MIEMBROS TORACICOS&lt;/small&gt;&lt;/b&gt;</property>
                                                             <property name="use_markup">True</property>
                                                           </widget>
                                                           <packing>
@@ -13071,7 +13155,7 @@ Fisica IPAS</property>
                                               <widget class="GtkLabel" id="label169">
                                                 <property name="visible">True</property>
                                                 <property name="can_focus">False</property>
-                                                <property name="label" translatable="yes">page 6</property>
+                                                <property name="label" translatable="yes">page 5</property>
                                               </widget>
                                               <packing>
                                                 <property name="position">5</property>

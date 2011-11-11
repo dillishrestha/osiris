@@ -158,6 +158,7 @@
     <File subtype="Code" buildaction="Compile" name="class_crea_ods.cs" />
     <File subtype="Code" buildaction="Nothing" name="leeme.txt" />
     <File subtype="Code" buildaction="Compile" name="rpt_analisis_devoluciones.cs" />
+    <File subtype="Code" buildaction="Compile" name="pases_a_quirofano.cs" />
   </Contents>
   <References>
     <ProjectReference type="Gac" localcopy="True" refto="Mono.Cairo, Version=2.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756" />

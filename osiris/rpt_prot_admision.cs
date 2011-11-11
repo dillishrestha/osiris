@@ -238,7 +238,7 @@ namespace osiris
 					numero_linea += separacionlineas;
 					//cr.MoveTo(20*escala_en_linux_windows, numero_linea*escala_en_linux_windows);					layout.SetText("Referido por: ");					Pango.CairoHelper.ShowLayout (cr, layout);
 					//numero_linea += separacionlineas;
-					cr.MoveTo(20*escala_en_linux_windows, numero_linea*escala_en_linux_windows);					layout.SetText("Observaciones: "+(string) lector["observacion_ingreso"]);					Pango.CairoHelper.ShowLayout (cr, layout);
+					cr.MoveTo(20*escala_en_linux_windows, numero_linea*escala_en_linux_windows);					layout.SetText("Serv. Medico: "+(string) lector["observacion_ingreso"]);					Pango.CairoHelper.ShowLayout (cr, layout);
 					numero_linea += separacionlineas;
 					numero_linea += separacionlineas;
 					layout.FontDescription.Weight = Weight.Bold;

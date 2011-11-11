@@ -462,6 +462,8 @@ namespace osiris
 			button_exportar_xls.Clicked += new EventHandler(on_button_exportar_xls_clicked);
 			// admitir paciente venta la publico
 			button_venta_publico.Clicked += new EventHandler(on_button_venta_publico_clicked);
+			// Pase a Quirofano
+			button_pase_quirofano.Clicked += new EventHandler(on_button_pase_quirofano_clicked);
 			// Sale de la ventana
 			button_salir.Clicked += new EventHandler(on_cierraventanas_clicked);
 									
@@ -532,6 +534,11 @@ namespace osiris
 									MessageType.Info,ButtonsType.Ok,"No tiene Permiso para esta Opcion");
 				msgBox.Run ();msgBox.Destroy();
 			}
+		}
+		
+		void on_button_pase_quirofano_clicked(object sender, EventArgs args)
+		{
+			new osiris.pases_a_quirofano();
 		}
 		
 		void on_button_venta_publico_clicked(object sender, EventArgs args)
@@ -3769,7 +3776,7 @@ namespace osiris
 				comando = conexion.CreateCommand ();
                	comando.CommandText = "SELECT * FROM osiris_his_tipo_admisiones "+
                						"WHERE cuenta_mayor = 4000 "+
-               						"AND id_tipo_admisiones IN('200','300','400','920','930','950','960') "+
+               						"AND activo_caja = 'true' "+
                						"ORDER BY descripcion_admisiones;";
 				
 				NpgsqlDataReader lector = comando.ExecuteReader ();
@@ -4674,8 +4681,7 @@ namespace osiris
 				this.col14_car_extr = col14_car_extr;
 				this.col15_car_extr = col15_car_extr;
 				this.col16_car_extr = col16_car_extr;
-				this.col17_car_extr = col17_car_extr;
-				
+				this.col17_car_extr = col17_car_extr;				
 			}
  		}
  		

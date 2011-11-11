@@ -703,6 +703,7 @@ namespace osiris
 			col_precio_prod_hsc.AddAttribute (cellr8, "text", 8);
 			col_precio_prod_hsc.SortColumnId = (int) col_ordencompra.col_precio_prod_hsc;
 			cellr8.Editable = true;
+			cellr8.Edited += NumberCellEdited_Autorizado;
 			
 			TreeViewColumn col_embalaje = new TreeViewColumn();
 			CellRendererText cellr9 = new CellRendererText();
@@ -710,6 +711,8 @@ namespace osiris
 			col_embalaje.PackStart(cellr9, true);
 			col_embalaje.AddAttribute (cellr9, "text", 9);
 			col_embalaje.SortColumnId = (int) col_ordencompra.col_embalaje;
+			cellr9.Editable = true;
+			cellr9.Edited += NumberCellEdited_Autorizado;
 			
 			TreeViewColumn col_precioprove = new TreeViewColumn();
 			CellRendererText cell10 = new CellRendererText();
@@ -782,6 +785,41 @@ namespace osiris
 			col_codprodprov,
 			col_codigbarras
 		}
+		
+		void NumberCellEdited_Autorizado (object o, EditedArgs args)
+		{
+			Console.WriteLine(o.ToString());
+			Gtk.TreeIter iter;
+			bool esnumerico = false;
+			int var_paso = 0;
+			int largo_variable = args.NewText.ToString().Length;
+			string toma_variable = args.NewText.ToString();
+			
+			treeViewEngineProductosaComprar.GetIter (out iter, new Gtk.TreePath (args.Path));
+			
+			while (var_paso < largo_variable){				
+				if ((string) toma_variable.Substring(var_paso,1).ToString() == "." || 
+					(string) toma_variable.Substring(var_paso,1).ToString() == "0" ||
+					(string) toma_variable.Substring(var_paso,1).ToString() == "1" || 
+					(string) toma_variable.Substring(var_paso,1).ToString() == "2" ||
+					(string) toma_variable.Substring(var_paso,1).ToString() == "3" ||
+					(string) toma_variable.Substring(var_paso,1).ToString() == "4" ||
+					(string) toma_variable.Substring(var_paso,1).ToString() == "5" || 
+					(string) toma_variable.Substring(var_paso,1).ToString() == "6" || 
+					(string) toma_variable.Substring(var_paso,1).ToString() == "7" || 
+					(string) toma_variable.Substring(var_paso,1).ToString() == "8" ||
+					(string) toma_variable.Substring(var_paso,1).ToString() == "9") {
+					esnumerico = true;
+				}else{
+				 	esnumerico = false;
+				 	var_paso = largo_variable;
+				}
+				var_paso += 1;
+			}
+			if (esnumerico == true){		
+				//treeViewEngineProductosaComprar.SetValue(iter,(int) Column_solicitudes.col_envios02,args.NewText);
+			}
+ 		}
 		
 		void on_button_busca_proveedores_clicked(object sender, EventArgs args)
 		{

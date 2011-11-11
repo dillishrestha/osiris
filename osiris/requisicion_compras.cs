@@ -76,6 +76,7 @@ namespace osiris
 		
 		[Widget] Gtk.ComboBox combobox_tipo_requisicion;
 		[Widget] Gtk.Button button_exportar = null;
+		[Widget] Gtk.Button button_productos_requi = null;
 		
 		[Widget] Gtk.ComboBox combobox_tipo_admision;
 		[Widget] Gtk.ComboBox combobox_tipo_admision2;
@@ -89,9 +90,11 @@ namespace osiris
 		[Widget] Gtk.TreeView lista_requisicion_productos;
 		
 		/////// Ventana Busqueda de productos\\\\\\\\
+		[Widget] Gtk.Window busca_producto = null;
 		[Widget] Gtk.RadioButton radiobutton_nombre;
 		[Widget] Gtk.RadioButton radiobutton_codigo;
 		[Widget] Gtk.TreeView lista_de_producto;
+		[Widget] Gtk.Label label_cantidad = null;
 		
 		//Declarando la barra de estado
 		[Widget] Gtk.Statusbar statusbar_almacen_requi;
@@ -112,13 +115,15 @@ namespace osiris
 		[Widget] Gtk.Entry entry_mes_termino;
 		[Widget] Gtk.Entry entry_ano_termino;
 		[Widget] Gtk.HBox hbox1 = null;
+		[Widget] Gtk.HBox hbox2 = null;
 		
 		[Widget] Gtk.CheckButton checkbutton_todos_envios;
 		[Widget] Gtk.CheckButton checkbutton_seleccion_presupuestos;
 		[Widget] Gtk.TreeView lista_almacenes;
 		[Widget] Gtk.Button button_buscar;
 		[Widget] Gtk.Button button_rep;
-					
+		[Widget] Gtk.Button button_buscar_prodreq = null;
+			
 		string connectionString;
 		string nombrebd;
 		string LoginEmpleado;
@@ -234,6 +239,7 @@ namespace osiris
 			//imprime la informacion:
 			this.button_imprimir.Clicked += new EventHandler(on_imprime_requisicion_clicked);
 			button_busca_requisiones.Clicked += new EventHandler(on_button_busca_requisiones_clicked);
+			button_productos_requi.Clicked += new EventHandler(on_button_productos_requi_clicked);
 			
 			// Activacion de boton de busqueda
 			button_busca_producto.Clicked += new EventHandler(on_button_busca_producto_clicked);
@@ -338,6 +344,29 @@ namespace osiris
 			}
 		}
 		
+		void on_button_productos_requi_clicked(object sender, EventArgs args)
+		{
+		  	Glade.XML gxml = new Glade.XML (null, "almacen_costos_compras.glade", "envio_almacenes", null);
+			gxml.Autoconnect (this);
+				
+			entry_dia_inicio.Text = DateTime.Now.ToString("dd");
+			entry_mes_inicio.Text = DateTime.Now.ToString("MM");
+			entry_ano_inicio.Text = DateTime.Now.ToString("yyyy");
+				
+			entry_dia_termino.Sensitive = false;
+			entry_mes_termino.Sensitive = false;
+			entry_ano_termino.Sensitive = false;
+				
+			hbox1.Hide();
+			//hbox2.Hide();
+			
+			button_salir.Clicked += new EventHandler(on_cierraventanas_clicked);
+			button_buscar_prodreq.Clicked += new EventHandler(on_button_busca_producto_clicked);
+           	//button_rep.Clicked += new EventHandler(on_button_rep_clicked);
+          	//checkbutton_todos_envios.Clicked += new EventHandler(on_checkbutton_todos_envios);
+          	checkbutton_seleccion_presupuestos.Hide();			
+		}
+		
 		void on_button_busca_requisiones_clicked(object sender, EventArgs args)
 		{
 		  	Glade.XML gxml = new Glade.XML (null, "almacen_costos_compras.glade", "envio_almacenes", null);
@@ -352,6 +381,7 @@ namespace osiris
 			entry_ano_termino.Text = DateTime.Now.ToString("yyyy");
 				
 			hbox1.Hide();
+			hbox2.Hide();
 			
 			button_salir.Clicked += new EventHandler(on_cierraventanas_clicked);
 			//button_buscar.Clicked += new EventHandler(on_buscar_clicked);
@@ -359,7 +389,7 @@ namespace osiris
           	//checkbutton_todos_envios.Clicked += new EventHandler(on_checkbutton_todos_envios);
           	checkbutton_seleccion_presupuestos.Hide();			
 		}
-		
+				
 		void on_checkbutton_nueva_requisicion_clicked(object sender, EventArgs args)
 		{
 			if (checkbutton_nueva_requisicion.Active == true){
@@ -465,16 +495,26 @@ namespace osiris
 		
 		void on_button_busca_producto_clicked (object sender, EventArgs args)
 		{
+			Gtk.Button button_buscarproducto = sender as Gtk.Button;
+			Console.WriteLine(button_buscarproducto.Name.ToString());
+			//Gtk.Button button_busca_producto = (Gtk.Button) sender;			
 			Glade.XML gxml = new Glade.XML (null, "almacen_costos_compras.glade", "busca_producto", null);
 			gxml.Autoconnect (this);
 			crea_treeview_busqueda("producto");
 			button_buscar_busqueda.Clicked += new EventHandler(on_llena_lista_producto_clicked);			
-			button_selecciona.Label = "Requisar";			
-			button_selecciona.Clicked += new EventHandler(on_selecciona_producto_clicked);			
-			entry_expresion.KeyPressEvent += onKeyPressEvent_entry_expresion;			
-			entry_cantidad_aplicada.KeyPressEvent += onKeyPressEvent;			
-			button_salir.Clicked += new EventHandler(on_cierraventanas_clicked); // esta sub-clase esta en hscmty.cs
+			button_salir.Clicked += new EventHandler(on_cierraventanas_clicked);
+			entry_expresion.KeyPressEvent += onKeyPressEvent_entry_expresion;
 			//this.entry_cantidad_aplicada.CanFocus = true;
+			if(button_buscarproducto.Name == "button_busca_producto"){
+				button_selecciona.Label = "Requisar";
+				button_selecciona.Clicked += new EventHandler(on_selecciona_producto_clicked);			
+				entry_cantidad_aplicada.KeyPressEvent += onKeyPressEvent;	
+			}
+			if(button_buscarproducto.Name == "button_buscar_prodreq"){
+				label_cantidad.Hide();
+				entry_cantidad_aplicada.Hide();
+			}
+			busca_producto.Show();			
 		}
 		
 		void on_selecciona_producto_clicked (object sender, EventArgs args)
@@ -1420,7 +1460,7 @@ namespace osiris
             // Verifica que la base de datos este conectada
 			string query_tipo_busqueda = "";
 			if(radiobutton_nombre.Active == true) {query_tipo_busqueda = "AND osiris_productos.descripcion_producto LIKE '%"+entry_expresion.Text.ToUpper().Trim()+"%' ORDER BY descripcion_producto; "; }
-			if(radiobutton_codigo.Active == true) {query_tipo_busqueda = "AND osiris_productos.id_producto LIKE '"+entry_expresion.Text.Trim()+"%'  ORDER BY id_producto; "; }
+			if(radiobutton_codigo.Active == true) {query_tipo_busqueda = "AND to_char(osiris_productos.id_producto,'999999999999') LIKE '%"+entry_expresion.Text.Trim()+"%'  ORDER BY id_producto; "; }
 			try{
 				conexion.Open ();
 				NpgsqlCommand comando; 
@@ -1444,7 +1484,7 @@ namespace osiris
 							this.campoacceso+
 							"AND osiris_productos.cobro_activo = 'true' "+
 							query_tipo_busqueda;
-				//Console.WriteLine(comando.CommandText);
+				Console.WriteLine(comando.CommandText);
 				NpgsqlDataReader lector = comando.ExecuteReader ();
 				float calculodeiva;
 				float preciomasiva;

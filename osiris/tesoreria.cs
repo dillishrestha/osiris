@@ -268,8 +268,6 @@ namespace osiris
 			on_button_button_rpt_facturas();
 		}
 		
-		
-		
 		void on_button_button_rpt_facturas()
 		{	
 			

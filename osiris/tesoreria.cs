@@ -50,6 +50,7 @@ namespace osiris
 		[Widget] Gtk.Button button_clientes = null;
 		[Widget] Gtk.Button button_envio_de_facturas = null;
 		[Widget] Gtk.Button button_solicitud_material = null;
+		[Widget] Gtk.Button button_exportar_cortecaja = null;
 		[Widget] Gtk.Button button_exportar = null;
 		[Widget] Gtk.Button button_reportes = null;
 		
@@ -150,6 +151,7 @@ namespace osiris
 			button_facturador.Clicked += new EventHandler(on_button_facturador_clicked);
 			button_envio_de_facturas.Clicked += new EventHandler(on_button_envio_facturas_clicked);
 			button_exportar.Clicked += new EventHandler(on_button_exportar_clicked);
+			button_exportar_cortecaja.Clicked += new EventHandler(on_button_exportar_cortecaja_clicked);
 			button_solicitud_material.Clicked += new EventHandler(on_button_solicitud_material_clicked);
 			button_reportes.Clicked += new EventHandler(on_button_reportes_clicked);				
 			////// Sale de la ventana
@@ -180,6 +182,59 @@ namespace osiris
 		void on_button_solicitud_material_clicked(object sender, EventArgs args)
 		{
 			new osiris.solicitud_material(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,16);
+		}
+		
+		void on_button_exportar_cortecaja_clicked(object sender, EventArgs args)
+		{
+			Glade.XML gxml = new Glade.XML  (null, "caja.glade", "rango_de_fecha", null);
+			gxml.Autoconnect (this);  
+			rango_de_fecha.Show();
+			
+			entry_dia1.KeyPressEvent += onKeyPressEvent;
+			entry_mes1.KeyPressEvent += onKeyPressEvent;
+			entry_ano1.KeyPressEvent += onKeyPressEvent;
+			entry_dia2.KeyPressEvent += onKeyPressEvent;
+			entry_mes2.KeyPressEvent += onKeyPressEvent;
+			entry_ano2.KeyPressEvent += onKeyPressEvent;
+			entry_dia1.Text =DateTime.Now.ToString("dd");
+			entry_mes1.Text =DateTime.Now.ToString("MM");
+			entry_ano1.Text =DateTime.Now.ToString("yyyy");
+			entry_dia2.Text =DateTime.Now.ToString("dd");
+			entry_mes2.Text =DateTime.Now.ToString("MM");
+			entry_ano2.Text =DateTime.Now.ToString("yyyy");
+			
+			button_imprime_rangofecha.Clicked += new EventHandler(on_exporta_cortecaja_clicked);
+			button_salir.Clicked += new EventHandler(on_cierraventanas_clicked);
+		}
+		
+		void on_exporta_cortecaja_clicked(object sender, EventArgs args)
+		{
+			if(LoginEmpleado == "DOLIVARES" || LoginEmpleado =="ADMIN" || LoginEmpleado =="MARGARITAZ" || LoginEmpleado =="IESPINOZAF" || LoginEmpleado =="ZBAEZH"){
+				string query_fechas = "AND to_char(osiris_erp_abonos.fecha_abono,'yyyy-MM-dd') >= '"+entry_ano1.Text+"-"+entry_mes1.Text+"-"+entry_dia1.Text+"' "+
+								"AND to_char(osiris_erp_abonos.fecha_abono,'yyyy-MM-dd') <= '"+entry_ano2.Text+"-"+entry_mes2.Text+"-"+entry_dia2.Text+"' ";
+			
+				string query_sql = "SELECT  to_char(osiris_erp_abonos.fecha_abono,'yyyy-MM-dd') AS fechaabonopago,"+
+									"osiris_erp_abonos.id_abono,"+
+									"to_char(osiris_erp_abonos.folio_de_servicio,'9999999999') AS foliodeservicio,"+
+									"osiris_his_paciente.pid_paciente AS pidpaciente,nombre1_paciente || ' ' || nombre2_paciente || ' ' || apellido_paterno_paciente || ' ' || apellido_materno_paciente AS nombrepaciente,"+
+									"osiris_erp_abonos.monto_de_abono_procedimiento AS monto_comprobante,osiris_erp_abonos.concepto_del_abono,numero_recibo_caja AS numerorecibo,"+
+									"osiris_erp_tipo_comprobante.descripcion_tipo_comprobante,osiris_erp_forma_de_pago.descripcion_forma_de_pago AS forma_de_pago "+
+									"FROM osiris_erp_cobros_enca, osiris_erp_abonos, osiris_erp_tipo_comprobante, osiris_his_paciente, osiris_erp_forma_de_pago "+
+									"WHERE osiris_erp_abonos.eliminado = false "+
+									"AND osiris_erp_abonos.folio_de_servicio = osiris_erp_cobros_enca.folio_de_servicio "+
+									"AND osiris_erp_abonos.id_forma_de_pago = osiris_erp_forma_de_pago.id_forma_de_pago "+ 
+									"AND osiris_erp_cobros_enca.pid_paciente = osiris_his_paciente.pid_paciente "+
+									"AND osiris_erp_abonos.id_tipo_comprobante = osiris_erp_tipo_comprobante.id_tipo_comprobante "+
+									query_fechas+
+									"ORDER BY osiris_erp_abonos.fecha_abono;";
+								
+				string[] args_names_field = {"foliodeservicio","pidpaciente","nombrepaciente","numerorecibo","descripcion_tipo_comprobante","monto_comprobante","forma_de_pago"};
+				string[] args_type_field = {"float","float","string","float","string","float","string"};
+				
+				// class_crea_ods.cs
+				//Console.WriteLine(query_sql);
+				new osiris.class_traslate_spreadsheet(query_sql,args_names_field,args_type_field);
+			}
 		}
 		
 		void on_button_exportar_clicked(object sender, EventArgs args)

@@ -46,34 +46,59 @@ namespace osiris
 		
 		//[Widget] Gtk.Entry entry_fecha_inicio;
 		[Widget] Gtk.Window envio_almacenes = null;
-		[Widget] Gtk.Entry entry_dia_inicio;
-		[Widget] Gtk.Entry entry_mes_inicio;
-		[Widget] Gtk.Entry entry_ano_inicio;
-		[Widget] Gtk.Entry entry_dia_salida;
-		[Widget] Gtk.Entry entry_mes_salida;
-		[Widget] Gtk.Entry entry_ano_salida;
+		[Widget] Gtk.Entry entry_dia_inicio = null;
+		[Widget] Gtk.Entry entry_mes_inicio = null;
+		[Widget] Gtk.Entry entry_ano_inicio = null;
+		[Widget] Gtk.Entry entry_dia_termino = null;
+		[Widget] Gtk.Entry entry_mes_termino = null;
+		[Widget] Gtk.Entry entry_ano_termino = null;
 		[Widget] Gtk.HBox hbox1 = null;
 		[Widget] Gtk.HBox hbox2 = null;
+		[Widget] Gtk.Label label262;
+		[Widget] Gtk.CheckButton checkbutton_todos_envios = null;
+		[Widget] Gtk.CheckButton checkbutton_seleccion_presupuestos = null;
+		
+		//Declaracion de ventana de error
+		protected Gtk.Window MyWinError;
+		protected Gtk.Window MyWin;
 		
 		public pases_a_quirofano ()
 		{
 			Glade.XML gxml = new Glade.XML (null, "almacen_costos_compras.glade", "envio_almacenes", null);
 			gxml.Autoconnect (this);
-			
-			
+						
 			entry_dia_inicio.Text = DateTime.Now.ToString("dd");
 			entry_mes_inicio.Text = DateTime.Now.ToString("MM");
-			entry_ano_inicio.Text = DateTime.Now.ToString("yyyy");
-				
+			entry_ano_inicio.Text = DateTime.Now.ToString("yyyy");			
+			entry_dia_termino.Sensitive = false;
+			entry_mes_termino.Sensitive = false;
+			entry_ano_termino.Sensitive = false;
+			entry_dia_inicio.IsEditable = false;
+			entry_mes_inicio.IsEditable = false;
+			entry_ano_inicio.IsEditable = false;				
 			hbox1.Hide();
 			hbox2.Hide();
+			checkbutton_seleccion_presupuestos.Hide();
+			checkbutton_todos_envios.Label = "Nuevo Pase para QX./Urgencias";
+			label262.Text = "Guardar";
 			envio_almacenes.Show();
 			
 			button_salir.Clicked += new EventHandler(on_cierraventanas_clicked);
 			//button_buscar.Clicked += new EventHandler(on_buscar_clicked);
            	//button_rep.Clicked += new EventHandler(on_button_rep_clicked);
-          	//checkbutton_todos_envios.Clicked += new EventHandler(on_checkbutton_todos_envios);
+          	checkbutton_todos_envios.Clicked += new EventHandler(on_create_pases_qxurg_clicked);
           	//checkbutton_seleccion_presupuestos.Hide();
+		}
+		
+		void on_create_pases_qxurg_clicked (object sender, EventArgs args)
+		{
+			MessageDialog msgBox = new MessageDialog (MyWin,DialogFlags.Modal,
+									MessageType.Question,ButtonsType.YesNo,"Esta seguro de crear un pase para QX/Urgencias");
+			ResponseType miResultado = (ResponseType)msgBox.Run ();
+			msgBox.Destroy();
+		 	if (miResultado == ResponseType.Yes){
+		 		
+		 	}
 		}
 		
 		// cierra ventanas emergentes

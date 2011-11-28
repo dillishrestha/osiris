@@ -293,6 +293,7 @@ namespace osiris
 		string busqueda;
 		string tipobusqueda = "AND osiris_his_medicos.nombre1_medico LIKE '";
 		int idsubalmacen;
+		int idcentro_costo;
 		int numerodecomprobante = 0;
 		
 		// Sumas Totales para los calculos
@@ -391,7 +392,7 @@ namespace osiris
 			}
 		}
 		
-		public caja_cobro(string LoginEmp, string NomEmpleado_, string AppEmpleado_, string ApmEmpleado_, string nombrebd_, int idsubalmacen_ ) 
+		public caja_cobro(string LoginEmp, string NomEmpleado_, string AppEmpleado_, string ApmEmpleado_, string nombrebd_, int idsubalmacen_, int idcentro_costo_ ) 
 		{
 			LoginEmpleado = LoginEmp;
 			NomEmpleado = NomEmpleado_;
@@ -401,6 +402,7 @@ namespace osiris
 			nombrebd = conexion_a_DB._nombrebd;
 			valoriva = float.Parse(classpublic.ivaparaaplicar);
 			idsubalmacen = idsubalmacen_;
+			idcentro_costo = idcentro_costo_;
 			
 			Glade.XML gxml = new Glade.XML (null, "caja.glade", "caja", null);
 			gxml.Autoconnect (this);
@@ -538,7 +540,7 @@ namespace osiris
 		
 		void on_button_pase_quirofano_clicked(object sender, EventArgs args)
 		{
-			new osiris.pases_a_quirofano();
+			new osiris.pases_a_quirofano(PidPaciente,folioservicio,idcentro_costo,LoginEmpleado,id_tipopaciente,idempresa_paciente,idaseguradora_paciente);
 		}
 		
 		void on_button_venta_publico_clicked(object sender, EventArgs args)
@@ -1983,9 +1985,9 @@ namespace osiris
 				 								DateTime.Now.ToString("yyyy-MM-dd")+"','"+
 	 											LoginEmpleado+"','"+
 	 											idformadepago.ToString()+"','"+
-	 											pagodehonorario+"','"+
+	 											"false"+"','"+
 	 											DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"','"+
-	 											pagodehonorario+"','"+
+	 											"false"+"','"+
 	 											pago_sino.ToString()+"','"+
 	 											this.entry_numero_factura.Text.Trim()+"','"+
 	 											numerodecomprobante.ToString().Trim()+"','"+
@@ -3329,6 +3331,7 @@ namespace osiris
 					entry_tipo_paciente.Text = (string) lector["descripcion_tipo_paciente"];
 					
 					idempresa_paciente = (int) lector["idempresa"];
+					
 					if((int) lector ["id_aseguradora"] > 1){
 						entry_aseguradora.Text = (string) lector["descripcion_aseguradora"];
 					}else{

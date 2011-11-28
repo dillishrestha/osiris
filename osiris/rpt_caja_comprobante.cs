@@ -142,7 +142,7 @@ namespace osiris
 	        	NpgsqlCommand comando; 
 	        	comando = conexion.CreateCommand (); 
 	           	comando.CommandText = sql_compcaja+sql_numerocomprobante+sql_foliodeservicio+sql_orderquery;
-	        	//Console.WriteLine(comando.CommandText);
+	        	Console.WriteLine(comando.CommandText);
 				NpgsqlDataReader lector = comando.ExecuteReader();
 				if (lector.Read()){
 					if (tipocomprobante == "CAJA"){

@@ -41,6 +41,7 @@ namespace osiris
 		//Declarando ventana de cambios de datos de paciente
 		[Widget] Gtk.Window abonar_procedimientos  = null;
 		[Widget] Gtk.Entry entry_monto_abono = null;
+		[Widget] Gtk.Entry entry_monto_convenio = null;
 		[Widget] Gtk.Entry entry_recibo_caja = null;
 		[Widget] Gtk.Entry entry_presupuesto = null;
 		[Widget] Gtk.Entry entry_paquete = null;
@@ -180,6 +181,7 @@ namespace osiris
 			
 			entry_presupuesto.Text = "0";
 			entry_paquete.Text = "0";
+			entry_monto_convenio.Text = "0";
 			statusbar_abonos.Pop(0);
 			statusbar_abonos.Push(1, "login: "+LoginEmpleado+"  |Usuario: "+nombrecajero);
 			statusbar_abonos.HasResizeGrip = false;
@@ -716,6 +718,8 @@ namespace osiris
 													"id_paquete ,"+//9
 													"id_forma_de_pago,"+
 													"id_tipo_comprobante,"+
+													"tipo_comprobante,"+
+													"monto_convenio,"+
 													"folio_de_servicio )"+
 													"VALUES ('"+
 			 										(string) this.entry_monto_abono.Text.Trim().ToUpper()+"','"+//2
@@ -728,6 +732,8 @@ namespace osiris
 			 										(string) this.entry_paquete.Text.Trim().ToUpper()+"','"+//9
 													idformadepago.ToString()+"','"+
 			 										idtipocomprobante+"','"+
+													"ABONO"+"','"+
+													entry_monto_convenio.Text.ToString().Trim()+"','"+
 													folioservicio+//"','"+//10
 			 										"');";
 		 						comando.ExecuteNonQuery();    	    	       	comando.Dispose();
@@ -906,7 +912,50 @@ namespace osiris
 				        "AND osiris_erp_tipo_comprobante.id_tipo_comprobante = osiris_erp_abonos.id_tipo_comprobante ",nombrecajero );
 				}
 			}
-				
+			if (tipo_reporte == "abono"){
+				if (lista_abonos.Selection.GetSelected(out model, out iterSelected)){
+	 				monto = (string) model.GetValue(iterSelected, 0); 				
+	 				fecha = (string) model.GetValue(iterSelected, 1);
+					concepto = (string) model.GetValue(iterSelected, 2);
+					idcreo = (string) model.GetValue(iterSelected, 3);
+					recibo = (string) model.GetValue(iterSelected, 4);
+					presupuesto = (string) model.GetValue(iterSelected, 5);
+					paquete = (string) model.GetValue(iterSelected, 6);
+					descripcion = (string) model.GetValue(iterSelected, 7);
+					new caja_comprobante(int.Parse(recibo),"CAJA", folioservicio,"SELECT osiris_erp_cobros_deta.folio_de_servicio AS foliodeservicio,osiris_erp_cobros_deta.pid_paciente AS pidpaciente, "+ 
+						"osiris_his_tipo_admisiones.descripcion_admisiones,aplicar_iva, "+
+						"osiris_his_tipo_admisiones.id_tipo_admisiones AS idadmisiones,"+
+						"osiris_grupo_producto.descripcion_grupo_producto, "+
+						"osiris_productos.id_grupo_producto,  "+
+						"to_char(osiris_erp_cobros_deta.porcentage_descuento,'999.99') AS porcdesc, "+
+						"to_char(osiris_erp_cobros_deta.fechahora_creacion,'dd-mm-yyyy') AS fechcreacion,  "+
+						"to_char(osiris_erp_cobros_deta.fechahora_creacion,'HH:mm') AS horacreacion,  "+
+						"to_char(osiris_erp_cobros_deta.id_producto,'999999999999') AS idproducto,descripcion_producto, "+
+						"to_char(osiris_erp_cobros_deta.cantidad_aplicada,'99999999.99') AS cantidadaplicada, "+
+						"to_char(osiris_erp_cobros_deta.precio_producto,'9999999.99') AS preciounitario, "+
+						"ltrim(to_char(osiris_erp_cobros_deta.precio_producto,'9999999.99')) AS preciounitarioprod, "+
+						"to_char(osiris_erp_cobros_deta.iva_producto,'999999.99') AS ivaproducto, "+
+						//"to_char(osiris_erp_cobros_deta.precio_por_cantidad,'999999.99') AS ppcantidad, "+
+						"to_char(osiris_erp_cobros_deta.cantidad_aplicada * osiris_erp_cobros_deta.precio_producto,'99999999.99') AS ppcantidad,"+
+						"to_char(osiris_productos.precio_producto_publico,'999999999.99999') AS preciopublico,osiris_erp_abonos.numero_recibo_caja AS numerorecibo,"+
+						"osiris_his_paciente.nombre1_paciente || ' ' || osiris_his_paciente.nombre2_paciente || ' ' || osiris_his_paciente.apellido_paterno_paciente || ' ' || osiris_his_paciente.apellido_materno_paciente AS nombre_completo, "+
+						"to_char(osiris_his_paciente.fecha_nacimiento_paciente, 'dd-MM-yyyy') AS fechanacpaciente, to_char(to_number(to_char(age('"+DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss")+"',osiris_his_paciente.fecha_nacimiento_paciente),'yyyy') ,'9999'),'9999') AS edadpaciente, "+
+					    "telefono_particular1_paciente,osiris_erp_abonos.observaciones AS observacionesvarias,osiris_erp_abonos.concepto_del_abono AS concepto_comprobante,"+
+						"osiris_erp_cobros_enca.id_empresa,descripcion_empresa,osiris_erp_cobros_enca.nombre_medico_encabezado,"+
+					    "to_char(monto_de_abono_procedimiento,'999999999.99') AS montodelabono,descripcion_tipo_comprobante "+
+				        "FROM osiris_erp_cobros_deta,osiris_his_tipo_admisiones,osiris_productos,osiris_grupo_producto,osiris_erp_abonos,osiris_his_paciente,osiris_erp_cobros_enca,osiris_empresas,osiris_erp_tipo_comprobante "+
+						"WHERE osiris_erp_cobros_deta.id_tipo_admisiones = osiris_his_tipo_admisiones.id_tipo_admisiones "+
+						"AND osiris_erp_cobros_deta.id_producto = osiris_productos.id_producto  "+ 
+						"AND osiris_productos.id_grupo_producto = osiris_grupo_producto.id_grupo_producto "+
+						"AND osiris_erp_cobros_deta.pid_paciente = osiris_his_paciente.pid_paciente "+
+				        "AND osiris_erp_cobros_enca.id_empresa = osiris_empresas.id_empresa "+
+					    "AND osiris_erp_cobros_enca.folio_de_servicio = osiris_erp_cobros_deta.folio_de_servicio "+
+						"AND osiris_erp_cobros_deta.eliminado = 'false' "+
+					    "AND osiris_erp_abonos.folio_de_servicio = osiris_erp_cobros_deta.folio_de_servicio "+
+				        "AND osiris_erp_tipo_comprobante.id_tipo_comprobante = osiris_erp_abonos.id_tipo_comprobante ",nombrecajero );
+				}
+			}
+			
 			if(tipo_reporte == "comprobante"){
 				if (treeview_lista_comprserv.Selection.GetSelected(out model, out iterSelected)){					
 					recibo = (string) model.GetValue(iterSelected, 0);					

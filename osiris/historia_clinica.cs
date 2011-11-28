@@ -246,8 +246,26 @@ namespace osiris
 		[Widget] Gtk.Entry entry_abdomen_nt_auscultacion = null;
 		[Widget] Gtk.Entry entry_abdomen_otros = null;
 		
-		//combobox_mienbrtorax_der = null;
-		//combobox_mienbrtorax_izq = null;
+		[Widget] Gtk.ComboBox combobox_mienbrotorax_integr_der = null;
+		[Widget] Gtk.ComboBox combobox_mienbrotorax_integr_izq = null;
+		[Widget] Gtk.Entry entry_mienbrotorax_integr_otros = null;
+		[Widget] Gtk.ComboBox combobox_mienbrotorax_mov_der = null;
+		[Widget] Gtk.ComboBox combobox_mienbrotorax_mov_izq = null;
+		[Widget] Gtk.Entry entry_mienbrotorax_mov_otros = null;
+		[Widget] Gtk.ComboBox combobox_mienbrotorax_rot_der = null;
+		[Widget] Gtk.ComboBox combobox_mienbrotorax_rot_izq = null;
+		[Widget] Gtk.Entry entry_mienbrotorax_rot_otros = null;
+		[Widget] Gtk.ComboBox combobox_mienbrotorax_fza_der = null;
+		[Widget] Gtk.ComboBox combobox_mienbrotorax_fza_izq = null;
+		[Widget] Gtk.Entry entry_mienbrotorax_fza_otros = null;
+		[Widget] Gtk.ComboBox combobox_mienbrotorax_plso_der = null;
+		[Widget] Gtk.ComboBox combobox_mienbrotorax_plso_izq = null;
+		[Widget] Gtk.Entry entry_mienbrotorax_plso_otros = null;
+		[Widget] Gtk.Entry entry_mienbrotorax_otros = null;
+		
+		//combobox_miempelv_inte_der = null;
+		//combobox_miempelv_inte_izq = null;
+		//entry_miempelv_inte_otros = null;
 		[Widget] Gtk.Button button_exportar_xls = null;
 		
 		[Widget] Gtk.Statusbar statusbar5 = null;
@@ -458,6 +476,18 @@ namespace osiris
 			llenado_combobox(1,"NO",combobox_abdomen_hernias,args_si_no,args_id_array);
 			llenado_combobox(1,"NO",combobox_abdomen_exostisis,args_si_no,args_id_array);
 			llenado_combobox(1,"NO",combobox_abdomen_auscultacion,args_si_no,args_id_array);
+			
+			llenado_combobox(1,"NORMAL",combobox_mienbrotorax_integr_der,args_normal_anormal,args_id_array);
+			llenado_combobox(1,"NORMAL",combobox_mienbrotorax_integr_izq,args_normal_anormal,args_id_array);
+			llenado_combobox(1,"NORMAL",combobox_mienbrotorax_mov_der,args_normal_anormal,args_id_array);
+			llenado_combobox(1,"NORMAL",combobox_mienbrotorax_mov_izq,args_normal_anormal,args_id_array);
+			llenado_combobox(1,"NORMAL",combobox_mienbrotorax_rot_der,args_normal_anormal,args_id_array);
+			llenado_combobox(1,"NORMAL",combobox_mienbrotorax_rot_izq,args_normal_anormal,args_id_array);
+			llenado_combobox(1,"NORMAL",combobox_mienbrotorax_fza_der,args_normal_anormal,args_id_array);
+			llenado_combobox(1,"NORMAL",combobox_mienbrotorax_fza_izq,args_normal_anormal,args_id_array);
+			llenado_combobox(1,"NORMAL",combobox_mienbrotorax_plso_der,args_normal_anormal,args_id_array);
+			llenado_combobox(1,"NORMAL",combobox_mienbrotorax_plso_izq,args_normal_anormal,args_id_array);
+			
 			
 			//SpinButtons Antecedentes Heredo Familiar:
 			spinbutton_edad_madre.SetRange(0, 150);

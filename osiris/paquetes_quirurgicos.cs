@@ -27,7 +27,7 @@
 // Programa		: paquetes_quirurgicos.cs
 // Proposito	: Crear paquetes de productos que se aplican en cirugia
 // Objeto		: paquetes_quirurgicos.cs
-//////////////////////////////////////////////////////////	
+//////////////////////////////////////////////////////////
 using System;
 using Npgsql;
 using System.Data;
@@ -380,14 +380,18 @@ namespace osiris
 		 							"id_especialidad,"+
 		 							"deposito_minimo,"+
 		 							"precio_de_venta,"+
+									"fechahora_creacion,"+
+									"id_quien_creo,"+
 		 							"dias_internamiento) "+
 		 							"VALUES ('"+
 		 							(string) entry_cirugia.Text.ToUpper()+"','"+
-		 							(bool) true+"','"+
+		 							(bool) checkbutton_paquete_sino.Active+"','"+
 		 							float.Parse(entry_total.Text)+"','"+//entry_a_pagar
 		 							this.entry_id_especialidad.Text.ToString().Trim()+"','"+
 		 							float.Parse(entry_deposito_minimo.Text)+"','"+
 		 							float.Parse(entry_precio_publico.Text)+"','"+
+									DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"','"+
+									LoginEmpleado+"','"+
 		 							int.Parse(entry_dias_internamiento.Text)+"');";
 				//Console.WriteLine("guarda cirugia: "+comando.CommandText.ToString().Substring(0,70)+
 									//"\n"+comando.CommandText.ToString().Substring(71));
@@ -416,7 +420,7 @@ namespace osiris
 				NpgsqlCommand comando; 
 				comando = conexion.CreateCommand ();
 				comando.CommandText = "UPDATE osiris_his_tipo_cirugias SET "+
-									"tiene_paquete = '"+(bool) tienepaquete+"', "+
+									"tiene_paquete = '"+(bool) checkbutton_paquete_sino.Active+"', "+
 		 							"valor_paquete = '"+float.Parse(entry_total.Text)+"', "+//entry_a_pagar
 		 							"id_especialidad = '"+this.entry_id_especialidad.Text.ToString().Trim()+"', "+
 		 							cambia_descripcion_cirugia+
@@ -1038,6 +1042,7 @@ namespace osiris
 									"to_char(precio_de_venta,'99999999') AS precioventa, "+
 									"to_char(deposito_minimo,'99999999') AS depominimo, "+
 									"to_char(dias_internamiento,'99999999') AS diasinternamiento, "+
+									"tiene_paquete,"+
 									"to_char(osiris_his_tipo_cirugias.id_especialidad,'999999') AS idespecialidad  "+
 									"FROM osiris_his_tipo_cirugias,osiris_his_tipo_especialidad  "+
 					            	"WHERE osiris_his_tipo_cirugias.id_especialidad = osiris_his_tipo_especialidad.id_especialidad  "+
@@ -1052,7 +1057,7 @@ namespace osiris
 	           		entry_descripcion_especialidad.Text = (string) lector["descripcion_especialidad"].ToString().Trim();
 	           		entry_precio_publico.Text = (string) lector["precioventa"].ToString().Trim();
 	           		entry_deposito_minimo.Text = (string) lector["depominimo"].ToString().Trim();
-					//checkbutton_paquete_sino.Active = false;
+					checkbutton_paquete_sino.Active = (bool) lector["tiene_paquete"];
 	           		llenado_de_material_aplicado( idcirugia);
 	           	}else{
 	           		MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
@@ -1384,7 +1389,7 @@ namespace osiris
 		
 		public void limpia_valores()
 		{	
-			this.entry_id_cirugia.Text = "0";
+			//this.entry_id_cirugia.Text = "0";
 			this.entry_cirugia.Text = "";
 			this.entry_id_especialidad.Text = "";
 			this.entry_descripcion_especialidad.Text = "";

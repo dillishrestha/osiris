@@ -11693,6 +11693,7 @@ Fisica IPAS</property>
                                                             <property name="can_focus">False</property>
                                                             <child>
                                                             <widget class="GtkLabel" id="label135">
+                                                            <property name="width_request">60</property>
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">False</property>
                                                             <property name="label" translatable="yes">Visceromogalias</property>
@@ -11897,6 +11898,7 @@ Fisica IPAS</property>
                                                             <property name="can_focus">False</property>
                                                             <child>
                                                             <widget class="GtkLabel" id="label138">
+                                                            <property name="width_request">60</property>
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">False</property>
                                                             <property name="label" translatable="yes">Otros</property>
@@ -11995,6 +11997,7 @@ Fisica IPAS</property>
                                                             <property name="can_focus">False</property>
                                                             <child>
                                                             <widget class="GtkLabel" id="label139">
+                                                            <property name="width_request">50</property>
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">False</property>
                                                             <property name="label" translatable="yes">Integridad</property>
@@ -12018,7 +12021,7 @@ Fisica IPAS</property>
                                                             </packing>
                                                             </child>
                                                             <child>
-                                                            <widget class="GtkComboBox" id="combobox_mienbrtorax_der">
+                                                            <widget class="GtkComboBox" id="combobox_mienbrotorax_integr_der">
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">False</property>
                                                             </widget>
@@ -12041,7 +12044,7 @@ Fisica IPAS</property>
                                                             </packing>
                                                             </child>
                                                             <child>
-                                                            <widget class="GtkComboBox" id="combobox_mienbrtorax_izq">
+                                                            <widget class="GtkComboBox" id="combobox_mienbrotorax_integr_izq">
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">False</property>
                                                             </widget>
@@ -12052,8 +12055,7 @@ Fisica IPAS</property>
                                                             </packing>
                                                             </child>
                                                             <child>
-                                                            <widget class="GtkEntry" id="entry73">
-                                                            <property name="width_request">50</property>
+                                                            <widget class="GtkEntry" id="entry_mienbrotorax_integr_otros">
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">True</property>
                                                             <property name="invisible_char">●</property>
@@ -12082,6 +12084,7 @@ Fisica IPAS</property>
                                                             <property name="can_focus">False</property>
                                                             <child>
                                                             <widget class="GtkLabel" id="label140">
+                                                            <property name="width_request">50</property>
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">False</property>
                                                             <property name="label" translatable="yes">Movilidad</property>
@@ -12093,9 +12096,10 @@ Fisica IPAS</property>
                                                             </packing>
                                                             </child>
                                                             <child>
-                                                            <widget class="GtkComboBox" id="combobox39">
+                                                            <widget class="GtkLabel" id="label197">
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">False</property>
+                                                            <property name="label" translatable="yes">Der.</property>
                                                             </widget>
                                                             <packing>
                                                             <property name="expand">True</property>
@@ -12104,7 +12108,41 @@ Fisica IPAS</property>
                                                             </packing>
                                                             </child>
                                                             <child>
-                                                            <widget class="GtkEntry" id="entry81">
+                                                            <widget class="GtkComboBox" id="combobox_mienbrotorax_mov_der">
+                                                            <property name="visible">True</property>
+                                                            <property name="can_focus">False</property>
+                                                            </widget>
+                                                            <packing>
+                                                            <property name="expand">True</property>
+                                                            <property name="fill">True</property>
+                                                            <property name="position">2</property>
+                                                            </packing>
+                                                            </child>
+                                                            <child>
+                                                            <widget class="GtkLabel" id="label196">
+                                                            <property name="visible">True</property>
+                                                            <property name="can_focus">False</property>
+                                                            <property name="label" translatable="yes">Izq.</property>
+                                                            </widget>
+                                                            <packing>
+                                                            <property name="expand">True</property>
+                                                            <property name="fill">True</property>
+                                                            <property name="position">3</property>
+                                                            </packing>
+                                                            </child>
+                                                            <child>
+                                                            <widget class="GtkComboBox" id="combobox_mienbrotorax_mov_izq">
+                                                            <property name="visible">True</property>
+                                                            <property name="can_focus">False</property>
+                                                            </widget>
+                                                            <packing>
+                                                            <property name="expand">True</property>
+                                                            <property name="fill">True</property>
+                                                            <property name="position">4</property>
+                                                            </packing>
+                                                            </child>
+                                                            <child>
+                                                            <widget class="GtkEntry" id="entry_mienbrotorax_mov_otros">
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">True</property>
                                                             <property name="invisible_char">●</property>
@@ -12117,7 +12155,7 @@ Fisica IPAS</property>
                                                             <packing>
                                                             <property name="expand">True</property>
                                                             <property name="fill">True</property>
-                                                            <property name="position">2</property>
+                                                            <property name="position">5</property>
                                                             </packing>
                                                             </child>
                                                             </widget>
@@ -12133,6 +12171,7 @@ Fisica IPAS</property>
                                                             <property name="can_focus">False</property>
                                                             <child>
                                                             <widget class="GtkLabel" id="label141">
+                                                            <property name="width_request">50</property>
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">False</property>
                                                             <property name="label" translatable="yes">R.O.T.</property>
@@ -12144,9 +12183,10 @@ Fisica IPAS</property>
                                                             </packing>
                                                             </child>
                                                             <child>
-                                                            <widget class="GtkComboBox" id="combobox40">
+                                                            <widget class="GtkLabel" id="label198">
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">False</property>
+                                                            <property name="label" translatable="yes">Der.</property>
                                                             </widget>
                                                             <packing>
                                                             <property name="expand">True</property>
@@ -12155,7 +12195,41 @@ Fisica IPAS</property>
                                                             </packing>
                                                             </child>
                                                             <child>
-                                                            <widget class="GtkEntry" id="entry82">
+                                                            <widget class="GtkComboBox" id="combobox_mienbrotorax_rot_der">
+                                                            <property name="visible">True</property>
+                                                            <property name="can_focus">False</property>
+                                                            </widget>
+                                                            <packing>
+                                                            <property name="expand">True</property>
+                                                            <property name="fill">True</property>
+                                                            <property name="position">2</property>
+                                                            </packing>
+                                                            </child>
+                                                            <child>
+                                                            <widget class="GtkLabel" id="label199">
+                                                            <property name="visible">True</property>
+                                                            <property name="can_focus">False</property>
+                                                            <property name="label" translatable="yes">Izq.</property>
+                                                            </widget>
+                                                            <packing>
+                                                            <property name="expand">True</property>
+                                                            <property name="fill">True</property>
+                                                            <property name="position">3</property>
+                                                            </packing>
+                                                            </child>
+                                                            <child>
+                                                            <widget class="GtkComboBox" id="combobox_mienbrotorax_rot_izq">
+                                                            <property name="visible">True</property>
+                                                            <property name="can_focus">False</property>
+                                                            </widget>
+                                                            <packing>
+                                                            <property name="expand">True</property>
+                                                            <property name="fill">True</property>
+                                                            <property name="position">4</property>
+                                                            </packing>
+                                                            </child>
+                                                            <child>
+                                                            <widget class="GtkEntry" id="entry_mienbrotorax_rot_otros">
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">True</property>
                                                             <property name="invisible_char">●</property>
@@ -12168,7 +12242,7 @@ Fisica IPAS</property>
                                                             <packing>
                                                             <property name="expand">True</property>
                                                             <property name="fill">True</property>
-                                                            <property name="position">2</property>
+                                                            <property name="position">5</property>
                                                             </packing>
                                                             </child>
                                                             </widget>
@@ -12184,6 +12258,7 @@ Fisica IPAS</property>
                                                             <property name="can_focus">False</property>
                                                             <child>
                                                             <widget class="GtkLabel" id="label142">
+                                                            <property name="width_request">50</property>
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">False</property>
                                                             <property name="label" translatable="yes">Fuerza</property>
@@ -12195,9 +12270,10 @@ Fisica IPAS</property>
                                                             </packing>
                                                             </child>
                                                             <child>
-                                                            <widget class="GtkComboBox" id="combobox41">
+                                                            <widget class="GtkLabel" id="label201">
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">False</property>
+                                                            <property name="label" translatable="yes">Der.</property>
                                                             </widget>
                                                             <packing>
                                                             <property name="expand">True</property>
@@ -12206,7 +12282,41 @@ Fisica IPAS</property>
                                                             </packing>
                                                             </child>
                                                             <child>
-                                                            <widget class="GtkEntry" id="entry83">
+                                                            <widget class="GtkComboBox" id="combobox_mienbrotorax_fza_der">
+                                                            <property name="visible">True</property>
+                                                            <property name="can_focus">False</property>
+                                                            </widget>
+                                                            <packing>
+                                                            <property name="expand">True</property>
+                                                            <property name="fill">True</property>
+                                                            <property name="position">2</property>
+                                                            </packing>
+                                                            </child>
+                                                            <child>
+                                                            <widget class="GtkLabel" id="label200">
+                                                            <property name="visible">True</property>
+                                                            <property name="can_focus">False</property>
+                                                            <property name="label" translatable="yes">Izq.</property>
+                                                            </widget>
+                                                            <packing>
+                                                            <property name="expand">True</property>
+                                                            <property name="fill">True</property>
+                                                            <property name="position">3</property>
+                                                            </packing>
+                                                            </child>
+                                                            <child>
+                                                            <widget class="GtkComboBox" id="combobox_mienbrotorax_fza_izq">
+                                                            <property name="visible">True</property>
+                                                            <property name="can_focus">False</property>
+                                                            </widget>
+                                                            <packing>
+                                                            <property name="expand">True</property>
+                                                            <property name="fill">True</property>
+                                                            <property name="position">4</property>
+                                                            </packing>
+                                                            </child>
+                                                            <child>
+                                                            <widget class="GtkEntry" id="entry_mienbrotorax_fza_otros">
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">True</property>
                                                             <property name="invisible_char">●</property>
@@ -12219,7 +12329,7 @@ Fisica IPAS</property>
                                                             <packing>
                                                             <property name="expand">True</property>
                                                             <property name="fill">True</property>
-                                                            <property name="position">2</property>
+                                                            <property name="position">5</property>
                                                             </packing>
                                                             </child>
                                                             </widget>
@@ -12235,6 +12345,7 @@ Fisica IPAS</property>
                                                             <property name="can_focus">False</property>
                                                             <child>
                                                             <widget class="GtkLabel" id="label143">
+                                                            <property name="width_request">50</property>
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">False</property>
                                                             <property name="label" translatable="yes">Pulsos</property>
@@ -12246,9 +12357,10 @@ Fisica IPAS</property>
                                                             </packing>
                                                             </child>
                                                             <child>
-                                                            <widget class="GtkComboBox" id="combobox42">
+                                                            <widget class="GtkLabel" id="label202">
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">False</property>
+                                                            <property name="label" translatable="yes">Der.</property>
                                                             </widget>
                                                             <packing>
                                                             <property name="expand">True</property>
@@ -12257,7 +12369,41 @@ Fisica IPAS</property>
                                                             </packing>
                                                             </child>
                                                             <child>
-                                                            <widget class="GtkEntry" id="entry84">
+                                                            <widget class="GtkComboBox" id="combobox_mienbrotorax_plso_der">
+                                                            <property name="visible">True</property>
+                                                            <property name="can_focus">False</property>
+                                                            </widget>
+                                                            <packing>
+                                                            <property name="expand">True</property>
+                                                            <property name="fill">True</property>
+                                                            <property name="position">2</property>
+                                                            </packing>
+                                                            </child>
+                                                            <child>
+                                                            <widget class="GtkLabel" id="label203">
+                                                            <property name="visible">True</property>
+                                                            <property name="can_focus">False</property>
+                                                            <property name="label" translatable="yes">Izq.</property>
+                                                            </widget>
+                                                            <packing>
+                                                            <property name="expand">True</property>
+                                                            <property name="fill">True</property>
+                                                            <property name="position">3</property>
+                                                            </packing>
+                                                            </child>
+                                                            <child>
+                                                            <widget class="GtkComboBox" id="combobox_mienbrotorax_plso_izq">
+                                                            <property name="visible">True</property>
+                                                            <property name="can_focus">False</property>
+                                                            </widget>
+                                                            <packing>
+                                                            <property name="expand">True</property>
+                                                            <property name="fill">True</property>
+                                                            <property name="position">4</property>
+                                                            </packing>
+                                                            </child>
+                                                            <child>
+                                                            <widget class="GtkEntry" id="entry_mienbrotorax_plso_otros">
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">True</property>
                                                             <property name="invisible_char">●</property>
@@ -12270,7 +12416,7 @@ Fisica IPAS</property>
                                                             <packing>
                                                             <property name="expand">True</property>
                                                             <property name="fill">True</property>
-                                                            <property name="position">2</property>
+                                                            <property name="position">5</property>
                                                             </packing>
                                                             </child>
                                                             </widget>
@@ -12297,7 +12443,7 @@ Fisica IPAS</property>
                                                             </packing>
                                                             </child>
                                                             <child>
-                                                            <widget class="GtkEntry" id="entry79">
+                                                            <widget class="GtkEntry" id="entry_mienbrotorax_otros">
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">True</property>
                                                             <property name="invisible_char">●</property>
@@ -12412,9 +12558,10 @@ Fisica IPAS</property>
                                                             </packing>
                                                             </child>
                                                             <child>
-                                                            <widget class="GtkComboBox" id="combobox59">
+                                                            <widget class="GtkLabel" id="label204">
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">False</property>
+                                                            <property name="label" translatable="yes">Der.</property>
                                                             </widget>
                                                             <packing>
                                                             <property name="expand">True</property>
@@ -12423,11 +12570,46 @@ Fisica IPAS</property>
                                                             </packing>
                                                             </child>
                                                             <child>
-                                                            <widget class="GtkEntry" id="entry86">
+                                                            <widget class="GtkComboBox" id="combobox_miempelv_inte_der">
+                                                            <property name="visible">True</property>
+                                                            <property name="can_focus">False</property>
+                                                            </widget>
+                                                            <packing>
+                                                            <property name="expand">True</property>
+                                                            <property name="fill">True</property>
+                                                            <property name="position">2</property>
+                                                            </packing>
+                                                            </child>
+                                                            <child>
+                                                            <widget class="GtkLabel" id="label205">
+                                                            <property name="visible">True</property>
+                                                            <property name="can_focus">False</property>
+                                                            <property name="label" translatable="yes">Izq.</property>
+                                                            </widget>
+                                                            <packing>
+                                                            <property name="expand">True</property>
+                                                            <property name="fill">True</property>
+                                                            <property name="position">3</property>
+                                                            </packing>
+                                                            </child>
+                                                            <child>
+                                                            <widget class="GtkComboBox" id="combobox_miempelv_inte_izq">
+                                                            <property name="visible">True</property>
+                                                            <property name="can_focus">False</property>
+                                                            </widget>
+                                                            <packing>
+                                                            <property name="expand">True</property>
+                                                            <property name="fill">True</property>
+                                                            <property name="position">4</property>
+                                                            </packing>
+                                                            </child>
+                                                            <child>
+                                                            <widget class="GtkEntry" id="entry_miempelv_inte_otros">
                                                             <property name="width_request">50</property>
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">True</property>
                                                             <property name="invisible_char">●</property>
+                                                            <property name="invisible_char_set">True</property>
                                                             <property name="primary_icon_activatable">False</property>
                                                             <property name="secondary_icon_activatable">False</property>
                                                             <property name="primary_icon_sensitive">True</property>
@@ -12436,7 +12618,7 @@ Fisica IPAS</property>
                                                             <packing>
                                                             <property name="expand">True</property>
                                                             <property name="fill">True</property>
-                                                            <property name="position">2</property>
+                                                            <property name="position">5</property>
                                                             </packing>
                                                             </child>
                                                             </widget>
@@ -12463,9 +12645,10 @@ Fisica IPAS</property>
                                                             </packing>
                                                             </child>
                                                             <child>
-                                                            <widget class="GtkComboBox" id="combobox60">
+                                                            <widget class="GtkLabel" id="label206">
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">False</property>
+                                                            <property name="label" translatable="yes">Der.</property>
                                                             </widget>
                                                             <packing>
                                                             <property name="expand">True</property>
@@ -12474,11 +12657,46 @@ Fisica IPAS</property>
                                                             </packing>
                                                             </child>
                                                             <child>
+                                                            <widget class="GtkComboBox" id="combobox60">
+                                                            <property name="visible">True</property>
+                                                            <property name="can_focus">False</property>
+                                                            </widget>
+                                                            <packing>
+                                                            <property name="expand">True</property>
+                                                            <property name="fill">True</property>
+                                                            <property name="position">2</property>
+                                                            </packing>
+                                                            </child>
+                                                            <child>
+                                                            <widget class="GtkLabel" id="label207">
+                                                            <property name="visible">True</property>
+                                                            <property name="can_focus">False</property>
+                                                            <property name="label" translatable="yes">Izq.</property>
+                                                            </widget>
+                                                            <packing>
+                                                            <property name="expand">True</property>
+                                                            <property name="fill">True</property>
+                                                            <property name="position">3</property>
+                                                            </packing>
+                                                            </child>
+                                                            <child>
+                                                            <widget class="GtkComboBox" id="combobox2">
+                                                            <property name="visible">True</property>
+                                                            <property name="can_focus">False</property>
+                                                            </widget>
+                                                            <packing>
+                                                            <property name="expand">True</property>
+                                                            <property name="fill">True</property>
+                                                            <property name="position">4</property>
+                                                            </packing>
+                                                            </child>
+                                                            <child>
                                                             <widget class="GtkEntry" id="entry87">
                                                             <property name="width_request">50</property>
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">True</property>
                                                             <property name="invisible_char">●</property>
+                                                            <property name="invisible_char_set">True</property>
                                                             <property name="primary_icon_activatable">False</property>
                                                             <property name="secondary_icon_activatable">False</property>
                                                             <property name="primary_icon_sensitive">True</property>
@@ -12487,7 +12705,7 @@ Fisica IPAS</property>
                                                             <packing>
                                                             <property name="expand">True</property>
                                                             <property name="fill">True</property>
-                                                            <property name="position">2</property>
+                                                            <property name="position">5</property>
                                                             </packing>
                                                             </child>
                                                             </widget>
@@ -12514,9 +12732,10 @@ Fisica IPAS</property>
                                                             </packing>
                                                             </child>
                                                             <child>
-                                                            <widget class="GtkComboBox" id="combobox61">
+                                                            <widget class="GtkLabel" id="label208">
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">False</property>
+                                                            <property name="label" translatable="yes">Der.</property>
                                                             </widget>
                                                             <packing>
                                                             <property name="expand">True</property>
@@ -12525,11 +12744,46 @@ Fisica IPAS</property>
                                                             </packing>
                                                             </child>
                                                             <child>
+                                                            <widget class="GtkComboBox" id="combobox61">
+                                                            <property name="visible">True</property>
+                                                            <property name="can_focus">False</property>
+                                                            </widget>
+                                                            <packing>
+                                                            <property name="expand">True</property>
+                                                            <property name="fill">True</property>
+                                                            <property name="position">2</property>
+                                                            </packing>
+                                                            </child>
+                                                            <child>
+                                                            <widget class="GtkLabel" id="label209">
+                                                            <property name="visible">True</property>
+                                                            <property name="can_focus">False</property>
+                                                            <property name="label" translatable="yes">Izq.</property>
+                                                            </widget>
+                                                            <packing>
+                                                            <property name="expand">True</property>
+                                                            <property name="fill">True</property>
+                                                            <property name="position">3</property>
+                                                            </packing>
+                                                            </child>
+                                                            <child>
+                                                            <widget class="GtkComboBox" id="combobox3">
+                                                            <property name="visible">True</property>
+                                                            <property name="can_focus">False</property>
+                                                            </widget>
+                                                            <packing>
+                                                            <property name="expand">True</property>
+                                                            <property name="fill">True</property>
+                                                            <property name="position">4</property>
+                                                            </packing>
+                                                            </child>
+                                                            <child>
                                                             <widget class="GtkEntry" id="entry88">
                                                             <property name="width_request">50</property>
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">True</property>
                                                             <property name="invisible_char">●</property>
+                                                            <property name="invisible_char_set">True</property>
                                                             <property name="primary_icon_activatable">False</property>
                                                             <property name="secondary_icon_activatable">False</property>
                                                             <property name="primary_icon_sensitive">True</property>
@@ -12538,7 +12792,7 @@ Fisica IPAS</property>
                                                             <packing>
                                                             <property name="expand">True</property>
                                                             <property name="fill">True</property>
-                                                            <property name="position">2</property>
+                                                            <property name="position">5</property>
                                                             </packing>
                                                             </child>
                                                             </widget>
@@ -12565,9 +12819,10 @@ Fisica IPAS</property>
                                                             </packing>
                                                             </child>
                                                             <child>
-                                                            <widget class="GtkComboBox" id="combobox62">
+                                                            <widget class="GtkLabel" id="label212">
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">False</property>
+                                                            <property name="label" translatable="yes">Der.</property>
                                                             </widget>
                                                             <packing>
                                                             <property name="expand">True</property>
@@ -12576,11 +12831,46 @@ Fisica IPAS</property>
                                                             </packing>
                                                             </child>
                                                             <child>
+                                                            <widget class="GtkComboBox" id="combobox62">
+                                                            <property name="visible">True</property>
+                                                            <property name="can_focus">False</property>
+                                                            </widget>
+                                                            <packing>
+                                                            <property name="expand">True</property>
+                                                            <property name="fill">True</property>
+                                                            <property name="position">2</property>
+                                                            </packing>
+                                                            </child>
+                                                            <child>
+                                                            <widget class="GtkLabel" id="label210">
+                                                            <property name="visible">True</property>
+                                                            <property name="can_focus">False</property>
+                                                            <property name="label" translatable="yes">Izq.</property>
+                                                            </widget>
+                                                            <packing>
+                                                            <property name="expand">True</property>
+                                                            <property name="fill">True</property>
+                                                            <property name="position">3</property>
+                                                            </packing>
+                                                            </child>
+                                                            <child>
+                                                            <widget class="GtkComboBox" id="combobox4">
+                                                            <property name="visible">True</property>
+                                                            <property name="can_focus">False</property>
+                                                            </widget>
+                                                            <packing>
+                                                            <property name="expand">True</property>
+                                                            <property name="fill">True</property>
+                                                            <property name="position">4</property>
+                                                            </packing>
+                                                            </child>
+                                                            <child>
                                                             <widget class="GtkEntry" id="entry89">
                                                             <property name="width_request">50</property>
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">True</property>
                                                             <property name="invisible_char">●</property>
+                                                            <property name="invisible_char_set">True</property>
                                                             <property name="primary_icon_activatable">False</property>
                                                             <property name="secondary_icon_activatable">False</property>
                                                             <property name="primary_icon_sensitive">True</property>
@@ -12589,7 +12879,7 @@ Fisica IPAS</property>
                                                             <packing>
                                                             <property name="expand">True</property>
                                                             <property name="fill">True</property>
-                                                            <property name="position">2</property>
+                                                            <property name="position">5</property>
                                                             </packing>
                                                             </child>
                                                             </widget>
@@ -12603,6 +12893,7 @@ Fisica IPAS</property>
                                                             <widget class="GtkHBox" id="hbox79">
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">False</property>
+                                                            <property name="homogeneous">True</property>
                                                             <child>
                                                             <widget class="GtkLabel" id="label172">
                                                             <property name="visible">True</property>
@@ -12616,9 +12907,10 @@ Fisica IPAS</property>
                                                             </packing>
                                                             </child>
                                                             <child>
-                                                            <widget class="GtkComboBox" id="combobox63">
+                                                            <widget class="GtkLabel" id="label213">
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">False</property>
+                                                            <property name="label" translatable="yes">Der.</property>
                                                             </widget>
                                                             <packing>
                                                             <property name="expand">True</property>
@@ -12627,11 +12919,46 @@ Fisica IPAS</property>
                                                             </packing>
                                                             </child>
                                                             <child>
+                                                            <widget class="GtkComboBox" id="combobox63">
+                                                            <property name="visible">True</property>
+                                                            <property name="can_focus">False</property>
+                                                            </widget>
+                                                            <packing>
+                                                            <property name="expand">True</property>
+                                                            <property name="fill">True</property>
+                                                            <property name="position">2</property>
+                                                            </packing>
+                                                            </child>
+                                                            <child>
+                                                            <widget class="GtkLabel" id="label211">
+                                                            <property name="visible">True</property>
+                                                            <property name="can_focus">False</property>
+                                                            <property name="label" translatable="yes">Izq.</property>
+                                                            </widget>
+                                                            <packing>
+                                                            <property name="expand">True</property>
+                                                            <property name="fill">True</property>
+                                                            <property name="position">3</property>
+                                                            </packing>
+                                                            </child>
+                                                            <child>
+                                                            <widget class="GtkComboBox" id="combobox5">
+                                                            <property name="visible">True</property>
+                                                            <property name="can_focus">False</property>
+                                                            </widget>
+                                                            <packing>
+                                                            <property name="expand">True</property>
+                                                            <property name="fill">True</property>
+                                                            <property name="position">4</property>
+                                                            </packing>
+                                                            </child>
+                                                            <child>
                                                             <widget class="GtkEntry" id="entry90">
                                                             <property name="width_request">50</property>
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">True</property>
                                                             <property name="invisible_char">●</property>
+                                                            <property name="invisible_char_set">True</property>
                                                             <property name="primary_icon_activatable">False</property>
                                                             <property name="secondary_icon_activatable">False</property>
                                                             <property name="primary_icon_sensitive">True</property>
@@ -12640,7 +12967,7 @@ Fisica IPAS</property>
                                                             <packing>
                                                             <property name="expand">True</property>
                                                             <property name="fill">True</property>
-                                                            <property name="position">2</property>
+                                                            <property name="position">5</property>
                                                             </packing>
                                                             </child>
                                                             </widget>
@@ -12708,7 +13035,7 @@ Fisica IPAS</property>
                                                       <widget class="GtkLabel" id="label165">
                                                         <property name="visible">True</property>
                                                         <property name="can_focus">False</property>
-                                                        <property name="label" translatable="yes">&lt;b&gt;&lt;small&gt;MIEM. PEELVICOS&lt;/small&gt;&lt;/b&gt;</property>
+                                                        <property name="label" translatable="yes">&lt;b&gt;&lt;small&gt;MIEM. PELVICOS&lt;/small&gt;&lt;/b&gt;</property>
                                                         <property name="use_markup">True</property>
                                                       </widget>
                                                       <packing>

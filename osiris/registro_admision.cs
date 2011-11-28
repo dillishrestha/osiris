@@ -200,6 +200,8 @@ namespace osiris
 		
 		[Widget] Gtk.ComboBox combobox_parent_responsable = null;
 		
+		[Widget] Gtk.ComboBox combobox_paquete_check_up = null;
+		
 		
 		// Cambio para VENEZUELA
 		[Widget] Gtk.Label label37 = null;
@@ -269,6 +271,10 @@ namespace osiris
 		string ApmEmpleado = "";		
 		string connectionString;
 		string nombrebd;        
+		
+		string[] args_args = {""};
+		string[] args_estado_civil = {"","CASADO(A)","SOLTERO(A)","SEPARADO(A)","VIUDO(A)","UNION LIBRE","DIVORCIADO(A)"};
+		int[] args_id_array = {0,1,2,3,4,5,6,7,8};
 		
 		protected Gtk.Window MyWin;
 		protected Gtk.Window MyWinError;
@@ -405,11 +411,13 @@ namespace osiris
 				// Observacion y otros servicios
 				checkbutton_consulta.Clicked += new EventHandler(on_checkbutton_consulta_clicked);
 	        	//entry_observacion.Sensitive = false;
+			
+				// Asignando paquete de Check-UP
+				checkbutton_checkup.Clicked += new EventHandler(on_checkbutton_checkup_clicked);
 	        	
 	        	// lenado de los ComboBox
-				llenado_estadocivil();	        	
-	        	//llenado_municipios();
-	        	llenado_estados();
+				llenado_combobox(0,"",combobox_estado,"sql","SELECT * FROM osiris_estados ORDER BY descripcion_estado;","descripcion_estado","id_estado",args_args,args_id_array);
+				llenado_combobox(0,"",combobox_estado_civil,"array","","","",args_estado_civil,args_id_array);
 	        	
 				// Sexo Paciente
 				radiobutton_masculino.Clicked += new EventHandler(on_cambioHM_clicked);
@@ -422,134 +430,118 @@ namespace osiris
 			//}
 		}
 		
-		// Estado Civil
-		void llenado_estadocivil()
+		void on_checkbutton_checkup_clicked(object sender, EventArgs a)
 		{
-			combobox_estado_civil.Clear();
+			if (checkbutton_checkup.Active == true){				
+				if(idempresa_paciente > 0 ){
+					combobox_paquete_check_up.Sensitive = true;
+					
+					
+					
+				}
+			}else{
+				combobox_paquete_check_up.Sensitive = false;
+			}
+		}
+		
+		void llenado_combobox(int tipodellenado,string descrip_defaul,object obj,string sql_or_array,string query_SQL,string name_field_desc,string name_field_id,string[] args_array,int[] args_id_array)
+		{			
+			Gtk.ComboBox combobox_llenado = (Gtk.ComboBox) obj;
+			//Gtk.ComboBox combobox_pos_neg = obj as Gtk.ComboBox;
+			combobox_llenado.Clear();
 			CellRendererText cell = new CellRendererText();
-			combobox_estado_civil.PackStart(cell, true);
-			combobox_estado_civil.AddAttribute(cell,"text",0);
-	        
-			ListStore store = new ListStore( typeof (string));
-			combobox_estado_civil.Model = store;
-	        
-			store.AppendValues ("Casado(a)");
-			store.AppendValues ("Soltero(a)");
-			store.AppendValues ("Separado(a)");
-			store.AppendValues ("Viudo(a)");
-			store.AppendValues ("Union Libre");
-			store.AppendValues ("Divorciado(a)");
-	        
+			combobox_llenado.PackStart(cell, true);
+			combobox_llenado.AddAttribute(cell,"text",0);	        
+			ListStore store = new ListStore( typeof (string),typeof (int));
+			combobox_llenado.Model = store;			
+			if ((int) tipodellenado == 1){
+				store.AppendValues ((string) descrip_defaul,0);
+			}			
+			if(sql_or_array == "array"){			
+				for (int colum_field = 0; colum_field < args_array.Length; colum_field++){
+					store.AppendValues (args_array[colum_field],args_id_array[colum_field]);
+				}
+			}
+			if(sql_or_array == "sql"){			
+				NpgsqlConnection conexion; 
+				conexion = new NpgsqlConnection (connectionString+nombrebd);
+	            // Verifica que la base de datos este conectada
+				try{
+					conexion.Open ();
+					NpgsqlCommand comando; 
+					comando = conexion.CreateCommand ();
+	               	comando.CommandText = query_SQL;					
+					NpgsqlDataReader lector = comando.ExecuteReader ();
+	               	while (lector.Read()){
+						store.AppendValues ((string) lector[ name_field_desc ], (int) lector[ name_field_id]);
+					}
+				}catch (NpgsqlException ex){
+					MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+											MessageType.Error,ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
+					msgBoxError.Run ();				msgBoxError.Destroy();
+				}
+				conexion.Close ();
+			}			
 			TreeIter iter;
 			if (store.GetIterFirst(out iter)){
-				combobox_estado_civil.SetActiveIter (iter);
+				combobox_llenado.SetActiveIter (iter);
 			}
-			combobox_estado_civil.Changed += new EventHandler (onComboBoxChanged_estadocivil);
+			combobox_llenado.Changed += new EventHandler (onComboBoxChanged_llenado);			
 		}
 		
-		// Llenado de Municipios
-		void llenado_municipios()
+		void onComboBoxChanged_llenado (object sender, EventArgs args)
 		{
-			combobox_municipios.Clear();
-			CellRendererText cell3 = new CellRendererText();
-			combobox_municipios.PackStart(cell3, true);
-			combobox_municipios.AddAttribute(cell3,"text",0);
-	        
-			ListStore store3 = new ListStore( typeof (string),typeof (int));
-			combobox_municipios.Model = store3;
-	        
-	        NpgsqlConnection conexion; 
-			conexion = new NpgsqlConnection (connectionString+nombrebd);
-            // Verifica que la base de datos este conectada
-			try{
-				conexion.Open ();
-				NpgsqlCommand comando; 
-				comando = conexion.CreateCommand ();
-               	comando.CommandText = "SELECT * FROM osiris_municipios WHERE id_estado = '"+idestado.ToString()+"' "+
-               						"ORDER BY descripcion_municipio;";
-				
-				NpgsqlDataReader lector = comando.ExecuteReader ();
-               	while (lector.Read())
-				{
-					store3.AppendValues ((string) lector["descripcion_municipio"],(int) lector["id_municipio"]);
+			ComboBox onComboBoxChanged = sender as ComboBox;
+			if (sender == null){	return; }
+			TreeIter iter;
+			if (onComboBoxChanged.GetActiveIter (out iter)){
+				switch (onComboBoxChanged.Name.ToString()){	
+				case "combobox_estado":
+					estado = (string) combobox_estado.Model.GetValue(iter,0); //Console.WriteLine(estado.ToString());
+					idestado = (int) combobox_estado.Model.GetValue(iter,1);
+					llenado_combobox(0,"",combobox_municipios,"sql","SELECT * FROM osiris_municipios WHERE id_estado = '"+idestado.ToString()+"' "+
+               						"ORDER BY descripcion_municipio;","descripcion_municipio","id_municipio",args_args,args_id_array);
+					break;
+				case "combobox_municipios":
+					municipios = (string) combobox_municipios.Model.GetValue(iter,0);
+					//idmunicipio = (int) combobox_municipios.Model.GetValue(iter,1);					
+					break;
+				case "combobox_estado_civil":
+					estadocivil = (string) combobox_estado_civil.Model.GetValue(iter,0);
+					break;
+				case "combobox_tipo_paciente":
+					tipopaciente = (string) combobox_tipo_paciente.Model.GetValue(iter,0);
+					id_tipopaciente = (int) combobox_tipo_paciente.Model.GetValue(iter,1);
+					if (id_tipopaciente == 400){
+						boolaseguradora = true;
+						combobox_aseguradora.Sensitive = true;
+						llenado_combobox(0,"",combobox_aseguradora,"sql","SELECT * FROM osiris_aseguradoras WHERE activa = 'true' ORDER BY descripcion_aseguradora;","descripcion_aseguradora","id_aseguradora",args_args,args_id_array);
+					}else{
+						boolaseguradora = false;
+						combobox_aseguradora.Sensitive = false;
+					}
+					if (id_tipopaciente == 102 || id_tipopaciente == 300 || id_tipopaciente == 500 ){
+						//if (_tipo_ == "nuevo"){
+						//	this.entry_empresa.Sensitive = true;
+						//}else{
+							this.entry_empresa.Sensitive = false;
+						//}
+					}else{
+						this.entry_empresa.Sensitive = true;
+					}
+					break;
+				case "combobox_aseguradora":
+					nombre_aseguradora = (string) combobox_aseguradora.Model.GetValue(iter,0);
+					idaseguradora = (int) combobox_aseguradora.Model.GetValue(iter,1);
+					break;
+				case "combobox_tipo_admision":
+					tipointernamiento = (string) combobox_tipo_admision.Model.GetValue(iter,0);//Console.WriteLine(tipointernamiento);
+					idtipointernamiento = (int) combobox_tipo_admision.Model.GetValue(iter,1);//Console.WriteLine(idtipointernamiento);
+					break;
 				}
-			}catch (NpgsqlException ex){
-				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
-										MessageType.Error,ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
-				msgBoxError.Run ();				msgBoxError.Destroy();
 			}
-			conexion.Close ();
-	        
-			TreeIter iter3;
-			if (store3.GetIterFirst(out iter3))	{ combobox_municipios.SetActiveIter (iter3); }
-			
-			combobox_municipios.Changed += new EventHandler (onComboBoxChanged_municipios);
 		}
-		
-		// Llenado de Estados
-		void llenado_estados()
-		{
-			combobox_estado.Clear();
-			CellRendererText cell4 = new CellRendererText();
-			combobox_estado.PackStart(cell4, true);
-			combobox_estado.AddAttribute(cell4,"text",0);
-	        
-	        ListStore store4 = new ListStore( typeof (string),typeof (int));
-			combobox_estado.Model = store4;
-			
-			NpgsqlConnection conexion; 
-			conexion = new NpgsqlConnection (connectionString+nombrebd);
-            // Verifica que la base de datos este conectada
-			try{
-				conexion.Open ();
-				NpgsqlCommand comando; 
-				comando = conexion.CreateCommand ();
-               	comando.CommandText = "SELECT * FROM osiris_estados ORDER BY descripcion_estado;";
 				
-				NpgsqlDataReader lector = comando.ExecuteReader ();
-               	while (lector.Read())
-				{
-					store4.AppendValues ((string) lector["descripcion_estado"], (int) lector["id_estado"]);
-				}
-			}catch (NpgsqlException ex){
-				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
-										MessageType.Error,ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
-				msgBoxError.Run ();				msgBoxError.Destroy();
-			}
-			conexion.Close ();
-			        	        
-			TreeIter iter4;
-			if (store4.GetIterFirst(out iter4))	{	combobox_estado.SetActiveIter (iter4);	}
-			combobox_estado.Changed += new EventHandler (onComboBoxChanged_estado);
-		}
-		
-		void llena_cmbox_aseguradora()
-		{
-			//store_aseguradora.Clear(); // Limpia el treeview cuando realiza una nueva busqueda
-			NpgsqlConnection conexion; 
-			conexion = new NpgsqlConnection (connectionString+nombrebd);
-            
-			// Verifica que la base de datos este conectada
-			try{
-				conexion.Open ();
-				NpgsqlCommand comando; 
-				comando = conexion.CreateCommand ();
-               	
-				comando.CommandText = "SELECT * FROM osiris_aseguradoras WHERE activa = 'true' ORDER BY descripcion_aseguradora;";
-				NpgsqlDataReader lector = comando.ExecuteReader ();
-               	
-				while (lector.Read()){
-					store_aseguradora.AppendValues ((string) lector["descripcion_aseguradora"],(int) lector["id_aseguradora"]);
-				}
-				
-			}catch (NpgsqlException ex){
-				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
-										MessageType.Error,ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
-				msgBoxError.Run ();			msgBoxError.Destroy();
-			}
-			conexion.Close ();
-		}
-		
 		void on_checkbutton_consulta_clicked (object sender, EventArgs a)
 		{
 			if (checkbutton_consulta.Active == true){
@@ -882,47 +874,10 @@ namespace osiris
 			button_busca_medico.Clicked += new EventHandler(on_button_busca_medicos_clicked);
 			
 			// Llenado de combobox con los tipos de Admisiones y centros de costos
-			combobox_tipo_admision.Clear();
-			CellRendererText cell2 = new CellRendererText();
-			combobox_tipo_admision.PackStart(cell2, true);
-			combobox_tipo_admision.AddAttribute(cell2,"text",0);
-	        
-			ListStore store2 = new ListStore( typeof (string), typeof (int));
-			combobox_tipo_admision.Model = store2;
-	        
-	      	NpgsqlConnection conexion; 
-			conexion = new NpgsqlConnection (connectionString+nombrebd);
-            // Verifica que la base de datos este conectada
-            try{
-				conexion.Open ();
-				NpgsqlCommand comando; 
-				comando = conexion.CreateCommand ();
-               	comando.CommandText = "SELECT * FROM osiris_his_tipo_admisiones WHERE servicio_directo = 'false' "+
+			
+			llenado_combobox(1,"",combobox_tipo_admision,"sql","SELECT * FROM osiris_his_tipo_admisiones WHERE servicio_directo = 'false' "+
 	           							"AND cuenta_mayor = '4000' "+
-	           							//"AND cuenta_mayor_ingreso = '4000' "+
-	           							//"AND grupo = 'MED' "+
-	               						"ORDER BY id_tipo_admisiones;";
-				
-				NpgsqlDataReader lector = comando.ExecuteReader ();
-				store2.AppendValues ("", 0);
-               	while (lector.Read())
-				{
-					store2.AppendValues ((string) lector["descripcion_admisiones"], (int) lector["id_tipo_admisiones"]);
-				}
-			}catch (NpgsqlException ex){
-				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
-										MessageType.Error,ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
-				msgBoxError.Run ();				msgBoxError.Destroy();
-			}
-			conexion.Close ();	        
-			
-			TreeIter iter2;
-			if (store2.GetIterFirst(out iter2)) {
-				//Console.WriteLine(iter2);
-				combobox_tipo_admision.SetActiveIter (iter2);
-			}
-			combobox_tipo_admision.Changed += new EventHandler (onComboBoxChanged_tipo_admision);
-			
+	               						"ORDER BY id_tipo_admisiones;","descripcion_admisiones","id_tipo_admisiones",args_args,args_id_array);
 			// Llenado de combobox con los tipos de cirugia
 			this.combobox_tipo_cirugia.Clear();
 			CellRendererText cell3 = new CellRendererText();
@@ -954,7 +909,6 @@ namespace osiris
 				decirugia = (string) combobox_tipo_cirugia.Model.GetValue(iter,0);
 			}
 		}
-		
 		
 		// Ventana de Busqueda de Medico
 		void on_button_busca_medicos_clicked (object sender, EventArgs args)
@@ -1341,19 +1295,6 @@ namespace osiris
 			}
 		}
 	    
-		void onComboBoxChanged_tipo_admision (object sender, EventArgs args)
-		{
-			ComboBox combobox_tipo_admision = sender as ComboBox;
-			if (sender == null){
-				return;
-			}
-			TreeIter iter;
-			if (combobox_tipo_admision.GetActiveIter (out iter)){
-				tipointernamiento = (string) combobox_tipo_admision.Model.GetValue(iter,0);//Console.WriteLine(tipointernamiento);
-				idtipointernamiento = (int) combobox_tipo_admision.Model.GetValue(iter,1);//Console.WriteLine(idtipointernamiento);
-			}
-		}
-
 		void on_button_contrata_paquete_clicked (object sender, EventArgs args)
 		{
 			Glade.XML gxml = new Glade.XML (null, "registro_admision.glade", "admision", null);
@@ -1587,89 +1528,7 @@ namespace osiris
 			}
 			conexion.Close ();
 		}
-	    
-		// Activa desactiva combobox de aseguradora
-		void onComboBoxChanged_tipopaciente(object sender, EventArgs args)
-		{
-			ComboBox combobox_tipo_paciente = sender as ComboBox;
-			if (sender == null){
-				return;
-			}
-			TreeIter iter;
-			if (combobox_tipo_paciente.GetActiveIter (out iter)){
-				tipopaciente = (string) combobox_tipo_paciente.Model.GetValue(iter,0);
-				id_tipopaciente = (int) combobox_tipo_paciente.Model.GetValue(iter,1);
-				if (id_tipopaciente == 400)  // Aseguradora
-				{
-					boolaseguradora = true;
-					combobox_aseguradora.Sensitive = true;
-				}else{
-					boolaseguradora = false;
-					combobox_aseguradora.Sensitive = false;
-				}
-				if (id_tipopaciente == 102 || id_tipopaciente == 300 || id_tipopaciente == 500 )  // Empresa-Hscmty-Municipio
-				{
-					//if (_tipo_ == "nuevo"){
-					//	this.entry_empresa.Sensitive = true;
-					//}else{
-						this.entry_empresa.Sensitive = false;
-					//}
-				}else{
-					this.entry_empresa.Sensitive = true;
-				}
-			}	
-		}
-	    
-		// Combobox de aseguradoras
-		void onComboBoxChanged_aseguradora (object sender, EventArgs args)
-		{
-			ComboBox comboboxe_aseguradora = sender as ComboBox;
-			if (sender == null){
-				return;
-			}
-			TreeIter iter;
-			if (comboboxe_aseguradora.GetActiveIter (out iter)){
-				nombre_aseguradora = (string) combobox_aseguradora.Model.GetValue(iter,0);
-				idaseguradora = (int) combobox_aseguradora.Model.GetValue(iter,1);	
-			}
-		}
-	    
-		// Combobox de municipios
-		void onComboBoxChanged_municipios (object sender, EventArgs args)
-		{
-			ComboBox combobox_municipios = sender as ComboBox;
-			if (sender == null) {	return; }
-			TreeIter iter;
-			if (combobox_municipios.GetActiveIter (out iter)){
-				municipios = (string) combobox_municipios.Model.GetValue(iter,0);
-				//idmunicipio = (int) combobox_municipios.Model.GetValue(iter,1);
-			}
-		}
-	    
-		// Combobox de los estados del pais
-		void onComboBoxChanged_estado (object sender, EventArgs args)
-		{
-			ComboBox combobox_estado = sender as ComboBox;
-			if (sender == null) { return;	}
-			TreeIter iter;
-			if (combobox_estado.GetActiveIter (out iter)){
-				estado = (string) combobox_estado.Model.GetValue(iter,0); //Console.WriteLine(estado.ToString());
-				idestado = (int) combobox_estado.Model.GetValue(iter,1);
-				llenado_municipios();
-			}
-		}
-	    
-		// Combobox de estado civl
-		void onComboBoxChanged_estadocivil (object sender, EventArgs args)
-		{
-			ComboBox combobox_estado_civil = sender as ComboBox;
-			if (sender == null){	return; }
-			TreeIter iter;
-			if (combobox_estado_civil.GetActiveIter (out iter)){
-				estadocivil = (string) combobox_estado_civil.Model.GetValue(iter,0);
-			}
-		}
-	    
+	    			    
 		// cierra ventanas emergentes
 		void on_cierraventanas_clicked (object sender, EventArgs a)
 		{
@@ -1994,7 +1853,7 @@ namespace osiris
 				comando.CommandText = "SELECT id_tipo_admisiones,folio_de_servicio_dep "+
 							"FROM osiris_erp_movcargos WHERE id_tipo_admisiones = '"+idtipoadmision.ToString()+"'"+
 							" ORDER BY folio_de_servicio_dep DESC LIMIT 1;";
-				Console.WriteLine(comando.CommandText);
+				//Console.WriteLine(comando.CommandText);
 				NpgsqlDataReader lector1 = comando.ExecuteReader ();
 				if ((bool) lector1.Read()){
 					int foliointernodep = (int) lector1["folio_de_servicio_dep"] + 1;
@@ -2018,7 +1877,7 @@ namespace osiris
 								"','"+
 								decirugia+"','"+
 								diagnostico.ToUpper().Trim()+"');";
-					Console.WriteLine(comando.CommandText);	
+					//Console.WriteLine(comando.CommandText);	
 					comando.ExecuteNonQuery();					comando.Dispose();
 				}
 			}catch (NpgsqlException ex){
@@ -2323,66 +2182,10 @@ namespace osiris
 			// Disable Internar a Centro Medico
 			checkbutton_consulta.Sensitive = false;
 			// llenado de comobobox
-			// Tipos de Paciente
-			combobox_tipo_paciente.Clear();
-			CellRendererText cell1 = new CellRendererText();
-			combobox_tipo_paciente.PackStart(cell1, true);
-			combobox_tipo_paciente.AddAttribute(cell1,"text",0);
-	        
-			ListStore store1 = new ListStore( typeof (string),typeof (int));
-			combobox_tipo_paciente.Model = store1;
-			store1.Clear();
-			
-			store1.AppendValues ("",0);
-			
-			NpgsqlConnection conexion; 
-			conexion = new NpgsqlConnection (connectionString+nombrebd);
-			//this.PidPaciente
-			try{
-				conexion.Open ();
-				NpgsqlCommand comando;
-				comando = conexion.CreateCommand ();
-				comando.CommandText = "SELECT * FROM osiris_his_tipo_pacientes ORDER BY descripcion_tipo_paciente;";
-				//Console.WriteLine(comando.CommandText);
-				NpgsqlDataReader lector = comando.ExecuteReader ();
-				while (lector.Read()){
-					store1.AppendValues ((string) lector["descripcion_tipo_paciente"].ToString().ToUpper(),(int) lector["id_tipo_paciente"]);
-				}
-			}catch (NpgsqlException ex){
-	   			MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
-										MessageType.Error, ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
-				msgBoxError.Run ();			msgBoxError.Destroy();
-			}
-			conexion.Close ();
-			
-			TreeIter iter1;
-			if (store1.GetIterFirst(out iter1)){
-				combobox_tipo_paciente.SetActiveIter (iter1);
-			}
-			combobox_tipo_paciente.Changed += new EventHandler (onComboBoxChanged_tipopaciente);  // activa casilla de 
-	        																			  // Aseguradora 
+			llenado_combobox(1,"",combobox_tipo_paciente,"sql","SELECT * FROM osiris_his_tipo_pacientes ORDER BY descripcion_tipo_paciente;",
+			                 "descripcion_tipo_paciente","id_tipo_paciente",args_args,args_id_array);
 			entry_empresa.Sensitive = false;
-			
-			// Tipos de Aseguradoras
-			combobox_aseguradora.Clear();
-			CellRendererText cell2 = new CellRendererText();
-			combobox_aseguradora.PackStart(cell2, true);
-			combobox_aseguradora.AddAttribute(cell2,"text",0);
-	        
-			store_aseguradora = new ListStore( typeof (string), typeof (int) );
-			combobox_aseguradora.Model = store_aseguradora;
-			combobox_aseguradora.Sensitive = false;
-	        
-			// Llenar con tabla de aseguradoras
-			llena_cmbox_aseguradora();
-			//store_aseguradora.AppendValues ("111",1);
-	        
-			TreeIter iter2;
-			if (store_aseguradora.GetIterFirst(out iter2)){
-				combobox_aseguradora.SetActiveIter (iter2);
-			}
-			combobox_aseguradora.Changed += new EventHandler (onComboBoxChanged_aseguradora);
-	        		        
+			        		        
 			// Creacion de Liststore
 			treeViewEngine = new TreeStore(typeof (string),typeof (string),typeof (string), typeof (string), 
 							typeof (string),typeof (string),typeof (string), typeof (string), typeof (string),typeof (string),typeof (bool));

@@ -1985,7 +1985,7 @@ namespace osiris
 				 								DateTime.Now.ToString("yyyy-MM-dd")+"','"+
 	 											LoginEmpleado+"','"+
 	 											idformadepago.ToString()+"','"+
-	 											"false"+"','"+
+	 											"true"+"','"+
 	 											DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"','"+
 	 											"false"+"','"+
 	 											pago_sino.ToString()+"','"+

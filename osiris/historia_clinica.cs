@@ -258,14 +258,28 @@ namespace osiris
 		[Widget] Gtk.ComboBox combobox_mienbrotorax_fza_der = null;
 		[Widget] Gtk.ComboBox combobox_mienbrotorax_fza_izq = null;
 		[Widget] Gtk.Entry entry_mienbrotorax_fza_otros = null;
-		[Widget] Gtk.ComboBox combobox_mienbrotorax_plso_der = null;
-		[Widget] Gtk.ComboBox combobox_mienbrotorax_plso_izq = null;
-		[Widget] Gtk.Entry entry_mienbrotorax_plso_otros = null;
+		[Widget] Gtk.ComboBox combobox_mienbrotorax_pulso_der = null;
+		[Widget] Gtk.ComboBox combobox_mienbrotorax_pulso_izq = null;
+		[Widget] Gtk.Entry entry_mienbrotorax_pulso_otros = null;
 		[Widget] Gtk.Entry entry_mienbrotorax_otros = null;
 		
-		//combobox_miempelv_inte_der = null;
-		//combobox_miempelv_inte_izq = null;
-		//entry_miempelv_inte_otros = null;
+		[Widget] Gtk.ComboBox combobox_miempelv_inte_der = null;
+		[Widget] Gtk.ComboBox combobox_miempelv_inte_izq = null;
+		[Widget] Gtk.Entry entry_miempelv_inte_otros = null;
+		[Widget] Gtk.ComboBox combobox_miempelv_movi_der = null;
+		[Widget] Gtk.ComboBox combobox_miempelv_movi_izq = null;
+		[Widget] Gtk.Entry entry_miempelv_movi_otros = null;
+		[Widget] Gtk.ComboBox combobox_miempelv_rot_der = null;
+		[Widget] Gtk.ComboBox combobox_miempelv_rot_izq = null;
+		[Widget] Gtk.Entry entry_miempelv_rot_otros = null;
+		[Widget] Gtk.ComboBox combobox_miempelv_fuerza_der = null;
+		[Widget] Gtk.ComboBox combobox_miempelv_fuerza_izq = null;
+		[Widget] Gtk.Entry entry_miempelv_fuerza_otros = null;
+		[Widget] Gtk.ComboBox combobox_miempelv_pulso_der = null;
+		[Widget] Gtk.ComboBox combobox_miempelv_pulso_izq = null;
+		[Widget] Gtk.Entry entry_miempelv_pulso_otros = null;
+		[Widget] Gtk.Entry entry_miempelv_otros = null;		
+		
 		[Widget] Gtk.Button button_exportar_xls = null;
 		
 		[Widget] Gtk.Statusbar statusbar5 = null;
@@ -485,8 +499,20 @@ namespace osiris
 			llenado_combobox(1,"NORMAL",combobox_mienbrotorax_rot_izq,args_normal_anormal,args_id_array);
 			llenado_combobox(1,"NORMAL",combobox_mienbrotorax_fza_der,args_normal_anormal,args_id_array);
 			llenado_combobox(1,"NORMAL",combobox_mienbrotorax_fza_izq,args_normal_anormal,args_id_array);
-			llenado_combobox(1,"NORMAL",combobox_mienbrotorax_plso_der,args_normal_anormal,args_id_array);
-			llenado_combobox(1,"NORMAL",combobox_mienbrotorax_plso_izq,args_normal_anormal,args_id_array);
+			llenado_combobox(1,"NORMAL",combobox_mienbrotorax_pulso_der,args_normal_anormal,args_id_array);
+			llenado_combobox(1,"NORMAL",combobox_mienbrotorax_pulso_izq,args_normal_anormal,args_id_array);
+			
+			llenado_combobox(1,"NORMAL",combobox_miempelv_inte_der,args_normal_anormal,args_id_array);
+			llenado_combobox(1,"NORMAL",combobox_miempelv_inte_izq,args_normal_anormal,args_id_array);
+			llenado_combobox(1,"NORMAL",combobox_miempelv_movi_der,args_normal_anormal,args_id_array);
+			llenado_combobox(1,"NORMAL",combobox_miempelv_movi_izq,args_normal_anormal,args_id_array);
+			llenado_combobox(1,"NORMAL",combobox_miempelv_rot_der,args_normal_anormal,args_id_array);
+			llenado_combobox(1,"NORMAL",combobox_miempelv_rot_izq,args_normal_anormal,args_id_array);
+			llenado_combobox(1,"NORMAL",combobox_miempelv_fuerza_der,args_normal_anormal,args_id_array);
+			llenado_combobox(1,"NORMAL",combobox_miempelv_fuerza_izq,args_normal_anormal,args_id_array);
+			llenado_combobox(1,"NORMAL",combobox_miempelv_pulso_der,args_normal_anormal,args_id_array);
+			llenado_combobox(1,"NORMAL",combobox_miempelv_pulso_izq,args_normal_anormal,args_id_array);
+			
 			
 			
 			//SpinButtons Antecedentes Heredo Familiar:

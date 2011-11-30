@@ -89,12 +89,16 @@ namespace osiris
 			if (tipocomprobante == "CAJA"){			
 				sql_numerocomprobante = "AND osiris_erp_abonos.numero_recibo_caja = '"+numero_comprobante.ToString().Trim()+"' ";
 			}
+			if (tipocomprobante == "ABONOS"){
+				sql_numerocomprobante = "AND osiris_erp_abonos.numero_recibo_caja = '"+numero_comprobante.ToString().Trim()+"' ";
+			}
 			if (tipocomprobante == "SERVICIO"){			
 				sql_numerocomprobante = "AND osiris_erp_comprobante_servicio.numero_comprobante_servicio = '"+numero_comprobante.ToString().Trim()+"' ";
 			}
 			if (tipocomprobante == "PAGARE"){
 				sql_numerocomprobante = "AND osiris_erp_comprobante_pagare.numero_comprobante_pagare = '"+numero_comprobante.ToString().Trim()+"' ";
 			}
+			
 			sql_foliodeservicio = "AND osiris_erp_cobros_deta.folio_de_servicio = '"+folioservicio_.ToString()+"' ";
 			print = new PrintOperation ();
 			print.JobName = "IMPRIME COMPROBANTE DE "+tipocomprobante;
@@ -145,14 +149,21 @@ namespace osiris
 	        	Console.WriteLine(comando.CommandText);
 				NpgsqlDataReader lector = comando.ExecuteReader();
 				if (lector.Read()){
-					if (tipocomprobante == "CAJA"){
+					switch (tipocomprobante){	
+					case "CAJA":
 						toma_valor_total = float.Parse((string) lector["montodelabono"]);
 						titulo_comprobante = tipocomprobante+"_"+ (string) lector["descripcion_tipo_comprobante"];
-					}else{
-						if (tipocomprobante == "PAGARE"){
-							toma_valor_total = float.Parse((string) lector["montodelabono"]);
-						}
+						break;
+					case "PAGARE":
+						toma_valor_total = float.Parse((string) lector["montodelabono"]);
 						titulo_comprobante = tipocomprobante;
+						break;
+					case "SERVICO":
+						titulo_comprobante = tipocomprobante;
+						break;
+					case "ABONO":
+						titulo_comprobante = tipocomprobante;
+						break;
 					}
 					toma_tipoadmisiones = (int) lector["idadmisiones"];
 					toma_grupoproducto = (int) lector["id_grupo_producto"];
@@ -281,8 +292,7 @@ namespace osiris
 				cr.MoveTo(400*escala_en_linux_windows,comienzo_linea+(separacion_linea*22)*escala_en_linux_windows);		layout.SetText("T O T A L : "+tomavalortotal.ToString("C"));	Pango.CairoHelper.ShowLayout (cr, layout);		
 			}
 			
-			if (tipocomprobante == "PAGARE"){
-				
+			if (tipocomprobante == "PAGARE"){				
 				fontSize = 7.0;		
 				desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;
 				layout.FontDescription.Weight = Weight.Normal;

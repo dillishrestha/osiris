@@ -200,8 +200,7 @@ namespace osiris
 		
 		[Widget] Gtk.ComboBox combobox_parent_responsable = null;
 		
-		[Widget] Gtk.ComboBox combobox_paquete_check_up = null;
-		
+		[Widget] Gtk.ComboBox combobox_paquete_check_up = null;		
 		
 		// Cambio para VENEZUELA
 		[Widget] Gtk.Label label37 = null;
@@ -435,12 +434,14 @@ namespace osiris
 			if (checkbutton_checkup.Active == true){				
 				if(idempresa_paciente > 0 ){
 					combobox_paquete_check_up.Sensitive = true;
-					
+					button_admision.Sensitive = false;
+					llenado_combobox(0,"",combobox_paquete_check_up,"sql","SELECT * FROM osiris_his_tipo_cirugias WHERE paquete_checkup = 'true';","descripcion_cirugia","id_tipo_cirugia",args_args,args_id_array);
 					
 					
 				}
 			}else{
 				combobox_paquete_check_up.Sensitive = false;
+				button_admision.Sensitive = true;
 			}
 		}
 		
@@ -538,6 +539,8 @@ namespace osiris
 					tipointernamiento = (string) combobox_tipo_admision.Model.GetValue(iter,0);//Console.WriteLine(tipointernamiento);
 					idtipointernamiento = (int) combobox_tipo_admision.Model.GetValue(iter,1);//Console.WriteLine(idtipointernamiento);
 					break;
+				case "combobox_paquete_check_up":
+					break;	
 				}
 			}
 		}
@@ -894,8 +897,7 @@ namespace osiris
 			TreeIter iter;
 			if (store3.GetIterFirst(out iter)){
 				combobox_tipo_cirugia.SetActiveIter (iter);
-			}
-			
+			}			
 			combobox_tipo_cirugia.Changed += new EventHandler (onComboBoxChanged_combobox_tipo_cirugia);
 		}
 		
@@ -930,8 +932,7 @@ namespace osiris
 												typeof(bool),typeof(bool),typeof(bool),typeof(bool),typeof(bool),typeof(bool),
 												typeof(bool),typeof(bool),typeof(bool),typeof(bool),typeof(bool),typeof(bool),typeof(bool));
 			lista_de_medicos.Model = treeViewEngineMedicos;
-			lista_de_medicos.RulesHint = true;
-		
+			lista_de_medicos.RulesHint = true;		
 			lista_de_medicos.RowActivated += on_selecciona_medico_clicked;  // Doble click selecciono paciente
 			
 			TreeViewColumn col_idmedico = new TreeViewColumn();
@@ -2130,6 +2131,7 @@ namespace osiris
 					entry_pid_paciente.Text = PidPaciente.ToString();
 					entry_observacion_ingreso.Sensitive = true;
 					
+					checkbutton_checkup.Clicked += new EventHandler(on_checkbutton_checkup_clicked);
 					// Cambio para VENEZUELA
 					//label37.Text = "RIF";			// RFC
 					//label43.Text = "C.I.";		// CURP					

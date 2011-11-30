@@ -12369,7 +12369,7 @@ Fisica IPAS</property>
                                                             </packing>
                                                             </child>
                                                             <child>
-                                                            <widget class="GtkComboBox" id="combobox_mienbrotorax_plso_der">
+                                                            <widget class="GtkComboBox" id="combobox_mienbrotorax_pulso_der">
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">False</property>
                                                             </widget>
@@ -12392,7 +12392,7 @@ Fisica IPAS</property>
                                                             </packing>
                                                             </child>
                                                             <child>
-                                                            <widget class="GtkComboBox" id="combobox_mienbrotorax_plso_izq">
+                                                            <widget class="GtkComboBox" id="combobox_mienbrotorax_pulso_izq">
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">False</property>
                                                             </widget>
@@ -12657,7 +12657,7 @@ Fisica IPAS</property>
                                                             </packing>
                                                             </child>
                                                             <child>
-                                                            <widget class="GtkComboBox" id="combobox60">
+                                                            <widget class="GtkComboBox" id="combobox_miempelv_movi_der">
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">False</property>
                                                             </widget>
@@ -12680,7 +12680,7 @@ Fisica IPAS</property>
                                                             </packing>
                                                             </child>
                                                             <child>
-                                                            <widget class="GtkComboBox" id="combobox2">
+                                                            <widget class="GtkComboBox" id="combobox_miempelv_movi_izq">
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">False</property>
                                                             </widget>
@@ -12691,7 +12691,7 @@ Fisica IPAS</property>
                                                             </packing>
                                                             </child>
                                                             <child>
-                                                            <widget class="GtkEntry" id="entry87">
+                                                            <widget class="GtkEntry" id="entry_miempelv_movi_otros">
                                                             <property name="width_request">50</property>
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">True</property>
@@ -12744,7 +12744,7 @@ Fisica IPAS</property>
                                                             </packing>
                                                             </child>
                                                             <child>
-                                                            <widget class="GtkComboBox" id="combobox61">
+                                                            <widget class="GtkComboBox" id="combobox_miempelv_rot_der">
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">False</property>
                                                             </widget>
@@ -12767,7 +12767,7 @@ Fisica IPAS</property>
                                                             </packing>
                                                             </child>
                                                             <child>
-                                                            <widget class="GtkComboBox" id="combobox3">
+                                                            <widget class="GtkComboBox" id="combobox_miempelv_rot_izq">
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">False</property>
                                                             </widget>
@@ -12778,7 +12778,7 @@ Fisica IPAS</property>
                                                             </packing>
                                                             </child>
                                                             <child>
-                                                            <widget class="GtkEntry" id="entry88">
+                                                            <widget class="GtkEntry" id="entry_miempelv_rot_otros">
                                                             <property name="width_request">50</property>
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">True</property>
@@ -12831,7 +12831,7 @@ Fisica IPAS</property>
                                                             </packing>
                                                             </child>
                                                             <child>
-                                                            <widget class="GtkComboBox" id="combobox62">
+                                                            <widget class="GtkComboBox" id="combobox_miempelv_fuerza_der">
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">False</property>
                                                             </widget>
@@ -12854,7 +12854,7 @@ Fisica IPAS</property>
                                                             </packing>
                                                             </child>
                                                             <child>
-                                                            <widget class="GtkComboBox" id="combobox4">
+                                                            <widget class="GtkComboBox" id="combobox_miempelv_fuerza_izq">
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">False</property>
                                                             </widget>
@@ -12865,7 +12865,7 @@ Fisica IPAS</property>
                                                             </packing>
                                                             </child>
                                                             <child>
-                                                            <widget class="GtkEntry" id="entry89">
+                                                            <widget class="GtkEntry" id="entry_miempelv_fuerza_otros">
                                                             <property name="width_request">50</property>
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">True</property>
@@ -12919,7 +12919,7 @@ Fisica IPAS</property>
                                                             </packing>
                                                             </child>
                                                             <child>
-                                                            <widget class="GtkComboBox" id="combobox63">
+                                                            <widget class="GtkComboBox" id="combobox_miempelv_pulso_der">
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">False</property>
                                                             </widget>
@@ -12930,7 +12930,7 @@ Fisica IPAS</property>
                                                             </packing>
                                                             </child>
                                                             <child>
-                                                            <widget class="GtkLabel" id="label211">
+                                                            <widget class="GtkLabel" id="label214">
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">False</property>
                                                             <property name="label" translatable="yes">Izq.</property>
@@ -12942,7 +12942,7 @@ Fisica IPAS</property>
                                                             </packing>
                                                             </child>
                                                             <child>
-                                                            <widget class="GtkComboBox" id="combobox5">
+                                                            <widget class="GtkComboBox" id="combobox_miempelv_pulso_izq">
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">False</property>
                                                             </widget>
@@ -12953,7 +12953,7 @@ Fisica IPAS</property>
                                                             </packing>
                                                             </child>
                                                             <child>
-                                                            <widget class="GtkEntry" id="entry90">
+                                                            <widget class="GtkEntry" id="entry_miempelv_pulso_otros">
                                                             <property name="width_request">50</property>
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">True</property>
@@ -12994,7 +12994,7 @@ Fisica IPAS</property>
                                                             </packing>
                                                             </child>
                                                             <child>
-                                                            <widget class="GtkEntry" id="entry91">
+                                                            <widget class="GtkEntry" id="entry_miempelv_otros">
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">True</property>
                                                             <property name="invisible_char">●</property>

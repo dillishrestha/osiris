@@ -43,17 +43,27 @@ namespace osiris
 		[Widget] Gtk.Entry entry_expresion = null;
 		[Widget] Gtk.Button button_selecciona = null;
 		
+		//Declaracion de ventana de busqueda de productos
+		[Widget] Gtk.Window busca_producto = null;
+		[Widget] Gtk.TreeView lista_de_producto = null;
+		[Widget] Gtk.RadioButton radiobutton_nombre = null;
+		[Widget] Gtk.RadioButton radiobutton_codigo = null;
+		
 		// Declarando ventana para ver productos enviados a los sub-almacenes
-		[Widget] Gtk.Window mov_productos;
-		//Fechas:
-	    [Widget] Gtk.Entry entry_dia1;                     
-	    [Widget] Gtk.Entry entry_mes1;
-	    [Widget] Gtk.Entry entry_ano1;
-	    [Widget] Gtk.Entry entry_dia2;
-	    [Widget] Gtk.Entry entry_mes2;
-	    [Widget] Gtk.Entry entry_ano2;
-		// Combobox:
-		[Widget] Gtk.ComboBox combobox_departamentos;
+		[Widget] Gtk.Window mov_productos = null;
+		[Widget] Gtk.Entry entry_descrip_producto = null;
+	    [Widget] Gtk.Entry entry_dia1 = null;                     
+	    [Widget] Gtk.Entry entry_mes1 = null;
+	    [Widget] Gtk.Entry entry_ano1 = null;
+	    [Widget] Gtk.Entry entry_dia2 = null;
+	    [Widget] Gtk.Entry entry_mes2 = null;
+	    [Widget] Gtk.Entry entry_ano2 = null;
+		[Widget]Gtk.CheckButton checkbutton_todos_productos = null;
+		[Widget]Gtk.CheckButton checkbutton_todos_departamentos = null;
+		[Widget] Gtk.ComboBox combobox_departamentos = null;
+		[Widget] Gtk.Button button_busca_producto = null;
+		[Widget] Gtk.TreeView lista_producto_seleccionados = null;
+		[Widget] Gtk.TreeView lista_resumen_productos = null;
 		
 		string connectionString;						
 		string nombrebd;
@@ -62,11 +72,19 @@ namespace osiris
     	string AppEmpleado;
     	string ApmEmpleado;
 		
+		string[] args_args = {""};
+		int[] args_id_array = {0,1,2,3,4,5,6,7,8};
+		
+		TreeStore treeViewEngineBusca2;	// Para la busqueda de Productos
+		TreeStore treeViewEngineSelec;	// Lista de Productos seleccionados
+		TreeStore treeViewEngineResumen;	// Lista de Productos seleccionados
+		
 		//Declaracion de ventana de error:
 		protected Gtk.Window MyWinError;
 		protected Gtk.Window MyWin;
 		
 		class_conexion conexion_a_DB = new class_conexion();
+		class_public classpublic = new class_public();
 		
 		public envios_a_subalmacenes (string LoginEmp_, string NomEmpleado_, string AppEmpleado_, string ApmEmpleado_, string nombrebd_ )
 		{
@@ -75,75 +93,501 @@ namespace osiris
     		AppEmpleado = AppEmpleado_;
     		ApmEmpleado = ApmEmpleado_;
     		connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
-			nombrebd_ = conexion_a_DB._nombrebd;	
+			nombrebd = conexion_a_DB._nombrebd;	
     		
 			Glade.XML gxml = new Glade.XML (null, "costos.glade", "mov_productos", null);
 			gxml.Autoconnect (this);
 	        // Muestra ventana de Glade:
 			mov_productos.Show();
+			mov_productos.Title = "Movimientos de Productos Enviados a los Sub-Almacenes";
 			entry_dia1.Text = DateTime.Now.ToString("dd");
 			entry_mes1.Text = DateTime.Now.ToString("MM");
 			entry_ano1.Text = DateTime.Now.ToString("yyyy");				
 			entry_dia2.Text = DateTime.Now.ToString("dd");
 			entry_mes2.Text = DateTime.Now.ToString("MM");
 			entry_ano2.Text = DateTime.Now.ToString("yyyy");
+			entry_descrip_producto.IsEditable = false;
+			crea_treeview_selec();
+			crea_treeview_resumen();
 			
 			//  Sale de la ventana:
 			button_salir.Clicked += new EventHandler(on_cierraventanas_clicked);
+			button_busca_producto.Clicked += new EventHandler(on_button_busca_producto_clicked);
+			checkbutton_todos_departamentos.Clicked += new EventHandler(on_checkbutton_todos_departamentos_clicked);
+			checkbutton_todos_productos.Clicked += new EventHandler(on_checkbutton_todos_productos_clicked);
 			
-			llenado_combobox_subalmacenes();
+			llenado_combobox(1,"",combobox_departamentos,"sql","SELECT * FROM osiris_almacenes WHERE activo = 'true' ORDER BY descripcion_almacen;","descripcion_almacen","id_almacen",args_args,args_id_array);
+
 		}
 		
-		void llenado_combobox_subalmacenes()
+		void on_checkbutton_todos_departamentos_clicked (object sender, EventArgs args)
+		{   
+			if (checkbutton_todos_departamentos.Active == true){
+				combobox_departamentos.Sensitive = false;
+		    	//query_departamento = "  "; //
+		    }else{
+				combobox_departamentos.Sensitive = true;
+				//query_departamento = "AND osiris_erp_cobros_deta.id_tipo_admisiones = '"+id_tipo_admisiones.ToString()+"' ";	
+			}
+		}
+		
+		void on_checkbutton_todos_productos_clicked (object sender, EventArgs args)
+		{ 	
+			if ( checkbutton_todos_productos.Active == true ){
+				button_busca_producto.Sensitive = false;
+				entry_descrip_producto.Sensitive = false;
+			}else{
+				button_busca_producto.Sensitive = true;
+				entry_descrip_producto.Sensitive = true;
+			}
+		}
+		
+		void llenado_combobox(int tipodellenado,string descrip_defaul,object obj,string sql_or_array,string query_SQL,string name_field_desc,string name_field_id,string[] args_array,int[] args_id_array)
+		{			
+			Gtk.ComboBox combobox_llenado = (Gtk.ComboBox) obj;
+			//Gtk.ComboBox combobox_pos_neg = obj as Gtk.ComboBox;
+			combobox_llenado.Clear();
+			CellRendererText cell = new CellRendererText();
+			combobox_llenado.PackStart(cell, true);
+			combobox_llenado.AddAttribute(cell,"text",0);	        
+			ListStore store = new ListStore( typeof (string),typeof (int));
+			combobox_llenado.Model = store;			
+			if ((int) tipodellenado == 1){
+				store.AppendValues ((string) descrip_defaul,0);
+			}			
+			if(sql_or_array == "array"){			
+				for (int colum_field = 0; colum_field < args_array.Length; colum_field++){
+					store.AppendValues (args_array[colum_field],args_id_array[colum_field]);
+				}
+			}
+			if(sql_or_array == "sql"){			
+				NpgsqlConnection conexion; 
+				conexion = new NpgsqlConnection (connectionString+nombrebd);
+	            // Verifica que la base de datos este conectada
+				try{
+					conexion.Open ();
+					NpgsqlCommand comando; 
+					comando = conexion.CreateCommand ();
+	               	comando.CommandText = query_SQL;					
+					NpgsqlDataReader lector = comando.ExecuteReader ();
+	               	while (lector.Read()){
+						store.AppendValues ((string) lector[ name_field_desc ], (int) lector[ name_field_id]);
+					}
+				}catch (NpgsqlException ex){
+					MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+											MessageType.Error,ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
+					msgBoxError.Run ();				msgBoxError.Destroy();
+				}
+				conexion.Close ();
+			}			
+			TreeIter iter;
+			if (store.GetIterFirst(out iter)){
+				combobox_llenado.SetActiveIter (iter);
+			}
+			combobox_llenado.Changed += new EventHandler (onComboBoxChanged_llenado);			
+		}
+		
+		void onComboBoxChanged_llenado (object sender, EventArgs args)
 		{
-			// Llenado de combobox con los tipos de departamentos:
-			combobox_departamentos.Clear();
-			CellRendererText cell1 = new CellRendererText();
-			combobox_departamentos.PackStart(cell1, true);
-			combobox_departamentos.AddAttribute(cell1,"text",0);
+			ComboBox onComboBoxChanged = sender as ComboBox;
+			if (sender == null){	return; }
+			TreeIter iter;
+			if (onComboBoxChanged.GetActiveIter (out iter)){
+				switch (onComboBoxChanged.Name.ToString()){	
+				case "combobox_departamentos":
+					break;
+				}
+			}
+		}
+		
+		/////LISTA_PRODUCTO_SELECCIONADOS/////
+		void crea_treeview_selec()
+		{
+			treeViewEngineSelec = new TreeStore(typeof(string), 
+												typeof(string));
+												
+			lista_producto_seleccionados.Model = treeViewEngineSelec;
 			
-			ListStore store1 = new ListStore( typeof (string), typeof (int));
-			combobox_departamentos.Model = store1;
-			this.combobox_departamentos.Changed += new EventHandler (onComboBoxChanged_departamentos);
-	        
-	      	NpgsqlConnection conexion; 
+			lista_producto_seleccionados.RulesHint = true;
+			
+			TreeViewColumn col_codigo_prod = new TreeViewColumn();
+			CellRendererText cellr0 = new CellRendererText();
+			col_codigo_prod.Title = "Codigo Prod."; // titulo de la cabecera de la columna, si está visible
+			col_codigo_prod.PackStart(cellr0, true);
+			col_codigo_prod.AddAttribute (cellr0, "text", 0);
+
+			TreeViewColumn col_descripcion = new TreeViewColumn();
+			CellRendererText cellr1 = new CellRendererText();
+			col_descripcion.Title = "Descripcion de Producto"; // titulo de la cabecera de la columna, si está visible
+			col_descripcion.PackStart(cellr1, true);
+			col_descripcion.AddAttribute (cellr1, "text", 1);
+			
+			lista_producto_seleccionados.AppendColumn(col_codigo_prod);
+			lista_producto_seleccionados.AppendColumn(col_descripcion);
+		}
+		
+		enum Column
+		{
+			col_codigo_prod,
+			col_descripcion,
+		}
+		
+		//LISTA_RESUMEN_PRODUCTOS///   
+		void crea_treeview_resumen()
+		{
+			treeViewEngineResumen = new TreeStore(typeof(string), 
+												  typeof(string),
+												  typeof(string),
+												  typeof(string),
+												  typeof(string),
+												  typeof(string),
+												  typeof(string),
+												  typeof(string),
+												  typeof(string));
+												
+	        lista_resumen_productos.Model = treeViewEngineResumen;
+		
+		    lista_resumen_productos.RulesHint = true;
+		       
+            TreeViewColumn col_cantidad = new TreeViewColumn();
+			CellRendererText cellr0 = new CellRendererText();
+			col_cantidad.Title = "Cantidad Aplicada"; // titulo de la cabecera de la columna, si está visible
+			col_cantidad.PackStart(cellr0, true);
+			col_cantidad.AddAttribute (cellr0, "text", 0);
+			col_cantidad.SortColumnId = (int) Column_resumen.col_cantidad;
+            
+            TreeViewColumn col_id_producto = new TreeViewColumn();
+			CellRendererText cellr1 = new CellRendererText();
+			col_id_producto.Title = "ID Producto."; // titulo de la cabecera de la columna, si está visible
+			col_id_producto.PackStart(cellr1, true);
+			col_id_producto.AddAttribute (cellr1, "text", 1);
+			col_id_producto.SortColumnId = (int) Column_resumen.col_id_producto;
+			
+			TreeViewColumn col_descripcion = new TreeViewColumn();
+			CellRendererText cellr2 = new CellRendererText();
+			col_descripcion.Title = "Descripcion de Producto"; // titulo de la cabecera de la columna, si está visible
+			col_descripcion.PackStart(cellr2, true);
+			col_descripcion.AddAttribute (cellr2, "text", 2);
+			col_descripcion.SortColumnId = (int) Column_resumen.col_descripcion;
+			
+			TreeViewColumn col_folio_de_servicio = new TreeViewColumn();
+			CellRendererText cellr3 = new CellRendererText();
+			col_folio_de_servicio.Title = "Num.Atencion"; // titulo de la cabecera de la columna, si está visible
+			col_folio_de_servicio.PackStart(cellr3, true);
+			col_folio_de_servicio.AddAttribute (cellr3, "text", 3);
+			col_folio_de_servicio.SortColumnId = (int) Column_resumen. col_folio_de_servicio;
+			
+			TreeViewColumn col_pid_paciente = new TreeViewColumn();
+			CellRendererText cellr4 = new CellRendererText();
+			col_pid_paciente.Title = "PID Paciente"; // titulo de la cabecera de la columna, si está visible
+			col_pid_paciente.PackStart(cellr4, true);
+			col_pid_paciente.AddAttribute (cellr4, "text", 4);
+			col_pid_paciente.SortColumnId = (int) Column_resumen. col_pid_paciente;
+			
+			TreeViewColumn col_nombre_paciente = new TreeViewColumn();
+			CellRendererText cellr5 = new CellRendererText();
+			col_nombre_paciente.Title = "Nombre Paciente"; // titulo de la cabecera de la columna, si está visible
+			col_nombre_paciente.PackStart(cellr5, true);
+			col_nombre_paciente.AddAttribute (cellr5, "text", 5);
+			col_nombre_paciente.SortColumnId = (int) Column_resumen. col_nombre_paciente;
+			
+			TreeViewColumn col_id_departamento = new TreeViewColumn();
+			CellRendererText cellr6 = new CellRendererText();
+			col_id_departamento.Title = "id Departamento"; // titulo de la cabecera de la columna, si está visible
+			col_id_departamento.PackStart(cellr6, true);
+			col_id_departamento.AddAttribute (cellr6, "text", 6);
+			col_id_departamento.SortColumnId = (int) Column_resumen.col_id_departamento;
+			
+			TreeViewColumn col_departamento = new TreeViewColumn();
+			CellRendererText cellr7 = new CellRendererText();
+			col_departamento.Title = "Departamento"; // titulo de la cabecera de la columna, si está visible
+			col_departamento.PackStart(cellr7, true);
+			col_departamento.AddAttribute (cellr7, "text", 7);
+			col_departamento.SortColumnId = (int) Column_resumen.col_departamento;
+			
+			TreeViewColumn col_fecha_cargo = new TreeViewColumn();
+			CellRendererText cellr8 = new CellRendererText();
+			col_fecha_cargo.Title = "Fecha de Cargo"; // titulo de la cabecera de la columna, si está visible
+			col_fecha_cargo.PackStart(cellr8, true);
+			col_fecha_cargo.AddAttribute (cellr8, "text", 8);
+			col_fecha_cargo.SortColumnId = (int) Column_resumen.col_fecha_cargo;
+			
+			lista_resumen_productos.AppendColumn(col_cantidad);
+		    lista_resumen_productos.AppendColumn(col_id_producto);
+            lista_resumen_productos.AppendColumn(col_descripcion);
+            lista_resumen_productos.AppendColumn(col_folio_de_servicio); //num atencion
+            lista_resumen_productos.AppendColumn(col_pid_paciente);
+            lista_resumen_productos.AppendColumn(col_nombre_paciente);
+            lista_resumen_productos.AppendColumn(col_id_departamento); //(id_tipo_admision);       
+            lista_resumen_productos.AppendColumn(col_departamento);   // (descripcion_admision)
+            lista_resumen_productos.AppendColumn(col_fecha_cargo);
+		}
+		
+		//  lista_de_resumen:
+		enum Column_resumen
+		{        
+			col_cantidad, //
+		    col_id_producto,
+            col_descripcion,
+            col_folio_de_servicio, //num atencion
+            col_pid_paciente,
+            col_nombre_paciente,
+            col_id_departamento, //(tipo_admision),
+            col_departamento,   //descripcion-admicion
+            col_fecha_cargo
+		}
+		
+		////////////////////////////////////////VENTANA BUSQUEDA DE PRODUCTOS/////////////////////////////////////////////////	
+		void on_button_busca_producto_clicked (object sender, EventArgs args)
+		{
+			Glade.XML gxml = new Glade.XML (null, "costos.glade", "busca_producto", null);
+			gxml.Autoconnect (this);
+			crea_treeview_busqueda("producto");
+			button_buscar_busqueda.Clicked += new EventHandler(on_llena_lista_producto_clicked);
+			entry_expresion.KeyPressEvent += onKeyPressEvent_enterbucar_busqueda;
+			button_selecciona.Clicked += new EventHandler(on_selecciona_producto_clicked);
+								
+			button_salir.Clicked += new EventHandler(on_cierraventanas_clicked); // esta sub-clase esta la final de la classe
+		}
+		
+		/////////BUSQUEDA DE PRODUCTOS(lista_de_producto)///////////////////
+		void crea_treeview_busqueda(string tipo_busqueda)
+		{ 
+			if (tipo_busqueda == "producto"){
+				treeViewEngineBusca2 = new TreeStore(typeof(string),
+														 typeof(string),
+														 typeof(string),
+														 typeof(string),
+														 typeof(string),
+														 typeof(string),
+														 typeof(string),
+														 typeof(string),
+														 typeof(string),
+														 typeof(string),
+														 typeof(string),
+														 typeof(string),
+														 typeof(string),
+														 typeof(string));
+						
+				lista_de_producto.Model = treeViewEngineBusca2;
+				
+				lista_de_producto.RulesHint = true;
+				
+				lista_de_producto.RowActivated += on_selecciona_producto_clicked;  // Doble click selecciono paciente*/
+					
+				TreeViewColumn col_idproducto = new TreeViewColumn();
+				CellRendererText cellr0 = new CellRendererText();
+				col_idproducto.Title = "ID Producto"; // titulo de la cabecera de la columna, si está visible
+				col_idproducto.PackStart(cellr0, true);
+				col_idproducto.AddAttribute (cellr0, "text", 0);    // la siguiente columna será 1 en vez de 1
+				col_idproducto.SortColumnId = (int) Column_prod.col_idproducto;
+			
+				TreeViewColumn col_desc_producto = new TreeViewColumn();
+				CellRendererText cellr1 = new CellRendererText();
+				col_desc_producto.Title = "Descripcion de Producto"; // titulo de la cabecera de la columna, si está visible
+				col_desc_producto.PackStart(cellr1, true);
+				col_desc_producto.AddAttribute (cellr1, "text", 1);    // la siguiente columna será 1 en vez de 1
+				col_desc_producto.SortColumnId = (int) Column_prod.col_desc_producto;
+				//cellr0.Editable = true;   // Permite edita este campo
+	       
+				TreeViewColumn col_precioprod = new TreeViewColumn();
+				CellRendererText cellrt2 = new CellRendererText();
+				col_precioprod.Title = "Precio Producto";
+				col_precioprod.PackStart(cellrt2, true);
+				col_precioprod.AddAttribute (cellrt2, "text", 2); // la siguiente columna será 1 en vez de 2
+				col_precioprod.SortColumnId = (int) Column_prod.col_precioprod;
+	       
+				TreeViewColumn col_ivaprod = new TreeViewColumn();
+				CellRendererText cellrt3 = new CellRendererText();
+				col_ivaprod.Title = "I.V.A.";
+				col_ivaprod.PackStart(cellrt3, true);
+				col_ivaprod.AddAttribute (cellrt3, "text", 3); // la siguiente columna será 2 en vez de 3
+				col_ivaprod.SortColumnId = (int) Column_prod.col_ivaprod;
+	       
+				TreeViewColumn col_totalprod = new TreeViewColumn();
+				CellRendererText cellrt4 = new CellRendererText();
+				col_totalprod.Title = "Total";
+				col_totalprod.PackStart(cellrt4, true);
+				col_totalprod.AddAttribute (cellrt4, "text", 4); // la siguiente columna será 3 en vez de 4
+				col_totalprod.SortColumnId = (int) Column_prod.col_totalprod;
+	       
+				TreeViewColumn col_descuentoprod = new TreeViewColumn();
+				CellRendererText cellrt5 = new CellRendererText();
+				col_descuentoprod.Title = "% Descuento";
+				col_descuentoprod.PackStart(cellrt5, true);
+				col_descuentoprod.AddAttribute (cellrt5, "text", 5); // la siguiente columna será 5 en vez de 6
+				col_descuentoprod.SortColumnId = (int) Column_prod.col_descuentoprod;
+	 
+				TreeViewColumn col_preciocondesc = new TreeViewColumn();
+				CellRendererText cellrt6 = new CellRendererText();
+				col_preciocondesc.Title = "$Descuento sin IVA";
+				col_preciocondesc.PackStart(cellrt6, true);
+				col_preciocondesc.AddAttribute (cellrt6, "text", 6);     // la siguiente columna será 6 en vez de 7
+				col_preciocondesc.SortColumnId = (int) Column_prod.col_preciocondesc;
+	       
+				TreeViewColumn col_grupoprod = new TreeViewColumn();
+				CellRendererText cellrt7 = new CellRendererText();
+				col_grupoprod.Title = "Grupo Producto";
+				col_grupoprod.PackStart(cellrt7, true);
+				col_grupoprod.AddAttribute (cellrt7, "text", 7); // la siguiente columna será 7 en vez de 8
+				col_grupoprod.SortColumnId = (int) Column_prod.col_grupoprod;
+	       
+				TreeViewColumn col_grupo1prod = new TreeViewColumn();
+				CellRendererText cellrt8 = new CellRendererText();
+				col_grupo1prod.Title = "Grupo1 Producto";
+				col_grupo1prod.PackStart(cellrt8, true);
+				col_grupo1prod.AddAttribute (cellrt8, "text", 8); // la siguiente columna será 8 en vez de 9
+				col_grupo1prod.SortColumnId = (int) Column_prod.col_grupo1prod;
+	                   
+				TreeViewColumn col_grupo2prod = new TreeViewColumn();
+				CellRendererText cellrt9 = new CellRendererText();
+				col_grupo2prod.Title = "Grupo2 Producto";
+				col_grupo2prod.PackStart(cellrt9, true);
+				col_grupo2prod.AddAttribute (cellrt9, "text", 9); // la siguiente columna será 8 en vez de 9
+				col_grupo2prod.SortColumnId = (int) Column_prod.col_grupo2prod;
+
+				lista_de_producto.AppendColumn(col_idproducto);  // 0
+				lista_de_producto.AppendColumn(col_desc_producto); // 1
+				lista_de_producto.AppendColumn(col_precioprod);	//2
+				lista_de_producto.AppendColumn(col_ivaprod);	// 3
+				lista_de_producto.AppendColumn(col_totalprod); // 4
+				lista_de_producto.AppendColumn(col_descuentoprod); //5
+				lista_de_producto.AppendColumn(col_preciocondesc); // 6
+				lista_de_producto.AppendColumn(col_grupoprod);	//7
+				lista_de_producto.AppendColumn(col_grupo1prod);	//8
+				lista_de_producto.AppendColumn(col_grupo2prod);	//9
+			}
+		}
+		
+		//  lista_de_productos:
+		enum Column_prod
+		{
+			col_idproducto,
+			col_desc_producto,
+			col_precioprod,
+			col_ivaprod,
+			col_totalprod,
+			col_descuentoprod,
+			col_preciocondesc,
+			col_grupoprod,
+			col_grupo1prod,
+			col_grupo2prod
+		}
+		
+		////////// llena la lista de productos//////////////////////////////
+	 	void on_llena_lista_producto_clicked (object sender, EventArgs args)
+	 	{       
+	 		llenando_lista_de_productos();
+	 	}
+	 		
+	 	void llenando_lista_de_productos()
+	 	{
+			treeViewEngineBusca2.Clear(); // Limpia el treeview cuando realiza una nueva busqueda
+			NpgsqlConnection conexion; 
 			conexion = new NpgsqlConnection (connectionString+nombrebd);
-            // Verifica que la base de datos este conectada:
-            try{
-				conexion.Open ();   
+			//Verifica que la base de datos este conectada
+			string query_tipo_busqueda = "";			
+			if(radiobutton_nombre.Active == true) {
+				query_tipo_busqueda = "AND osiris_productos.descripcion_producto LIKE '%"+entry_expresion.Text.ToUpper().Trim()+"%' ORDER BY descripcion_producto; ";
+			}			
+			if(radiobutton_codigo.Active == true){
+				query_tipo_busqueda = "AND osiris_productos.id_producto LIKE '"+entry_expresion.Text.Trim()+"%'  ORDER BY id_producto; ";
+			}	           
+			try{
+				conexion.Open ();
 				NpgsqlCommand comando; 
 				comando = conexion.CreateCommand ();
-		        comando.CommandText = "SELECT * FROM osiris_his_tipo_admisiones "+
-		               						"WHERE cuenta_mayor = 4000 "+
-		               						"ORDER BY descripcion_admisiones;";
-						
+				comando.CommandText = "SELECT to_char(osiris_productos.id_producto,'999999999999') AS codProducto,"+
+									"osiris_productos.descripcion_producto,to_char(precio_producto_publico,'99999999.99') AS preciopublico,"+
+									"to_char(precio_producto_publico1,'99999999.99') AS preciopublico1,"+
+									"aplicar_iva,to_char(porcentage_descuento,'999.99') AS porcentagesdesc,aplica_descuento,"+
+									"descripcion_grupo_producto,descripcion_grupo1_producto,descripcion_grupo2_producto,to_char(costo_por_unidad,'999999999.99') AS costoproductounitario, "+
+									"to_char(porcentage_ganancia,'99999.99') AS porcentageutilidad,to_char(costo_producto,'999999999.99') AS costoproducto, "+
+									"osiris_grupo_producto.agrupacion "+
+									"FROM osiris_productos,osiris_grupo_producto,osiris_grupo1_producto,osiris_grupo2_producto "+
+									"WHERE osiris_productos.id_grupo_producto = osiris_grupo_producto.id_grupo_producto "+
+									"AND osiris_productos.id_grupo1_producto = osiris_grupo1_producto.id_grupo1_producto "+
+									"AND osiris_productos.id_grupo2_producto = osiris_grupo2_producto.id_grupo2_producto "+
+									"AND cobro_activo = 'true' "+
+						            query_tipo_busqueda;
 				NpgsqlDataReader lector = comando.ExecuteReader ();
-				store1.AppendValues ("", 0);
-		        while (lector.Read()){
-					store1.AppendValues ((string) lector["descripcion_admisiones"], (int) lector["id_tipo_admisiones"]);
-				}				
+				//Console.WriteLine(comando.CommandText.ToString());
+						
+				float tomaprecio;
+				float calculodeiva;
+				float preciomasiva;
+				float tomadescue;
+				float preciocondesc;
+																
+				while (lector.Read()){
+					calculodeiva = 0;
+					preciomasiva = 0;
+					
+					tomaprecio = float.Parse((string) lector["preciopublico"]);
+										
+					tomadescue = float.Parse((string) lector["porcentagesdesc"]);
+					preciocondesc = tomaprecio;
+					
+					if ((bool) lector["aplicar_iva"]){
+						calculodeiva = (tomaprecio * float.Parse(classpublic.ivaparaaplicar))/100;
+					}
+					if ((bool) lector["aplica_descuento"]){
+						preciocondesc = tomaprecio-((tomaprecio*tomadescue)/100);
+					}
+					preciomasiva = tomaprecio + calculodeiva; 
+					treeViewEngineBusca2.AppendValues (
+											(string) lector["codProducto"] ,
+											(string) lector["descripcion_producto"],
+											tomaprecio.ToString("F").PadLeft(10),
+											calculodeiva.ToString("F").PadLeft(10),
+											preciomasiva.ToString("F").PadLeft(10),
+											(string) lector["porcentagesdesc"],
+											preciocondesc.ToString("F").PadLeft(10),
+											(string) lector["descripcion_grupo_producto"],
+											(string) lector["descripcion_grupo1_producto"],
+											(string) lector["descripcion_grupo2_producto"],
+											(string) lector["costoproductounitario"],
+											(string) lector["porcentageutilidad"],
+											(string) lector["costoproducto"],
+											(string) lector["agrupacion"]);
+					
+				}
 			}catch (NpgsqlException ex){
-				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
-												MessageType.Error,ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
-				msgBoxError.Run ();				msgBoxError.Destroy();
+		   		MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+											MessageType.Error, 
+									ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
+				msgBoxError.Run ();		msgBoxError.Destroy();
 			}
 			conexion.Close ();
 		}
 		
-		void onComboBoxChanged_departamentos(object sender, EventArgs args)
+		////////////////BUTTON SELECCIONA//////////////////////////////////
+		void on_selecciona_producto_clicked (object sender, EventArgs args)
 		{
-    		ComboBox combobox_departamentos = sender as ComboBox;
-			if (sender == null){
-	    		return;
+			TreeModel model;
+			TreeIter iterSelected;
+
+			if (lista_de_producto.Selection.GetSelected(out model, out iterSelected)){
+		 		entry_descrip_producto.Text = (string) model.GetValue(iterSelected, 1);
+				treeViewEngineSelec.AppendValues ((string) model.GetValue(iterSelected, 0),(string) model.GetValue(iterSelected, 1));
+			}else{
+ 				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+							MessageType.Error, 
+							ButtonsType.Close, "NO existen productos para seleccionar");
+				msgBoxError.Run ();
+				msgBoxError.Destroy();
 			}
-	  		TreeIter iter;
-	  		if (combobox_departamentos.GetActiveIter (out iter)){
-		    	//id_tipo_admisiones = (int) combobox_departamentos.Model.GetValue(iter,1);
-		    	//query_departamento = " AND osiris_erp_cobros_deta.id_tipo_admisiones = '"+Convert.ToString((int) combobox_departamentos.Model.GetValue(iter,1)).ToString()+"' ";		    			    	
-		    	//if (this.checkbutton_todos_departamentos .Active == true){
-				//	query_departamento = " ";
-				//}
-	     	}
+		}
+		
+	 	[GLib.ConnectBefore ()] 
+		public void onKeyPressEvent_enterbucar_busqueda(object o, Gtk.KeyPressEventArgs args)
+		{
+			if (args.Event.Key == Gdk.Key.Return || args.Event.Key == Gdk.Key.KP_Enter){
+				args.RetVal = true;
+				llenando_lista_de_productos();
+				//Console.WriteLine ("key press");
+								
+			}
 		}
 		
 		void on_cierraventanas_clicked (object sender, EventArgs args)

@@ -13080,7 +13080,8 @@ Fisica IPAS</property>
                                                             </packing>
                                                             </child>
                                                             <child>
-                                                            <widget class="GtkComboBox" id="combobox64">
+                                                            <widget class="GtkComboBox" id="combobox_piel_dermis">
+                                                            <property name="width_request">60</property>
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">False</property>
                                                             </widget>
@@ -13091,7 +13092,7 @@ Fisica IPAS</property>
                                                             </packing>
                                                             </child>
                                                             <child>
-                                                            <widget class="GtkEntry" id="entry92">
+                                                            <widget class="GtkEntry" id="entry_piel_dermis">
                                                             <property name="width_request">50</property>
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">True</property>
@@ -13131,7 +13132,7 @@ Fisica IPAS</property>
                                                             </packing>
                                                             </child>
                                                             <child>
-                                                            <widget class="GtkComboBox" id="combobox65">
+                                                            <widget class="GtkComboBox" id="combobox_piel_cabello">
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">False</property>
                                                             </widget>
@@ -13142,7 +13143,7 @@ Fisica IPAS</property>
                                                             </packing>
                                                             </child>
                                                             <child>
-                                                            <widget class="GtkEntry" id="entry93">
+                                                            <widget class="GtkEntry" id="entry_piel_cabello">
                                                             <property name="width_request">50</property>
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">True</property>
@@ -13182,7 +13183,7 @@ Fisica IPAS</property>
                                                             </packing>
                                                             </child>
                                                             <child>
-                                                            <widget class="GtkComboBox" id="combobox66">
+                                                            <widget class="GtkComboBox" id="combobox_piel_unas">
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">False</property>
                                                             </widget>
@@ -13193,7 +13194,7 @@ Fisica IPAS</property>
                                                             </packing>
                                                             </child>
                                                             <child>
-                                                            <widget class="GtkEntry" id="entry94">
+                                                            <widget class="GtkEntry" id="entry_piel_unas">
                                                             <property name="width_request">50</property>
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">True</property>
@@ -13234,7 +13235,7 @@ Fisica IPAS</property>
                                                             </packing>
                                                             </child>
                                                             <child>
-                                                            <widget class="GtkComboBox" id="combobox67">
+                                                            <widget class="GtkComboBox" id="combobox_piel_dermatosis">
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">False</property>
                                                             </widget>
@@ -13286,7 +13287,7 @@ Fisica IPAS</property>
                                                             </packing>
                                                             </child>
                                                             <child>
-                                                            <widget class="GtkComboBox" id="combobox68">
+                                                            <widget class="GtkComboBox" id="combobox_piel_dermatitis">
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">False</property>
                                                             </widget>
@@ -13297,7 +13298,7 @@ Fisica IPAS</property>
                                                             </packing>
                                                             </child>
                                                             <child>
-                                                            <widget class="GtkEntry" id="entry96">
+                                                            <widget class="GtkEntry" id="entry_piel_dermatitis">
                                                             <property name="width_request">50</property>
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">True</property>
@@ -13338,7 +13339,7 @@ Fisica IPAS</property>
                                                             </packing>
                                                             </child>
                                                             <child>
-                                                            <widget class="GtkComboBox" id="combobox69">
+                                                            <widget class="GtkComboBox" id="combobox_piel_tatuajes">
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">False</property>
                                                             </widget>
@@ -13349,7 +13350,7 @@ Fisica IPAS</property>
                                                             </packing>
                                                             </child>
                                                             <child>
-                                                            <widget class="GtkEntry" id="entry97">
+                                                            <widget class="GtkEntry" id="entry_piel_tatuajes">
                                                             <property name="width_request">50</property>
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">True</property>
@@ -13390,7 +13391,7 @@ Fisica IPAS</property>
                                                             </packing>
                                                             </child>
                                                             <child>
-                                                            <widget class="GtkComboBox" id="combobox70">
+                                                            <widget class="GtkComboBox" id="combobox_piel_cicatrices">
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">False</property>
                                                             </widget>
@@ -13401,7 +13402,7 @@ Fisica IPAS</property>
                                                             </packing>
                                                             </child>
                                                             <child>
-                                                            <widget class="GtkEntry" id="entry98">
+                                                            <widget class="GtkEntry" id="entry_piel_cicatrices">
                                                             <property name="width_request">50</property>
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">True</property>

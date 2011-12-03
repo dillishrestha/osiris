@@ -278,7 +278,22 @@ namespace osiris
 		[Widget] Gtk.ComboBox combobox_miempelv_pulso_der = null;
 		[Widget] Gtk.ComboBox combobox_miempelv_pulso_izq = null;
 		[Widget] Gtk.Entry entry_miempelv_pulso_otros = null;
-		[Widget] Gtk.Entry entry_miempelv_otros = null;		
+		[Widget] Gtk.Entry entry_miempelv_otros = null;
+		
+		[Widget] Gtk.ComboBox combobox_piel_dermis = null;
+		[Widget] Gtk.Entry entry_piel_dermis = null;
+		[Widget] Gtk.ComboBox combobox_piel_cabello = null;
+		[Widget] Gtk.Entry entry_piel_cabello = null;
+		[Widget] Gtk.ComboBox combobox_piel_unas = null;
+		[Widget] Gtk.Entry entry_piel_unas = null;
+		[Widget] Gtk.ComboBox combobox_piel_dermatosis = null;
+		[Widget] Gtk.Entry entry_piel_dermatosis = null;
+		[Widget] Gtk.ComboBox combobox_piel_dermatitis = null;
+		[Widget] Gtk.Entry entry_piel_dermatitis = null;
+		[Widget] Gtk.ComboBox combobox_piel_tatuajes = null;
+		[Widget] Gtk.Entry entry_piel_tatuajes = null;
+		[Widget] Gtk.ComboBox combobox_piel_cicatrices = null;
+		[Widget] Gtk.Entry entry_piel_cicatrices = null;
 		
 		[Widget] Gtk.Button button_exportar_xls = null;
 		
@@ -513,8 +528,14 @@ namespace osiris
 			llenado_combobox(1,"NORMAL",combobox_miempelv_pulso_der,args_normal_anormal,args_id_array);
 			llenado_combobox(1,"NORMAL",combobox_miempelv_pulso_izq,args_normal_anormal,args_id_array);
 			
-			
-			
+			llenado_combobox(1,"NORMAL",combobox_piel_dermis,args_normal_anormal,args_id_array);
+			llenado_combobox(1,"NORMAL",combobox_piel_cabello,args_normal_anormal,args_id_array);
+			llenado_combobox(1,"NORMAL",combobox_piel_unas,args_normal_anormal,args_id_array);
+			llenado_combobox(1,"NO",combobox_piel_dermatosis,args_si_no,args_id_array);
+			llenado_combobox(1,"NO",combobox_piel_dermatitis,args_si_no,args_id_array);
+			llenado_combobox(1,"NO",combobox_piel_tatuajes,args_si_no,args_id_array);
+			llenado_combobox(1,"NO",combobox_piel_cicatrices,args_si_no,args_id_array);
+						
 			//SpinButtons Antecedentes Heredo Familiar:
 			spinbutton_edad_madre.SetRange(0, 150);
 			spinbutton_edad_padre.SetRange(0, 150);

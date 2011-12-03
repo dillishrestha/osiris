@@ -1,18 +1,21 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <glade-interface>
   <!-- interface-requires gtk+ 2.6 -->
   <!-- interface-naming-policy toplevel-contextual -->
   <widget class="GtkWindow" id="busca_paciente">
     <property name="visible">True</property>
+    <property name="can_focus">False</property>
     <property name="title" translatable="yes">Busqueda de Paciente</property>
     <property name="window_position">center</property>
     <property name="type_hint">dialog</property>
     <child>
       <widget class="GtkVBox" id="vbox10">
         <property name="visible">True</property>
+        <property name="can_focus">False</property>
         <child>
           <widget class="GtkLabel" id="label4">
             <property name="visible">True</property>
+            <property name="can_focus">False</property>
             <property name="label" translatable="yes">
 Busqueda de Paciente</property>
             <property name="wrap">True</property>
@@ -26,52 +29,71 @@ Busqueda de Paciente</property>
         <child>
           <widget class="GtkHBox" id="hbox9">
             <property name="visible">True</property>
+            <property name="can_focus">False</property>
             <child>
               <widget class="GtkHBox" id="hbox12">
                 <property name="visible">True</property>
+                <property name="can_focus">False</property>
                 <child>
                   <widget class="GtkVBox" id="vbox11">
                     <property name="visible">True</property>
+                    <property name="can_focus">False</property>
                     <child>
                       <widget class="GtkHBox" id="hbox13">
                         <property name="visible">True</property>
+                        <property name="can_focus">False</property>
                         <child>
                           <widget class="GtkLabel" id="label5">
                             <property name="visible">True</property>
+                            <property name="can_focus">False</property>
                             <property name="label" translatable="yes">A Buscar</property>
                           </widget>
                           <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
                             <property name="position">0</property>
                           </packing>
                         </child>
                         <child>
                           <widget class="GtkEntry" id="entry_expresion">
                             <property name="visible">True</property>
-                            <property name="invisible_char">&#x25CF;</property>
+                            <property name="can_focus">False</property>
+                            <property name="invisible_char">●</property>
                             <property name="width_chars">44</property>
+                            <property name="primary_icon_activatable">False</property>
+                            <property name="secondary_icon_activatable">False</property>
+                            <property name="primary_icon_sensitive">True</property>
+                            <property name="secondary_icon_sensitive">True</property>
                           </widget>
                           <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
                             <property name="position">1</property>
                           </packing>
                         </child>
                       </widget>
                       <packing>
+                        <property name="expand">True</property>
+                        <property name="fill">True</property>
                         <property name="position">0</property>
                       </packing>
                     </child>
                     <child>
                       <widget class="GtkHBox" id="hbox16">
                         <property name="visible">True</property>
+                        <property name="can_focus">False</property>
                         <child>
                           <widget class="GtkRadioButton" id="radiobutton_busca_apellido">
                             <property name="label" translatable="yes">Por Apellido</property>
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <property name="receives_default">False</property>
+                            <property name="use_action_appearance">False</property>
                             <property name="use_underline">True</property>
                             <property name="draw_indicator">True</property>
                           </widget>
                           <packing>
+                            <property name="expand">True</property>
                             <property name="fill">False</property>
                             <property name="position">0</property>
                           </packing>
@@ -82,11 +104,13 @@ Busqueda de Paciente</property>
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <property name="receives_default">False</property>
+                            <property name="use_action_appearance">False</property>
                             <property name="use_underline">True</property>
                             <property name="draw_indicator">True</property>
                             <property name="group">radiobutton_busca_apellido</property>
                           </widget>
                           <packing>
+                            <property name="expand">True</property>
                             <property name="fill">False</property>
                             <property name="position">1</property>
                           </packing>
@@ -97,28 +121,35 @@ Busqueda de Paciente</property>
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <property name="receives_default">False</property>
+                            <property name="use_action_appearance">False</property>
                             <property name="use_underline">True</property>
                             <property name="draw_indicator">True</property>
                             <property name="group">radiobutton_busca_apellido</property>
                           </widget>
                           <packing>
+                            <property name="expand">True</property>
                             <property name="fill">False</property>
                             <property name="position">2</property>
                           </packing>
                         </child>
                       </widget>
                       <packing>
+                        <property name="expand">True</property>
+                        <property name="fill">True</property>
                         <property name="position">1</property>
                       </packing>
                     </child>
                   </widget>
                   <packing>
+                    <property name="expand">True</property>
+                    <property name="fill">True</property>
                     <property name="position">0</property>
                   </packing>
                 </child>
                 <child>
                   <widget class="GtkVBox" id="vbox12">
                     <property name="visible">True</property>
+                    <property name="can_focus">False</property>
                     <child>
                       <widget class="GtkButton" id="button_buscar_busqueda">
                         <property name="label">gtk-find</property>
@@ -126,9 +157,12 @@ Busqueda de Paciente</property>
                         <property name="can_focus">False</property>
                         <property name="receives_default">False</property>
                         <property name="tooltip" translatable="yes">Realiza la busqueda del paciente</property>
+                        <property name="use_action_appearance">False</property>
                         <property name="use_stock">True</property>
                       </widget>
                       <packing>
+                        <property name="expand">True</property>
+                        <property name="fill">True</property>
                         <property name="position">0</property>
                       </packing>
                     </child>
@@ -138,9 +172,12 @@ Busqueda de Paciente</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="receives_default">False</property>
+                        <property name="use_action_appearance">False</property>
                         <property name="use_underline">True</property>
                       </widget>
                       <packing>
+                        <property name="expand">True</property>
+                        <property name="fill">True</property>
                         <property name="position">1</property>
                       </packing>
                     </child>
@@ -150,9 +187,12 @@ Busqueda de Paciente</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="receives_default">False</property>
+                        <property name="use_action_appearance">False</property>
                         <property name="use_underline">True</property>
                       </widget>
                       <packing>
+                        <property name="expand">True</property>
+                        <property name="fill">True</property>
                         <property name="position">2</property>
                       </packing>
                     </child>
@@ -162,24 +202,33 @@ Busqueda de Paciente</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="receives_default">False</property>
+                        <property name="use_action_appearance">False</property>
                         <property name="use_stock">True</property>
                       </widget>
                       <packing>
+                        <property name="expand">True</property>
+                        <property name="fill">True</property>
                         <property name="position">3</property>
                       </packing>
                     </child>
                   </widget>
                   <packing>
+                    <property name="expand">True</property>
+                    <property name="fill">True</property>
                     <property name="position">1</property>
                   </packing>
                 </child>
               </widget>
               <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
                 <property name="position">0</property>
               </packing>
             </child>
           </widget>
           <packing>
+            <property name="expand">True</property>
+            <property name="fill">True</property>
             <property name="position">1</property>
           </packing>
         </child>
@@ -192,10 +241,13 @@ Busqueda de Paciente</property>
                 <property name="width_request">300</property>
                 <property name="height_request">227</property>
                 <property name="visible">True</property>
+                <property name="can_focus">False</property>
               </widget>
             </child>
           </widget>
           <packing>
+            <property name="expand">True</property>
+            <property name="fill">True</property>
             <property name="position">2</property>
           </packing>
         </child>
@@ -203,62 +255,79 @@ Busqueda de Paciente</property>
     </child>
   </widget>
   <widget class="GtkWindow" id="busqueda_folio">
+    <property name="can_focus">False</property>
     <property name="title" translatable="yes">Seleccion de Documentos para Imprimir</property>
     <property name="resizable">False</property>
     <property name="window_position">center</property>
     <child>
       <widget class="GtkVBox" id="vbox5">
         <property name="visible">True</property>
-        <property name="orientation">vertical</property>
+        <property name="can_focus">False</property>
         <child>
           <widget class="GtkHBox" id="hbox15">
             <property name="visible">True</property>
+            <property name="can_focus">False</property>
             <child>
               <widget class="GtkVBox" id="vbox6">
                 <property name="visible">True</property>
-                <property name="orientation">vertical</property>
+                <property name="can_focus">False</property>
                 <child>
                   <widget class="GtkVBox" id="vbox34">
                     <property name="visible">True</property>
-                    <property name="orientation">vertical</property>
+                    <property name="can_focus">False</property>
                     <child>
                       <widget class="GtkFrame" id="frame9">
                         <property name="visible">True</property>
+                        <property name="can_focus">False</property>
                         <property name="label_xalign">0</property>
                         <property name="shadow_type">in</property>
                         <child>
                           <widget class="GtkAlignment" id="alignment15">
                             <property name="visible">True</property>
+                            <property name="can_focus">False</property>
                             <property name="left_padding">12</property>
                             <child>
                               <widget class="GtkAlignment" id="alignment20">
                                 <property name="visible">True</property>
+                                <property name="can_focus">False</property>
                                 <property name="left_padding">12</property>
                                 <child>
                                   <widget class="GtkVBox" id="vbox33">
                                     <property name="visible">True</property>
-                                    <property name="orientation">vertical</property>
+                                    <property name="can_focus">False</property>
                                     <child>
                                       <widget class="GtkVBox" id="vbox1">
                                         <property name="visible">True</property>
-                                        <property name="orientation">vertical</property>
+                                        <property name="can_focus">False</property>
                                         <child>
                                           <widget class="GtkHBox" id="hbox42">
                                             <property name="visible">True</property>
+                                            <property name="can_focus">False</property>
                                             <child>
                                               <widget class="GtkLabel" id="label103">
                                                 <property name="visible">True</property>
-                                                <property name="label" translatable="yes">N&#xBA; Folio</property>
+                                                <property name="can_focus">False</property>
+                                                <property name="label" translatable="yes">Nº Folio</property>
                                               </widget>
                                               <packing>
+                                                <property name="expand">True</property>
+                                                <property name="fill">True</property>
                                                 <property name="position">0</property>
                                               </packing>
                                             </child>
                                             <child>
                                               <widget class="GtkEntry" id="entry_folio_servicio">
                                                 <property name="visible">True</property>
+                                                <property name="can_focus">True</property>
+                                                <property name="invisible_char">●</property>
+                                                <property name="primary_icon_activatable">False</property>
+                                                <property name="secondary_icon_activatable">False</property>
+                                                <property name="primary_icon_sensitive">True</property>
+                                                <property name="secondary_icon_sensitive">True</property>
                                               </widget>
                                               <packing>
+                                                <property name="expand">True</property>
+                                                <property name="fill">True</property>
                                                 <property name="position">1</property>
                                               </packing>
                                             </child>
@@ -268,18 +337,24 @@ Busqueda de Paciente</property>
                                                 <property name="visible">True</property>
                                                 <property name="can_focus">False</property>
                                                 <property name="receives_default">False</property>
+                                                <property name="use_action_appearance">False</property>
                                                 <property name="use_underline">True</property>
                                               </widget>
                                               <packing>
+                                                <property name="expand">True</property>
+                                                <property name="fill">True</property>
                                                 <property name="position">2</property>
                                               </packing>
                                             </child>
                                             <child>
                                               <widget class="GtkLabel" id="label104">
                                                 <property name="visible">True</property>
+                                                <property name="can_focus">False</property>
                                                 <property name="label" translatable="yes">Fecha Ingreso</property>
                                               </widget>
                                               <packing>
+                                                <property name="expand">True</property>
+                                                <property name="fill">True</property>
                                                 <property name="position">3</property>
                                               </packing>
                                             </child>
@@ -287,17 +362,27 @@ Busqueda de Paciente</property>
                                               <widget class="GtkEntry" id="entry_fecha_admision">
                                                 <property name="width_request">82</property>
                                                 <property name="visible">True</property>
+                                                <property name="can_focus">False</property>
+                                                <property name="primary_icon_activatable">False</property>
+                                                <property name="secondary_icon_activatable">False</property>
+                                                <property name="primary_icon_sensitive">True</property>
+                                                <property name="secondary_icon_sensitive">True</property>
                                               </widget>
                                               <packing>
+                                                <property name="expand">True</property>
+                                                <property name="fill">True</property>
                                                 <property name="position">4</property>
                                               </packing>
                                             </child>
                                             <child>
                                               <widget class="GtkLabel" id="label105">
                                                 <property name="visible">True</property>
+                                                <property name="can_focus">False</property>
                                                 <property name="label" translatable="yes">Hora Ingreso</property>
                                               </widget>
                                               <packing>
+                                                <property name="expand">True</property>
+                                                <property name="fill">True</property>
                                                 <property name="position">5</property>
                                               </packing>
                                             </child>
@@ -305,42 +390,65 @@ Busqueda de Paciente</property>
                                               <widget class="GtkEntry" id="entry_hora_registro">
                                                 <property name="width_request">80</property>
                                                 <property name="visible">True</property>
+                                                <property name="can_focus">False</property>
+                                                <property name="primary_icon_activatable">False</property>
+                                                <property name="secondary_icon_activatable">False</property>
+                                                <property name="primary_icon_sensitive">True</property>
+                                                <property name="secondary_icon_sensitive">True</property>
                                               </widget>
                                               <packing>
+                                                <property name="expand">True</property>
+                                                <property name="fill">True</property>
                                                 <property name="position">6</property>
                                               </packing>
                                             </child>
                                             <child>
                                               <widget class="GtkLabel" id="label30">
                                                 <property name="visible">True</property>
+                                                <property name="can_focus">False</property>
                                                 <property name="label" translatable="yes">Fecha/hora Alta</property>
                                               </widget>
                                               <packing>
+                                                <property name="expand">True</property>
+                                                <property name="fill">True</property>
                                                 <property name="position">7</property>
                                               </packing>
                                             </child>
                                             <child>
                                               <widget class="GtkEntry" id="entry_fechahora_alta">
                                                 <property name="visible">True</property>
+                                                <property name="can_focus">False</property>
+                                                <property name="primary_icon_activatable">False</property>
+                                                <property name="secondary_icon_activatable">False</property>
+                                                <property name="primary_icon_sensitive">True</property>
+                                                <property name="secondary_icon_sensitive">True</property>
                                               </widget>
                                               <packing>
+                                                <property name="expand">True</property>
+                                                <property name="fill">True</property>
                                                 <property name="position">8</property>
                                               </packing>
                                             </child>
                                           </widget>
                                           <packing>
+                                            <property name="expand">True</property>
+                                            <property name="fill">True</property>
                                             <property name="position">0</property>
                                           </packing>
                                         </child>
                                         <child>
                                           <widget class="GtkHBox" id="hbox43">
                                             <property name="visible">True</property>
+                                            <property name="can_focus">False</property>
                                             <child>
                                               <widget class="GtkLabel" id="label14">
                                                 <property name="visible">True</property>
+                                                <property name="can_focus">False</property>
                                                 <property name="label" translatable="yes">PID</property>
                                               </widget>
                                               <packing>
+                                                <property name="expand">True</property>
+                                                <property name="fill">True</property>
                                                 <property name="position">0</property>
                                               </packing>
                                             </child>
@@ -348,17 +456,27 @@ Busqueda de Paciente</property>
                                               <widget class="GtkEntry" id="entry_pid_paciente">
                                                 <property name="width_request">88</property>
                                                 <property name="visible">True</property>
+                                                <property name="can_focus">False</property>
+                                                <property name="primary_icon_activatable">False</property>
+                                                <property name="secondary_icon_activatable">False</property>
+                                                <property name="primary_icon_sensitive">True</property>
+                                                <property name="secondary_icon_sensitive">True</property>
                                               </widget>
                                               <packing>
+                                                <property name="expand">True</property>
+                                                <property name="fill">True</property>
                                                 <property name="position">1</property>
                                               </packing>
                                             </child>
                                             <child>
                                               <widget class="GtkLabel" id="label106">
                                                 <property name="visible">True</property>
+                                                <property name="can_focus">False</property>
                                                 <property name="label" translatable="yes">Nombre Paciente</property>
                                               </widget>
                                               <packing>
+                                                <property name="expand">True</property>
+                                                <property name="fill">True</property>
                                                 <property name="position">2</property>
                                               </packing>
                                             </child>
@@ -366,8 +484,15 @@ Busqueda de Paciente</property>
                                               <widget class="GtkEntry" id="entry_nombre_paciente">
                                                 <property name="width_request">307</property>
                                                 <property name="visible">True</property>
+                                                <property name="can_focus">False</property>
+                                                <property name="primary_icon_activatable">False</property>
+                                                <property name="secondary_icon_activatable">False</property>
+                                                <property name="primary_icon_sensitive">True</property>
+                                                <property name="secondary_icon_sensitive">True</property>
                                               </widget>
                                               <packing>
+                                                <property name="expand">True</property>
+                                                <property name="fill">True</property>
                                                 <property name="position">3</property>
                                               </packing>
                                             </child>
@@ -378,49 +503,99 @@ Busqueda de Paciente</property>
                                                 <property name="can_focus">False</property>
                                                 <property name="receives_default">False</property>
                                                 <property name="tooltip" translatable="yes">Busca solo los Pacientes que tienen algun folio pendiente de pago</property>
+                                                <property name="use_action_appearance">False</property>
                                                 <property name="use_stock">True</property>
                                               </widget>
                                               <packing>
+                                                <property name="expand">True</property>
+                                                <property name="fill">True</property>
                                                 <property name="position">4</property>
+                                              </packing>
+                                            </child>
+                                            <child>
+                                              <widget class="GtkLabel" id="label2">
+                                                <property name="visible">True</property>
+                                                <property name="can_focus">False</property>
+                                                <property name="label" translatable="yes">Edad </property>
+                                              </widget>
+                                              <packing>
+                                                <property name="expand">True</property>
+                                                <property name="fill">True</property>
+                                                <property name="position">5</property>
+                                              </packing>
+                                            </child>
+                                            <child>
+                                              <widget class="GtkEntry" id="entry_edad_paciente">
+                                                <property name="width_request">30</property>
+                                                <property name="visible">True</property>
+                                                <property name="can_focus">True</property>
+                                                <property name="invisible_char">●</property>
+                                                <property name="primary_icon_activatable">False</property>
+                                                <property name="secondary_icon_activatable">False</property>
+                                                <property name="primary_icon_sensitive">True</property>
+                                                <property name="secondary_icon_sensitive">True</property>
+                                              </widget>
+                                              <packing>
+                                                <property name="expand">True</property>
+                                                <property name="fill">True</property>
+                                                <property name="position">6</property>
                                               </packing>
                                             </child>
                                             <child>
                                               <widget class="GtkLabel" id="label107">
                                                 <property name="visible">True</property>
+                                                <property name="can_focus">False</property>
                                                 <property name="label" translatable="yes">Telefono</property>
                                               </widget>
                                               <packing>
-                                                <property name="position">5</property>
+                                                <property name="expand">True</property>
+                                                <property name="fill">True</property>
+                                                <property name="position">7</property>
                                               </packing>
                                             </child>
                                             <child>
                                               <widget class="GtkEntry" id="entry_telefono_paciente">
                                                 <property name="visible">True</property>
+                                                <property name="can_focus">False</property>
+                                                <property name="primary_icon_activatable">False</property>
+                                                <property name="secondary_icon_activatable">False</property>
+                                                <property name="primary_icon_sensitive">True</property>
+                                                <property name="secondary_icon_sensitive">True</property>
                                               </widget>
                                               <packing>
-                                                <property name="position">6</property>
+                                                <property name="expand">True</property>
+                                                <property name="fill">True</property>
+                                                <property name="position">8</property>
                                               </packing>
                                             </child>
                                           </widget>
                                           <packing>
+                                            <property name="expand">True</property>
+                                            <property name="fill">True</property>
                                             <property name="position">1</property>
                                           </packing>
                                         </child>
                                       </widget>
                                       <packing>
+                                        <property name="expand">True</property>
+                                        <property name="fill">True</property>
                                         <property name="position">0</property>
                                       </packing>
                                     </child>
                                     <child>
                                       <widget class="GtkHBox" id="hbox4">
                                         <property name="visible">True</property>
+                                        <property name="can_focus">False</property>
                                         <child>
                                           <widget class="GtkLabel" id="label15">
                                             <property name="width_request">44</property>
                                             <property name="visible">True</property>
+                                            <property name="can_focus">False</property>
                                             <property name="label" translatable="yes">Diagnostico  </property>
                                           </widget>
                                           <packing>
+                                            <property name="expand">True</property>
+                                            <property name="fill">True</property>
                                             <property name="position">0</property>
                                           </packing>
                                         </child>
@@ -428,115 +603,179 @@ Busqueda de Paciente</property>
                                           <widget class="GtkEntry" id="entry_diagnostico">
                                             <property name="width_request">267</property>
                                             <property name="visible">True</property>
+                                            <property name="can_focus">False</property>
+                                            <property name="primary_icon_activatable">False</property>
+                                            <property name="secondary_icon_activatable">False</property>
+                                            <property name="primary_icon_sensitive">True</property>
+                                            <property name="secondary_icon_sensitive">True</property>
                                           </widget>
                                           <packing>
+                                            <property name="expand">True</property>
+                                            <property name="fill">True</property>
                                             <property name="position">1</property>
                                           </packing>
                                         </child>
                                         <child>
                                           <widget class="GtkLabel" id="label16">
                                             <property name="visible">True</property>
+                                            <property name="can_focus">False</property>
                                             <property name="label" translatable="yes">Doctor</property>
                                           </widget>
                                           <packing>
+                                            <property name="expand">True</property>
+                                            <property name="fill">True</property>
                                             <property name="position">2</property>
                                           </packing>
                                         </child>
                                         <child>
                                           <widget class="GtkEntry" id="entry_doctor">
                                             <property name="visible">True</property>
+                                            <property name="can_focus">False</property>
+                                            <property name="primary_icon_activatable">False</property>
+                                            <property name="secondary_icon_activatable">False</property>
+                                            <property name="primary_icon_sensitive">True</property>
+                                            <property name="secondary_icon_sensitive">True</property>
                                           </widget>
                                           <packing>
+                                            <property name="expand">True</property>
+                                            <property name="fill">True</property>
                                             <property name="position">3</property>
                                           </packing>
                                         </child>
                                         <child>
                                           <widget class="GtkLabel" id="label17">
                                             <property name="visible">True</property>
+                                            <property name="can_focus">False</property>
                                             <property name="label" translatable="yes">Especialidad</property>
                                           </widget>
                                           <packing>
+                                            <property name="expand">True</property>
+                                            <property name="fill">True</property>
                                             <property name="position">4</property>
                                           </packing>
                                         </child>
                                         <child>
                                           <widget class="GtkEntry" id="entry_especialidad">
                                             <property name="visible">True</property>
+                                            <property name="can_focus">False</property>
+                                            <property name="primary_icon_activatable">False</property>
+                                            <property name="secondary_icon_activatable">False</property>
+                                            <property name="primary_icon_sensitive">True</property>
+                                            <property name="secondary_icon_sensitive">True</property>
                                           </widget>
                                           <packing>
+                                            <property name="expand">True</property>
+                                            <property name="fill">True</property>
                                             <property name="position">5</property>
                                           </packing>
                                         </child>
                                       </widget>
                                       <packing>
+                                        <property name="expand">True</property>
+                                        <property name="fill">True</property>
                                         <property name="position">1</property>
                                       </packing>
                                     </child>
                                     <child>
                                       <widget class="GtkHBox" id="hbox5">
                                         <property name="visible">True</property>
+                                        <property name="can_focus">False</property>
                                         <child>
                                           <widget class="GtkLabel" id="label18">
                                             <property name="visible">True</property>
+                                            <property name="can_focus">False</property>
                                             <property name="label" translatable="yes">Tipo Paciente</property>
                                           </widget>
                                           <packing>
+                                            <property name="expand">True</property>
+                                            <property name="fill">True</property>
                                             <property name="position">0</property>
                                           </packing>
                                         </child>
                                         <child>
                                           <widget class="GtkEntry" id="entry_tipo_paciente">
                                             <property name="visible">True</property>
+                                            <property name="can_focus">False</property>
+                                            <property name="primary_icon_activatable">False</property>
+                                            <property name="secondary_icon_activatable">False</property>
+                                            <property name="primary_icon_sensitive">True</property>
+                                            <property name="secondary_icon_sensitive">True</property>
                                           </widget>
                                           <packing>
+                                            <property name="expand">True</property>
+                                            <property name="fill">True</property>
                                             <property name="position">1</property>
                                           </packing>
                                         </child>
                                         <child>
                                           <widget class="GtkLabel" id="label19">
                                             <property name="visible">True</property>
+                                            <property name="can_focus">False</property>
                                             <property name="label" translatable="yes">Aseguradora</property>
                                           </widget>
                                           <packing>
+                                            <property name="expand">True</property>
+                                            <property name="fill">True</property>
                                             <property name="position">2</property>
                                           </packing>
                                         </child>
                                         <child>
                                           <widget class="GtkEntry" id="entry_aseguradora">
                                             <property name="visible">True</property>
+                                            <property name="can_focus">False</property>
+                                            <property name="primary_icon_activatable">False</property>
+                                            <property name="secondary_icon_activatable">False</property>
+                                            <property name="primary_icon_sensitive">True</property>
+                                            <property name="secondary_icon_sensitive">True</property>
                                           </widget>
                                           <packing>
+                                            <property name="expand">True</property>
+                                            <property name="fill">True</property>
                                             <property name="position">3</property>
                                           </packing>
                                         </child>
                                         <child>
                                           <widget class="GtkLabel" id="label20">
                                             <property name="visible">True</property>
+                                            <property name="can_focus">False</property>
                                             <property name="label" translatable="yes">Poliza o Certificado</property>
                                           </widget>
                                           <packing>
+                                            <property name="expand">True</property>
+                                            <property name="fill">True</property>
                                             <property name="position">4</property>
                                           </packing>
                                         </child>
                                         <child>
                                           <widget class="GtkEntry" id="entry_poliza">
                                             <property name="visible">True</property>
+                                            <property name="can_focus">False</property>
+                                            <property name="primary_icon_activatable">False</property>
+                                            <property name="secondary_icon_activatable">False</property>
+                                            <property name="primary_icon_sensitive">True</property>
+                                            <property name="secondary_icon_sensitive">True</property>
                                           </widget>
                                           <packing>
+                                            <property name="expand">True</property>
+                                            <property name="fill">True</property>
                                             <property name="position">5</property>
                                           </packing>
                                         </child>
                                       </widget>
                                       <packing>
+                                        <property name="expand">True</property>
+                                        <property name="fill">True</property>
                                         <property name="position">2</property>
                                       </packing>
                                     </child>
                                     <child>
                                       <widget class="GtkHBox" id="hbox55">
                                         <property name="visible">True</property>
+                                        <property name="can_focus">False</property>
                                         <child>
                                           <widget class="GtkLabel" id="label118">
                                             <property name="visible">True</property>
+                                            <property name="can_focus">False</property>
                                             <property name="label" translatable="yes">Cirugia</property>
                                           </widget>
                                           <packing>
@@ -549,13 +788,21 @@ Busqueda de Paciente</property>
                                           <widget class="GtkEntry" id="entry_cirugia">
                                             <property name="visible">True</property>
                                             <property name="can_focus">True</property>
+                                            <property name="primary_icon_activatable">False</property>
+                                            <property name="secondary_icon_activatable">False</property>
+                                            <property name="primary_icon_sensitive">True</property>
+                                            <property name="secondary_icon_sensitive">True</property>
                                           </widget>
                                           <packing>
+                                            <property name="expand">True</property>
+                                            <property name="fill">True</property>
                                             <property name="position">1</property>
                                           </packing>
                                         </child>
                                       </widget>
                                       <packing>
+                                        <property name="expand">True</property>
+                                        <property name="fill">True</property>
                                         <property name="position">3</property>
                                       </packing>
                                     </child>
@@ -568,6 +815,7 @@ Busqueda de Paciente</property>
                         <child>
                           <widget class="GtkLabel" id="label90">
                             <property name="visible">True</property>
+                            <property name="can_focus">False</property>
                             <property name="label" translatable="yes">&lt;b&gt;Datos del Paciente&lt;/b&gt;</property>
                             <property name="use_markup">True</property>
                           </widget>
@@ -577,18 +825,22 @@ Busqueda de Paciente</property>
                         </child>
                       </widget>
                       <packing>
+                        <property name="expand">True</property>
+                        <property name="fill">True</property>
                         <property name="position">0</property>
                       </packing>
                     </child>
                     <child>
                       <widget class="GtkHBox" id="hbox44">
                         <property name="visible">True</property>
+                        <property name="can_focus">False</property>
                         <child>
                           <widget class="GtkCheckButton" id="checkbutton_camb_dats">
                             <property name="label" translatable="yes">CAMBIAR DATOS</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">False</property>
+                            <property name="use_action_appearance">False</property>
                             <property name="use_underline">True</property>
                             <property name="draw_indicator">True</property>
                           </widget>
@@ -601,54 +853,72 @@ Busqueda de Paciente</property>
                         <child>
                           <widget class="GtkFixed" id="fixed4">
                             <property name="visible">True</property>
+                            <property name="can_focus">False</property>
                           </widget>
                           <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
                             <property name="position">1</property>
                           </packing>
                         </child>
                         <child>
                           <widget class="GtkFixed" id="fixed5">
                             <property name="visible">True</property>
+                            <property name="can_focus">False</property>
                           </widget>
                           <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
                             <property name="position">2</property>
                           </packing>
                         </child>
                         <child>
                           <widget class="GtkFixed" id="fixed6">
                             <property name="visible">True</property>
+                            <property name="can_focus">False</property>
                           </widget>
                           <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
                             <property name="position">3</property>
                           </packing>
                         </child>
                       </widget>
                       <packing>
+                        <property name="expand">True</property>
+                        <property name="fill">True</property>
                         <property name="position">1</property>
                       </packing>
                     </child>
                     <child>
                       <widget class="GtkFrame" id="frame10">
                         <property name="visible">True</property>
+                        <property name="can_focus">False</property>
                         <property name="label_xalign">0</property>
                         <child>
                           <widget class="GtkAlignment" id="alignment21">
                             <property name="visible">True</property>
+                            <property name="can_focus">False</property>
                             <property name="left_padding">12</property>
                             <child>
                               <widget class="GtkVBox" id="vbox2">
                                 <property name="visible">True</property>
-                                <property name="orientation">vertical</property>
+                                <property name="can_focus">False</property>
                                 <child>
                                   <widget class="GtkTable" id="table1">
                                     <property name="visible">True</property>
+                                    <property name="can_focus">False</property>
                                     <property name="n_rows">7</property>
                                     <property name="n_columns">3</property>
                                     <child>
                                       <widget class="GtkEntry" id="entry_medic_diag">
                                         <property name="visible">True</property>
                                         <property name="can_focus">True</property>
-                                        <property name="invisible_char">&#x25CF;</property>
+                                        <property name="invisible_char">●</property>
+                                        <property name="primary_icon_activatable">False</property>
+                                        <property name="secondary_icon_activatable">False</property>
+                                        <property name="primary_icon_sensitive">True</property>
+                                        <property name="secondary_icon_sensitive">True</property>
                                       </widget>
                                       <packing>
                                         <property name="left_attach">1</property>
@@ -661,18 +931,22 @@ Busqueda de Paciente</property>
                                         <property name="visible">True</property>
                                         <property name="can_focus">True</property>
                                         <property name="receives_default">True</property>
+                                        <property name="use_action_appearance">False</property>
                                         <child>
                                           <widget class="GtkAlignment" id="alignment23">
                                             <property name="visible">True</property>
+                                            <property name="can_focus">False</property>
                                             <property name="xscale">0</property>
                                             <property name="yscale">0</property>
                                             <child>
                                               <widget class="GtkHBox" id="hbox47">
                                                 <property name="visible">True</property>
+                                                <property name="can_focus">False</property>
                                                 <property name="spacing">2</property>
                                                 <child>
                                                   <widget class="GtkImage" id="image2">
                                                     <property name="visible">True</property>
+                                                    <property name="can_focus">False</property>
                                                     <property name="stock">gtk-find</property>
                                                   </widget>
                                                   <packing>
@@ -684,6 +958,7 @@ Busqueda de Paciente</property>
                                                 <child>
                                                   <widget class="GtkLabel" id="label114">
                                                     <property name="visible">True</property>
+                                                    <property name="can_focus">False</property>
                                                     <property name="label" translatable="yes">Buscar  </property>
                                                     <property name="use_underline">True</property>
                                                   </widget>
@@ -708,12 +983,14 @@ Busqueda de Paciente</property>
                                     <child>
                                       <widget class="GtkHBox" id="hbox51">
                                         <property name="visible">True</property>
+                                        <property name="can_focus">False</property>
                                         <child>
                                           <widget class="GtkRadioButton" id="radiobutton_med">
                                             <property name="label" translatable="yes">Medico 1er  diagnostico:</property>
                                             <property name="visible">True</property>
                                             <property name="can_focus">True</property>
                                             <property name="receives_default">False</property>
+                                            <property name="use_action_appearance">False</property>
                                             <property name="relief">none</property>
                                             <property name="use_underline">True</property>
                                             <property name="active">True</property>
@@ -735,7 +1012,11 @@ Busqueda de Paciente</property>
                                       <widget class="GtkEntry" id="entry_med_trat">
                                         <property name="visible">True</property>
                                         <property name="can_focus">True</property>
-                                        <property name="invisible_char">&#x25CF;</property>
+                                        <property name="invisible_char">●</property>
+                                        <property name="primary_icon_activatable">False</property>
+                                        <property name="secondary_icon_activatable">False</property>
+                                        <property name="primary_icon_sensitive">True</property>
+                                        <property name="secondary_icon_sensitive">True</property>
                                       </widget>
                                       <packing>
                                         <property name="left_attach">1</property>
@@ -751,6 +1032,7 @@ Busqueda de Paciente</property>
                                         <property name="visible">True</property>
                                         <property name="can_focus">True</property>
                                         <property name="receives_default">False</property>
+                                        <property name="use_action_appearance">False</property>
                                         <property name="use_underline">True</property>
                                         <property name="draw_indicator">True</property>
                                         <property name="group">radiobutton_med</property>
@@ -766,7 +1048,11 @@ Busqueda de Paciente</property>
                                       <widget class="GtkEntry" id="entry_diag">
                                         <property name="visible">True</property>
                                         <property name="can_focus">True</property>
-                                        <property name="invisible_char">&#x25CF;</property>
+                                        <property name="invisible_char">●</property>
+                                        <property name="primary_icon_activatable">False</property>
+                                        <property name="secondary_icon_activatable">False</property>
+                                        <property name="primary_icon_sensitive">True</property>
+                                        <property name="secondary_icon_sensitive">True</property>
                                       </widget>
                                       <packing>
                                         <property name="left_attach">1</property>
@@ -779,12 +1065,14 @@ Busqueda de Paciente</property>
                                     <child>
                                       <widget class="GtkHBox" id="hbox53">
                                         <property name="visible">True</property>
+                                        <property name="can_focus">False</property>
                                         <child>
                                           <widget class="GtkRadioButton" id="radiobutton_diag">
                                             <property name="label" translatable="yes">Diagnostico Admision</property>
                                             <property name="visible">True</property>
                                             <property name="can_focus">True</property>
                                             <property name="receives_default">False</property>
+                                            <property name="use_action_appearance">False</property>
                                             <property name="use_underline">True</property>
                                             <property name="draw_indicator">True</property>
                                             <property name="group">radiobutton_med</property>
@@ -798,6 +1086,7 @@ Busqueda de Paciente</property>
                                         <child>
                                           <widget class="GtkLabel" id="label111">
                                             <property name="visible">True</property>
+                                            <property name="can_focus">False</property>
                                             <property name="xalign">0</property>
                                           </widget>
                                           <packing>
@@ -819,18 +1108,22 @@ Busqueda de Paciente</property>
                                         <property name="visible">True</property>
                                         <property name="can_focus">True</property>
                                         <property name="receives_default">True</property>
+                                        <property name="use_action_appearance">False</property>
                                         <child>
                                           <widget class="GtkAlignment" id="alignment24">
                                             <property name="visible">True</property>
+                                            <property name="can_focus">False</property>
                                             <property name="xscale">0</property>
                                             <property name="yscale">0</property>
                                             <child>
                                               <widget class="GtkHBox" id="hbox48">
                                                 <property name="visible">True</property>
+                                                <property name="can_focus">False</property>
                                                 <property name="spacing">2</property>
                                                 <child>
                                                   <widget class="GtkImage" id="image3">
                                                     <property name="visible">True</property>
+                                                    <property name="can_focus">False</property>
                                                     <property name="stock">gtk-find</property>
                                                   </widget>
                                                   <packing>
@@ -842,6 +1135,7 @@ Busqueda de Paciente</property>
                                                 <child>
                                                   <widget class="GtkLabel" id="label115">
                                                     <property name="visible">True</property>
+                                                    <property name="can_focus">False</property>
                                                     <property name="label" translatable="yes">Buscar </property>
                                                     <property name="use_underline">True</property>
                                                   </widget>
@@ -871,6 +1165,7 @@ Busqueda de Paciente</property>
                                         <property name="visible">True</property>
                                         <property name="can_focus">True</property>
                                         <property name="receives_default">False</property>
+                                        <property name="use_action_appearance">False</property>
                                         <property name="use_underline">True</property>
                                         <property name="draw_indicator">True</property>
                                         <property name="group">radiobutton_med</property>
@@ -886,7 +1181,11 @@ Busqueda de Paciente</property>
                                       <widget class="GtkEntry" id="entry_diag_cie10">
                                         <property name="visible">True</property>
                                         <property name="can_focus">True</property>
-                                        <property name="invisible_char">&#x25CF;</property>
+                                        <property name="invisible_char">●</property>
+                                        <property name="primary_icon_activatable">False</property>
+                                        <property name="secondary_icon_activatable">False</property>
+                                        <property name="primary_icon_sensitive">True</property>
+                                        <property name="secondary_icon_sensitive">True</property>
                                       </widget>
                                       <packing>
                                         <property name="left_attach">1</property>
@@ -901,18 +1200,22 @@ Busqueda de Paciente</property>
                                         <property name="visible">True</property>
                                         <property name="can_focus">True</property>
                                         <property name="receives_default">True</property>
+                                        <property name="use_action_appearance">False</property>
                                         <child>
                                           <widget class="GtkAlignment" id="alignment30">
                                             <property name="visible">True</property>
+                                            <property name="can_focus">False</property>
                                             <property name="xscale">0</property>
                                             <property name="yscale">0</property>
                                             <child>
                                               <widget class="GtkHBox" id="hbox59">
                                                 <property name="visible">True</property>
+                                                <property name="can_focus">False</property>
                                                 <property name="spacing">2</property>
                                                 <child>
                                                   <widget class="GtkImage" id="image9">
                                                     <property name="visible">True</property>
+                                                    <property name="can_focus">False</property>
                                                     <property name="stock">gtk-find</property>
                                                   </widget>
                                                   <packing>
@@ -924,6 +1227,7 @@ Busqueda de Paciente</property>
                                                 <child>
                                                   <widget class="GtkLabel" id="label122">
                                                     <property name="visible">True</property>
+                                                    <property name="can_focus">False</property>
                                                     <property name="label" translatable="yes">Buscar </property>
                                                     <property name="use_underline">True</property>
                                                   </widget>
@@ -950,6 +1254,7 @@ Busqueda de Paciente</property>
                                     <child>
                                       <widget class="GtkFixed" id="fixed27">
                                         <property name="visible">True</property>
+                                        <property name="can_focus">False</property>
                                       </widget>
                                       <packing>
                                         <property name="left_attach">2</property>
@@ -965,18 +1270,22 @@ Busqueda de Paciente</property>
                                         <property name="visible">True</property>
                                         <property name="can_focus">True</property>
                                         <property name="receives_default">True</property>
+                                        <property name="use_action_appearance">False</property>
                                         <child>
                                           <widget class="GtkAlignment" id="alignment26">
                                             <property name="visible">True</property>
+                                            <property name="can_focus">False</property>
                                             <property name="xscale">0</property>
                                             <property name="yscale">0</property>
                                             <child>
                                               <widget class="GtkHBox" id="hbox50">
                                                 <property name="visible">True</property>
+                                                <property name="can_focus">False</property>
                                                 <property name="spacing">2</property>
                                                 <child>
                                                   <widget class="GtkImage" id="image5">
                                                     <property name="visible">True</property>
+                                                    <property name="can_focus">False</property>
                                                     <property name="stock">gtk-find</property>
                                                   </widget>
                                                   <packing>
@@ -988,6 +1297,7 @@ Busqueda de Paciente</property>
                                                 <child>
                                                   <widget class="GtkLabel" id="label117">
                                                     <property name="visible">True</property>
+                                                    <property name="can_focus">False</property>
                                                     <property name="label" translatable="yes">Buscar </property>
                                                     <property name="use_underline">True</property>
                                                   </widget>
@@ -1015,7 +1325,11 @@ Busqueda de Paciente</property>
                                       <widget class="GtkEntry" id="entry_docimp_cirugia">
                                         <property name="visible">True</property>
                                         <property name="can_focus">True</property>
-                                        <property name="invisible_char">&#x25CF;</property>
+                                        <property name="invisible_char">●</property>
+                                        <property name="primary_icon_activatable">False</property>
+                                        <property name="secondary_icon_activatable">False</property>
+                                        <property name="primary_icon_sensitive">True</property>
+                                        <property name="secondary_icon_sensitive">True</property>
                                       </widget>
                                       <packing>
                                         <property name="left_attach">1</property>
@@ -1028,12 +1342,14 @@ Busqueda de Paciente</property>
                                     <child>
                                       <widget class="GtkHBox" id="hbox54">
                                         <property name="visible">True</property>
+                                        <property name="can_focus">False</property>
                                         <child>
                                           <widget class="GtkRadioButton" id="radiobutton_cirugia">
                                             <property name="label" translatable="yes">Cirugia:</property>
                                             <property name="visible">True</property>
                                             <property name="can_focus">True</property>
                                             <property name="receives_default">False</property>
+                                            <property name="use_action_appearance">False</property>
                                             <property name="use_underline">True</property>
                                             <property name="draw_indicator">True</property>
                                             <property name="group">radiobutton_med</property>
@@ -1047,6 +1363,7 @@ Busqueda de Paciente</property>
                                         <child>
                                           <widget class="GtkLabel" id="label112">
                                             <property name="visible">True</property>
+                                            <property name="can_focus">False</property>
                                             <property name="xalign">0</property>
                                           </widget>
                                           <packing>
@@ -1069,6 +1386,7 @@ Busqueda de Paciente</property>
                                         <property name="visible">True</property>
                                         <property name="can_focus">True</property>
                                         <property name="receives_default">False</property>
+                                        <property name="use_action_appearance">False</property>
                                         <property name="use_underline">True</property>
                                         <property name="draw_indicator">True</property>
                                         <property name="group">radiobutton_med</property>
@@ -1084,7 +1402,11 @@ Busqueda de Paciente</property>
                                       <widget class="GtkEntry" id="entry_diag_final">
                                         <property name="visible">True</property>
                                         <property name="can_focus">True</property>
-                                        <property name="invisible_char">&#x25CF;</property>
+                                        <property name="invisible_char">●</property>
+                                        <property name="primary_icon_activatable">False</property>
+                                        <property name="secondary_icon_activatable">False</property>
+                                        <property name="primary_icon_sensitive">True</property>
+                                        <property name="secondary_icon_sensitive">True</property>
                                       </widget>
                                       <packing>
                                         <property name="left_attach">1</property>
@@ -1099,18 +1421,22 @@ Busqueda de Paciente</property>
                                         <property name="visible">True</property>
                                         <property name="can_focus">True</property>
                                         <property name="receives_default">True</property>
+                                        <property name="use_action_appearance">False</property>
                                         <child>
                                           <widget class="GtkAlignment" id="alignment31">
                                             <property name="visible">True</property>
+                                            <property name="can_focus">False</property>
                                             <property name="xscale">0</property>
                                             <property name="yscale">0</property>
                                             <child>
                                               <widget class="GtkHBox" id="hbox60">
                                                 <property name="visible">True</property>
+                                                <property name="can_focus">False</property>
                                                 <property name="spacing">2</property>
                                                 <child>
                                                   <widget class="GtkImage" id="image10">
                                                     <property name="visible">True</property>
+                                                    <property name="can_focus">False</property>
                                                     <property name="stock">gtk-find</property>
                                                   </widget>
                                                   <packing>
@@ -1122,6 +1448,7 @@ Busqueda de Paciente</property>
                                                 <child>
                                                   <widget class="GtkLabel" id="label123">
                                                     <property name="visible">True</property>
+                                                    <property name="can_focus">False</property>
                                                     <property name="label" translatable="yes">Buscar </property>
                                                     <property name="use_underline">True</property>
                                                   </widget>
@@ -1148,6 +1475,7 @@ Busqueda de Paciente</property>
                                     <child>
                                       <widget class="GtkFixed" id="fixed28">
                                         <property name="visible">True</property>
+                                        <property name="can_focus">False</property>
                                       </widget>
                                       <packing>
                                         <property name="left_attach">2</property>
@@ -1161,6 +1489,7 @@ Busqueda de Paciente</property>
                                     <child>
                                       <widget class="GtkComboBox" id="combobox_tipo_cirugia">
                                         <property name="visible">True</property>
+                                        <property name="can_focus">False</property>
                                       </widget>
                                       <packing>
                                         <property name="left_attach">1</property>
@@ -1177,6 +1506,7 @@ Busqueda de Paciente</property>
                                         <property name="visible">True</property>
                                         <property name="can_focus">True</property>
                                         <property name="receives_default">False</property>
+                                        <property name="use_action_appearance">False</property>
                                         <property name="use_underline">True</property>
                                         <property name="draw_indicator">True</property>
                                         <property name="group">radiobutton_med</property>
@@ -1190,39 +1520,51 @@ Busqueda de Paciente</property>
                                     </child>
                                   </widget>
                                   <packing>
+                                    <property name="expand">True</property>
+                                    <property name="fill">True</property>
                                     <property name="position">0</property>
                                   </packing>
                                 </child>
                                 <child>
                                   <widget class="GtkHBox" id="hbox2">
                                     <property name="visible">True</property>
+                                    <property name="can_focus">False</property>
                                     <child>
                                       <widget class="GtkRadioButton" id="radiobutton_diag_primeravez">
                                         <property name="label" translatable="yes">Diagnostico por Primera VEZ</property>
                                         <property name="visible">True</property>
                                         <property name="can_focus">True</property>
                                         <property name="receives_default">False</property>
+                                        <property name="use_action_appearance">False</property>
                                         <property name="active">True</property>
                                         <property name="draw_indicator">True</property>
                                         <property name="group">radiobutton_med</property>
                                       </widget>
                                       <packing>
+                                        <property name="expand">True</property>
+                                        <property name="fill">True</property>
                                         <property name="position">0</property>
                                       </packing>
                                     </child>
                                     <child>
                                       <widget class="GtkComboBox" id="combobox_diagprimeravez">
                                         <property name="visible">True</property>
+                                        <property name="can_focus">False</property>
                                       </widget>
                                       <packing>
+                                        <property name="expand">True</property>
+                                        <property name="fill">True</property>
                                         <property name="position">1</property>
                                       </packing>
                                     </child>
                                     <child>
                                       <widget class="GtkFixed" id="fixed1">
                                         <property name="visible">True</property>
+                                        <property name="can_focus">False</property>
                                       </widget>
                                       <packing>
+                                        <property name="expand">True</property>
+                                        <property name="fill">True</property>
                                         <property name="position">2</property>
                                       </packing>
                                     </child>
@@ -1230,13 +1572,18 @@ Busqueda de Paciente</property>
                                       <widget class="GtkFixed" id="fixed2">
                                         <property name="width_request">500</property>
                                         <property name="visible">True</property>
+                                        <property name="can_focus">False</property>
                                       </widget>
                                       <packing>
+                                        <property name="expand">True</property>
+                                        <property name="fill">True</property>
                                         <property name="position">3</property>
                                       </packing>
                                     </child>
                                   </widget>
                                   <packing>
+                                    <property name="expand">True</property>
+                                    <property name="fill">True</property>
                                     <property name="position">1</property>
                                   </packing>
                                 </child>
@@ -1250,6 +1597,7 @@ Busqueda de Paciente</property>
                         <child>
                           <widget class="GtkLabel" id="label108">
                             <property name="visible">True</property>
+                            <property name="can_focus">False</property>
                             <property name="label" translatable="yes">&lt;b&gt;Datos:&lt;/b&gt;</property>
                             <property name="use_markup">True</property>
                           </widget>
@@ -1259,35 +1607,44 @@ Busqueda de Paciente</property>
                         </child>
                       </widget>
                       <packing>
+                        <property name="expand">True</property>
+                        <property name="fill">True</property>
                         <property name="position">2</property>
                       </packing>
                     </child>
                   </widget>
                   <packing>
+                    <property name="expand">True</property>
+                    <property name="fill">True</property>
                     <property name="position">0</property>
                   </packing>
                 </child>
                 <child>
                   <widget class="GtkHBox" id="hbox1">
                     <property name="visible">True</property>
+                    <property name="can_focus">False</property>
                     <child>
                       <widget class="GtkButton" id="button_imprimir_protocolo">
                         <property name="width_request">120</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="receives_default">False</property>
+                        <property name="use_action_appearance">False</property>
                         <child>
                           <widget class="GtkAlignment" id="alignment27">
                             <property name="visible">True</property>
+                            <property name="can_focus">False</property>
                             <property name="xscale">0</property>
                             <property name="yscale">0</property>
                             <child>
                               <widget class="GtkHBox" id="hbox56">
                                 <property name="visible">True</property>
+                                <property name="can_focus">False</property>
                                 <property name="spacing">2</property>
                                 <child>
                                   <widget class="GtkImage" id="image6">
                                     <property name="visible">True</property>
+                                    <property name="can_focus">False</property>
                                     <property name="stock">gtk-print</property>
                                   </widget>
                                   <packing>
@@ -1299,6 +1656,7 @@ Busqueda de Paciente</property>
                                 <child>
                                   <widget class="GtkLabel" id="label119">
                                     <property name="visible">True</property>
+                                    <property name="can_focus">False</property>
                                     <property name="label" translatable="yes">Protocolo de 
   Admision</property>
                                     <property name="use_underline">True</property>
@@ -1326,18 +1684,22 @@ Busqueda de Paciente</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">False</property>
+                        <property name="use_action_appearance">False</property>
                         <child>
                           <widget class="GtkAlignment" id="alignment28">
                             <property name="visible">True</property>
+                            <property name="can_focus">False</property>
                             <property name="xscale">0</property>
                             <property name="yscale">0</property>
                             <child>
                               <widget class="GtkHBox" id="hbox57">
                                 <property name="visible">True</property>
+                                <property name="can_focus">False</property>
                                 <property name="spacing">2</property>
                                 <child>
                                   <widget class="GtkImage" id="image7">
                                     <property name="visible">True</property>
+                                    <property name="can_focus">False</property>
                                     <property name="stock">gtk-print</property>
                                   </widget>
                                   <packing>
@@ -1349,6 +1711,7 @@ Busqueda de Paciente</property>
                                 <child>
                                   <widget class="GtkLabel" id="label120">
                                     <property name="visible">True</property>
+                                    <property name="can_focus">False</property>
                                     <property name="label" translatable="yes">Consentimiento
    Informado</property>
                                     <property name="use_underline">True</property>
@@ -1376,18 +1739,22 @@ Busqueda de Paciente</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">False</property>
+                        <property name="use_action_appearance">False</property>
                         <child>
                           <widget class="GtkAlignment" id="alignment29">
                             <property name="visible">True</property>
+                            <property name="can_focus">False</property>
                             <property name="xscale">0</property>
                             <property name="yscale">0</property>
                             <child>
                               <widget class="GtkHBox" id="hbox58">
                                 <property name="visible">True</property>
+                                <property name="can_focus">False</property>
                                 <property name="spacing">2</property>
                                 <child>
                                   <widget class="GtkImage" id="image8">
                                     <property name="visible">True</property>
+                                    <property name="can_focus">False</property>
                                     <property name="stock">gtk-print</property>
                                   </widget>
                                   <packing>
@@ -1399,6 +1766,7 @@ Busqueda de Paciente</property>
                                 <child>
                                   <widget class="GtkLabel" id="label121">
                                     <property name="visible">True</property>
+                                    <property name="can_focus">False</property>
                                     <property name="label" translatable="yes">Contrato</property>
                                     <property name="use_underline">True</property>
                                   </widget>
@@ -1425,18 +1793,22 @@ Busqueda de Paciente</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">False</property>
+                        <property name="use_action_appearance">False</property>
                         <child>
                           <widget class="GtkAlignment" id="alignment32">
                             <property name="visible">True</property>
+                            <property name="can_focus">False</property>
                             <property name="xscale">0</property>
                             <property name="yscale">0</property>
                             <child>
                               <widget class="GtkHBox" id="hbox61">
                                 <property name="visible">True</property>
+                                <property name="can_focus">False</property>
                                 <property name="spacing">2</property>
                                 <child>
                                   <widget class="GtkImage" id="image11">
                                     <property name="visible">True</property>
+                                    <property name="can_focus">False</property>
                                     <property name="stock">gtk-dialog-info</property>
                                   </widget>
                                   <packing>
@@ -1448,6 +1820,7 @@ Busqueda de Paciente</property>
                                 <child>
                                   <widget class="GtkLabel" id="label124">
                                     <property name="visible">True</property>
+                                    <property name="can_focus">False</property>
                                     <property name="label" translatable="yes">Historia
 Clinica</property>
                                     <property name="use_underline">True</property>
@@ -1472,6 +1845,7 @@ Clinica</property>
                     <child>
                       <widget class="GtkFixed" id="fixed29">
                         <property name="visible">True</property>
+                        <property name="can_focus">False</property>
                       </widget>
                       <packing>
                         <property name="expand">False</property>
@@ -1482,8 +1856,11 @@ Clinica</property>
                     <child>
                       <widget class="GtkFixed" id="fixed30">
                         <property name="visible">True</property>
+                        <property name="can_focus">False</property>
                       </widget>
                       <packing>
+                        <property name="expand">True</property>
+                        <property name="fill">True</property>
                         <property name="position">5</property>
                       </packing>
                     </child>
@@ -1493,18 +1870,22 @@ Clinica</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">False</property>
+                        <property name="use_action_appearance">False</property>
                         <child>
                           <widget class="GtkAlignment" id="alignment22">
                             <property name="visible">True</property>
+                            <property name="can_focus">False</property>
                             <property name="xscale">0</property>
                             <property name="yscale">0</property>
                             <child>
                               <widget class="GtkHBox" id="hbox46">
                                 <property name="visible">True</property>
+                                <property name="can_focus">False</property>
                                 <property name="spacing">2</property>
                                 <child>
                                   <widget class="GtkImage" id="image1">
                                     <property name="visible">True</property>
+                                    <property name="can_focus">False</property>
                                     <property name="stock">gtk-save</property>
                                   </widget>
                                   <packing>
@@ -1516,6 +1897,7 @@ Clinica</property>
                                 <child>
                                   <widget class="GtkLabel" id="label113">
                                     <property name="visible">True</property>
+                                    <property name="can_focus">False</property>
                                     <property name="label" translatable="yes">Guardar</property>
                                     <property name="use_underline">True</property>
                                   </widget>
@@ -1543,6 +1925,7 @@ Clinica</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="receives_default">False</property>
+                        <property name="use_action_appearance">False</property>
                         <property name="use_stock">True</property>
                       </widget>
                       <packing>
@@ -1553,26 +1936,34 @@ Clinica</property>
                     </child>
                   </widget>
                   <packing>
+                    <property name="expand">True</property>
+                    <property name="fill">True</property>
                     <property name="position">1</property>
                   </packing>
                 </child>
               </widget>
               <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
                 <property name="position">0</property>
               </packing>
             </child>
           </widget>
           <packing>
+            <property name="expand">True</property>
+            <property name="fill">True</property>
             <property name="position">0</property>
           </packing>
         </child>
         <child>
           <widget class="GtkStatusbar" id="statusbar_caja">
             <property name="visible">True</property>
+            <property name="can_focus">False</property>
             <property name="has_resize_grip">False</property>
           </widget>
           <packing>
             <property name="expand">False</property>
+            <property name="fill">True</property>
             <property name="position">1</property>
           </packing>
         </child>

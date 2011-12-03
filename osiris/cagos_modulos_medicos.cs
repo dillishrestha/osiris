@@ -1507,11 +1507,8 @@ namespace osiris
 						        "alta_paciente,"+
             					"osiris_erp_movcargos.id_tipo_admisiones AS idtipoadmision,descripcion_admisiones,osiris_his_tipo_especialidad.descripcion_especialidad,"+
 				            	"osiris_empresas.lista_de_precio AS listadeprecio_empresa,"+
-				            	
 				            	"osiris_erp_cobros_enca.id_habitacion,to_char(osiris_his_habitaciones.numero_cuarto,'999999999') AS numerocuarto,osiris_his_habitaciones.descripcion_cuarto,osiris_his_habitaciones.id_tipo_admisiones AS idtipoadmisiones_habitacion,"+
-				            	
-				            	"osiris_his_paciente.sexo_paciente,"+
-				            	
+				            	"osiris_his_paciente.sexo_paciente,osiris_erp_cobros_enca.reservacion,"+			            	
 				            	"osiris_erp_cobros_enca.nombre_medico_tratante,"+
 				            	"osiris_erp_movcargos.nombre_de_cirugia,"+
 				            	"osiris_aseguradoras.lista_de_precio AS listadeprecio_aseguradora,"+
@@ -1535,8 +1532,7 @@ namespace osiris
 								"AND osiris_erp_cobros_enca.folio_de_servicio = "+(string) foliodeserv+";";
 				NpgsqlDataReader lector = comando.ExecuteReader ();
 				
-				if(lector.Read())
-				{
+				if(lector.Read()){
 					entry_fecha_admision.Text = (string) lector["fecha_registro"];
 					entry_hora_registro.Text = (string) lector["hora_registro"];
 					entry_fechahora_alta.Text = (string) lector["fechahora_alta"];
@@ -1588,7 +1584,17 @@ namespace osiris
 					//int foliointernodep = (int) lector["folio_de_servicio_dep"];
 					
 					if ( idhabitacion == 1){
-						//button_alta_paciente.Sensitive = false;
+						button_alta_paciente.Sensitive = false;
+					}
+					
+					if((bool) lector["reservacion"]){
+						button_busca_producto.Sensitive = false;
+						MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+						MessageType.Error, 
+						ButtonsType.Close, "Este procedimiento se encuentra RESERVADO \n"+
+									"solo el personal de CAJA podra liberarlo....");
+						msgBoxError.Run ();
+						msgBoxError.Destroy();
 					}
 					
 					PidPaciente = int.Parse(entry_pid_paciente.Text);		    // Toma la actualizacion del pid del paciente

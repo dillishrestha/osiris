@@ -46,7 +46,7 @@ namespace osiris
 		[Widget] Gtk.Button button_selecciona;
 		
 		//Declaracion de ventana de busqueda de productos
-		//[Widget] Gtk.Window busca_producto;
+		[Widget] Gtk.Window busca_producto;
 		[Widget] Gtk.TreeView lista_de_producto;
 		[Widget] Gtk.RadioButton radiobutton_nombre;
 		[Widget] Gtk.RadioButton radiobutton_codigo;
@@ -100,7 +100,7 @@ namespace osiris
 		protected Gtk.Window MyWin;
 		
 		class_conexion conexion_a_DB = new class_conexion();
-	    
+	    class_public classpublic = new class_public();
 		public movimientos_productos_paciente(string LoginEmp_, string NomEmpleado_, string AppEmpleado_, string ApmEmpleado_, string nombrebd_,int centrocosto)
 		{
 	    	LoginEmpleado = LoginEmp_;
@@ -266,8 +266,7 @@ namespace osiris
 				float preciomasiva;
 				float tomadescue;
 				float preciocondesc;
-				float valoriva = 15;
-												
+																
 				while (lector.Read()){
 					calculodeiva = 0;
 					preciomasiva = 0;
@@ -278,7 +277,7 @@ namespace osiris
 					preciocondesc = tomaprecio;
 					
 					if ((bool) lector["aplicar_iva"]){
-						calculodeiva = (tomaprecio * valoriva)/100;
+						calculodeiva = (tomaprecio * float.Parse(classpublic.ivaparaaplicar))/100;
 					}
 					if ((bool) lector["aplica_descuento"]){
 						preciocondesc = tomaprecio-((tomaprecio*tomadescue)/100);

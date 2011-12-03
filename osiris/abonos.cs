@@ -919,12 +919,34 @@ namespace osiris
 					    "AND osiris_erp_cobros_enca.folio_de_servicio = osiris_erp_cobros_deta.folio_de_servicio "+
 						"AND osiris_erp_cobros_deta.eliminado = 'false' "+
 					    "AND osiris_erp_abonos.folio_de_servicio = osiris_erp_cobros_deta.folio_de_servicio "+
-				        "AND osiris_erp_tipo_comprobante.id_tipo_comprobante = osiris_erp_abonos.id_tipo_comprobante ",nombrecajero );						
+				        "AND osiris_erp_tipo_comprobante.id_tipo_comprobante = osiris_erp_abonos.id_tipo_comprobante ",nombrecajero);						
 					}
 					
 					if((bool) model.GetValue(iterSelected, 10)){
 						// Pago en Caja total del procedimiento
 						Console.WriteLine("Es un Abono");
+						new caja_comprobante(int.Parse(recibo),"ABONO", folioservicio,"SELECT osiris_erp_cobros_enca.folio_de_servicio AS foliodeservicio,osiris_erp_cobros_enca.pid_paciente AS pidpaciente," +
+							"osiris_erp_abonos.numero_recibo_caja AS numerorecibo," +
+							"osiris_his_paciente.nombre1_paciente || ' ' || osiris_his_paciente.nombre2_paciente || ' ' || osiris_his_paciente.apellido_paterno_paciente || ' ' || osiris_his_paciente.apellido_materno_paciente AS nombre_completo," +
+							"to_char(osiris_his_paciente.fecha_nacimiento_paciente, 'dd-MM-yyyy') AS fechanacpaciente," +
+							"to_char(to_number(to_char(age('2011-12-01 10:13:42',osiris_his_paciente.fecha_nacimiento_paciente),'yyyy') ,'9999'),'9999') AS edadpaciente," +
+							"telefono_particular1_paciente,osiris_erp_abonos.observaciones AS observacionesvarias,osiris_erp_abonos.concepto_del_abono AS concepto_comprobante," +
+							"osiris_erp_cobros_enca.id_empresa,descripcion_empresa,osiris_erp_cobros_enca.nombre_medico_encabezado,to_char(monto_de_abono_procedimiento,'999999999.99') AS montodelabono," +
+							"descripcion_tipo_comprobante " +
+							"FROM osiris_erp_abonos,osiris_his_paciente,osiris_erp_cobros_enca,osiris_empresas,osiris_erp_tipo_comprobante "+
+							"WHERE osiris_erp_cobros_enca.id_empresa = osiris_empresas.id_empresa "+
+							"AND osiris_erp_abonos.folio_de_servicio = osiris_erp_cobros_enca.folio_de_servicio " +
+							"AND osiris_erp_abonos.id_tipo_comprobante = osiris_erp_tipo_comprobante.id_tipo_comprobante "+
+							"AND osiris_his_paciente.pid_paciente = osiris_erp_cobros_enca.pid_paciente ",nombrecajero);
+						
+						/*
+						SELECT osiris_erp_abonos.numero_recibo_caja,osiris_erp_abonos.folio_de_servicio,descripcion_tipo_comprobante,abono 
+						FROM osiris_erp_abonos,osiris_erp_cobros_enca,osiris_erp_tipo_comprobante,osiris_empresas
+						WHERE osiris_erp_abonos.folio_de_servicio = osiris_erp_cobros_enca.folio_de_servicio 
+						AND osiris_erp_abonos.id_tipo_comprobante = osiris_erp_tipo_comprobante.id_tipo_comprobante 
+						AND osiris_erp_cobros_enca.id_empresa = osiris_empresas.id_empresa
+						AND osiris_erp_abonos.folio_de_servicio = '8013';
+						*/
 					}
 				}
 			}

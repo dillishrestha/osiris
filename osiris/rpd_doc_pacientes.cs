@@ -63,6 +63,7 @@ namespace osiris
 		[Widget] Gtk.Entry entry_fechahora_alta;
 		[Widget] Gtk.Entry entry_pid_paciente;
 		[Widget] Gtk.Entry entry_nombre_paciente;
+		[Widget] Gtk.Entry entry_edad_paciente = null;
 		[Widget] Gtk.Entry entry_telefono_paciente;
 		[Widget] Gtk.Entry entry_diagnostico;
 		[Widget] Gtk.Entry entry_doctor;
@@ -186,6 +187,8 @@ namespace osiris
 		string connectionString;
 		string nombrebd;
 		
+		string fechanacimientopx;
+		string sexopacientepx;
 		class_conexion conexion_a_DB = new class_conexion();
 		
 		public impr_doc_pacientes(string LoginEmp, string NomEmpleado_, string AppEmpleado_, string ApmEmpleado_, string nombrebd_,string folioserv_,int control)//,string entry_nombre_medico) 
@@ -204,18 +207,19 @@ namespace osiris
 			busqueda_folio.Show();
 			
 			entry_folio_servicio.Text = folioserv_;
-			entry_fecha_admision.Sensitive = false;
-			entry_hora_registro.Sensitive = false;
-			entry_fechahora_alta.Sensitive = false;
-			entry_nombre_paciente.Sensitive = false;
-			entry_pid_paciente.Sensitive = false;
-			entry_telefono_paciente.Sensitive = false;
-			entry_diagnostico.Sensitive = false;
-			entry_doctor.Sensitive = false;
-			entry_especialidad.Sensitive = false;
-			entry_tipo_paciente.Sensitive = false;
-			entry_aseguradora.Sensitive = false;
-			entry_poliza.Sensitive = false;
+			entry_fecha_admision.IsEditable = false;
+			entry_hora_registro.IsEditable = false;
+			entry_fechahora_alta.IsEditable = false;
+			entry_nombre_paciente.IsEditable = false;
+			entry_pid_paciente.IsEditable = false;
+			entry_telefono_paciente.IsEditable = false;
+			entry_diagnostico.IsEditable = false;
+			entry_doctor.IsEditable = false;
+			entry_especialidad.IsEditable = false;
+			entry_tipo_paciente.IsEditable = false;
+			entry_aseguradora.IsEditable = false;
+			entry_poliza.IsEditable = false;
+			entry_edad_paciente.IsEditable = false;
 			//
 			entry_cirugia.Sensitive = false;
 			entry_medic_diag.Sensitive = false;
@@ -262,36 +266,21 @@ namespace osiris
 			button_historia_clinica.Clicked += new EventHandler(on_button_historia_clinica_clicked);
 			
 			// Sale de la ventana
-			button_salir.Clicked += new EventHandler(on_cierraventanas_clicked);
-	    	
-	    	checkbutton_camb_dats.Clicked  += new EventHandler(on_checkbutton_camb_dats_clicked);
-			
-			button_busc_medic_diag.Clicked += new EventHandler(on_button_busca_medicos_clicked);
-			
-			button_busc_medic_trat.Clicked += new EventHandler(on_button_busca_medicos_clicked);
-			
-			button_busc_diag.Clicked += new EventHandler(on_button_busc_diag_clicked);
-			
-			button_diag_final.Clicked += new EventHandler(on_button_busc_diag_final_clicked);
-			
-			button_busc_cirugia.Clicked += new EventHandler(on_button_busc_cirugia_clicked);
-			
-			button_guardar.Clicked += new EventHandler(on_button_guardar_clicked);
-			//radiobuttons pacientes:
-			radiobutton_med.Clicked += new EventHandler(on_radio_clicked);
-			
-			radiobutton_med_trat.Clicked += new EventHandler(on_radio_clicked);
-			
-			radiobutton_diag.Clicked += new EventHandler(on_radio_clicked);
-			
-			radiobutton_diag_cie10.Clicked += new EventHandler(on_radio_clicked);
-		
-			radiobutton_diag_final.Clicked += new EventHandler(on_radio_clicked);
-			
-			radiobutton_cirugia.Clicked += new EventHandler(on_radio_clicked);
-			
-			radiobutton_tipo_cirugia.Clicked += new EventHandler(on_radio_clicked);
-			
+			button_salir.Clicked += new EventHandler(on_cierraventanas_clicked);	    	
+	    	checkbutton_camb_dats.Clicked  += new EventHandler(on_checkbutton_camb_dats_clicked);			
+			button_busc_medic_diag.Clicked += new EventHandler(on_button_busca_medicos_clicked);			
+			button_busc_medic_trat.Clicked += new EventHandler(on_button_busca_medicos_clicked);			
+			button_busc_diag.Clicked += new EventHandler(on_button_busc_diag_clicked);			
+			button_diag_final.Clicked += new EventHandler(on_button_busc_diag_final_clicked);			
+			button_busc_cirugia.Clicked += new EventHandler(on_button_busc_cirugia_clicked);			
+			button_guardar.Clicked += new EventHandler(on_button_guardar_clicked);			//radiobuttons pacientes:
+			radiobutton_med.Clicked += new EventHandler(on_radio_clicked);			
+			radiobutton_med_trat.Clicked += new EventHandler(on_radio_clicked);			
+			radiobutton_diag.Clicked += new EventHandler(on_radio_clicked);			
+			radiobutton_diag_cie10.Clicked += new EventHandler(on_radio_clicked);		
+			radiobutton_diag_final.Clicked += new EventHandler(on_radio_clicked);			
+			radiobutton_cirugia.Clicked += new EventHandler(on_radio_clicked);			
+			radiobutton_tipo_cirugia.Clicked += new EventHandler(on_radio_clicked);			
 			radiobutton_diag_primeravez.Clicked += new EventHandler(on_radio_clicked);
 						   	
 			statusbar_caja.Pop(0);
@@ -370,7 +359,8 @@ namespace osiris
 		
 		void on_button_historia_clinica_clicked(object sender, EventArgs args)
 		{
-			new osiris.historia_clinica(entry_nombre_paciente.Text,entry_pid_paciente.Text,"edad",LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,entry_fecha_admision.Text,"entry_fecha_nacimiento.Text");
+			new osiris.historia_clinica(entry_nombre_paciente.Text,entry_pid_paciente.Text,entry_edad_paciente.Text,
+			                            LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,entry_fecha_admision.Text,"entry_fecha_nacimiento.Text");
 		}
 		
 		void on_radio_clicked (object sender, EventArgs args)
@@ -1151,7 +1141,9 @@ namespace osiris
             				"nombre1_paciente,nombre2_paciente,apellido_paterno_paciente,apellido_materno_paciente,"+
             				"telefono_particular1_paciente,numero_poliza,folio_de_servicio_dep,"+
             				"nombre_de_cirugia,"+
-            				"descripcion_diagnostico_movcargos,id_tipo_cirugia,"+
+							"to_char(to_number(to_char(age('"+DateTime.Now.ToString("yyyy-MM-dd")+"',osiris_his_paciente.fecha_nacimiento_paciente),'yyyy') ,'9999'),'9999') AS edad_paciente, "+
+            				"to_char(fecha_nacimiento_paciente,'yyyy-MM-dd') AS fech_nacimiento,sexo_paciente,"+
+							"descripcion_diagnostico_movcargos,id_tipo_cirugia,"+
             				"nombre_medico_encabezado,"+
             				"id_medico_tratante,nombre_medico_tratante,"+
             				"to_char(osiris_erp_cobros_enca.fechahora_creacion,'dd-MM-yyyy') AS fecha_registro,"+
@@ -1207,7 +1199,7 @@ namespace osiris
 						entry_tipo_paciente.Text = (string) lector["descripcion_tipo_paciente"];
 						entry_aseguradora.Text = (string) lector["descripcion_aseguradora"];
 						
-						
+						entry_edad_paciente.Text = (string) lector["edad_paciente"];
 						
 						entry_poliza.Text =  (string) lector["numero_poliza"];
 						id_tipopaciente = (int) lector["idtipopaciente"];

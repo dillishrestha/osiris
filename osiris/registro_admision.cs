@@ -435,9 +435,8 @@ namespace osiris
 				if(idempresa_paciente > 0 ){
 					combobox_paquete_check_up.Sensitive = true;
 					button_admision.Sensitive = false;
-					llenado_combobox(0,"",combobox_paquete_check_up,"sql","SELECT * FROM osiris_his_tipo_cirugias WHERE paquete_checkup = 'true';","descripcion_cirugia","id_tipo_cirugia",args_args,args_id_array);
-					
-					
+					llenado_combobox(1,"",combobox_paquete_check_up,"sql","SELECT * FROM osiris_his_tipo_cirugias WHERE paquete_checkup = 'true';","descripcion_cirugia","id_tipo_cirugia",args_args,args_id_array);
+				
 				}
 			}else{
 				combobox_paquete_check_up.Sensitive = false;

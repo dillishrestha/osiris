@@ -459,8 +459,7 @@ namespace osiris
 								MessageType.Error, 
 								ButtonsType.Close, "seleccione un departamento");
 						msgBoxError.Run ();				msgBoxError.Destroy();
-				}
-				
+				}				
 			}
 		}
 		

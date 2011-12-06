@@ -58,12 +58,13 @@ namespace osiris
 	    [Widget] Gtk.Entry entry_dia2 = null;
 	    [Widget] Gtk.Entry entry_mes2 = null;
 	    [Widget] Gtk.Entry entry_ano2 = null;
-		[Widget]Gtk.CheckButton checkbutton_todos_productos = null;
-		[Widget]Gtk.CheckButton checkbutton_todos_departamentos = null;
+		[Widget] Gtk.CheckButton checkbutton_todos_productos = null;
+		[Widget] Gtk.CheckButton checkbutton_todos_departamentos = null;
 		[Widget] Gtk.ComboBox combobox_departamentos = null;
 		[Widget] Gtk.Button button_busca_producto = null;
 		[Widget] Gtk.TreeView lista_producto_seleccionados = null;
 		[Widget] Gtk.TreeView lista_resumen_productos = null;
+		[Widget] Gtk.Button button_consultar_costos = null;
 		
 		string connectionString;						
 		string nombrebd;
@@ -73,7 +74,12 @@ namespace osiris
     	string ApmEmpleado;
 		
 		string[] args_args = {""};
-		int[] args_id_array = {0,1,2,3,4,5,6,7,8};
+		int[] args_id_array = {0,1,2,3,4,5,6,7,8};		
+			    	
+    	string query_departamento = "AND osiris_his_tipo_admisiones.descripcion_admisiones = '0' ";
+    	int id_tipo_admisiones = 0; 
+		string query1 = "" ;
+		string titulopagina= "MOVIMIENTOS DE PRODUCOS";
 		
 		TreeStore treeViewEngineBusca2;	// Para la busqueda de Productos
 		TreeStore treeViewEngineSelec;	// Lista de Productos seleccionados
@@ -115,19 +121,18 @@ namespace osiris
 			button_busca_producto.Clicked += new EventHandler(on_button_busca_producto_clicked);
 			checkbutton_todos_departamentos.Clicked += new EventHandler(on_checkbutton_todos_departamentos_clicked);
 			checkbutton_todos_productos.Clicked += new EventHandler(on_checkbutton_todos_productos_clicked);
-			
+			button_consultar_costos.Clicked += new EventHandler(on_button_consultar_costos_clicked);
 			llenado_combobox(1,"",combobox_departamentos,"sql","SELECT * FROM osiris_almacenes WHERE activo = 'true' ORDER BY descripcion_almacen;","descripcion_almacen","id_almacen",args_args,args_id_array);
-
 		}
 		
 		void on_checkbutton_todos_departamentos_clicked (object sender, EventArgs args)
 		{   
 			if (checkbutton_todos_departamentos.Active == true){
 				combobox_departamentos.Sensitive = false;
-		    	//query_departamento = "  "; //
+		    	query_departamento = "  "; //
 		    }else{
 				combobox_departamentos.Sensitive = true;
-				//query_departamento = "AND osiris_erp_cobros_deta.id_tipo_admisiones = '"+id_tipo_admisiones.ToString()+"' ";	
+				query_departamento = "AND osiris_his_solicitudes_deta.id_almacen = '"+id_tipo_admisiones.ToString()+"' ";	
 			}
 		}
 		
@@ -195,6 +200,11 @@ namespace osiris
 			if (onComboBoxChanged.GetActiveIter (out iter)){
 				switch (onComboBoxChanged.Name.ToString()){	
 				case "combobox_departamentos":
+					id_tipo_admisiones = (int) combobox_departamentos.Model.GetValue(iter,1);
+			    	query_departamento = " AND osiris_his_solicitudes_deta.id_almacen = '"+Convert.ToString((int) combobox_departamentos.Model.GetValue(iter,1)).ToString()+"' ";		    			    	
+			    	if (this.checkbutton_todos_departamentos .Active == true){
+						query_departamento = " ";
+					}
 					break;
 				}
 			}
@@ -204,12 +214,9 @@ namespace osiris
 		void crea_treeview_selec()
 		{
 			treeViewEngineSelec = new TreeStore(typeof(string), 
-												typeof(string));
-												
-			lista_producto_seleccionados.Model = treeViewEngineSelec;
-			
-			lista_producto_seleccionados.RulesHint = true;
-			
+												typeof(string));												
+			lista_producto_seleccionados.Model = treeViewEngineSelec;			
+			lista_producto_seleccionados.RulesHint = true;			
 			TreeViewColumn col_codigo_prod = new TreeViewColumn();
 			CellRendererText cellr0 = new CellRendererText();
 			col_codigo_prod.Title = "Codigo Prod."; // titulo de la cabecera de la columna, si está visible
@@ -232,6 +239,87 @@ namespace osiris
 			col_descripcion,
 		}
 		
+		void on_button_consultar_costos_clicked (object sender, EventArgs args)         
+		{
+			string query_fechas = "AND to_char(osiris_his_solicitudes_deta.fechahora_solicitud,'yyyy-MM-dd') >= '"+entry_ano1.Text.Trim()+"-"+entry_mes1.Text+"-"+entry_dia1.Text+"' "+
+									            "AND to_char(osiris_his_solicitudes_deta.fechahora_solicitud,'yyyy-MM-dd') <= '"+entry_ano2.Text.Trim()+"-"+entry_mes2.Text+"-"+entry_dia2.Text+"' ";
+			string productos_seleccionado = "";
+			string var_paso = "";
+			
+			// Validadndo que tenga algun producto seleccionado en la lista
+			treeViewEngineResumen.Clear();
+			TreeIter iter;
+			if (this.checkbutton_todos_productos.Active == false ){
+				if (this.treeViewEngineSelec.GetIterFirst (out iter)){
+					if (id_tipo_admisiones != 0 || this.checkbutton_todos_departamentos.Active == true){ 
+						// Llenando string de productos
+						var_paso = (string) lista_producto_seleccionados.Model.GetValue (iter,0);
+						productos_seleccionado = var_paso.Trim();							
+			 			while (treeViewEngineSelec.IterNext(ref iter)){
+		 					var_paso = (string) lista_producto_seleccionados.Model.GetValue (iter,0);
+		 					productos_seleccionado += "','"+var_paso.Trim();
+		 				}
+		 				llena_treeview_aplicados("AND osiris_his_solicitudes_deta.id_producto IN('"+productos_seleccionado+"') ",query_fechas);					
+					}else{
+						MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+								MessageType.Error, 
+								ButtonsType.Close, "Seleccione un departamento");
+						msgBoxError.Run ();				msgBoxError.Destroy();
+					}					
+				}
+			}else{
+				if (id_tipo_admisiones != 0 || this.checkbutton_todos_departamentos.Active == true){
+ 					llena_treeview_aplicados(" ",query_fechas);
+				}else{
+						MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+								MessageType.Error, 
+								ButtonsType.Close, "seleccione un departamento");
+						msgBoxError.Run ();				msgBoxError.Destroy();
+				}
+			}
+		}
+		
+		void llena_treeview_aplicados(string productos_seleccionado_,string query_fechas_)
+		{	
+			
+			NpgsqlConnection conexion;
+			conexion = new NpgsqlConnection (connectionString+nombrebd);
+		            
+			// Verifica que la base de datos este conectada
+			try{
+				conexion.Open ();
+				NpgsqlCommand comando; 
+				comando = conexion.CreateCommand ();
+		        query1 = "SELECT to_char(osiris_his_solicitudes_deta.id_producto,'999999999999') AS idproducto,descripcion_almacen,descripcion_producto,cantidad_solicitada,folio_de_solicitud," +
+						"to_char(osiris_his_solicitudes_deta.fechahora_solicitud,'dd-MM-yyyy HH24:mi') AS fechahorasolic,osiris_his_solicitudes_deta.id_almacen "+
+		        		"FROM osiris_his_solicitudes_deta,osiris_productos,osiris_almacenes " +
+		        		"WHERE osiris_his_solicitudes_deta.id_producto = osiris_productos.id_producto "+
+						"AND osiris_his_solicitudes_deta.id_almacen = osiris_almacenes.id_almacen "+
+						productos_seleccionado_+
+						 query_fechas_+
+						query_departamento;
+				comando.CommandText = query1;
+				Console.WriteLine(query1);
+				NpgsqlDataReader lector = comando.ExecuteReader ();
+				while (lector.Read()){
+					treeViewEngineResumen.AppendValues ((string) lector["descripcion_producto"],
+														(string) lector["idproducto"],
+														(string) lector["folio_de_solicitud"].ToString(),
+					                                    (string) lector["descripcion_almacen"].ToString(),
+					                                    (string) lector["cantidad_solicitada"].ToString());
+														
+				 	//total_aplicado += float.Parse(((string) lector["cantidadaplicada"]).Trim());
+				}
+				//this.entry_total_aplicado.Text = total_aplicado.ToString(); 
+			}catch (NpgsqlException ex){
+	 			MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+												MessageType.Error, 
+												ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
+				msgBoxError.Run ();		msgBoxError.Destroy();
+			}
+			conexion.Close ();
+		}
+		
 		//LISTA_RESUMEN_PRODUCTOS///   
 		void crea_treeview_resumen()
 		{
@@ -251,63 +339,63 @@ namespace osiris
 		       
             TreeViewColumn col_cantidad = new TreeViewColumn();
 			CellRendererText cellr0 = new CellRendererText();
-			col_cantidad.Title = "Cantidad Aplicada"; // titulo de la cabecera de la columna, si está visible
+			col_cantidad.Title = "Producto"; // titulo de la cabecera de la columna, si está visible
 			col_cantidad.PackStart(cellr0, true);
 			col_cantidad.AddAttribute (cellr0, "text", 0);
 			col_cantidad.SortColumnId = (int) Column_resumen.col_cantidad;
             
             TreeViewColumn col_id_producto = new TreeViewColumn();
 			CellRendererText cellr1 = new CellRendererText();
-			col_id_producto.Title = "ID Producto."; // titulo de la cabecera de la columna, si está visible
+			col_id_producto.Title = "Codigo"; // titulo de la cabecera de la columna, si está visible
 			col_id_producto.PackStart(cellr1, true);
 			col_id_producto.AddAttribute (cellr1, "text", 1);
 			col_id_producto.SortColumnId = (int) Column_resumen.col_id_producto;
 			
 			TreeViewColumn col_descripcion = new TreeViewColumn();
 			CellRendererText cellr2 = new CellRendererText();
-			col_descripcion.Title = "Descripcion de Producto"; // titulo de la cabecera de la columna, si está visible
+			col_descripcion.Title = "N° Solicitud"; // titulo de la cabecera de la columna, si está visible
 			col_descripcion.PackStart(cellr2, true);
 			col_descripcion.AddAttribute (cellr2, "text", 2);
 			col_descripcion.SortColumnId = (int) Column_resumen.col_descripcion;
 			
 			TreeViewColumn col_folio_de_servicio = new TreeViewColumn();
 			CellRendererText cellr3 = new CellRendererText();
-			col_folio_de_servicio.Title = "Num.Atencion"; // titulo de la cabecera de la columna, si está visible
+			col_folio_de_servicio.Title = "Sub-Almacen"; // titulo de la cabecera de la columna, si está visible
 			col_folio_de_servicio.PackStart(cellr3, true);
 			col_folio_de_servicio.AddAttribute (cellr3, "text", 3);
 			col_folio_de_servicio.SortColumnId = (int) Column_resumen. col_folio_de_servicio;
 			
 			TreeViewColumn col_pid_paciente = new TreeViewColumn();
 			CellRendererText cellr4 = new CellRendererText();
-			col_pid_paciente.Title = "PID Paciente"; // titulo de la cabecera de la columna, si está visible
+			col_pid_paciente.Title = "Canti. Solic."; // titulo de la cabecera de la columna, si está visible
 			col_pid_paciente.PackStart(cellr4, true);
 			col_pid_paciente.AddAttribute (cellr4, "text", 4);
 			col_pid_paciente.SortColumnId = (int) Column_resumen. col_pid_paciente;
 			
 			TreeViewColumn col_nombre_paciente = new TreeViewColumn();
 			CellRendererText cellr5 = new CellRendererText();
-			col_nombre_paciente.Title = "Nombre Paciente"; // titulo de la cabecera de la columna, si está visible
+			col_nombre_paciente.Title = "Fech.Solic."; // titulo de la cabecera de la columna, si está visible
 			col_nombre_paciente.PackStart(cellr5, true);
 			col_nombre_paciente.AddAttribute (cellr5, "text", 5);
 			col_nombre_paciente.SortColumnId = (int) Column_resumen. col_nombre_paciente;
 			
 			TreeViewColumn col_id_departamento = new TreeViewColumn();
 			CellRendererText cellr6 = new CellRendererText();
-			col_id_departamento.Title = "id Departamento"; // titulo de la cabecera de la columna, si está visible
+			col_id_departamento.Title = "Fech.Autoriz."; // titulo de la cabecera de la columna, si está visible
 			col_id_departamento.PackStart(cellr6, true);
 			col_id_departamento.AddAttribute (cellr6, "text", 6);
 			col_id_departamento.SortColumnId = (int) Column_resumen.col_id_departamento;
 			
 			TreeViewColumn col_departamento = new TreeViewColumn();
 			CellRendererText cellr7 = new CellRendererText();
-			col_departamento.Title = "Departamento"; // titulo de la cabecera de la columna, si está visible
+			col_departamento.Title = "Sub-Almacen"; // titulo de la cabecera de la columna, si está visible
 			col_departamento.PackStart(cellr7, true);
 			col_departamento.AddAttribute (cellr7, "text", 7);
 			col_departamento.SortColumnId = (int) Column_resumen.col_departamento;
 			
 			TreeViewColumn col_fecha_cargo = new TreeViewColumn();
 			CellRendererText cellr8 = new CellRendererText();
-			col_fecha_cargo.Title = "Fecha de Cargo"; // titulo de la cabecera de la columna, si está visible
+			col_fecha_cargo.Title = "N° Atencion"; // titulo de la cabecera de la columna, si está visible
 			col_fecha_cargo.PackStart(cellr8, true);
 			col_fecha_cargo.AddAttribute (cellr8, "text", 8);
 			col_fecha_cargo.SortColumnId = (int) Column_resumen.col_fecha_cargo;

@@ -1,4 +1,3 @@
-///////////////////////////////////////////////////////
 // created on 31/01/2010 at 10:00 am
 // Sistema Hospitalario OSIRIS
 // Monterrey - Mexico
@@ -35,7 +34,7 @@ using Glade;
 
 namespace osiris
 {
-	public class envios_a_subalmacenes
+	public class movimientos_productos
 	{
 		// Boton general para salir de las ventanas
 		[Widget] Gtk.Button button_salir = null;
@@ -98,7 +97,7 @@ namespace osiris
 		class_conexion conexion_a_DB = new class_conexion();
 		class_public classpublic = new class_public();
 		
-		public envios_a_subalmacenes (string LoginEmp_,string NomEmpleado_,string AppEmpleado_,string ApmEmpleado_,string nombrebd_,string tipo_reporte_,string query_sql_)
+		public movimientos_productos (string LoginEmp_,string NomEmpleado_,string AppEmpleado_,string ApmEmpleado_,string nombrebd_,string tipo_reporte_,string query_sql_)
 		{
 			LoginEmpleado = LoginEmp_;
     		NomEmpleado = NomEmpleado_;
@@ -112,7 +111,7 @@ namespace osiris
 			gxml.Autoconnect (this);
 	        // Muestra ventana de Glade:
 			mov_productos.Show();
-			mov_productos.Title = "Movimientos de Productos Enviados a los Sub-Almacenes";
+			mov_productos.Title = "Movimientos de Productos";
 			entry_dia1.Text = DateTime.Now.ToString("dd");
 			entry_mes1.Text = DateTime.Now.ToString("MM");
 			entry_ano1.Text = DateTime.Now.ToString("yyyy");				
@@ -127,15 +126,20 @@ namespace osiris
 			crea_treeview_selec();
 			
 			if(tipo_reporte_ == "envios_subalamcenes"){
+				mov_productos.Title = "Movimientos de Productos Enviados a los Sub-Almacenes";
 				crea_treeview_envios();
 				llenado_combobox(1,"",combobox_departamentos,"sql","SELECT * FROM osiris_almacenes WHERE activo = 'true' ORDER BY descripcion_almacen;","descripcion_almacen","id_almacen",args_args,args_id_array);
 			}
 			if(tipo_reporte == "cargos_pacientes"){
+				mov_productos.Title = "Cargos de Productos a Pacientes (Sub-Almacenes)";
 				crea_treeview_cargos_pacientes();
 				llenado_combobox(1,"",combobox_departamentos,"sql","SELECT * FROM osiris_his_tipo_admisiones "+
 		               						"WHERE cuenta_mayor = 4000 "+
 		               						"ORDER BY descripcion_admisiones;","descripcion_admisiones","id_tipo_admisiones",args_args,args_id_array);
 				button_imprimir_movimiento.Clicked += new EventHandler(on_button_imprimir_movimiento_clicked);
+			}
+			if(tipo_reporte == "productos_requisados"){
+				mov_productos.Title = "Mov. Prod. Requisados de Almacen a Compras";
 			}
 			//  Sale de la ventana:
 			button_salir.Clicked += new EventHandler(on_cierraventanas_clicked);

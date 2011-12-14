@@ -369,25 +369,7 @@ namespace osiris
 		
 		void on_button_busca_requisiones_clicked(object sender, EventArgs args)
 		{
-		  	Glade.XML gxml = new Glade.XML (null, "almacen_costos_compras.glade", "envio_almacenes", null);
-			gxml.Autoconnect (this);
-				
-			entry_dia_inicio.Text = DateTime.Now.ToString("dd");
-			entry_mes_inicio.Text = DateTime.Now.ToString("MM");
-			entry_ano_inicio.Text = DateTime.Now.ToString("yyyy");
-				
-			entry_dia_termino.Text = DateTime.Now.ToString("dd");
-			entry_mes_termino.Text = DateTime.Now.ToString("MM");
-			entry_ano_termino.Text = DateTime.Now.ToString("yyyy");
-				
-			hbox1.Hide();
-			hbox2.Hide();
-			
-			button_salir.Clicked += new EventHandler(on_cierraventanas_clicked);
-			//button_buscar.Clicked += new EventHandler(on_buscar_clicked);
-           	//button_rep.Clicked += new EventHandler(on_button_rep_clicked);
-          	//checkbutton_todos_envios.Clicked += new EventHandler(on_checkbutton_todos_envios);
-          	checkbutton_seleccion_presupuestos.Hide();			
+		  	new osiris.movimientos_productos(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,"productos_requisados","");
 		}
 				
 		void on_checkbutton_nueva_requisicion_clicked(object sender, EventArgs args)

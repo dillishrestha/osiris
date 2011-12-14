@@ -114,7 +114,7 @@
     <File subtype="Code" buildaction="Compile" name="envio_mat_subalmacenes.cs" />
     <File subtype="Code" buildaction="Compile" name="inv_sub_almacen.cs" />
     <File subtype="Code" buildaction="Compile" name="requisicion_compras.cs" />
-    <File subtype="Code" buildaction="Compile" name="movimientos_productos_paciente.cs" />
+    <File subtype="Code" buildaction="Compile" name="movimientos_productos.cs" />
     <File subtype="Code" buildaction="Compile" name="historia_clinica.cs" />
     <File subtype="Code" buildaction="Compile" name="hospitalizacion.cs" />
     <File subtype="Code" buildaction="Compile" name="laboratorio.cs" />
@@ -153,7 +153,6 @@
     <File subtype="Code" buildaction="Compile" name="rpt_solicitud_labrx.cs" />
     <File subtype="Code" buildaction="Compile" name="vision.cs" />
     <File subtype="Code" buildaction="Compile" name="lista_ordenes_compra.cs" />
-    <File subtype="Code" buildaction="Compile" name="envios_a_subalmacenes.cs" />
     <File subtype="Code" buildaction="Compile" name="rpt_notas_medicas.cs" />
     <File subtype="Code" buildaction="Compile" name="class_crea_ods.cs" />
     <File subtype="Code" buildaction="Nothing" name="leeme.txt" />

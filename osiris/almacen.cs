@@ -131,7 +131,8 @@ namespace osiris
 		
 		void on_button_productos_aplicados_clicked(object sender, EventArgs args)
 		{
-			new osiris.movimientos_productos_paciente(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,0);
+			//new osiris.movimientos_productos(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,0);
+			new osiris.movimientos_productos(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,"cargos_pacientes","");
 		}
 		
 		void on_button_envios_subalmacenes_clicked(object sender, EventArgs args)
@@ -147,8 +148,7 @@ namespace osiris
 		void on_button_productos_enviados_clicked(object sender, EventArgs args)
 		{
 			// Productos enviado a los sub-almacenes
-			new osiris.envios_a_subalmacenes(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
-			
+			new osiris.movimientos_productos(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,"envios_subalamcenes","");
 		}
 		
 		void on_button_traspaso_subalmacenes_clicked(object sender, EventArgs args)

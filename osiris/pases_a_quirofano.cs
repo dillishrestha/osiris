@@ -56,6 +56,28 @@ namespace osiris
 		string connectionString;
 		string nombrebd;
 		
+		// variable publicas
+		int pidpaciente;
+		int folioservicio;
+		int idcentro_costo;
+		string LoginEmpleado;
+		int idtipopaciente;
+		int idempresa_paciente;
+		int idaseguradora_paciente;		
+		string diagnostico_movcargo = "";
+		string nombrecirugia_movcargo = "";
+		
+		string query_slq = "SELECT osiris_erp_pases_qxurg.id_secuencia,osiris_erp_pases_qxurg.folio_de_servicio AS foliodeservicio," +
+							"to_char(osiris_erp_cobros_enca.pid_paciente,'9999999999') AS pidpaciente,"+
+							"nombre1_paciente || ' ' || nombre2_paciente || ' ' || apellido_paterno_paciente || ' ' || apellido_materno_paciente AS nombre_completo,"+
+							"to_char(osiris_erp_pases_qxurg.fechahora_creacion,'yyyy-MM-dd HH24:mi:ss') AS fechahoracrea," +
+							"osiris_erp_pases_qxurg.id_tipo_admisiones,descripcion_admisiones," +
+							 "id_quien_creo " +
+						 	"FROM osiris_erp_pases_qxurg,osiris_his_tipo_admisiones,osiris_erp_cobros_enca,osiris_his_paciente "+
+							"WHERE osiris_erp_pases_qxurg.id_tipo_admisiones = osiris_his_tipo_admisiones.id_tipo_admisiones " +
+							"AND osiris_erp_pases_qxurg.pid_paciente = osiris_his_paciente.pid_paciente "+
+							"AND osiris_erp_pases_qxurg.folio_de_servicio = osiris_erp_cobros_enca.folio_de_servicio ";
+		
 		// Boton general para salir de las ventanas
 		// Todas la ventanas en glade este boton debe estra declarado identico
 		[Widget] Gtk.Button button_salir;
@@ -85,13 +107,20 @@ namespace osiris
 		class_conexion conexion_a_DB = new class_conexion();
 		class_public classpublic = new class_public();
 
-		public pases_a_quirofano (int pid_paciente_,int folioservicio_,int idcentro_costo_,string LoginEmpleado_,
-		                          int id_tipopaciente_,int idempresa_paciente_,int idaseguradora_paciente)
+		public pases_a_quirofano (int pidpaciente_,int folioservicio_,int idcentro_costo_,string LoginEmpleado_,
+		                          int idtipopaciente_,int idempresa_paciente_,int idaseguradora_paciente_)
 		{
 			escala_en_linux_windows = classpublic.escala_linux_windows;
 			connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
 			nombrebd = conexion_a_DB._nombrebd;
-			
+			pidpaciente = pidpaciente_;
+			folioservicio = folioservicio_;
+			idcentro_costo = idcentro_costo_;
+			LoginEmpleado = LoginEmpleado_;
+			idtipopaciente = idtipopaciente_;
+			idempresa_paciente = idempresa_paciente_;
+			idaseguradora_paciente = idaseguradora_paciente_;
+				
 			Glade.XML gxml = new Glade.XML (null, "almacen_costos_compras.glade", "envio_almacenes", null);
 			gxml.Autoconnect (this);
 			
@@ -186,7 +215,27 @@ namespace osiris
 		
 		void llenado_treeview_pases()
 		{
-			
+			treeViewEnginePases.Clear();
+			NpgsqlConnection conexion;
+			conexion = new NpgsqlConnection (connectionString+nombrebd);
+			try{
+				conexion.Open ();
+				NpgsqlCommand comando; 
+				comando = conexion.CreateCommand();
+				comando.CommandText = query_slq + "AND osiris_erp_pases_qxurg.folio_de_servicio = '"+ folioservicio.ToString().Trim() +"';";		
+				NpgsqlDataReader lector = comando.ExecuteReader ();
+				while(lector.Read()){
+					treeViewEnginePases.AppendValues(lector["id_secuencia"].ToString().Trim(),
+					                                 lector["fechahoracrea"].ToString().Trim(),
+					                                 lector["id_quien_creo"],
+					                                 lector["descripcion_admisiones"]);
+				}
+			}catch (NpgsqlException ex){
+				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+							MessageType.Error, ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
+				msgBoxError.Run ();		msgBoxError.Destroy();				
+			}
+			conexion.Close();			
 		}
 		
 		void on_create_pases_qxurg_clicked (object sender, EventArgs args)
@@ -205,9 +254,30 @@ namespace osiris
 						conexion.Open ();
 						NpgsqlCommand comando; 
 						comando = conexion.CreateCommand ();
-						comando.CommandText = "INSERT INTO ";
+						comando.CommandText = "INSERT INTO osiris_erp_pases_qxurg(" +
+							"pid_paciente," +
+							"folio_de_servicio," +
+							"fechahora_creacion," +
+							"id_tipo_admisiones," +
+							"id_quien_creo," +
+							"observaciones," +
+							"id_tipo_paciente," +
+							"id_empresa," +
+							"id_aseguradora" +
+							") VALUES ('"+
+							pidpaciente.ToString().Trim()+"','"+
+							folioservicio.ToString().Trim()+"','"+
+							DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"','"+
+							idcentro_costo.ToString().Trim()+"','"+
+							LoginEmpleado+"','"+
+							""+"','"+
+							idtipopaciente.ToString().Trim()+"','"+
+							idempresa_paciente.ToString().Trim()+"','"+
+							idaseguradora_paciente.ToString().Trim()+
+							"');";
 						
-						//comando.ExecuteNonQuery();					comando.Dispose();
+						comando.ExecuteNonQuery();					comando.Dispose();
+						llenado_treeview_pases();
 					}catch (NpgsqlException ex){
 						MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
 							MessageType.Error, ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
@@ -257,10 +327,72 @@ namespace osiris
 			fontSize = 8.0;
 			desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;
 			
-			imprime_encabezado(cr,layout);
+			NpgsqlConnection conexion; 
+	        conexion = new NpgsqlConnection (connectionString+nombrebd);
+	        // Verifica que la base de datos este conectada
+	        try{
+	 			conexion.Open ();
+	        	NpgsqlCommand comando; 
+	        	comando = conexion.CreateCommand (); 
+	           	comando.CommandText = query_slq + "AND osiris_erp_pases_qxurg.folio_de_servicio = '"+ folioservicio.ToString().Trim() +"';";
+	        	Console.WriteLine(comando.CommandText);
+				NpgsqlDataReader lector = comando.ExecuteReader();
+				if (lector.Read()){
+					
+					imprime_encabezado(cr,
+					                   layout,
+					                   lector["descripcion_admisiones"].ToString().Trim(),
+					                   lector["id_secuencia"].ToString().Trim(),
+					                   lector["fechahoracrea"].ToString().Trim(),
+					               		lector["foliodeservicio"].ToString().Trim(),
+					                   lector["pidpaciente"].ToString().Trim(),
+					                   lector["nombre_completo"].ToString().Trim(),
+					               	"",
+					                   "",
+					                   "",
+					               "sexopaciente",
+					                   "diagnostico_movcargo",
+					                   "nombrecirugia_movcargo",
+					                   "",
+					               "",
+					                  "",
+					               "");
+					/*
+					imprime_encabezado(cr,
+									layout,
+									(string) lector["area_quien_solicita"],
+					                   lector["folio_de_solicitud"].ToString().Trim(),
+					               lector["fechahora_solicitud"].ToString().Trim(),
+					                   lector["foliodeservicio"].ToString().Trim(),
+					                   lector["pidpaciente"].ToString().Trim(),
+					               lector["nombre_completo"].ToString().Trim(),
+					                   lector["fechanacpaciente"].ToString().Trim(),
+					                   lector["edadpaciente"].ToString().Trim(),
+					               sexopaciente,
+					               diagnostico_movcargo,
+					                   nombrecirugia_movcargo,
+					                   lector["nombre_medico_tratante"].ToString().Trim(),
+					               lector["descripcion_cuarto"].ToString().Trim()+" "+lector["numero_cuarto"].ToString().Trim(),
+					                   lector["id_quien_solicito"].ToString().Trim(),
+					               lector["nombresolicitante"].ToString().Trim(),
+					                   lector["descripcion_proveedor"].ToString().Trim());
+					                  */
+				}				
+			}catch (NpgsqlException ex){
+				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+					MessageType.Warning, ButtonsType.Ok, "PostgresSQL error: {0}",ex.Message);
+					msgBoxError.Run ();
+					msgBoxError.Destroy();
+				Console.WriteLine ("PostgresSQL error: {0}",ex.Message);
+				return; 
+			}
+			conexion.Close();
 		}
 		
-		void imprime_encabezado(Cairo.Context cr,Pango.Layout layout)
+		void imprime_encabezado(Cairo.Context cr,Pango.Layout layout,string areaquiensolicita,string numerosolicitud,string fechasolicitud, 
+		                    string numerodeatencion, string numeroexpediente, string nombrepaciente, string fechanacimiento, string edadpaciente, 
+		                    string sexodelpaciente, string descripciondiagnostico, string nombredecirugia, string medicotratante, string numerohabitacion,
+		                    string quiensolicito, string nomsolicitante, string nombregabinete)
 		{
 			//Gtk.Image image5 = new Gtk.Image();
             //image5.Name = "image5";
@@ -301,7 +433,7 @@ namespace osiris
 			//layout.Wrap = Pango.WrapMode.Word;
 			//layout.SingleParagraphMode = true;
 			layout.Justify =  false;
-			cr.MoveTo(width/2,45*escala_en_linux_windows);	layout.SetText("PASE_A_SERVICIO_MEDICO");	Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(width/2,45*escala_en_linux_windows);	layout.SetText("PASE_A_SERVICIO_MEDICO_QUIRURGICO");	Pango.CairoHelper.ShowLayout (cr, layout);
 			
 			fontSize = 9.0;			layout = null;			layout = context.CreatePangoLayout ();
 			desc.Size = (int)(fontSize * pangoScale);		layout.FontDescription = desc;
@@ -310,10 +442,90 @@ namespace osiris
 			cr.MoveTo(565*escala_en_linux_windows, 383*escala_en_linux_windows);
 			cr.LineTo(05,383);		// Linea Horizontal 4
 			
+			desc = Pango.FontDescription.FromString ("Sans");									 
+			//cr.Rotate(90);  //Imprimir Orizontalmente rota la hoja cambian las posiciones de las lineas y columna					
+			fontSize = 8.0;
+			desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;
+			
+			cr.MoveTo(05*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);		layout.SetText("Area quien Solicito: "+areaquiensolicita);	Pango.CairoHelper.ShowLayout (cr, layout);
+			//cr.MoveTo(250*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText("N° de Solicitud: ");			Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(400*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText("Fecha Envio: "+fechasolicitud);						Pango.CairoHelper.ShowLayout (cr, layout);
+			comienzo_linea += separacion_linea;
+			layout.FontDescription.Weight = Weight.Bold;		// Letra negrita
+			cr.MoveTo(250*escala_en_linux_windows,comienzo_linea-separacion_linea*escala_en_linux_windows);		layout.SetText("N° de Pase: "+numerosolicitud);			Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText("N° Atencion: "+numerodeatencion);	Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(120*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText("N° Expe.: "+numeroexpediente);		Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(220*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText("Nombre Paciente: "+nombrepaciente);	Pango.CairoHelper.ShowLayout (cr, layout);
+			comienzo_linea += separacion_linea;
+			cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText("Fecha Nacimiento: "+fechanacimiento);	Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(250*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText("Edad: "+edadpaciente+" Años");				Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(400*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText("Sexo: "+sexodelpaciente);			Pango.CairoHelper.ShowLayout (cr, layout);
+			layout.FontDescription.Weight = Weight.Normal;
+			comienzo_linea += separacion_linea;
+			cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText("Procedimiento: "+nombredecirugia);	Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(300*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText("Diagnostico Admision: "+descripciondiagnostico);	Pango.CairoHelper.ShowLayout (cr, layout);
+			comienzo_linea += separacion_linea;
+			cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText("Medico Tratante: "+medicotratante);	Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(400*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText("Habitacion: "+numerohabitacion);		Pango.CairoHelper.ShowLayout (cr, layout);
+			comienzo_linea += separacion_linea;
+			cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText("Usuario: "+quiensolicito);							Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(200*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText("Nom. Cajero: "+nomsolicitante);					Pango.CairoHelper.ShowLayout (cr, layout);
+			comienzo_linea += separacion_linea;
+			cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText("Tipo de Paciente : "+nombregabinete);			Pango.CairoHelper.ShowLayout (cr, layout);
+			comienzo_linea += separacion_linea;
+			cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText("Empresa o Municipio : ");							Pango.CairoHelper.ShowLayout (cr, layout);
+			comienzo_linea += separacion_linea;
+			cr.MoveTo(150*escala_en_linux_windows,(comienzo_linea+(separacion_linea*22))*escala_en_linux_windows);		layout.SetText("Sello y Firma Cajero");							Pango.CairoHelper.ShowLayout (cr, layout);
+			fontSize = 6.5;
+			desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;
+			layout.FontDescription.Weight = Weight.Bold;		// Letra negrita
+			cr.MoveTo(405*escala_en_linux_windows,(comienzo_linea+(separacion_linea*19))*escala_en_linux_windows);		layout.SetText(nombrepaciente);							Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(405*escala_en_linux_windows,(comienzo_linea+(separacion_linea*20))*escala_en_linux_windows);		layout.SetText("Edad: "+edadpaciente+" Años");				Pango.CairoHelper.ShowLayout (cr, layout);
+			if(medicotratante != ""){
+				cr.MoveTo(405*escala_en_linux_windows,(comienzo_linea+(separacion_linea*21))*escala_en_linux_windows);		layout.SetText("Dr. "+medicotratante);				Pango.CairoHelper.ShowLayout (cr, layout);
+			}
+			cr.MoveTo(405*escala_en_linux_windows,(comienzo_linea+(separacion_linea*22))*escala_en_linux_windows);		layout.SetText("Fecha: "+(string) DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));				Pango.CairoHelper.ShowLayout (cr, layout);
+
+			layout.FontDescription.Weight = Weight.Normal;		// Letra normal
+			fontSize = 8.0;
+			desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;
+			//Console.WriteLine(comienzo_linea.ToString());
+			cr.Rectangle (05*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows, 565*escala_en_linux_windows, 180*escala_en_linux_windows);
 			cr.FillExtents();  //. FillPreserve(); 
 			cr.SetSourceRGB (0, 0, 0);
-			cr.LineWidth = 0.1;
+			cr.LineWidth = 0.5;
 			cr.Stroke();
+			
+			
+		}
+		
+		void buscar_en_movcargos(string foliodeservicio)
+		{
+			NpgsqlConnection conexion; 
+	        conexion = new NpgsqlConnection (connectionString+nombrebd);
+	        // Verifica que la base de datos este conectada
+	        try{
+	 			conexion.Open ();
+	        	NpgsqlCommand comando; 
+	        	comando = conexion.CreateCommand (); 
+	           	comando.CommandText = "SELECT DISTINCT (osiris_erp_movcargos.folio_de_servicio),id_tipo_admisiones,osiris_erp_movcargos.id_tipo_paciente,pid_paciente,descripcion_tipo_paciente,descripcion_diagnostico_movcargos,nombre_de_cirugia "+
+					"FROM osiris_erp_movcargos,osiris_his_tipo_pacientes "+
+					"WHERE osiris_erp_movcargos.id_tipo_paciente = osiris_his_tipo_pacientes.id_tipo_paciente "+
+						"AND osiris_erp_movcargos.folio_de_servicio = '"+foliodeservicio+"';";
+	        	//Console.WriteLine(comando.CommandText);
+				NpgsqlDataReader lector = comando.ExecuteReader();
+				if (lector.Read()){
+					diagnostico_movcargo = lector["descripcion_diagnostico_movcargos"].ToString().Trim();
+					nombrecirugia_movcargo = lector["nombre_de_cirugia"].ToString().Trim();
+				}
+			}catch (NpgsqlException ex){
+				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+					MessageType.Warning, ButtonsType.Ok, "PostgresSQL error: {0}",ex.Message);
+					msgBoxError.Run ();
+					msgBoxError.Destroy();
+				Console.WriteLine ("PostgresSQL error: {0}",ex.Message);
+			}
+			conexion.Close();
 		}
 		
 		private void OnEndPrint (object obj, Gtk.EndPrintArgs args)

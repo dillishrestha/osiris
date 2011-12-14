@@ -163,7 +163,7 @@ namespace osiris
 		{
 			//15 es el sub-almacen (tabla osiris_almacenes)
 			//16 es el centro de costo (tabla osiris_his_tipo_admisiones)			
-			new osiris.caja_cobro(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,15,16);
+			new osiris.caja_cobro(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,15,13);
 		}
 		
 		void on_button_facturador_clicked(object sender, EventArgs args)

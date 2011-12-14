@@ -119,6 +119,9 @@ namespace osiris
 		TreeViewColumn col_es_stock;	CellRendererToggle cel_es_stock;
 		
 		class_conexion conexion_a_DB = new class_conexion();
+		
+		string[] args_args = {""};
+		int[] args_id_array = {0,1,2,3,4,5,6,7,8};
 	
 		public inventario_sub_almacen(string LoginEmp_, string NomEmpleado_, string AppEmpleado_, 
 									string ApmEmpleado_, string nombrebd_, int _idsubalmacen_, string _descsubalmacen_, int tipoalmacen_)
@@ -148,11 +151,11 @@ namespace osiris
 			button_enviar.Clicked += new EventHandler(on_button_enviar_articulos_clicked);
 			button_quitar.Clicked += new EventHandler(on_button_quitar_clicked);
 			entry_numero_de_traspaso.KeyPressEvent += onKeyPressEvent_numero_traspaso;
-						
-			llenado_grupo("selecciona",descripgrupo,idtipogrupo);
-		 	llenado_grupo1("selecciona",descripgrupo1,idtipogrupo1);
-			llenado_grupo2("selecciona",descripgrupo2,idtipogrupo2);
 			
+			llenado_combobox(1,"",combobox_grupo,"sql","SELECT * FROM osiris_grupo_producto ORDER BY descripcion_grupo_producto;","descripcion_grupo_producto","id_grupo_producto",args_args,args_id_array);
+			llenado_combobox(1,"",combobox_grupo1,"sql","SELECT * FROM osiris_grupo1_producto ORDER BY descripcion_grupo1_producto;","descripcion_grupo1_producto","id_grupo1_producto",args_args,args_id_array);
+			llenado_combobox(1,"",combobox_grupo2,"sql","SELECT * FROM osiris_grupo2_producto ORDER BY descripcion_grupo2_producto;","descripcion_grupo2_producto","id_grupo2_producto",args_args,args_id_array);
+	
 			statusbar_inv_sub_hosp.Pop(0);
 			statusbar_inv_sub_hosp.Push(1, "login: "+LoginEmpleado+"  |Usuario: "+NomEmpleado+" "+AppEmpleado+" "+ApmEmpleado);
 			statusbar_inv_sub_hosp.HasResizeGrip = false;
@@ -183,6 +186,7 @@ namespace osiris
 				this.checkbutton_ajuste_de_articulos.Hide();
 				this.query_stock = " AND osiris_catalogo_almacenes.stock > 0";
 				crea_treeview_traspaso();
+				entry_filter.Changed += OnFilterEntryTextChanged;
 				//TRASPASO DE SUB ALMACENES
 			}
 			
@@ -190,65 +194,100 @@ namespace osiris
 				this.button_quitar.Hide();
 				this.query_stock = " AND osiris_catalogo_almacenes.stock > 0";
 				crea_treeview_traspaso();
+				entry_filter.Changed += OnFilterEntryTextChanged;
 				//TODAS LAS OPCIONES
 			}
-						
-			// Llenado de combobox1 
-			combobox_tipo_almacen.Clear();
-			combobox_almacen_destino.Clear();
-			CellRendererText cell1 = new CellRendererText();
-			
-			combobox_tipo_almacen.PackStart(cell1, true);
-			combobox_almacen_destino.PackStart(cell1, true);
-			
-			combobox_tipo_almacen.AddAttribute(cell1,"text",0);
-			combobox_almacen_destino.AddAttribute(cell1,"text",0);
-			
-			ListStore store2 = new ListStore( typeof (string), typeof (int));
-			ListStore store3 = new ListStore( typeof (string), typeof (int));
-			
-			combobox_tipo_almacen.Model = store2;
-			combobox_almacen_destino.Model = store3;
-							        
-			// lleno de la tabla de his_tipo_de_admisiones
-			NpgsqlConnection conexion; 
-			conexion = new NpgsqlConnection (connectionString+nombrebd);
-            // Verifica que la base de datos este conectada
-			try{
-				conexion.Open ();
-				NpgsqlCommand comando; 
-				comando = conexion.CreateCommand ();
-               	comando.CommandText = "SELECT id_almacen,descripcion_almacen,sub_almacen FROM osiris_almacenes "+
-               						"WHERE sub_almacen = 'true'  "+
-               						"ORDER BY descripcion_almacen;";
-				NpgsqlDataReader lector = comando.ExecuteReader ();
-				store2.AppendValues (descsubalmacen,0);
-				store3.AppendValues (descsubalmacen,0);
-				//Console.WriteLine(this.tipoalmacen.ToString());
-               	while (lector.Read()){
-					if(this.tipoalmacen == 1 || this.tipoalmacen == 3 ){
-						store2.AppendValues ((string) lector["descripcion_almacen"], (int) lector["id_almacen"]);
-					}
-					if(this.tipoalmacen == 2 || this.tipoalmacen == 3 ){
-						store3.AppendValues ((string) lector["descripcion_almacen"], (int) lector["id_almacen"]);
-					}
-				}
-			}catch (NpgsqlException ex){
-				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
-										MessageType.Error,ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
-				msgBoxError.Run ();				msgBoxError.Destroy();
-			}
-			conexion.Close ();
-						
-			TreeIter iter2;
-			if (store2.GetIterFirst(out iter2)){
-				combobox_tipo_almacen.SetActiveIter (iter2);
-			}
-			combobox_tipo_almacen.Changed += new EventHandler (onComboBoxChanged_sub_almacenes);
-			combobox_almacen_destino.Changed += new EventHandler (onComboBoxChanged_almacen_destino);
+
+			llenado_combobox(1,"",combobox_tipo_almacen,"sql","SELECT id_almacen,descripcion_almacen,sub_almacen FROM osiris_almacenes WHERE sub_almacen = 'true' ORDER BY descripcion_almacen;","descripcion_almacen","id_almacen",args_args,args_id_array);
+			llenado_combobox(1,"",combobox_almacen_destino,"sql","SELECT id_almacen,descripcion_almacen,sub_almacen FROM osiris_almacenes WHERE sub_almacen = 'true' ORDER BY descripcion_almacen;","descripcion_almacen","id_almacen",args_args,args_id_array);
 			
 			llenando_busqueda_productos();
 		}
+		
+		
+		
+		void llenado_combobox(int tipodellenado,string descrip_defaul,object obj,string sql_or_array,string query_SQL,string name_field_desc,string name_field_id,string[] args_array,int[] args_id_array)
+		{			
+			Gtk.ComboBox combobox_llenado = (Gtk.ComboBox) obj;
+			//Gtk.ComboBox combobox_pos_neg = obj as Gtk.ComboBox;
+			combobox_llenado.Clear();
+			CellRendererText cell = new CellRendererText();
+			combobox_llenado.PackStart(cell, true);
+			combobox_llenado.AddAttribute(cell,"text",0);	        
+			ListStore store = new ListStore( typeof (string),typeof (int));
+			combobox_llenado.Model = store;			
+			if ((int) tipodellenado == 1){
+				store.AppendValues ((string) descrip_defaul,0);
+			}			
+			if(sql_or_array == "array"){			
+				for (int colum_field = 0; colum_field < args_array.Length; colum_field++){
+					store.AppendValues (args_array[colum_field],args_id_array[colum_field]);
+				}
+			}
+			if(sql_or_array == "sql"){			
+				NpgsqlConnection conexion; 
+				conexion = new NpgsqlConnection (connectionString+nombrebd);
+	            // Verifica que la base de datos este conectada
+				try{
+					conexion.Open ();
+					NpgsqlCommand comando; 
+					comando = conexion.CreateCommand ();
+	               	comando.CommandText = query_SQL;					
+					NpgsqlDataReader lector = comando.ExecuteReader ();
+	               	while (lector.Read()){
+						store.AppendValues ((string) lector[ name_field_desc ], (int) lector[ name_field_id]);
+					}
+				}catch (NpgsqlException ex){
+					MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+											MessageType.Error,ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
+					msgBoxError.Run ();				msgBoxError.Destroy();
+				}
+				conexion.Close ();
+			}			
+			TreeIter iter;
+			if (store.GetIterFirst(out iter)){
+				combobox_llenado.SetActiveIter (iter);
+			}
+			combobox_llenado.Changed += new EventHandler (onComboBoxChanged_llenado);			
+		}
+		
+		void onComboBoxChanged_llenado (object sender, EventArgs args)
+		{
+			ComboBox onComboBoxChanged = sender as ComboBox;
+			if (sender == null){	return; }
+			TreeIter iter;
+			if (onComboBoxChanged.GetActiveIter (out iter)){
+				switch (onComboBoxChanged.Name.ToString()){	
+				case "combobox_tipo_almacen":
+					idsubalmacen = (int) combobox_tipo_almacen.Model.GetValue(iter,1);
+					entry_filter.Text = "";
+		    		llenando_busqueda_productos();
+					break;
+				case "combobox_almacen_destino":
+					idalmacendestino = (int) this.combobox_almacen_destino.Model.GetValue(iter,1);
+					break;
+				case "combobox_grupo":
+			    	idtipogrupo = (int) combobox_grupo.Model.GetValue(iter,1);
+			    	descripgrupo = (string) combobox_grupo.Model.GetValue(iter,0);
+			    	query_grupo = "AND osiris_productos.id_grupo_producto = '"+idtipogrupo.ToString()+"' ";
+			    	this.llenando_busqueda_productos();
+					break;
+				case "combobox_grupo1":
+					idtipogrupo1 = (int) combobox_grupo1.Model.GetValue(iter,1);
+		    		descripgrupo1 = (string) combobox_grupo1.Model.GetValue(iter,0);
+		    		query_grupo1 = "AND osiris_productos.id_grupo1_producto = '"+idtipogrupo1.ToString()+"' ";
+		    		llenando_busqueda_productos();
+					break;
+				case "combobox_grupo2":
+					idtipogrupo2 = (int) combobox_grupo2.Model.GetValue(iter,1);
+		    		descripgrupo2 = (string) combobox_grupo2.Model.GetValue(iter,0);
+		    		query_grupo2 = "AND osiris_productos.id_grupo2_producto = '"+idtipogrupo2.ToString()+"' ";
+		    		llenando_busqueda_productos();
+					break;				
+				}
+			}
+		}
+		
 		
 		void crea_treeview_traspaso()
 		{			
@@ -362,7 +401,7 @@ namespace osiris
 				if (miResultado2 == ResponseType.Yes){
 					TreeIter iterSelected;
 					if(this.treeViewEngineBusca.GetIterFirst (out iterSelected)){
-						if((bool) this.lista_almacenes.Model.GetValue (iterSelected,8) == true){
+						if((bool) filter.Model.GetValue (iterSelected,8) == true){
 							NpgsqlConnection conexion;
 							conexion = new NpgsqlConnection (connectionString+nombrebd);
 							try{
@@ -371,7 +410,7 @@ namespace osiris
 								comando = conexion.CreateCommand();
 								comando.CommandText = "UPDATE osiris_catalogo_almacenes SET eliminado = 'true' "+
 									"WHERE id_almacen = '"+this.idsubalmacen.ToString()+"' "+
-									"AND id_producto = '"+(string)this.lista_almacenes.Model.GetValue(iterSelected,2)+"' ;";
+									"AND id_producto = '"+(string) filter.Model.GetValue(iterSelected,2)+"' ;";
 								comando.ExecuteNonQuery();
 								comando.Dispose();
 								conexion.Close();
@@ -383,7 +422,7 @@ namespace osiris
 							}
 							conexion.Close();
 						}
-						if ((bool) this.lista_almacenes.Model.GetValue (iterSelected,9) == true){
+						if ((bool) filter.Model.GetValue (iterSelected,9) == true){
 							NpgsqlConnection conexion;
 							conexion = new NpgsqlConnection (connectionString+nombrebd);
 							try{
@@ -392,7 +431,7 @@ namespace osiris
 								comando = conexion.CreateCommand();
 								comando.CommandText = "UPDATE osiris_catalogo_almacenes SET tiene_stock = 'true' "+
 									"WHERE id_almacen = '"+this.idsubalmacen.ToString()+"' "+
-									"AND id_producto = '"+(string)this.lista_almacenes.Model.GetValue(iterSelected,2)+"' ;";
+									"AND id_producto = '"+(string) filter.Model.GetValue(iterSelected,2)+"' ;";
 								comando.ExecuteNonQuery();
 								comando.Dispose();
 								conexion.Close();
@@ -406,7 +445,7 @@ namespace osiris
 						}
 					}
 					while (treeViewEngineBusca.IterNext(ref iterSelected)){
-						if ((bool) this.lista_almacenes.Model.GetValue (iterSelected,8) == true){
+						if ((bool) filter.Model.GetValue (iterSelected,8) == true){
 							NpgsqlConnection conexion;
 							conexion = new NpgsqlConnection (connectionString+nombrebd);
 							try{
@@ -415,7 +454,7 @@ namespace osiris
 								comando = conexion.CreateCommand();
 								comando.CommandText = "UPDATE osiris_catalogo_almacenes SET eliminado = 'true' "+
 									"WHERE id_almacen = '"+this.idsubalmacen.ToString()+"' "+
-									"AND id_producto = '"+(string)this.lista_almacenes.Model.GetValue(iterSelected,2)+"' ;";
+									"AND id_producto = '"+(string) filter.Model.GetValue(iterSelected,2)+"' ;";
 								comando.ExecuteNonQuery();
 								comando.Dispose();
 								conexion.Close();
@@ -427,7 +466,7 @@ namespace osiris
 							}
 							conexion.Close();
 						}
-						if ((bool) this.lista_almacenes.Model.GetValue (iterSelected,9) == true){
+						if ((bool) filter.Model.GetValue (iterSelected,9) == true){
 							NpgsqlConnection conexion;
 							conexion = new NpgsqlConnection (connectionString+nombrebd);
 							try{
@@ -436,7 +475,7 @@ namespace osiris
 								comando = conexion.CreateCommand();
 								comando.CommandText = "UPDATE osiris_catalogo_almacenes SET tiene_stock = 'true' "+
 									"WHERE id_almacen = '"+this.idsubalmacen.ToString()+"' "+
-									"AND id_producto = '"+(string)this.lista_almacenes.Model.GetValue(iterSelected,2)+"' ;";
+									"AND id_producto = '"+(string) filter.Model.GetValue(iterSelected,2)+"' ;";
 								comando.ExecuteNonQuery();
 								comando.Dispose();
 								conexion.Close();
@@ -486,10 +525,16 @@ namespace osiris
 		{
 			TreeIter iter;
 			TreePath path = new TreePath (args.Path);
-			if (lista_almacenes.Model.GetIter (out iter, path)) {
-				bool old = (bool) lista_almacenes.Model.GetValue (iter,0);
-				lista_almacenes.Model.SetValue(iter,0,!old);
-			}	
+			
+			//if (lista_almacenes.Model.GetIter (out iter, path)) {
+			//	bool old = (bool) lista_almacenes.Model.GetValue (iter,0);
+			//	lista_almacenes.Model.SetValue(iter,0,!old);			
+			//}
+			
+			if (filter.Model.GetIter(out iter, path)) {
+				bool old = (bool) filter.Model.GetValue(iter,0);
+				filter.Model.SetValue(iter,0,!old);				
+			}
 		}
 		
 		void selecciona_fila2(object obj, ToggledArgs args)
@@ -499,9 +544,10 @@ namespace osiris
 			// Gtk.RadioButton radiobutton_filtros = (Gtk.RadioButton) obj;
 			TreeIter iter;
 			TreePath path = new TreePath (args.Path);
-			if (lista_almacenes.Model.GetIter (out iter, path)){
-				bool old = (bool) lista_almacenes.Model.GetValue (iter,8);
-				lista_almacenes.Model.SetValue(iter,8,!old);
+			if (filter.Model.GetIter (out iter, path)){
+				bool old = (bool) filter.Model.GetValue (iter,8);
+				//lista_almacenes.Model.SetValue(iter,8,!old);
+				filter.Model.SetValue(iter,8,!old);
 			}	
 		}
 		
@@ -512,9 +558,10 @@ namespace osiris
 			// Gtk.RadioButton radiobutton_filtros = (Gtk.RadioButton) obj;
 			TreeIter iter;
 			TreePath path = new TreePath (args.Path);
-			if (lista_almacenes.Model.GetIter (out iter, path)){				
-				bool old = (bool) lista_almacenes.Model.GetValue (iter,9);
-				lista_almacenes.Model.SetValue(iter,9,!old);
+			if (filter.Model.GetIter (out iter, path)){				
+				bool old = (bool) filter.Model.GetValue (iter,9);
+				//lista_almacenes.Model.SetValue(iter,9,!old);
+				filter.Model.SetValue(iter,9,!old);
 			}	
 		}
 						
@@ -548,9 +595,9 @@ namespace osiris
 				var_paso += 1;
 			}
 			if (esnumerico == true){		
-				this.treeViewEngineBusca2.SetValue(iter,(int) Col_traspaso.col_autorizado,args.NewText);
-				bool old = (bool) this.lista_almacenes.Model.GetValue (iter,0);
-				this.lista_almacenes.Model.SetValue(iter,0,!old);
+				treeViewEngineBusca2.SetValue(iter,(int) Col_traspaso.col_autorizado,args.NewText);
+				bool old = (bool) filter.Model.GetValue (iter,0);
+				filter.Model.SetValue(iter,0,!old);
 			}
  		}
 		
@@ -668,31 +715,24 @@ namespace osiris
 	 
 		bool FilterTree (Gtk.TreeModel model, Gtk.TreeIter iter)
 		{
-			return true;
-			/*
-			string artistName = model.GetValue (iter, 0).ToString ();	 
 			if (entry_filter.Text == "")
-				return true;	 
-			if (artistName.IndexOf (entry_filter.Text) > -1)
+				return true;
+			string artistName = model.GetValue (iter, 0).ToString ();
+			if (artistName.IndexOf (entry_filter.Text.ToString().ToUpper()) > -1)
 				return true;
 			else
-				return false;
-			*/			
-		}
-		
+				return false;			
+		}		
 		
 		bool FilterTree2 (Gtk.TreeModel model, Gtk.TreeIter iter)
 		{
-			return true;
-			/*
-			string artistName = model.GetValue (iter, 4).ToString ();	 
 			if (entry_filter.Text == "")
-				return true;	 
-			if (artistName.IndexOf (entry_filter.Text) > -1)
+				return true;
+			string artistName = model.GetValue (iter, 4).ToString ();
+			if (artistName.IndexOf (entry_filter.Text.ToString().ToUpper()) > -1)
 				return true;
 			else
-				return false;
-			*/			
+				return false;	
 		}
 		
 		enum Col_inv_sub_almacen
@@ -706,31 +746,6 @@ namespace osiris
 			col_fecha,
 			col_embalaje,
 			col_quitar,col_es_stock
-		}
-		
-		void onComboBoxChanged_sub_almacenes(object sender, EventArgs args)
-		{
-			ComboBox combobox_tipo_almacen = sender as ComboBox;
-			if (sender == null){
-	    		return;
-			}
-	  		TreeIter iter;
-	  		if (combobox_tipo_almacen.GetActiveIter (out iter)){
-		    	idsubalmacen = (int) combobox_tipo_almacen.Model.GetValue(iter,1);
-		    	llenando_busqueda_productos();
-		    }
-		}
-		
-		void onComboBoxChanged_almacen_destino(object sender, EventArgs args)
-		{
-			ComboBox combobox_almacen_destino = sender as ComboBox;
-			if (sender == null){
-	    		return;
-			}
-	  		TreeIter iter;
-	  		if (this.combobox_almacen_destino.GetActiveIter (out iter)){
-				idalmacendestino = (int) this.combobox_almacen_destino.Model.GetValue(iter,1);
-		    }
 		}
 		
 		void actualizar(object sender, EventArgs args)
@@ -787,9 +802,9 @@ namespace osiris
 							"ORDER BY descripcion_producto; ";
 				//Console.WriteLine(comando.CommandText);
 				NpgsqlDataReader lector = comando.ExecuteReader ();
-				string tienestock = "";
+				//string tienestock = "";
 				while (lector.Read()){
-					tienestock = Convert.ToString((bool) lector["tiene_stock"]);
+					//tienestock = Convert.ToString((bool) lector["tiene_stock"]);
 					//Console.WriteLine(tienestock);
 					if(this.tipoalmacen==1){
 						treeViewEngineBusca.AppendValues ((string) lector["descripcion_producto"],
@@ -837,19 +852,19 @@ namespace osiris
 					}	
 				}
 				if(tipoalmacen == 1){
-					//filter = new Gtk.TreeModelFilter (treeViewEngineBusca, null);
-					//filter.VisibleFunc = new Gtk.TreeModelFilterVisibleFunc (FilterTree);
-					//lista_almacenes.Model = filter;
+					filter = new Gtk.TreeModelFilter (treeViewEngineBusca, null);
+					filter.VisibleFunc = new Gtk.TreeModelFilterVisibleFunc (FilterTree);
+					lista_almacenes.Model = filter;
 				}
 				if(tipoalmacen == 2){
-					//filter = new Gtk.TreeModelFilter (treeViewEngineBusca2, null);
-					//filter.VisibleFunc = new Gtk.TreeModelFilterVisibleFunc (FilterTree2);
-					//lista_almacenes.Model = filter;
+					filter = new Gtk.TreeModelFilter (treeViewEngineBusca2, null);
+					filter.VisibleFunc = new Gtk.TreeModelFilterVisibleFunc (FilterTree2);
+					lista_almacenes.Model = filter;
 				}
 				if(tipoalmacen == 3){
-					//filter = new Gtk.TreeModelFilter (treeViewEngineBusca2, null);
-					//filter.VisibleFunc = new Gtk.TreeModelFilterVisibleFunc (FilterTree2);
-					//lista_almacenes.Model = filter;
+					filter = new Gtk.TreeModelFilter (treeViewEngineBusca2, null);
+					filter.VisibleFunc = new Gtk.TreeModelFilterVisibleFunc (FilterTree2);
+					lista_almacenes.Model = filter;
 				}
 					
 			}catch (NpgsqlException ex){
@@ -903,8 +918,8 @@ namespace osiris
 							if (miResultado == ResponseType.Yes){
 								TreeIter iterSelected;
 								if (this.treeViewEngineBusca2.GetIterFirst (out iterSelected)){
-									if ((bool) this.lista_almacenes.Model.GetValue (iterSelected,0) == true){
-										if (decimal.Parse((string) this.lista_almacenes.Model.GetValue (iterSelected,2)) > 0 ){
+									if ((bool) filter.Model.GetValue (iterSelected,0) == true){
+										if (decimal.Parse((string) filter.Model.GetValue (iterSelected,2)) > 0 ){
 											NpgsqlConnection conexion;
 											conexion = new NpgsqlConnection (connectionString+nombrebd);
 					 						try{
@@ -914,7 +929,7 @@ namespace osiris
 												comando.CommandText = "SELECT id_producto,id_almacen,stock FROM osiris_catalogo_almacenes "+
 															"WHERE id_almacen = '"+this.idalmacendestino.ToString()+"' "+
 															"AND eliminado = 'false' "+														
-															"AND id_producto = '"+(string)this.lista_almacenes.Model.GetValue(iterSelected,3)+"' ;";
+															"AND id_producto = '"+(string) filter.Model.GetValue(iterSelected,3)+"' ;";
 										
 												NpgsqlDataReader lector = comando.ExecuteReader ();
 													if(lector.Read()){
@@ -924,10 +939,10 @@ namespace osiris
 															conexion5.Open ();
 															NpgsqlCommand comando5; 
 															comando5 = conexion5.CreateCommand();
-															comando5.CommandText = "UPDATE osiris_catalogo_almacenes SET stock = stock - '"+(string)this.lista_almacenes.Model.GetValue(iterSelected,1)+"' "+
+															comando5.CommandText = "UPDATE osiris_catalogo_almacenes SET stock = stock - '"+(string)filter.Model.GetValue(iterSelected,1)+"' "+
 																"WHERE id_almacen = '"+this.idsubalmacen.ToString()+"' "+
 																"AND eliminado = 'false'" +
-																"AND id_producto = '"+(string)this.lista_almacenes.Model.GetValue(iterSelected,3)+"' ;";
+																"AND id_producto = '"+(string) filter.Model.GetValue(iterSelected,3)+"' ;";
 															
 															comando5.ExecuteNonQuery();
 															comando5.Dispose();
@@ -939,10 +954,10 @@ namespace osiris
 																conexion1.Open ();
 																NpgsqlCommand comando1;
 																comando1 = conexion1.CreateCommand();
-																comando1.CommandText = "UPDATE osiris_catalogo_almacenes SET stock = stock + '"+(string)this.lista_almacenes.Model.GetValue(iterSelected,1)+"' "+
+																comando1.CommandText = "UPDATE osiris_catalogo_almacenes SET stock = stock + '"+(string) filter.Model.GetValue(iterSelected,1)+"' "+
 																	"WHERE id_almacen = '"+this.idalmacendestino.ToString()+"' "+
 																	"AND eliminado = 'false'" +
-																	"AND id_producto = '"+(string)this.lista_almacenes.Model.GetValue(iterSelected,3)+"' ;";
+																	"AND id_producto = '"+(string) filter.Model.GetValue(iterSelected,3)+"' ;";
 																		
 																comando1.ExecuteNonQuery();
 																comando1.Dispose();
@@ -969,15 +984,15 @@ namespace osiris
 																					"traspaso ) "+
 																					"VALUES ("+
 																					"0,'"+
-																					(string) this.lista_almacenes.Model.GetValue(iterSelected,3)+"','"+//+" ,'"+
-																					(string) this.lista_almacenes.Model.GetValue(iterSelected,1)+"','"+
+																					(string) filter.Model.GetValue(iterSelected,3)+"','"+//+" ,'"+
+																					(string) filter.Model.GetValue(iterSelected,1)+"','"+
 																					DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"','"+
 																					LoginEmpleado+"','"+
 																					this.idsubalmacen.ToString()+"','"+
 																					this.idalmacendestino.ToString()+"' ,'"+
-																					(string) this.lista_almacenes.Model.GetValue(iterSelected,5)+"','"+
-																					(string) this.lista_almacenes.Model.GetValue(iterSelected,1)+"','"+
-																					(string) this.lista_almacenes.Model.GetValue(iterSelected,6)+"','"+
+																					(string) filter.Model.GetValue(iterSelected,5)+"','"+
+																					(string) filter.Model.GetValue(iterSelected,1)+"','"+
+																					(string) filter.Model.GetValue(iterSelected,6)+"','"+
 																					(string) this.entry_numero_de_traspaso.Text.ToUpper()+"','"+	
 																					"true');";
 																		comando4.ExecuteNonQuery();
@@ -1019,8 +1034,8 @@ namespace osiris
 																						"fechahora_ultimo_surtimiento)"+
 																						"VALUES ('"+
 																						this.idalmacendestino.ToString()+"','"+
-																						(string) lista_almacenes.Model.GetValue (iterSelected,3)+"','"+
-																						(string) lista_almacenes.Model.GetValue (iterSelected,1)+"','"+
+																						(string) filter.Model.GetValue (iterSelected,3)+"','"+
+																						(string) filter.Model.GetValue (iterSelected,1)+"','"+
 																						this.LoginEmpleado+"','"+
 																						DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"','"+
 																						DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"');";
@@ -1040,10 +1055,10 @@ namespace osiris
 																	conexion6.Open ();
 																	NpgsqlCommand comando1;
 																	comando1 = conexion6.CreateCommand();
-																	comando1.CommandText = "UPDATE osiris_catalogo_almacenes SET stock = '"+(string)this.lista_almacenes.Model.GetValue(iterSelected,1)+"' "+
+																	comando1.CommandText = "UPDATE osiris_catalogo_almacenes SET stock = '"+(string) filter.Model.GetValue(iterSelected,1)+"' "+
 																			"WHERE id_almacen = '"+this.idalmacendestino.ToString()+"' "+
 																			"AND eliminado = 'false'" +
-																			"AND id_producto = '"+(string)this.lista_almacenes.Model.GetValue(iterSelected,3)+"' ;";
+																			"AND id_producto = '"+(string) filter.Model.GetValue(iterSelected,3)+"' ;";
 																					
 																	comando1.ExecuteNonQuery();
 																	comando1.Dispose();
@@ -1055,10 +1070,10 @@ namespace osiris
 																		conexion7.Open ();
 																		NpgsqlCommand comando7; 
 																		comando7 = conexion7.CreateCommand();
-																		comando7.CommandText = "UPDATE osiris_catalogo_almacenes SET stock = stock - '"+(string)this.lista_almacenes.Model.GetValue(iterSelected,1)+"' "+
+																		comando7.CommandText = "UPDATE osiris_catalogo_almacenes SET stock = stock - '"+(string) filter.Model.GetValue(iterSelected,1)+"' "+
 																			"WHERE id_almacen = '"+this.idsubalmacen.ToString()+"' "+
 																			"AND eliminado = 'false'" +
-																			"AND id_producto = '"+(string)this.lista_almacenes.Model.GetValue(iterSelected,3)+"' ;";
+																			"AND id_producto = '"+(string) filter.Model.GetValue(iterSelected,3)+"' ;";
 																		comando7.ExecuteNonQuery();
 																		comando7.Dispose();
 																		conexion7.Close();
@@ -1084,16 +1099,16 @@ namespace osiris
 																							"traspaso ) "+
 																							"VALUES ("+
 																							"0,'"+
-																							(string) this.lista_almacenes.Model.GetValue(iterSelected,3)+"','"+//+" ,'"+
-																							(string) this.lista_almacenes.Model.GetValue(iterSelected,1)+"','"+
+																							(string) filter.Model.GetValue(iterSelected,3)+"','"+//+" ,'"+
+																							(string) filter.Model.GetValue(iterSelected,1)+"','"+
 																							DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"','"+
 																							LoginEmpleado+"','"+
 																							this.idsubalmacen.ToString()+"','"+
 																							this.idalmacendestino.ToString()+"' ,'"+
-																							(string) this.lista_almacenes.Model.GetValue(iterSelected,5)+"','"+
-																							(string) this.lista_almacenes.Model.GetValue(iterSelected,1)+"','"+
-																							(string) this.lista_almacenes.Model.GetValue(iterSelected,6)+"','"+
-																							(string) this.entry_numero_de_traspaso.Text.ToUpper()+"','"+	
+																							(string) filter.Model.GetValue(iterSelected,5)+"','"+
+																							(string) filter.Model.GetValue(iterSelected,1)+"','"+
+																							(string) filter.Model.GetValue(iterSelected,6)+"','"+
+																							(string) entry_numero_de_traspaso.Text.ToUpper()+"','"+	
 																							"true');";
 																				comando4.ExecuteNonQuery();
 																				comando4.Dispose();
@@ -1128,8 +1143,8 @@ namespace osiris
 									}	
 								}
 								while (treeViewEngineBusca2.IterNext(ref iterSelected)){
-									if ((bool) this.lista_almacenes.Model.GetValue (iterSelected,0) == true){
-										if (decimal.Parse((string) this.lista_almacenes.Model.GetValue (iterSelected,2)) > 0 ){
+									if ((bool) filter.Model.GetValue (iterSelected,0) == true){
+										if (decimal.Parse((string) filter.Model.GetValue (iterSelected,2)) > 0 ){
 											NpgsqlConnection conexion;
 											conexion = new NpgsqlConnection (connectionString+nombrebd);
 					 						try{
@@ -1139,7 +1154,7 @@ namespace osiris
 												comando.CommandText = "SELECT id_producto,id_almacen,stock FROM osiris_catalogo_almacenes "+
 															"WHERE id_almacen = '"+this.idalmacendestino.ToString()+"' "+
 															"AND eliminado = 'false' "+														
-															"AND id_producto = '"+(string)this.lista_almacenes.Model.GetValue(iterSelected,3)+"' ;";
+															"AND id_producto = '"+(string) filter.Model.GetValue(iterSelected,3)+"' ;";
 										
 												NpgsqlDataReader lector = comando.ExecuteReader ();
 													if(lector.Read()){
@@ -1149,10 +1164,10 @@ namespace osiris
 															conexion5.Open ();
 															NpgsqlCommand comando5; 
 															comando5 = conexion5.CreateCommand();
-															comando5.CommandText = "UPDATE osiris_catalogo_almacenes SET stock = stock - '"+(string)this.lista_almacenes.Model.GetValue(iterSelected,1)+"' "+
+															comando5.CommandText = "UPDATE osiris_catalogo_almacenes SET stock = stock - '"+(string) filter.Model.GetValue(iterSelected,1)+"' "+
 																"WHERE id_almacen = '"+this.idsubalmacen.ToString()+"' "+
 																"AND eliminado = 'false'" +
-																"AND id_producto = '"+(string)this.lista_almacenes.Model.GetValue(iterSelected,3)+"' ;";
+																"AND id_producto = '"+(string) filter.Model.GetValue(iterSelected,3)+"' ;";
 															
 															comando5.ExecuteNonQuery();
 															comando5.Dispose();
@@ -1164,10 +1179,10 @@ namespace osiris
 																conexion1.Open ();
 																NpgsqlCommand comando1;
 																comando1 = conexion1.CreateCommand();
-																comando1.CommandText = "UPDATE osiris_catalogo_almacenes SET stock = stock + '"+(string)this.lista_almacenes.Model.GetValue(iterSelected,1)+"' "+
+																comando1.CommandText = "UPDATE osiris_catalogo_almacenes SET stock = stock + '"+(string) filter.Model.GetValue(iterSelected,1)+"' "+
 																	"WHERE id_almacen = '"+this.idalmacendestino.ToString()+"' "+
 																	"AND eliminado = 'false'" +
-																	"AND id_producto = '"+(string)this.lista_almacenes.Model.GetValue(iterSelected,3)+"' ;";
+																	"AND id_producto = '"+(string) filter.Model.GetValue(iterSelected,3)+"' ;";
 																		
 																comando1.ExecuteNonQuery();
 																comando1.Dispose();
@@ -1194,15 +1209,15 @@ namespace osiris
 																					"traspaso ) "+
 																					"VALUES ("+
 																					"0,'"+
-																					(string) this.lista_almacenes.Model.GetValue(iterSelected,3)+"','"+//+" ,'"+
-																					(string) this.lista_almacenes.Model.GetValue(iterSelected,1)+"','"+
+																					(string) filter.Model.GetValue(iterSelected,3)+"','"+//+" ,'"+
+																					(string) filter.Model.GetValue(iterSelected,1)+"','"+
 																					DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"','"+
 																					LoginEmpleado+"','"+
 																					this.idsubalmacen.ToString()+"','"+
 																					this.idalmacendestino.ToString()+"' ,'"+
-																					(string) this.lista_almacenes.Model.GetValue(iterSelected,5)+"','"+
-																					(string) this.lista_almacenes.Model.GetValue(iterSelected,1)+"','"+
-																					(string) this.lista_almacenes.Model.GetValue(iterSelected,6)+"','"+
+																					(string) filter.Model.GetValue(iterSelected,5)+"','"+
+																					(string) filter.Model.GetValue(iterSelected,1)+"','"+
+																					(string) filter.Model.GetValue(iterSelected,6)+"','"+
 																					(string) this.entry_numero_de_traspaso.Text.ToUpper()+"','"+	
 																					"true');";
 																		comando4.ExecuteNonQuery();
@@ -1244,8 +1259,8 @@ namespace osiris
 																						"fechahora_ultimo_surtimiento)"+
 																						"VALUES ('"+
 																						this.idalmacendestino.ToString()+"','"+
-																						(string) lista_almacenes.Model.GetValue (iterSelected,3)+"','"+
-																						(string) lista_almacenes.Model.GetValue (iterSelected,1)+"','"+
+																						(string) filter.Model.GetValue (iterSelected,3)+"','"+
+																						(string) filter.Model.GetValue (iterSelected,1)+"','"+
 																						this.LoginEmpleado+"','"+
 																						DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"','"+
 																						DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"');";
@@ -1265,10 +1280,10 @@ namespace osiris
 																	conexion6.Open ();
 																	NpgsqlCommand comando1;
 																	comando1 = conexion6.CreateCommand();
-																	comando1.CommandText = "UPDATE osiris_catalogo_almacenes SET stock = '"+(string)this.lista_almacenes.Model.GetValue(iterSelected,1)+"' "+
+																	comando1.CommandText = "UPDATE osiris_catalogo_almacenes SET stock = '"+(string) filter.Model.GetValue(iterSelected,1)+"' "+
 																			"WHERE id_almacen = '"+this.idalmacendestino.ToString()+"' "+
 																			"AND eliminado = 'false'" +
-																			"AND id_producto = '"+(string)this.lista_almacenes.Model.GetValue(iterSelected,3)+"' ;";
+																			"AND id_producto = '"+(string) filter.Model.GetValue(iterSelected,3)+"' ;";
 																					
 																	comando1.ExecuteNonQuery();
 																	comando1.Dispose();
@@ -1280,10 +1295,10 @@ namespace osiris
 																		conexion7.Open ();
 																		NpgsqlCommand comando7; 
 																		comando7 = conexion7.CreateCommand();
-																		comando7.CommandText = "UPDATE osiris_catalogo_almacenes SET stock = stock - '"+(string)this.lista_almacenes.Model.GetValue(iterSelected,1)+"' "+
+																		comando7.CommandText = "UPDATE osiris_catalogo_almacenes SET stock = stock - '"+(string) filter.Model.GetValue(iterSelected,1)+"' "+
 																			"WHERE id_almacen = '"+this.idsubalmacen.ToString()+"' "+
 																			"AND eliminado = 'false'" +
-																			"AND id_producto = '"+(string)this.lista_almacenes.Model.GetValue(iterSelected,3)+"' ;";
+																			"AND id_producto = '"+(string) filter.Model.GetValue(iterSelected,3)+"' ;";
 																		comando7.ExecuteNonQuery();
 																		comando7.Dispose();
 																		conexion7.Close();
@@ -1309,15 +1324,15 @@ namespace osiris
 																							"traspaso ) "+
 																							"VALUES ("+
 																							"0,'"+
-																							(string) this.lista_almacenes.Model.GetValue(iterSelected,3)+"','"+//+" ,'"+
-																							(string) this.lista_almacenes.Model.GetValue(iterSelected,1)+"','"+
+																							(string) filter.Model.GetValue(iterSelected,3)+"','"+//+" ,'"+
+																							(string) filter.Model.GetValue(iterSelected,1)+"','"+
 																							DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"','"+
 																							LoginEmpleado+"','"+
 																							this.idsubalmacen.ToString()+"','"+
 																							this.idalmacendestino.ToString()+"' ,'"+
-																							(string) this.lista_almacenes.Model.GetValue(iterSelected,5)+"','"+
-																							(string) this.lista_almacenes.Model.GetValue(iterSelected,1)+"','"+
-																							(string) this.lista_almacenes.Model.GetValue(iterSelected,6)+"','"+
+																							(string) filter.Model.GetValue(iterSelected,5)+"','"+
+																							(string) filter.Model.GetValue(iterSelected,1)+"','"+
+																							(string) filter.Model.GetValue(iterSelected,6)+"','"+
 																							(string) this.entry_numero_de_traspaso.Text.ToUpper()+"','"+	
 																							"true');";
 																				comando4.ExecuteNonQuery();
@@ -1371,7 +1386,7 @@ namespace osiris
 							if (miResultado2 == ResponseType.Yes){
 								TreeIter iterSelected2;								
 								if (this.treeViewEngineBusca2.GetIterFirst (out iterSelected2)){
-									if ((bool) this.lista_almacenes.Model.GetValue (iterSelected2,0) == true){
+									if ((bool) filter.Model.GetValue (iterSelected2,0) == true){
 										//if (decimal.Parse((string) this.lista_almacenes.Model.GetValue (iterSelected2,1)) != 0 ){
 											NpgsqlConnection conexion;
 											conexion = new NpgsqlConnection (connectionString+nombrebd);
@@ -1379,13 +1394,13 @@ namespace osiris
 												conexion.Open ();
 												NpgsqlCommand comando; 
 												comando = conexion.CreateCommand();
-												comando.CommandText = "UPDATE osiris_catalogo_almacenes SET stock = '"+(string)this.lista_almacenes.Model.GetValue(iterSelected2,1)+"',"+
+												comando.CommandText = "UPDATE osiris_catalogo_almacenes SET stock = '"+(string) filter.Model.GetValue(iterSelected2,1)+"',"+
 													"historial_ajustes = historial_ajustes || '"+LoginEmpleado.Trim()+";"+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss").Trim()+";"+
-													Convert.ToString((string) this.lista_almacenes.Model.GetValue (iterSelected2,2)).Trim()+";"+
-													Convert.ToString((string) this.lista_almacenes.Model.GetValue (iterSelected2,1)).Trim()+"\n' "+
+													Convert.ToString((string) filter.Model.GetValue (iterSelected2,2)).Trim()+";"+
+													Convert.ToString((string) filter.Model.GetValue (iterSelected2,1)).Trim()+"\n' "+
 													"WHERE id_almacen = '"+this.idsubalmacen.ToString()+"' "+
 													"AND eliminado = 'false' " +
-													"AND id_producto = '"+(string)this.lista_almacenes.Model.GetValue(iterSelected2,3)+"' ;";
+													"AND id_producto = '"+(string) filter.Model.GetValue(iterSelected2,3)+"' ;";
 												//Console.WriteLine(comando.CommandText.ToString());
 												comando.ExecuteNonQuery();
 												comando.Dispose();
@@ -1402,7 +1417,7 @@ namespace osiris
 								}
 								
 								while (treeViewEngineBusca2.IterNext(ref iterSelected2)){
-									if ((bool) this.lista_almacenes.Model.GetValue (iterSelected2,0) == true){
+									if ((bool) filter.Model.GetValue (iterSelected2,0) == true){
 										//if (decimal.Parse((string) this.lista_almacenes.Model.GetValue (iterSelected2,2)) != 0 ){
 											NpgsqlConnection conexion;
 											conexion = new NpgsqlConnection (connectionString+nombrebd);
@@ -1410,13 +1425,13 @@ namespace osiris
 												conexion.Open ();
 												NpgsqlCommand comando; 
 												comando = conexion.CreateCommand();
-												comando.CommandText = "UPDATE osiris_catalogo_almacenes SET stock = '"+(string)this.lista_almacenes.Model.GetValue(iterSelected2,1)+"',"+
+												comando.CommandText = "UPDATE osiris_catalogo_almacenes SET stock = '"+(string) filter.Model.GetValue(iterSelected2,1)+"',"+
 													"historial_ajustes = historial_ajustes || '"+LoginEmpleado.Trim()+";"+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss").Trim()+";"+
-													Convert.ToString((string) this.lista_almacenes.Model.GetValue (iterSelected2,2)).Trim()+";"+
-													Convert.ToString((string) this.lista_almacenes.Model.GetValue (iterSelected2,1)).Trim()+"\n' "+
+													Convert.ToString((string) filter.Model.GetValue (iterSelected2,2)).Trim()+";"+
+													Convert.ToString((string) filter.Model.GetValue (iterSelected2,1)).Trim()+"\n' "+
 													"WHERE id_almacen = '"+this.idsubalmacen.ToString()+"' "+
 													"AND eliminado = 'false' " +
-													"AND id_producto = '"+(string)this.lista_almacenes.Model.GetValue(iterSelected2,3)+"' ;";
+													"AND id_producto = '"+(string) filter.Model.GetValue(iterSelected2,3)+"' ;";
 												comando.ExecuteNonQuery();
 												comando.Dispose();
 																									
@@ -1458,171 +1473,7 @@ namespace osiris
 		{
 			
 		}
-			
-		void llenado_grupo(string tipo_, string descripciongrupo_,int idgrupoproducto_ )
-		{
-			combobox_grupo.Clear();
-			CellRendererText cell3 = new CellRendererText();
-			combobox_grupo.PackStart(cell3, true);
-			combobox_grupo.AddAttribute(cell3,"text",0);
-	        
-			ListStore store1 = new ListStore( typeof (string), typeof (int));
-			combobox_grupo.Model = store1;
-			if(tipo_ == "selecciona"){
-				store1.AppendValues ((string)descripciongrupo_,(int) idgrupoproducto_);
-			}
-	      
-	        NpgsqlConnection conexion; 
-			conexion = new NpgsqlConnection (connectionString+nombrebd);
-            // Verifica que la base de datos este conectada
-			try{
-				conexion.Open ();
-				NpgsqlCommand comando; 
-				comando = conexion.CreateCommand ();
-               	comando.CommandText = "SELECT * FROM osiris_grupo_producto ORDER BY descripcion_grupo_producto ;";				
-				NpgsqlDataReader lector = comando.ExecuteReader ();
-               	while (lector.Read())
-				{
-					store1.AppendValues ((string) lector["descripcion_grupo_producto"],
-									 	(int) lector["id_grupo_producto"] );
-									 	
-				}
-			}catch (NpgsqlException ex){
-				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
-										MessageType.Error,ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
-				msgBoxError.Run ();				msgBoxError.Destroy();
-			}
-			conexion.Close ();
-	        
-			TreeIter iter1;
-			if (store1.GetIterFirst(out iter1)){
-				combobox_grupo.SetActiveIter (iter1);
-			}
-			combobox_grupo.Changed += new EventHandler (onComboBoxChanged_grupo);
-		}
-		
-		void llenado_grupo1(string tipo_,string descripciongrupo1_,int idgrupoproducto1_)
-		{
-			combobox_grupo1.Clear();
-			CellRendererText cell3 = new CellRendererText();
-			combobox_grupo1.PackStart(cell3, true);
-			combobox_grupo1.AddAttribute(cell3,"text",0);
-	        ListStore store4 = new ListStore( typeof (string), typeof (int), typeof (string));
-			combobox_grupo1.Model = store4;
-			if(tipo_ == "selecciona"){
-				store4.AppendValues ((string)descripciongrupo1_,(int) idgrupoproducto1_);
-			}
-	      	NpgsqlConnection conexion; 
-			conexion = new NpgsqlConnection (connectionString+nombrebd);
-            // Verifica que la base de datos este conectada
-			try{
-				conexion.Open ();
-				NpgsqlCommand comando; 
-				comando = conexion.CreateCommand ();
-               	comando.CommandText = "SELECT * FROM osiris_grupo1_producto ORDER BY descripcion_grupo1_producto ;";				
-				NpgsqlDataReader lector = comando.ExecuteReader ();
-               	while (lector.Read())
-				{
-					store4.AppendValues ((string) lector["descripcion_grupo1_producto"],
-									 	(int) lector["id_grupo1_producto"]);
-				}
-			}catch (NpgsqlException ex){
-				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
-										MessageType.Error,ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
-				msgBoxError.Run ();				msgBoxError.Destroy();
-			}
-			conexion.Close ();
-	        TreeIter iter4;
-			if (store4.GetIterFirst(out iter4)){
-				combobox_grupo1.SetActiveIter (iter4);
-			}
-			combobox_grupo1.Changed += new EventHandler (onComboBoxChanged_grupo1);
-		}
-		
-		void llenado_grupo2(string tipo_,string descripciongrupo2_,int idgrupoproducto2_)
-		{
-			combobox_grupo2.Clear();
-			CellRendererText cell3 = new CellRendererText();
-			combobox_grupo2.PackStart(cell3, true);
-			combobox_grupo2.AddAttribute(cell3,"text",0);
-	        
-			ListStore store3 = new ListStore( typeof (string), typeof (int));
-			combobox_grupo2.Model = store3;
-			if(tipo_ == "selecciona"){
-				store3.AppendValues ((string)descripciongrupo2_,(int) idgrupoproducto2_);
-			}
-	      	NpgsqlConnection conexion; 
-			conexion = new NpgsqlConnection (connectionString+nombrebd);
-            // Verifica que la base de datos este conectada
-			try{
-				conexion.Open ();
-				NpgsqlCommand comando; 
-				comando = conexion.CreateCommand ();
-               	comando.CommandText = "SELECT * FROM osiris_grupo2_producto ORDER BY descripcion_grupo2_producto ;";
-				NpgsqlDataReader lector = comando.ExecuteReader ();
-               	while (lector.Read()){
-					store3.AppendValues ((string) lector["descripcion_grupo2_producto"],
-									 	(int) lector["id_grupo2_producto"] );
-				}
-			}catch (NpgsqlException ex){
-				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
-										MessageType.Error,ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
-				msgBoxError.Run ();				msgBoxError.Destroy();
-			}
-			conexion.Close ();
-	        
-			TreeIter iter3;
-			if (store3.GetIterFirst(out iter3)){
-				combobox_grupo2.SetActiveIter (iter3);
-			}
-			combobox_grupo2.Changed += new EventHandler (onComboBoxChanged_grupo2);
-		}
-		
-		void onComboBoxChanged_grupo (object sender, EventArgs args)
-		{
-	    	ComboBox combobox_grupo = sender as ComboBox;
-			if (sender == null){
-	    		return;
-			}
-	  		TreeIter iter;
-	  		if (combobox_grupo.GetActiveIter (out iter)){
-		    	idtipogrupo = (int) combobox_grupo.Model.GetValue(iter,1);
-		    	descripgrupo = (string) combobox_grupo.Model.GetValue(iter,0);
-		    	query_grupo = "AND osiris_productos.id_grupo_producto = '"+idtipogrupo.ToString()+"' ";
-		    	this.llenando_busqueda_productos();
-		    }
-		}
-		
-		void onComboBoxChanged_grupo1(object sender, EventArgs args)
-		{
-	    	ComboBox combobox_grupo1 = sender as ComboBox;
-			if (sender == null){
-	    		return;
-			}
-	  		TreeIter iter;
-	  		if (combobox_grupo1.GetActiveIter (out iter)){
-		    		idtipogrupo1 = (int) combobox_grupo1.Model.GetValue(iter,1);
-		    		descripgrupo1 = (string) combobox_grupo1.Model.GetValue(iter,0);
-		    		query_grupo1 = "AND osiris_productos.id_grupo1_producto = '"+idtipogrupo1.ToString()+"' ";
-		    		this.llenando_busqueda_productos();
-			}
-		}
-		
-		void onComboBoxChanged_grupo2(object sender, EventArgs args)
-		{		
-	    	ComboBox combobox_grupo2 = sender as ComboBox;
-			if (sender == null){
-	    		return;
-			}
-	  		TreeIter iter;
-	  		if (combobox_grupo2.GetActiveIter (out iter)){
-		    		idtipogrupo2 = (int) combobox_grupo2.Model.GetValue(iter,1);
-		    		descripgrupo2 = (string) combobox_grupo2.Model.GetValue(iter,0);
-		    		query_grupo2 = "AND osiris_productos.id_grupo2_producto = '"+idtipogrupo2.ToString()+"' ";
-		    		this.llenando_busqueda_productos();
-	     	}
-		}
-		
+				
 		void on_checkbutton_articulos_sin_stock_clicked(object sender, EventArgs args)
 		{			
 			if(this.checkbutton_sin_stock.Active == true) {

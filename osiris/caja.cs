@@ -837,8 +837,16 @@ namespace osiris
 		// Accion de Bloque de una cuenta para que no realicen mas cargos exepto el cajero
 		void on_button_bloquea_cuenta_clicked(object sender, EventArgs a)
 		{
+			string mensaje_bloqueo = "BLOQUEAR";
+			if((bool) cuenta_bloqueada == true){
+				mensaje_bloqueo = "DESBLOQUEAR";
+				cuenta_bloqueada = false;
+			}else{
+				cuenta_bloqueada = true;
+			}
+			
 			MessageDialog msgBox = new MessageDialog (MyWin,DialogFlags.Modal,
-						MessageType.Question,ButtonsType.YesNo,"¿ Desea BLOQUEAR esta cuenta ?");
+						MessageType.Question,ButtonsType.YesNo,"¿ Desea "+mensaje_bloqueo+" esta cuenta ?");
 			ResponseType miResultado = (ResponseType)msgBox.Run ();
 			msgBox.Destroy();
 	 			
@@ -851,19 +859,19 @@ namespace osiris
 					NpgsqlCommand comando; 
 					comando = conexion.CreateCommand ();
 			 		comando.CommandText = "UPDATE osiris_erp_cobros_enca "+
-								"SET bloqueo_de_folio = 'true' ,"+
-								"historial_de_bloqueo = historial_de_bloqueo ||'"+LoginEmpleado+" "+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"\n' "+
+								"SET bloqueo_de_folio = '"+cuenta_bloqueada.ToString()+"' ,"+
+								"historial_de_bloqueo = historial_de_bloqueo ||'"+LoginEmpleado+";"+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+";"+mensaje_bloqueo+"\n' "+
 		 						"WHERE  folio_de_servicio =  '"+this.folioservicio+"';";
 					comando.ExecuteNonQuery();
 			        comando.Dispose();
 			        //Console.WriteLine(comando.CommandText.ToString());
 			        //button_busca_producto.Sensitive = false;
 			        msgBox = new MessageDialog (MyWin,DialogFlags.Modal,
-								MessageType.Info,ButtonsType.Ok,"El Folio "+folioservicio+" se bloqueo satisfactoriamente");
+								MessageType.Info,ButtonsType.Ok,"El Folio "+folioservicio+" se "+mensaje_bloqueo+" satisfactoriamente");
 					miResultado = (ResponseType)msgBox.Run ();
 					msgBox.Destroy();  			conexion.Close ();
 	       			button_bloquea_cuenta.Sensitive = false;
-			        	
+			        llenado_de_productos_aplicados( (string) entry_folio_servicio.Text );	
 			    }catch (NpgsqlException ex){
 				   	MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
 										MessageType.Error, 
@@ -2192,8 +2200,8 @@ namespace osiris
 						"osiris_grupo_producto.descripcion_grupo_producto, "+
 						"osiris_productos.id_grupo_producto,  "+
 						"to_char(osiris_erp_cobros_deta.porcentage_descuento,'999.99') AS porcdesc, "+
-						"to_char(osiris_erp_cobros_deta.fechahora_creacion,'dd-mm-yyyy') AS fechcreacion,  "+
-						"to_char(osiris_erp_cobros_deta.fechahora_creacion,'HH:mm') AS horacreacion,  "+
+						"to_char(osiris_erp_cobros_enca.fechahora_creacion,'dd-mm-yyyy') AS fechcreacion,  "+
+						"to_char(osiris_erp_cobros_enca.fechahora_creacion,'HH:mi') AS horacreacion,  "+
 						"to_char(osiris_erp_cobros_deta.id_producto,'999999999999') AS idproducto,descripcion_producto, "+
 						"to_char(osiris_erp_cobros_deta.cantidad_aplicada,'99999999.99') AS cantidadaplicada, "+
 						"to_char(osiris_erp_cobros_deta.precio_producto,'9999999.99') AS preciounitario, "+
@@ -2225,8 +2233,8 @@ namespace osiris
 						"osiris_grupo_producto.descripcion_grupo_producto, "+
 						"osiris_productos.id_grupo_producto,  "+
 						"to_char(osiris_erp_cobros_deta.porcentage_descuento,'999.99') AS porcdesc, "+
-						"to_char(osiris_erp_cobros_deta.fechahora_creacion,'dd-mm-yyyy') AS fechcreacion,  "+
-						"to_char(osiris_erp_cobros_deta.fechahora_creacion,'HH:mm') AS horacreacion,  "+
+						"to_char(osiris_erp_cobros_enca.fechahora_creacion,'dd-mm-yyyy') AS fechcreacion,  "+
+						"to_char(osiris_erp_cobros_enca.fechahora_creacion,'HH:mi') AS horacreacion,  "+
 						"to_char(osiris_erp_cobros_deta.id_producto,'999999999999') AS idproducto,descripcion_producto, "+
 						"to_char(osiris_erp_cobros_deta.cantidad_aplicada,'99999999.99') AS cantidadaplicada, "+
 						"to_char(osiris_erp_cobros_deta.precio_producto,'9999999.99') AS preciounitario, "+
@@ -2257,8 +2265,8 @@ namespace osiris
 						"osiris_grupo_producto.descripcion_grupo_producto, "+
 						"osiris_productos.id_grupo_producto,  "+
 						"to_char(osiris_erp_cobros_deta.porcentage_descuento,'999.99') AS porcdesc, "+
-						"to_char(osiris_erp_cobros_deta.fechahora_creacion,'dd-mm-yyyy') AS fechcreacion,  "+
-						"to_char(osiris_erp_cobros_deta.fechahora_creacion,'HH:mm') AS horacreacion,  "+
+						"to_char(osiris_erp_cobros_enca.fechahora_creacion,'dd-mm-yyyy') AS fechcreacion,  "+
+						"to_char(osiris_erp_cobros_enca.fechahora_creacion,'HH:mi') AS horacreacion,  "+
 						"to_char(osiris_erp_cobros_deta.id_producto,'999999999999') AS idproducto,descripcion_producto, "+
 						"to_char(osiris_erp_cobros_deta.cantidad_aplicada,'99999999.99') AS cantidadaplicada, "+
 						"to_char(osiris_erp_cobros_deta.precio_producto,'9999999.99') AS preciounitario, "+
@@ -3359,7 +3367,7 @@ namespace osiris
 					entry_diagnostico.Text = (string) lector ["descripcion_diagnostico_movcargos"];
 					
 					
-					//cuenta_bloqueada = (bool) lector["bloqueo_de_folio"];
+					cuenta_bloqueada = (bool) lector["bloqueo_de_folio"];
 					//cuenta_cerrada = (bool) lector["pagado"];
 					
 					deducible_caja = float.Parse((string) lector["deduciblecaja"]); 
@@ -3403,9 +3411,8 @@ namespace osiris
 									if (procedimiento_cerrado == false){
 									
 										button_busca_producto.Sensitive = true;
-										button_pase_quirofano.Sensitive = true;
+										button_pase_quirofano.Sensitive = false;
 										if ((bool) lector ["alta_paciente"] == false){
-											button_cierre_cuenta.Sensitive = false;
 											// habilitando boton para poder realizar mas cargos
 											if ((bool) lector ["bloqueo_de_folio"] == false){
 												button_busca_producto.Sensitive = true;
@@ -3431,6 +3438,8 @@ namespace osiris
 																					"solo el personal de CAJA podra agregar Cargos");
 												msgBoxError.Run ();											msgBoxError.Destroy();
 											}
+											button_cierre_cuenta.Sensitive = false;
+											button_pase_quirofano.Sensitive = true;
 										}else{
 											button_busca_producto.Sensitive = true;
 											button_alta_paciente.Sensitive = false;
@@ -3440,7 +3449,7 @@ namespace osiris
 											button_compro_caja.Sensitive = true;
 											button_compro_serv.Sensitive = true;
 											button_pagare.Sensitive = true;
-											button_pase_quirofano.Sensitive = true;
+											button_pase_quirofano.Sensitive = false;
 											button_traspasa_productos.Sensitive = true;
 											button_exportar_xls.Sensitive = true;
 											MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
@@ -3497,6 +3506,7 @@ namespace osiris
 								button_abre_folio.Sensitive = false;
 								button_honorario_medico.Sensitive = true;
 								button_traspasa_productos.Sensitive = false;
+								button_pase_quirofano.Sensitive = false;
 								button_exportar_xls.Sensitive = true;
 								//button_abonar.Sensitive = false;
 								MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
@@ -3518,6 +3528,7 @@ namespace osiris
 							button_abonar.Sensitive = false;
 							button_exportar_xls.Sensitive = false;
 							button_pagare.Sensitive = false;
+							button_pase_quirofano.Sensitive = false;
 							MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
 							MessageType.Error,ButtonsType.Close,"Este procedimiento se encuentra CANCELADO \n"+
 																"NO podra agregar mas cargos a esta cuenta");
@@ -3533,6 +3544,7 @@ namespace osiris
 						button_procedimiento_totales.Sensitive = true;
 						button_abonar.Sensitive = false;
 						button_abre_folio.Sensitive = false;
+						button_pase_quirofano.Sensitive = false;
 						MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
 						MessageType.Error,ButtonsType.Close,"Este procedimiento pertenece al CENTRO MEDICO  \n"+
 															"NO podra agregar cargos a esta cuenta");

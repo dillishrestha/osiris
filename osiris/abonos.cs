@@ -895,8 +895,8 @@ namespace osiris
 						"osiris_grupo_producto.descripcion_grupo_producto, "+
 						"osiris_productos.id_grupo_producto,  "+
 						"to_char(osiris_erp_cobros_deta.porcentage_descuento,'999.99') AS porcdesc, "+
-						"to_char(osiris_erp_cobros_deta.fechahora_creacion,'dd-mm-yyyy') AS fechcreacion,  "+
-						"to_char(osiris_erp_cobros_deta.fechahora_creacion,'HH:mm') AS horacreacion,  "+
+						"to_char(osiris_erp_cobros_enca.fechahora_creacion,'dd-mm-yyyy') AS fechcreacion,  "+
+						"to_char(osiris_erp_cobros_enca.fechahora_creacion,'HH:mi') AS horacreacion,  "+
 						"to_char(osiris_erp_cobros_deta.id_producto,'999999999999') AS idproducto,descripcion_producto, "+
 						"to_char(osiris_erp_cobros_deta.cantidad_aplicada,'99999999.99') AS cantidadaplicada, "+
 						"to_char(osiris_erp_cobros_deta.precio_producto,'9999999.99') AS preciounitario, "+
@@ -924,12 +924,14 @@ namespace osiris
 					
 					if((bool) model.GetValue(iterSelected, 10)){
 						// Pago en Caja total del procedimiento
-						Console.WriteLine("Es un Abono");
+						// Console.WriteLine("Es un Abono");
 						new caja_comprobante(int.Parse(recibo),"ABONO", folioservicio,"SELECT osiris_erp_cobros_enca.folio_de_servicio AS foliodeservicio,osiris_erp_cobros_enca.pid_paciente AS pidpaciente," +
 							"osiris_erp_abonos.numero_recibo_caja AS numerorecibo," +
 							"osiris_his_paciente.nombre1_paciente || ' ' || osiris_his_paciente.nombre2_paciente || ' ' || osiris_his_paciente.apellido_paterno_paciente || ' ' || osiris_his_paciente.apellido_materno_paciente AS nombre_completo," +
 							"to_char(osiris_his_paciente.fecha_nacimiento_paciente, 'dd-MM-yyyy') AS fechanacpaciente," +
-							"to_char(to_number(to_char(age('2011-12-01 10:13:42',osiris_his_paciente.fecha_nacimiento_paciente),'yyyy') ,'9999'),'9999') AS edadpaciente," +
+						    "to_char(osiris_erp_cobros_enca.fechahora_creacion,'dd-mm-yyyy') AS fechcreacion,  "+
+							"to_char(osiris_erp_cobros_enca.fechahora_creacion,'HH:mi') AS horacreacion,  "+
+							"to_char(to_number(to_char(age('"+DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss")+"',osiris_his_paciente.fecha_nacimiento_paciente),'yyyy') ,'9999'),'9999') AS edadpaciente," +
 							"telefono_particular1_paciente,osiris_erp_abonos.observaciones AS observacionesvarias,osiris_erp_abonos.concepto_del_abono AS concepto_comprobante," +
 							"osiris_erp_cobros_enca.id_empresa,descripcion_empresa,osiris_erp_cobros_enca.nombre_medico_encabezado,to_char(monto_de_abono_procedimiento,'999999999.99') AS montodelabono," +
 							"descripcion_tipo_comprobante " +

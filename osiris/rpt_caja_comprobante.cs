@@ -169,7 +169,8 @@ namespace osiris
 						titulo_comprobante = tipocomprobante;
 						break;
 					case "ABONO":
-						titulo_comprobante = tipocomprobante;
+						toma_valor_total = float.Parse((string) lector["montodelabono"]);
+						titulo_comprobante = "CAJA_"+tipocomprobante;
 						break;
 					}					
 					busca_tipoadmisiones(lector["foliodeservicio"].ToString().Trim());
@@ -221,6 +222,9 @@ namespace osiris
 								}
 							}
 						}
+					}
+					if(tipocomprobante == "ABONO"){
+					
 					}
 				}								
 			}catch (NpgsqlException ex){

@@ -141,6 +141,9 @@ namespace osiris
 			}
 			if(tipo_reporte == "productos_requisados"){
 				mov_productos.Title = "Mov. Prod. Requisados de Almacen a Compras";
+				llenado_combobox(1,"",combobox_departamentos,"sql","SELECT * FROM osiris_his_tipo_admisiones "+
+		               						"WHERE cuenta_mayor = 4000 "+
+		               						"ORDER BY descripcion_admisiones;","descripcion_admisiones","id_tipo_admisiones",args_args,args_id_array);
 			}
 			//  Sale de la ventana:
 			button_salir.Clicked += new EventHandler(on_cierraventanas_clicked);

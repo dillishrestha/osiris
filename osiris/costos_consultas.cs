@@ -181,7 +181,7 @@ namespace osiris
 		
 		void on_button_productos_aplicados_clicked(object sender, EventArgs args)
 		{
-			new movimientos_productos(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,0);
+			new osiris.movimientos_productos(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,"cargos_pacientes","");
 		}
 		
 		void on_button_listas_precios_clicked (object sender, EventArgs args)

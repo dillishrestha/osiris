@@ -65,6 +65,7 @@ namespace osiris
 		[Widget] Gtk.TreeView lista_resumen_productos = null;
 		[Widget] Gtk.Button button_consultar_costos = null;
 		[Widget] Gtk.Button button_imprimir_movimiento = null;
+		[Widget] Gtk.Button button_quitar_producto = null;
 		[Widget] Gtk.Label label136 = null;
 		[Widget] Gtk.Entry entry1 = null;
 		[Widget] Gtk.Label label137 = null;

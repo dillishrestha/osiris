@@ -346,30 +346,12 @@ namespace osiris
 		
 		void on_button_productos_requi_clicked(object sender, EventArgs args)
 		{
-		  	Glade.XML gxml = new Glade.XML (null, "almacen_costos_compras.glade", "envio_almacenes", null);
-			gxml.Autoconnect (this);
-				
-			entry_dia_inicio.Text = DateTime.Now.ToString("dd");
-			entry_mes_inicio.Text = DateTime.Now.ToString("MM");
-			entry_ano_inicio.Text = DateTime.Now.ToString("yyyy");
-				
-			entry_dia_termino.Sensitive = false;
-			entry_mes_termino.Sensitive = false;
-			entry_ano_termino.Sensitive = false;
-				
-			hbox1.Hide();
-			//hbox2.Hide();
-			
-			button_salir.Clicked += new EventHandler(on_cierraventanas_clicked);
-			button_buscar_prodreq.Clicked += new EventHandler(on_button_busca_producto_clicked);
-           	//button_rep.Clicked += new EventHandler(on_button_rep_clicked);
-          	//checkbutton_todos_envios.Clicked += new EventHandler(on_checkbutton_todos_envios);
-          	checkbutton_seleccion_presupuestos.Hide();			
+		  		
 		}
 		
 		void on_button_busca_requisiones_clicked(object sender, EventArgs args)
 		{
-		  	new osiris.movimientos_productos(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,"productos_requisados","");
+		  	//new osiris.envios_a_subalmacenes(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,"","");
 		}
 				
 		void on_checkbutton_nueva_requisicion_clicked(object sender, EventArgs args)
@@ -807,33 +789,29 @@ namespace osiris
 												(bool) lector["requisicion_ordinaria"],(bool) lector["requisicion_urgente"],(string) tiporequisicion_);
 						
 						idrequisicion = int.Parse((string) this.entry_requisicion.Text.Trim());
-						this.entry_motivo.Text = (string) lector["motivo_requisicion"].ToString().Trim();
-						this.entry_observaciones.Text = (string) lector["observaciones"].ToString().Trim();
+						entry_motivo.Text = (string) lector["motivo_requisicion"].ToString().Trim();
+						entry_observaciones.Text = (string) lector["observaciones"].ToString().Trim();
 						descripinternamiento = (string) lector["descripcion_admisiones"];	// Descripcion de Centro de Costos - Solicitado por
 						descripinternamiento2 = (string) lector["descripcion_admisiones_cargada"];	// Descripcion de Centro de Costos - con Cargo a
 						descripcion_tipo_requi = (string) tiporequisicion_;	// descripcion del tipo de requisicion
-						this.entry_solicitado_por.Text = (string) lector["nombre1_empleado"].ToString().Trim()+" "+
+						entry_solicitado_por.Text = (string) lector["nombre1_empleado"].ToString().Trim()+" "+
 														(string) lector["nombre2_empleado"].ToString().Trim()+" "+
 														(string) lector["apellido_paterno_empleado"].ToString().Trim()+" "+
 														(string) lector["apellido_materno_empleado"].ToString().Trim();
-						this.entry_fecha_solicitud.Text = (string) lector["fechacrearequisicion"];
-						this.entry_dia_requerida.Text = (string) lector["dia_fecha_requerida"];
-						this.entry_mes_requerida.Text = (string) lector["mes_fecha_requerida"];
-						this.entry_ano_requerida.Text = (string) lector["ano_fecha_requerida"];
-						
+						entry_fecha_solicitud.Text = (string) lector["fechacrearequisicion"];
+						entry_dia_requerida.Text = (string) lector["dia_fecha_requerida"];
+						entry_mes_requerida.Text = (string) lector["mes_fecha_requerida"];
+						entry_ano_requerida.Text = (string) lector["ano_fecha_requerida"];
 						if ((bool) lector["enviada_a_compras"] == true && (bool) lector["cancelado"] == false){
-											
-							this.button_guardar_requisicion.Sensitive = false;
-							this.button_envio_compras.Sensitive = false;
-							this.button_enviopara_autorizar.Sensitive = false;
-							this.button_busca_producto.Sensitive = false;
-							this.button_quitar_productos.Sensitive = false;
-							this.button_busca_proveedores1.Sensitive = false;
-							this.button_busca_proveedores2.Sensitive = false;
-							this.button_busca_proveedores3.Sensitive = false;
-								
-							this.entry_status_requisicion.Text = "ENVIADA A COMPRAS "+(string) lector["fechahoraenviocompras"];
-																					
+							button_guardar_requisicion.Sensitive = false;
+							button_envio_compras.Sensitive = false;
+							button_enviopara_autorizar.Sensitive = false;
+							button_busca_producto.Sensitive = false;
+							button_quitar_productos.Sensitive = false;
+							button_busca_proveedores1.Sensitive = false;
+							button_busca_proveedores2.Sensitive = false;
+							button_busca_proveedores3.Sensitive = false;
+							entry_status_requisicion.Text = "ENVIADA A COMPRAS "+(string) lector["fechahoraenviocompras"];
 							enviadacompras = true;														
 							if ((bool) lector["autorizacion_para_comprar"] == false){
 								MessageDialog msgBox1 = new MessageDialog (MyWin,DialogFlags.Modal,
@@ -841,45 +819,45 @@ namespace osiris
 								msgBox1.Run ();		msgBox1.Destroy();
 								//Console.WriteLine("envio para autorizar");
 								if((string) LoginEmpleado == "DOLIVARES" || (string) LoginEmpleado == "ADMIN"){									
-									this.button_autorizar_compra.Sensitive = false;
-									this.button_enviopara_autorizar.Sensitive = true;									
+									button_autorizar_compra.Sensitive = false;
+									button_enviopara_autorizar.Sensitive = true;									
 								}							
 							}else{
 								MessageDialog msgBox1 = new MessageDialog (MyWin,DialogFlags.Modal,
 								MessageType.Info,ButtonsType.Ok,"Requisicion Autorizada para Generar la ORDEN DE COMPRA");
 								msgBox1.Run ();		msgBox1.Destroy();
-								this.entry_status_requisicion.Text = "AUTORIZADA PARA GENERAR ORDEN ED COMPRA";
+								entry_status_requisicion.Text = "AUTORIZADA PARA GENERAR ORDEN ED COMPRA";
 								if((string) LoginEmpleado == "DOLIVARES"  || (string) LoginEmpleado == "ADMIN"){
-									this.button_autorizar_compra.Sensitive = true;
+									button_autorizar_compra.Sensitive = true;
 								}
 							}							
 						}else{
 							if ((bool) lector["cancelado"] == true){
-								this.button_guardar_requisicion.Sensitive = false;
-								this.button_envio_compras.Sensitive = false;
-								this.button_enviopara_autorizar.Sensitive = false;
-								this.button_busca_producto.Sensitive = false;
-								this.button_quitar_productos.Sensitive = false;
-								this.button_autorizar_compra.Sensitive = false;
-								this.button_busca_proveedores1.Sensitive = false;
-								this.button_busca_proveedores2.Sensitive = false;
-								this.button_busca_proveedores3.Sensitive = false;							
-								this.entry_status_requisicion.Text = "REQUISICION CANCELADA";
+								button_guardar_requisicion.Sensitive = false;
+								button_envio_compras.Sensitive = false;
+								button_enviopara_autorizar.Sensitive = false;
+								button_busca_producto.Sensitive = false;
+								button_quitar_productos.Sensitive = false;
+								button_autorizar_compra.Sensitive = false;
+								button_busca_proveedores1.Sensitive = false;
+								button_busca_proveedores2.Sensitive = false;
+								button_busca_proveedores3.Sensitive = false;							
+								entry_status_requisicion.Text = "REQUISICION CANCELADA";
 								MessageDialog msgBox1 = new MessageDialog (MyWin,DialogFlags.Modal,
 									MessageType.Info,ButtonsType.Ok,"La requisicion se encuentra Cancelada, verifique... ");
 								msgBox1.Run ();		msgBox1.Destroy();
 						
 							}else{
-								this.button_guardar_requisicion.Sensitive = true;
-								this.button_envio_compras.Sensitive = true;
-								this.button_enviopara_autorizar.Sensitive = false;
-								this.button_busca_producto.Sensitive = true;
-								this.button_quitar_productos.Sensitive = true;
-								this.button_autorizar_compra.Sensitive = false;
-								this.button_busca_proveedores1.Sensitive = true;
-								this.button_busca_proveedores2.Sensitive = true;
-								this.button_busca_proveedores3.Sensitive = true;							
-								this.entry_status_requisicion.Text = "PENDIENTE DE ENVIAR A COMPRAS";
+								button_guardar_requisicion.Sensitive = true;
+								button_envio_compras.Sensitive = true;
+								button_enviopara_autorizar.Sensitive = false;
+								button_busca_producto.Sensitive = true;
+								button_quitar_productos.Sensitive = true;
+								button_autorizar_compra.Sensitive = false;
+								button_busca_proveedores1.Sensitive = true;
+								button_busca_proveedores2.Sensitive = true;
+								button_busca_proveedores3.Sensitive = true;							
+								entry_status_requisicion.Text = "PENDIENTE DE ENVIAR A COMPRAS";
 							}
 							enviadacompras = false;
 							editar = true;
@@ -931,7 +909,7 @@ namespace osiris
 							
 							treeViewEngineRequisicion.AppendValues((string) lector1["cantidadsolicitada"],
 														(string) lector1["descripcion_producto"], 
-														this.entry_solicitado_por.Text = (string) lector1["id_quien_requiso"],
+														(string) lector1["idproducto"],
 														(string) lector1["cantidadembalaje"],
 														(string) lector1["tipo_unidad_producto"],
 														"",
@@ -973,56 +951,54 @@ namespace osiris
 													(bool) lector["requisicion_ordinaria"],(bool) lector["requisicion_urgente"],(string) tiporequisicion_);
 							
 							idrequisicion = int.Parse((string) this.entry_requisicion.Text.Trim());
-							this.entry_motivo.Text = (string) lector["motivo_requisicion"].ToString().Trim();
-							this.entry_observaciones.Text = (string) lector["observaciones"].ToString().Trim();
+							entry_motivo.Text = (string) lector["motivo_requisicion"].ToString().Trim();
+							entry_observaciones.Text = (string) lector["observaciones"].ToString().Trim();
 							descripinternamiento = (string) lector["descripcion_admisiones"];	// Descripcion de Centro de Costos - Solicitado por
 							descripinternamiento2 = (string) lector["descripcion_admisiones_cargada"];	// Descripcion de Centro de Costos - con Cargo a
 							descripcion_tipo_requi = (string) tiporequisicion_;	// descripcion del tipo de requisicion
-							this.entry_solicitado_por.Text = (string) lector["nombre1_empleado"].ToString().Trim()+" "+
-														(string) lector["nombre2_empleado"].ToString().Trim()+" "+
-														(string) lector["apellido_paterno_empleado"].ToString().Trim()+" "+
-														(string) lector["apellido_materno_empleado"].ToString().Trim();
-							this.entry_fecha_solicitud.Text = (string) lector["fechacrearequisicion"];
-							this.entry_dia_requerida.Text = (string) lector["dia_fecha_requerida"];
-							this.entry_mes_requerida.Text = (string) lector["mes_fecha_requerida"];
-							this.entry_ano_requerida.Text = (string) lector["ano_fecha_requerida"];
+							//entry_solicitado_por.Text = (string) lector["nombre1_empleado"].ToString().Trim()+" "+
+							//							(string) lector["nombre2_empleado"].ToString().Trim()+" "+
+							//							(string) lector["apellido_paterno_empleado"].ToString().Trim()+" "+
+							//							(string) lector["apellido_materno_empleado"].ToString().Trim();
+							entry_fecha_solicitud.Text = (string) lector["fechacrearequisicion"];
+							entry_dia_requerida.Text = (string) lector["dia_fecha_requerida"];
+							entry_mes_requerida.Text = (string) lector["mes_fecha_requerida"];
+							entry_ano_requerida.Text = (string) lector["ano_fecha_requerida"];
 							if ((bool) lector["enviada_a_compras"] == true){						
-								this.button_guardar_requisicion.Sensitive = false;
-								this.button_envio_compras.Sensitive = false;
-								this.button_enviopara_autorizar.Sensitive = false;
-								this.button_busca_producto.Sensitive = false;	
-								this.button_busca_proveedores1.Sensitive = false;
-								this.button_busca_proveedores2.Sensitive = false;
-								this.button_busca_proveedores3.Sensitive = false;
-														
-								this.entry_status_requisicion.Text = "ENVIADA A COMPRAS "+(string) lector["fechahoraenviocompras"];														
+								button_guardar_requisicion.Sensitive = false;
+								button_envio_compras.Sensitive = false;
+								button_enviopara_autorizar.Sensitive = false;
+								button_busca_producto.Sensitive = false;	
+								button_busca_proveedores1.Sensitive = false;
+								button_busca_proveedores2.Sensitive = false;
+								button_busca_proveedores3.Sensitive = false;
+								entry_status_requisicion.Text = "ENVIADA A COMPRAS "+(string) lector["fechahoraenviocompras"];														
 								enviadacompras = true;							
 								MessageDialog msgBox1 = new MessageDialog (MyWin,DialogFlags.Modal,
 										MessageType.Info,ButtonsType.Ok,"La requisicion se envio a Compras con fecha "+(string) lector["fechahoraenviocompras"]);
 								msgBox1.Run ();		msgBox1.Destroy();
 								if ((bool) lector["autorizacion_para_comprar"] == false){									
 									if((string) LoginEmpleado == "DOLIVARES" || (string) LoginEmpleado == "ADMIN"){
-										this.button_enviopara_autorizar.Sensitive = true;									
+										button_enviopara_autorizar.Sensitive = true;									
 									}
 								}else{
 									if((string) LoginEmpleado == "DOLIVARES" || (string) LoginEmpleado == "ADMIN"){
-										this.button_autorizar_compra.Sensitive = true;		
+										button_autorizar_compra.Sensitive = true;		
 									}
 								}
 							}else{
-								this.button_guardar_requisicion.Sensitive = true;
-								this.button_envio_compras.Sensitive = true;
-								this.button_enviopara_autorizar.Sensitive = false;
-								this.button_busca_producto.Sensitive = true;
-								this.button_autorizar_compra.Sensitive = false;
-								this.button_busca_proveedores1.Sensitive = true;
-								this.button_busca_proveedores2.Sensitive = true;
-								this.button_busca_proveedores3.Sensitive = true;
-								this.entry_status_requisicion.Text = "PENDIENTE DE ENVIAR A COMPRAS";
+								button_guardar_requisicion.Sensitive = true;
+								button_envio_compras.Sensitive = true;
+								button_enviopara_autorizar.Sensitive = false;
+								button_busca_producto.Sensitive = true;
+								button_autorizar_compra.Sensitive = false;
+								button_busca_proveedores1.Sensitive = true;
+								button_busca_proveedores2.Sensitive = true;
+								button_busca_proveedores3.Sensitive = true;
+								entry_status_requisicion.Text = "PENDIENTE DE ENVIAR A COMPRAS";
 								enviadacompras = false;
 								editar = true;
-							}
-							
+							}							
 							comando.CommandText = "SELECT id_requisicion,to_char(osiris_erp_requisicion_deta.id_producto,'999999999999') AS idproducto,"+
 										"to_char(cantidad_solicitada,'999999.99') AS cantidadsolicitada,comprado,"+
 										"osiris_productos.descripcion_producto,to_char(osiris_productos.cantidad_de_embalaje,'9999.99') AS cantidadembalaje,"+

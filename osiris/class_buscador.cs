@@ -147,6 +147,10 @@ namespace osiris
 		Gtk.Entry entry_pid_paciente = null;
 		Gtk.Entry entry_nombre_paciente = null;
 		
+		// Busqueda de almacen en iventario fisico
+		Gtk.Entry entry_id_almacen = null;
+		Gtk.Entry entry_almacen = null;
+		
 		class_conexion conexion_a_DB = new class_conexion();
 		
 		string[] args_sql;
@@ -349,6 +353,10 @@ namespace osiris
 				case "find_proveedores_OC":
 					entry_id_proveedor = (object) args[0] as Gtk.Entry;
 					entry_nombre_proveedor = (object) args[1] as Gtk.Entry;
+				break;
+				case "find_almacen_inventario":
+					entry_id_almacen = (object) args[0] as Gtk.Entry;
+					entry_almacen = (object) args[1] as Gtk.Entry;
 				break;
 			}
 			args_sql = args_sql_;
@@ -693,6 +701,10 @@ namespace osiris
 													//(string) lector["fax_proveedor"], //12
 							                        //(int) lector["id_forma_de_pago"]);//13
 							break;
+							case "find_almacen_inventario":
+								treeViewEngineBuscador.AppendValues((int) lector["id_almacen"],
+							                                  (string) lector["descripcion_almacen"]);
+							break;
 							
 						}
 					}
@@ -708,8 +720,7 @@ namespace osiris
 		void on_selecciona_busqueda(object sender, EventArgs args)
 		{
 			TreeModel model;
-			TreeIter iterSelected;
-			
+			TreeIter iterSelected;			
 			if (lista_de_busqueda.Selection.GetSelected(out model, out iterSelected)){										
 				int tomaid = (int) model.GetValue(iterSelected, 0);												
 				switch (type_find){	
@@ -853,6 +864,11 @@ namespace osiris
 					break;
 					case "find_proveedores_OC":
 					
+					break;
+					
+					case "find_almacen_inventario":
+						entry_id_almacen.Text = tomaid.ToString();
+						entry_almacen.Text = (string) model.GetValue(iterSelected, 1);
 					break;
 				}				
 			}

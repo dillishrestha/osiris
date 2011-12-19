@@ -93,6 +93,8 @@ namespace osiris
 		[Widget] Gtk.TreeView busqueda;
 		[Widget] Gtk.Label label_cantidad;
 		[Widget] Gtk.Entry entry_cantidad_aplicada;
+		[Widget] Gtk.HBox hbox3 = null;
+		
 		
 		// Para todas las busquedas este es el nombre asignado
 		// se declara una vez
@@ -625,6 +627,7 @@ namespace osiris
 			entry_expresion.KeyPressEvent += onKeyPressEvent_enter;
 			//button_seleccionar.Clicked += new EventHandler(on_selecciona_producto_clicked);
 			label_cantidad.Hide();
+			hbox3.Hide();
 			entry_cantidad_aplicada.Hide();
 			crea_treeview_busqueda();
 			button_salir.Clicked += new EventHandler(on_cierraventanas_clicked); // esta sub-clase esta en hscmty.cs

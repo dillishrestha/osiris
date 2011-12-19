@@ -4,7 +4,7 @@
 // Monterrey - Mexico
 //
 // Autor    	: ing. Juan Antonio Peña Gonzalez (gjuanzz@gmail.com) 
-// 				  Ing. Daniel Olivares C. (Programacion Base y Ajustes)
+// 				  Ing. Daniel Olivares C. (Programacion Base y Ajustes dic 2011)
 //
 // Licencia		: GLP
 //////////////////////////////////////////////////////////
@@ -24,9 +24,9 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 // 
 //////////////////////////////////////////////////////////
-// Programa		: paquetes_quirurgicos.cs
-// Proposito	: Crear paquetes de productos que se aplican en cirugia
-// Objeto		: paquetes_quirurgicos.cs
+// Programa		:
+// Proposito	:
+// Objeto		:
 //////////////////////////////////////////////////////////	
 using System;
 using Npgsql;
@@ -44,9 +44,12 @@ namespace osiris
 		
 		// Para todas las busquedas este es el nombre asignado
 		// se declara una vez
+		[Widget] Gtk.Window busca_producto = null;
 		[Widget] Gtk.Entry entry_expresion = null;
 		[Widget] Gtk.Button button_selecciona = null;
 		[Widget] Gtk.Button button_buscar_busqueda = null;
+		[Widget] Gtk.Entry entry_lote = null;
+		[Widget] Gtk.Entry entry_caducidad = null;
 		
 		// Declarando ventana principal
 		[Widget] Gtk.Window inventario = null;
@@ -74,8 +77,6 @@ namespace osiris
 		//Declarando la barra de estado
 		[Widget] Gtk.Statusbar statusbar_inventario = null;
 		
-		/////// Ventana Busqueda de productos\\\\\\\\
-		//[Widget] Gtk.Window busca_producto;
 		[Widget] Gtk.TreeView lista_de_producto = null;
 		
 		[Widget] Gtk.Entry entry_cantidad_aplicada = null;
@@ -118,6 +119,7 @@ namespace osiris
 		string connectionString;
 		string nombrebd;
 		class_conexion conexion_a_DB = new class_conexion();
+		class_buscador classfind_data = new class_buscador();
 		CellRendererText cel_descripcion;
 		
 		//Declaracion de ventana de error
@@ -298,50 +300,6 @@ namespace osiris
 			llenado_de_material_aplicado(idtipoalmacen.ToString());
 		}
 														
-		void llenado_de_almacen(string idalmacen)
-		{
-			treeViewEngineInventario.Clear();
-			//entry_id_cirugia.Sensitive = true;
-			entry_almacen.Sensitive = true;
-			entry_ano_inventario.Sensitive = true;
-			entry_ano_inventario.GrabFocus();
-			combobox_mes_inventario.Sensitive = true;
-			button_graba_inventario.Sensitive = true;
-			button_reporte.Sensitive = true;
-			button_quitar_aplicados.Sensitive = true;
-			button_limpiar.Sensitive = true;
-			lista_de_inventario.Sensitive = true;
-			button_copia_productos.Sensitive = true;
-			button_busca_producto.Sensitive = true;
-			
-			NpgsqlConnection conexion;
-			conexion = new NpgsqlConnection (connectionString+nombrebd);
-	           
-			try{
-				conexion.Open ();
-				NpgsqlCommand comando; 
-				comando = conexion.CreateCommand ();
-	              	
-				comando.CommandText = "SELECT * "+
-									"FROM osiris_almacenes  "+
-					            	"WHERE id_almacen = '"+idalmacen.ToString()+"' ;";
-				//Console.WriteLine("query llenado cirugia: "+comando.CommandText.ToString());				
-				NpgsqlDataReader lector = comando.ExecuteReader ();
-				
-				if(lector.Read())
-				{
-					idtipoalmacen = int.Parse(idalmacen);
-					entry_almacen.Text = (string) lector["descripcion_almacen"];
-				}
-			}catch (NpgsqlException ex){
-		   		Console.WriteLine ("PostgresSQL error: {0}",ex.Message);
-		   		MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
-							MessageType.Error, ButtonsType.Close, "PostgresSQL error: {0} ",ex.Message);
-				msgBoxError.Run (); 	msgBoxError.Destroy();
-		    }
-	       	conexion.Close ();
-       	}
-		
 		// llenando el detalle de procedimiento de cobranza
 		void llenado_de_material_aplicado(string idalmacen)
 		{	
@@ -363,7 +321,7 @@ namespace osiris
 							"to_char(osiris_inventario_almacenes.id_producto,'999999999999') AS idproducto,"+
 							"to_char(osiris_inventario_almacenes.stock,'999999.99') AS stock, "+
 							"to_char(osiris_inventario_almacenes.id_secuencia,'999999999999') AS idsecuencia,"+
-							"eliminado,"+
+							"eliminado,lote,caducidad,"+
 							//"to_char(osiris_catalogo_almacenes."+mesinventario.ToString()+",'99999.99') AS stock, "+
 							"to_char(osiris_productos.costo_por_unidad,'999999999.99') AS costoproductounitario, "+
 							"to_char(osiris_productos.costo_producto,'999999999.99') AS costoproducto, "+
@@ -401,7 +359,9 @@ namespace osiris
 																	(string) lector["id_quien_creo"],
 																	(string) lector["fechcreacion"],	
 																	true,
-																	(string) lector["idsecuencia"] );
+																	(string) lector["idsecuencia"],
+						                                       		(string) lector["lote"],
+						                                       		(string) lector["caducidad"]);
 					}
 					
 				}
@@ -413,97 +373,58 @@ namespace osiris
 		
 		void on_button_buscar_almacen_clicked(object sender, EventArgs args)
 		{
-			Glade.XML gxml = new Glade.XML (null, "almacen_costos_compras.glade", "busca_tipo_almacen", null);
-			gxml.Autoconnect (this);
 			
-			tipobusqueda ="almacenes";
-			// Activa la salida de la ventana
-			button_salir.Clicked += new EventHandler(on_cierraventanas_clicked);
-			// Activa la seleccion de cirugia
-			button_selecciona.Clicked += new EventHandler(on_selecciona_almacen_clicked);
-			// Activa boton de busqueda
-			button_buscar_busqueda.Clicked += new EventHandler(on_button_llena_almacenes_clicked);
-	       	//funcion para que aplique el enter
-	       	entry_expresion.KeyPressEvent += click_enter;
-	       	
-	       	treeViewEngineBusca = new TreeStore( typeof(int), typeof(string));
-			lista_almacenes.Model = treeViewEngineBusca;
-			
-			lista_almacenes.RulesHint = true;
-			
-			lista_almacenes.RowActivated += on_selecciona_almacen_clicked;  // Doble click selecciono paciente
-			
-			TreeViewColumn col_idalmacen = new TreeViewColumn();
-			CellRendererText cellr0 = new CellRendererText();
-			col_idalmacen.Title = "ID Almacen"; // titulo de la cabecera de la columna, si está visible
-			col_idalmacen.PackStart(cellr0, true);
-			col_idalmacen.AddAttribute (cellr0, "text", 0);    // la siguiente columna será 1 en vez de 1
-			
-			TreeViewColumn col_descripalmacen = new TreeViewColumn();
-			CellRendererText cellrt1 = new CellRendererText();
-			col_descripalmacen.Title = "Descripcion de Almacen";
-			col_descripalmacen.PackStart(cellrt1, true);
-			col_descripalmacen.AddAttribute (cellrt1, "text", 1); // la siguiente columna será 1 en vez de 2
-			
-			lista_almacenes.AppendColumn(col_idalmacen);
-			lista_almacenes.AppendColumn(col_descripalmacen);
+			// Los parametros de del SQL siempre es primero cuando busca todo y la otra por expresion
+			// la clase recibe tambien el orden del query
+			// es importante definir que tipo de busqueda es para que los objetos caigan ahi mismo
+			object[] parametros_objetos = {entry_id_almacen,entry_almacen};
+			string[] parametros_sql = {"SELECT * FROM osiris_almacenes ",															
+										"SELECT * FROM osiris_almacenes WHERE descripcion_almacen LIKE '%"};			
+			classfind_data.buscandor(parametros_objetos,parametros_sql,"find_almacen_inventario"," ORDER BY id_almacen","%' ",0);
 		}
 		
-		[GLib.ConnectBefore ()]   	  // Esto es indispensable para que funcione    
-		public void click_enter(object o, Gtk.KeyPressEventArgs args)
+		void llenado_de_almacen(string idalmacen)
 		{
-			//Console.WriteLine(args.Event.Key);
-			if (args.Event.Key == Gdk.Key.Return || args.Event.Key == Gdk.Key.KP_Enter){
-				args.RetVal = true;
-				llena_lista_de_busqueda();			
-			}
-		}
-		
-		void on_button_llena_almacenes_clicked(object sender, EventArgs args)
-		{
-			llena_lista_de_busqueda();
-		}
-		
-		void llena_lista_de_busqueda() 
-		{
-			treeViewEngineBusca.Clear();// Limpia el treeview cuando realiza una nueva busqueda
-			NpgsqlConnection conexion; 
+			treeViewEngineInventario.Clear();
+			//entry_id_cirugia.Sensitive = true;
+			entry_almacen.Sensitive = true;
+			entry_ano_inventario.Sensitive = true;
+			entry_ano_inventario.GrabFocus();
+			combobox_mes_inventario.Sensitive = true;
+			button_graba_inventario.Sensitive = true;
+			button_reporte.Sensitive = true;
+			button_quitar_aplicados.Sensitive = true;
+			button_limpiar.Sensitive = true;
+			lista_de_inventario.Sensitive = true;
+			button_copia_productos.Sensitive = true;
+			button_busca_producto.Sensitive = true;
+			
+			NpgsqlConnection conexion;
 			conexion = new NpgsqlConnection (connectionString+nombrebd);
-           	// Verifica que la base de datos este conectada
+	           
 			try{
-					conexion.Open ();
-					NpgsqlCommand comando; 
-					comando = conexion.CreateCommand ();
-		           	if ((string) entry_expresion.Text.ToUpper() == "*")	{
-						comando.CommandText ="SELECT * FROM osiris_almacenes "+
-											" ORDER BY id_almacen;";
-					}else{
-						comando.CommandText ="SELECT * FROM osiris_almacenes "+
-											"WHERE descripcion_almacen LIKE '%"+entry_expresion.Text.ToUpper()+"%' "+
-											" ORDER BY id_almacen;";
-					}
-					NpgsqlDataReader lector = comando.ExecuteReader ();
-					while (lector.Read())	{
-						treeViewEngineBusca.AppendValues ((int) lector["id_almacen"],(string) lector["descripcion_almacen"]);//TreeIter iter =
-					}
-				}catch (NpgsqlException ex) { Console.WriteLine ("PostgresSQL error: {0}",ex.Message); }
-			conexion.Close ();
-		}
-		
-		void on_selecciona_almacen_clicked (object sender, EventArgs args)
-		{
-			TreeModel model;			TreeIter iterSelected;
-			if (lista_almacenes.Selection.GetSelected(out model, out iterSelected)) {
-				idtipoalmacen = (int) model.GetValue(iterSelected, 0);
-				almacen = (string) model.GetValue(iterSelected, 1);
-				entry_id_almacen.Text = idtipoalmacen.ToString(); 
-				entry_almacen.Text = almacen;
-				llenado_de_almacen(idtipoalmacen.ToString());
-				// cierra la ventana despues que almaceno la informacion en variables
-				Widget win = (Widget) sender;
-				win.Toplevel.Destroy();
-			}
-		}
+				conexion.Open ();
+				NpgsqlCommand comando; 
+				comando = conexion.CreateCommand ();
+	              	
+				comando.CommandText = "SELECT * "+
+									"FROM osiris_almacenes  "+
+					            	"WHERE id_almacen = '"+idalmacen.ToString()+"' ;";
+				//Console.WriteLine("query llenado cirugia: "+comando.CommandText.ToString());				
+				NpgsqlDataReader lector = comando.ExecuteReader ();
+				
+				if(lector.Read()){
+					idtipoalmacen = int.Parse(idalmacen);
+					entry_almacen.Text = (string) lector["descripcion_almacen"];
+				}
+			}catch (NpgsqlException ex){
+		   		Console.WriteLine ("PostgresSQL error: {0}",ex.Message);
+		   		MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+							MessageType.Error, ButtonsType.Close, "PostgresSQL error: {0} ",ex.Message);
+				msgBoxError.Run (); 	msgBoxError.Destroy();
+		    }
+	       	conexion.Close ();
+       	}
 		
 		void on_button_limpiar_clicked(object sender, EventArgs args)
 		{
@@ -643,7 +564,10 @@ namespace osiris
 												(string) LoginEmpleado,
 												(string) DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
 												(bool) false,
-												(string) "0");
+												(string) "0",
+					                            (string) entry_lote.Text.Trim(),
+					                            (string) entry_caducidad.Text.Trim()
+					                            );
 					entry_cantidad_aplicada.Text = "0";
 					entry_expresion.Text = "";
 					entry_expresion.GrabFocus();
@@ -668,7 +592,7 @@ namespace osiris
 					
  				}else{
  					prodeliminado = (string) lista_de_inventario.Model.GetValue (iter,1);
- 					if (LoginEmpleado =="DOLIVARES" || LoginEmpleado =="HVARGAS" || LoginEmpleado =="JPENA" ){
+ 					if (LoginEmpleado =="DOLIVARES" || LoginEmpleado =="ADMIN" ){
  						MessageDialog msgBox = new MessageDialog (MyWin,DialogFlags.Modal,
 						MessageType.Question,ButtonsType.YesNo,"¿ Desea eliminar "+prodeliminado+" del paquete este producto ?");
 						ResponseType miResultado = (ResponseType)
@@ -763,6 +687,8 @@ namespace osiris
 														"mes_inventario,"+
 														"ano_inventario,"+
 														"fechahora_alta,"+
+														"lote,"+
+														"caducidad,"+
 														"id_quien_creo) "+
 														"VALUES ('"+
 														(string) lista_de_inventario.Model.GetValue(iter,0)+"','"+
@@ -771,6 +697,8 @@ namespace osiris
 														this.mesinventario+"','"+
 														float.Parse(entry_ano_inventario.Text)+"','"+
 														DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"','"+
+														(string) lista_de_inventario.Model.GetValue(iter,14)+"','"+
+														(string) lista_de_inventario.Model.GetValue(iter,15)+"','"+
 														LoginEmpleado+"');";
 							//Console.WriteLine(comando.CommandText);
 							comando.ExecuteNonQuery();
@@ -786,6 +714,8 @@ namespace osiris
 														"mes_inventario,"+
 														"ano_inventario,"+
 														"fechahora_alta,"+
+														"lote,"+
+														"caducidad,"+
 														"id_quien_creo) "+
 														"VALUES ('"+
 														(string) lista_de_inventario.Model.GetValue(iter,0)+"','"+
@@ -794,6 +724,8 @@ namespace osiris
 														this.mesinventario+"','"+
 														float.Parse(entry_ano_inventario.Text)+"','"+
 														DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"','"+
+														(string) lista_de_inventario.Model.GetValue(iter,14)+"','"+
+														(string) lista_de_inventario.Model.GetValue(iter,15)+"','"+
 														LoginEmpleado+"');";
 									//Console.WriteLine(comando.CommandText);
 									comando.ExecuteNonQuery();
@@ -846,7 +778,9 @@ namespace osiris
 													typeof(string),//10quien lo creo
 													typeof(string),//11fecha creacion
 													typeof(bool),//12 cargado
-													typeof(string)); // 13 id_secuencia
+													typeof(string),	// 13 id_secuencia
+			                                         typeof(string),	// 14 lote
+			                                         typeof(string)); 	// 15 caducidad
 			lista_de_inventario.Model = treeViewEngineInventario;
 			lista_de_inventario.RulesHint = true;
 				
@@ -948,6 +882,22 @@ namespace osiris
 			col_empleado.SortColumnId = (int) Column_inv.col_empleado;
 			col_empleado.SetCellDataFunc(cellrt11, new Gtk.TreeCellDataFunc(cambia_colores_fila));
 			
+			TreeViewColumn col_lote = new TreeViewColumn();
+			CellRendererText cellrt14 = new CellRendererText();
+			col_lote.Title = "Lote";
+			col_lote.PackStart(cellrt14, true);
+			col_lote.AddAttribute (cellrt14, "text", 14);
+			col_lote.SortColumnId = (int) Column_inv.col_lote;
+			col_lote.SetCellDataFunc(cellrt14, new Gtk.TreeCellDataFunc(cambia_colores_fila));
+			
+			TreeViewColumn col_caducidad = new TreeViewColumn();
+			CellRendererText cellrt15 = new CellRendererText();
+			col_caducidad.Title = "Caducidad";
+			col_caducidad.PackStart(cellrt15, true);
+			col_caducidad.AddAttribute (cellrt15, "text", 15);
+			col_caducidad.SortColumnId = (int) Column_inv.col_caducidad;
+			col_caducidad.SetCellDataFunc(cellrt15, new Gtk.TreeCellDataFunc(cambia_colores_fila));
+			
 			lista_de_inventario.AppendColumn(col_idproducto);  // 0
 			lista_de_inventario.AppendColumn(col_desc_producto); // 1
 			lista_de_inventario.AppendColumn(col_stock);//2
@@ -960,6 +910,8 @@ namespace osiris
 			lista_de_inventario.AppendColumn(col_grupo2prod);	//9	
 			lista_de_inventario.AppendColumn(col_fecha_hora);//10
 			lista_de_inventario.AppendColumn(col_empleado);//11
+			lista_de_inventario.AppendColumn(col_lote);		//12
+			lista_de_inventario.AppendColumn(col_caducidad);	//13
 		}
 		
 		enum Column_inv
@@ -975,7 +927,9 @@ namespace osiris
 			col_grupo1prod,
 			col_grupo2prod,
 			col_fecha_hora,
-			col_empleado
+			col_empleado,
+			col_lote,
+			col_caducidad
 		}
 		
 		void crea_treeview_busqueda()

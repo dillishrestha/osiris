@@ -95,6 +95,7 @@ namespace osiris
 		[Widget] Gtk.RadioButton radiobutton_codigo;
 		[Widget] Gtk.TreeView lista_de_producto;
 		[Widget] Gtk.Label label_cantidad = null;
+		[Widget] Gtk.HBox hbox3 = null;
 		
 		//Declarando la barra de estado
 		[Widget] Gtk.Statusbar statusbar_almacen_requi;
@@ -479,6 +480,7 @@ namespace osiris
 			//Gtk.Button button_busca_producto = (Gtk.Button) sender;			
 			Glade.XML gxml = new Glade.XML (null, "almacen_costos_compras.glade", "busca_producto", null);
 			gxml.Autoconnect (this);
+			hbox3.Hide();
 			crea_treeview_busqueda("producto");
 			button_buscar_busqueda.Clicked += new EventHandler(on_llena_lista_producto_clicked);			
 			button_salir.Clicked += new EventHandler(on_cierraventanas_clicked);

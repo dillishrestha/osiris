@@ -71,6 +71,7 @@ namespace osiris
 		[Widget] Gtk.Label label_cantidad = null;
 		//[Widget] Gtk.Button button_agrega_extra;
 		[Widget] Gtk.Entry entry_cantidad_aplicada = null;
+		[Widget] Gtk.HBox hbox3 = null;
 		
 		// Busqueda de productos
 		[Widget] Gtk.Window catalogo_proveedore  = null;
@@ -1057,6 +1058,7 @@ namespace osiris
 
 			this.label_cantidad.Hide();
 			this.entry_cantidad_aplicada.Hide();
+			hbox3.Hide();
 
 			button_selecciona.Clicked += new EventHandler(on_selecciona_producto_clicked);
 			entry_expresion.KeyPressEvent += onKeyPressEvent_enter_entry_expresion;

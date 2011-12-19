@@ -1229,6 +1229,87 @@ Busqueda de Productos</property>
                       </packing>
                     </child>
                     <child>
+                      <widget class="GtkHBox" id="hbox3">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <child>
+                          <widget class="GtkLabel" id="label3">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="label" translatable="yes">Lote</property>
+                          </widget>
+                          <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <widget class="GtkEntry" id="entry_lote">
+                            <property name="width_request">90</property>
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="invisible_char">●</property>
+                            <property name="primary_icon_activatable">False</property>
+                            <property name="secondary_icon_activatable">False</property>
+                            <property name="primary_icon_sensitive">True</property>
+                            <property name="secondary_icon_sensitive">True</property>
+                          </widget>
+                          <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <widget class="GtkLabel" id="label4">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="label" translatable="yes">Caducidad</property>
+                          </widget>
+                          <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
+                            <property name="position">2</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <widget class="GtkEntry" id="entry_caducidad">
+                            <property name="width_request">90</property>
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="invisible_char">●</property>
+                            <property name="primary_icon_activatable">False</property>
+                            <property name="secondary_icon_activatable">False</property>
+                            <property name="primary_icon_sensitive">True</property>
+                            <property name="secondary_icon_sensitive">True</property>
+                          </widget>
+                          <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
+                            <property name="position">3</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <widget class="GtkFixed" id="fixed1">
+                            <property name="width_request">150</property>
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                          </widget>
+                          <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
+                            <property name="position">4</property>
+                          </packing>
+                        </child>
+                      </widget>
+                      <packing>
+                        <property name="expand">True</property>
+                        <property name="fill">True</property>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
+                    <child>
                       <widget class="GtkHBox" id="hbox240">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
@@ -1249,6 +1330,7 @@ Busqueda de Productos</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="invisible_char">●</property>
+                            <property name="invisible_char_set">True</property>
                             <property name="primary_icon_activatable">False</property>
                             <property name="secondary_icon_activatable">False</property>
                             <property name="primary_icon_sensitive">True</property>
@@ -1260,18 +1342,6 @@ Busqueda de Productos</property>
                             <property name="position">1</property>
                           </packing>
                         </child>
-                      </widget>
-                      <packing>
-                        <property name="expand">True</property>
-                        <property name="fill">True</property>
-                        <property name="position">1</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <widget class="GtkFixed" id="fixed36">
-                        <property name="height_request">18</property>
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
                       </widget>
                       <packing>
                         <property name="expand">True</property>
@@ -1545,9 +1615,10 @@ Busqueda de Almacenes
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
                                 <child>
-                                  <widget class="GtkFixed" id="fixed108">
+                                  <widget class="GtkLabel" id="label1">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
+                                    <property name="label" translatable="yes">Almacen</property>
                                   </widget>
                                   <packing>
                                     <property name="expand">True</property>
@@ -1605,19 +1676,18 @@ Busqueda de Almacenes
                                 </child>
                                 <child>
                                   <widget class="GtkEntry" id="entry_expresion">
-                                    <property name="width_request">624</property>
+                                    <property name="width_request">550</property>
                                     <property name="visible">True</property>
-                                    <property name="can_focus">False</property>
+                                    <property name="can_focus">True</property>
                                     <property name="invisible_char">●</property>
-                                    <property name="width_chars">44</property>
                                     <property name="primary_icon_activatable">False</property>
                                     <property name="secondary_icon_activatable">False</property>
                                     <property name="primary_icon_sensitive">True</property>
                                     <property name="secondary_icon_sensitive">True</property>
                                   </widget>
                                   <packing>
-                                    <property name="expand">False</property>
-                                    <property name="fill">False</property>
+                                    <property name="expand">True</property>
+                                    <property name="fill">True</property>
                                     <property name="position">1</property>
                                   </packing>
                                 </child>
@@ -1765,11 +1835,8 @@ Busqueda de Almacenes
                 <property name="can_focus">False</property>
                 <child>
                   <widget class="GtkTreeView" id="lista_almacenes">
-                    <property name="width_request">300</property>
-                    <property name="height_request">227</property>
                     <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="reorderable">True</property>
+                    <property name="can_focus">True</property>
                   </widget>
                 </child>
               </widget>
@@ -7753,16 +7820,16 @@ Paciente</property>
                                           <widget class="GtkEntry" id="entry_id_almacen">
                                             <property name="width_request">56</property>
                                             <property name="visible">True</property>
-                                            <property name="can_focus">False</property>
-                                            <property name="has_focus">True</property>
+                                            <property name="can_focus">True</property>
+                                            <property name="invisible_char">●</property>
                                             <property name="primary_icon_activatable">False</property>
                                             <property name="secondary_icon_activatable">False</property>
                                             <property name="primary_icon_sensitive">True</property>
                                             <property name="secondary_icon_sensitive">True</property>
                                           </widget>
                                           <packing>
-                                            <property name="expand">False</property>
-                                            <property name="fill">False</property>
+                                            <property name="expand">True</property>
+                                            <property name="fill">True</property>
                                             <property name="position">1</property>
                                           </packing>
                                         </child>

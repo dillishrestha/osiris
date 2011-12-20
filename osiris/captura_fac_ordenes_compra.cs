@@ -742,10 +742,12 @@ namespace osiris
 		
 		void on_selecciona_producto_clicked (object sender, EventArgs args)
 		{	
-			string toma_valor;
+			//string toma_valor;
 			TreeModel model;
 			TreeIter iterSelected;			
-			if (lista_de_producto.Selection.GetSelected(out model, out iterSelected)){				
+			if (lista_de_producto.Selection.GetSelected(out model, out iterSelected)){
+				treeViewEngineListaProdRequi.AppendValues (false,entry_num_factura_proveedor.Text.Trim());
+				
 				//cierra la ventana despues que almaceno la informacion en variables
 				Widget win = (Widget) sender;
 				win.Toplevel.Destroy();

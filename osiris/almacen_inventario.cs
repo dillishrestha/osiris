@@ -156,7 +156,7 @@ namespace osiris
 			//quita lementos aplicados
 			button_quitar_aplicados.Clicked += new EventHandler(on_button_quitar_aplicados_clicked);
 			// Activacion de grabacion de informacion
-	    	button_graba_inventario.Clicked += new EventHandler(on_button_graba_paquete_clicked);
+	    	button_graba_inventario.Clicked += new EventHandler(on_button_graba_inventario_clicked);
 			// Imprime Procedimiento
 			button_reporte.Clicked += new EventHandler(on_button_reporte_clicked);
 			/*
@@ -177,14 +177,14 @@ namespace osiris
 			treeViewEngineInventario.Clear();
 			//entry_id_cirugia.Sensitive = true;
 			entry_almacen.Sensitive = false;
-			entry_ano_inventario.Sensitive = false;
+			//entry_ano_inventario.Sensitive = false;
 			button_graba_inventario.Sensitive = true;
 			button_reporte.Sensitive = true;
 			button_quitar_aplicados.Sensitive = true;
 			button_limpiar.Sensitive = true;
 			lista_de_inventario.Sensitive = true;
 			
-			combobox_mes_inventario.Sensitive = false;
+			//combobox_mes_inventario.Sensitive = false;
 			button_busca_producto.Sensitive = false;
 			button_graba_inventario.Sensitive = false;
 			button_reporte.Sensitive = false;
@@ -235,15 +235,13 @@ namespace osiris
 		void onComboBoxChanged_mes_inventario (object sender, EventArgs args)
 		{
 	    	//Console.WriteLine("cambio el combobox");
-	    	if(entry_ano_inventario.Text.Trim() != "" )   
-			{
+	    	if(entry_ano_inventario.Text.Trim() != "" ){
 		    	ComboBox combobox_mes_inventario = sender as ComboBox;
 				if (sender == null)	{	return;	}
 		  		TreeIter iter;
-		  		if (combobox_mes_inventario.GetActiveIter (out iter))
-			    {
+		  		if (combobox_mes_inventario.GetActiveIter (out iter)){
 			    	mesinventario = (string) combobox_mes_inventario.Model.GetValue(iter,1);
-			    	llenado_de_material_aplicado(idtipoalmacen.ToString()); 
+			    	llenado_de_material_del_stock(idtipoalmacen.ToString(), entry_ano_inventario.Text.Trim(),mesinventario); 
 		    	}
 		    }else{
 		    	MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
@@ -262,7 +260,8 @@ namespace osiris
 			}else{
 				//Console.WriteLine ("on_selec_id selecciono el ID");
 				idtipoalmacen = int.Parse(entry_id_almacen.Text.ToString());
-				llenado_de_almacen(entry_id_almacen.Text );
+				llenado_de_material_del_stock(entry_id_almacen.Text.ToString(),entry_ano_inventario.Text.Trim(),mesinventario.ToString().Trim());
+				
 			}
 		}
 		
@@ -283,7 +282,7 @@ namespace osiris
 					//Console.WriteLine ("actualiza selecciono el ID");
 					idtipoalmacen = int.Parse(entry_id_almacen.Text.ToString());
 					//tipo_de_inventario();
-					llenado_de_almacen(entry_id_almacen.Text );
+					llenado_de_material_del_stock(entry_id_almacen.Text.ToString(),entry_ano_inventario.Text.Trim(),mesinventario);
 				}			
 			}
 			string misDigitos = ".0123456789ﾰﾱﾲﾳﾴﾵﾶﾷﾸﾹﾮｔｒｓｑ（）";
@@ -296,14 +295,13 @@ namespace osiris
 		
 		void on_button_actualizar_clicked(object sender, EventArgs args)
 		{
-			idtipoalmacen = int.Parse(entry_id_almacen.Text.ToString());
-			llenado_de_material_aplicado(idtipoalmacen.ToString());
+			llenado_de_material_del_stock(entry_id_almacen.Text.ToString(),entry_ano_inventario.Text.Trim(),mesinventario);
 		}
 														
-		// llenando el detalle de procedimiento de cobranza
-		void llenado_de_material_aplicado(string idalmacen)
+		// llenando el detalle de procedimiento
+		void llenado_de_material_del_stock(string idalmacen_,string anoinventario_,string mesinvenario_)
 		{	
-			//Console.WriteLine("entro a llenar lista de productos");
+			llenado_de_almacen(idalmacen_);
 			treeViewEngineInventario.Clear();
 			
 			NpgsqlConnection conexion; 
@@ -335,17 +333,16 @@ namespace osiris
 							"AND osiris_productos.id_grupo1_producto = osiris_grupo1_producto.id_grupo1_producto "+
 							"AND osiris_productos.id_grupo2_producto = osiris_grupo2_producto.id_grupo2_producto "+
 							"AND osiris_inventario_almacenes.id_almacen = osiris_almacenes.id_almacen "+
-							"AND osiris_inventario_almacenes.id_almacen = '"+(string) idalmacen +"' "+
-							"AND osiris_inventario_almacenes.ano_inventario = '"+(string) entry_ano_inventario.Text +"' "+
-							"AND osiris_inventario_almacenes.mes_inventario = '"+mesinventario+"' "+
+							"AND osiris_inventario_almacenes.id_almacen = '"+(string) idalmacen_ +"' "+
+							"AND osiris_inventario_almacenes.ano_inventario = '"+anoinventario_+"' "+
+							"AND osiris_inventario_almacenes.mes_inventario = '"+mesinvenario_+"' "+
 							"AND eliminado = 'false' "+
 							"ORDER BY to_char(osiris_inventario_almacenes.fechahora_alta,'dd-MM-yyyy HH:mi:ss');";
 				
 				NpgsqlDataReader lector = comando.ExecuteReader ();
 				//Console.WriteLine("query llenado de materiales: "+comando.CommandText.ToString());
 				while (lector.Read()){
-					if(float.Parse((string) lector["stock"]) != 0)
-					{
+					//if(float.Parse((string) lector["stock"]) != 0){
 							treeViewEngineInventario.AppendValues ((string) lector["idproducto"],
 																	(string) lector["descripcion_producto"],
 																	(string) lector["stock"],
@@ -362,7 +359,7 @@ namespace osiris
 																	(string) lector["idsecuencia"],
 						                                       		(string) lector["lote"],
 						                                       		(string) lector["caducidad"]);
-					}
+					//}
 					
 				}
 				button_busca_producto.Sensitive = true;
@@ -514,8 +511,7 @@ namespace osiris
 							"AND osiris_productos.descripcion_producto LIKE '%"+entry_expresion.Text.ToUpper().Trim()+"%' ORDER BY descripcion_producto; ";
 				
 				NpgsqlDataReader lector = comando.ExecuteReader ();
-				while (lector.Read())
-				{
+				while (lector.Read()){
 					treeViewEngineBusca2.AppendValues ((string) lector["codProducto"] , 
 														(string) lector["descripcion_producto"],
 														//stock
@@ -536,8 +532,7 @@ namespace osiris
 			TreeModel model;
 			TreeIter iterSelected;
 
- 			if (lista_de_producto.Selection.GetSelected(out model, out iterSelected)) 
- 			{
+ 			if (lista_de_producto.Selection.GetSelected(out model, out iterSelected)){
  				//Console.WriteLine("pasavalor");
  				id_produ = (string) model.GetValue(iterSelected, 0);//0(string) lector["codProducto"] ,
 				desc_produ = (string) model.GetValue(iterSelected, 1);//1(string) lector["descripcion_producto"],
@@ -563,7 +558,7 @@ namespace osiris
 												(string) grupo2_prod,
 												(string) LoginEmpleado,
 												(string) DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
-												(bool) false,
+												false,
 												(string) "0",
 					                            (string) entry_lote.Text.Trim(),
 					                            (string) entry_caducidad.Text.Trim()
@@ -576,6 +571,86 @@ namespace osiris
 												MessageType.Error,ButtonsType.Close, 
 											"La cantidad que quiere aplicar debe ser \n"+"distinta a cero, intente de nuevo");
 					msgBoxError.Run ();					msgBoxError.Destroy();
+				}
+			}
+		}
+		
+		void guarda_productos()
+		{
+			TreeIter iter;
+			if ((int) idtipoalmacen > 0){
+				if (treeViewEngineInventario.GetIterFirst (out iter)){
+					NpgsqlConnection conexion; 
+					conexion = new NpgsqlConnection (connectionString+nombrebd);
+					// Verifica que la base de datos este conectada
+					try{
+						conexion.Open ();
+						NpgsqlCommand comando; 
+						comando = conexion.CreateCommand ();
+						if ((bool) lista_de_inventario.Model.GetValue (iter,12) == false){
+							comando.CommandText = "INSERT INTO osiris_inventario_almacenes("+
+															"id_producto,"+
+															"id_almacen,"+
+															"stock,"+
+															"mes_inventario,"+
+															"ano_inventario,"+
+															"fechahora_alta,"+
+															"lote,"+
+															"caducidad,"+
+															"id_quien_creo) "+
+															"VALUES ('"+
+															(string) lista_de_inventario.Model.GetValue(iter,0)+"','"+
+															idtipoalmacen+"','"+
+															(string) lista_de_inventario.Model.GetValue(iter,2)+"','"+
+															this.mesinventario+"','"+
+															float.Parse(entry_ano_inventario.Text)+"','"+
+															DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"','"+
+															(string) lista_de_inventario.Model.GetValue(iter,14)+"','"+
+															(string) lista_de_inventario.Model.GetValue(iter,15)+"','"+
+															LoginEmpleado+"');";
+							//Console.WriteLine(comando.CommandText);
+							comando.ExecuteNonQuery();
+							comando.Dispose();
+						}
+						while (treeViewEngineInventario.IterNext(ref iter)){
+							if ((bool)lista_de_inventario.Model.GetValue (iter,12) == false){
+								comando.CommandText = "INSERT INTO osiris_inventario_almacenes("+
+														"id_producto,"+
+														"id_almacen,"+
+														"stock,"+
+														"mes_inventario,"+
+														"ano_inventario,"+
+														"fechahora_alta,"+
+														"lote,"+
+														"caducidad,"+
+														"id_quien_creo) "+
+														"VALUES ('"+
+														(string) lista_de_inventario.Model.GetValue(iter,0)+"','"+
+														idtipoalmacen+"','"+
+														(string) lista_de_inventario.Model.GetValue(iter,2)+"','"+
+														this.mesinventario+"','"+
+														float.Parse(entry_ano_inventario.Text)+"','"+
+														DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"','"+
+														(string) lista_de_inventario.Model.GetValue(iter,14)+"','"+
+														(string) lista_de_inventario.Model.GetValue(iter,15)+"','"+
+														LoginEmpleado+"');";
+									//Console.WriteLine(comando.CommandText);
+									comando.ExecuteNonQuery();
+									comando.Dispose();
+								}
+							}							
+							MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,MessageType.Info,
+			 							ButtonsType.Close, "Los datos se guardaron con EXITO");
+							msgBoxError.Run ();			msgBoxError.Destroy();
+							conexion.Close ();
+							entry_id_almacen.Text = idtipoalmacen.ToString();
+							llenado_de_material_del_stock(entry_id_almacen.Text, entry_ano_inventario.Text.Trim(),mesinventario);
+					}catch (NpgsqlException ex){
+		   					Console.WriteLine ("PostgresSQL error: {0}",ex.Message);
+		   					MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+										MessageType.Info,ButtonsType.Close, "PostgresSQL error: {0} ",ex.Message);
+							msgBoxError.Run ();					msgBoxError.Destroy();
+					}
 				}
 			}
 		}
@@ -612,14 +687,12 @@ namespace osiris
 										"id_quien_elimino = '"+LoginEmpleado+"' "+								
 				 						"WHERE id_secuencia = '"+(string) lista_de_inventario.Model.GetValue (iter,13)+"' ;";
 										comando.ExecuteNonQuery();
-					        			comando.Dispose();
-			        			
-			        			
+					        			comando.Dispose();		        			
 			        			msgBox = new MessageDialog (MyWin,DialogFlags.Modal,
 										MessageType.Info,ButtonsType.Ok,"El Producto "+prodeliminado.ToString()+" se devolvio satisfactoriamente");
 								msgBox.Run ();					msgBox.Destroy();
 								
-								this.llenado_de_material_aplicado((string) entry_id_almacen.Text );
+								llenado_de_material_del_stock(entry_id_almacen.Text, entry_ano_inventario.Text.Trim(),mesinventario);
 								
 								conexion.Close ();
 			        		}catch (NpgsqlException ex){
@@ -638,11 +711,10 @@ namespace osiris
 		}
 		
 		
-		void on_button_graba_paquete_clicked(object sender, EventArgs args)
+		void on_button_graba_inventario_clicked(object sender, EventArgs args)
 		{
 			if(entry_almacen.Text.Trim() == "" || entry_ano_inventario.Text == "" || this.mesinventario == "" ||
-			   entry_id_almacen.Text.Trim()  == "" || entry_ano_inventario.Text == "") 
-			{
+			   entry_id_almacen.Text.Trim()  == "" || entry_ano_inventario.Text == "") {
 				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,MessageType.Info,
 											ButtonsType.Close,"verifique que no existan campos en blanco");
 				msgBoxError.Run ();					msgBoxError.Destroy();
@@ -653,100 +725,15 @@ namespace osiris
 				ResponseType miResultado = (ResponseType)
 				msgBox.Run ();			msgBox.Destroy();
  				if (miResultado == ResponseType.Yes){
-					guarda_productos();
-					entry_id_almacen.Text = idtipoalmacen.ToString();
-					llenado_de_almacen(idtipoalmacen.ToString());
-					this.llenado_de_material_aplicado(idtipoalmacen.ToString());
-				}else{///termina el proceso de nuevacirugia == false
+					guarda_productos();					
+				}else{
 	 				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,MessageType.Info,
 	 											ButtonsType.Close, "No grabo, ya que NO CARGO NADA");
 					msgBoxError.Run ();			msgBoxError.Destroy();
 	 			}
 	 		}
-		}
-		
-		void guarda_productos()
-		{
-			TreeIter iter;
-			//Console.WriteLine("guarda PRODUCTOS a la cirugia: "+idtipocirugia);
-			if ((int) this.idtipoalmacen > 0){  // Validando que seleccione un folio de atencion
-				if (treeViewEngineInventario.GetIterFirst (out iter)){
-					if ((bool)lista_de_inventario.Model.GetValue (iter,12) == false){
-						NpgsqlConnection conexion; 
-						conexion = new NpgsqlConnection (connectionString+nombrebd);
-						// Verifica que la base de datos este conectada
-						try{
-							conexion.Open ();
-							NpgsqlCommand comando; 
-							comando = conexion.CreateCommand ();
-							//Console.WriteLine("leeo primer linea"+(string) lista_de_servicios.Model.GetValue(iter,2));
-							comando.CommandText = "INSERT INTO osiris_inventario_almacenes("+
-														"id_producto,"+
-														"id_almacen,"+
-														"stock,"+
-														"mes_inventario,"+
-														"ano_inventario,"+
-														"fechahora_alta,"+
-														"lote,"+
-														"caducidad,"+
-														"id_quien_creo) "+
-														"VALUES ('"+
-														(string) lista_de_inventario.Model.GetValue(iter,0)+"','"+
-														idtipoalmacen+"','"+
-														(string) lista_de_inventario.Model.GetValue(iter,2)+"','"+
-														this.mesinventario+"','"+
-														float.Parse(entry_ano_inventario.Text)+"','"+
-														DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"','"+
-														(string) lista_de_inventario.Model.GetValue(iter,14)+"','"+
-														(string) lista_de_inventario.Model.GetValue(iter,15)+"','"+
-														LoginEmpleado+"');";
-							//Console.WriteLine(comando.CommandText);
-							comando.ExecuteNonQuery();
-							comando.Dispose();
-						
-							while (treeViewEngineInventario.IterNext(ref iter)){
-				   				if ((bool)lista_de_inventario.Model.GetValue (iter,12) == false){
-									//Console.WriteLine("leeo primer linea"+(string) lista_de_servicios.Model.GetValue(iter,2));
-									comando.CommandText = "INSERT INTO osiris_inventario_almacenes("+
-														"id_producto,"+
-														"id_almacen,"+
-														"stock,"+
-														"mes_inventario,"+
-														"ano_inventario,"+
-														"fechahora_alta,"+
-														"lote,"+
-														"caducidad,"+
-														"id_quien_creo) "+
-														"VALUES ('"+
-														(string) lista_de_inventario.Model.GetValue(iter,0)+"','"+
-														idtipoalmacen+"','"+
-														(string) lista_de_inventario.Model.GetValue(iter,2)+"','"+
-														this.mesinventario+"','"+
-														float.Parse(entry_ano_inventario.Text)+"','"+
-														DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"','"+
-														(string) lista_de_inventario.Model.GetValue(iter,14)+"','"+
-														(string) lista_de_inventario.Model.GetValue(iter,15)+"','"+
-														LoginEmpleado+"');";
-									//Console.WriteLine(comando.CommandText);
-									comando.ExecuteNonQuery();
-									comando.Dispose();
-								}
-							}
-							MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,MessageType.Info,
-			 							ButtonsType.Close, "Los datos se guardaron con EXITO");
-							msgBoxError.Run ();			msgBoxError.Destroy();
-						}catch (NpgsqlException ex){
-		   					Console.WriteLine ("PostgresSQL error: {0}",ex.Message);
-		   					MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
-										MessageType.Info,ButtonsType.Close, "PostgresSQL error: {0} ",ex.Message);
-							msgBoxError.Run ();					msgBoxError.Destroy();
-						}
-						conexion.Close ();
-					}
-				}
-			}
-		}
-		
+		}		
+			
 		void on_button_reporte_clicked(object sender, EventArgs args)
 		{
 			if ((string) this.entry_id_almacen.Text.Trim() == "" )

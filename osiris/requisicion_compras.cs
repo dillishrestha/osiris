@@ -1154,6 +1154,7 @@ namespace osiris
 	               	comando.CommandText = "SELECT * FROM osiris_his_tipo_admisiones "+
 	               						"WHERE id_tipo_admisiones IN('"+accesocentrocosto+"')"+
 	               						"ORDER BY descripcion_admisiones;";
+					//Console.WriteLine(comando.CommandText);
 					NpgsqlDataReader lector = comando.ExecuteReader ();
 	               	while (lector.Read()){
 	               		if((int) lector["id_tipo_admisiones"] == idtipointernamiento){

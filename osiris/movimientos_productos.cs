@@ -142,8 +142,7 @@ namespace osiris
 			if(tipo_reporte == "productos_requisados"){
 				mov_productos.Title = "Mov. Prod. Requisados de Almacen a Compras";
 				llenado_combobox(1,"",combobox_departamentos,"sql","SELECT * FROM osiris_his_tipo_admisiones "+
-		               						"WHERE cuenta_mayor = 4000 "+
-		               						"ORDER BY descripcion_admisiones;","descripcion_admisiones","id_tipo_admisiones",args_args,args_id_array);
+		               						         						"ORDER BY descripcion_admisiones;","descripcion_admisiones","id_tipo_admisiones",args_args,args_id_array);
 			}
 			//  Sale de la ventana:
 			button_salir.Clicked += new EventHandler(on_cierraventanas_clicked);
@@ -172,6 +171,9 @@ namespace osiris
 				}
 				if(tipo_reporte == "cargos_pacientes"){
 					query_departamento = "AND osiris_erp_cobros_deta.id_tipo_admisiones = '"+id_tipo_admisiones.ToString()+"' ";
+				}
+				if(tipo_reporte == "productos_requisados"){
+					query_departamento = "";
 				}
 			}
 		}
@@ -247,6 +249,9 @@ namespace osiris
 					if(tipo_reporte == "cargos_pacientes"){
 						query_departamento = " AND osiris_erp_cobros_deta.id_tipo_admisiones = '"+Convert.ToString((int) combobox_departamentos.Model.GetValue(iter,1)).ToString()+"' ";		    			    	
 		    		}
+					if(tipo_reporte == "productos_requisados"){
+						query_departamento = "";
+					}
 					if (this.checkbutton_todos_departamentos .Active == true){
 						query_departamento = " ";
 					}
@@ -336,7 +341,11 @@ namespace osiris
 									            "AND to_char(osiris_erp_cobros_deta.fechahora_creacion,'yyyy-MM-dd') <= '"+entry_ano2.Text.Trim()+"-"+entry_mes2.Text+"-"+entry_dia2.Text+"' ";
 		    	campo_filtrado = "AND osiris_erp_cobros_deta.id_producto IN('";
 			}
-			
+			if(tipo_reporte == "productos_requisados"){
+				query_fechas = " ";
+		    	campo_filtrado = " ";
+			}
+						
 			// Validadndo que tenga algun producto seleccionado en la lista
 			treeViewEngineResumen.Clear();
 			TreeIter iter;
@@ -415,6 +424,9 @@ namespace osiris
 						      "osiris_his_paciente.nombre1_paciente || ' ' || osiris_his_paciente.nombre2_paciente || ' ' || osiris_his_paciente.apellido_paterno_paciente || ' ' || osiris_his_paciente.apellido_materno_paciente;";
 			}
 			
+			if(tipo_reporte == "productos_requisados"){
+				query_consulta = "";	
+			}
 			
 			NpgsqlConnection conexion;
 			conexion = new NpgsqlConnection (connectionString+nombrebd);
@@ -458,6 +470,9 @@ namespace osiris
 						 	total_aplicado += float.Parse(((string) lector["cantidadaplicada"]).Trim());
 						}
 						entry_total_aplicado.Text = total_aplicado.ToString(); 
+					}					
+					if(tipo_reporte == "productos_requisados"){
+					
 					}
 				}
 				//this.entry_total_aplicado.Text = total_aplicado.ToString(); 

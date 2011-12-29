@@ -138,43 +138,43 @@ namespace osiris
 		/// <returns>
 		/// A <see cref="System.String"/>
 		/// </returns>
-		public string nom_mes()
+		public string nom_mes(string number_month)
 		{
 			string mes = "";
-			if (DateTime.Now.ToString("MM") == "01"){
+			if (number_month == "01"){
 				mes ="Enero";
 			}
-			if (DateTime.Now.ToString("MM") == "02"){
+			if (number_month == "02"){
 				mes ="Febrero";
 			}
-			if (DateTime.Now.ToString("MM") == "03"){
+			if (number_month == "03"){
 				mes ="Marzo";
 			}
-			if (DateTime.Now.ToString("MM") == "04"){
+			if (number_month == "04"){
 				mes ="Abril";
 			}
-			if (DateTime.Now.ToString("MM") == "05"){
+			if (number_month == "05"){
 				mes ="Mayo";
 			}
-			if (DateTime.Now.ToString("MM") == "06"){
+			if (number_month == "06"){
 				mes ="Junio";
 			}
-			if (DateTime.Now.ToString("MM") == "07"){
+			if (number_month == "07"){
 				mes ="Julio";
 			}
-			if (DateTime.Now.ToString("MM") == "08"){
+			if (number_month == "08"){
 				mes ="Agosto";
 			}
-			if (DateTime.Now.ToString("MM") == "09"){
+			if (number_month == "09"){
 				mes ="Septiembre";
 			}
-			if (DateTime.Now.ToString("MM") == "10"){
+			if (number_month == "10"){
 				mes ="Octubre";
 			}
-			if (DateTime.Now.ToString("MM") == "11"){
+			if (number_month == "11"){
 				mes ="Noviembre";
 			}
-			if (DateTime.Now.ToString("MM") == "12"){
+			if (number_month == "12"){
 				mes ="Diciembre";
 			}
 			return(mes);

@@ -376,7 +376,7 @@ namespace osiris
 			filatex += separacion_linea;
 			fontSize = 11.0;
 			desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;
-			cr.MoveTo(columna_inicio*escala_en_linux_windows, filatex*escala_en_linux_windows);				layout.SetText("Monterrey, Nuevo León a los "+DateTime.Now.ToString("dd")+" días del mes de "+classpublic.nom_mes()+" del año "+DateTime.Now.ToString("yyyy"));
+			cr.MoveTo(columna_inicio*escala_en_linux_windows, filatex*escala_en_linux_windows);				layout.SetText("Monterrey, Nuevo León a los "+DateTime.Now.ToString("dd")+" días del mes de "+classpublic.nom_mes(DateTime.Now.ToString("MM"))+" del año "+DateTime.Now.ToString("yyyy"));
 			Pango.CairoHelper.ShowLayout (cr, layout);
 			fontSize = 12.0;
 			desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;

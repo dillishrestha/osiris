@@ -540,7 +540,7 @@ namespace osiris
 		
 		void on_button_pase_quirofano_clicked(object sender, EventArgs args)
 		{
-			new osiris.pases_a_quirofano(PidPaciente,folioservicio,idcentro_costo,LoginEmpleado,id_tipopaciente,idempresa_paciente,idaseguradora_paciente);
+			new osiris.pases_a_quirofano(PidPaciente,folioservicio,idcentro_costo,LoginEmpleado,id_tipopaciente,idempresa_paciente,idaseguradora_paciente,false);
 		}
 		
 		void on_button_venta_publico_clicked(object sender, EventArgs args)
@@ -3225,7 +3225,7 @@ namespace osiris
 								"osiris_erp_cobros_enca.bloqueo_de_folio,"+
 								"to_char(osiris_erp_cobros_enca.pid_paciente,'9999999999') AS pidpaciente,"+
 				            	"nombre1_paciente,nombre2_paciente,apellido_paterno_paciente,apellido_materno_paciente,"+
-				            	"telefono_particular1_paciente,numero_poliza,folio_de_servicio_dep,osiris_empresas.descripcion_empresa,"+
+				            	"telefono_particular1_paciente,numero_poliza,folio_de_servicio_dep,"+
 				            	"to_char(osiris_erp_cobros_enca.fechahora_creacion,'dd-MM-yyyy HH24:mi:ss') AS fecha_ingreso,"+
 				            	"to_char(osiris_erp_cobros_enca.fecha_alta_paciente,'dd-MM-yyyy HH24:mi:ss') AS fecha_egreso,"+
 				            	"to_char(osiris_erp_cobros_enca.numero_factura,'9999999999') AS numerofactura,"+
@@ -3242,7 +3242,7 @@ namespace osiris
 				            	"osiris_his_paciente.direccion_paciente,osiris_his_paciente.numero_casa_paciente,osiris_his_paciente.numero_departamento_paciente, "+
 								"osiris_his_paciente.colonia_paciente,osiris_his_paciente.municipio_paciente,osiris_his_paciente.codigo_postal_paciente,osiris_his_paciente.estado_paciente,  "+
             					"descripcion_tipo_paciente,osiris_his_tipo_cirugias.descripcion_cirugia,"+
-            					"osiris_his_paciente.id_empresa AS idempresa,osiris_empresas.lista_de_precio AS listadeprecio_empresa,"+   ///
+            					"osiris_his_paciente.id_empresa AS idempresa,osiris_empresas.descripcion_empresa,osiris_empresas.lista_de_precio AS listadeprecio_empresa,"+   ///
             					"descripcion_admisiones,osiris_his_tipo_especialidad.descripcion_especialidad,"+
 				            	"osiris_erp_cobros_enca.id_aseguradora,descripcion_aseguradora,osiris_aseguradoras.lista_de_precio AS listadeprecio_aseguradora,"+   ///
 				            	"osiris_erp_cobros_enca.id_medico,nombre_medico, "+

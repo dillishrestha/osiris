@@ -212,15 +212,15 @@ namespace osiris
 			combobox_mes_inventario.Model = store1;
 	        
 			store1.AppendValues ("","0");
-			store1.AppendValues ("ENERO","1");
-			store1.AppendValues ("FEBRERO","2");
-			store1.AppendValues ("MARZO","3");
-			store1.AppendValues ("ABRIL","4");
-			store1.AppendValues ("MAYO","5");
-			store1.AppendValues ("JUNIO","6");
-			store1.AppendValues ("JULIO","7");
-			store1.AppendValues ("AGOSTO","8");
-			store1.AppendValues ("SEPTIEMBRE","9");
+			store1.AppendValues ("ENERO","01");
+			store1.AppendValues ("FEBRERO","02");
+			store1.AppendValues ("MARZO","03");
+			store1.AppendValues ("ABRIL","04");
+			store1.AppendValues ("MAYO","05");
+			store1.AppendValues ("JUNIO","06");
+			store1.AppendValues ("JULIO","07");
+			store1.AppendValues ("AGOSTO","08");
+			store1.AppendValues ("SEPTIEMBRE","09");
 			store1.AppendValues ("OCTUBRE","10");
 			store1.AppendValues ("NOVIEMBRE","11");
 			store1.AppendValues ("DICIEMBRE","12");
@@ -298,7 +298,6 @@ namespace osiris
 			llenado_de_material_del_stock(entry_id_almacen.Text.ToString(),entry_ano_inventario.Text.Trim(),mesinventario);
 		}
 														
-		// llenando el detalle de procedimiento
 		void llenado_de_material_del_stock(string idalmacen_,string anoinventario_,string mesinvenario_)
 		{	
 			llenado_de_almacen(idalmacen_);
@@ -340,7 +339,7 @@ namespace osiris
 							"ORDER BY to_char(osiris_inventario_almacenes.fechahora_alta,'dd-MM-yyyy HH:mi:ss');";
 				
 				NpgsqlDataReader lector = comando.ExecuteReader ();
-				//Console.WriteLine("query llenado de materiales: "+comando.CommandText.ToString());
+				Console.WriteLine(comando.CommandText.ToString());
 				while (lector.Read()){
 					//if(float.Parse((string) lector["stock"]) != 0){
 							treeViewEngineInventario.AppendValues ((string) lector["idproducto"],

@@ -156,7 +156,7 @@ namespace osiris
 		
 		void on_button_catalogo_productos_clicked (object sender, EventArgs args)
 		{
-			if(LoginEmpleado == "ADMIN" || LoginEmpleado == "ROLVEDAFLORES"){
+			if(LoginEmpleado == "ADMIN" || LoginEmpleado == "ROLVEDAFLORES" || LoginEmpleado == "SAMANTHA" ){
 				new osiris.catalogo_productos_nuevos(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
 			}else{
 				msgBox = new MessageDialog (MyWin,DialogFlags.Modal,

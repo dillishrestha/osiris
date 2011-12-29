@@ -73,6 +73,9 @@ namespace osiris
 		[Widget] Gtk.Entry entry_expresion = null;
 		[Widget] Gtk.RadioButton radiobutton_nombre = null;
 		[Widget] Gtk.RadioButton radiobutton_codigo = null;
+		[Widget] Gtk.Entry entry_lote = null;
+		[Widget] Gtk.Entry entry_caducidad = null;
+		[Widget] Gtk.Entry entry_cantidad_aplicada = null;
 		
 		//[Widget] Gtk
 		[Widget] Gtk.TreeView lista_de_producto = null;
@@ -746,7 +749,15 @@ namespace osiris
 			TreeModel model;
 			TreeIter iterSelected;			
 			if (lista_de_producto.Selection.GetSelected(out model, out iterSelected)){
-				treeViewEngineListaProdRequi.AppendValues (false,entry_num_factura_proveedor.Text.Trim());
+				treeViewEngineListaProdRequi.AppendValues (true,
+				                                           entry_num_factura_proveedor.Text.Trim(),
+				                                           "0",
+				                                           entry_cantidad_aplicada.Text.Trim(),
+				                                           (string) model.GetValue(iterSelected, 2),
+				                                           "",
+				                                           (string) model.GetValue(iterSelected, 0),
+				                                           (string) model.GetValue(iterSelected, 1)
+				                                           );
 				
 				//cierra la ventana despues que almaceno la informacion en variables
 				Widget win = (Widget) sender;

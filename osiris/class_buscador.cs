@@ -862,10 +862,10 @@ namespace osiris
 															(string) model.GetValue(iterSelected, 5);
 						//entry_edad_paciente_cita.Text = (string) model.GetValue(iterSelected, 4);
 					break;
-					case "find_proveedores_OC":
-					
-					break;
-					
+					case "find_proveedores_OC":						
+						entry_id_proveedor.Text = tomaid.ToString();
+						entry_nombre_proveedor.Text = (string) model.GetValue(iterSelected, 1);
+					break;					
 					case "find_almacen_inventario":
 						entry_id_almacen.Text = tomaid.ToString();
 						entry_almacen.Text = (string) model.GetValue(iterSelected, 1);

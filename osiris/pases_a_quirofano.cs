@@ -461,10 +461,7 @@ namespace osiris
 			fontSize = 9.0;			layout = null;			layout = context.CreatePangoLayout ();
 			desc.Size = (int)(fontSize * pangoScale);		layout.FontDescription = desc;
 			layout.FontDescription.Weight = Weight.Bold;		// Letra negrita						
-			
-			cr.MoveTo(565*escala_en_linux_windows, 383*escala_en_linux_windows);
-			cr.LineTo(05,383);		// Linea Horizontal 4
-			
+								
 			desc = Pango.FontDescription.FromString ("Sans");									 
 			//cr.Rotate(90);  //Imprimir Orizontalmente rota la hoja cambian las posiciones de las lineas y columna					
 			fontSize = 8.0;
@@ -498,15 +495,15 @@ namespace osiris
 			comienzo_linea += separacion_linea;
 			cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText("Empresa o Municipio : "+empresa_aseguradora);							Pango.CairoHelper.ShowLayout (cr, layout);
 			comienzo_linea += separacion_linea;
-			comienzo_linea += separacion_linea;
-			cr.MoveTo(10*escala_en_linux_windows,(comienzo_linea+(separacion_linea))*escala_en_linux_windows);		layout.SetText("Cirugia :___________________________________________");							Pango.CairoHelper.ShowLayout (cr, layout);						
-			cr.MoveTo(10*escala_en_linux_windows,(comienzo_linea+(separacion_linea*2))*escala_en_linux_windows);		layout.SetText("Cirujano :____________________________________________");							Pango.CairoHelper.ShowLayout (cr, layout);						
-			cr.MoveTo(10*escala_en_linux_windows,(comienzo_linea+(separacion_linea*4))*escala_en_linux_windows);		layout.SetText("Ayudante :____________________________________________");							Pango.CairoHelper.ShowLayout (cr, layout);						
-			cr.MoveTo(10*escala_en_linux_windows,(comienzo_linea+(separacion_linea*6))*escala_en_linux_windows);		layout.SetText("Anestesiologo :______________________________________");							Pango.CairoHelper.ShowLayout (cr, layout);						
-			cr.MoveTo(10*escala_en_linux_windows,(comienzo_linea+(separacion_linea*8))*escala_en_linux_windows);		layout.SetText("Tipo de Anestesia :______________________________________");							Pango.CairoHelper.ShowLayout (cr, layout);						
-			cr.MoveTo(10*escala_en_linux_windows,(comienzo_linea+(separacion_linea*10))*escala_en_linux_windows);		layout.SetText("Nom. Proveedor 1 :___________________________________________");							Pango.CairoHelper.ShowLayout (cr, layout);						
-			cr.MoveTo(10*escala_en_linux_windows,(comienzo_linea+(separacion_linea*12))*escala_en_linux_windows);		layout.SetText("Nom. Proveedor 2 :___________________________________________");							Pango.CairoHelper.ShowLayout (cr, layout);						
-			cr.MoveTo(10*escala_en_linux_windows,(comienzo_linea+(separacion_linea*14))*escala_en_linux_windows);		layout.SetText("Materiales y/o Equipos :");							Pango.CairoHelper.ShowLayout (cr, layout);						
+			//comienzo_linea += separacion_linea;
+			cr.MoveTo(10*escala_en_linux_windows,(comienzo_linea+(separacion_linea*2))*escala_en_linux_windows);		layout.SetText("Cirugia :___________________________________________");							Pango.CairoHelper.ShowLayout (cr, layout);						
+			cr.MoveTo(10*escala_en_linux_windows,(comienzo_linea+(separacion_linea*4))*escala_en_linux_windows);		layout.SetText("Cirujano :____________________________________________");							Pango.CairoHelper.ShowLayout (cr, layout);						
+			cr.MoveTo(10*escala_en_linux_windows,(comienzo_linea+(separacion_linea*6))*escala_en_linux_windows);		layout.SetText("Ayudante :____________________________________________");							Pango.CairoHelper.ShowLayout (cr, layout);						
+			cr.MoveTo(10*escala_en_linux_windows,(comienzo_linea+(separacion_linea*8))*escala_en_linux_windows);		layout.SetText("Anestesiologo :______________________________________");							Pango.CairoHelper.ShowLayout (cr, layout);						
+			cr.MoveTo(10*escala_en_linux_windows,(comienzo_linea+(separacion_linea*10))*escala_en_linux_windows);		layout.SetText("Tipo de Anestesia :______________________________________");							Pango.CairoHelper.ShowLayout (cr, layout);						
+			cr.MoveTo(10*escala_en_linux_windows,(comienzo_linea+(separacion_linea*12))*escala_en_linux_windows);		layout.SetText("Nom. Proveedor 1 :___________________________________________");							Pango.CairoHelper.ShowLayout (cr, layout);						
+			cr.MoveTo(10*escala_en_linux_windows,(comienzo_linea+(separacion_linea*14))*escala_en_linux_windows);		layout.SetText("Nom. Proveedor 2 :___________________________________________");							Pango.CairoHelper.ShowLayout (cr, layout);						
+			cr.MoveTo(10*escala_en_linux_windows,(comienzo_linea+(separacion_linea*16))*escala_en_linux_windows);		layout.SetText("Materiales y/o Equipos :");							Pango.CairoHelper.ShowLayout (cr, layout);						
 
 			cr.MoveTo(430*escala_en_linux_windows,(comienzo_linea+(separacion_linea*2))*escala_en_linux_windows);		layout.SetText("Sello de Dep. Medico");							Pango.CairoHelper.ShowLayout (cr, layout);						
 			cr.MoveTo(150*escala_en_linux_windows,(comienzo_linea+(separacion_linea*21))*escala_en_linux_windows);		layout.SetText("Sello y Firma Cajero");							Pango.CairoHelper.ShowLayout (cr, layout);
@@ -526,9 +523,12 @@ namespace osiris
 			//Console.WriteLine(comienzo_linea.ToString());
 			cr.Rectangle (05*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows, 565*escala_en_linux_windows, (separacion_linea*18)*escala_en_linux_windows);
 			
-			
+			// Linea Vertical
 			cr.MoveTo(400*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);
 			cr.LineTo(400*escala_en_linux_windows,330);
+			
+			//cr.MoveTo(565*escala_en_linux_windows, 383*escala_en_linux_windows);
+			//cr.LineTo(05,383);		// Linea Horizontal 4
 			
 			cr.FillExtents();  //. FillPreserve(); 
 			cr.SetSourceRGB (0, 0, 0);

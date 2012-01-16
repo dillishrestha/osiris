@@ -364,11 +364,9 @@ namespace osiris
 		{
 			Gtk.TreeIter iter;
 			bool esnumerico = false;
-			int var_paso = 0;
-			
+			int var_paso = 0;			
 			int largo_variable = args.NewText.ToString().Length;
-			string toma_variable = args.NewText.ToString();	
-			
+			string toma_variable = args.NewText.ToString();			
 			treeViewEngineListaProdRequi.GetIter (out iter, new Gtk.TreePath (args.Path));			
 			while (var_paso < largo_variable){				
 				if ((string) toma_variable.Substring(var_paso,1).ToString() == "." || 
@@ -427,8 +425,7 @@ namespace osiris
 					entry_contacto_proveedor.Text  = (string) lector["contacto_proveedor"];
 					entry_formapago.Text  = (string) lector["condiciones_de_pago"];
 				}
-				comando = conexion.CreateCommand ();
-				
+				comando = conexion.CreateCommand ();				
                	comando.CommandText = "SELECT * "+
 					"FROM osiris_erp_requisicion_deta WHERE numero_orden_compra = '"+entry_orden_de_compra.Text.Trim()+"';";
 				//Console.WriteLine(comando.CommandText);
@@ -453,7 +450,7 @@ namespace osiris
 			// Los parametros de del SQL siempre es primero cuando busca todo y la otra por expresion
 			// la clase recibe tambien el orden del query
 			// es importante definir que tipo de busqueda es para que los objetos caigan ahi mismo
-			object[] parametros_objetos = {entry_id_proveedor,entry_nombre_proveedor,entry_formapago,entry_direccion_proveedor};
+			object[] parametros_objetos = {entry_id_proveedor,entry_nombre_proveedor,entry_direccion_proveedor,entry_tel_proveedor,entry_contacto_proveedor,entry_formapago};
 			string[] parametros_sql = {"SELECT descripcion_proveedor,direccion_proveedor,rfc_proveedor,curp_proveedor, "+
 								"colonia_proveedor,municipio_proveedor,estado_proveedor,telefono1_proveedor, "+ 
 								"telefono2_proveedor,celular_proveedor,rfc_proveedor, proveedor_activo, "+

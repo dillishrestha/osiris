@@ -156,6 +156,9 @@ namespace osiris
 							cr.MoveTo(65*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);			layout.SetText(lector["descripcion_producto"].ToString().Trim());				Pango.CairoHelper.ShowLayout (cr, layout);				
 						}
 						cr.MoveTo(340*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);			layout.SetText(lector["stock"].ToString());				Pango.CairoHelper.ShowLayout (cr, layout);				
+						cr.MoveTo(420*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);			layout.SetText(string.Format("{0:C}",decimal.Parse(lector["costoproducto"].ToString())));		Pango.CairoHelper.ShowLayout (cr, layout);
+						cr.MoveTo(480*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);			layout.SetText(lector["embalaje"].ToString());		Pango.CairoHelper.ShowLayout (cr, layout);
+						
 						comienzo_linea += separacion_linea;
 						salto_de_pagina(cr,layout);
 					}

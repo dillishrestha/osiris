@@ -93,7 +93,7 @@ namespace osiris
 		// Declaracion de variables publicas
 		int idtipoalmacen = 0;	        			// Toma el valor de numero de atencion de paciente
 		string almacen;
-		string mesinventario= "";
+		string mesinventario= "00";
 		
 		string id_produ = "";
 		string desc_produ = "";
@@ -192,6 +192,8 @@ namespace osiris
 			button_limpiar.Sensitive = false;
 			button_copia_productos.Sensitive = false;
 			
+			entry_ano_inventario.Text = DateTime.Now.ToString("yyyy");
+			
 			statusbar_inventario.Pop(0);
 			statusbar_inventario.Push(1, "login: "+LoginEmpleado+"  |Usuario: "+NomEmpleado+" "+AppEmpleado+" "+ApmEmpleado);
 			statusbar_inventario.HasResizeGrip = false;
@@ -211,7 +213,7 @@ namespace osiris
 			ListStore store1 = new ListStore( typeof (string),typeof (string));
 			combobox_mes_inventario.Model = store1;
 	        
-			store1.AppendValues ("","0");
+			store1.AppendValues ("","00");
 			store1.AppendValues ("ENERO","01");
 			store1.AppendValues ("FEBRERO","02");
 			store1.AppendValues ("MARZO","03");
@@ -337,9 +339,8 @@ namespace osiris
 							"AND osiris_inventario_almacenes.mes_inventario = '"+mesinvenario_+"' "+
 							"AND eliminado = 'false' "+
 							"ORDER BY to_char(osiris_inventario_almacenes.fechahora_alta,'dd-MM-yyyy HH:mi:ss');";
-				
-				NpgsqlDataReader lector = comando.ExecuteReader ();
-				Console.WriteLine(comando.CommandText.ToString());
+				//Console.WriteLine(comando.CommandText.ToString());
+				NpgsqlDataReader lector = comando.ExecuteReader ();				
 				while (lector.Read()){
 					//if(float.Parse((string) lector["stock"]) != 0){
 							treeViewEngineInventario.AppendValues ((string) lector["idproducto"],
@@ -363,7 +364,12 @@ namespace osiris
 				}
 				button_busca_producto.Sensitive = true;
 				// Realizando las restas
-			}catch (NpgsqlException ex) { Console.WriteLine ("PostgresSQL error: {0}",ex.Message);	}
+			}catch (NpgsqlException ex) { Console.WriteLine ("PostgresSQL error: {0}",ex.Message);
+				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+								MessageType.Warning, ButtonsType.Ok, "PostgresSQL error: {0}",ex.Message);
+								msgBoxError.Run ();
+								msgBoxError.Destroy();
+			}
 			conexion.Close ();
 		}
 		
@@ -470,8 +476,7 @@ namespace osiris
 			//Console.WriteLine(args.Event.Key);
 			//Console.WriteLine(Convert.ToChar(args.Event.Key));
 			string misDigitos = "-.0123456789ﾰﾱﾲﾳﾴﾵﾶﾷﾸﾹﾮｔｒｓｑ（）";
-			if (Array.IndexOf(misDigitos.ToCharArray(), Convert.ToChar(args.Event.Key)) == -1 && args.Event.Key != Gdk.Key.BackSpace)
-			{
+			if (Array.IndexOf(misDigitos.ToCharArray(), Convert.ToChar(args.Event.Key)) == -1 && args.Event.Key != Gdk.Key.BackSpace){
 				args.RetVal = true;
 			}
 		}

@@ -351,7 +351,7 @@ namespace osiris
 					Pango.CairoHelper.ShowLayout (cr, layout);
 					
 					
-										
+									
 					
 					layout.FontDescription.Weight = Weight.Bold;
 					cr.MoveTo(220*escala_en_linux_windows, 453*escala_en_linux_windows);					layout.SetText("PARA SER LLENADO POR EL MEDICO TRATANTE");

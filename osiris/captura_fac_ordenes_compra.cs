@@ -766,8 +766,10 @@ namespace osiris
 		{
 			if ((bool)lista_de_producto.Model.GetValue (iter,20)==true){ 
 				if ((bool)lista_de_producto.Model.GetValue (iter,19)==true) { (cell as Gtk.CellRendererText).Foreground = "blue";
-				}else{ (cell as Gtk.CellRendererText).Foreground = "black"; }
-			}else{	(cell as Gtk.CellRendererText).Foreground = "red";  }
+				}else{
+				(cell as Gtk.CellRendererText).Foreground = "black";}
+			}else{
+				(cell as Gtk.CellRendererText).Foreground = "red";}
 		}
 		
 		///////////////////////////////////////BOTON general de busqueda por enter///////////////////////////////////////////////		

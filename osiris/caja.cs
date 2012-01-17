@@ -2304,6 +2304,7 @@ namespace osiris
 		
 		void comprobante_de_servicio_pagare(string tipoopcion)
 		{			
+			entry_numero_comprobante.IsEditable = false;
 			if ((string) entry_folio_servicio.Text == "" || (string) entry_pid_paciente.Text == "" )
 		    {	
 				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,

@@ -178,6 +178,7 @@ namespace osiris
 			button_guardar.Sensitive = false;
 			combobox_formapago.Sensitive = false;
 			combobox_tipocomprobante.Sensitive = false;
+			entry_recibo_caja.IsEditable = false;
 			
 			entry_presupuesto.Text = "0";
 			entry_paquete.Text = "0";

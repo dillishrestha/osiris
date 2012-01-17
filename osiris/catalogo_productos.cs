@@ -94,7 +94,12 @@ namespace osiris
 		[Widget] Gtk.Label label_cantidad;
 		[Widget] Gtk.Entry entry_cantidad_aplicada;
 		[Widget] Gtk.HBox hbox3 = null;
-		
+		[Widget] Gtk.Label label_pack = null;
+		[Widget] Gtk.Entry entry_embalaje_pack = null;
+		[Widget] Gtk.Label label_desc_proveedor = null;
+		[Widget] Gtk.Entry entry_producto_proveedor = null;
+		[Widget] Gtk.Label label_codprod_proveedor = null;
+		[Widget] Gtk.Entry entry_codprod_proveedor = null;		
 		
 		// Para todas las busquedas este es el nombre asignado
 		// se declara una vez
@@ -267,6 +272,7 @@ namespace osiris
 				store3.AppendValues ("CAJA");
 				store3.AppendValues ("PULGADA");
 				store3.AppendValues ("FRASCO");
+				store3.AppendValues ("GALON");
 			}
 	      
 			TreeIter iter3;
@@ -627,8 +633,15 @@ namespace osiris
 			entry_expresion.KeyPressEvent += onKeyPressEvent_enter;
 			//button_seleccionar.Clicked += new EventHandler(on_selecciona_producto_clicked);
 			label_cantidad.Hide();
+			label_pack.Hide();
+			entry_embalaje_pack.Hide();
+			label_desc_proveedor.Hide();
+			entry_producto_proveedor.Hide();
+			label_codprod_proveedor.Hide();
+			entry_codprod_proveedor.Hide();
 			hbox3.Hide();
 			entry_cantidad_aplicada.Hide();
+			
 			crea_treeview_busqueda();
 			button_salir.Clicked += new EventHandler(on_cierraventanas_clicked); // esta sub-clase esta en hscmty.cs
 		}

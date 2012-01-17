@@ -1,4 +1,13 @@
 <Project name="osiris" fileversion="2.0" DefaultNamespace="osiris" language="C#" clr-version="Net_2_0" targetFramework="2.0" ctype="DotNetProject">
+  <MonoDevelop.Autotools.MakefileInfo RelativeMakefileName="Makefile">
+    <BuildFilesVar Sync="True" Name="DEP1" />
+    <DeployFilesVar />
+    <ResourcesVar />
+    <OthersVar />
+    <GacRefVar />
+    <AsmRefVar />
+    <ProjectRefVar />
+  </MonoDevelop.Autotools.MakefileInfo>
   <Configurations active="Debug">
     <Configuration name="Debug" ctype="DotNetProjectConfiguration">
       <Output directory="../bin/Debug" assembly="osiris" />
@@ -160,9 +169,9 @@
     <ProjectReference type="Gac" localcopy="True" refto="System, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
     <ProjectReference type="Gac" localcopy="True" refto="System.Data, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
     <ProjectReference type="Gac" localcopy="True" refto="System.Xml, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-    <ProjectReference type="Assembly" localcopy="True" specificVersion="False" refto="../dll/AODL.dll" />
-    <ProjectReference type="Assembly" localcopy="True" specificVersion="False" refto="../dll/ICSharpCode.SharpZipLib.dll" />
-    <ProjectReference type="Assembly" localcopy="True" specificVersion="False" refto="../dll/SX.dll" />
+    <ProjectReference specificVersion="False" type="Assembly" localcopy="True" refto="../dll/AODL.dll" />
+    <ProjectReference specificVersion="False" type="Assembly" localcopy="True" refto="../dll/ICSharpCode.SharpZipLib.dll" />
+    <ProjectReference specificVersion="False" type="Assembly" localcopy="True" refto="../dll/SX.dll" />
     <ProjectReference type="Gac" localcopy="True" refto="Mono.Posix, Version=2.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756" />
     <ProjectReference type="Gac" localcopy="True" refto="atk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
     <ProjectReference type="Gac" localcopy="True" refto="gdk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
@@ -170,17 +179,8 @@
     <ProjectReference type="Gac" localcopy="True" refto="glib-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
     <ProjectReference type="Gac" localcopy="True" refto="gtk-dotnet, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
     <ProjectReference type="Gac" localcopy="True" refto="gtk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
-    <ProjectReference type="Gac" localcopy="True" refto="nunit.framework, Version=2.4.7.0, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77" />
     <ProjectReference type="Gac" localcopy="True" refto="pango-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
+    <ProjectReference type="Gac" localcopy="False" refto="nunit.framework, Version=2.4.8.0, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77" />
   </References>
-  <MonoDevelop.Autotools.MakefileInfo RelativeMakefileName="Makefile">
-    <BuildFilesVar Sync="True" Name="DEP1" />
-    <DeployFilesVar />
-    <ResourcesVar />
-    <OthersVar />
-    <GacRefVar />
-    <AsmRefVar />
-    <ProjectRefVar />
-  </MonoDevelop.Autotools.MakefileInfo>
   <DeploymentInformation strategy="File" />
 </Project>

@@ -76,6 +76,9 @@ namespace osiris
 		[Widget] Gtk.Entry entry_lote = null;
 		[Widget] Gtk.Entry entry_caducidad = null;
 		[Widget] Gtk.Entry entry_cantidad_aplicada = null;
+		[Widget] Gtk.Entry entry_embalaje_pack = null;
+		[Widget] Gtk.Entry entry_producto_proveedor = null;
+		[Widget] Gtk.Entry entry_codprod_proveedor = null;	
 		
 		//[Widget] Gtk
 		[Widget] Gtk.TreeView lista_de_producto = null;
@@ -147,6 +150,7 @@ namespace osiris
 			button_busca_proveedor.Clicked += new EventHandler(on_busca_proveedores_clicked);
 			button_busca_producto.Clicked += new EventHandler(on_button_busca_producto_clicked);
 			checkbutton_factura_sin_orden.Clicked += new EventHandler(on_checkbutton_factura_sin_orden_clicked);
+			button_guardar.Clicked += new EventHandler(on_button_guardar_clicked);
 						
 			entry_num_factura_proveedor.ModifyBase(StateType.Normal, new Gdk.Color(255,243,169)); // Color Amarillo
 			entry_orden_de_compra.ModifyBase(StateType.Normal, new Gdk.Color(255,243,169)); // Color Amarillo
@@ -180,6 +184,61 @@ namespace osiris
 			}
 		}
 		
+		void on_button_guardar_clicked(object sender, EventArgs args)
+		{
+			MessageDialog msgBox = new MessageDialog (MyWin,DialogFlags.Modal,
+			MessageType.Question,ButtonsType.YesNo,"¿ Esta seguro de querer realizar un nuevo abono?");
+			ResponseType miResultado = (ResponseType)
+			msgBox.Run ();				msgBox.Destroy();
+	 		if (miResultado == ResponseType.Yes){
+				NpgsqlConnection conexion; 
+				conexion = new NpgsqlConnection (connectionString+nombrebd);
+			    // Verifica que la base de datos este conectada
+			    try{
+					conexion.Open ();
+					NpgsqlCommand comando; 
+					comando = conexion.CreateCommand ();
+					TreeIter iter;
+					if (treeViewEngineListaProdRequi.GetIterFirst (out iter)){
+						comando.CommandText = "INSERT INTO osiris_erp_requisicion_deta( "+
+			 									"id_producto, "+
+			 									"cantidad_comprada, "+
+			 									"id_quien_compro, "+
+			 									"fechahora_compra, "+
+			 									"id_quien_recibio) "+
+			 									"VALUES ('"+
+ 												int.Parse((string) lista_de_honorarios.Model.GetValue(iter,0))+"','"+
+ 												decimal.Parse((string) lista_de_honorarios.Model.GetValue(iter,3))+"','"+
+ 												folioservicio+"','"+
+ 												DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"','"+
+ 												LoginEmpleado+"');";
+		 					comando.ExecuteNonQuery();
+					    	comando.Dispose();
+					}
+					while (treeViewEngineListaProdRequi.IterNext(ref iter)){
+						comando.CommandText = "INSERT INTO osiris_erp_requisicion_deta( "+
+			 									"id_medico, "+
+			 									"monto_del_abono, "+
+			 									"folio_de_servicio, "+
+			 									"fechahora_abono, "+
+			 									"id_quien_abono) "+
+			 									"VALUES ('"+
+ 												int.Parse((string) lista_de_honorarios.Model.GetValue(iter,0))+"','"+
+ 												decimal.Parse((string) lista_de_honorarios.Model.GetValue(iter,3))+"','"+
+ 												folioservicio+"','"+
+ 												DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"','"+
+ 												LoginEmpleado+"');";
+		 					comando.ExecuteNonQuery();
+					    	comando.Dispose();
+					}
+				}catch (NpgsqlException ex){
+					MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+								MessageType.Error,ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
+					msgBoxError.Run ();			msgBoxError.Destroy();
+				}
+			}			
+		}
+		
 		void on_checkbutton_factura_sin_orden_clicked(object sender, EventArgs args)
 		{
 			if (checkbutton_factura_sin_orden.Active == true){
@@ -195,6 +254,7 @@ namespace osiris
 				entry_fecha_orden_compra.Sensitive = false;
 				entry_id_quien_hizo.Sensitive = false;
 				entry_estatus_oc.Sensitive = false;
+				button_guardar.Sensitive = true;
 			}else{
 				button_busca_proveedor.Sensitive = false;
 				button_busca_producto.Sensitive = false;
@@ -744,16 +804,36 @@ namespace osiris
 		{	
 			//string toma_valor;
 			TreeModel model;
-			TreeIter iterSelected;			
+			TreeIter iterSelected;
 			if (lista_de_producto.Selection.GetSelected(out model, out iterSelected)){
+				
+				// buscando el codigo del proveedor para agregarlo en su catalogo
+				NpgsqlConnection conexion; 
+				conexion = new NpgsqlConnection (connectionString+nombrebd);
+				try{
+					conexion.Open ();
+					NpgsqlCommand comando; 
+					comando = conexion.CreateCommand ();
+	               	comando.CommandText = "";
+				}catch (NpgsqlException ex){
+	   				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+								MessageType.Warning, ButtonsType.Ok, "PostgresSQL error: {0}",ex.Message);
+								msgBoxError.Run ();
+								msgBoxError.Destroy();
+				}
+				conexion.Close ();
+				
 				treeViewEngineListaProdRequi.AppendValues (true,
 				                                           entry_num_factura_proveedor.Text.Trim(),
 				                                           "0",
 				                                           entry_cantidad_aplicada.Text.Trim(),
 				                                           (string) model.GetValue(iterSelected, 2),
-				                                           "",
+				                                           entry_codprod_proveedor.Text.Trim(),
 				                                           (string) model.GetValue(iterSelected, 0),
-				                                           (string) model.GetValue(iterSelected, 1)
+				                                           (string) model.GetValue(iterSelected, 1),
+															entry_embalaje_pack.Text.Trim(),
+															entry_lote.Text.Trim(),
+															entry_caducidad.Text.Trim()
 				                                           );
 				
 				//cierra la ventana despues que almaceno la informacion en variables

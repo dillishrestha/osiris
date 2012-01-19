@@ -1,4 +1,5 @@
 using System;
+using Gtk;
 namespace osiris
 {
 	public partial class rango_de_fechas : Gtk.Window

@@ -2,12 +2,20 @@
 <stetic-interface>
   <configuration>
     <images-root-path>..</images-root-path>
-    <target-gtk-version>2.12</target-gtk-version>
+    <target-gtk-version>2.10</target-gtk-version>
   </configuration>
   <import>
-    <widget-library name="glade-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
     <widget-library name="../../bin/Debug/osiris.exe" internal="true" />
+    <widget-library name="../../../../../../usr/lib/mono/gac/glade-sharp/2.12.0.0__35e10195dab3c99f/glade-sharp.dll" />
   </import>
+  <widget class="Gtk.Window" id="osiris.rango_de_fechas" design-size="400 300">
+    <property name="MemberName" />
+    <property name="Title" translatable="yes">rango_de_fechas</property>
+    <property name="WindowPosition">CenterOnParent</property>
+    <child>
+      <placeholder />
+    </child>
+  </widget>
   <widget class="Gtk.Window" id="osiris.rango_de_fechas" design-size="400 300">
     <property name="MemberName" />
     <property name="Title" translatable="yes">rango_de_fechas</property>

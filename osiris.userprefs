@@ -1,20 +1,27 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" ctype="Workspace" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="osiris/catalogos.cs" ctype="Workbench">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="osiris/rango_de_fechas.cs">
     <Files>
-      <File FileName="osiris/osiris.cs" Line="1" Column="1" />
-      <File FileName="osiris/class_conexion.cs" Line="12" Column="54" />
-      <File FileName="osiris/inv_sub_almacen.cs" Line="1037" Column="19" />
-      <File FileName="osiris/rpt_comprobante_serv.cs" Line="41" Column="15" />
-      <File FileName="osiris/catalogos.cs" Line="14" Column="55" />
-      <File FileName="osiris/solicitud_materiales_medicos.cs" Line="117" Column="49" />
+      <File FileName="osiris/osiris.cs" Line="730" Column="8" />
+      <File FileName="osiris/class_conexion.cs" Line="1" Column="1" />
+      <File FileName="osiris/class_public.cs" Line="1" Column="1" />
+      <File FileName="osiris/registro_admision.cs" Line="1" Column="1" />
+      <File FileName="osiris/caja.cs" Line="1" Column="1" />
+      <File FileName="osiris/reservacion_de_paquetes.cs" Line="1" Column="1" />
+      <File FileName="osiris/abonos.cs" Line="1" Column="1" />
+      <File FileName="osiris/captura_fac_ordenes_compra.cs" Line="1" Column="1" />
+      <File FileName="osiris/catalogo_productos.cs" Line="1" Column="1" />
+      <File FileName="osiris/rango_de_fechas.cs" Line="1" Column="1" />
+      <File FileName="osiris/autorizacion_doctores_compra.cs" Line="1" Column="1" />
+      <File FileName="osiris/almacen_inventario.cs" Line="1" Column="1" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
         <State expanded="True">
           <Node name="osiris" expanded="True">
-            <Node name="References" expanded="True" />
-            <Node name="catalogos.cs" selected="True" />
+            <Node name="References" expanded="True">
+              <Node name="System.Data, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" selected="True" />
+            </Node>
           </Node>
         </State>
       </Pad>
@@ -28,4 +35,8 @@
       </Pad>
     </Pads>
   </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
 </Properties>

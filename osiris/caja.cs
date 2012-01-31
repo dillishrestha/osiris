@@ -884,7 +884,8 @@ namespace osiris
 		
 		void on_button_abre_folio_clicked(object sender, EventArgs args)
 		{
-			if(LoginEmpleado == "DOLIVARES" || LoginEmpleado =="ADMIN" || LoginEmpleado =="MARGARITAZ" || LoginEmpleado =="IESPINOZAF" || LoginEmpleado =="ZBAEZH"){
+			if(LoginEmpleado == "DOLIVARES" || LoginEmpleado =="ADMIN" || LoginEmpleado =="MARGARITAZ" || 
+				LoginEmpleado =="IESPINOZAF" || LoginEmpleado =="ZBAEZH" || LoginEmpleado == "YTAMEZ"){
 				MessageDialog msgBox = new MessageDialog (MyWin,DialogFlags.Modal,
 							MessageType.Question,ButtonsType.YesNo,"¿ Esta seguro de Abrir este Nº de Atencion ?");
 				ResponseType miResultado = (ResponseType)msgBox.Run ();

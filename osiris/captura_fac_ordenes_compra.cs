@@ -111,6 +111,7 @@ namespace osiris
 		TreeViewColumn col_empaqueproducto;
 		TreeViewColumn col_loteproducto;
 		TreeViewColumn col_caducidadproducto;
+		TreeViewColumn col_desprodprove;
 				
 		//declaracion de columnas y celdas de treeview de busqueda
 		TreeViewColumn col_idproducto;			CellRendererText cellrt0;
@@ -187,7 +188,7 @@ namespace osiris
 		void on_button_guardar_clicked(object sender, EventArgs args)
 		{
 			MessageDialog msgBox = new MessageDialog (MyWin,DialogFlags.Modal,
-			MessageType.Question,ButtonsType.YesNo,"¿ Esta seguro de querer realizar un nuevo abono?");
+			MessageType.Question,ButtonsType.YesNo,"¿ Esta seguro ingresar la factura?");
 			ResponseType miResultado = (ResponseType)
 			msgBox.Run ();				msgBox.Destroy();
 	 		if (miResultado == ResponseType.Yes){
@@ -200,22 +201,52 @@ namespace osiris
 					comando = conexion.CreateCommand ();
 					TreeIter iter;
 					if (treeViewEngineListaProdRequi.GetIterFirst (out iter)){
+						
+						comando.CommandText = "INSERT INTO osiris_erp_factura_compra_enca(" +
+							//"numero_orden_compra," +
+							//"fechahora_orden_compra," +
+							"id_quien_creo," +
+							//"cancelado," +
+							//"fechahora_cancelado," +
+							"id_proveedor," +
+							"factura_sin orden_compra," +
+							//"id_secuencia," +
+							"numero_de_factura," +
+							"fecha_fatura," +
+							//"id_quien_cancelo," +
+							"fechahora_creacion) VALUES ('"+LoginEmpleado+"','"+entry_id_proveedor.Text.Trim();
+							
 						comando.CommandText = "INSERT INTO osiris_erp_requisicion_deta( "+
 			 									"id_producto, "+
 			 									"cantidad_comprada, "+
 			 									"id_quien_compro, "+
 			 									"fechahora_compra, "+
-			 									"id_quien_recibio) "+
-			 									"VALUES ('"+
- 												int.Parse((string) lista_de_honorarios.Model.GetValue(iter,0))+"','"+
- 												decimal.Parse((string) lista_de_honorarios.Model.GetValue(iter,3))+"','"+
- 												folioservicio+"','"+
- 												DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"','"+
- 												LoginEmpleado+"');";
+			 									"id_quien_recibio," +
+			 									"fechahora_recibido," +
+			 									"recibido," +
+			 									"id_almacen," +
+			 									"id_proveedor," +
+			 									"numero_factura_proveedor," +
+			 									"costo_producto," +
+			 									"costo_por_unidad," +
+			 									"precio_producto_publico," +
+			 									"porcentage_ganancia," +
+			 									"cantidad_de_embalaje" +
+			 									"autorizada," +
+			 									"id_quien_autorizo," +
+			 									"id_tipo_admisiones," +
+			 									"factura_sin_oc," +
+			 									"id_producto_proveedor) "+
+			 									"VALUES ('";
+ 												//int.Parse((string) lista_de_honorarios.Model.GetValue(iter,0))+"','"+
+ 												//decimal.Parse((string) lista_de_honorarios.Model.GetValue(iter,3))+"','"+
+ 												//folioservicio+"','"+
+ 												//DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"','LoginEmpleado+"');";
 		 					comando.ExecuteNonQuery();
 					    	comando.Dispose();
 					}
 					while (treeViewEngineListaProdRequi.IterNext(ref iter)){
+						/*
 						comando.CommandText = "INSERT INTO osiris_erp_requisicion_deta( "+
 			 									"id_medico, "+
 			 									"monto_del_abono, "+
@@ -229,8 +260,9 @@ namespace osiris
  												DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"','"+
  												LoginEmpleado+"');";
 		 					comando.ExecuteNonQuery();
-					    	comando.Dispose();
+					    	comando.Dispose();*/
 					}
+					button_guardar.Sensitive = false;
 				}catch (NpgsqlException ex){
 					MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
 								MessageType.Error,ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
@@ -299,13 +331,23 @@ namespace osiris
 			col_recibido.SortColumnId = (int) col_productos_recibidos.col_recibido;			
 			
 			
+			/*Gtk.CellRendererText text = new CellRendererText ();
+			text.Xalign = 0.0f;
+			text.Editable = true;
+			columns.Add (text);
+			TreeViewColumn column0 = new TreeViewColumn("Estudio/Parametro", text,
+								    "text", Column.col_00);
+			column0.Resizable = true;
+			column0.SortColumnId = (int) Column.col_00;
+			treeview_resultados_interptretados.InsertColumn (column0, (int) Column.col_00);*/
+						
 			col_numerofactura = new TreeViewColumn();
-			CellRendererText cel_numerofactura = new CellRendererText();
+			Gtk.CellRendererText cel_numerofactura = new CellRendererText();
 			col_numerofactura.Title = "N° Factura"; // titulo de la cabecera de la columna, si está visible
 			col_numerofactura.PackStart(cel_numerofactura, true);
 			col_numerofactura.AddAttribute(cel_numerofactura, "text", 1);
 			col_numerofactura.SortColumnId = (int) col_productos_recibidos.col_numerofactura;
-			cel_numerofactura.Edited += NumberCellEdited_NroFactura;
+			cel_numerofactura.Edited += NumberCellEdited;
 			cel_numerofactura.Editable = true;
 										
 			col_cant_ordencompra = new TreeViewColumn();
@@ -329,18 +371,20 @@ namespace osiris
 			col_precioprod.Title = "Precio Producto";
 			col_precioprod.PackStart(cellrt2, true);
 			col_precioprod.AddAttribute (cellrt2, "text", 4);
+			cellrt0.Edited += NumberCellEdited;
+			cellrt0.Editable = true;
 			col_precioprod.SortColumnId = (int) col_productos_recibidos.col_precioprod;
 			
 			col_idproducto_provee = new TreeViewColumn();
 			cellrt1 = new CellRendererText();
-			col_idproducto_provee.Title = "Cod.Prod.Prov.";
+			col_idproducto_provee.Title = "Pre.Unitario";
 			col_idproducto_provee.PackStart(cellrt0, true);
 			col_idproducto_provee.AddAttribute (cellrt0, "text", 5);
 			col_idproducto_provee.SortColumnId = (int) col_productos_recibidos.col_idproducto_provee;
 			
 			col_idproducto = new TreeViewColumn();
 			cellrt2 = new CellRendererText();
-			col_idproducto.Title = "ID Producto";
+			col_idproducto.Title = "Precio Osiris";
 			col_idproducto.PackStart(cellrt2, true);
 			col_idproducto.AddAttribute (cellrt2, "text", 6);
 			col_idproducto.SortColumnId = (int) col_productos_recibidos.col_idproducto;
@@ -355,14 +399,14 @@ namespace osiris
 			
 			col_empaqueproducto = new TreeViewColumn();
 			cellrt4 = new CellRendererText();
-			col_empaqueproducto.Title = "Empaque";
+			col_empaqueproducto.Title = "id Producto";
 			col_empaqueproducto.PackStart(cellrt4, true);
 			col_empaqueproducto.AddAttribute (cellrt4, "text", 8);
 			col_empaqueproducto.SortColumnId = (int) col_productos_recibidos.col_empaqueproducto;
 			
 			col_loteproducto = new TreeViewColumn();
 			cellrt5 = new CellRendererText();
-			col_loteproducto.Title = "Lote";
+			col_loteproducto.Title = "Desc. Prod. Proveedor";
 			col_loteproducto.PackStart(cellrt5, true);
 			col_loteproducto.AddAttribute (cellrt5, "text", 9);
 			col_loteproducto.SortColumnId = (int) col_productos_recibidos.col_loteproducto;
@@ -370,11 +414,27 @@ namespace osiris
 			
 			col_caducidadproducto = new TreeViewColumn();
 			cellrt6 = new CellRendererText();
-			col_caducidadproducto.Title = "Caducidad";
+			col_caducidadproducto.Title = "id Prod.Prove.";
 			col_caducidadproducto.PackStart(cellrt6, true);
 			col_caducidadproducto.AddAttribute (cellrt6, "text", 10);
 			col_caducidadproducto.SortColumnId = (int) col_productos_recibidos.col_caducidadproducto;
 			cellrt6.Editable = true;
+			
+			col_desprodprove = new TreeViewColumn();
+			cellrt7 = new CellRendererText();
+			col_desprodprove.Title = "Lote";
+			col_desprodprove.PackStart(cellrt7, true);
+			col_desprodprove.AddAttribute (cellrt7, "text", 11);
+			col_desprodprove.SortColumnId = (int) col_productos_recibidos.col_desprodprove;
+			cellrt7.Editable = true;
+			
+			col_desprodprove = new TreeViewColumn();
+			cellrt7 = new CellRendererText();
+			col_desprodprove.Title = "Lote";
+			col_desprodprove.PackStart(cellrt7, true);
+			col_desprodprove.AddAttribute (cellrt7, "text", 11);
+			col_desprodprove.SortColumnId = (int) col_productos_recibidos.col_desprodprove;
+			cellrt7.Editable = true;
 			
 			lista_productos_a_recibir.AppendColumn(col_recibido);				// 0
 			lista_productos_a_recibir.AppendColumn(col_numerofactura);			// 1
@@ -387,6 +447,7 @@ namespace osiris
 			lista_productos_a_recibir.AppendColumn(col_empaqueproducto);		// 8
 			lista_productos_a_recibir.AppendColumn(col_loteproducto);			// 9
 			lista_productos_a_recibir.AppendColumn(col_caducidadproducto);		// 10
+			lista_productos_a_recibir.AppendColumn(col_desprodprove);			// 11
 		}
 		
 		enum col_productos_recibidos{
@@ -400,7 +461,8 @@ namespace osiris
 			col_desc_producto,
 			col_empaqueproducto,
 			col_loteproducto,
-			col_caducidadproducto
+			col_caducidadproducto,
+			col_desprodprove
 		}
 		
 		// Cuando seleccion campos para la autorizacion de compras  
@@ -413,8 +475,15 @@ namespace osiris
 			}				
 		}
 		
-		void NumberCellEdited_NroFactura (object o, EditedArgs args)
+		void NumberCellEdited (object sender, EditedArgs args)
 		{
+			Console.WriteLine(args.ToString());
+			Console.WriteLine(args.Path.ToString());
+			Console.WriteLine(sender.ToString());
+			if (sender.ToString() == "Gtk.CellRendererText"){
+				Gtk.CellRendererText cellRenderer_treeview = (object) sender as Gtk.CellRendererText;
+				//cellRenderer_treeview.Data.
+			}
 			Gtk.TreeIter iter;
 			treeViewEngineListaProdRequi.GetIter (out iter, new Gtk.TreePath (args.Path));
 			treeViewEngineListaProdRequi.SetValue(iter,(int) col_productos_recibidos.col_numerofactura,args.NewText);			
@@ -572,6 +641,7 @@ namespace osiris
 			lista_de_producto.RulesHint = true;
 			
 			lista_de_producto.RowActivated += on_selecciona_producto_clicked;  // Doble click selecciono producto*/
+			lista_de_producto.MoveCursor += on_packproductos_clicked;
 			
 			col_idproducto = new TreeViewColumn();
 			cellrt0 = new CellRendererText();
@@ -839,6 +909,15 @@ namespace osiris
 				//cierra la ventana despues que almaceno la informacion en variables
 				Widget win = (Widget) sender;
 				win.Toplevel.Destroy();
+			}
+		}
+		
+		void on_packproductos_clicked(object sender, EventArgs args)
+		{
+			TreeModel model;
+			TreeIter iterSelected;
+			if (lista_de_producto.Selection.GetSelected(out model, out iterSelected)){
+				entry_embalaje_pack.Text = (string) model.GetValue(iterSelected, 15);
 			}
 		}
 		

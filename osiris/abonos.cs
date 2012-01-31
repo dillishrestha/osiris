@@ -727,7 +727,8 @@ namespace osiris
 													"tipo_comprobante,"+
 													"abono,"+
 													"monto_convenio,"+
-													"folio_de_servicio )"+
+													"folio_de_servicio," +
+													"pid_paciente)"+
 													"VALUES ('"+
 			 										(string) this.entry_monto_abono.Text.Trim().ToUpper()+"','"+//2
 			 										(string) this.entry_recibo_caja.Text.Trim().ToUpper()+"','"+//3										  
@@ -742,8 +743,8 @@ namespace osiris
 													"ABONO"+"','"+
 													"true"+"','"+
 													entry_monto_convenio.Text.ToString().Trim()+"','"+
-													folioservicio+//"','"+//10
-			 										"');";
+													folioservicio+"','"+//"','"+//10
+			 										PidPaciente+"');";
 		 						comando.ExecuteNonQuery();    	    	       	comando.Dispose();
 		 						
 		 						NpgsqlConnection conexion2; 

@@ -53,6 +53,7 @@ namespace osiris
 		[Widget] Gtk.Button button_exportar_cortecaja = null;
 		[Widget] Gtk.Button button_exportar = null;
 		[Widget] Gtk.Button button_reportes = null;
+		[Widget] Gtk.Button button_separa_folio = null;
 		
 		// Ventana de Reportes
 		[Widget] Gtk.Window reportes_caja = null;
@@ -152,6 +153,7 @@ namespace osiris
 			button_envio_de_facturas.Clicked += new EventHandler(on_button_envio_facturas_clicked);
 			button_exportar.Clicked += new EventHandler(on_button_exportar_clicked);
 			button_exportar_cortecaja.Clicked += new EventHandler(on_button_exportar_cortecaja_clicked);
+			button_separa_folio.Clicked += new EventHandler(on_button_separa_folio_clicked);
 			button_solicitud_material.Clicked += new EventHandler(on_button_solicitud_material_clicked);
 			button_reportes.Clicked += new EventHandler(on_button_reportes_clicked);				
 			////// Sale de la ventana
@@ -184,6 +186,11 @@ namespace osiris
 		void on_button_solicitud_material_clicked(object sender, EventArgs args)
 		{
 			new osiris.solicitud_material(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,16);
+		}
+		
+		void on_button_separa_folio_clicked(object sender, EventArgs a)
+		{
+			new osiris.reservacion_de_paquetes(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,0,false);
 		}
 		
 		void on_button_exportar_cortecaja_clicked(object sender, EventArgs args)

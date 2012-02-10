@@ -65,18 +65,15 @@ namespace osiris
 		private PrintOperation print;
 		private double fontSize = 8.0;
 		int escala_en_linux_windows;		// Linux = 1  Windows = 8
+		int comienzo_linea = 70;
+		int separacion_linea = 10;
+		int numpage = 1;
+		Pango.FontDescription desc;
 		
 		string connectionString;
         string nombrebd;
 		string tiporeporte = "ABONOS";
 		string titulo = "REPORTE DE ABONOS";
-		
-		int columna = 0;
-		int fila = -70;
-		int contador = 1;
-		int numpage = 1;
-		string schars = "";
-		int filas=710;
 		
 		string query_fechas = " ";
 		string orden = " ";
@@ -170,7 +167,7 @@ namespace osiris
 			
 			Cairo.Context cr = context.CairoContext;
 			Pango.Layout layout = context.CreatePangoLayout ();
-			Pango.FontDescription desc = Pango.FontDescription.FromString ("Sans");			
+			desc = Pango.FontDescription.FromString ("Sans");			
 			fontSize = 7.0;											layout = context.CreatePangoLayout ();		
 			desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;
 			
@@ -205,12 +202,18 @@ namespace osiris
 				NpgsqlDataReader lector = comando.ExecuteReader ();
 				imprime_encabezado(cr,layout);
 				while (lector.Read()){
+					
+					cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText((string) lector["folio"].ToString().Trim());	Pango.CairoHelper.ShowLayout (cr, layout);
+					cr.MoveTo(40*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText(string.Format("{0:C}",decimal.Parse(lector["abono"].ToString())));	Pango.CairoHelper.ShowLayout (cr, layout);
+					cr.MoveTo(93*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText(lector["fechaabono"].ToString());	Pango.CairoHelper.ShowLayout (cr, layout);
+					cr.MoveTo(125*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText(lector["recibocaja"].ToString());	Pango.CairoHelper.ShowLayout (cr, layout);
+					cr.MoveTo(171*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText(lector["nombre_completo"].ToString());	Pango.CairoHelper.ShowLayout (cr, layout);
+
+					comienzo_linea += separacion_linea;
+					total += decimal.Parse((string) lector["abono"]);
+					contadorprocedimientos += 1;
+					
 					/*
-					ContextoImp.MoveTo(15, filas);		ContextoImp.Show((string) lector["folio".Trim()]);
-					ContextoImp.MoveTo(40, filas);		ContextoImp.Show((string) lector["abono".Trim()]);
-					ContextoImp.MoveTo(93, filas);		ContextoImp.Show((string) lector["fechaabono"]);
-					ContextoImp.MoveTo(125, filas);		ContextoImp.Show((string) lector["recibocaja"]);
-					ContextoImp.MoveTo(171, filas);		ContextoImp.Show((string) lector["nombre_completo"]);
 					tomovalor1 = (string) lector["concepto"];
 					if(tomovalor1.Length > 40)
 					{
@@ -219,17 +222,12 @@ namespace osiris
 					ContextoImp.MoveTo(351, filas);		ContextoImp.Show(tomovalor1);
 					ContextoImp.MoveTo(501, filas);		ContextoImp.Show((string) lector["descripago"]);
 					
-					total += decimal.Parse((string) lector["abono"]);
-					
-					filas -= 08;
-					contador+=1;
-					contadorprocedimientos += 1;
-					salto_pagina(ContextoImp,trabajoImpresion);
 					*/
-				}				
-				//ContextoImp.MoveTo(300,filas);				ContextoImp.Show("TOTAL DE ABONOS "+contadorprocedimientos.ToString());
-				//ContextoImp.MoveTo(420,filas);				ContextoImp.Show("TOTAL" );
-				//ContextoImp.MoveTo(465,filas);				ContextoImp.Show(total.ToString("C"));				
+				}
+				comienzo_linea += separacion_linea;
+				cr.MoveTo(300*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText("TOTAL DE PAGOS/ABONOS "+string.Format("{0:C}",decimal.Parse(total.ToString())));	Pango.CairoHelper.ShowLayout (cr, layout);
+				comienzo_linea += separacion_linea;
+				cr.MoveTo(420*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText("TOTAL N° ATENCION "+contadorprocedimientos.ToString());	Pango.CairoHelper.ShowLayout (cr, layout);
 			}catch(NpgsqlException ex){
 				Console.WriteLine("PostgresSQL error: {0}",ex.Message);
 				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
@@ -240,7 +238,7 @@ namespace osiris
  	
 		void imprime_encabezado(Cairo.Context cr,Pango.Layout layout)
 		{	
- 			Pango.FontDescription desc = Pango.FontDescription.FromString ("Sans");								
+ 			desc = Pango.FontDescription.FromString ("Sans");								
 			//cr.Rotate(90);  //Imprimir Orizontalmente rota la hoja cambian las posiciones de las lineas y columna					
 			fontSize = 8.0;
 			desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;
@@ -297,14 +295,11 @@ namespace osiris
 		
 		void salto_de_pagina(Cairo.Context cr,Pango.Layout layout)			
 		{
-			//context.PageSetup.Orientation = PageOrientation.Landscape;
-			//if(comienzo_linea > 660){
-			//	cr.ShowPage();
-			//	Pango.FontDescription desc = Pango.FontDescription.FromString ("Sans");								
-			//	fontSize = 8.0;		desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;
-			//	comienzo_linea = 125;
-			//	imprime_encabezado(cr,layout);
-			//}
+			if(comienzo_linea > 700){
+				cr.ShowPage();
+				comienzo_linea = 70;
+				imprime_encabezado(cr,layout);
+			}
 		}
 	
 		void onKeyPressEvent(object o, Gtk.KeyPressEventArgs args)

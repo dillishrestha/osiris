@@ -199,7 +199,8 @@ namespace osiris
 			statusbar_inventario.HasResizeGrip = false;
 	    	
 			// pone color a los entry
-			entry_id_almacen.ModifyBase(StateType.Normal, new Gdk.Color(54,180,221));
+			//entry_id_almacen.ModifyBase(StateType.Normal,new Gdk.Color(54,180,221));
+			entry_id_almacen.ModifyBase(Gtk.StateType.Normal, new Gdk.Color(54,180,221));
 			entry_almacen.ModifyBase(StateType.Normal, new Gdk.Color(254,253,152));
 		}
 		

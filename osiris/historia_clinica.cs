@@ -45,7 +45,7 @@ using AODL.Document.Content.Tables;
 using AODL.Document;
 using AODL.Package;
 using AODL.Document.Collections;
-using NUnit.Framework;
+//using NUnit.Framework;
 
 namespace osiris
 {
@@ -314,6 +314,7 @@ namespace osiris
 		string pnneurologicos = "";
 		string enfermedad_padre = "";
 		string enfermedad_madre = "";
+		string enfermedad_hermanos = "";
 		
 		//public int tipodellenado;
 		bool editando = false;
@@ -795,6 +796,9 @@ namespace osiris
 				case "combobox_enfermedad_madre":
 					enfermedad_madre = (string) onComboBoxChanged.Model.GetValue(iter,0);
 					break;
+				case "combobox_enfermedad_hermanos":
+					enfermedad_hermanos  = (string) onComboBoxChanged.Model.GetValue(iter,0);
+					break; 
 				}
 			}
 		}
@@ -1409,6 +1413,37 @@ namespace osiris
 				case "ENF. MENTALES":				book.setText(13, 15, "X");
 					break;
 				}
+				if(spinbutton_novivos_hermanos.Text.ToString()== "0" && spinbutton_nomuertos_hermanos.Text.ToString() == "0"){
+					book.setText(14,1," ");
+				}else{
+					if(spinbutton_novivos_hermanos.Text.ToString() != "0"){
+						book.setText(14,1,"X");
+						book.setText(14,2,"");
+					}
+					if(spinbutton_nomuertos_hermanos.Text.ToString() != "0"){
+						book.setText(14,1,"");
+						book.setText(14,2,"X");
+						switch (enfermedad_hermanos){
+							case "DIABETES":					book.setText(14, 3, "X");
+								break;
+							case "HIPERTENSION":				book.setText(14, 5, "X");
+								break;
+							case "ENF. DEL CORAZON":			book.setText(14, 7, "X");
+								break;
+							case "ENF. DE PULMONES":			book.setText(14, 9, "X");
+								break;
+							case "CANCER O LEUCEMIA":			book.setText(14, 11, "X");
+								break;
+							case "EMBOLIA":						book.setText(14, 13, "X");
+								break;
+							case "ENF. MENTALES":				book.setText(14, 15, "X");
+								break;
+						}
+					}
+				}
+				//book.setText(14,3,spinbutton_nomuertos_hermanos.Text.ToString());
+				//spinbutton_novivos_hermanos.Text
+				//spinbutton_nomuertos_hermanos
 				
 				
 				

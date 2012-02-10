@@ -2305,9 +2305,7 @@ namespace osiris
 		
 		void comprobante_de_servicio_pagare(string tipoopcion)
 		{			
-			entry_numero_comprobante.IsEditable = false;
-			if ((string) entry_folio_servicio.Text == "" || (string) entry_pid_paciente.Text == "" )
-		    {	
+			if ((string) entry_folio_servicio.Text == "" || (string) entry_pid_paciente.Text == "" ){	
 				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
 				MessageType.Error,ButtonsType.Close, "Debe de llenar el campo de Folio con uno \n"+
 							"existente para que el comprobante se muestre \n"+"o no a pulsado el boton ''Seleccionar''");
@@ -2332,6 +2330,7 @@ namespace osiris
 				pagodehonorario = false;
 				Glade.XML gxml = new Glade.XML (null, "caja.glade", "comprobante_pago", null);
 				gxml.Autoconnect (this);
+				entry_numero_comprobante.IsEditable = false;
 				
 				comprobante_pago.Show();
 																

@@ -103,16 +103,22 @@ namespace osiris
 		TreeStore treeViewEngineBusca2;
 		
 		// declaro treevie de productos para la requisicion
-		TreeViewColumn col_recibido;
-		TreeViewColumn col_numerofactura;
-		TreeViewColumn col_cant_ordencompra;
-		TreeViewColumn col_cant_recibida;
-		TreeViewColumn col_idproducto_provee;
-		TreeViewColumn col_empaqueproducto;
-		TreeViewColumn col_loteproducto;
-		TreeViewColumn col_caducidadproducto;
-		TreeViewColumn col_desprodprove;
-				
+		TreeViewColumn col_00;
+		TreeViewColumn col_01;
+		TreeViewColumn col_02;
+		TreeViewColumn col_03;
+		TreeViewColumn col_04;
+		TreeViewColumn col_05;
+		TreeViewColumn col_06;
+		TreeViewColumn col_07;
+		TreeViewColumn col_08;
+		TreeViewColumn col_09;
+		TreeViewColumn col_10;
+		TreeViewColumn col_11;
+		TreeViewColumn col_12;
+		TreeViewColumn col_13;
+		TreeViewColumn col_14;
+		
 		//declaracion de columnas y celdas de treeview de busqueda
 		TreeViewColumn col_idproducto;			CellRendererText cellrt0;
 		TreeViewColumn col_desc_producto;		CellRendererText cellrt1;
@@ -124,9 +130,15 @@ namespace osiris
 		TreeViewColumn col_grupoprod;			CellRendererText cellrt7;
 		TreeViewColumn col_grupo1prod;			CellRendererText cellrt8;
 		TreeViewColumn col_grupo2prod;			CellRendererText cellrt9;
+		CellRendererText cellrt10;
+		CellRendererText cellrt11;
 		TreeViewColumn col_costoprod_uni;		CellRendererText cellrt12;
+		CellRendererText cellrt13;
+		CellRendererCombo cellrt14;
 		TreeViewColumn col_aplica_iva;			CellRendererText cellrt19;
 		TreeViewColumn col_cobro_activo;		CellRendererText cellrt20;
+		
+		ListStore cell_combox_store;
 		
 		public factura_orden_compra(string LoginEmp_,string nombreempleado_,string nombrebd_)
 		{
@@ -305,164 +317,221 @@ namespace osiris
 		
 		void crea_treeview_capturafactura()
 		{
+			cell_combox_store = new ListStore(typeof (string));
+			cell_combox_store.AppendValues("uno");
+			cell_combox_store.AppendValues("dos");
+			
 			treeViewEngineListaProdRequi = new TreeStore(typeof(bool), 
 														typeof(string),
 														typeof(string),
 														typeof(string),
-			                                             typeof(string),
-			                                             typeof(string),
-			                                             typeof(string),
-			                                             typeof(string),
-			                                             typeof(string),
-			                                             typeof(string),
-			                                             typeof(string),
-			                                             typeof(string));
+			                                            typeof(string),
+			                                            typeof(string),
+			                                            typeof(string),
+			                                            typeof(string),
+			                                            typeof(string),
+			                                            typeof(string),
+			                                            typeof(string),
+			                                            typeof(string),
+														typeof(string),
+														typeof(string),
+														typeof(string));
 												
 			lista_productos_a_recibir.Model = treeViewEngineListaProdRequi;			
 			lista_productos_a_recibir.RulesHint = true;
 						
-			col_recibido = new TreeViewColumn();
+			col_00 = new TreeViewColumn();
 			CellRendererToggle cellrToggle = new CellRendererToggle();
-			col_recibido.Title = "Seleccion"; // titulo de la cabecera de la columna, si está visible
-			col_recibido.PackStart(cellrToggle, true);
-			col_recibido.AddAttribute (cellrToggle, "active", 0);
+			col_00.Title = "Seleccion";
+			col_00.PackStart(cellrToggle, true);
+			col_00.AddAttribute (cellrToggle, "active", 0);
 			cellrToggle.Activatable = true;
 			cellrToggle.Toggled += selecciona_fila;
-			col_recibido.SortColumnId = (int) col_productos_recibidos.col_recibido;			
-			
-			
-			/*Gtk.CellRendererText text = new CellRendererText ();
-			text.Xalign = 0.0f;
-			text.Editable = true;
-			columns.Add (text);
-			TreeViewColumn column0 = new TreeViewColumn("Estudio/Parametro", text,
-								    "text", Column.col_00);
-			column0.Resizable = true;
-			column0.SortColumnId = (int) Column.col_00;
-			treeview_resultados_interptretados.InsertColumn (column0, (int) Column.col_00);*/
-						
-			col_numerofactura = new TreeViewColumn();
-			Gtk.CellRendererText cel_numerofactura = new CellRendererText();
-			col_numerofactura.Title = "N° Factura"; // titulo de la cabecera de la columna, si está visible
-			col_numerofactura.PackStart(cel_numerofactura, true);
-			col_numerofactura.AddAttribute(cel_numerofactura, "text", 1);
-			col_numerofactura.SortColumnId = (int) col_productos_recibidos.col_numerofactura;
-			cel_numerofactura.Edited += NumberCellEdited;
-			cel_numerofactura.Editable = true;
-										
-			col_cant_ordencompra = new TreeViewColumn();
-			cellrt2 = new CellRendererText();
-			col_cant_ordencompra.Title = "Cant. O.C.";
-			col_cant_ordencompra.PackStart(cellrt2, true);
-			col_cant_ordencompra.AddAttribute (cellrt2, "text", 2);
-			col_cant_ordencompra.SortColumnId = (int) col_productos_recibidos.col_cant_ordencompra;
-			
-			col_cant_recibida = new TreeViewColumn();
-			CellRendererText cel_cant_recibida = new CellRendererText();
-			col_cant_recibida.Title = "Cant.Recibida";
-			col_cant_recibida.PackStart(cel_cant_recibida, true);
-			col_cant_recibida.AddAttribute(cel_cant_recibida, "text", 3);
-			col_cant_recibida.SortColumnId = (int) col_productos_recibidos.col_cant_recibida;
-			cel_cant_recibida.Edited += NumberCellEdited_Recibida;
-			cel_cant_recibida.Editable = true;
-			
-			col_precioprod = new TreeViewColumn();
-			cellrt0 = new CellRendererText();
-			col_precioprod.Title = "Precio Producto";
-			col_precioprod.PackStart(cellrt2, true);
-			col_precioprod.AddAttribute (cellrt2, "text", 4);
-			cellrt0.Edited += NumberCellEdited;
-			cellrt0.Editable = true;
-			col_precioprod.SortColumnId = (int) col_productos_recibidos.col_precioprod;
-			
-			col_idproducto_provee = new TreeViewColumn();
+			col_00.SortColumnId = (int) col_productos_recibidos.col_00;			
+									
+			col_01 = new TreeViewColumn();
 			cellrt1 = new CellRendererText();
-			col_idproducto_provee.Title = "Pre.Unitario";
-			col_idproducto_provee.PackStart(cellrt0, true);
-			col_idproducto_provee.AddAttribute (cellrt0, "text", 5);
-			col_idproducto_provee.SortColumnId = (int) col_productos_recibidos.col_idproducto_provee;
-			
-			col_idproducto = new TreeViewColumn();
+			col_01.Title = "N° Factura";
+			col_01.PackStart(cellrt1, true);
+			col_01.AddAttribute(cellrt1, "text", 1);
+			col_01.SortColumnId = (int) col_productos_recibidos.col_01;
+			cellrt1.Edited += NumberCellEdited;
+			cellrt1.Editable = true;
+										
+			col_02 = new TreeViewColumn();
 			cellrt2 = new CellRendererText();
-			col_idproducto.Title = "Precio Osiris";
-			col_idproducto.PackStart(cellrt2, true);
-			col_idproducto.AddAttribute (cellrt2, "text", 6);
-			col_idproducto.SortColumnId = (int) col_productos_recibidos.col_idproducto;
+			col_02.Title = "Cant. O.C.";
+			col_02.PackStart(cellrt2, true);
+			col_02.AddAttribute (cellrt2, "text", 2);
+			col_02.SortColumnId = (int) col_productos_recibidos.col_02;
 			
-			col_desc_producto = new TreeViewColumn();
+			col_03 = new TreeViewColumn();
 			cellrt3 = new CellRendererText();
-			col_desc_producto.Title = "Descripcion de Producto";
-			col_desc_producto.PackStart(cellrt3, true);
-			col_desc_producto.AddAttribute (cellrt3, "text", 7);
-			col_desc_producto.SortColumnId = (int) col_productos_recibidos.col_desc_producto;
-			col_desc_producto.Resizable = true;
+			col_03.Title = "Cant.Recibida";
+			col_03.PackStart(cellrt3, true);
+			col_03.AddAttribute(cellrt3, "text", 3);
+			col_03.SortColumnId = (int) col_productos_recibidos.col_03;
+			cellrt3.Edited += NumberCellEdited_Recibida;
+			cellrt3.Editable = true;
 			
-			col_empaqueproducto = new TreeViewColumn();
+			col_04 = new TreeViewColumn();
 			cellrt4 = new CellRendererText();
-			col_empaqueproducto.Title = "id Producto";
-			col_empaqueproducto.PackStart(cellrt4, true);
-			col_empaqueproducto.AddAttribute (cellrt4, "text", 8);
-			col_empaqueproducto.SortColumnId = (int) col_productos_recibidos.col_empaqueproducto;
+			col_04.Title = "Pack/Embalaje";
+			col_04.PackStart(cellrt4, true);
+			col_04.AddAttribute (cellrt4, "text", 4);
+			cellrt4.Edited += NumberCellEdited;
+			cellrt4.Editable = true;
+			col_04.SortColumnId = (int) col_productos_recibidos.col_04;
 			
-			col_loteproducto = new TreeViewColumn();
+			col_05 = new TreeViewColumn();
 			cellrt5 = new CellRendererText();
-			col_loteproducto.Title = "Desc. Prod. Proveedor";
-			col_loteproducto.PackStart(cellrt5, true);
-			col_loteproducto.AddAttribute (cellrt5, "text", 9);
-			col_loteproducto.SortColumnId = (int) col_productos_recibidos.col_loteproducto;
+			col_05.Title = "Precio";
+			col_05.PackStart(cellrt5, true);
+			col_05.AddAttribute (cellrt5, "text", 5);
+			col_05.SortColumnId = (int) col_productos_recibidos.col_05;
 			cellrt5.Editable = true;
 			
-			col_caducidadproducto = new TreeViewColumn();
+			col_06 = new TreeViewColumn();
 			cellrt6 = new CellRendererText();
-			col_caducidadproducto.Title = "id Prod.Prove.";
-			col_caducidadproducto.PackStart(cellrt6, true);
-			col_caducidadproducto.AddAttribute (cellrt6, "text", 10);
-			col_caducidadproducto.SortColumnId = (int) col_productos_recibidos.col_caducidadproducto;
+			col_06.Title = "Pre.Unitario";
+			col_06.PackStart(cellrt6, true);
+			col_06.AddAttribute (cellrt6, "text", 6);
+			col_06.SortColumnId = (int) col_productos_recibidos.col_06;
 			cellrt6.Editable = true;
 			
-			col_desprodprove = new TreeViewColumn();
+			col_07 = new TreeViewColumn();
 			cellrt7 = new CellRendererText();
-			col_desprodprove.Title = "Lote";
-			col_desprodprove.PackStart(cellrt7, true);
-			col_desprodprove.AddAttribute (cellrt7, "text", 11);
-			col_desprodprove.SortColumnId = (int) col_productos_recibidos.col_desprodprove;
-			cellrt7.Editable = true;
+			col_07.Title = "Precio Osiris";
+			col_07.PackStart(cellrt7, true);
+			col_07.AddAttribute (cellrt7, "text", 7);
+			col_07.SortColumnId = (int) col_productos_recibidos.col_07;
 			
-			col_desprodprove = new TreeViewColumn();
-			cellrt7 = new CellRendererText();
-			col_desprodprove.Title = "Lote";
-			col_desprodprove.PackStart(cellrt7, true);
-			col_desprodprove.AddAttribute (cellrt7, "text", 11);
-			col_desprodprove.SortColumnId = (int) col_productos_recibidos.col_desprodprove;
-			cellrt7.Editable = true;
+			col_08 = new TreeViewColumn();
+			cellrt8 = new CellRendererText();
+			col_08.Title = "Descripcion de Producto";
+			col_08.PackStart(cellrt8, true);
+			col_08.AddAttribute (cellrt8, "text", 8);
+			col_08.SortColumnId = (int) col_productos_recibidos.col_08;
+			col_08.Resizable = true;
 			
-			lista_productos_a_recibir.AppendColumn(col_recibido);				// 0
-			lista_productos_a_recibir.AppendColumn(col_numerofactura);			// 1
-			lista_productos_a_recibir.AppendColumn(col_cant_ordencompra);		// 2
-			lista_productos_a_recibir.AppendColumn(col_cant_recibida);			// 3
-			lista_productos_a_recibir.AppendColumn(col_precioprod);				// 4
-			lista_productos_a_recibir.AppendColumn(col_idproducto_provee);		// 5
-			lista_productos_a_recibir.AppendColumn(col_idproducto);				// 6
-			lista_productos_a_recibir.AppendColumn(col_desc_producto);			// 7
-			lista_productos_a_recibir.AppendColumn(col_empaqueproducto);		// 8
-			lista_productos_a_recibir.AppendColumn(col_loteproducto);			// 9
-			lista_productos_a_recibir.AppendColumn(col_caducidadproducto);		// 10
-			lista_productos_a_recibir.AppendColumn(col_desprodprove);			// 11
+			col_09 = new TreeViewColumn();
+			cellrt9 = new CellRendererText();
+			col_09.Title = "id Producto";
+			col_09.PackStart(cellrt9, true);
+			col_09.AddAttribute (cellrt9, "text", 9);
+			col_09.SortColumnId = (int) col_productos_recibidos.col_09;
+			
+			col_10 = new TreeViewColumn();
+			cellrt10 = new CellRendererText();
+			col_10.Title = "Desc. Prod. Proveedor";
+			col_10.PackStart(cellrt10, true);
+			col_10.AddAttribute (cellrt10, "text", 10);
+			col_10.SortColumnId = (int) col_productos_recibidos.col_10;
+			cellrt10.Editable = true;
+			
+			col_11 = new TreeViewColumn();
+			cellrt11 = new CellRendererText();
+			col_11.Title = "id Prod.Prove.";
+			col_11.PackStart(cellrt11, true);
+			col_11.AddAttribute (cellrt11, "text", 11);
+			col_11.SortColumnId = (int) col_productos_recibidos.col_11;
+			cellrt11.Editable = true;
+			
+			col_12 = new TreeViewColumn();
+			cellrt12 = new CellRendererText();
+			col_12.Title = "Lote";
+			col_12.PackStart(cellrt12, true);
+			col_12.AddAttribute (cellrt12, "text", 12);
+			col_12.SortColumnId = (int) col_productos_recibidos.col_12;
+			cellrt12.Editable = true;
+			
+			col_13 = new TreeViewColumn();
+			cellrt13 = new CellRendererText();
+			col_13.Title = "Caducidad";
+			col_13.PackStart(cellrt13, true);
+			col_13.AddAttribute (cellrt13, "text", 13);
+			col_13.SortColumnId = (int) col_productos_recibidos.col_13;
+			cellrt13.Editable = true;
+			
+			col_14 = new TreeViewColumn();
+			cellrt14 = new Gtk.CellRendererCombo();
+			col_14.Title = "Presentacion";
+			col_14.PackStart(cellrt14, false);
+			col_14.SetAttributes(cellrt14,"markup",14);
+			//col_14.AddAttribute (cellrt14, "markup", 14);
+			//col_14.SortColumnId = (int) col_productos_recibidos.col_14;
+			cellrt14.Mode = CellRendererMode.Editable;
+			cellrt14.Model = cell_combox_store;
+			cellrt14.EditingStarted += OnEditingStarted;
+			cellrt14.Edited += onEdited;
+			cellrt14.Editable = true;
+			
+			//column = new TreeViewColumn ();
+			//CellRendererCombo cellRendererCombo = new CellRendererCombo ();
+			//cellRendererCombo.Ypad = 1;
+			//cellRendererCombo.Mode = CellRendererMode.Editable;
+			//cellRendererCombo.TextColumn = 1;
+			//cellRendererCombo.Model = comboBoxStore;
+			//cellRendererCombo.HasEntry = false;
+			//cellRendererCombo.Editable = true;
+			//column.PackStart (cellRendererCombo, false);
+			//column.SetAttributes (cellRendererCombo, "markup", valueDisplayTextColumn, "visible", comboVisibleColumn);
+			
+			
+			
+			lista_productos_a_recibir.AppendColumn(col_00);
+			lista_productos_a_recibir.AppendColumn(col_01);
+			lista_productos_a_recibir.AppendColumn(col_02);
+			lista_productos_a_recibir.AppendColumn(col_03);
+			lista_productos_a_recibir.AppendColumn(col_04);
+			lista_productos_a_recibir.AppendColumn(col_05);
+			lista_productos_a_recibir.AppendColumn(col_06);
+			lista_productos_a_recibir.AppendColumn(col_07);
+			lista_productos_a_recibir.AppendColumn(col_08);
+			lista_productos_a_recibir.AppendColumn(col_09);
+			lista_productos_a_recibir.AppendColumn(col_10);
+			lista_productos_a_recibir.AppendColumn(col_11);
+			lista_productos_a_recibir.AppendColumn(col_12);
+			lista_productos_a_recibir.AppendColumn(col_13);
+			lista_productos_a_recibir.AppendColumn(col_14);
 		}
 		
-		enum col_productos_recibidos{
-			col_recibido,
-			col_numerofactura,
-			col_cant_ordencompra,
-			col_cant_recibida,
-			col_precioprod,
-			col_idproducto_provee,
-			col_idproducto,
-			col_desc_producto,
-			col_empaqueproducto,
-			col_loteproducto,
-			col_caducidadproducto,
-			col_desprodprove
+		enum col_productos_recibidos
+		{
+			col_00,
+			col_01,
+			col_02,
+			col_03,
+			col_04,
+			col_05,
+			col_06,
+			col_07,
+			col_08,
+			col_09,
+			col_10,
+			col_11,
+			col_12,
+			col_13
+		}
+		
+		void OnEditingStarted( object o, EditingStartedArgs args )
+		{
+			//cell_combox_store.AppendValues("uno");
+			//cell_combox_store.AppendValues("dos");
+		}
+		
+		void onEdited (object o, EditedArgs args)
+		{
+			Console.WriteLine("entre");
+			Console.WriteLine(o.ToString());
+			TreeIter iter;
+			//if (cell_combox_store.GetIterFirst(out iter)){
+			
+			//}
+			
+			if (cell_combox_store.GetIterFromString (out iter, args.Path)) {
+				 cell_combox_store.SetValue (iter, 14, args.NewText);
+			}
 		}
 		
 		// Cuando seleccion campos para la autorizacion de compras  
@@ -485,8 +554,8 @@ namespace osiris
 				//cellRenderer_treeview.Data.
 			}
 			Gtk.TreeIter iter;
-			treeViewEngineListaProdRequi.GetIter (out iter, new Gtk.TreePath (args.Path));
-			treeViewEngineListaProdRequi.SetValue(iter,(int) col_productos_recibidos.col_numerofactura,args.NewText);			
+			//treeViewEngineListaProdRequi.GetIter (out iter, new Gtk.TreePath (args.Path));
+			//treeViewEngineListaProdRequi.SetValue(iter,(int) col_productos_recibidos.col_numerofactura,args.NewText);			
 		}
 		
 		void NumberCellEdited_Recibida (object o, EditedArgs args)
@@ -517,9 +586,9 @@ namespace osiris
 				var_paso += 1;
 			}
 			if (esnumerico == true){
-				treeViewEngineListaProdRequi.SetValue(iter,(int) col_productos_recibidos.col_cant_recibida,args.NewText);
-				bool old = (bool) lista_productos_a_recibir.Model.GetValue (iter,0);
-				lista_productos_a_recibir.Model.SetValue(iter,0,!old);
+				//treeViewEngineListaProdRequi.SetValue(iter,(int) col_productos_recibidos.col_cant_recibida,args.NewText);
+				//bool old = (bool) lista_productos_a_recibir.Model.GetValue (iter,0);
+				//lista_productos_a_recibir.Model.SetValue(iter,0,!old);
 			}
  		}
 		
@@ -903,8 +972,11 @@ namespace osiris
 				                                           (string) model.GetValue(iterSelected, 1),
 															entry_embalaje_pack.Text.Trim(),
 															entry_lote.Text.Trim(),
-															entry_caducidad.Text.Trim()
-				                                           );
+															entry_caducidad.Text.Trim(),
+				                                           "",
+					"",
+					"",
+					"Prueba");
 				
 				//cierra la ventana despues que almaceno la informacion en variables
 				Widget win = (Widget) sender;
@@ -937,7 +1009,7 @@ namespace osiris
 		{
 			if (args.Event.Key == Gdk.Key.Return || args.Event.Key == Gdk.Key.KP_Enter){
 				args.RetVal = true;		
-				//llenando_lista_de_proveedores();
+				llena_la_lista_de_productos();
 			}
 		}
 		

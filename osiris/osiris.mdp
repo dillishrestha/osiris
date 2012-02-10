@@ -167,15 +167,15 @@
     <ProjectReference type="Gac" localcopy="True" refto="System.Xml, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
     <ProjectReference specificVersion="False" type="Assembly" localcopy="True" refto="../dll/AODL.dll" />
     <ProjectReference specificVersion="False" type="Assembly" localcopy="True" refto="../dll/ICSharpCode.SharpZipLib.dll" />
-    <ProjectReference specificVersion="False" type="Assembly" localcopy="True" refto="../dll/SX.dll" />
     <ProjectReference specificVersion="False" type="Assembly" localcopy="True" refto="../../../../../usr/lib/mono/gac/glade-sharp/2.12.0.0__35e10195dab3c99f/glade-sharp.dll" />
-    <ProjectReference specificVersion="False" type="Assembly" localcopy="True" refto="../../../../../usr/lib/mono/gac/atk-sharp/2.12.0.0__35e10195dab3c99f/atk-sharp.dll" />
+    <ProjectReference specificVersion="False" type="Gac" localcopy="False" refto="Mono.Cairo, Version=2.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756" />
+    <ProjectReference type="Gac" localcopy="True" refto="Mono.Posix, Version=2.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756" />
+    <ProjectReference specificVersion="False" type="Assembly" localcopy="True" refto="../../../../../usr/lib/mono/gac/nunit.framework/2.4.8.0__96d09a1eb7f44a77/nunit.framework.dll" />
     <ProjectReference specificVersion="False" type="Assembly" localcopy="True" refto="../../../../../usr/lib/mono/gac/gdk-sharp/2.12.0.0__35e10195dab3c99f/gdk-sharp.dll" />
     <ProjectReference specificVersion="False" type="Assembly" localcopy="True" refto="../../../../../usr/lib/mono/gac/glib-sharp/2.12.0.0__35e10195dab3c99f/glib-sharp.dll" />
     <ProjectReference specificVersion="False" type="Assembly" localcopy="True" refto="../../../../../usr/lib/mono/gac/gtk-sharp/2.12.0.0__35e10195dab3c99f/gtk-sharp.dll" />
     <ProjectReference specificVersion="False" type="Assembly" localcopy="True" refto="../../../../../usr/lib/mono/gac/pango-sharp/2.12.0.0__35e10195dab3c99f/pango-sharp.dll" />
-    <ProjectReference specificVersion="False" type="Assembly" localcopy="True" refto="../../../../../usr/lib/mono/gac/nunit.framework/2.4.8.0__96d09a1eb7f44a77/nunit.framework.dll" />
-    <ProjectReference specificVersion="False" type="Gac" localcopy="False" refto="Mono.Cairo, Version=2.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756" />
+    <ProjectReference specificVersion="False" type="Assembly" localcopy="True" refto="../bin/Debug/SX.dll" />
   </References>
   <DeploymentInformation strategy="File" />
 </Project>

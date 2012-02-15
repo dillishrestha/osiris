@@ -51,12 +51,12 @@ namespace osiris
 		// Declarando ventana para ver productos enviados a los sub-almacenes
 		[Widget] Gtk.Window mov_productos = null;
 		[Widget] Gtk.Entry entry_descrip_producto = null;
-	    [Widget] Gtk.Entry entry_dia1 = null;                     
-	    [Widget] Gtk.Entry entry_mes1 = null;
-	    [Widget] Gtk.Entry entry_ano1 = null;
-	    [Widget] Gtk.Entry entry_dia2 = null;
-	    [Widget] Gtk.Entry entry_mes2 = null;
-	    [Widget] Gtk.Entry entry_ano2 = null;
+		[Widget] Gtk.Entry entry_dia1 = null;                     
+		[Widget] Gtk.Entry entry_mes1 = null;
+		[Widget] Gtk.Entry entry_ano1 = null;
+		[Widget] Gtk.Entry entry_dia2 = null;
+		[Widget] Gtk.Entry entry_mes2 = null;
+		[Widget] Gtk.Entry entry_ano2 = null;
 		[Widget] Gtk.CheckButton checkbutton_todos_productos = null;
 		[Widget] Gtk.CheckButton checkbutton_todos_departamentos = null;
 		[Widget] Gtk.ComboBox combobox_departamentos = null;
@@ -74,16 +74,16 @@ namespace osiris
 		string connectionString;						
 		string nombrebd;
 		string LoginEmpleado;
-    	string NomEmpleado;
-    	string AppEmpleado;
-    	string ApmEmpleado;
+		string NomEmpleado;
+		string AppEmpleado;
+		string ApmEmpleado;
 		string tipo_reporte;
 		
 		string[] args_args = {""};
 		int[] args_id_array = {0,1,2,3,4,5,6,7,8};		
 			    	
-    	string query_departamento = "AND osiris_his_tipo_admisiones.descripcion_admisiones = '0' ";
-    	int id_tipo_admisiones = 0; 
+		string query_departamento = "AND osiris_his_tipo_admisiones.descripcion_admisiones = '0' ";
+		int id_tipo_admisiones = 0; 
 		string query1 = "" ;
 		string titulopagina= "MOVIMIENTOS DE PRODUCOS";
 		
@@ -101,16 +101,16 @@ namespace osiris
 		public movimientos_productos (string LoginEmp_,string NomEmpleado_,string AppEmpleado_,string ApmEmpleado_,string nombrebd_,string tipo_reporte_,string query_sql_)
 		{
 			LoginEmpleado = LoginEmp_;
-    		NomEmpleado = NomEmpleado_;
-    		AppEmpleado = AppEmpleado_;
-    		ApmEmpleado = ApmEmpleado_;
+			NomEmpleado = NomEmpleado_;
+			AppEmpleado = AppEmpleado_;
+			ApmEmpleado = ApmEmpleado_;
 			tipo_reporte = tipo_reporte_;
-    		connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
-			nombrebd = conexion_a_DB._nombrebd;	
+			connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
+			nombrebd = conexion_a_DB._nombrebd;
     		
 			Glade.XML gxml = new Glade.XML (null, "costos.glade", "mov_productos", null);
 			gxml.Autoconnect (this);
-	        // Muestra ventana de Glade:
+			// Muestra ventana de Glade:
 			mov_productos.Show();
 			mov_productos.Title = "Movimientos de Productos";
 			entry_dia1.Text = DateTime.Now.ToString("dd");
@@ -124,25 +124,37 @@ namespace osiris
 			entry1.Hide();
 			label137.Hide();
 			entry2.Hide();
-			crea_treeview_selec();
-			
 			if(tipo_reporte_ == "envios_subalamcenes"){
+				crea_treeview_selec("");
 				mov_productos.Title = "Movimientos de Productos Enviados a los Sub-Almacenes";
 				crea_treeview_envios();
 				llenado_combobox(1,"",combobox_departamentos,"sql","SELECT * FROM osiris_almacenes WHERE activo = 'true' ORDER BY descripcion_almacen;","descripcion_almacen","id_almacen",args_args,args_id_array);
+				button_consultar_costos.Clicked += new EventHandler(on_button_consultar_costos_clicked);
 			}
 			if(tipo_reporte == "cargos_pacientes"){
+				crea_treeview_selec("");
 				mov_productos.Title = "Cargos de Productos a Pacientes (Sub-Almacenes)";
 				crea_treeview_cargos_pacientes();
 				llenado_combobox(1,"",combobox_departamentos,"sql","SELECT * FROM osiris_his_tipo_admisiones "+
 		               						"WHERE cuenta_mayor = 4000 "+
 		               						"ORDER BY descripcion_admisiones;","descripcion_admisiones","id_tipo_admisiones",args_args,args_id_array);
 				button_imprimir_movimiento.Clicked += new EventHandler(on_button_imprimir_movimiento_clicked);
+				button_consultar_costos.Clicked += new EventHandler(on_button_consultar_costos_clicked);
 			}
 			if(tipo_reporte == "productos_requisados"){
+				crea_treeview_selec("");
 				mov_productos.Title = "Mov. Prod. Requisados de Almacen a Compras";
 				llenado_combobox(1,"",combobox_departamentos,"sql","SELECT * FROM osiris_his_tipo_admisiones "+
-		               						         						"ORDER BY descripcion_admisiones;","descripcion_admisiones","id_tipo_admisiones",args_args,args_id_array);
+						         						"ORDER BY descripcion_admisiones;","descripcion_admisiones","id_tipo_admisiones",args_args,args_id_array);
+			}
+			if(tipo_reporte == "cargos_x_fecha"){
+				crea_treeview_selec("movimiento_totales_x_fecha");
+				mov_productos.Title = "Mov.Tot. Prod. Cargados por Fechas";
+				entry_descrip_producto.IsEditable = false;
+				button_busca_producto.Sensitive = false;
+				llenado_combobox(1,"",combobox_departamentos,"sql","SELECT * FROM osiris_his_tipo_admisiones "+
+		               						"WHERE cuenta_mayor = 4000 "+
+		               						"ORDER BY descripcion_admisiones;","descripcion_admisiones","id_tipo_admisiones",args_args,args_id_array);
 			}
 			//  Sale de la ventana:
 			button_salir.Clicked += new EventHandler(on_cierraventanas_clicked);
@@ -150,21 +162,21 @@ namespace osiris
 			checkbutton_todos_departamentos.Clicked += new EventHandler(on_checkbutton_todos_departamentos_clicked);
 			checkbutton_todos_productos.Clicked += new EventHandler(on_checkbutton_todos_productos_clicked);
 			button_quitar_producto.Clicked += new EventHandler(on_button_quitar_producto_clicked);
-			button_consultar_costos.Clicked += new EventHandler(on_button_consultar_costos_clicked);
+			//button_consultar_costos.Clicked += new EventHandler(on_button_consultar_costos_clicked);
 			entry_dia1.KeyPressEvent += onKeyPressEventactual;
-	        entry_mes1.KeyPressEvent += onKeyPressEventactual;
-	        entry_ano1.KeyPressEvent += onKeyPressEventactual;
-	        entry_dia2.KeyPressEvent += onKeyPressEventactual;
-	        entry_mes2.KeyPressEvent += onKeyPressEventactual;
-	        entry_ano2.KeyPressEvent += onKeyPressEventactual;
+			entry_mes1.KeyPressEvent += onKeyPressEventactual;
+			entry_ano1.KeyPressEvent += onKeyPressEventactual;
+			entry_dia2.KeyPressEvent += onKeyPressEventactual;
+			entry_mes2.KeyPressEvent += onKeyPressEventactual;
+			entry_ano2.KeyPressEvent += onKeyPressEventactual;
 		}
 		
 		void on_checkbutton_todos_departamentos_clicked (object sender, EventArgs args)
 		{   
 			if (checkbutton_todos_departamentos.Active == true){
 				combobox_departamentos.Sensitive = false;
-		    	query_departamento = "  "; //
-		    }else{
+				query_departamento = "  "; //
+		    	}else{
 				combobox_departamentos.Sensitive = true;
 				if(tipo_reporte == "envios_subalamcenes"){
 					query_departamento = "AND osiris_his_solicitudes_deta.id_almacen = '"+id_tipo_admisiones.ToString()+"' ";
@@ -210,14 +222,14 @@ namespace osiris
 			if(sql_or_array == "sql"){			
 				NpgsqlConnection conexion; 
 				conexion = new NpgsqlConnection (connectionString+nombrebd);
-	            // Verifica que la base de datos este conectada
+				// Verifica que la base de datos este conectada
 				try{
 					conexion.Open ();
 					NpgsqlCommand comando; 
 					comando = conexion.CreateCommand ();
-	               	comando.CommandText = query_SQL;					
+					comando.CommandText = query_SQL;					
 					NpgsqlDataReader lector = comando.ExecuteReader ();
-	               	while (lector.Read()){
+					while (lector.Read()){
 						store.AppendValues ((string) lector[ name_field_desc ], (int) lector[ name_field_id]);
 					}
 				}catch (NpgsqlException ex){
@@ -244,11 +256,11 @@ namespace osiris
 				case "combobox_departamentos":
 					id_tipo_admisiones = (int) combobox_departamentos.Model.GetValue(iter,1);
 					if(tipo_reporte == "envios_subalamcenes"){
-			    		query_departamento = " AND osiris_his_solicitudes_deta.id_almacen = '"+Convert.ToString((int) combobox_departamentos.Model.GetValue(iter,1)).ToString()+"' ";		    			    	
+						query_departamento = " AND osiris_his_solicitudes_deta.id_almacen = '"+Convert.ToString((int) combobox_departamentos.Model.GetValue(iter,1)).ToString()+"' ";		    			    	
 					}
 					if(tipo_reporte == "cargos_pacientes"){
 						query_departamento = " AND osiris_erp_cobros_deta.id_tipo_admisiones = '"+Convert.ToString((int) combobox_departamentos.Model.GetValue(iter,1)).ToString()+"' ";		    			    	
-		    		}
+					}
 					if(tipo_reporte == "productos_requisados"){
 						query_departamento = "";
 					}
@@ -283,7 +295,6 @@ namespace osiris
 		{
 		   	TreeIter iter;
 			TreeModel model;
-
 			if (lista_producto_seleccionados.Selection.GetSelected (out model, out iter)) {
 				treeViewEngineSelec.Remove (ref iter);
 					
@@ -296,26 +307,84 @@ namespace osiris
 		}
 		
 		/////LISTA_PRODUCTO_SELECCIONADOS/////
-		void crea_treeview_selec()
+		void crea_treeview_selec(string nombre_reporte)
 		{
-			treeViewEngineSelec = new TreeStore(typeof(string), 
-												typeof(string));												
-			lista_producto_seleccionados.Model = treeViewEngineSelec;			
-			lista_producto_seleccionados.RulesHint = true;			
-			TreeViewColumn col_codigo_prod = new TreeViewColumn();
-			CellRendererText cellr0 = new CellRendererText();
-			col_codigo_prod.Title = "Codigo Prod."; // titulo de la cabecera de la columna, si está visible
-			col_codigo_prod.PackStart(cellr0, true);
-			col_codigo_prod.AddAttribute (cellr0, "text", 0);
-
-			TreeViewColumn col_descripcion = new TreeViewColumn();
-			CellRendererText cellr1 = new CellRendererText();
-			col_descripcion.Title = "Descripcion de Producto"; // titulo de la cabecera de la columna, si está visible
-			col_descripcion.PackStart(cellr1, true);
-			col_descripcion.AddAttribute (cellr1, "text", 1);
-			
-			lista_producto_seleccionados.AppendColumn(col_codigo_prod);
-			lista_producto_seleccionados.AppendColumn(col_descripcion);
+			if(nombre_reporte == ""){
+				treeViewEngineSelec = new TreeStore(typeof(string), 
+								typeof(string));												
+				lista_producto_seleccionados.Model = treeViewEngineSelec;			
+				lista_producto_seleccionados.RulesHint = true;
+				
+				TreeViewColumn col_00 = new TreeViewColumn();
+				CellRendererText cellr0 = new CellRendererText();
+				col_00.Title = "Codigo Prod."; // titulo de la cabecera de la columna, si está visible
+				col_00.PackStart(cellr0, true);
+				col_00.AddAttribute (cellr0, "text", 0);
+	
+				TreeViewColumn col_01 = new TreeViewColumn();
+				CellRendererText cellr1 = new CellRendererText();
+				col_01.Title = "Descripcion de Producto"; // titulo de la cabecera de la columna, si está visible
+				col_01.PackStart(cellr1, true);
+				col_01.AddAttribute (cellr1, "text", 1);
+				
+				lista_producto_seleccionados.AppendColumn(col_00);
+				lista_producto_seleccionados.AppendColumn(col_01);
+			}else{
+				treeViewEngineSelec = new TreeStore(typeof(string), 
+								typeof(string));												
+				lista_producto_seleccionados.Model = treeViewEngineSelec;			
+				lista_producto_seleccionados.RulesHint = true;
+				
+				TreeViewColumn col_00 = new TreeViewColumn();
+				CellRendererText cellr0 = new CellRendererText();
+				col_00.Title = "Codigo Prod.";
+				col_00.PackStart(cellr0, true);
+				col_00.AddAttribute (cellr0, "text", 0);
+	
+				TreeViewColumn col_01 = new TreeViewColumn();
+				CellRendererText cellr1 = new CellRendererText();
+				col_01.Title = "Descripcion de Producto";
+				col_01.PackStart(cellr1, true);
+				col_01.AddAttribute (cellr1, "text", 1);
+				
+				TreeViewColumn col_02 = new TreeViewColumn();
+				CellRendererText cellr2 = new CellRendererText();
+				col_02.Title = "Cargados";
+				col_02.PackStart(cellr2, true);
+				col_02.AddAttribute (cellr2, "text", 2);
+				
+				TreeViewColumn col_03 = new TreeViewColumn();
+				CellRendererText cellr3 = new CellRendererText();
+				col_03.Title = "Precio Prod.";
+				col_03.PackStart(cellr3, true);
+				col_03.AddAttribute (cellr3, "text", 3);
+				
+				TreeViewColumn col_04 = new TreeViewColumn();
+				CellRendererText cellr4 = new CellRendererText();
+				col_04.Title = "Pack";
+				col_04.PackStart(cellr4, true);
+				col_04.AddAttribute (cellr4, "text", 4);
+				
+				TreeViewColumn col_05 = new TreeViewColumn();
+				CellRendererText cellr5 = new CellRendererText();
+				col_05.Title = "Costo Unit.";
+				col_05.PackStart(cellr5, true);
+				col_05.AddAttribute (cellr5, "text", 5);
+				
+				TreeViewColumn col_06 = new TreeViewColumn();
+				CellRendererText cellr6 = new CellRendererText();
+				col_06.Title = "$ Consumo";
+				col_06.PackStart(cellr6, true);
+				col_06.AddAttribute (cellr6, "text", 6);
+				
+				lista_producto_seleccionados.AppendColumn(col_00);
+				lista_producto_seleccionados.AppendColumn(col_01);
+				lista_producto_seleccionados.AppendColumn(col_02);
+				lista_producto_seleccionados.AppendColumn(col_03);
+				lista_producto_seleccionados.AppendColumn(col_04);
+				lista_producto_seleccionados.AppendColumn(col_05);
+				lista_producto_seleccionados.AppendColumn(col_06);
+			}
 		}
 		
 		enum Column
@@ -326,11 +395,15 @@ namespace osiris
 		
 		void on_button_consultar_costos_clicked (object sender, EventArgs args)         
 		{
+			llenando_productos();			
+		}
+		
+		void llenando_productos()
+		{
 			string query_fechas = "";
 			string productos_seleccionado = "";
 			string var_paso = "";
-			string campo_filtrado = "";
-			
+			string campo_filtrado = "";			
 			if(tipo_reporte == "envios_subalamcenes"){
 			    query_fechas = "AND to_char(osiris_his_solicitudes_deta.fechahora_solicitud,'yyyy-MM-dd') >= '"+entry_ano1.Text.Trim()+"-"+entry_mes1.Text+"-"+entry_dia1.Text+"' "+
 									            "AND to_char(osiris_his_solicitudes_deta.fechahora_solicitud,'yyyy-MM-dd') <= '"+entry_ano2.Text.Trim()+"-"+entry_mes2.Text+"-"+entry_dia2.Text+"' ";
@@ -339,11 +412,11 @@ namespace osiris
 			if(tipo_reporte == "cargos_pacientes"){
 				query_fechas = "AND to_char(osiris_erp_cobros_deta.fechahora_creacion,'yyyy-MM-dd') >= '"+entry_ano1.Text.Trim()+"-"+entry_mes1.Text+"-"+entry_dia1.Text+"' "+
 									            "AND to_char(osiris_erp_cobros_deta.fechahora_creacion,'yyyy-MM-dd') <= '"+entry_ano2.Text.Trim()+"-"+entry_mes2.Text+"-"+entry_dia2.Text+"' ";
-		    	campo_filtrado = "AND osiris_erp_cobros_deta.id_producto IN('";
+				campo_filtrado = "AND osiris_erp_cobros_deta.id_producto IN('";
 			}
 			if(tipo_reporte == "productos_requisados"){
 				query_fechas = " ";
-		    	campo_filtrado = " ";
+				campo_filtrado = " ";
 			}
 						
 			// Validadndo que tenga algun producto seleccionado en la lista
@@ -371,17 +444,32 @@ namespace osiris
 				if (id_tipo_admisiones != 0 || this.checkbutton_todos_departamentos.Active == true){
  					llena_treeview_aplicados(" ",query_fechas);
 				}else{
-						MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+					MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
 								MessageType.Error, 
 								ButtonsType.Close, "seleccione un departamento");
-						msgBoxError.Run ();				msgBoxError.Destroy();
+					msgBoxError.Run ();				msgBoxError.Destroy();
 				}
 			}
 		}
 		
 		void llena_treeview_aplicados(string productos_seleccionado_,string query_fechas_)
 		{	
+			/*
+			SELECT to_char(SUM(cantidad_aplicada),'999999999.99') AS cantidadaplicada,to_char(osiris_erp_cobros_deta.id_producto,'999999999999') AS idproducto,descripcion_producto 
+			FROM osiris_erp_cobros_deta,osiris_productos,osiris_his_paciente,osiris_his_tipo_admisiones,osiris_erp_cobros_enca,osiris_empresas WHERE osiris_erp_cobros_deta.id_producto = osiris_productos.id_producto 
+			AND osiris_erp_cobros_deta.pid_paciente = osiris_his_paciente.pid_paciente AND osiris_erp_cobros_deta.id_tipo_admisiones = osiris_his_tipo_admisiones.id_tipo_admisiones 
+			AND osiris_erp_cobros_deta.folio_de_servicio = osiris_erp_cobros_enca.folio_de_servicio 
+			AND osiris_erp_cobros_enca.id_empresa = osiris_empresas.id_empresa 
+			AND osiris_erp_cobros_deta.cantidad_aplicada > '0' 
+			AND osiris_erp_cobros_deta.eliminado = false 
+			AND osiris_erp_cobros_deta.id_producto IN('52502300009','52502300008') 
+			AND to_char(osiris_erp_cobros_deta.fechahora_creacion,'yyyy-MM-dd') >= '2012-02-01' 
+			AND to_char(osiris_erp_cobros_deta.fechahora_creacion,'yyyy-MM-dd') <= '2012-02-13' 
+			GROUP BY osiris_erp_cobros_deta.id_producto,descripcion_producto;
+			*/
+			
 			string query_consulta = "";
+			float total_aplicado = 0;
 			if(tipo_reporte == "envios_subalamcenes"){
 				query_consulta =  "SELECT to_char(osiris_his_solicitudes_deta.id_producto,'999999999999') AS idproducto,descripcion_almacen," +
 		        		"descripcion_producto,folio_de_solicitud," +
@@ -411,8 +499,8 @@ namespace osiris
 						      "WHERE osiris_erp_cobros_deta.id_producto = osiris_productos.id_producto AND "+ 
 						      "osiris_erp_cobros_deta.pid_paciente = osiris_his_paciente.pid_paciente AND "+ 
 						      "osiris_erp_cobros_deta.id_tipo_admisiones = osiris_his_tipo_admisiones.id_tipo_admisiones AND "+
-							  "osiris_erp_cobros_deta.folio_de_servicio = osiris_erp_cobros_enca.folio_de_servicio AND "+
-							  "osiris_erp_cobros_enca.id_empresa = osiris_empresas.id_empresa AND "+
+							"osiris_erp_cobros_deta.folio_de_servicio = osiris_erp_cobros_enca.folio_de_servicio AND "+
+							"osiris_erp_cobros_enca.id_empresa = osiris_empresas.id_empresa AND "+
 						      "osiris_erp_cobros_deta.cantidad_aplicada > '0' AND "+
 						      "osiris_erp_cobros_deta.eliminado = false "+ 
 						      productos_seleccionado_+
@@ -427,7 +515,6 @@ namespace osiris
 			if(tipo_reporte == "productos_requisados"){
 				query_consulta = "";	
 			}
-			
 			NpgsqlConnection conexion;
 			conexion = new NpgsqlConnection (connectionString+nombrebd);
 		            
@@ -436,46 +523,43 @@ namespace osiris
 				conexion.Open ();
 				NpgsqlCommand comando; 
 				comando = conexion.CreateCommand ();
-		        query1 = query_consulta;
+				query1 = query_consulta;
 				comando.CommandText = query1;
 				Console.WriteLine(query1);
 				NpgsqlDataReader lector = comando.ExecuteReader ();
 				while (lector.Read()){					
 					if(tipo_reporte == "envios_subalamcenes"){
+						total_aplicado += float.Parse(((string) lector["cantidad_autorizada"]).Trim());
 						treeViewEngineResumen.AppendValues ((string) lector["descripcion_producto"],
-														(string) lector["idproducto"],
-														(string) lector["folio_de_solicitud"].ToString(),
-					                                    (string) lector["descripcion_almacen"].ToString(),
-					                                    (string) lector["cantidad_solicitada"].ToString(),
-					                                    (string) lector["fechahorasolic"].ToString(),
-					                                    (string) lector["cantidad_autorizada"].ToString(),
-					                                    (string) lector["fechahoraautoriz"].ToString(),
-					                                    (string) lector["foliodeatencion"].ToString(),
-					                                    (string) lector["nombre_completo"].ToString(),
-					                                    (string) lector["pidpaciente"].ToString());
+										(string) lector["idproducto"],
+										(string) lector["folio_de_solicitud"].ToString(),
+										(string) lector["descripcion_almacen"].ToString(),
+										(string) lector["cantidad_solicitada"].ToString(),
+										(string) lector["fechahorasolic"].ToString(),
+										(string) lector["cantidad_autorizada"].ToString(),
+										(string) lector["fechahoraautoriz"].ToString(),
+										(string) lector["foliodeatencion"].ToString(),
+										(string) lector["nombre_completo"].ToString(),
+										(string) lector["pidpaciente"].ToString());
 					}
 					if(tipo_reporte == "cargos_pacientes"){
-						float total_aplicado = 0;
-						while (lector.Read()){
-							treeViewEngineResumen.AppendValues ((string) lector["cantidadaplicada"],
-																(string) lector["idproducto"],
-																(string) lector["descripcion_producto"],
-																(string) lector["foliodeservicio"],
-																(string) lector["pidpaciente"],
-																(string) lector["nombre_paciente"],
-																(string) lector["idtipoadmisiones"],
-																(string) lector["descripcion_admisiones"],
-																(string) lector["fechahoracreacion"]);
-																
-						 	total_aplicado += float.Parse(((string) lector["cantidadaplicada"]).Trim());
-						}
-						entry_total_aplicado.Text = total_aplicado.ToString(); 
+						total_aplicado += float.Parse(((string) lector["cantidadaplicada"]).Trim());
+						treeViewEngineResumen.AppendValues ((string) lector["cantidadaplicada"],
+										(string) lector["idproducto"],
+										(string) lector["descripcion_producto"],
+										(string) lector["foliodeservicio"],
+										(string) lector["pidpaciente"],
+										(string) lector["nombre_paciente"],
+										(string) lector["idtipoadmisiones"],
+										(string) lector["descripcion_admisiones"],
+										(string) lector["fechahoracreacion"]);
+									
 					}					
 					if(tipo_reporte == "productos_requisados"){
 					
 					}
 				}
-				//this.entry_total_aplicado.Text = total_aplicado.ToString(); 
+				this.entry_total_aplicado.Text = total_aplicado.ToString(); 
 			}catch (NpgsqlException ex){
 	 			MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
 												MessageType.Error, 
@@ -488,29 +572,28 @@ namespace osiris
 		void crea_treeview_envios()
 		{
 			treeViewEngineResumen = new TreeStore(typeof(string), 
-												  typeof(string),
-												  typeof(string),
-												  typeof(string),
-												  typeof(string),
-												  typeof(string),
-												  typeof(string),
-												  typeof(string),
-												  typeof(string),
-			                                      typeof(string),
-			                                      typeof(string));
+								typeof(string),
+								typeof(string),
+								typeof(string),
+								typeof(string),
+								typeof(string),
+								typeof(string),
+								typeof(string),
+								typeof(string),
+								typeof(string),
+								typeof(string));
 												
-	        lista_resumen_productos.Model = treeViewEngineResumen;
-		
-		    lista_resumen_productos.RulesHint = true;
-		       
-            TreeViewColumn col_producto = new TreeViewColumn();
+			lista_resumen_productos.Model = treeViewEngineResumen;
+			lista_resumen_productos.RulesHint = true;
+			TreeViewColumn col_producto = new TreeViewColumn();
+			
 			CellRendererText cellr0 = new CellRendererText();
 			col_producto.Title = "Producto";
 			col_producto.PackStart(cellr0, true);
 			col_producto.AddAttribute (cellr0, "text", 0);
 			col_producto.SortColumnId = (int) Column_resumen.col_producto;
             
-            TreeViewColumn col_id_producto = new TreeViewColumn();
+			TreeViewColumn col_id_producto = new TreeViewColumn();
 			CellRendererText cellr1 = new CellRendererText();
 			col_id_producto.Title = "Codigo";
 			col_id_producto.PackStart(cellr1, true);
@@ -581,14 +664,14 @@ namespace osiris
 			col_nro_expediente.SortColumnId = (int) Column_resumen.col_nro_expediente;
 			
 			lista_resumen_productos.AppendColumn(col_producto);
-		    lista_resumen_productos.AppendColumn(col_id_producto);
-            lista_resumen_productos.AppendColumn(col_nrosolicitud);
-            lista_resumen_productos.AppendColumn(col_subalmacen);
-            lista_resumen_productos.AppendColumn(col_cantsolicitada);
-            lista_resumen_productos.AppendColumn(col_fechsolicitada);
-            lista_resumen_productos.AppendColumn(col_cantautorizada);       
-            lista_resumen_productos.AppendColumn(col_fechautorizada);
-            lista_resumen_productos.AppendColumn(col_nroatencion);
+			lista_resumen_productos.AppendColumn(col_id_producto);
+			lista_resumen_productos.AppendColumn(col_nrosolicitud);
+			lista_resumen_productos.AppendColumn(col_subalmacen);
+			lista_resumen_productos.AppendColumn(col_cantsolicitada);
+			lista_resumen_productos.AppendColumn(col_fechsolicitada);
+			lista_resumen_productos.AppendColumn(col_cantautorizada);       
+			lista_resumen_productos.AppendColumn(col_fechautorizada);
+			lista_resumen_productos.AppendColumn(col_nroatencion);
 			lista_resumen_productos.AppendColumn(col_nombre_paciente);
 			lista_resumen_productos.AppendColumn(col_nro_expediente);
 		}

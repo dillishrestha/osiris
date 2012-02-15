@@ -116,6 +116,7 @@ namespace osiris
 			
 			button_asignacion_habitacion.Clicked += new EventHandler(on_button_asignacion_habitacion_clicked);
 			button_salir.Clicked += new EventHandler(on_cierraventanas_clicked);
+			button_separa_folio.Sensitive = false;
 		}
 		
 		void on_button_reportes_de_ocupacion_clicked(object sender, EventArgs args)
@@ -245,10 +246,8 @@ namespace osiris
 									"WHERE folio_de_servicio = '"+entry_folio.Text.Trim()+"' ;";
 				NpgsqlDataReader lector = comando.ExecuteReader ();
 				
-				if(lector.Read() == true)
-				{
-					if(entry_motivo.Text.Trim() != "" || entry_folio.Text.Trim() != "" )
-					{
+				if(lector.Read() == true){
+					if(entry_motivo.Text.Trim() != "" || entry_folio.Text.Trim() != "" ){
 						MessageDialog msgBox = new MessageDialog (MyWin,DialogFlags.Modal,
 										MessageType.Question,ButtonsType.YesNo,"¿ El Nº de Atencion contiene productos cargados\n"+
 										" esta seguro que desea CANCELARLO?");

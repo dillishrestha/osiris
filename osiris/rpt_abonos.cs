@@ -207,7 +207,7 @@ namespace osiris
 					cr.MoveTo(40*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText(string.Format("{0:C}",decimal.Parse(lector["abono"].ToString())));	Pango.CairoHelper.ShowLayout (cr, layout);
 					cr.MoveTo(93*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText(lector["fechaabono"].ToString());	Pango.CairoHelper.ShowLayout (cr, layout);
 					cr.MoveTo(125*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText(lector["recibocaja"].ToString());	Pango.CairoHelper.ShowLayout (cr, layout);
-					cr.MoveTo(171*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText(lector["nombre_completo"].ToString());	Pango.CairoHelper.ShowLayout (cr, layout);
+					cr.MoveTo(171*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText(lector["nombre_completo"].ToString().Trim());	Pango.CairoHelper.ShowLayout (cr, layout);
 
 					comienzo_linea += separacion_linea;
 					total += decimal.Parse((string) lector["abono"]);
@@ -227,7 +227,7 @@ namespace osiris
 				comienzo_linea += separacion_linea;
 				cr.MoveTo(300*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText("TOTAL DE PAGOS/ABONOS "+string.Format("{0:C}",decimal.Parse(total.ToString())));	Pango.CairoHelper.ShowLayout (cr, layout);
 				comienzo_linea += separacion_linea;
-				cr.MoveTo(420*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText("TOTAL N° ATENCION "+contadorprocedimientos.ToString());	Pango.CairoHelper.ShowLayout (cr, layout);
+				cr.MoveTo(300*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText("TOTAL N° ATENCION "+contadorprocedimientos.ToString());	Pango.CairoHelper.ShowLayout (cr, layout);
 			}catch(NpgsqlException ex){
 				Console.WriteLine("PostgresSQL error: {0}",ex.Message);
 				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,

@@ -33,6 +33,7 @@ using Npgsql;
 using System.Data;
 using Gtk;
 using Glade;
+using Gdk;
 
 namespace osiris
 {
@@ -200,8 +201,9 @@ namespace osiris
 	    	
 			// pone color a los entry
 			//entry_id_almacen.ModifyBase(StateType.Normal,new Gdk.Color(54,180,221));
-			entry_id_almacen.ModifyBase(Gtk.StateType.Normal, new Gdk.Color(54,180,221));
-			entry_almacen.ModifyBase(StateType.Normal, new Gdk.Color(254,253,152));
+			//Gdk.Color color1 = new Gdk.Color(54,180,221);
+			//entry_id_almacen.ModifyBase(StateType.Normal, new Gdk.Color(54,180,221));
+			//entry_almacen.ModifyBase(StateType.Normal, new Gdk.Color(254,253,152));
 		}
 		
 		void llenado_cmbox_meses()

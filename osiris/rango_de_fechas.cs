@@ -6,7 +6,7 @@ namespace osiris
 	{
 		public rango_de_fechas () : base(Gtk.WindowType.Toplevel)
 		{
-			//this.Build ();
+			this.Build ();
 		}
 	}
 }

@@ -209,6 +209,10 @@ namespace osiris
 					decimal rehabilitacion = 0;
 					decimal imagenologia = 0;
 					decimal	laboratorio = 0;
+					decimal oftalmologia = 0;
+					decimal consultamedica = 0;
+					decimal vision = 0;
+					decimal optica = 0;
 					
 					//cobrado
 					decimal cobrado_hospital = 0;
@@ -225,6 +229,11 @@ namespace osiris
 					decimal cobrado_rehabilitacion = 0;
 					decimal cobrado_imagenologia = 0;
 					decimal	cobrado_laboratorio = 0;
+					decimal cobrado_oftalmologia = 0;
+					decimal cobrado_consultamedica = 0;
+					decimal cobrado_vision = 0;
+					decimal cobrado_optica = 0;
+					
 					float total_preciocompra_1 = 0;
 					float total_precioventa_1 = 0;				
 					float total_porcentage_ganancia_1 = 0; 
@@ -384,7 +393,7 @@ namespace osiris
 							otros_servicio += totalcompra;//(Convert.ToDecimal(total_cantaplicada) * Convert.ToDecimal(preciocompra)) + ((Convert.ToDecimal((total_cantaplicada * float.Parse(preciocompra))) * porc_utilidad) / 100); 
 							//osiris_otros_servicio += Convert.ToDecimal (total_cantaplicada) * Convert.ToDecimal ((string) precioventa);
 							cobrado_otros_servicio += totalprecioventa;//Convert.ToDecimal((string) lector["precioproducto"]) * Convert.ToDecimal(total_cantaplicada);
-							break;	
+							break;
 						case 930:
 							if (idgrupoproducto == 4){
 								porc_utilidad = busca_medicamento();	
@@ -394,7 +403,47 @@ namespace osiris
 							odontologia += totalcompra;//(Convert.ToDecimal(total_cantaplicada) * Convert.ToDecimal(preciocompra)) + ((Convert.ToDecimal((total_cantaplicada * float.Parse(preciocompra))) * porc_utilidad) / 100); 
 							//osiris_odontologia += Convert.ToDecimal (total_cantaplicada) * Convert.ToDecimal ((string) precioventa);
 							cobrado_odontologia += totalprecioventa;//Convert.ToDecimal((string) lector["precioproducto"]) * Convert.ToDecimal(total_cantaplicada);
-							break;       
+							break;
+						case 940:
+							if (idgrupoproducto == 4){
+								porc_utilidad = busca_medicamento();	
+							}else{
+								porc_utilidad = busca_porcentage_utilidad(precio_uni);
+							}
+							oftalmologia += totalcompra;//(Convert.ToDecimal(total_cantaplicada) * Convert.ToDecimal(preciocompra)) + ((Convert.ToDecimal((total_cantaplicada * float.Parse(preciocompra))) * porc_utilidad) / 100); 
+							//osiris_odontologia += Convert.ToDecimal (total_cantaplicada) * Convert.ToDecimal ((string) precioventa);
+							cobrado_oftalmologia += totalprecioventa;//Convert.ToDecimal((string) lector["precioproducto"]) * Convert.ToDecimal(total_cantaplicada);
+							break;
+						case 950:
+							if (idgrupoproducto == 4){
+								porc_utilidad = busca_medicamento();	
+							}else{
+								porc_utilidad = busca_porcentage_utilidad(precio_uni);
+							}
+							consultamedica += totalcompra;//(Convert.ToDecimal(total_cantaplicada) * Convert.ToDecimal(preciocompra)) + ((Convert.ToDecimal((total_cantaplicada * float.Parse(preciocompra))) * porc_utilidad) / 100); 
+							//osiris_odontologia += Convert.ToDecimal (total_cantaplicada) * Convert.ToDecimal ((string) precioventa);
+							cobrado_consultamedica += totalprecioventa;//Convert.ToDecimal((string) lector["precioproducto"]) * Convert.ToDecimal(total_cantaplicada);
+							break;
+						case 960:
+							if (idgrupoproducto == 4){
+								porc_utilidad = busca_medicamento();	
+							}else{
+								porc_utilidad = busca_porcentage_utilidad(precio_uni);
+							}
+							vision += totalcompra;//(Convert.ToDecimal(total_cantaplicada) * Convert.ToDecimal(preciocompra)) + ((Convert.ToDecimal((total_cantaplicada * float.Parse(preciocompra))) * porc_utilidad) / 100); 
+							//osiris_odontologia += Convert.ToDecimal (total_cantaplicada) * Convert.ToDecimal ((string) precioventa);
+							cobrado_vision += totalprecioventa;//Convert.ToDecimal((string) lector["precioproducto"]) * Convert.ToDecimal(total_cantaplicada);
+							break;
+						case 970:
+							if (idgrupoproducto == 4){
+								porc_utilidad = busca_medicamento();	
+							}else{
+								porc_utilidad = busca_porcentage_utilidad(precio_uni);
+							}
+							optica += totalcompra;//(Convert.ToDecimal(total_cantaplicada) * Convert.ToDecimal(preciocompra)) + ((Convert.ToDecimal((total_cantaplicada * float.Parse(preciocompra))) * porc_utilidad) / 100); 
+							//osiris_odontologia += Convert.ToDecimal (total_cantaplicada) * Convert.ToDecimal ((string) precioventa);
+							cobrado_optica += totalprecioventa;//Convert.ToDecimal((string) lector["precioproducto"]) * Convert.ToDecimal(total_cantaplicada);
+							break;
 						}
 					
 						if (idgrupoproducto == 4){
@@ -610,7 +659,47 @@ namespace osiris
 							odontologia += totalcompra;//(Convert.ToDecimal(total_cantaplicada) * Convert.ToDecimal(preciocompra)) + ((Convert.ToDecimal((total_cantaplicada * float.Parse(preciocompra))) * porc_utilidad) / 100); 
 							//osiris_odontologia += Convert.ToDecimal (total_cantaplicada) * Convert.ToDecimal ((string) precioventa);
 							cobrado_odontologia += totalprecioventa;//Convert.ToDecimal((string) lector["precioproducto"]) * Convert.ToDecimal(total_cantaplicada);
-							break;       
+							break;
+						case 940:
+							if (idgrupoproducto == 4){
+								porc_utilidad = busca_medicamento();	
+							}else{
+								porc_utilidad = busca_porcentage_utilidad(precio_uni);
+							}
+							oftalmologia += totalcompra;//(Convert.ToDecimal(total_cantaplicada) * Convert.ToDecimal(preciocompra)) + ((Convert.ToDecimal((total_cantaplicada * float.Parse(preciocompra))) * porc_utilidad) / 100); 
+							//osiris_odontologia += Convert.ToDecimal (total_cantaplicada) * Convert.ToDecimal ((string) precioventa);
+							cobrado_oftalmologia += totalprecioventa;//Convert.ToDecimal((string) lector["precioproducto"]) * Convert.ToDecimal(total_cantaplicada);
+							break;
+						case 950:
+							if (idgrupoproducto == 4){
+								porc_utilidad = busca_medicamento();	
+							}else{
+								porc_utilidad = busca_porcentage_utilidad(precio_uni);
+							}
+							consultamedica += totalcompra;//(Convert.ToDecimal(total_cantaplicada) * Convert.ToDecimal(preciocompra)) + ((Convert.ToDecimal((total_cantaplicada * float.Parse(preciocompra))) * porc_utilidad) / 100); 
+							//osiris_odontologia += Convert.ToDecimal (total_cantaplicada) * Convert.ToDecimal ((string) precioventa);
+							cobrado_consultamedica += totalprecioventa;//Convert.ToDecimal((string) lector["precioproducto"]) * Convert.ToDecimal(total_cantaplicada);
+							break;
+						case 960:
+							if (idgrupoproducto == 4){
+								porc_utilidad = busca_medicamento();	
+							}else{
+								porc_utilidad = busca_porcentage_utilidad(precio_uni);
+							}
+							vision += totalcompra;//(Convert.ToDecimal(total_cantaplicada) * Convert.ToDecimal(preciocompra)) + ((Convert.ToDecimal((total_cantaplicada * float.Parse(preciocompra))) * porc_utilidad) / 100); 
+							//osiris_odontologia += Convert.ToDecimal (total_cantaplicada) * Convert.ToDecimal ((string) precioventa);
+							cobrado_vision += totalprecioventa;//Convert.ToDecimal((string) lector["precioproducto"]) * Convert.ToDecimal(total_cantaplicada);
+							break;
+						case 970:
+							if (idgrupoproducto == 4){
+								porc_utilidad = busca_medicamento();	
+							}else{
+								porc_utilidad = busca_porcentage_utilidad(precio_uni);
+							}
+							optica += totalcompra;//(Convert.ToDecimal(total_cantaplicada) * Convert.ToDecimal(preciocompra)) + ((Convert.ToDecimal((total_cantaplicada * float.Parse(preciocompra))) * porc_utilidad) / 100); 
+							//osiris_odontologia += Convert.ToDecimal (total_cantaplicada) * Convert.ToDecimal ((string) precioventa);
+							cobrado_optica += totalprecioventa;//Convert.ToDecimal((string) lector["precioproducto"]) * Convert.ToDecimal(total_cantaplicada);
+							break;
 						}
 							
 						this.treeViewEngineProducto.AppendValues(total_cantaplicada.ToString("F"),
@@ -665,7 +754,7 @@ namespace osiris
 					                                         cobrado_terapia_neonatal.ToString("C"));
 					}
 					
-	                if(terapia_adulto != 0){ 
+					if(terapia_adulto != 0){ 
 						treeViewEngineDetaFact.AppendValues("TERAPIA ADULTO",
 					                                         terapia_adulto.ToString("C"),
 					                                         cobrado_terapia_adulto.ToString("C"));
@@ -719,10 +808,32 @@ namespace osiris
 					                                         cobrado_laboratorio.ToString("C"));
 					}
 					
+					if(oftalmologia != 0){ 
+						treeViewEngineDetaFact.AppendValues("OFTALMOLOGIA",
+					                                         oftalmologia.ToString("C"),
+					                                         cobrado_oftalmologia.ToString("C"));
+					}
+					if(consultamedica != 0){ 
+						treeViewEngineDetaFact.AppendValues("CONSULTA MEDICA",
+					                                         consultamedica.ToString("C"),
+					                                         cobrado_consultamedica.ToString("C"));
+					}
+					if(vision != 0){ 
+						treeViewEngineDetaFact.AppendValues("VISION",
+					                                         vision.ToString("C"),
+					                                         cobrado_vision.ToString("C"));
+					}
+					if(optica != 0){ 
+						treeViewEngineDetaFact.AppendValues("OPTICA",
+					                                         optica.ToString("C"),
+					                                         cobrado_optica.ToString("C"));
+					}
+						
 					//Calculo de totales y la diferencia ( entry's )
 					comprado = hospital+urgencias+odontologia+otros_servicio+terapia_neonatal 
 						+terapia_adulto+terapia_pediatra+endoscopia+quirofano+ginecologia
-						+almacen_gral+rehabilitacion+imagenologia+laboratorio;
+						+almacen_gral+rehabilitacion+imagenologia+laboratorio+oftalmologia+
+								consultamedica+vision+optica;
 
 					/*esperado = osiris_hospital+osiris_urgencias+osiris_odontologia+osiris_otros_servicio 
 						+osiris_terapia_neonatal+osiris_terapia_adulto+osiris_terapia_pediatra 
@@ -732,14 +843,13 @@ namespace osiris
 					cobrado = cobrado_hospital+cobrado_urgencias+cobrado_odontologia+cobrado_otros_servicio 
 						+cobrado_terapia_neonatal+cobrado_terapia_adulto+cobrado_terapia_pediatra 
 						+cobrado_endoscopia+cobrado_quirofano+cobrado_ginecologia+cobrado_almacen_gral
-						+cobrado_rehabilitacion+cobrado_imagenologia+cobrado_laboratorio;
+						+cobrado_rehabilitacion+cobrado_imagenologia+cobrado_laboratorio+cobrado_oftalmologia+
+								cobrado_consultamedica+cobrado_vision+cobrado_optica;
 							
 					diferencia = cobrado - esperado;
-					diferencia2 = cobrado - comprado;
-					
+					diferencia2 = cobrado - comprado;					
 
-					porcentage_total = (diferencia2 / cobrado) * 100;
-					 
+					porcentage_total = (diferencia2 / cobrado) * 100;					 
 					 
 					this.entry_porcentage_total.Text = porcentage_total.ToString("C");
 					//this.entry_total_esperado.Text = esperado.ToString("C");

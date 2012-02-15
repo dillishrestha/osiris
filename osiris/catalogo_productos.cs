@@ -306,12 +306,12 @@ namespace osiris
 		void crea_treeview_principal()
 		{
 			treeViewEngineBusca4 = new TreeStore(typeof(bool),
-												typeof(string),
-												typeof(string),
-												typeof(string),
-												typeof(string),
-												typeof(string),
-												typeof(string));
+								typeof(string),
+								typeof(string),
+								typeof(string),
+								typeof(string),
+								typeof(string),
+								typeof(string));
 			treeview_precios_clientes.Model = treeViewEngineBusca4;
 			//Nombre de la ventana donde se muestra en el glade(treeview_precios_clientes)
 			treeview_precios_clientes.RulesHint = true;
@@ -322,51 +322,51 @@ namespace osiris
 			cellrt_seleccion = new CellRendererToggle();
 			col_seleccion.Title = "Seleccion";
 			col_seleccion.PackStart(cellrt_seleccion, true);
-			col_seleccion.AddAttribute (cellrt_seleccion, "active", 0); // la siguiente columna será 1 en vez de 2
+			col_seleccion.AddAttribute (cellrt_seleccion, "active", 0);
 			cellrt_seleccion.Activatable = true;
 			cellrt_seleccion.Toggled += selecciona_fila;
 			col_seleccion.SortColumnId = (int) Column_princ.col_seleccion;			
 			
 			col_clie_aseg = new TreeViewColumn();
 			cellr30 = new CellRendererText();
-			col_clie_aseg.Title = "Cliente / Aseguradora"; // titulo de la cabecera de la columna, si está visible
+			col_clie_aseg.Title = "Cliente / Aseguradora";
 			col_clie_aseg.PackStart(cellr30, true);
-			col_clie_aseg.AddAttribute (cellr30, "text", 1);    // la siguiente columna será 1 en vez de 1
+			col_clie_aseg.AddAttribute (cellr30, "text", 1);
 			col_clie_aseg.SortColumnId = (int) Column_princ.col_clie_aseg;
 			
 			col_precio_sin_iva = new TreeViewColumn();
 			cellrt32 = new CellRendererText();
 			col_precio_sin_iva.Title = "Precio Sin IVA";
 			col_precio_sin_iva.PackStart(cellrt32, true);
-			col_precio_sin_iva.AddAttribute (cellrt32, "text", 2); // la siguiente columna será 1 en vez de 2
+			col_precio_sin_iva.AddAttribute (cellrt32, "text", 2);
 			col_precio_sin_iva.SortColumnId = (int) Column_princ.col_precio_sin_iva;
 			
 			col_iva = new TreeViewColumn();
 			cellrt34 = new CellRendererText();
 			col_iva.Title = "IVA";
 			col_iva.PackStart(cellrt34, true);
-			col_iva.AddAttribute (cellrt34, "text", 3); // la siguiente columna será 3 en vez de 4
+			col_iva.AddAttribute (cellrt34, "text", 3);
 			col_iva.SortColumnId = (int) Column_princ.col_iva;
 			
 			col_precio_final = new TreeViewColumn();
 			cellrt35 = new CellRendererText();
 			col_precio_final.Title = "Precio Total";
 			col_precio_final.PackStart(cellrt35, true);
-			col_precio_final.AddAttribute (cellrt35, "text", 4); // la siguiente columna será 5 en vez de 6
+			col_precio_final.AddAttribute (cellrt35, "text", 4);
 			col_precio_final.SortColumnId = (int) Column_princ.col_precio_final;
        
 			col_porc_utilidad = new TreeViewColumn();
 			cellrt33 = new CellRendererText();
 			col_porc_utilidad.Title = "% de Utilidad";
 			col_porc_utilidad.PackStart(cellrt33, true);
-			col_porc_utilidad.AddAttribute (cellrt33, "text", 5); // la siguiente columna será 2 en vez de 3
+			col_porc_utilidad.AddAttribute (cellrt33, "text", 5);
 			col_porc_utilidad.SortColumnId = (int) Column_princ.col_porc_utilidad;
        
 			col_utilidad = new TreeViewColumn();
 			cellr31 = new CellRendererText();
-			col_utilidad.Title = "$ Utilidad"; // titulo de la cabecera de la columna, si está visible
+			col_utilidad.Title = "$ Utilidad";
 			col_utilidad.PackStart(cellr31, true);
-			col_utilidad.AddAttribute (cellr31, "text", 6);    // la siguiente columna será 1 en vez de 1
+			col_utilidad.AddAttribute (cellr31, "text", 6);
 			col_utilidad.SortColumnId = (int) Column_princ.col_utilidad;
  
 			treeview_precios_clientes.AppendColumn(col_seleccion); // 0

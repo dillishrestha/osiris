@@ -98,7 +98,7 @@ namespace osiris
 		//Declaracion de ventana de error
 		protected Gtk.Window MyWinError;
 		protected Gtk.Window MyWin;
-		
+				
 		TreeStore treeViewEngineListaProdRequi;	// Lista de proctos que se van a comprar
 		TreeStore treeViewEngineBusca2;
 		
@@ -134,7 +134,8 @@ namespace osiris
 		CellRendererText cellrt11;
 		TreeViewColumn col_costoprod_uni;		CellRendererText cellrt12;
 		CellRendererText cellrt13;
-		CellRendererCombo cellrt14;
+		CellRendererText cellrt14;
+		CellRendererCombo cellrt15;
 		TreeViewColumn col_aplica_iva;			CellRendererText cellrt19;
 		TreeViewColumn col_cobro_activo;		CellRendererText cellrt20;
 		
@@ -149,8 +150,8 @@ namespace osiris
 			nombrebd = conexion_a_DB._nombrebd;
 			
 			Glade.XML gxml = new Glade.XML (null, "almacen_costos_compras.glade", "captura_facturas_orden_compra", null);
-			gxml.Autoconnect                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 (this);
-	        captura_facturas_orden_compra.Show();			
+			gxml.Autoconnect(this);
+			captura_facturas_orden_compra.Show();			
 			captura_facturas_orden_compra.SetPosition(WindowPosition.Center);	// centra la ventana en la pantalla
 			
 			Pango.FontDescription fontdesc = Pango.FontDescription.FromString("Arial 10");  // Cambia el tipo de Letra
@@ -318,25 +319,34 @@ namespace osiris
 		void crea_treeview_capturafactura()
 		{
 			cell_combox_store = new ListStore(typeof (string));
-			cell_combox_store.AppendValues("uno");
-			cell_combox_store.AppendValues("dos");
+			cell_combox_store.AppendValues (" ");
+			cell_combox_store.AppendValues ("PIEZA");
+			cell_combox_store.AppendValues ("KILO");
+			cell_combox_store.AppendValues ("LITRO");
+			cell_combox_store.AppendValues ("GRAMO");
+			cell_combox_store.AppendValues ("METRO");
+			cell_combox_store.AppendValues ("CENTIMETRO");
+			cell_combox_store.AppendValues ("CAJA");
+			cell_combox_store.AppendValues ("PULGADA");
+			cell_combox_store.AppendValues ("FRASCO");
+			cell_combox_store.AppendValues ("GALON");
 			
 			treeViewEngineListaProdRequi = new TreeStore(typeof(bool), 
-														typeof(string),
-														typeof(string),
-														typeof(string),
-			                                            typeof(string),
-			                                            typeof(string),
-			                                            typeof(string),
-			                                            typeof(string),
-			                                            typeof(string),
-			                                            typeof(string),
-			                                            typeof(string),
-			                                            typeof(string),
-														typeof(string),
-														typeof(string),
-														typeof(string));
-												
+									typeof(string),
+									typeof(string),
+									typeof(string),
+									typeof(string),
+									typeof(string),
+									typeof(string),
+									typeof(string),
+									typeof(string),
+									typeof(string),
+									typeof(string),
+									typeof(string),
+									typeof(string),
+									typeof(string),
+									typeof(string));
+			
 			lista_productos_a_recibir.Model = treeViewEngineListaProdRequi;			
 			lista_productos_a_recibir.RulesHint = true;
 						
@@ -385,15 +395,16 @@ namespace osiris
 			
 			col_05 = new TreeViewColumn();
 			cellrt5 = new CellRendererText();
-			col_05.Title = "Precio";
-			col_05.PackStart(cellrt5, true);
-			col_05.AddAttribute (cellrt5, "text", 5);
-			col_05.SortColumnId = (int) col_productos_recibidos.col_05;
+			col_05.Title = "Ingreso Stock";
+			col_05.PackStart(cellrt4, true);
+			col_05.AddAttribute (cellrt4, "text", 4);
+			cellrt5.Edited += NumberCellEdited;
 			cellrt5.Editable = true;
+			col_05.SortColumnId = (int) col_productos_recibidos.col_04;
 			
 			col_06 = new TreeViewColumn();
 			cellrt6 = new CellRendererText();
-			col_06.Title = "Pre.Unitario";
+			col_06.Title = "Precio";
 			col_06.PackStart(cellrt6, true);
 			col_06.AddAttribute (cellrt6, "text", 6);
 			col_06.SortColumnId = (int) col_productos_recibidos.col_06;
@@ -401,14 +412,14 @@ namespace osiris
 			
 			col_07 = new TreeViewColumn();
 			cellrt7 = new CellRendererText();
-			col_07.Title = "Precio Osiris";
+			col_07.Title = "Pre.Unitario";
 			col_07.PackStart(cellrt7, true);
 			col_07.AddAttribute (cellrt7, "text", 7);
 			col_07.SortColumnId = (int) col_productos_recibidos.col_07;
 			
 			col_08 = new TreeViewColumn();
 			cellrt8 = new CellRendererText();
-			col_08.Title = "Descripcion de Producto";
+			col_08.Title = "Precio Osiris";
 			col_08.PackStart(cellrt8, true);
 			col_08.AddAttribute (cellrt8, "text", 8);
 			col_08.SortColumnId = (int) col_productos_recibidos.col_08;
@@ -416,14 +427,14 @@ namespace osiris
 			
 			col_09 = new TreeViewColumn();
 			cellrt9 = new CellRendererText();
-			col_09.Title = "id Producto";
+			col_09.Title = "Descripcion de Producto";
 			col_09.PackStart(cellrt9, true);
 			col_09.AddAttribute (cellrt9, "text", 9);
 			col_09.SortColumnId = (int) col_productos_recibidos.col_09;
 			
 			col_10 = new TreeViewColumn();
 			cellrt10 = new CellRendererText();
-			col_10.Title = "Desc. Prod. Proveedor";
+			col_10.Title = "id Producto";
 			col_10.PackStart(cellrt10, true);
 			col_10.AddAttribute (cellrt10, "text", 10);
 			col_10.SortColumnId = (int) col_productos_recibidos.col_10;
@@ -431,7 +442,7 @@ namespace osiris
 			
 			col_11 = new TreeViewColumn();
 			cellrt11 = new CellRendererText();
-			col_11.Title = "id Prod.Prove.";
+			col_11.Title = "Desc. Prod. Proveedor";
 			col_11.PackStart(cellrt11, true);
 			col_11.AddAttribute (cellrt11, "text", 11);
 			col_11.SortColumnId = (int) col_productos_recibidos.col_11;
@@ -439,7 +450,7 @@ namespace osiris
 			
 			col_12 = new TreeViewColumn();
 			cellrt12 = new CellRendererText();
-			col_12.Title = "Lote";
+			col_12.Title = "Id Prod.Prove.";
 			col_12.PackStart(cellrt12, true);
 			col_12.AddAttribute (cellrt12, "text", 12);
 			col_12.SortColumnId = (int) col_productos_recibidos.col_12;
@@ -447,37 +458,36 @@ namespace osiris
 			
 			col_13 = new TreeViewColumn();
 			cellrt13 = new CellRendererText();
-			col_13.Title = "Caducidad";
+			col_13.Title = "Lote";
 			col_13.PackStart(cellrt13, true);
 			col_13.AddAttribute (cellrt13, "text", 13);
 			col_13.SortColumnId = (int) col_productos_recibidos.col_13;
 			cellrt13.Editable = true;
 			
 			col_14 = new TreeViewColumn();
-			cellrt14 = new Gtk.CellRendererCombo();
-			col_14.Title = "Presentacion";
-			col_14.PackStart(cellrt14, false);
-			col_14.SetAttributes(cellrt14,"markup",14);
-			//col_14.AddAttribute (cellrt14, "markup", 14);
-			//col_14.SortColumnId = (int) col_productos_recibidos.col_14;
-			cellrt14.Mode = CellRendererMode.Editable;
-			cellrt14.Model = cell_combox_store;
-			cellrt14.EditingStarted += OnEditingStarted;
-			cellrt14.Edited += onEdited;
+			cellrt14 = new CellRendererText();
+			col_14.Title = "Caducidad";
+			col_14.PackStart(cellrt13, true);
+			col_14.AddAttribute (cellrt13, "text", 13);
+			col_14.SortColumnId = (int) col_productos_recibidos.col_13;
 			cellrt14.Editable = true;
 			
-			//column = new TreeViewColumn ();
-			//CellRendererCombo cellRendererCombo = new CellRendererCombo ();
-			//cellRendererCombo.Ypad = 1;
-			//cellRendererCombo.Mode = CellRendererMode.Editable;
-			//cellRendererCombo.TextColumn = 1;
-			//cellRendererCombo.Model = comboBoxStore;
-			//cellRendererCombo.HasEntry = false;
-			//cellRendererCombo.Editable = true;
-			//column.PackStart (cellRendererCombo, false);
-			//column.SetAttributes (cellRendererCombo, "markup", valueDisplayTextColumn, "visible", comboVisibleColumn);
-			
-			
+			col_15 = new TreeViewColumn();
+			//cellrt15 = new Gtk.CellRendererCombo();
+			col_15.Title = "Presentacion";
+			cellrt15 = new Gtk.CellRendererCombo ();
+			(cellrt15 as Gtk.CellRendererCombo).Editable = true;
+			(cellrt15 as Gtk.CellRendererCombo).HasEntry = true;
+			(cellrt15 as Gtk.CellRendererCombo).Edited += OnTaskPriorityEdited;
+			(cellrt15 as Gtk.CellRendererCombo).Model = cell_combox_store;
+			TreeIter iter1;
+			if (cell_combox_store.GetIterFirst(out iter1)){
+				cellrt15.Text = "";			
+			}
+			(cellrt15 as Gtk.CellRendererCombo).TextColumn = 0;
+			//cellrt15.Xalign = 0.5f;
+			col_15.PackStart(cellrt15, true);
+			col_15.SetCellDataFunc (cellrt15, new Gtk.TreeCellDataFunc (TaskPriorityCellDataFunc));
 			
 			lista_productos_a_recibir.AppendColumn(col_00);
 			lista_productos_a_recibir.AppendColumn(col_01);
@@ -494,6 +504,7 @@ namespace osiris
 			lista_productos_a_recibir.AppendColumn(col_12);
 			lista_productos_a_recibir.AppendColumn(col_13);
 			lista_productos_a_recibir.AppendColumn(col_14);
+			lista_productos_a_recibir.AppendColumn(col_15);
 		}
 		
 		enum col_productos_recibidos
@@ -514,24 +525,54 @@ namespace osiris
 			col_13
 		}
 		
-		void OnEditingStarted( object o, EditingStartedArgs args )
+		void TaskPriorityCellDataFunc (Gtk.TreeViewColumn tree_column,Gtk.CellRenderer cell,Gtk.TreeModel tree_model,Gtk.TreeIter iter)
 		{
-			//cell_combox_store.AppendValues("uno");
-			//cell_combox_store.AppendValues("dos");
+			// TODO: Add bold (for high), light (for None), and also colors to priority?
+			Gtk.CellRendererCombo crc = cell as Gtk.CellRendererCombo;
+			//crc.Text = "Hola";
+			
+			//ITask task = Model.GetValue (iter, 0) as ITask;
+			//switch (task.Priority) {
+			//	case TaskPriority.Low:
+					//crc.Text = Catalog.GetString ("3");
+			//		break;
+			//	case TaskPriority.Medium:
+					//crc.Text = Catalog.GetString ("2");
+			//		break;
+			//	case TaskPriority.High:
+					//crc.Text = Catalog.GetString ("1");
+			//		break;
+			//	default:
+					//crc.Text = Catalog.GetString ("-");
+			//		break;
+                  	//}
 		}
 		
-		void onEdited (object o, EditedArgs args)
+		void OnTaskPriorityEdited (object sender, Gtk.EditedArgs args)
 		{
-			Console.WriteLine("entre");
-			Console.WriteLine(o.ToString());
-			TreeIter iter;
-			//if (cell_combox_store.GetIterFirst(out iter)){
+			//Gtk.TreeIter iter;
+			//Gtk.TreePath path = new TreePath (args.Path);
+			//Console.WriteLine( args.NewText.ToString());
+			cellrt15.Text = args.NewText.ToString();
+			//if ( Model.GetIter (out iter, path))
+			return;
 			
-			//}
-			
-			if (cell_combox_store.GetIterFromString (out iter, args.Path)) {
-				 cell_combox_store.SetValue (iter, 14, args.NewText);
-			}
+			/*
+			TaskPriority newPriority;
+			if (args.NewText.CompareTo (Catalog.GetString ("3")) == 0)
+				newPriority = TaskPriority.Low;
+			else if (args.NewText.CompareTo (Catalog.GetString ("2")) == 0)
+				newPriority = TaskPriority.Medium;
+			else if (args.NewText.CompareTo (Catalog.GetString ("1")) == 0)
+				newPriority = TaskPriority.High;
+			else
+				newPriority = TaskPriority.None;
+
+			// Update the priority if it's different
+			ITask task = Model.GetValue (iter, 0) as ITask;
+			if (task.Priority != newPriority)
+				task.Priority = newPriority;
+			*/
 		}
 		
 		// Cuando seleccion campos para la autorizacion de compras  
@@ -605,12 +646,12 @@ namespace osiris
 			treeViewEngineListaProdRequi.Clear(); // Limpia el treeview cuando realiza una nueva busqueda
 			NpgsqlConnection conexion; 
 			conexion = new NpgsqlConnection (connectionString+nombrebd);
-            // Verifica que la base de datos este conectada		
+			// Verifica que la base de datos este conectada		
 			try{
 				conexion.Open ();
 				NpgsqlCommand comando; 
 				comando = conexion.CreateCommand ();
-               	comando.CommandText = "SELECT numero_orden_compra,id_proveedor,descripcion_proveedor,direccion_proveedor,"+
+				comando.CommandText = "SELECT numero_orden_compra,id_proveedor,descripcion_proveedor,direccion_proveedor,"+
 					"faxnextel_proveedor,contacto_proveedor,condiciones_de_pago,fechahora_creacion "+
 					"FROM osiris_erp_ordenes_compras_enca WHERE numero_orden_compra = '"+entry_orden_de_compra.Text.Trim()+"';";
 				//Console.WriteLine(comando.CommandText);
@@ -624,7 +665,7 @@ namespace osiris
 					entry_formapago.Text  = (string) lector["condiciones_de_pago"];
 				}
 				comando = conexion.CreateCommand ();				
-               	comando.CommandText = "SELECT * "+
+				comando.CommandText = "SELECT * "+
 					"FROM osiris_erp_requisicion_deta WHERE numero_orden_compra = '"+entry_orden_de_compra.Text.Trim()+"';";
 				//Console.WriteLine(comando.CommandText);
 				NpgsqlDataReader lector1 = comando.ExecuteReader ();							
@@ -683,28 +724,28 @@ namespace osiris
 		void crea_treeview_busqueda()
 		{
 			treeViewEngineBusca2 = new TreeStore(typeof(string),
-													typeof(string),
-													typeof(string),
-													typeof(string),
-													typeof(string),
-													typeof(string),
-													typeof(string),
-													typeof(string),
-													typeof(string),
-													typeof(string),
-													typeof(string),
-													typeof(string),
-													typeof(string),
-													typeof(string),
-													typeof(string),
-													typeof(string),
-													typeof(string),
-													typeof(string),
-													typeof(string),
-													typeof(bool),
-													typeof(bool),
-													typeof(bool),
-													typeof(string));
+								typeof(string),
+								typeof(string),
+								typeof(string),
+								typeof(string),
+								typeof(string),
+								typeof(string),
+								typeof(string),
+								typeof(string),
+								typeof(string),
+								typeof(string),
+								typeof(string),
+								typeof(string),
+								typeof(string),
+								typeof(string),
+								typeof(string),
+								typeof(string),
+								typeof(string),
+								typeof(string),
+								typeof(bool),
+								typeof(bool),
+								typeof(bool),
+								typeof(string));
 			lista_de_producto.Model = treeViewEngineBusca2;
 			
 			lista_de_producto.RulesHint = true;
@@ -728,75 +769,75 @@ namespace osiris
 			col_desc_producto.Resizable = true;
 			//cellr0.Editable = true;   // Permite edita este campo
             
-				col_precioprod = new TreeViewColumn();
-				cellrt2 = new CellRendererText();
-				col_precioprod.Title = "Precio Producto";
-				col_precioprod.PackStart(cellrt2, true);
-				col_precioprod.AddAttribute (cellrt2, "text", 2); // la siguiente columna será 1 en vez de 2
-				col_precioprod.SortColumnId = (int) Column_prod.col_precioprod;
-            
-				col_ivaprod = new TreeViewColumn();
-				cellrt3 = new CellRendererText();
-				col_ivaprod.Title = "I.V.A.";
-				col_ivaprod.PackStart(cellrt3, true);
-				col_ivaprod.AddAttribute (cellrt3, "text", 3); // la siguiente columna será 2 en vez de 3
-				col_ivaprod.SortColumnId = (int) Column_prod.col_ivaprod;
-            
-				col_totalprod = new TreeViewColumn();
-				cellrt4 = new CellRendererText();
-				col_totalprod.Title = "Total";
-				col_totalprod.PackStart(cellrt4, true);
-				col_totalprod.AddAttribute (cellrt4, "text", 4); // la siguiente columna será 3 en vez de 4
-				col_totalprod.SortColumnId = (int) Column_prod.col_totalprod;
-            
-				col_descuentoprod = new TreeViewColumn();
-				cellrt5 = new CellRendererText();
-				col_descuentoprod.Title = "% Descuento";
-				col_descuentoprod.PackStart(cellrt5, true);
-				col_descuentoprod.AddAttribute (cellrt5, "text", 5); // la siguiente columna será 5 en vez de 6
-				col_descuentoprod.SortColumnId = (int) Column_prod.col_descuentoprod;
-      
-				col_preciocondesc = new TreeViewColumn();
-				cellrt6 = new CellRendererText();
-				col_preciocondesc.Title = "Precio con Desc.";
-				col_preciocondesc.PackStart(cellrt6, true);
-				col_preciocondesc.AddAttribute (cellrt6, "text", 6);     // la siguiente columna será 6 en vez de 7
-				col_preciocondesc.SortColumnId = (int) Column_prod.col_preciocondesc;
-            
-				col_grupoprod = new TreeViewColumn();
-				cellrt7 = new CellRendererText();
-				col_grupoprod.Title = "Grupo Producto";
-				col_grupoprod.PackStart(cellrt7, true);
-				col_grupoprod.AddAttribute (cellrt7, "text", 7); // la siguiente columna será 7 en vez de 8
-				col_grupoprod.SortColumnId = (int) Column_prod.col_grupoprod;
-            
-				col_grupo1prod = new TreeViewColumn();
-				cellrt8 = new CellRendererText();
-				col_grupo1prod.Title = "Grupo1 Producto";
-				col_grupo1prod.PackStart(cellrt8, true);
-				col_grupo1prod.AddAttribute (cellrt8, "text", 8); // la siguiente columna será 9 en vez de 
-				col_grupo1prod.SortColumnId = (int) Column_prod.col_grupo1prod;
-                        
-				col_grupo2prod = new TreeViewColumn();
-				cellrt9 = new CellRendererText();
-				col_grupo2prod.Title = "Grupo2 Producto";
-				col_grupo2prod.PackStart(cellrt9, true);
-				col_grupo2prod.AddAttribute (cellrt9, "text", 9); // la siguiente columna será 10 en vez de 9
-				col_grupo2prod.SortColumnId = (int) Column_prod.col_grupo2prod;
+			col_precioprod = new TreeViewColumn();
+			cellrt2 = new CellRendererText();
+			col_precioprod.Title = "Precio Producto";
+			col_precioprod.PackStart(cellrt2, true);
+			col_precioprod.AddAttribute (cellrt2, "text", 2); // la siguiente columna será 1 en vez de 2
+			col_precioprod.SortColumnId = (int) Column_prod.col_precioprod;
+			
+			col_ivaprod = new TreeViewColumn();
+			cellrt3 = new CellRendererText();
+			col_ivaprod.Title = "I.V.A.";
+			col_ivaprod.PackStart(cellrt3, true);
+			col_ivaprod.AddAttribute (cellrt3, "text", 3); // la siguiente columna será 2 en vez de 3
+			col_ivaprod.SortColumnId = (int) Column_prod.col_ivaprod;
+			
+			col_totalprod = new TreeViewColumn();
+			cellrt4 = new CellRendererText();
+			col_totalprod.Title = "Total";
+			col_totalprod.PackStart(cellrt4, true);
+			col_totalprod.AddAttribute (cellrt4, "text", 4); // la siguiente columna será 3 en vez de 4
+			col_totalprod.SortColumnId = (int) Column_prod.col_totalprod;
+			
+			col_descuentoprod = new TreeViewColumn();
+			cellrt5 = new CellRendererText();
+			col_descuentoprod.Title = "% Descuento";
+			col_descuentoprod.PackStart(cellrt5, true);
+			col_descuentoprod.AddAttribute (cellrt5, "text", 5); // la siguiente columna será 5 en vez de 6
+			col_descuentoprod.SortColumnId = (int) Column_prod.col_descuentoprod;
+			
+			col_preciocondesc = new TreeViewColumn();
+			cellrt6 = new CellRendererText();
+			col_preciocondesc.Title = "Precio con Desc.";
+			col_preciocondesc.PackStart(cellrt6, true);
+			col_preciocondesc.AddAttribute (cellrt6, "text", 6);     // la siguiente columna será 6 en vez de 7
+			col_preciocondesc.SortColumnId = (int) Column_prod.col_preciocondesc;
+			
+			col_grupoprod = new TreeViewColumn();
+			cellrt7 = new CellRendererText();
+			col_grupoprod.Title = "Grupo Producto";
+			col_grupoprod.PackStart(cellrt7, true);
+			col_grupoprod.AddAttribute (cellrt7, "text", 7); // la siguiente columna será 7 en vez de 8
+			col_grupoprod.SortColumnId = (int) Column_prod.col_grupoprod;
+			
+			col_grupo1prod = new TreeViewColumn();
+			cellrt8 = new CellRendererText();
+			col_grupo1prod.Title = "Grupo1 Producto";
+			col_grupo1prod.PackStart(cellrt8, true);
+			col_grupo1prod.AddAttribute (cellrt8, "text", 8); // la siguiente columna será 9 en vez de 
+			col_grupo1prod.SortColumnId = (int) Column_prod.col_grupo1prod;
+			
+			col_grupo2prod = new TreeViewColumn();
+			cellrt9 = new CellRendererText();
+			col_grupo2prod.Title = "Grupo2 Producto";
+			col_grupo2prod.PackStart(cellrt9, true);
+			col_grupo2prod.AddAttribute (cellrt9, "text", 9); // la siguiente columna será 10 en vez de 9
+			col_grupo2prod.SortColumnId = (int) Column_prod.col_grupo2prod;
+			
+			col_costoprod_uni = new TreeViewColumn();
+			cellrt12 = new CellRendererText();
+			col_costoprod_uni.Title = "Precio Unitario";
+			col_costoprod_uni.PackStart(cellrt12, true);
+			col_costoprod_uni.AddAttribute (cellrt12, "text", 12); // la siguiente columna será 1 en vez de 2
+			col_costoprod_uni.SortColumnId = (int) Column_prod.col_costoprod_uni;
 				
-				col_costoprod_uni = new TreeViewColumn();
-				cellrt12 = new CellRendererText();
-				col_costoprod_uni.Title = "Precio Unitario";
-				col_costoprod_uni.PackStart(cellrt12, true);
-				col_costoprod_uni.AddAttribute (cellrt12, "text", 12); // la siguiente columna será 1 en vez de 2
-				col_costoprod_uni.SortColumnId = (int) Column_prod.col_costoprod_uni;
-            				
-				col_aplica_iva = new TreeViewColumn();
-				cellrt19 = new CellRendererText();
-				col_aplica_iva.Title = "Iva Activo?";
-				col_aplica_iva.PackStart(cellrt19, true);
-				col_aplica_iva.AddAttribute (cellrt19, "text", 19); // la siguiente columna será 10 en vez de 9
-				col_aplica_iva.SortColumnId = (int) Column_prod.col_aplica_iva;
+			col_aplica_iva = new TreeViewColumn();
+			cellrt19 = new CellRendererText();
+			col_aplica_iva.Title = "Iva Activo?";
+			col_aplica_iva.PackStart(cellrt19, true);
+			col_aplica_iva.AddAttribute (cellrt19, "text", 19); // la siguiente columna será 10 en vez de 9
+			col_aplica_iva.SortColumnId = (int) Column_prod.col_aplica_iva;
 				
 			col_cobro_activo = new TreeViewColumn();
 			cellrt20 = new CellRendererText();
@@ -846,7 +887,7 @@ namespace osiris
  			treeViewEngineBusca2.Clear(); // Limpia el treeview cuando realiza una nueva busqueda
 			NpgsqlConnection conexion; 
 			conexion = new NpgsqlConnection (connectionString+nombrebd);
-            // Verifica que la base de datos este conectada
+			// Verifica que la base de datos este conectada
 			string query_tipo_busqueda = "";
 			if(radiobutton_nombre.Active == true) {query_tipo_busqueda = "AND osiris_productos.descripcion_producto LIKE '%"+entry_expresion.Text.ToUpper().Trim()+"%' ORDER BY descripcion_producto; "; }
 			if(radiobutton_codigo.Active == true) {query_tipo_busqueda = "AND osiris_productos.id_producto LIKE '"+entry_expresion.Text.Trim()+"%'  ORDER BY id_producto; "; }
@@ -854,7 +895,7 @@ namespace osiris
 				conexion.Open ();
 				NpgsqlCommand comando; 
 				comando = conexion.CreateCommand ();
-               	comando.CommandText = "SELECT to_char(osiris_productos.id_producto,'999999999999') AS codProducto,"+
+				comando.CommandText = "SELECT to_char(osiris_productos.id_producto,'999999999999') AS codProducto,"+
 							"osiris_productos.descripcion_producto,osiris_productos.nombre_articulo,osiris_productos.nombre_generico_articulo, "+
 							"to_char(precio_producto_publico,'99999999.99') AS preciopublico,"+
 							"to_char(precio_producto_publico1,'99999999.99') AS preciopublico1,"+
@@ -963,20 +1004,21 @@ namespace osiris
 				conexion.Close ();
 				
 				treeViewEngineListaProdRequi.AppendValues (true,
-				                                           entry_num_factura_proveedor.Text.Trim(),
-				                                           "0",
-				                                           entry_cantidad_aplicada.Text.Trim(),
-				                                           (string) model.GetValue(iterSelected, 2),
-				                                           entry_codprod_proveedor.Text.Trim(),
-				                                           (string) model.GetValue(iterSelected, 0),
-				                                           (string) model.GetValue(iterSelected, 1),
-															entry_embalaje_pack.Text.Trim(),
-															entry_lote.Text.Trim(),
-															entry_caducidad.Text.Trim(),
-				                                           "",
-					"",
-					"",
-					"Prueba");
+							entry_num_factura_proveedor.Text.Trim(),
+							"0",
+							entry_cantidad_aplicada.Text.Trim(),
+							Convert.ToString(float.Parse(entry_cantidad_aplicada.Text.Trim()) * float.Parse(entry_embalaje_pack.Text.Trim())),
+							(string) model.GetValue(iterSelected, 2),
+							//entry_codprod_proveedor.Text.Trim(),
+							(string) model.GetValue(iterSelected, 0),
+							(string) model.GetValue(iterSelected, 1),
+							entry_embalaje_pack.Text.Trim(),
+							entry_lote.Text.Trim(),
+							entry_caducidad.Text.Trim(),
+							"",
+							"",
+							"",
+							"");
 				
 				//cierra la ventana despues que almaceno la informacion en variables
 				Widget win = (Widget) sender;

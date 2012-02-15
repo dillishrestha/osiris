@@ -48,7 +48,7 @@ namespace osiris
 		// Declarando ventana del menu de costos
 		[Widget] Gtk.Window menu_costos;
 		[Widget] Gtk.Button button_movtotal_producto;		
-		[Widget] Gtk.Button button_nuevos_productos;
+		[Widget] Gtk.Button button_analisis_de_cargos;
 		[Widget] Gtk.Button button_costeo_procedimiento;
 		[Widget] Gtk.Button button_listas_precios;
 		[Widget] Gtk.Button button_catalogo_productos;
@@ -126,10 +126,6 @@ namespace osiris
 			// movimiento total de productos
 			button_movtotal_producto.Clicked += new EventHandler(on_button_movtotal_producto_clicked);
 			
-			// Nuevos productos San Nicolas
-			button_nuevos_productos.Clicked += new EventHandler(on_button_nuevos_productos_clicked);
-			button_nuevos_productos.Hide();
-			
 			// Reporte de las Listas de Precios
 			button_listas_precios.Clicked += new EventHandler(on_button_listas_precios_clicked);
 			
@@ -144,6 +140,7 @@ namespace osiris
 			
 			//Reporte Compras De Farmacia
 			button_farmacia.Clicked += new EventHandler(on_button_button_farmacia_clicked);
+			button_analisis_de_cargos.Clicked += new EventHandler(on_button_analisis_de_cargos_clicked);
 			
 			// Sale de la ventana
 			button_salir.Clicked += new EventHandler(on_cierraventanas_clicked);			
@@ -164,9 +161,9 @@ namespace osiris
 				ResponseType miResultado = (ResponseType) msgBox.Run ();				msgBox.Destroy();
 			}
 		}
-		void on_button_nuevos_productos_clicked(object sender, EventArgs args)
+		void on_button_analisis_de_cargos_clicked(object sender, EventArgs args)
 		{
-			//new osiris.nuevos_prod(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
+			new osiris.movimientos_productos(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,"cargos_x_fecha","");
 		}
 		
 		void on_button_button_farmacia_clicked(object sender, EventArgs args)

@@ -846,13 +846,12 @@ namespace osiris
 		// Internamiento de paciente
 		void on_button_admision_clicked (object sender, EventArgs args)
 		{
-	    	Glade.XML gxml = new Glade.XML (null, "registro_admision.glade", "admision", null);
+			Glade.XML gxml = new Glade.XML (null, "registro_admision.glade", "admision", null);
 			gxml.Autoconnect (this);
 	        	                	
 			// Muestra ventana de Glade
 			admision.Show();
-	        
-	        
+			
 			entry_pid_admision.Text = PidPaciente.ToString();
 			entry_paciente_admision.Text = entry_nombre_1.Text.ToString()+" "+
 							entry_nombre_2.Text.ToString()+" "+
@@ -865,7 +864,7 @@ namespace osiris
 			entry_id_medico.Sensitive = false;
 			//entry_descrip_cirugia.Text = decirugia;
 			entry_diag_admision.Text = diagnostico;
-	        decirugia = "";
+			decirugia = "";
 			// Activa busqueda de cirugia
 			//button_busca_cirugia.Clicked += new EventHandler(on_button_busca_cirugia_clicked);
 			// Activa la salida de la ventana
@@ -902,7 +901,7 @@ namespace osiris
 		
 		void onComboBoxChanged_combobox_tipo_cirugia(object sender, EventArgs args)
 		{
-	    	ComboBox combobox_tipo_cirugia = sender as ComboBox;
+			ComboBox combobox_tipo_cirugia = sender as ComboBox;
 			if (sender == null)	{	return;	}
 			TreeIter iter;			
 			int numbusqueda = 0;
@@ -918,11 +917,11 @@ namespace osiris
 			Glade.XML gxml = new Glade.XML (null, "catalogos.glade", "buscador_medicos", null);
 			gxml.Autoconnect                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 (this);
 			buscador_medicos.Show();
-	        llenado_cmbox_tipo_busqueda();
-	        entry_expresion.KeyPressEvent += onKeyPressEvent_enter;
+			llenado_cmbox_tipo_busqueda();
+			entry_expresion.KeyPressEvent += onKeyPressEvent_enter;
 			button_buscar_busqueda.Clicked += new EventHandler(on_button_llena_medicos_clicked);
 			button_selecciona.Clicked += new EventHandler(on_selecciona_medico_clicked);
-	        button_salir.Clicked +=  new EventHandler(on_cierraventanas_clicked);
+			button_salir.Clicked +=  new EventHandler(on_cierraventanas_clicked);
 			
 			treeViewEngineMedicos = new TreeStore(typeof(int),typeof(string),typeof(string),typeof(string),typeof(string),typeof(string),
 												typeof(string),typeof(string),typeof(string),typeof(string),typeof(string),typeof(string),
@@ -1240,8 +1239,7 @@ namespace osiris
 		{
 			TreeModel model;
 			TreeIter iterSelected;
-			if (lista_de_medicos.Selection.GetSelected(out model, out iterSelected)) 
- 			{
+			if (lista_de_medicos.Selection.GetSelected(out model, out iterSelected)){
  				idmedico =(int) model.GetValue(iterSelected, 0);
  				nombmedico = (string) model.GetValue(iterSelected, 1)+" "+(string) model.GetValue(iterSelected, 2)+" "+
 							(string) model.GetValue(iterSelected, 3)+" "+(string) model.GetValue(iterSelected,4);
@@ -2083,11 +2081,11 @@ namespace osiris
 					//Activa el boton para editar datos de paciente
 					checkbutton_modificar.Sensitive = false;
 					if(LoginEmpleado == "DOLIVARES" || LoginEmpleado == "ADMIN") { 
-		           		checkbutton_modificar.Sensitive = true;
-		           		checkbutton_modificar.Clicked += new EventHandler(on_modifica_informacion_clicked);
-		           		button_cancelar_pid.Sensitive = true;
-		           		button_cancelar_pid.Clicked += new EventHandler(on_button_cancelar_pid_clicked);
-		           	}
+						checkbutton_modificar.Sensitive = true;
+						checkbutton_modificar.Clicked += new EventHandler(on_modifica_informacion_clicked);
+						button_cancelar_pid.Sensitive = true;
+						button_cancelar_pid.Clicked += new EventHandler(on_button_cancelar_pid_clicked);
+					}
 					// activa boton de grabacion de informacion
 					button_grabar.Clicked += new EventHandler(on_graba_informacion_clicked);
 					
@@ -2095,7 +2093,7 @@ namespace osiris
 					button_responsable.Clicked += new EventHandler(on_button_responsable_clicked);
 					// Activa boton de admision Urgenacias/Hospital/Quirofano
 					//button_admision.Clicked += new EventHandler(on_button_admision_clicked);
-		        	// Activacion de boton de busqueda
+					// Activacion de boton de busqueda
 					button_buscar_paciente.Clicked += new EventHandler(on_button_buscar_paciente_clicked);
 					// Centro Medico
 					entry_medico_cm.Sensitive = false;
@@ -2112,21 +2110,21 @@ namespace osiris
 					button_contrata_paquete.Sensitive = false;
 					
 					//Desactiva campos de PID y de FOLIO para que no se escriba en ellos
-		        	entry_pid_paciente.Sensitive = false;
-		        	entry_folio_paciente.Sensitive = false;
-		        	entry_folio_interno_dep.Sensitive = false;
-		        	
-		        	// Asugnacion de Cuarto o Cubiculo
-		        	button_asignacion_habitacion.Clicked += new EventHandler(on_button_asignacion_habitacion_clicked);
-		        	
-		        	//Lista a las empresas con convenio
-		        	button_lista_empresas.Clicked += new EventHandler(on_button_lista_empresas_clicked);
-		        	
-		        	// este entry se activa cuando el paciente solicita otros servicios
-		       	    //entry_observacion.Sensitive = false;
-		       	    
-		       	    button_separa_folio.Clicked += new EventHandler(on_button_separa_folio_clicked);
-		        	
+					entry_pid_paciente.Sensitive = false;
+					entry_folio_paciente.Sensitive = false;
+					entry_folio_interno_dep.Sensitive = false;
+					
+					// Asugnacion de Cuarto o Cubiculo
+					button_asignacion_habitacion.Clicked += new EventHandler(on_button_asignacion_habitacion_clicked);
+					
+					//Lista a las empresas con convenio
+					button_lista_empresas.Clicked += new EventHandler(on_button_lista_empresas_clicked);
+					
+					// este entry se activa cuando el paciente solicita otros servicios
+					//entry_observacion.Sensitive = false;
+					
+					button_separa_folio.Clicked += new EventHandler(on_button_separa_folio_clicked);
+					
 					entry_pid_paciente.Text = PidPaciente.ToString();
 					entry_observacion_ingreso.Sensitive = true;
 					
@@ -2150,6 +2148,65 @@ namespace osiris
 				llena_Ventana_de_datos(pidpaciente_.ToString().Trim());
 				llena_inf_de_paciente(pidpaciente_.ToString().Trim());
 				activa_los_entry(false);
+				
+				button_admision.Sensitive = true;  // Activando Boton de Internamiento de Paciente
+				//Activa el boton para editar datos de paciente
+				checkbutton_modificar.Sensitive = false;
+				if(LoginEmpleado == "DOLIVARES" || LoginEmpleado == "ADMIN") { 
+		           		checkbutton_modificar.Sensitive = true;
+		           		checkbutton_modificar.Clicked += new EventHandler(on_modifica_informacion_clicked);
+		           		button_cancelar_pid.Sensitive = true;
+		           		button_cancelar_pid.Clicked += new EventHandler(on_button_cancelar_pid_clicked);
+		           	}
+				// activa boton de grabacion de informacion
+				button_grabar.Clicked += new EventHandler(on_graba_informacion_clicked);
+				//button_graba_admision.Clicked += new EventHandler(on_graba_admision_clicked);
+				
+				// Activa boton de responsable
+				button_responsable.Clicked += new EventHandler(on_button_responsable_clicked);
+				// Activa boton de admision Urgenacias/Hospital/Quirofano
+				//button_admision.Clicked += new EventHandler(on_button_admision_clicked);
+				// Activacion de boton de busqueda
+				button_buscar_paciente.Clicked += new EventHandler(on_button_buscar_paciente_clicked);
+				// Centro Medico
+				entry_medico_cm.Sensitive = false;
+				button_busca_medicos.Sensitive = false;
+				entry_esp_med_cm.Sensitive = false;
+				checkbutton_consulta.Clicked += new EventHandler(on_checkbutton_consulta_clicked);
+				
+				//Activa boton para imprimir el protocolo
+				button_imprimir_protocolo.Clicked += new EventHandler(on_button_imprimir_protocolo_clicked);
+				button_imprimir_protocolo.Sensitive = false;
+				
+				// Contratacion de paquetes
+				button_contrata_paquete.Clicked += new EventHandler(on_button_contrata_paquete_clicked);
+				button_contrata_paquete.Sensitive = false;
+				
+				//Desactiva campos de PID y de FOLIO para que no se escriba en ellos
+				entry_pid_paciente.Sensitive = false;
+				entry_folio_paciente.Sensitive = false;
+				entry_folio_interno_dep.Sensitive = false;
+				
+				// Asugnacion de Cuarto o Cubiculo
+				button_asignacion_habitacion.Clicked += new EventHandler(on_button_asignacion_habitacion_clicked);
+				
+				//Lista a las empresas con convenio
+				button_lista_empresas.Clicked += new EventHandler(on_button_lista_empresas_clicked);
+				
+				// este entry se activa cuando el paciente solicita otros servicios
+				//entry_observacion.Sensitive = false;
+				
+				button_separa_folio.Clicked += new EventHandler(on_button_separa_folio_clicked);
+				
+				PidPaciente = int.Parse(pidpaciente_);
+								
+				entry_observacion_ingreso.Sensitive = true;
+				
+				checkbutton_checkup.Clicked += new EventHandler(on_checkbutton_checkup_clicked);
+				// Cambio para VENEZUELA
+				//label37.Text = "RIF";			// RFC
+				//label43.Text = "C.I.";		// CURP	
+				_tipo_ = "busca1";
 			}
 		}
 		
@@ -2170,10 +2227,10 @@ namespace osiris
 			// Cierra Ventana
 			button_salir.Clicked += new EventHandler(on_cierraventanas_clicked);
 			button_cancelar_pid.Sensitive = false;
-			button_admision.Clicked += new EventHandler(on_button_admision_clicked);
+			button_admision.Clicked += new EventHandler(on_button_admision_clicked);			
 			// desactiva botton de intermaniento de paciente
 			button_admision.Sensitive = true;
-	        //Entrada de Fecha de Nacimiento valida solo numeros
+			//Entrada de Fecha de Nacimiento valida solo numeros
 			//Dia
 			entry_dia_nacimiento.KeyPressEvent += onKeyPressEvent;
 			//Mes
@@ -2185,8 +2242,7 @@ namespace osiris
 			// llenado de comobobox
 			llenado_combobox(1,"",combobox_tipo_paciente,"sql","SELECT * FROM osiris_his_tipo_pacientes ORDER BY descripcion_tipo_paciente;",
 			                 "descripcion_tipo_paciente","id_tipo_paciente",args_args,args_id_array);
-			entry_empresa.Sensitive = false;
-			        		        
+			entry_empresa.Sensitive = false;			        		        
 			// Creacion de Liststore
 			treeViewEngine = new TreeStore(typeof (string),typeof (string),typeof (string), typeof (string), 
 							typeof (string),typeof (string),typeof (string), typeof (string), typeof (string),typeof (string),typeof (bool));
@@ -2283,7 +2339,7 @@ namespace osiris
 			if(_tipo_ == "selecciona"){
 				llena_servicios_realizados(pidpaciente_);
 			}
-
+			entry_pid_paciente.Text = pidpaciente_;
 			// Actulizando statusbar
 			statusbar_registro.Pop(0);
 			statusbar_registro.Push(1, "login: "+LoginEmpleado+"| Usuario: "+NomEmpleado+" "+AppEmpleado+" "+ApmEmpleado);// NomEmp_);

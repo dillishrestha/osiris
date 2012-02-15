@@ -53,6 +53,7 @@ namespace osiris
 		[Widget] Gtk.TreeView treeview_lista_agenda = null;
 		[Widget] Gtk.CheckButton checkbutton_fecha_final = null;
 		[Widget] Gtk.CheckButton checkbutton_canceladas = null;
+		[Widget] Gtk.CheckButton checkbutton_px_no_asistieron = null;
 		
 		[Widget] Gtk.CheckButton checkbutton_filtro_paciente = null;
 		[Widget] Gtk.Entry entry_pid_paciente = null;
@@ -65,7 +66,7 @@ namespace osiris
 		[Widget] Gtk.Entry entry_nombre_doctor_consulta = null;
 		[Widget] Gtk.Button button_busca_medicos_consulta = null;
 		[Widget] Gtk.Button button_aplica_filtrodoctor = null;
-		
+				
 		[Widget] Gtk.CheckButton checkbutton_filtro_especialidad = null;
 		[Widget] Gtk.Entry entry_id_especialidad_consulta = null;
 		[Widget] Gtk.Entry entry_nombre_especialidad_consulta = null;
@@ -80,6 +81,7 @@ namespace osiris
 		[Widget] Gtk.Entry entry_numero_citas = null;
 		[Widget] Gtk.Button button_cancela_cita = null;
 		[Widget] Gtk.Button button_imprimir_calendario = null;
+		
 		[Widget] Gtk.Statusbar statusbar_citasqx = null;
 							
 		// Notebook2 Citas		
@@ -180,7 +182,9 @@ namespace osiris
 					"AND osiris_empresas.id_empresa = osiris_his_calendario_citaqx.id_empresa "+
 					"AND osiris_aseguradoras.id_aseguradora = osiris_his_calendario_citaqx.id_aseguradora ";
 		string sql_fecha1 = "";
+		string sql_fecha1_1 = "";
 		string sql_fecha2 = "";
+		string sql_fecha2_2 = "";
 		string sql_doctor = "";
 		string sql_paciente = "";
 		string sql_especialidad = "";
@@ -251,6 +255,9 @@ namespace osiris
 			calendar2.DaySelected += new EventHandler (on_dayselected_clicked);	// Agendar la cita
 			calendar3.DaySelected += new EventHandler (on_dayselected_clicked);	// Agendar en quirofano
 			
+			entry_fecha_seleccionada.Text = DateTime.Now.ToString("yyyy-MM-dd");
+			sql_fecha1 = " AND to_char(fecha_programacion,'yyyy-MM-dd') = '"+entry_fecha_seleccionada.Text.ToString().Trim()+"' ";
+			sql_fecha1_1 = " AND to_char(fechahora_creacion,'yyyy-MM-dd') = '"+entry_fecha_seleccionada.Text.ToString().Trim()+"' ";
 			////////////////////////
 			// Calendario de Citas
 			/////////////////////////
@@ -267,6 +274,7 @@ namespace osiris
 			button_aplica_filtroespecialidad.Clicked += new EventHandler(on_button_aplica_filtroespecialidad_clicked);				
 			button_cancela_cita.Clicked += new EventHandler(on_button_cancela_cita_clicked);
 			button_imprimir_calendario.Clicked += new EventHandler(on_button_imprimir_calendario_clicked);
+			checkbutton_px_no_asistieron.Clicked += new EventHandler(on_checkbutton_px_no_asistieron_clicked);
 					
 			// Action the Click for Citas
 			button_guardar_cita.Clicked += new EventHandler(on_button_guardar_cita_clicked);
@@ -355,9 +363,10 @@ namespace osiris
 			                                         typeof(string),typeof(string),typeof(string),typeof(string),
 			                                         typeof(string),typeof(string),typeof(string),typeof(string),
 			                                         typeof(string),typeof(string),typeof(string),typeof(string),
-			                                         typeof(string),typeof(string),typeof(string),typeof(string),typeof(bool));
+			                                         typeof(string),typeof(string),typeof(string),typeof(string),typeof(bool),typeof(bool));
 			treeview_lista_agenda.Model = treeViewEngineListaCitas;
 			treeview_lista_agenda.RulesHint = true;
+			treeview_lista_agenda.RowActivated += on_seleccion_paciente;
 			
 			col_agenda0 = new TreeViewColumn();		cellrt0 = new CellRendererText();
 			col_agenda0.Title = "Fecha";
@@ -522,6 +531,18 @@ namespace osiris
 			col_agenda17,col_agenda18	
 		}
 		
+		void on_seleccion_paciente (object obj, EventArgs args)
+		{
+			TreeModel model;
+			TreeIter iterSelected;
+			if ( treeview_lista_agenda.Selection.GetSelected(out model, out iterSelected)){
+				if((string) model.GetValue(iterSelected, 3) != "0"){
+					new osiris.registro_paciente_busca("selecciona",LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,(string) model.GetValue(iterSelected, 3));
+				}else{
+					new osiris.registro_paciente_busca("",LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,(string) model.GetValue(iterSelected, 3));
+				}
+			}
+		}
 		void on_dayselected_clicked (object obj, EventArgs args)
 		{
 			Gtk.Calendar activatedCalendar = (Gtk.Calendar) obj;
@@ -529,12 +550,17 @@ namespace osiris
 				if((bool) checkbutton_fecha_final.Active == false){
 					entry_fecha_seleccionada.Text = activatedCalendar.GetDate().ToString ("yyyy-MM-dd");
 					sql_fecha1 = " AND to_char(fecha_programacion,'yyyy-MM-dd') = '"+entry_fecha_seleccionada.Text.ToString().Trim()+"' ";
+					sql_fecha1_1 = " AND to_char(fechahora_creacion,'yyyy-MM-dd') = '"+entry_fecha_seleccionada.Text.ToString().Trim()+"' ";
 					sql_fecha2 = "";
+					sql_fecha2_2 = "";					
 				}else{
 					entry_fecha_final.Text = activatedCalendar.GetDate().ToString ("yyyy-MM-dd");
 					sql_fecha1 = "";
+					sql_fecha1_1 = "";
 					sql_fecha2 = " AND to_char(fecha_programacion,'yyyy-MM-dd') >= '"+entry_fecha_seleccionada.Text.ToString().Trim()+"' "+
 								" AND to_char(fecha_programacion,'yyyy-MM-dd') <= '"+entry_fecha_final.Text.ToString().Trim()+"' ";
+					sql_fecha2_2 = " AND to_char(fechahora_creacion,'yyyy-MM-dd') >= '"+entry_fecha_seleccionada.Text.ToString().Trim()+"' "+
+								" AND to_char(fechahora_creacion,'yyyy-MM-dd') <= '"+entry_fecha_final.Text.ToString().Trim()+"' ";
 				}
 				llenado_lista_citas("");				
 			}
@@ -632,6 +658,11 @@ namespace osiris
 					}
 				}
 			}
+		}
+		
+		void on_checkbutton_px_no_asistieron_clicked(object obj, EventArgs args)
+		{
+			llenado_lista_citas("");
 		}
 		
 		void on_radiobutton_paciente_cita_clicked(object obj, EventArgs args)
@@ -1171,6 +1202,7 @@ namespace osiris
 			string emailpaciente;
 			string emprinstitucion_aseguradora;
 			string observaciongeneral = "";
+			bool asistio_a_consulta = true;
 			contador_numerocitas = 0;
 			treeViewEngineListaCitas.Clear();
 			NpgsqlConnection conexion; 
@@ -1185,70 +1217,166 @@ namespace osiris
 				
 				//Console.WriteLine(comando.CommandText);
 				NpgsqlDataReader lector = comando.ExecuteReader ();				
-				while (lector.Read()){
-					contador_numerocitas += 1;
-					if ((int) lector["pidpaciente"] == 0){
-						nombrepaciente = (string) lector["nombre_paciente"].ToString().Trim();
-						telefonopaciente = (string) lector["telefonopaciente_cita"]+"  "+(string) lector["celular1paciente_cita"].ToString().Trim();
-						emailpaciente = (string) lector["emailpaciente_cita"].ToString().Trim();
-					}else{
-						nombrepaciente = (string) lector["nombre1_paciente"].ToString().Trim()+" "+
-							             (string) lector["nombre2_paciente"].ToString().Trim()+" "+
-							             (string) lector["apellido_paterno_paciente"].ToString().Trim()+" "+
-							             (string) lector["apellido_materno_paciente"].ToString().Trim();
-						telefonopaciente = (string) lector["telefonoparticular1_paciente"].ToString().Trim()+"  "+(string) lector["celular1_paciente"].ToString().Trim();
-						emailpaciente = (string) lector["email_paciente"].ToString().Trim();
+				while (lector.Read()){					
+					// Verificando que los pacientes de la citas tengan su numero de atencion
+					NpgsqlConnection conexion1; 
+					conexion1 = new NpgsqlConnection (connectionString+nombrebd);
+		            // Verifica que la base de datos este conectada
+					try{
+						conexion1.Open ();
+						NpgsqlCommand comando1; 
+						comando1 = conexion.CreateCommand ();
+						comando1.CommandText = "SELECT pid_paciente,fechahora_creacion FROM osiris_erp_cobros_enca WHERE pid_paciente = '"+lector["pidpaciente"].ToString().Trim()+"' "+
+											sql_fecha1_1+sql_fecha2_2+";";						
+						//Console.WriteLine(comando.CommandText);
+						NpgsqlDataReader lector1 = comando1.ExecuteReader ();
+						if (lector1.Read()){
+							asistio_a_consulta = true;
+						}else{
+							asistio_a_consulta = false;
+						}
+					}catch (NpgsqlException ex){
+		   				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+										MessageType.Error,ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
+						msgBoxError.Run ();			msgBoxError.Destroy();
 					}
-					if((int) lector["idempresa"] >= 1){
-						emprinstitucion_aseguradora = (string) lector["descripcion_empresa"];
+					conexion1.Close();
+					
+					if((bool) checkbutton_px_no_asistieron.Active == true){
+						if(asistio_a_consulta == false){
+							if((string) lector["pidpaciente"].ToString().Trim() != "0"){
+								contador_numerocitas += 1;
+								if ((int) lector["pidpaciente"] == 0){
+									nombrepaciente = (string) lector["nombre_paciente"].ToString().Trim();
+									telefonopaciente = (string) lector["telefonopaciente_cita"]+"  "+(string) lector["celular1paciente_cita"].ToString().Trim();
+									emailpaciente = (string) lector["emailpaciente_cita"].ToString().Trim();
+								}else{
+									nombrepaciente = (string) lector["nombre1_paciente"].ToString().Trim()+" "+
+										             (string) lector["nombre2_paciente"].ToString().Trim()+" "+
+										             (string) lector["apellido_paterno_paciente"].ToString().Trim()+" "+
+										             (string) lector["apellido_materno_paciente"].ToString().Trim();
+									telefonopaciente = (string) lector["telefonoparticular1_paciente"].ToString().Trim()+"  "+(string) lector["celular1_paciente"].ToString().Trim();
+									emailpaciente = (string) lector["email_paciente"].ToString().Trim();
+								}
+								if((int) lector["idempresa"] >= 1){
+									emprinstitucion_aseguradora = (string) lector["descripcion_empresa"];
+								}else{
+									emprinstitucion_aseguradora = (string) lector["descripcion_aseguradora"];
+								}					
+								if((bool) lector["cancelacitaqx"] == false){
+									observaciongeneral = (string) lector["observaciones_citaqx"].ToString().Trim().ToUpper();
+								}else{
+									observaciongeneral = (string) lector["motivo_cancelacion_citaqx"].ToString().Trim().ToUpper();
+								}
+								treeViewEngineListaCitas.AppendValues((string) lector["fechaprogramacion"],
+								                                      (string) lector["hora_programacion"],
+								                                      (string) lector["id_numero_citaqx"].ToString().Trim(),
+								                                      (string) lector["pidpaciente"].ToString().Trim(),
+								                					  nombrepaciente.Trim(),
+								                                      (string) lector["edad"]+" Años y "+(string) lector["mesesedad"]+" Meses",
+								                                      (string) telefonopaciente.Trim(),
+								                                      (string) emailpaciente,
+								                                      (string) lector["descripcion_tipo_paciente"],
+								                                      (string) lector["descripcion_admisiones"],
+								                                      "",
+								                                      (string) lector["nombremedico"],
+								                                      (string) lector["descripcionespecialidad"],
+								                                      (string) lector["motivo_consulta"],
+								                                      observaciongeneral,
+								                                      (string) lector["referido_por"],
+								                                      emprinstitucion_aseguradora,
+								                                      (string) lector["id_quiencreo_cita"],
+								                                      (string) lector["fechahoracreacion"].ToString(),
+								                                      (string) lector["idsecuencia"].ToString().Trim(),
+								                                      (bool) lector["cancelacitaqx"],
+																	  asistio_a_consulta);
+								col_agenda0.SetCellDataFunc(cellrt0, new Gtk.TreeCellDataFunc(cambia_colores_fila));
+								col_agenda1.SetCellDataFunc(cellrt1, new Gtk.TreeCellDataFunc(cambia_colores_fila));
+								col_agenda2.SetCellDataFunc(cellrt2, new Gtk.TreeCellDataFunc(cambia_colores_fila));
+								col_agenda3.SetCellDataFunc(cellrt3, new Gtk.TreeCellDataFunc(cambia_colores_fila));
+								col_agenda4.SetCellDataFunc(cellrt4, new Gtk.TreeCellDataFunc(cambia_colores_fila));	
+								col_agenda5.SetCellDataFunc(cellrt5, new Gtk.TreeCellDataFunc(cambia_colores_fila));
+								col_agenda6.SetCellDataFunc(cellrt6, new Gtk.TreeCellDataFunc(cambia_colores_fila));
+								col_agenda7.SetCellDataFunc(cellrt7, new Gtk.TreeCellDataFunc(cambia_colores_fila));
+								col_agenda8.SetCellDataFunc(cellrt8, new Gtk.TreeCellDataFunc(cambia_colores_fila));
+								col_agenda9.SetCellDataFunc(cellrt9, new Gtk.TreeCellDataFunc(cambia_colores_fila));
+								col_agenda10.SetCellDataFunc(cellrt10, new Gtk.TreeCellDataFunc(cambia_colores_fila));
+								col_agenda11.SetCellDataFunc(cellrt11, new Gtk.TreeCellDataFunc(cambia_colores_fila));
+								col_agenda12.SetCellDataFunc(cellrt12, new Gtk.TreeCellDataFunc(cambia_colores_fila));
+								col_agenda13.SetCellDataFunc(cellrt13, new Gtk.TreeCellDataFunc(cambia_colores_fila));
+								col_agenda14.SetCellDataFunc(cellrt14, new Gtk.TreeCellDataFunc(cambia_colores_fila));
+								col_agenda15.SetCellDataFunc(cellrt15, new Gtk.TreeCellDataFunc(cambia_colores_fila));
+								col_agenda16.SetCellDataFunc(cellrt16, new Gtk.TreeCellDataFunc(cambia_colores_fila));
+								col_agenda17.SetCellDataFunc(cellrt17, new Gtk.TreeCellDataFunc(cambia_colores_fila));
+								col_agenda18.SetCellDataFunc(cellrt18, new Gtk.TreeCellDataFunc(cambia_colores_fila));
+							}
+						}						
 					}else{
-						emprinstitucion_aseguradora = (string) lector["descripcion_aseguradora"];
-					}					
-					if((bool) lector["cancelacitaqx"] == false){
-						observaciongeneral = (string) lector["observaciones_citaqx"].ToString().Trim().ToUpper();
-					}else{
-						observaciongeneral = (string) lector["motivo_cancelacion_citaqx"].ToString().Trim().ToUpper();
+						contador_numerocitas += 1;
+						if ((int) lector["pidpaciente"] == 0){
+							nombrepaciente = (string) lector["nombre_paciente"].ToString().Trim();
+							telefonopaciente = (string) lector["telefonopaciente_cita"]+"  "+(string) lector["celular1paciente_cita"].ToString().Trim();
+							emailpaciente = (string) lector["emailpaciente_cita"].ToString().Trim();
+						}else{
+							nombrepaciente = (string) lector["nombre1_paciente"].ToString().Trim()+" "+
+								             (string) lector["nombre2_paciente"].ToString().Trim()+" "+
+								             (string) lector["apellido_paterno_paciente"].ToString().Trim()+" "+
+								             (string) lector["apellido_materno_paciente"].ToString().Trim();
+							telefonopaciente = (string) lector["telefonoparticular1_paciente"].ToString().Trim()+"  "+(string) lector["celular1_paciente"].ToString().Trim();
+							emailpaciente = (string) lector["email_paciente"].ToString().Trim();
+						}
+						if((int) lector["idempresa"] >= 1){
+							emprinstitucion_aseguradora = (string) lector["descripcion_empresa"];
+						}else{
+							emprinstitucion_aseguradora = (string) lector["descripcion_aseguradora"];
+						}					
+						if((bool) lector["cancelacitaqx"] == false){
+							observaciongeneral = (string) lector["observaciones_citaqx"].ToString().Trim().ToUpper();
+						}else{
+							observaciongeneral = (string) lector["motivo_cancelacion_citaqx"].ToString().Trim().ToUpper();
+						}
+						treeViewEngineListaCitas.AppendValues((string) lector["fechaprogramacion"],
+						                                      (string) lector["hora_programacion"],
+						                                      (string) lector["id_numero_citaqx"].ToString().Trim(),
+						                                      (string) lector["pidpaciente"].ToString().Trim(),
+						                					  nombrepaciente.Trim(),
+						                                      (string) lector["edad"]+" Años y "+(string) lector["mesesedad"]+" Meses",
+						                                      (string) telefonopaciente.Trim(),
+						                                      (string) emailpaciente,
+						                                      (string) lector["descripcion_tipo_paciente"],
+						                                      (string) lector["descripcion_admisiones"],
+						                                      "",
+						                                      (string) lector["nombremedico"],
+						                                      (string) lector["descripcionespecialidad"],
+						                                      (string) lector["motivo_consulta"],
+						                                      observaciongeneral,
+						                                      (string) lector["referido_por"],
+						                                      emprinstitucion_aseguradora,
+						                                      (string) lector["id_quiencreo_cita"],
+						                                      (string) lector["fechahoracreacion"].ToString(),
+						                                      (string) lector["idsecuencia"].ToString().Trim(),
+						                                      (bool) lector["cancelacitaqx"],
+															  asistio_a_consulta);
+						col_agenda0.SetCellDataFunc(cellrt0, new Gtk.TreeCellDataFunc(cambia_colores_fila));
+						col_agenda1.SetCellDataFunc(cellrt1, new Gtk.TreeCellDataFunc(cambia_colores_fila));
+						col_agenda2.SetCellDataFunc(cellrt2, new Gtk.TreeCellDataFunc(cambia_colores_fila));
+						col_agenda3.SetCellDataFunc(cellrt3, new Gtk.TreeCellDataFunc(cambia_colores_fila));
+						col_agenda4.SetCellDataFunc(cellrt4, new Gtk.TreeCellDataFunc(cambia_colores_fila));	
+						col_agenda5.SetCellDataFunc(cellrt5, new Gtk.TreeCellDataFunc(cambia_colores_fila));
+						col_agenda6.SetCellDataFunc(cellrt6, new Gtk.TreeCellDataFunc(cambia_colores_fila));
+						col_agenda7.SetCellDataFunc(cellrt7, new Gtk.TreeCellDataFunc(cambia_colores_fila));
+						col_agenda8.SetCellDataFunc(cellrt8, new Gtk.TreeCellDataFunc(cambia_colores_fila));
+						col_agenda9.SetCellDataFunc(cellrt9, new Gtk.TreeCellDataFunc(cambia_colores_fila));
+						col_agenda10.SetCellDataFunc(cellrt10, new Gtk.TreeCellDataFunc(cambia_colores_fila));
+						col_agenda11.SetCellDataFunc(cellrt11, new Gtk.TreeCellDataFunc(cambia_colores_fila));
+						col_agenda12.SetCellDataFunc(cellrt12, new Gtk.TreeCellDataFunc(cambia_colores_fila));
+						col_agenda13.SetCellDataFunc(cellrt13, new Gtk.TreeCellDataFunc(cambia_colores_fila));
+						col_agenda14.SetCellDataFunc(cellrt14, new Gtk.TreeCellDataFunc(cambia_colores_fila));
+						col_agenda15.SetCellDataFunc(cellrt15, new Gtk.TreeCellDataFunc(cambia_colores_fila));
+						col_agenda16.SetCellDataFunc(cellrt16, new Gtk.TreeCellDataFunc(cambia_colores_fila));
+						col_agenda17.SetCellDataFunc(cellrt17, new Gtk.TreeCellDataFunc(cambia_colores_fila));
+						col_agenda18.SetCellDataFunc(cellrt18, new Gtk.TreeCellDataFunc(cambia_colores_fila));
 					}
-					treeViewEngineListaCitas.AppendValues((string) lector["fechaprogramacion"],
-					                                      (string) lector["hora_programacion"],
-					                                      (string) lector["id_numero_citaqx"].ToString().Trim(),
-					                                      (string) lector["pidpaciente"].ToString().Trim(),
-					                					  nombrepaciente.Trim(),
-					                                      (string) lector["edad"]+" Años y "+(string) lector["mesesedad"]+" Meses",
-					                                      (string) telefonopaciente.Trim(),
-					                                      (string) emailpaciente,
-					                                      (string) lector["descripcion_tipo_paciente"],
-					                                      (string) lector["descripcion_admisiones"],
-					                                      "",
-					                                      (string) lector["nombremedico"],
-					                                      (string) lector["descripcionespecialidad"],
-					                                      (string) lector["motivo_consulta"],
-					                                      observaciongeneral,
-					                                      (string) lector["referido_por"],
-					                                      emprinstitucion_aseguradora,
-					                                      (string) lector["id_quiencreo_cita"],
-					                                      (string) lector["fechahoracreacion"].ToString(),
-					                                      (string) lector["idsecuencia"].ToString().Trim(),
-					                                      (bool) lector["cancelacitaqx"]);
-					col_agenda0.SetCellDataFunc(cellrt0, new Gtk.TreeCellDataFunc(cambia_colores_fila));
-					col_agenda1.SetCellDataFunc(cellrt1, new Gtk.TreeCellDataFunc(cambia_colores_fila));
-					col_agenda2.SetCellDataFunc(cellrt2, new Gtk.TreeCellDataFunc(cambia_colores_fila));
-					col_agenda3.SetCellDataFunc(cellrt3, new Gtk.TreeCellDataFunc(cambia_colores_fila));
-					col_agenda4.SetCellDataFunc(cellrt4, new Gtk.TreeCellDataFunc(cambia_colores_fila));	
-					col_agenda5.SetCellDataFunc(cellrt5, new Gtk.TreeCellDataFunc(cambia_colores_fila));
-					col_agenda6.SetCellDataFunc(cellrt6, new Gtk.TreeCellDataFunc(cambia_colores_fila));
-					col_agenda7.SetCellDataFunc(cellrt7, new Gtk.TreeCellDataFunc(cambia_colores_fila));
-					col_agenda8.SetCellDataFunc(cellrt8, new Gtk.TreeCellDataFunc(cambia_colores_fila));
-					col_agenda9.SetCellDataFunc(cellrt9, new Gtk.TreeCellDataFunc(cambia_colores_fila));
-					col_agenda10.SetCellDataFunc(cellrt10, new Gtk.TreeCellDataFunc(cambia_colores_fila));
-					col_agenda11.SetCellDataFunc(cellrt11, new Gtk.TreeCellDataFunc(cambia_colores_fila));
-					col_agenda12.SetCellDataFunc(cellrt12, new Gtk.TreeCellDataFunc(cambia_colores_fila));
-					col_agenda13.SetCellDataFunc(cellrt13, new Gtk.TreeCellDataFunc(cambia_colores_fila));
-					col_agenda14.SetCellDataFunc(cellrt14, new Gtk.TreeCellDataFunc(cambia_colores_fila));
-					col_agenda15.SetCellDataFunc(cellrt15, new Gtk.TreeCellDataFunc(cambia_colores_fila));
-					col_agenda16.SetCellDataFunc(cellrt16, new Gtk.TreeCellDataFunc(cambia_colores_fila));
-					col_agenda17.SetCellDataFunc(cellrt17, new Gtk.TreeCellDataFunc(cambia_colores_fila));
-					col_agenda18.SetCellDataFunc(cellrt18, new Gtk.TreeCellDataFunc(cambia_colores_fila));
 				}
 			}catch (NpgsqlException ex){
 	   				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
@@ -1261,8 +1389,15 @@ namespace osiris
 		
 		void cambia_colores_fila(Gtk.TreeViewColumn column, Gtk.CellRenderer cell, Gtk.TreeModel model, Gtk.TreeIter iter)
 		{
-			if ((bool) treeview_lista_agenda.Model.GetValue (iter,20) == false) { 
-				(cell as Gtk.CellRendererText).CellBackground = "white";
+			if ((bool) treeview_lista_agenda.Model.GetValue (iter,20) == false){
+				if ((bool) treeview_lista_agenda.Model.GetValue (iter,21) == false){
+					(cell as Gtk.CellRendererText).CellBackground = "red";
+				}else{
+					(cell as Gtk.CellRendererText).CellBackground = "green";
+				}
+				if((string) treeview_lista_agenda.Model.GetValue (iter,3) == "0"){
+					(cell as Gtk.CellRendererText).CellBackground = "white";
+				}
 				//(cell as Gtk.CellRendererText).CellBackgroundGdk = new Gdk.Color(0,0,0);
 			}else{
 				(cell as Gtk.CellRendererText).CellBackground = "yellow";

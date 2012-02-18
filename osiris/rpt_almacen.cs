@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////
 // created on 26/07/2007 at 04:18 p
-// Hospital Santa Cecilia
+// Sistema Hospitalario OSIRIS
 // Monterrey - Mexico
 //
 // Autor    	: Juan Antonio Peña Gonzalez (Programacion) gjuanzz@gmail.com
@@ -58,8 +58,12 @@ namespace osiris
 		string NomEmpleado;
 		string AppEmpleado;
 		string ApmEmpleado;
+		string query_consulta = "" ;
+		string titulo_reporte = "";
+		string tipo_reporte = "";
+		string rango_fecha = "";
 		
-				//Declaracion de ventana de error
+		//Declaracion de ventana de error
 		protected Gtk.Window MyWinError;
 		
 		class_conexion conexion_a_DB = new class_conexion();
@@ -67,7 +71,8 @@ namespace osiris
 		
 		public inventario_almacen_reporte (int id_almacen_,string almacen_,string mesinventario_,string ano_inventario_,
 										string LoginEmpleado_,string NomEmpleado_,string AppEmpleado_,
-										string ApmEmpleado_,string nombrebd_)
+										string ApmEmpleado_,string nombrebd_,string tipo_reporte_,string query_consulta_,
+										string entry_dia1_,string entry_mes1_,string entry_ano1_, string entry_dia2_,string entry_mes2_,string entry_ano2_)
 		{
 			idalmacen = id_almacen_;
 			almacen = almacen_;
@@ -77,12 +82,46 @@ namespace osiris
 			NomEmpleado = NomEmpleado_;
 			AppEmpleado = AppEmpleado_;
 			ApmEmpleado = ApmEmpleado_;
+			tipo_reporte = tipo_reporte_;
 			connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
 			nombrebd = conexion_a_DB._nombrebd;
 			escala_en_linux_windows = classpublic.escala_linux_windows;
+			rango_fecha = "DESDE "+entry_dia1_.Trim()+"-"+entry_mes1_.Trim()+"-"+entry_ano1_.Trim()+ "  HASTA "+entry_dia2_.Trim()+"-"+entry_mes2_.Trim()+"-"+entry_ano2_.Trim();
+
 			
-			print = new PrintOperation ();
-			print.JobName = "Reporte de Inventario Fisico";	// Name of the report
+			if(tipo_reporte == "inventario_fisico"){
+				titulo_reporte = "Reporte de Inventario Fisico "+almacen;
+				query_consulta = "SELECT descripcion_producto,eliminado, "+
+								"id_quien_creo,osiris_productos.aplicar_iva,osiris_inventario_almacenes.id_almacen,  "+
+								"descripcion_grupo_producto,descripcion_grupo1_producto,descripcion_grupo2_producto, "+
+								"to_char(osiris_inventario_almacenes.id_producto,'999999999999') AS idproducto, "+
+								//"to_char(osiris_inventario_almacenes."+mesinventario.ToString()+",'99999.99') AS stock, "+
+								"to_char(osiris_inventario_almacenes.stock,'999999.99') AS stock, "+
+								"to_char(osiris_productos.costo_por_unidad,'999999999.99') AS costoproductounitario, "+
+								"to_char(osiris_productos.costo_producto,'999999999.99') AS costoproducto, "+
+								"to_char(osiris_productos.precio_producto_publico,'99999999.99') AS preciopublico,"+
+								"to_char(osiris_productos.cantidad_de_embalaje,'999999999.99') AS embalaje, "+
+								"to_char(osiris_productos.porcentage_ganancia,'99999.99') AS porcentageganancia, "+
+								"to_char(osiris_inventario_almacenes.fechahora_alta,'dd-MM-yyyy HH:mi:ss') AS fechcreacion "+
+								"FROM "+
+								"osiris_inventario_almacenes,osiris_productos,osiris_almacenes,osiris_grupo_producto,osiris_grupo1_producto,osiris_grupo2_producto "+
+								"WHERE osiris_inventario_almacenes.id_producto = osiris_productos.id_producto "+ 
+								"AND osiris_productos.id_grupo_producto = osiris_grupo_producto.id_grupo_producto "+
+								"AND osiris_productos.id_grupo1_producto = osiris_grupo1_producto.id_grupo1_producto "+
+								"AND osiris_productos.id_grupo2_producto = osiris_grupo2_producto.id_grupo2_producto "+
+								"AND osiris_inventario_almacenes.id_almacen = osiris_almacenes.id_almacen "+
+								"AND osiris_inventario_almacenes.id_almacen = '"+(int) idalmacen +"' "+
+								"AND osiris_inventario_almacenes.ano_inventario = '"+(string) anoinventario +"' "+
+								"AND osiris_inventario_almacenes.mes_inventario = '"+mesinventario+"' "+
+								"ORDER BY osiris_productos.descripcion_producto,to_char(osiris_inventario_almacenes.fechahora_alta,'yyyy-mm-dd HH:mm:ss');";;
+			}
+			
+			if(tipo_reporte == "cargos_x_fecha"){
+				titulo_reporte = "Mov.Tot. Prod. Cargados por Fechas";
+				query_consulta = query_consulta_;
+			}			
+			print = new PrintOperation ();			
+			print.JobName = titulo_reporte;	// Name of the report
 			print.BeginPrint += new BeginPrintHandler (OnBeginPrint);
 			print.DrawPage += new DrawPageHandler (OnDrawPage);
 			print.EndPrint += new EndPrintHandler (OnEndPrint);
@@ -121,29 +160,7 @@ namespace osiris
 	 			conexion.Open ();
 	        	NpgsqlCommand comando; 
 	        	comando = conexion.CreateCommand (); 
-	        	comando.CommandText = "SELECT descripcion_producto,eliminado, "+
-								"id_quien_creo,osiris_productos.aplicar_iva,osiris_inventario_almacenes.id_almacen,  "+
-								"descripcion_grupo_producto,descripcion_grupo1_producto,descripcion_grupo2_producto, "+
-								"to_char(osiris_inventario_almacenes.id_producto,'999999999999') AS idproducto, "+
-								//"to_char(osiris_inventario_almacenes."+mesinventario.ToString()+",'99999.99') AS stock, "+
-								"to_char(osiris_inventario_almacenes.stock,'999999.99') AS stock, "+
-								"to_char(osiris_productos.costo_por_unidad,'999999999.99') AS costoproductounitario, "+
-								"to_char(osiris_productos.costo_producto,'999999999.99') AS costoproducto, "+
-								"to_char(osiris_productos.precio_producto_publico,'99999999.99') AS preciopublico,"+
-								"to_char(osiris_productos.cantidad_de_embalaje,'999999999.99') AS embalaje, "+
-								"to_char(osiris_productos.porcentage_ganancia,'99999.99') AS porcentageganancia, "+
-								"to_char(osiris_inventario_almacenes.fechahora_alta,'dd-MM-yyyy HH:mi:ss') AS fechcreacion "+
-								"FROM "+
-								"osiris_inventario_almacenes,osiris_productos,osiris_almacenes,osiris_grupo_producto,osiris_grupo1_producto,osiris_grupo2_producto "+
-								"WHERE osiris_inventario_almacenes.id_producto = osiris_productos.id_producto "+ 
-								"AND osiris_productos.id_grupo_producto = osiris_grupo_producto.id_grupo_producto "+
-								"AND osiris_productos.id_grupo1_producto = osiris_grupo1_producto.id_grupo1_producto "+
-								"AND osiris_productos.id_grupo2_producto = osiris_grupo2_producto.id_grupo2_producto "+
-								"AND osiris_inventario_almacenes.id_almacen = osiris_almacenes.id_almacen "+
-								"AND osiris_inventario_almacenes.id_almacen = '"+(int) idalmacen +"' "+
-								"AND osiris_inventario_almacenes.ano_inventario = '"+(string) anoinventario +"' "+
-								"AND osiris_inventario_almacenes.mes_inventario = '"+mesinventario+"' "+
-								"ORDER BY osiris_productos.descripcion_producto,to_char(osiris_inventario_almacenes.fechahora_alta,'yyyy-mm-dd HH:mm:ss');";
+	        	comando.CommandText = query_consulta;
 							
 	        	NpgsqlDataReader lector = comando.ExecuteReader ();
 				if (lector.Read()){
@@ -226,17 +243,29 @@ namespace osiris
 			// Cambiando el tamaño de la fuente			
 			fontSize = 10.0;
 			desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;
-			cr.MoveTo(340*escala_en_linux_windows, 25*escala_en_linux_windows);			layout.SetText("Reporte de Inventario Fisico "+almacen);				Pango.CairoHelper.ShowLayout (cr, layout);
-			cr.MoveTo(340*escala_en_linux_windows, 35*escala_en_linux_windows);			layout.SetText("Mes de "+classpublic.nom_mes(mesinventario)+" del "+anoinventario);				Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(340*escala_en_linux_windows, 25*escala_en_linux_windows);			layout.SetText(titulo_reporte);				Pango.CairoHelper.ShowLayout (cr, layout);
 			
+			if(tipo_reporte == "inventario_fisico"){
+				cr.MoveTo(340*escala_en_linux_windows, 35*escala_en_linux_windows);			layout.SetText("Mes de "+classpublic.nom_mes(mesinventario)+" del "+anoinventario);				Pango.CairoHelper.ShowLayout (cr, layout);
+				fontSize = 8.0;
+				desc.Size = (int)(fontSize * pangoScale);	layout.FontDescription = desc;
+				cr.MoveTo(350*escala_en_linux_windows, 65*escala_en_linux_windows);			layout.SetText("Stock");				Pango.CairoHelper.ShowLayout (cr, layout);
+				cr.MoveTo(670*escala_en_linux_windows, 65*escala_en_linux_windows);			layout.SetText("$ Inventario");				Pango.CairoHelper.ShowLayout (cr, layout);
+			}else{
+				cr.MoveTo(340*escala_en_linux_windows, 35*escala_en_linux_windows);			layout.SetText("Rango de Fecha : "+rango_fecha);				Pango.CairoHelper.ShowLayout (cr, layout);			
+				fontSize = 8.0;
+				desc.Size = (int)(fontSize * pangoScale);	layout.FontDescription = desc;
+				cr.MoveTo(350*escala_en_linux_windows, 65*escala_en_linux_windows);			layout.SetText("Cargado");				Pango.CairoHelper.ShowLayout (cr, layout);
+				cr.MoveTo(670*escala_en_linux_windows, 65*escala_en_linux_windows);			layout.SetText("$ Consumo");				Pango.CairoHelper.ShowLayout (cr, layout);
+			}
 			fontSize = 8.0;
 			desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;
-			cr.MoveTo(350*escala_en_linux_windows, 65*escala_en_linux_windows);			layout.SetText("Stock");				Pango.CairoHelper.ShowLayout (cr, layout);
+			//cr.MoveTo(350*escala_en_linux_windows, 65*escala_en_linux_windows);			layout.SetText("Stock");				Pango.CairoHelper.ShowLayout (cr, layout);
 			cr.MoveTo(410*escala_en_linux_windows, 65*escala_en_linux_windows);			layout.SetText("Precio Prod.");				Pango.CairoHelper.ShowLayout (cr, layout);
 			cr.MoveTo(480*escala_en_linux_windows, 65*escala_en_linux_windows);			layout.SetText("Pack");				Pango.CairoHelper.ShowLayout (cr, layout);
 			cr.MoveTo(530*escala_en_linux_windows, 65*escala_en_linux_windows);			layout.SetText("Costo Unit.");				Pango.CairoHelper.ShowLayout (cr, layout);
 			cr.MoveTo(590*escala_en_linux_windows, 65*escala_en_linux_windows);			layout.SetText("% Ganancia");				Pango.CairoHelper.ShowLayout (cr, layout);
-			cr.MoveTo(670*escala_en_linux_windows, 65*escala_en_linux_windows);			layout.SetText("$ Inventario");				Pango.CairoHelper.ShowLayout (cr, layout);
+			//cr.MoveTo(670*escala_en_linux_windows, 65*escala_en_linux_windows);			layout.SetText("$ Inventario");				Pango.CairoHelper.ShowLayout (cr, layout);
 
 			// Creando el Cuadro de Titulos
 			cr.Rectangle (05*escala_en_linux_windows, 60*escala_en_linux_windows, 750*escala_en_linux_windows, 15*escala_en_linux_windows);

@@ -157,7 +157,7 @@ namespace osiris
 			//quita lementos aplicados
 			button_quitar_aplicados.Clicked += new EventHandler(on_button_quitar_aplicados_clicked);
 			// Activacion de grabacion de informacion
-	    	button_graba_inventario.Clicked += new EventHandler(on_button_graba_inventario_clicked);
+			button_graba_inventario.Clicked += new EventHandler(on_button_graba_inventario_clicked);
 			// Imprime Procedimiento
 			button_reporte.Clicked += new EventHandler(on_button_reporte_clicked);
 			/*
@@ -346,22 +346,22 @@ namespace osiris
 				NpgsqlDataReader lector = comando.ExecuteReader ();				
 				while (lector.Read()){
 					//if(float.Parse((string) lector["stock"]) != 0){
-							treeViewEngineInventario.AppendValues ((string) lector["idproducto"],
-																	(string) lector["descripcion_producto"],
-																	(string) lector["stock"],
-																	(string) lector["costoproductounitario"],
-																	(string) lector["costoproducto"],
-																	(string) lector["embalaje"],
-																	(string) lector["preciopublico"],
-																	(string) lector["descripcion_grupo_producto"],
-																	(string) lector["descripcion_grupo1_producto"],
-																	(string) lector["descripcion_grupo2_producto"],
-																	(string) lector["id_quien_creo"],
-																	(string) lector["fechcreacion"],	
-																	true,
-																	(string) lector["idsecuencia"],
-						                                       		(string) lector["lote"],
-						                                       		(string) lector["caducidad"]);
+						treeViewEngineInventario.AppendValues ((string) lector["idproducto"],
+							(string) lector["descripcion_producto"],
+							(string) lector["stock"],
+							(string) lector["costoproductounitario"],
+							(string) lector["costoproducto"],
+							(string) lector["embalaje"],
+							(string) lector["preciopublico"],
+							(string) lector["descripcion_grupo_producto"],
+							(string) lector["descripcion_grupo1_producto"],
+							(string) lector["descripcion_grupo2_producto"],
+							(string) lector["id_quien_creo"],
+							(string) lector["fechcreacion"],	
+							true,
+							(string) lector["idsecuencia"],
+							(string) lector["lote"],
+							(string) lector["caducidad"]);
 					//}
 					
 				}
@@ -753,7 +753,7 @@ namespace osiris
 				msgBoxError.Destroy();
 			}else{
 				new osiris.inventario_almacen_reporte (int.Parse(entry_id_almacen.Text.ToString()),entry_almacen.Text,mesinventario,entry_ano_inventario.Text,
-													LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
+													LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,"inventario_fisico","","","","","","","");
 			}
 		}
 				
@@ -796,7 +796,7 @@ namespace osiris
 			col_desc_producto.Resizable = true;
 			cellr1.Width = 400;
 			
-            TreeViewColumn col_stock = new TreeViewColumn();
+			TreeViewColumn col_stock = new TreeViewColumn();
 			CellRendererText cellrt2 = new CellRendererText();
 			col_stock.Title = "stock";
 			col_stock.PackStart(cellrt2, true);
@@ -812,7 +812,7 @@ namespace osiris
 			col_precioprod.SortColumnId = (int) Column_inv.col_precioprod;
 			col_precioprod.SetCellDataFunc(cellrt3,new Gtk.TreeCellDataFunc(cambia_colores_fila));
            
-           	TreeViewColumn col_costo_prod = new TreeViewColumn();
+			TreeViewColumn col_costo_prod = new TreeViewColumn();
 			CellRendererText cellrt4 = new CellRendererText();
 			col_costo_prod.Title = "Costo Prod";
 			col_costo_prod.PackStart(cellrt4, true);
@@ -834,7 +834,7 @@ namespace osiris
 			col_precio_pub.PackStart(cellrt6, true);
 			col_precio_pub.AddAttribute (cellrt6, "text", 6);
 			col_precio_pub.SortColumnId = (int) Column_inv.col_precio_pub;
-           	col_precio_pub.SetCellDataFunc(cellrt6, new Gtk.TreeCellDataFunc(cambia_colores_fila));
+			col_precio_pub.SetCellDataFunc(cellrt6, new Gtk.TreeCellDataFunc(cambia_colores_fila));
            
 			TreeViewColumn col_grupoprod = new TreeViewColumn();
 			CellRendererText cellrt7 = new CellRendererText();

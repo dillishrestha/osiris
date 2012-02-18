@@ -540,7 +540,7 @@ namespace osiris
 		
 		void on_button_pase_quirofano_clicked(object sender, EventArgs args)
 		{
-			new osiris.pases_a_quirofano(PidPaciente,folioservicio,idcentro_costo,LoginEmpleado,id_tipopaciente,idempresa_paciente,idaseguradora_paciente,false);
+			new osiris.pases_a_quirofano(PidPaciente,folioservicio,idcentro_costo,LoginEmpleado,id_tipopaciente,idempresa_paciente,idaseguradora_paciente,false,"pase_qx_urg");
 		}
 		
 		void on_button_venta_publico_clicked(object sender, EventArgs args)

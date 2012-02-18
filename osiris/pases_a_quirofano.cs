@@ -66,27 +66,8 @@ namespace osiris
 		string diagnostico_movcargo = "";
 		string nombrecirugia_movcargo = "";
 		string descripciontipopaciente = "";
-		
-		string query_slq = "SELECT osiris_erp_pases_qxurg.id_secuencia,osiris_erp_pases_qxurg.folio_de_servicio AS foliodeservicio," +
-							"to_char(osiris_erp_cobros_enca.pid_paciente,'9999999999') AS pidpaciente,"+
-							"nombre1_paciente || ' ' || nombre2_paciente || ' ' || apellido_paterno_paciente || ' ' || apellido_materno_paciente AS nombre_completo,"+
-							"to_char(osiris_his_paciente.fecha_nacimiento_paciente, 'dd-MM-yyyy') AS fechanacpaciente,"+
-							"to_char(to_number(to_char(age('"+DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss")+"',osiris_his_paciente.fecha_nacimiento_paciente),'yyyy') ,'9999'),'9999') AS edadpaciente,"+
-							"osiris_his_paciente.sexo_paciente,"+
-							"osiris_erp_cobros_enca.nombre_medico_tratante,"+
-							"osiris_erp_pases_qxurg.id_quien_creo,nombre1_empleado || ' ' || nombre2_empleado || ' ' || apellido_paterno_empleado || ' ' || apellido_materno_empleado AS nombresolicitante,"+
-							"to_char(osiris_erp_pases_qxurg.fechahora_creacion,'yyyy-MM-dd HH24:mi:ss') AS fechahoracrea," +
-							"osiris_erp_pases_qxurg.id_tipo_admisiones,descripcion_admisiones," +
-							"osiris_erp_cobros_enca.id_empresa AS idempresa,osiris_empresas.descripcion_empresa,"+
-							"osiris_erp_cobros_enca.id_aseguradora,osiris_aseguradoras.descripcion_aseguradora,"+
-							 "id_quien_creo " +
-						 	"FROM osiris_erp_pases_qxurg,osiris_his_tipo_admisiones,osiris_erp_cobros_enca,osiris_his_paciente,osiris_empleado,osiris_empresas,osiris_aseguradoras "+
-							"WHERE osiris_erp_pases_qxurg.id_tipo_admisiones = osiris_his_tipo_admisiones.id_tipo_admisiones " +
-							"AND osiris_erp_pases_qxurg.pid_paciente = osiris_his_paciente.pid_paciente "+
-							"AND osiris_erp_pases_qxurg.folio_de_servicio = osiris_erp_cobros_enca.folio_de_servicio "+
-							"AND osiris_erp_pases_qxurg.id_quien_creo = osiris_empleado.login_empleado "+
-							"AND osiris_erp_cobros_enca.id_empresa = osiris_empresas.id_empresa "+
-							"AND osiris_erp_cobros_enca.id_aseguradora = osiris_aseguradoras.id_aseguradora ";
+		string tipo_pase = "";
+		string query_slq = "";
 		
 		// Boton general para salir de las ventanas
 		// Todas la ventanas en glade este boton debe estra declarado identico
@@ -118,7 +99,8 @@ namespace osiris
 		class_public classpublic = new class_public();
 
 		public pases_a_quirofano (int pidpaciente_,int folioservicio_,int idcentro_costo_,string LoginEmpleado_,
-		                          int idtipopaciente_,int idempresa_paciente_,int idaseguradora_paciente_,bool altamedicapaciente)
+		                          int idtipopaciente_,int idempresa_paciente_,int idaseguradora_paciente_,
+									bool altamedicapaciente,string tipo_pase_)
 		{
 			escala_en_linux_windows = classpublic.escala_linux_windows;
 			connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
@@ -130,51 +112,57 @@ namespace osiris
 			idtipopaciente = idtipopaciente_;
 			idempresa_paciente = idempresa_paciente_;
 			idaseguradora_paciente = idaseguradora_paciente_;
+			tipo_pase = tipo_pase_;
+			
+			if(tipo_pase == "pase_qx_urg"){
+				Glade.XML gxml = new Glade.XML (null, "almacen_costos_compras.glade", "envio_almacenes", null);
+				gxml.Autoconnect (this);
 				
-			Glade.XML gxml = new Glade.XML (null, "almacen_costos_compras.glade", "envio_almacenes", null);
-			gxml.Autoconnect (this);
-			
-			entry_dia_inicio.Text = DateTime.Now.ToString("dd");
-			entry_mes_inicio.Text = DateTime.Now.ToString("MM");
-			entry_ano_inicio.Text = DateTime.Now.ToString("yyyy");			
-			entry_dia_termino.Sensitive = false;
-			entry_mes_termino.Sensitive = false;
-			entry_ano_termino.Sensitive = false;
-			entry_dia_inicio.IsEditable = false;
-			entry_mes_inicio.IsEditable = false;
-			entry_ano_inicio.IsEditable = false;				
-			hbox1.Hide();
-			hbox2.Hide();
-			checkbutton_seleccion_presupuestos.Hide();
-			checkbutton_todos_envios.Label = "Nuevo Pase para QX./Urgencias";
-			label262.Text = "Cancelar";
-			envio_almacenes.Show();
-			
-			button_salir.Clicked += new EventHandler(on_cierraventanas_clicked);
-			//button_buscar.Clicked += new EventHandler(on_buscar_clicked);
-           	button_rep.Clicked += new EventHandler(on_printing_pase_qx_clcked);
-          	checkbutton_todos_envios.Clicked += new EventHandler(on_create_pases_qxurg_clicked);
-          	//checkbutton_seleccion_presupuestos.Hide();
-			crea_treeview_pases();
-			llenado_treeview_pases();
+				entry_dia_inicio.Text = DateTime.Now.ToString("dd");
+				entry_mes_inicio.Text = DateTime.Now.ToString("MM");
+				entry_ano_inicio.Text = DateTime.Now.ToString("yyyy");			
+				entry_dia_termino.Sensitive = false;
+				entry_mes_termino.Sensitive = false;
+				entry_ano_termino.Sensitive = false;
+				entry_dia_inicio.IsEditable = false;
+				entry_mes_inicio.IsEditable = false;
+				entry_ano_inicio.IsEditable = false;				
+				hbox1.Hide();
+				hbox2.Hide();
+				checkbutton_seleccion_presupuestos.Hide();
+				checkbutton_todos_envios.Label = "Nuevo Pase para QX./Urgencias";
+				label262.Text = "Cancelar";
+				envio_almacenes.Show();
+				
+				button_salir.Clicked += new EventHandler(on_cierraventanas_clicked);
+				//button_buscar.Clicked += new EventHandler(on_buscar_clicked);
+	           	button_rep.Clicked += new EventHandler(on_printing_pase_qx_clcked);
+	          	checkbutton_todos_envios.Clicked += new EventHandler(on_create_pases_qxurg_clicked);
+	          	//checkbutton_seleccion_presupuestos.Hide();
+				crea_treeview_pases();
+				llenado_treeview_pases();
+			}
+			if(tipo_pase == "pase_de_ingreso"){
+				printing_pase();
+			}
 		}
 		
 		void crea_treeview_pases()
 		{
 			treeViewEnginePases = new TreeStore(typeof(string),
-														 typeof(string),
-														 typeof(string),
-														 typeof(string),
-														 typeof(string),
-														 typeof(string),
-														 typeof(string),
-														 typeof(string),
-														 typeof(string),
-														 typeof(string),
-														 typeof(string),
-														 typeof(string),
-														 typeof(string),
-														 typeof(string));
+												 typeof(string),
+												 typeof(string),
+												 typeof(string),
+												 typeof(string),
+												 typeof(string),
+												 typeof(string),
+												 typeof(string),
+												 typeof(string),
+												 typeof(string),
+												 typeof(string),
+												 typeof(string),
+												 typeof(string),
+												 typeof(string));
 						
 				lista_almacenes.Model = treeViewEnginePases;
 				lista_almacenes.RulesHint = true;
@@ -304,6 +292,11 @@ namespace osiris
 		
 		void on_printing_pase_qx_clcked(object sender, EventArgs args)
 		{
+			printing_pase();
+		}
+		
+		void printing_pase()
+		{
 			print = new PrintOperation ();
 			print.JobName = "Pase para Servicios Medicos";	// Name of the report
 			print.BeginPrint += new BeginPrintHandler (OnBeginPrint);
@@ -330,6 +323,58 @@ namespace osiris
 		{
 			string sexopaciente = "";
 			string empresa_o_aseguradora = "";
+			string titulo_de_pase = "";
+			
+			if(tipo_pase=="pase_qx_urg"){
+				query_slq = "SELECT osiris_erp_pases_qxurg.id_secuencia,osiris_erp_pases_qxurg.folio_de_servicio AS foliodeservicio," +
+							"to_char(osiris_erp_cobros_enca.pid_paciente,'9999999999') AS pidpaciente,"+
+							"nombre1_paciente || ' ' || nombre2_paciente || ' ' || apellido_paterno_paciente || ' ' || apellido_materno_paciente AS nombre_completo,"+
+							"to_char(osiris_his_paciente.fecha_nacimiento_paciente, 'dd-MM-yyyy') AS fechanacpaciente,"+
+							"to_char(to_number(to_char(age('"+DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss")+"',osiris_his_paciente.fecha_nacimiento_paciente),'yyyy') ,'9999'),'9999') AS edadpaciente,"+
+							"osiris_his_paciente.sexo_paciente,"+
+							"osiris_erp_cobros_enca.nombre_medico_tratante,"+
+							"osiris_erp_pases_qxurg.id_quien_creo,nombre1_empleado || ' ' || nombre2_empleado || ' ' || apellido_paterno_empleado || ' ' || apellido_materno_empleado AS nombresolicitante,"+
+							"to_char(osiris_erp_pases_qxurg.fechahora_creacion,'yyyy-MM-dd HH24:mi:ss') AS fechahoracrea," +
+							"osiris_erp_pases_qxurg.id_tipo_admisiones,descripcion_admisiones," +
+							"osiris_erp_cobros_enca.id_empresa AS idempresa,osiris_empresas.descripcion_empresa,"+
+							"osiris_erp_cobros_enca.id_aseguradora,osiris_aseguradoras.descripcion_aseguradora,"+
+							 "id_quien_creo " +
+						 	"FROM osiris_erp_pases_qxurg,osiris_his_tipo_admisiones,osiris_erp_cobros_enca,osiris_his_paciente,osiris_empleado,osiris_empresas,osiris_aseguradoras "+
+							"WHERE osiris_erp_pases_qxurg.id_tipo_admisiones = osiris_his_tipo_admisiones.id_tipo_admisiones " +
+							"AND osiris_erp_pases_qxurg.pid_paciente = osiris_his_paciente.pid_paciente "+
+							"AND osiris_erp_pases_qxurg.folio_de_servicio = osiris_erp_cobros_enca.folio_de_servicio "+
+							"AND osiris_erp_pases_qxurg.id_quien_creo = osiris_empleado.login_empleado "+
+							"AND osiris_erp_cobros_enca.id_empresa = osiris_empresas.id_empresa "+
+							"AND osiris_erp_cobros_enca.id_aseguradora = osiris_aseguradoras.id_aseguradora "+
+							"AND osiris_erp_pases_qxurg.folio_de_servicio = '"+ folioservicio.ToString().Trim() +"';";
+				titulo_de_pase = "PASE_A_SERVICIO_MEDICO_QUIRURGICO";
+			}
+			if(tipo_pase=="pase_de_ingreso"){
+				query_slq = "SELECT osiris_erp_cobros_enca.folio_de_servicio AS id_secuencia,osiris_erp_cobros_enca.folio_de_servicio AS foliodeservicio," +
+							"to_char(osiris_erp_cobros_enca.pid_paciente,'9999999999') AS pidpaciente,"+
+							"nombre1_paciente || ' ' || nombre2_paciente || ' ' || apellido_paterno_paciente || ' ' || apellido_materno_paciente AS nombre_completo,"+
+							"to_char(osiris_his_paciente.fecha_nacimiento_paciente, 'dd-MM-yyyy') AS fechanacpaciente,"+
+							"to_char(to_number(to_char(age('"+DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss")+"',osiris_his_paciente.fecha_nacimiento_paciente),'yyyy') ,'9999'),'9999') AS edadpaciente,"+
+							"osiris_his_paciente.sexo_paciente,"+
+							"osiris_erp_cobros_enca.nombre_medico_tratante,"+
+							"osiris_erp_cobros_enca.id_empleado_admision,nombre1_empleado || ' ' || nombre2_empleado || ' ' || apellido_paterno_empleado || ' ' || apellido_materno_empleado AS nombresolicitante,"+
+							"to_char(osiris_erp_cobros_enca.fechahora_creacion,'yyyy-MM-dd HH24:mi:ss') AS fechahoracrea," +
+							"osiris_erp_movcargos.id_tipo_admisiones,descripcion_admisiones," +
+							"osiris_erp_cobros_enca.id_empresa AS idempresa,osiris_empresas.descripcion_empresa,"+
+							"osiris_erp_cobros_enca.id_aseguradora,osiris_aseguradoras.descripcion_aseguradora,"+
+							 "id_empleado_admision AS id_quien_creo,descripcion_diagnostico_movcargos,nombre_de_cirugia " +
+						 	"FROM osiris_erp_movcargos,osiris_his_tipo_admisiones,osiris_erp_cobros_enca,osiris_his_paciente,osiris_empleado,osiris_empresas,osiris_aseguradoras "+
+							"WHERE " +
+							"osiris_erp_movcargos.id_tipo_admisiones = osiris_his_tipo_admisiones.id_tipo_admisiones " +
+							"AND osiris_erp_cobros_enca.pid_paciente = osiris_his_paciente.pid_paciente "+
+							"AND osiris_erp_movcargos.folio_de_servicio = osiris_erp_cobros_enca.folio_de_servicio "+
+							"AND osiris_erp_cobros_enca.id_empleado_admision = osiris_empleado.login_empleado "+
+							"AND osiris_erp_cobros_enca.id_empresa = osiris_empresas.id_empresa "+
+							"AND osiris_erp_cobros_enca.id_aseguradora = osiris_aseguradoras.id_aseguradora "+
+							"AND osiris_erp_cobros_enca.folio_de_servicio = '"+ folioservicio.ToString().Trim() +"';";
+				titulo_de_pase = "PASE_DE_INGRESO";
+			}
+			
 			Cairo.Context cr = context.CairoContext;
 			Pango.Layout layout = context.CreatePangoLayout ();
 						
@@ -345,7 +390,7 @@ namespace osiris
 	 			conexion.Open ();
 	        	NpgsqlCommand comando; 
 	        	comando = conexion.CreateCommand (); 
-	           	comando.CommandText = query_slq + "AND osiris_erp_pases_qxurg.folio_de_servicio = '"+ folioservicio.ToString().Trim() +"';";
+	           	comando.CommandText = query_slq;
 	        	Console.WriteLine(comando.CommandText);
 				NpgsqlDataReader lector = comando.ExecuteReader();
 				if (lector.Read()){
@@ -379,7 +424,7 @@ namespace osiris
 					               		lector["id_quien_creo"].ToString().Trim(),
 					                   lector["nombresolicitante"].ToString().Trim(),
 					              	 	descripciontipopaciente,
-					                 empresa_o_aseguradora);
+					                 empresa_o_aseguradora,titulo_de_pase);
 					/*
 					imprime_encabezado(cr,
 									layout,
@@ -415,7 +460,7 @@ namespace osiris
 		void imprime_encabezado(Cairo.Context cr,Pango.Layout layout,string areaquiensolicita,string numerosolicitud,string fechasolicitud, 
 		                    string numerodeatencion, string numeroexpediente, string nombrepaciente, string fechanacimiento, string edadpaciente, 
 		                    string sexodelpaciente, string descripciondiagnostico, string nombredecirugia, string medicotratante, string numerohabitacion,
-		                    string quiensolicito, string nomsolicitante, string tipo_paciente,string empresa_aseguradora)
+		                    string quiensolicito, string nomsolicitante, string tipo_paciente,string empresa_aseguradora,string titulo_de_pase)
 		{
 			//Gtk.Image image5 = new Gtk.Image();
             //image5.Name = "image5";
@@ -456,7 +501,7 @@ namespace osiris
 			//layout.Wrap = Pango.WrapMode.Word;
 			//layout.SingleParagraphMode = true;
 			layout.Justify =  false;
-			cr.MoveTo(width/2,45*escala_en_linux_windows);	layout.SetText("PASE_A_SERVICIO_MEDICO_QUIRURGICO");	Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(width/2,45*escala_en_linux_windows);	layout.SetText(titulo_de_pase);	Pango.CairoHelper.ShowLayout (cr, layout);
 			
 			fontSize = 9.0;			layout = null;			layout = context.CreatePangoLayout ();
 			desc.Size = (int)(fontSize * pangoScale);		layout.FontDescription = desc;
@@ -469,10 +514,12 @@ namespace osiris
 			
 			cr.MoveTo(05*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);		layout.SetText("Area quien Solicito: "+areaquiensolicita);	Pango.CairoHelper.ShowLayout (cr, layout);
 			//cr.MoveTo(250*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText("N° de Solicitud: ");			Pango.CairoHelper.ShowLayout (cr, layout);
-			cr.MoveTo(400*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText("Fecha Pase: "+fechasolicitud);						Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(400*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText("Fecha : "+fechasolicitud);						Pango.CairoHelper.ShowLayout (cr, layout);
 			comienzo_linea += separacion_linea;
 			layout.FontDescription.Weight = Weight.Bold;		// Letra negrita
-			cr.MoveTo(250*escala_en_linux_windows,comienzo_linea-separacion_linea*escala_en_linux_windows);		layout.SetText("N° de Pase: "+numerosolicitud);			Pango.CairoHelper.ShowLayout (cr, layout);
+			if(tipo_pase == "pase_qx_urg"){
+				cr.MoveTo(250*escala_en_linux_windows,comienzo_linea-separacion_linea*escala_en_linux_windows);		layout.SetText("N° de Pase: "+numerosolicitud);			Pango.CairoHelper.ShowLayout (cr, layout);
+			}
 			cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText("N° Atencion: "+numerodeatencion);	Pango.CairoHelper.ShowLayout (cr, layout);
 			cr.MoveTo(120*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText("N° Expe.: "+numeroexpediente);		Pango.CairoHelper.ShowLayout (cr, layout);
 			cr.MoveTo(220*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText("Nombre Paciente: "+nombrepaciente);	Pango.CairoHelper.ShowLayout (cr, layout);
@@ -496,17 +543,19 @@ namespace osiris
 			cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText("Empresa o Municipio : "+empresa_aseguradora);							Pango.CairoHelper.ShowLayout (cr, layout);
 			comienzo_linea += separacion_linea;
 			//comienzo_linea += separacion_linea;
-			cr.MoveTo(10*escala_en_linux_windows,(comienzo_linea+(separacion_linea*2))*escala_en_linux_windows);		layout.SetText("Cirugia :___________________________________________");							Pango.CairoHelper.ShowLayout (cr, layout);						
-			cr.MoveTo(10*escala_en_linux_windows,(comienzo_linea+(separacion_linea*4))*escala_en_linux_windows);		layout.SetText("Cirujano :____________________________________________");							Pango.CairoHelper.ShowLayout (cr, layout);						
-			cr.MoveTo(10*escala_en_linux_windows,(comienzo_linea+(separacion_linea*6))*escala_en_linux_windows);		layout.SetText("Ayudante :____________________________________________");							Pango.CairoHelper.ShowLayout (cr, layout);						
-			cr.MoveTo(10*escala_en_linux_windows,(comienzo_linea+(separacion_linea*8))*escala_en_linux_windows);		layout.SetText("Anestesiologo :______________________________________");							Pango.CairoHelper.ShowLayout (cr, layout);						
-			cr.MoveTo(10*escala_en_linux_windows,(comienzo_linea+(separacion_linea*10))*escala_en_linux_windows);		layout.SetText("Tipo de Anestesia :______________________________________");							Pango.CairoHelper.ShowLayout (cr, layout);						
-			cr.MoveTo(10*escala_en_linux_windows,(comienzo_linea+(separacion_linea*12))*escala_en_linux_windows);		layout.SetText("Nom. Proveedor 1 :___________________________________________");							Pango.CairoHelper.ShowLayout (cr, layout);						
-			cr.MoveTo(10*escala_en_linux_windows,(comienzo_linea+(separacion_linea*14))*escala_en_linux_windows);		layout.SetText("Nom. Proveedor 2 :___________________________________________");							Pango.CairoHelper.ShowLayout (cr, layout);						
-			cr.MoveTo(10*escala_en_linux_windows,(comienzo_linea+(separacion_linea*16))*escala_en_linux_windows);		layout.SetText("Materiales y/o Equipos :");							Pango.CairoHelper.ShowLayout (cr, layout);						
-
-			cr.MoveTo(430*escala_en_linux_windows,(comienzo_linea+(separacion_linea*2))*escala_en_linux_windows);		layout.SetText("Sello de Dep. Medico");							Pango.CairoHelper.ShowLayout (cr, layout);						
-			cr.MoveTo(150*escala_en_linux_windows,(comienzo_linea+(separacion_linea*21))*escala_en_linux_windows);		layout.SetText("Sello y Firma Cajero");							Pango.CairoHelper.ShowLayout (cr, layout);
+			if(tipo_pase == "pase_qx_urg"){
+				cr.MoveTo(10*escala_en_linux_windows,(comienzo_linea+(separacion_linea*2))*escala_en_linux_windows);		layout.SetText("Cirugia :___________________________________________");							Pango.CairoHelper.ShowLayout (cr, layout);						
+				cr.MoveTo(10*escala_en_linux_windows,(comienzo_linea+(separacion_linea*4))*escala_en_linux_windows);		layout.SetText("Cirujano :____________________________________________");							Pango.CairoHelper.ShowLayout (cr, layout);						
+				cr.MoveTo(10*escala_en_linux_windows,(comienzo_linea+(separacion_linea*6))*escala_en_linux_windows);		layout.SetText("Ayudante :____________________________________________");							Pango.CairoHelper.ShowLayout (cr, layout);						
+				cr.MoveTo(10*escala_en_linux_windows,(comienzo_linea+(separacion_linea*8))*escala_en_linux_windows);		layout.SetText("Anestesiologo :______________________________________");							Pango.CairoHelper.ShowLayout (cr, layout);						
+				cr.MoveTo(10*escala_en_linux_windows,(comienzo_linea+(separacion_linea*10))*escala_en_linux_windows);		layout.SetText("Tipo de Anestesia :______________________________________");							Pango.CairoHelper.ShowLayout (cr, layout);						
+				cr.MoveTo(10*escala_en_linux_windows,(comienzo_linea+(separacion_linea*12))*escala_en_linux_windows);		layout.SetText("Nom. Proveedor 1 :___________________________________________");							Pango.CairoHelper.ShowLayout (cr, layout);						
+				cr.MoveTo(10*escala_en_linux_windows,(comienzo_linea+(separacion_linea*14))*escala_en_linux_windows);		layout.SetText("Nom. Proveedor 2 :___________________________________________");							Pango.CairoHelper.ShowLayout (cr, layout);						
+				cr.MoveTo(10*escala_en_linux_windows,(comienzo_linea+(separacion_linea*16))*escala_en_linux_windows);		layout.SetText("Materiales y/o Equipos :");							Pango.CairoHelper.ShowLayout (cr, layout);						
+		
+				cr.MoveTo(430*escala_en_linux_windows,(comienzo_linea+(separacion_linea*2))*escala_en_linux_windows);		layout.SetText("Sello de Dep. Medico");							Pango.CairoHelper.ShowLayout (cr, layout);						
+				cr.MoveTo(150*escala_en_linux_windows,(comienzo_linea+(separacion_linea*21))*escala_en_linux_windows);		layout.SetText("Sello y Firma Cajero");							Pango.CairoHelper.ShowLayout (cr, layout);
+			}
 			fontSize = 6.5;
 			desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;
 			layout.FontDescription.Weight = Weight.Bold;		// Letra negrita
@@ -523,10 +572,11 @@ namespace osiris
 			//Console.WriteLine(comienzo_linea.ToString());
 			cr.Rectangle (05*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows, 565*escala_en_linux_windows, (separacion_linea*18)*escala_en_linux_windows);
 			
-			// Linea Vertical
-			cr.MoveTo(400*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);
-			cr.LineTo(400*escala_en_linux_windows,330);
-			
+			if(tipo_pase == "pase_qx_urg"){
+				// Linea Vertical
+				cr.MoveTo(400*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);
+				cr.LineTo(400*escala_en_linux_windows,330);
+			}
 			//cr.MoveTo(565*escala_en_linux_windows, 383*escala_en_linux_windows);
 			//cr.LineTo(05,383);		// Linea Horizontal 4
 			

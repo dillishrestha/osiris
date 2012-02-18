@@ -84,7 +84,8 @@ namespace osiris
 			    	
 		string query_departamento = "AND osiris_his_tipo_admisiones.descripcion_admisiones = '0' ";
 		int id_tipo_admisiones = 0; 
-		string query1 = "" ;
+		string query_consulta = "" ;
+		string rango_de_fecha = "";
 		string titulopagina= "MOVIMIENTOS DE PRODUCOS";
 		
 		TreeStore treeViewEngineBusca2;	// Para la busqueda de Productos
@@ -155,6 +156,8 @@ namespace osiris
 				llenado_combobox(1,"",combobox_departamentos,"sql","SELECT * FROM osiris_his_tipo_admisiones "+
 		               						"WHERE cuenta_mayor = 4000 "+
 		               						"ORDER BY descripcion_admisiones;","descripcion_admisiones","id_tipo_admisiones",args_args,args_id_array);
+				button_consultar_costos.Clicked += new EventHandler(on_button_consultar_costos_clicked);
+				button_imprimir_movimiento.Clicked += new EventHandler(on_button_rpt_movcargosfecha_clicked);
 			}
 			//  Sale de la ventana:
 			button_salir.Clicked += new EventHandler(on_cierraventanas_clicked);
@@ -186,6 +189,9 @@ namespace osiris
 				}
 				if(tipo_reporte == "productos_requisados"){
 					query_departamento = "";
+				}
+				if(tipo_reporte == "cargos_x_fecha"){
+				
 				}
 			}
 		}
@@ -275,20 +281,20 @@ namespace osiris
 		void on_button_imprimir_movimiento_clicked(object sender, EventArgs args)
 		{
 			TreeIter iter;
-			//if(this.query1.GetIterFirst (out iter)){         
-			//	new osiris.imprime_mov_productos (this.query1,this.lista_resumen_productos,this.treeViewEngineResumen);
-			//}
 			if (this.treeViewEngineResumen.GetIterFirst (out iter)){
-				//Console.WriteLine(query1);
-				
-				new osiris.imprime_mov_productos (entry_total_aplicado.Text,entry_dia1.Text,entry_mes1.Text,entry_ano1.Text,entry_dia2.Text,entry_mes2.Text,entry_ano2.Text, this.lista_resumen_productos,this.treeViewEngineResumen,this.query1,this.nombrebd,this.titulopagina);
+				new osiris.imprime_mov_productos (entry_total_aplicado.Text,entry_dia1.Text,entry_mes1.Text,entry_ano1.Text,entry_dia2.Text,entry_mes2.Text,entry_ano2.Text, this.lista_resumen_productos,this.treeViewEngineResumen,query_consulta,this.nombrebd,this.titulopagina);
 			}else{
-				
 				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
 								MessageType.Error, 
 								ButtonsType.Close, "NO existe nada para imprimir");
 				msgBoxError.Run ();			msgBoxError.Destroy();
 			}
+		}
+		
+		void on_button_rpt_movcargosfecha_clicked(object sender, EventArgs args)
+		{
+			new osiris.inventario_almacen_reporte (1,"","01","0000",LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,tipo_reporte,query_consulta,
+				entry_dia1.Text,entry_mes1.Text,entry_ano1.Text,entry_dia2.Text,entry_mes2.Text,entry_ano2.Text);
 		}
 		
 		void on_button_quitar_producto_clicked (object o, EventArgs args)
@@ -331,6 +337,12 @@ namespace osiris
 				lista_producto_seleccionados.AppendColumn(col_01);
 			}else{
 				treeViewEngineSelec = new TreeStore(typeof(string), 
+								typeof(string),
+								typeof(string),
+								typeof(string),
+								typeof(string),
+								typeof(string),
+								typeof(string),
 								typeof(string));												
 				lista_producto_seleccionados.Model = treeViewEngineSelec;			
 				lista_producto_seleccionados.RulesHint = true;
@@ -346,6 +358,8 @@ namespace osiris
 				col_01.Title = "Descripcion de Producto";
 				col_01.PackStart(cellr1, true);
 				col_01.AddAttribute (cellr1, "text", 1);
+				col_01.Resizable = true;
+				cellr1.Width = 250;
 				
 				TreeViewColumn col_02 = new TreeViewColumn();
 				CellRendererText cellr2 = new CellRendererText();
@@ -395,7 +409,13 @@ namespace osiris
 		
 		void on_button_consultar_costos_clicked (object sender, EventArgs args)         
 		{
-			llenando_productos();			
+			if(tipo_reporte != "cargos_x_fecha"){
+				llenando_productos();
+			}else{
+				string query_fechas = "AND to_char(osiris_erp_cobros_deta.fechahora_creacion,'yyyy-MM-dd') >= '"+entry_ano1.Text.Trim()+"-"+entry_mes1.Text+"-"+entry_dia1.Text+"' "+
+							"AND to_char(osiris_erp_cobros_deta.fechahora_creacion,'yyyy-MM-dd') <= '"+entry_ano2.Text.Trim()+"-"+entry_mes2.Text+"-"+entry_dia2.Text+"' ";
+				llena_treeview_aplicados(" ",query_fechas);
+			}
 		}
 		
 		void llenando_productos()
@@ -405,13 +425,13 @@ namespace osiris
 			string var_paso = "";
 			string campo_filtrado = "";			
 			if(tipo_reporte == "envios_subalamcenes"){
-			    query_fechas = "AND to_char(osiris_his_solicitudes_deta.fechahora_solicitud,'yyyy-MM-dd') >= '"+entry_ano1.Text.Trim()+"-"+entry_mes1.Text+"-"+entry_dia1.Text+"' "+
-									            "AND to_char(osiris_his_solicitudes_deta.fechahora_solicitud,'yyyy-MM-dd') <= '"+entry_ano2.Text.Trim()+"-"+entry_mes2.Text+"-"+entry_dia2.Text+"' ";
+				query_fechas = "AND to_char(osiris_his_solicitudes_deta.fechahora_solicitud,'yyyy-MM-dd') >= '"+entry_ano1.Text.Trim()+"-"+entry_mes1.Text+"-"+entry_dia1.Text+"' "+
+					"AND to_char(osiris_his_solicitudes_deta.fechahora_solicitud,'yyyy-MM-dd') <= '"+entry_ano2.Text.Trim()+"-"+entry_mes2.Text+"-"+entry_dia2.Text+"' ";
 				campo_filtrado = "AND osiris_his_solicitudes_deta.id_producto IN('";
 			}
 			if(tipo_reporte == "cargos_pacientes"){
 				query_fechas = "AND to_char(osiris_erp_cobros_deta.fechahora_creacion,'yyyy-MM-dd') >= '"+entry_ano1.Text.Trim()+"-"+entry_mes1.Text+"-"+entry_dia1.Text+"' "+
-									            "AND to_char(osiris_erp_cobros_deta.fechahora_creacion,'yyyy-MM-dd') <= '"+entry_ano2.Text.Trim()+"-"+entry_mes2.Text+"-"+entry_dia2.Text+"' ";
+						"AND to_char(osiris_erp_cobros_deta.fechahora_creacion,'yyyy-MM-dd') <= '"+entry_ano2.Text.Trim()+"-"+entry_mes2.Text+"-"+entry_dia2.Text+"' ";
 				campo_filtrado = "AND osiris_erp_cobros_deta.id_producto IN('";
 			}
 			if(tipo_reporte == "productos_requisados"){
@@ -454,33 +474,19 @@ namespace osiris
 		
 		void llena_treeview_aplicados(string productos_seleccionado_,string query_fechas_)
 		{	
-			/*
-			SELECT to_char(SUM(cantidad_aplicada),'999999999.99') AS cantidadaplicada,to_char(osiris_erp_cobros_deta.id_producto,'999999999999') AS idproducto,descripcion_producto 
-			FROM osiris_erp_cobros_deta,osiris_productos,osiris_his_paciente,osiris_his_tipo_admisiones,osiris_erp_cobros_enca,osiris_empresas WHERE osiris_erp_cobros_deta.id_producto = osiris_productos.id_producto 
-			AND osiris_erp_cobros_deta.pid_paciente = osiris_his_paciente.pid_paciente AND osiris_erp_cobros_deta.id_tipo_admisiones = osiris_his_tipo_admisiones.id_tipo_admisiones 
-			AND osiris_erp_cobros_deta.folio_de_servicio = osiris_erp_cobros_enca.folio_de_servicio 
-			AND osiris_erp_cobros_enca.id_empresa = osiris_empresas.id_empresa 
-			AND osiris_erp_cobros_deta.cantidad_aplicada > '0' 
-			AND osiris_erp_cobros_deta.eliminado = false 
-			AND osiris_erp_cobros_deta.id_producto IN('52502300009','52502300008') 
-			AND to_char(osiris_erp_cobros_deta.fechahora_creacion,'yyyy-MM-dd') >= '2012-02-01' 
-			AND to_char(osiris_erp_cobros_deta.fechahora_creacion,'yyyy-MM-dd') <= '2012-02-13' 
-			GROUP BY osiris_erp_cobros_deta.id_producto,descripcion_producto;
-			*/
-			
-			string query_consulta = "";
+			query_consulta = "";
 			float total_aplicado = 0;
 			if(tipo_reporte == "envios_subalamcenes"){
 				query_consulta =  "SELECT to_char(osiris_his_solicitudes_deta.id_producto,'999999999999') AS idproducto,descripcion_almacen," +
-		        		"descripcion_producto,folio_de_solicitud," +
+						"descripcion_producto,folio_de_solicitud," +
 						"to_char(osiris_his_solicitudes_deta.pid_paciente,'9999999999') AS pidpaciente," +
 						"osiris_his_solicitudes_deta.folio_de_servicio AS foliodeatencion,"+
 						"nombre1_paciente || ' ' || nombre2_paciente || ' ' || apellido_paterno_paciente || ' ' || apellido_materno_paciente AS nombre_completo,"+
 						"cantidad_solicitada,to_char(osiris_his_solicitudes_deta.fechahora_solicitud,'dd-MM-yyyy HH24:mi') AS fechahorasolic," +
 						"cantidad_autorizada,to_char(osiris_his_solicitudes_deta.fechahora_autorizado,'dd-MM-yyyy HH24:mi') AS fechahoraautoriz," +
 						"osiris_his_solicitudes_deta.id_almacen "+
-		        		"FROM osiris_his_solicitudes_deta,osiris_productos,osiris_almacenes,osiris_his_paciente " +
-		        		"WHERE osiris_his_solicitudes_deta.id_producto = osiris_productos.id_producto "+
+						"FROM osiris_his_solicitudes_deta,osiris_productos,osiris_almacenes,osiris_his_paciente " +
+						"WHERE osiris_his_solicitudes_deta.id_producto = osiris_productos.id_producto "+
 						"AND osiris_his_solicitudes_deta.id_almacen = osiris_almacenes.id_almacen " +
 						"AND osiris_his_solicitudes_deta.pid_paciente = osiris_his_paciente.pid_paciente "+
 						productos_seleccionado_+
@@ -491,29 +497,51 @@ namespace osiris
 			
 			if(tipo_reporte == "cargos_pacientes"){
 				query_consulta = "SELECT to_char(SUM(cantidad_aplicada),'999999999.99') AS cantidadaplicada,to_char(osiris_erp_cobros_deta.id_producto,'999999999999') AS idproducto,descripcion_producto,"+
-	        			      "to_char(osiris_erp_cobros_deta.folio_de_servicio,'9999999999') AS foliodeservicio,to_char(osiris_erp_cobros_deta.fechahora_creacion,'dd-MM-yyyy HH24:mi') AS fechahoracreacion,"+
-	        			      "to_char(osiris_erp_cobros_deta.pid_paciente,'9999999999') AS pidpaciente,osiris_his_paciente.nombre1_paciente || ' ' || "+  
-						      "osiris_his_paciente.nombre2_paciente || ' ' || osiris_his_paciente.apellido_paterno_paciente || ' ' || osiris_his_paciente.apellido_materno_paciente AS nombre_paciente,"+
-						      "to_char(osiris_erp_cobros_deta.id_tipo_admisiones,'9999999999') AS idtipoadmisiones,descripcion_admisiones,descripcion_empresa "+
-						      "FROM osiris_erp_cobros_deta,osiris_productos,osiris_his_paciente,osiris_his_tipo_admisiones,osiris_erp_cobros_enca,osiris_empresas "+
-						      "WHERE osiris_erp_cobros_deta.id_producto = osiris_productos.id_producto AND "+ 
-						      "osiris_erp_cobros_deta.pid_paciente = osiris_his_paciente.pid_paciente AND "+ 
-						      "osiris_erp_cobros_deta.id_tipo_admisiones = osiris_his_tipo_admisiones.id_tipo_admisiones AND "+
-							"osiris_erp_cobros_deta.folio_de_servicio = osiris_erp_cobros_enca.folio_de_servicio AND "+
-							"osiris_erp_cobros_enca.id_empresa = osiris_empresas.id_empresa AND "+
-						      "osiris_erp_cobros_deta.cantidad_aplicada > '0' AND "+
-						      "osiris_erp_cobros_deta.eliminado = false "+ 
-						      productos_seleccionado_+
-						      query_fechas_+
-						      query_departamento+
-						      "GROUP BY osiris_erp_cobros_deta.id_producto,descripcion_producto,osiris_erp_cobros_deta.folio_de_servicio,osiris_erp_cobros_deta.fechahora_creacion,osiris_erp_cobros_deta.pid_paciente,osiris_his_paciente.nombre1_paciente || ' ' || "+  
-						      "osiris_his_paciente.nombre2_paciente || ' ' || osiris_his_paciente.apellido_paterno_paciente || ' ' || osiris_his_paciente.apellido_materno_paciente,osiris_erp_cobros_deta.id_tipo_admisiones,descripcion_admisiones,descripcion_empresa "+
-						      "ORDER BY osiris_erp_cobros_deta.id_tipo_admisiones,osiris_erp_cobros_deta.id_producto,"+
-						      "osiris_his_paciente.nombre1_paciente || ' ' || osiris_his_paciente.nombre2_paciente || ' ' || osiris_his_paciente.apellido_paterno_paciente || ' ' || osiris_his_paciente.apellido_materno_paciente;";
+						"to_char(osiris_erp_cobros_deta.folio_de_servicio,'9999999999') AS foliodeservicio,to_char(osiris_erp_cobros_deta.fechahora_creacion,'dd-MM-yyyy HH24:mi') AS fechahoracreacion,"+
+						"to_char(osiris_erp_cobros_deta.pid_paciente,'9999999999') AS pidpaciente,osiris_his_paciente.nombre1_paciente || ' ' || "+  
+						"osiris_his_paciente.nombre2_paciente || ' ' || osiris_his_paciente.apellido_paterno_paciente || ' ' || osiris_his_paciente.apellido_materno_paciente AS nombre_paciente,"+
+						"to_char(osiris_erp_cobros_deta.id_tipo_admisiones,'9999999999') AS idtipoadmisiones,descripcion_admisiones,descripcion_empresa "+
+						"FROM osiris_erp_cobros_deta,osiris_productos,osiris_his_paciente,osiris_his_tipo_admisiones,osiris_erp_cobros_enca,osiris_empresas "+
+						"WHERE osiris_erp_cobros_deta.id_producto = osiris_productos.id_producto AND "+ 
+						"osiris_erp_cobros_deta.pid_paciente = osiris_his_paciente.pid_paciente AND "+ 
+						"osiris_erp_cobros_deta.id_tipo_admisiones = osiris_his_tipo_admisiones.id_tipo_admisiones AND "+
+						"osiris_erp_cobros_deta.folio_de_servicio = osiris_erp_cobros_enca.folio_de_servicio AND "+
+						"osiris_erp_cobros_enca.id_empresa = osiris_empresas.id_empresa AND "+
+						"osiris_erp_cobros_deta.cantidad_aplicada > '0' AND "+
+						"osiris_erp_cobros_deta.eliminado = false "+ 
+						productos_seleccionado_+
+						query_fechas_+
+						query_departamento+
+						"GROUP BY osiris_erp_cobros_deta.id_producto,descripcion_producto,osiris_erp_cobros_deta.folio_de_servicio,osiris_erp_cobros_deta.fechahora_creacion,osiris_erp_cobros_deta.pid_paciente,osiris_his_paciente.nombre1_paciente || ' ' || "+  
+						"osiris_his_paciente.nombre2_paciente || ' ' || osiris_his_paciente.apellido_paterno_paciente || ' ' || osiris_his_paciente.apellido_materno_paciente,osiris_erp_cobros_deta.id_tipo_admisiones,descripcion_admisiones,descripcion_empresa "+
+						"ORDER BY osiris_erp_cobros_deta.id_tipo_admisiones,osiris_erp_cobros_deta.id_producto,"+
+						"osiris_his_paciente.nombre1_paciente || ' ' || osiris_his_paciente.nombre2_paciente || ' ' || osiris_his_paciente.apellido_paterno_paciente || ' ' || osiris_his_paciente.apellido_materno_paciente;";
 			}
 			
 			if(tipo_reporte == "productos_requisados"){
 				query_consulta = "";	
+			}
+			
+			if(tipo_reporte == "cargos_x_fecha"){
+				query_consulta = "SELECT to_char(SUM(cantidad_aplicada),'999999999.99') AS cantidadaplicada," +
+					"to_char(SUM(cantidad_aplicada),'999999999.99') AS stock," +
+						"to_char(osiris_erp_cobros_deta.id_producto,'999999999999') AS idproducto,descripcion_producto," +
+						"to_char(osiris_productos.costo_producto,'999999999.99') AS costoproducto, "+
+						"to_char(osiris_productos.cantidad_de_embalaje,'999999999.99') AS embalaje, "+
+						"to_char(osiris_productos.porcentage_ganancia,'99999.99') AS porcentageganancia, "+
+						"to_char(osiris_productos.costo_por_unidad,'999999999.99') AS costoproductounitario "+						
+						"FROM osiris_erp_cobros_deta,osiris_productos,osiris_his_paciente,osiris_his_tipo_admisiones,osiris_erp_cobros_enca,osiris_empresas "+
+						"WHERE osiris_erp_cobros_deta.id_producto = osiris_productos.id_producto "+
+						"AND osiris_erp_cobros_deta.pid_paciente = osiris_his_paciente.pid_paciente "+
+						"AND osiris_erp_cobros_deta.id_tipo_admisiones = osiris_his_tipo_admisiones.id_tipo_admisiones "+
+						"AND osiris_erp_cobros_deta.folio_de_servicio = osiris_erp_cobros_enca.folio_de_servicio "+
+						"AND osiris_erp_cobros_enca.id_empresa = osiris_empresas.id_empresa "+ 
+						"AND osiris_erp_cobros_deta.cantidad_aplicada > '0' "+ 
+						"AND osiris_erp_cobros_deta.eliminado = false "+ 
+						//"AND osiris_erp_cobros_deta.id_producto IN('52502300009','52502300008')
+						query_fechas_+
+						"GROUP BY osiris_erp_cobros_deta.id_producto,descripcion_producto,costo_producto,cantidad_de_embalaje,porcentage_ganancia,costo_por_unidad " +
+						"ORDER BY descripcion_producto;";
 			}
 			NpgsqlConnection conexion;
 			conexion = new NpgsqlConnection (connectionString+nombrebd);
@@ -523,13 +551,12 @@ namespace osiris
 				conexion.Open ();
 				NpgsqlCommand comando; 
 				comando = conexion.CreateCommand ();
-				query1 = query_consulta;
-				comando.CommandText = query1;
-				Console.WriteLine(query1);
+				comando.CommandText = query_consulta;
+				Console.WriteLine(query_consulta);
 				NpgsqlDataReader lector = comando.ExecuteReader ();
 				while (lector.Read()){					
 					if(tipo_reporte == "envios_subalamcenes"){
-						total_aplicado += float.Parse(((string) lector["cantidad_autorizada"]).Trim());
+						total_aplicado += float.Parse(((string) lector["cantidad_autorizada"].ToString().Trim()));
 						treeViewEngineResumen.AppendValues ((string) lector["descripcion_producto"],
 										(string) lector["idproducto"],
 										(string) lector["folio_de_solicitud"].ToString(),
@@ -543,7 +570,7 @@ namespace osiris
 										(string) lector["pidpaciente"].ToString());
 					}
 					if(tipo_reporte == "cargos_pacientes"){
-						total_aplicado += float.Parse(((string) lector["cantidadaplicada"]).Trim());
+						total_aplicado += float.Parse(((string) lector["cantidadaplicada"]).ToString().Trim());
 						treeViewEngineResumen.AppendValues ((string) lector["cantidadaplicada"],
 										(string) lector["idproducto"],
 										(string) lector["descripcion_producto"],
@@ -552,11 +579,21 @@ namespace osiris
 										(string) lector["nombre_paciente"],
 										(string) lector["idtipoadmisiones"],
 										(string) lector["descripcion_admisiones"],
-										(string) lector["fechahoracreacion"]);
-									
+										(string) lector["fechahoracreacion"]);									
 					}					
 					if(tipo_reporte == "productos_requisados"){
 					
+					}
+					
+					if(tipo_reporte == "cargos_x_fecha"){
+						total_aplicado += float.Parse((string) lector["costoproductounitario"].ToString()) * float.Parse((string) lector["cantidadaplicada"].ToString());
+						treeViewEngineSelec.AppendValues ((string) lector["idproducto"],
+										(string) lector["descripcion_producto"].ToString(),
+										(string) lector["cantidadaplicada"].ToString(),
+										string.Format("{0:C}",decimal.Parse((string) lector["costoproducto"].ToString())),
+										string.Format("{0:F}",decimal.Parse((string) lector["embalaje"].ToString())),
+										string.Format("{0:C}",decimal.Parse((string) lector["costoproductounitario"].ToString())),
+										string.Format("{0:C}",decimal.Parse((string) lector["costoproductounitario"].ToString()) * decimal.Parse((string) lector["cantidadaplicada"].ToString())));
 					}
 				}
 				this.entry_total_aplicado.Text = total_aplicado.ToString(); 
@@ -696,27 +733,27 @@ namespace osiris
 		void crea_treeview_cargos_pacientes()
 		{
 			treeViewEngineResumen = new TreeStore(typeof(string), 
-												  typeof(string),
-												  typeof(string),
-												  typeof(string),
-												  typeof(string),
-												  typeof(string),
-												  typeof(string),
-												  typeof(string),
-												  typeof(string));
+								typeof(string),
+								typeof(string),
+								typeof(string),
+								typeof(string),
+								typeof(string),
+								typeof(string),
+								typeof(string),
+								typeof(string));
 												
-	        lista_resumen_productos.Model = treeViewEngineResumen;
-		
-		    lista_resumen_productos.RulesHint = true;
-		       
-            TreeViewColumn col_cantidad = new TreeViewColumn();
+			lista_resumen_productos.Model = treeViewEngineResumen;
+			
+			lista_resumen_productos.RulesHint = true;
+			
+			TreeViewColumn col_cantidad = new TreeViewColumn();
 			CellRendererText cellr0 = new CellRendererText();
 			col_cantidad.Title = "Cantidad Aplicada"; // titulo de la cabecera de la columna, si está visible
 			col_cantidad.PackStart(cellr0, true);
 			col_cantidad.AddAttribute (cellr0, "text", 0);
 			col_cantidad.SortColumnId = (int) Column_resumen1.col_cantidad;
-            
-            TreeViewColumn col_id_producto = new TreeViewColumn();
+			
+			TreeViewColumn col_id_producto = new TreeViewColumn();
 			CellRendererText cellr1 = new CellRendererText();
 			col_id_producto.Title = "ID Producto."; // titulo de la cabecera de la columna, si está visible
 			col_id_producto.PackStart(cellr1, true);
@@ -773,27 +810,27 @@ namespace osiris
 			col_fecha_cargo.SortColumnId = (int) Column_resumen1.col_fecha_cargo;
 			
 			lista_resumen_productos.AppendColumn(col_cantidad);
-		    lista_resumen_productos.AppendColumn(col_id_producto);
-            lista_resumen_productos.AppendColumn(col_descripcion);
-            lista_resumen_productos.AppendColumn(col_folio_de_servicio); //num atencion
-            lista_resumen_productos.AppendColumn(col_pid_paciente);
-            lista_resumen_productos.AppendColumn(col_nombre_paciente);
-            lista_resumen_productos.AppendColumn(col_id_departamento); //(id_tipo_admision);       
-            lista_resumen_productos.AppendColumn(col_departamento);   // (descripcion_admision)
-            lista_resumen_productos.AppendColumn(col_fecha_cargo);
+			lista_resumen_productos.AppendColumn(col_id_producto);
+			lista_resumen_productos.AppendColumn(col_descripcion);
+			lista_resumen_productos.AppendColumn(col_folio_de_servicio); //num atencion
+			lista_resumen_productos.AppendColumn(col_pid_paciente);
+			lista_resumen_productos.AppendColumn(col_nombre_paciente);
+			lista_resumen_productos.AppendColumn(col_id_departamento); //(id_tipo_admision);       
+			lista_resumen_productos.AppendColumn(col_departamento);   // (descripcion_admision)
+			lista_resumen_productos.AppendColumn(col_fecha_cargo);
 		}
 		
 		enum Column_resumen1
 		{        
 			col_cantidad, //
-		    col_id_producto,
-            col_descripcion,
-            col_folio_de_servicio, //num atencion
-            col_pid_paciente,
-            col_nombre_paciente,
-            col_id_departamento, //(tipo_admision),
-            col_departamento,   //descripcion-admicion
-            col_fecha_cargo
+			col_id_producto,
+			col_descripcion,
+			col_folio_de_servicio, //num atencion
+			col_pid_paciente,
+			col_nombre_paciente,
+			col_id_departamento, //(tipo_admision),
+			col_departamento,   //descripcion-admicion
+			col_fecha_cargo
 		}
 		
 		////////////////////////////////////////VENTANA BUSQUEDA DE PRODUCTOS/////////////////////////////////////////////////	
@@ -814,19 +851,19 @@ namespace osiris
 		{ 
 			if (tipo_busqueda == "producto"){
 				treeViewEngineBusca2 = new TreeStore(typeof(string),
-														 typeof(string),
-														 typeof(string),
-														 typeof(string),
-														 typeof(string),
-														 typeof(string),
-														 typeof(string),
-														 typeof(string),
-														 typeof(string),
-														 typeof(string),
-														 typeof(string),
-														 typeof(string),
-														 typeof(string),
-														 typeof(string));
+								 typeof(string),
+								 typeof(string),
+								 typeof(string),
+								 typeof(string),
+								 typeof(string),
+								 typeof(string),
+								 typeof(string),
+								 typeof(string),
+								 typeof(string),
+								 typeof(string),
+								 typeof(string),
+								 typeof(string),
+								 typeof(string));
 						
 				lista_de_producto.Model = treeViewEngineBusca2;
 				
@@ -995,20 +1032,20 @@ namespace osiris
 					}
 					preciomasiva = tomaprecio + calculodeiva; 
 					treeViewEngineBusca2.AppendValues (
-											(string) lector["codProducto"] ,
-											(string) lector["descripcion_producto"],
-											tomaprecio.ToString("F").PadLeft(10),
-											calculodeiva.ToString("F").PadLeft(10),
-											preciomasiva.ToString("F").PadLeft(10),
-											(string) lector["porcentagesdesc"],
-											preciocondesc.ToString("F").PadLeft(10),
-											(string) lector["descripcion_grupo_producto"],
-											(string) lector["descripcion_grupo1_producto"],
-											(string) lector["descripcion_grupo2_producto"],
-											(string) lector["costoproductounitario"],
-											(string) lector["porcentageutilidad"],
-											(string) lector["costoproducto"],
-											(string) lector["agrupacion"]);
+									(string) lector["codProducto"] ,
+									(string) lector["descripcion_producto"],
+									tomaprecio.ToString("F").PadLeft(10),
+									calculodeiva.ToString("F").PadLeft(10),
+									preciomasiva.ToString("F").PadLeft(10),
+									(string) lector["porcentagesdesc"],
+									preciocondesc.ToString("F").PadLeft(10),
+									(string) lector["descripcion_grupo_producto"],
+									(string) lector["descripcion_grupo1_producto"],
+									(string) lector["descripcion_grupo2_producto"],
+									(string) lector["costoproductounitario"],
+									(string) lector["porcentageutilidad"],
+									(string) lector["costoproducto"],
+									(string) lector["agrupacion"]);
 					
 				}
 			}catch (NpgsqlException ex){

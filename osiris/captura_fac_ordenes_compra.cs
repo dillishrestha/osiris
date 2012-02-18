@@ -118,6 +118,7 @@ namespace osiris
 		TreeViewColumn col_12;
 		TreeViewColumn col_13;
 		TreeViewColumn col_14;
+		TreeViewColumn col_15;
 		
 		//declaracion de columnas y celdas de treeview de busqueda
 		TreeViewColumn col_idproducto;			CellRendererText cellrt0;

@@ -78,6 +78,7 @@ namespace osiris
 		[Widget] Gtk.Button button_cons_informado = null;
 		[Widget] Gtk.Button button_contrato_prest = null;
 		[Widget] Gtk.Button button_historia_clinica = null;
+		[Widget] Gtk.Button button_pase_de_ingreso = null;
 		[Widget] Gtk.RadioButton radiobutton_tipo_cirugia  = null;
 		[Widget] Gtk.ComboBox  combobox_tipo_cirugia = null;
 		[Widget] Gtk.CheckButton checkbutton_camb_dats;
@@ -163,6 +164,8 @@ namespace osiris
 		
 		int iddiagnosticocie10 = 1;	// Toma el valor del id de tabla de diagnosticos
 		int iddiagnosticofinal = 1;	// toma el valor del id del diagnostico final
+		int idaseguradora_paciente = 1;
+		int idempresa_paciente = 1;
 		
 		//busqueda de diagnostico
 		private TreeStore treeViewEngineBusca2;	// Para la busqueda de Productos
@@ -264,6 +267,8 @@ namespace osiris
 			button_contrato_prest.Clicked += new EventHandler(on_button_contrato_prest_clicked);
 			// Historia Clinica del Paciente
 			button_historia_clinica.Clicked += new EventHandler(on_button_historia_clinica_clicked);
+			// pase de ingreso
+			button_pase_de_ingreso.Clicked += new EventHandler(on_button_pase_de_ingreso_clicked);
 			
 			// Sale de la ventana
 			button_salir.Clicked += new EventHandler(on_cierraventanas_clicked);	    	
@@ -350,8 +355,7 @@ namespace osiris
 		{
 	    	ComboBox combobox_tipo_cirugia = sender as ComboBox;
 			if (sender == null)	{	return;	}
-			TreeIter iter;			
-			int numbusqueda = 0;
+			TreeIter iter;
 			if (combobox_tipo_cirugia.GetActiveIter (out iter)){
 				descrip_tipo_cirugia = (string) combobox_tipo_cirugia.Model.GetValue(iter,0);
 			}
@@ -361,6 +365,11 @@ namespace osiris
 		{
 			new osiris.historia_clinica(entry_nombre_paciente.Text,entry_pid_paciente.Text,entry_edad_paciente.Text,
 			                            LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,entry_fecha_admision.Text,"entry_fecha_nacimiento.Text");
+		}
+		
+		void on_button_pase_de_ingreso_clicked(object sender, EventArgs args)
+		{
+			new osiris.pases_a_quirofano(PidPaciente,folioservicio,idtipointernamiento,LoginEmpleado,id_tipopaciente,idempresa_paciente,idaseguradora_paciente,false,"pase_de_ingreso");
 		}
 		
 		void on_radio_clicked (object sender, EventArgs args)
@@ -1124,7 +1133,7 @@ namespace osiris
 			llenado_de_datos_paciente( (string) entry_folio_servicio.Text );
 		}
 		
-		void llenado_de_datos_paciente(string foliodeservicio)
+		void llenado_de_datos_paciente(string foliodeservicio_)
 		{
 			
 			NpgsqlConnection conexion; 
@@ -1152,22 +1161,24 @@ namespace osiris
 							"to_char(osiris_erp_cobros_enca.fecha_alta_paciente, 'HH:mm') AS hora_egre,  "+
             				"osiris_erp_movcargos.id_tipo_paciente AS idtipopaciente,descripcion_tipo_paciente,"+
             				"osiris_erp_movcargos.id_tipo_admisiones AS idtipoadmision,descripcion_admisiones,"+
+							"osiris_his_paciente.id_empresa AS idempresa,osiris_empresas.descripcion_empresa,"+
             				"osiris_erp_cobros_enca.id_aseguradora,descripcion_aseguradora, "+
             				"descripcion_diagnostico_movcargos,nombre_medico_encabezado, "+
             				"osiris_erp_cobros_enca.id_medico,nombre_medico,cancelado,tipo_cirugia,diagnostico_primeravez,"+
             				"osiris_erp_movcargos.descripcion_diagnostico_cie10,osiris_erp_movcargos.descripcion_diagnostico_final "+            				
             				//"osiris_his_tipo_diagnosticos.descripcion_diagnostico "+
             				"FROM osiris_erp_cobros_enca,osiris_his_paciente,osiris_erp_movcargos,osiris_his_tipo_admisiones,osiris_his_tipo_pacientes, "+
-            				"osiris_aseguradoras, osiris_his_medicos "+ 
+            				"osiris_aseguradoras,osiris_his_medicos,osiris_empresas "+ 
             				//"osiris_his_tipo_diagnosticos "+
             				"WHERE osiris_erp_cobros_enca.pid_paciente = osiris_his_paciente.pid_paciente "+
             				"AND osiris_erp_movcargos.folio_de_servicio = osiris_erp_cobros_enca.folio_de_servicio "+
-            				"AND osiris_erp_cobros_enca.id_medico = osiris_his_medicos.id_medico "+ 
+            				"AND osiris_erp_cobros_enca.id_medico = osiris_his_medicos.id_medico "+
+							"AND osiris_erp_cobros_enca.id_empresa = osiris_empresas.id_empresa "+
             				"AND osiris_erp_cobros_enca.id_aseguradora = osiris_aseguradoras.id_aseguradora "+ 
             				"AND osiris_erp_movcargos.id_tipo_admisiones = osiris_his_tipo_admisiones.id_tipo_admisiones "+
             				"AND osiris_erp_movcargos.id_tipo_paciente = osiris_his_tipo_pacientes.id_tipo_paciente "+
             				//"AND osiris_erp_movcargos.id_cie_10 = osiris_his_tipo_diagnosticos.id_cie_10 "+
-            				"AND osiris_erp_cobros_enca.folio_de_servicio = '"+(string) foliodeservicio+"';";
+            				"AND osiris_erp_cobros_enca.folio_de_servicio = '"+(string) foliodeservicio_+"';";
 				NpgsqlDataReader lector = comando.ExecuteReader ();
             	
 				while (lector.Read())
@@ -1204,11 +1215,15 @@ namespace osiris
 						entry_poliza.Text =  (string) lector["numero_poliza"];
 						id_tipopaciente = (int) lector["idtipopaciente"];
             			//int foliointernodep = (int) lector["folio_de_servicio_dep"];
+						folioservicio = int.Parse((string) foliodeservicio_);
 						PidPaciente = int.Parse(entry_pid_paciente.Text);// Toma la actualizacion del pid del paciente
 						
 						idmedico = (int) lector["id_medico"];
 						idcirugianumero = (int) lector["id_tipo_cirugia"];
 						idmedicotratante =  (int) lector["id_medico_tratante"]; 
+						
+						idaseguradora_paciente = (int) lector["id_aseguradora"];
+						idempresa_paciente = (int) lector["idempresa"];
 						
 						this.entry_medic_diag.Text = (string) lector["nombre_medico"];
 						this.entry_docimp_cirugia.Text = (string) lector["nombre_de_cirugia"];

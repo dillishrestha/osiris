@@ -293,8 +293,16 @@ namespace osiris
 		
 		void on_button_rpt_movcargosfecha_clicked(object sender, EventArgs args)
 		{
-			new osiris.inventario_almacen_reporte (1,"","01","0000",LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,tipo_reporte,query_consulta,
-				entry_dia1.Text,entry_mes1.Text,entry_ano1.Text,entry_dia2.Text,entry_mes2.Text,entry_ano2.Text);
+			TreeIter iter;
+			if (treeViewEngineSelec.GetIterFirst (out iter)){
+				new osiris.inventario_almacen_reporte (1,"","01","0000",LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,tipo_reporte,query_consulta,
+							entry_dia1.Text,entry_mes1.Text,entry_ano1.Text,entry_dia2.Text,entry_mes2.Text,entry_ano2.Text);
+			}else{
+				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+								MessageType.Error, 
+								ButtonsType.Close, "NO existe nada para imprimir");
+				msgBoxError.Run ();			msgBoxError.Destroy();
+			}
 		}
 		
 		void on_button_quitar_producto_clicked (object o, EventArgs args)

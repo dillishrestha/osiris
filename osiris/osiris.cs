@@ -52,14 +52,15 @@ namespace osiris
 		[Widget] Gtk.Button button_cargos_urgencia = null;
 		[Widget] Gtk.Button button_cargos_quirofano = null;
 		[Widget] Gtk.Button button_endoscopia = null;
-		[Widget] Gtk.Button button_terapia_adulto = null;
-		[Widget] Gtk.Button button_terapia_nino = null;
-		[Widget] Gtk.Button button_terapia_neonatal = null;
-		[Widget] Gtk.Button button_ginecologia = null;
+		[Widget] Gtk.Button button_consulta_medica = null;
 		[Widget] Gtk.Button button_laboratorio = null;
 		[Widget] Gtk.Button button_imagenologia = null;
 		[Widget] Gtk.Button button_oftalmologia = null;
 		[Widget] Gtk.Button button_vision = null;
+		
+		[Widget] Gtk.Button button_terapia_adulto = null;
+		[Widget] Gtk.Button button_terapia_nino = null;
+		[Widget] Gtk.Button button_terapia_neonatal = null;
 		[Widget] Gtk.Button button_nutricion = null;
 		[Widget] Gtk.Button button_hemodialisis = null;
 		
@@ -333,21 +334,20 @@ namespace osiris
 			button_recursos_humanos.Clicked += new EventHandler(on_button_recursos_humanos_clicked);
 			button_caja.Clicked += new EventHandler(on_button_caja_clicked );
 			button_costos.Clicked += new EventHandler(on_button_costos_clicked);
-			button_cargos_urgencia.Clicked += new EventHandler(on_button_cargos_urgencia_clicked );
+			
 			button_agredecimientos.Clicked += new EventHandler(on_button_agredecimientos_clicked);
 			button_ocupacion_hscmty.Clicked += new EventHandler(on_button_ocupacion_osiris_clicked);
+			
 			button_cargos_hospital.Clicked += new EventHandler( on_button_cargos_hospital_clicked );
-			button_cargos_quirofano.Clicked += new EventHandler( on_button_cargos_quirofano_clicked);					
-													 			
+			button_cargos_urgencia.Clicked += new EventHandler(on_button_cargos_urgencia_clicked );
+			button_cargos_quirofano.Clicked += new EventHandler( on_button_cargos_quirofano_clicked);
 			button_endoscopia.Clicked += new EventHandler(on_button_endoscopia_clicked);
+			button_consulta_medica.Clicked += new EventHandler(on_button_consulta_medica_clicked);
 			button_laboratorio.Clicked += new EventHandler( on_button_laboratorio_clicked );
 			button_imagenologia.Clicked += new EventHandler( on_button_imagenologia_clicked );
-			button_terapia_adulto.Clicked += new EventHandler( on_button_terapia_adulto_clicked );
-			button_terapia_nino.Clicked += new EventHandler( on_button_terapia_pediatrica_clicked );
-			button_terapia_neonatal.Clicked += new EventHandler(on_button_terapia_neonatal_clicked);
-			button_ginecologia.Clicked += new EventHandler(on_button_ginecologia_clicked);
 			button_oftalmologia.Clicked += new EventHandler(on_button_oftalmologia_clicked);
 			button_vision.Clicked += new EventHandler(on_button_vision_clicked);
+			
 			button_medicos.Clicked += new EventHandler(on_button_medicos_clicked);					 			
 			button_cambio_contraseña.Clicked += new EventHandler(on_button_cambio_contraseña_clicked);					 							 			
 			button_herramientas.Clicked += new EventHandler(on_button_herramientas_clicked);						
@@ -356,8 +356,10 @@ namespace osiris
 			//button_nutricion.Clicked += new EventHandler(on_button_nutricion_clicked);
 			//button_hemodialisis.Clicked += new EventHandler(on_button_hemodialisis_clicked);
 			//button_imagenologia_b.Clicked += new EventHandler( on_button_imagenologia_b_clicked );
-								
-			button_salir.Clicked += new EventHandler(on_button_salir_clicked);
+			//button_terapia_adulto.Clicked += new EventHandler( on_button_terapia_adulto_clicked );
+			//button_terapia_nino.Clicked += new EventHandler( on_button_terapia_pediatrica_clicked );
+			//button_terapia_neonatal.Clicked += new EventHandler(on_button_terapia_neonatal_clicked);					
+			//button_salir.Clicked += new EventHandler(on_button_salir_clicked);
 			
 			//button_almacen.Hide();
 			//button_compras.Hide();
@@ -446,9 +448,9 @@ namespace osiris
 			new osiris.terapia_neonatal(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
 		}
 		
-		void on_button_ginecologia_clicked (object sender, EventArgs args)
+		void on_button_consulta_medica_clicked(object sender, EventArgs args)
 		{
-			new osiris.tococirugia_ginecologia(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
+			new osiris.consulta_medica(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
 		}
 		
 		void on_button_oftalmologia_clicked(object sender, EventArgs args)
@@ -556,7 +558,7 @@ namespace osiris
 			button_terapia_adulto.Sensitive = false;
 			button_terapia_nino.Sensitive = false;
 			button_terapia_neonatal.Sensitive = false;
-			button_ginecologia.Sensitive = false;
+			button_consulta_medica.Sensitive = false;
 			button_laboratorio.Sensitive = false;
 			button_imagenologia.Sensitive = false;
 			button_oftalmologia.Sensitive = false;
@@ -592,17 +594,8 @@ namespace osiris
 				if ((string) accesoHIS.Substring(3,1) == "1"){
 					button_endoscopia.Sensitive = true;
 				}
-				if ((string) accesoHIS.Substring(4,1) == "1"){
-					button_terapia_adulto.Sensitive = true;
-				}
-				if ((string) accesoHIS.Substring(5,1) == "1"){
-					button_terapia_nino.Sensitive = true;
-				}
-				if ((string) accesoHIS.Substring(6,1) == "1"){
-					button_terapia_neonatal.Sensitive = true;
-				}
 				if ((string) accesoHIS.Substring(7,1) == "1"){
-					button_ginecologia.Sensitive = true;
+					button_consulta_medica.Sensitive = true;
 				}
 				if ((string) accesoHIS.Substring(8,1) == "1"){
 					button_laboratorio.Sensitive = true;
@@ -613,6 +606,23 @@ namespace osiris
 				if ((string) accesoHIS.Substring(10,1) == "1"){
 					button_oftalmologia.Sensitive = true;
 				}
+				if ((string) accesoHIS.Substring(11,1) == "1"){
+					button_vision.Sensitive = true;
+				}
+				
+				/*
+				if ((string) accesoHIS.Substring(7,1) == "1"){
+					button_ginecologia.Sensitive = true;
+				}
+				if ((string) accesoHIS.Substring(4,1) == "1"){
+					button_terapia_adulto.Sensitive = true;
+				}
+				if ((string) accesoHIS.Substring(5,1) == "1"){
+					button_terapia_nino.Sensitive = true;
+				}
+				if ((string) accesoHIS.Substring(6,1) == "1"){
+					button_terapia_neonatal.Sensitive = true;
+				}*/
 			}
 			if((bool) autorizaERP == true){
 				if ((string) accesoERP.Substring(0,1) == "1"){

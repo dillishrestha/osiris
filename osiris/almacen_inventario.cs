@@ -743,8 +743,7 @@ namespace osiris
 			
 		void on_button_reporte_clicked(object sender, EventArgs args)
 		{
-			if ((string) this.entry_id_almacen.Text.Trim() == "" )
-		    {	
+			if ((string) this.entry_id_almacen.Text.Trim() == "" ){	
 				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
 				MessageType.Error, 
 				ButtonsType.Close, "Debe de llenar el campo de almacen con uno \n"+

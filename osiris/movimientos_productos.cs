@@ -399,6 +399,12 @@ namespace osiris
 				col_06.PackStart(cellr6, true);
 				col_06.AddAttribute (cellr6, "text", 6);
 				
+				TreeViewColumn col_07 = new TreeViewColumn();
+				CellRendererText cellr7 = new CellRendererText();
+				col_07.Title = "Grupo Producto";
+				col_07.PackStart(cellr7, true);
+				col_07.AddAttribute (cellr7, "text", 7);
+				
 				lista_producto_seleccionados.AppendColumn(col_00);
 				lista_producto_seleccionados.AppendColumn(col_01);
 				lista_producto_seleccionados.AppendColumn(col_02);
@@ -406,6 +412,7 @@ namespace osiris
 				lista_producto_seleccionados.AppendColumn(col_04);
 				lista_producto_seleccionados.AppendColumn(col_05);
 				lista_producto_seleccionados.AppendColumn(col_06);
+				lista_producto_seleccionados.AppendColumn(col_07);
 			}
 		}
 		
@@ -534,22 +541,24 @@ namespace osiris
 				query_consulta = "SELECT to_char(SUM(cantidad_aplicada),'999999999.99') AS cantidadaplicada," +
 					"to_char(SUM(cantidad_aplicada),'999999999.99') AS stock," +
 						"to_char(osiris_erp_cobros_deta.id_producto,'999999999999') AS idproducto,descripcion_producto," +
-						"to_char(osiris_productos.costo_producto,'999999999.99') AS costoproducto, "+
-						"to_char(osiris_productos.cantidad_de_embalaje,'999999999.99') AS embalaje, "+
-						"to_char(osiris_productos.porcentage_ganancia,'99999.99') AS porcentageganancia, "+
-						"to_char(osiris_productos.costo_por_unidad,'999999999.99') AS costoproductounitario "+						
-						"FROM osiris_erp_cobros_deta,osiris_productos,osiris_his_paciente,osiris_his_tipo_admisiones,osiris_erp_cobros_enca,osiris_empresas "+
+						"to_char(osiris_productos.costo_producto,'999999999.99') AS costoproducto,"+
+						"to_char(osiris_productos.cantidad_de_embalaje,'999999999.99') AS embalaje,"+
+						"to_char(osiris_productos.porcentage_ganancia,'99999.99') AS porcentageganancia,"+
+						"to_char(osiris_productos.costo_por_unidad,'999999999.99') AS costoproductounitario," +
+						"osiris_productos.id_grupo_producto AS idgrupoproducto,descripcion_grupo_producto "+						
+						"FROM osiris_erp_cobros_deta,osiris_productos,osiris_grupo_producto,osiris_his_paciente,osiris_his_tipo_admisiones,osiris_erp_cobros_enca,osiris_empresas "+
 						"WHERE osiris_erp_cobros_deta.id_producto = osiris_productos.id_producto "+
 						"AND osiris_erp_cobros_deta.pid_paciente = osiris_his_paciente.pid_paciente "+
 						"AND osiris_erp_cobros_deta.id_tipo_admisiones = osiris_his_tipo_admisiones.id_tipo_admisiones "+
 						"AND osiris_erp_cobros_deta.folio_de_servicio = osiris_erp_cobros_enca.folio_de_servicio "+
 						"AND osiris_erp_cobros_enca.id_empresa = osiris_empresas.id_empresa "+ 
 						"AND osiris_erp_cobros_deta.cantidad_aplicada > '0' "+ 
-						"AND osiris_erp_cobros_deta.eliminado = false "+ 
+						"AND osiris_erp_cobros_deta.eliminado = false " +
+						"AND osiris_productos.id_grupo_producto = osiris_grupo_producto.id_grupo_producto " +
 						//"AND osiris_erp_cobros_deta.id_producto IN('52502300009','52502300008')
 						query_fechas_+
-						"GROUP BY osiris_erp_cobros_deta.id_producto,descripcion_producto,costo_producto,cantidad_de_embalaje,porcentage_ganancia,costo_por_unidad " +
-						"ORDER BY descripcion_producto;";
+						"GROUP BY osiris_erp_cobros_deta.id_producto,descripcion_producto,costo_producto,cantidad_de_embalaje,porcentage_ganancia,costo_por_unidad,osiris_productos.id_grupo_producto,descripcion_grupo_producto " +
+						"ORDER BY osiris_productos.id_grupo_producto,descripcion_producto;";
 			}
 			NpgsqlConnection conexion;
 			conexion = new NpgsqlConnection (connectionString+nombrebd);
@@ -601,7 +610,8 @@ namespace osiris
 										string.Format("{0:C}",decimal.Parse((string) lector["costoproducto"].ToString())),
 										string.Format("{0:F}",decimal.Parse((string) lector["embalaje"].ToString())),
 										string.Format("{0:C}",decimal.Parse((string) lector["costoproductounitario"].ToString())),
-										string.Format("{0:C}",decimal.Parse((string) lector["costoproductounitario"].ToString()) * decimal.Parse((string) lector["cantidadaplicada"].ToString())));
+										string.Format("{0:C}",decimal.Parse((string) lector["costoproductounitario"].ToString()) * decimal.Parse((string) lector["cantidadaplicada"].ToString())),
+										(string) lector["descripcion_grupo_producto"].ToString());
 					}
 				}
 				this.entry_total_aplicado.Text = total_aplicado.ToString(); 

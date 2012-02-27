@@ -359,7 +359,7 @@ namespace osiris
 			//button_terapia_adulto.Clicked += new EventHandler( on_button_terapia_adulto_clicked );
 			//button_terapia_nino.Clicked += new EventHandler( on_button_terapia_pediatrica_clicked );
 			//button_terapia_neonatal.Clicked += new EventHandler(on_button_terapia_neonatal_clicked);					
-			//button_salir.Clicked += new EventHandler(on_button_salir_clicked);
+			button_salir.Clicked += new EventHandler(on_button_salir_clicked);
 			
 			//button_almacen.Hide();
 			//button_compras.Hide();

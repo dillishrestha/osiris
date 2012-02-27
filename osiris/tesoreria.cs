@@ -64,6 +64,7 @@ namespace osiris
 		[Widget] Gtk.Button button_reporte_de_cerrados;
 		[Widget] Gtk.Button button_rpt_abonos;
 		[Widget] Gtk.Button button_rpt_facturas_pendientes;
+		[Widget] Gtk.Button button_rpt_no_ingresados_caja;
 		
 		//declarando la ventana de rango de fechas
 		[Widget] Gtk.Window rango_de_fecha;
@@ -155,7 +156,7 @@ namespace osiris
 			button_exportar_cortecaja.Clicked += new EventHandler(on_button_exportar_cortecaja_clicked);
 			button_separa_folio.Clicked += new EventHandler(on_button_separa_folio_clicked);
 			button_solicitud_material.Clicked += new EventHandler(on_button_solicitud_material_clicked);
-			button_reportes.Clicked += new EventHandler(on_button_reportes_clicked);				
+			button_reportes.Clicked += new EventHandler(on_button_reportes_clicked);
 			////// Sale de la ventana
 			button_salir.Clicked += new EventHandler(on_cierraventanas_clicked);			
 		}
@@ -193,6 +194,44 @@ namespace osiris
 			new osiris.reservacion_de_paquetes(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,0,false);
 		}
 		
+		void on_button_rpt_no_ingresados_caja_clicked(object sender, EventArgs a)
+		{
+			string entry_dia1 = DateTime.Now.ToString("dd");
+			string entry_mes1 = DateTime.Now.ToString("MM");
+			string entry_ano1 = DateTime.Now.ToString("yyyy");				
+			string entry_dia2 = DateTime.Now.ToString("dd");
+			string entry_mes2 = DateTime.Now.ToString("MM");
+			string entry_ano2 = DateTime.Now.ToString("yyyy");
+			
+			string query_fechas = " AND to_char(osiris_erp_cobros_enca.fechahora_creacion,'yyyy-MM-dd') >= '"+entry_ano1+"-"+entry_mes1+"-"+entry_dia1+"' "+
+							" AND to_char(osiris_erp_cobros_enca.fechahora_creacion,'yyyy-MM-dd') <= '"+entry_ano2+"-"+entry_mes2+"-"+entry_dia2+"' ";
+			
+			
+			NpgsqlConnection conexion; 
+			conexion = new NpgsqlConnection (connectionString+nombrebd);
+            // Verifica que la base de datos este conectada
+			try{
+				conexion.Open ();
+				NpgsqlCommand comando; 
+				comando = conexion.CreateCommand ();
+				comando.CommandText = "SELECT osiris_erp_cobros_enca.folio_de_servicio,numero_recibo_caja,numero_comprobante_servicio " +
+					"FROM osiris_erp_cobros_enca,osiris_erp_abonos,osiris_erp_comprobante_servicio " +
+					"WHERE osiris_erp_cobros_enca.folio_de_servicio = osiris_erp_abonos.folio_de_servicio " +
+					"AND osiris_erp_cobros_enca.folio_de_servicio = osiris_erp_comprobante_servicio.folio_de_servicio " +
+					""+query_fechas+";";
+				Console.WriteLine(comando.CommandText);
+	        	NpgsqlDataReader lector = comando.ExecuteReader ();
+				while(lector.Read()){
+					
+				}
+			}catch (NpgsqlException ex){
+				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+					MessageType.Warning, ButtonsType.Ok, "PostgresSQL error: {0}",ex.Message);
+					msgBoxError.Run ();		msgBoxError.Destroy();
+				Console.WriteLine ("PostgresSQL error: {0}",ex.Message);
+			}
+		}
+		
 		void on_button_exportar_cortecaja_clicked(object sender, EventArgs args)
 		{
 			Glade.XML gxml = new Glade.XML  (null, "caja.glade", "rango_de_fecha", null);
@@ -218,27 +257,30 @@ namespace osiris
 		
 		void on_exporta_cortecaja_clicked(object sender, EventArgs args)
 		{
-			if(LoginEmpleado == "DOLIVARES" || LoginEmpleado =="ADMIN" || LoginEmpleado =="MARGARITAZ" || LoginEmpleado =="IESPINOZAF" || LoginEmpleado =="ZBAEZH"){
+			if(LoginEmpleado == "DOLIVARES" || LoginEmpleado =="ADMIN" || LoginEmpleado =="MARGARITAZ" || LoginEmpleado =="IESPINOZAF" || LoginEmpleado =="ZBAEZH" || LoginEmpleado == "YTAMEZ"){
 				string query_fechas = "AND to_char(osiris_erp_abonos.fecha_abono,'yyyy-MM-dd') >= '"+entry_ano1.Text+"-"+entry_mes1.Text+"-"+entry_dia1.Text+"' "+
 								"AND to_char(osiris_erp_abonos.fecha_abono,'yyyy-MM-dd') <= '"+entry_ano2.Text+"-"+entry_mes2.Text+"-"+entry_dia2.Text+"' ";
 			
-				string query_sql = "SELECT  to_char(osiris_erp_abonos.fecha_abono,'yyyy-MM-dd') AS fechaabonopago,"+
+				string query_sql = "SELECT DISTINCT (osiris_erp_movcargos.folio_de_servicio),to_char(osiris_erp_abonos.fecha_abono,'yyyy-MM-dd') AS fechaabonopago,"+
 									"osiris_erp_abonos.id_abono,"+
 									"to_char(osiris_erp_abonos.folio_de_servicio,'9999999999') AS foliodeservicio,"+
 									"osiris_his_paciente.pid_paciente AS pidpaciente,nombre1_paciente || ' ' || nombre2_paciente || ' ' || apellido_paterno_paciente || ' ' || apellido_materno_paciente AS nombrepaciente,"+
 									"osiris_erp_abonos.monto_de_abono_procedimiento AS monto_comprobante,osiris_erp_abonos.concepto_del_abono,numero_recibo_caja AS numerorecibo,"+
-									"osiris_erp_tipo_comprobante.descripcion_tipo_comprobante,osiris_erp_forma_de_pago.descripcion_forma_de_pago AS forma_de_pago "+
-									"FROM osiris_erp_cobros_enca, osiris_erp_abonos, osiris_erp_tipo_comprobante, osiris_his_paciente, osiris_erp_forma_de_pago "+
+									"osiris_erp_tipo_comprobante.descripcion_tipo_comprobante,osiris_erp_forma_de_pago.descripcion_forma_de_pago AS forma_de_pago,osiris_erp_abonos.monto_convenio," +
+									"osiris_erp_movcargos.id_tipo_paciente,descripcion_tipo_paciente "+
+									"FROM osiris_erp_cobros_enca, osiris_erp_abonos,osiris_erp_tipo_comprobante, osiris_his_paciente, osiris_erp_forma_de_pago,osiris_erp_movcargos,osiris_his_tipo_pacientes "+
 									"WHERE osiris_erp_abonos.eliminado = false "+
 									"AND osiris_erp_abonos.folio_de_servicio = osiris_erp_cobros_enca.folio_de_servicio "+
+									"AND osiris_erp_movcargos.folio_de_servicio = osiris_erp_abonos.folio_de_servicio "+
 									"AND osiris_erp_abonos.id_forma_de_pago = osiris_erp_forma_de_pago.id_forma_de_pago "+ 
 									"AND osiris_erp_cobros_enca.pid_paciente = osiris_his_paciente.pid_paciente "+
-									"AND osiris_erp_abonos.id_tipo_comprobante = osiris_erp_tipo_comprobante.id_tipo_comprobante "+
+									"AND osiris_erp_abonos.id_tipo_comprobante = osiris_erp_tipo_comprobante.id_tipo_comprobante " +
+									"AND osiris_his_tipo_pacientes.id_tipo_paciente = osiris_erp_movcargos.id_tipo_paciente "+
 									query_fechas+
-									"ORDER BY osiris_erp_abonos.fecha_abono;";
+									";";
 								
-				string[] args_names_field = {"foliodeservicio","pidpaciente","nombrepaciente","numerorecibo","descripcion_tipo_comprobante","monto_comprobante","forma_de_pago"};
-				string[] args_type_field = {"float","float","string","float","string","float","string"};
+				string[] args_names_field = {"foliodeservicio","pidpaciente","nombrepaciente","numerorecibo","descripcion_tipo_comprobante","monto_comprobante","forma_de_pago","concepto_del_abono","monto_convenio","descripcion_tipo_paciente"};
+				string[] args_type_field = {"float","float","string","float","string","float","string","string","float","string"};
 				
 				// class_crea_ods.cs
 				//Console.WriteLine(query_sql);
@@ -248,7 +290,7 @@ namespace osiris
 		
 		void on_button_exportar_clicked(object sender, EventArgs args)
 		{
-			if(LoginEmpleado == "DOLIVARES" || LoginEmpleado =="ADMIN" || LoginEmpleado =="MARGARITAZ" || LoginEmpleado =="IESPINOZAF" || LoginEmpleado =="ZBAEZH"){
+			if(LoginEmpleado == "DOLIVARES" || LoginEmpleado =="ADMIN" || LoginEmpleado =="MARGARITAZ" || LoginEmpleado =="IESPINOZAF" || LoginEmpleado =="ZBAEZH" || LoginEmpleado == "YTAMEZ"){
 				/*
 				string query_sql = "SELECT osiris_erp_cobros_deta.folio_de_servicio AS foliodeservicio,osiris_erp_cobros_deta.pid_paciente AS pidpaciente, "+
 					"osiris_his_tipo_admisiones.descripcion_admisiones,aplicar_iva, osiris_his_tipo_admisiones.id_tipo_admisiones AS idadmisiones,"+
@@ -308,6 +350,7 @@ namespace osiris
 			button_reporte_de_cerrados.Clicked += new EventHandler(on_button_reporte_de_cerrados_clicked);
 			button_rpt_abonos.Clicked += new EventHandler(on_button_button_rpt_abonos_clicked);
 			button_rpt_facturas_pendientes.Clicked += new EventHandler(button_rpt_facturas_pendientes_clicked);
+			button_rpt_no_ingresados_caja.Clicked += new EventHandler(on_button_rpt_no_ingresados_caja_clicked);
 			////// Sale de la ventana
 			button_salir.Clicked += new EventHandler(on_cierraventanas_clicked);
 		}
@@ -704,8 +747,7 @@ namespace osiris
 						conexion.Open ();
 						NpgsqlCommand comando; 
 						comando = conexion.CreateCommand ();
-						if ((string) entry_expresion.Text.ToUpper().Trim() == "")
-						{
+						if ((string) entry_expresion.Text.ToUpper().Trim() == ""){
 							comando.CommandText = "SELECT id_medico, "+
 										"to_char(id_empresa,'999999') AS idempresa, "+
 										"to_char(osiris_his_tipo_especialidad.id_especialidad,'999999') AS idespecialidad, "+

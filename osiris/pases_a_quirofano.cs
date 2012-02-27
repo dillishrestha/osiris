@@ -117,7 +117,6 @@ namespace osiris
 			if(tipo_pase == "pase_qx_urg"){
 				Glade.XML gxml = new Glade.XML (null, "almacen_costos_compras.glade", "envio_almacenes", null);
 				gxml.Autoconnect (this);
-				
 				entry_dia_inicio.Text = DateTime.Now.ToString("dd");
 				entry_mes_inicio.Text = DateTime.Now.ToString("MM");
 				entry_ano_inicio.Text = DateTime.Now.ToString("yyyy");			
@@ -220,7 +219,28 @@ namespace osiris
 				conexion.Open ();
 				NpgsqlCommand comando; 
 				comando = conexion.CreateCommand();
-				comando.CommandText = query_slq + "AND osiris_erp_pases_qxurg.folio_de_servicio = '"+ folioservicio.ToString().Trim() +"';";		
+				comando.CommandText = "SELECT osiris_erp_pases_qxurg.id_secuencia,osiris_erp_pases_qxurg.folio_de_servicio AS foliodeservicio," +
+							"to_char(osiris_erp_cobros_enca.pid_paciente,'9999999999') AS pidpaciente,"+
+							"nombre1_paciente || ' ' || nombre2_paciente || ' ' || apellido_paterno_paciente || ' ' || apellido_materno_paciente AS nombre_completo,"+
+							"to_char(osiris_his_paciente.fecha_nacimiento_paciente, 'dd-MM-yyyy') AS fechanacpaciente,"+
+							"to_char(to_number(to_char(age('"+DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss")+"',osiris_his_paciente.fecha_nacimiento_paciente),'yyyy') ,'9999'),'9999') AS edadpaciente,"+
+							"osiris_his_paciente.sexo_paciente,"+
+							"osiris_erp_cobros_enca.nombre_medico_tratante,"+
+							"osiris_erp_pases_qxurg.id_quien_creo,nombre1_empleado || ' ' || nombre2_empleado || ' ' || apellido_paterno_empleado || ' ' || apellido_materno_empleado AS nombresolicitante,"+
+							"to_char(osiris_erp_pases_qxurg.fechahora_creacion,'yyyy-MM-dd HH24:mi:ss') AS fechahoracrea," +
+							"osiris_erp_pases_qxurg.id_tipo_admisiones,descripcion_admisiones," +
+							"osiris_erp_cobros_enca.id_empresa AS idempresa,osiris_empresas.descripcion_empresa,"+
+							"osiris_erp_cobros_enca.id_aseguradora,osiris_aseguradoras.descripcion_aseguradora,"+
+							 "id_quien_creo " +
+						 	"FROM osiris_erp_pases_qxurg,osiris_his_tipo_admisiones,osiris_erp_cobros_enca,osiris_his_paciente,osiris_empleado,osiris_empresas,osiris_aseguradoras "+
+							"WHERE osiris_erp_pases_qxurg.id_tipo_admisiones = osiris_his_tipo_admisiones.id_tipo_admisiones " +
+							"AND osiris_erp_pases_qxurg.pid_paciente = osiris_his_paciente.pid_paciente "+
+							"AND osiris_erp_pases_qxurg.folio_de_servicio = osiris_erp_cobros_enca.folio_de_servicio "+
+							"AND osiris_erp_pases_qxurg.id_quien_creo = osiris_empleado.login_empleado "+
+							"AND osiris_erp_cobros_enca.id_empresa = osiris_empresas.id_empresa "+
+							"AND osiris_erp_cobros_enca.id_aseguradora = osiris_aseguradoras.id_aseguradora "+
+							"AND osiris_erp_pases_qxurg.folio_de_servicio = '"+ folioservicio.ToString().Trim() +"';";		
+				Console.WriteLine(comando.CommandText);
 				NpgsqlDataReader lector = comando.ExecuteReader ();
 				while(lector.Read()){
 					treeViewEnginePases.AppendValues(lector["id_secuencia"].ToString().Trim(),
@@ -324,6 +344,7 @@ namespace osiris
 			string sexopaciente = "";
 			string empresa_o_aseguradora = "";
 			string titulo_de_pase = "";
+			string query_sql_ = "";
 			
 			if(tipo_pase=="pase_qx_urg"){
 				query_slq = "SELECT osiris_erp_pases_qxurg.id_secuencia,osiris_erp_pases_qxurg.folio_de_servicio AS foliodeservicio," +
@@ -346,7 +367,7 @@ namespace osiris
 							"AND osiris_erp_pases_qxurg.id_quien_creo = osiris_empleado.login_empleado "+
 							"AND osiris_erp_cobros_enca.id_empresa = osiris_empresas.id_empresa "+
 							"AND osiris_erp_cobros_enca.id_aseguradora = osiris_aseguradoras.id_aseguradora "+
-							"AND osiris_erp_pases_qxurg.folio_de_servicio = '"+ folioservicio.ToString().Trim() +"';";
+							"AND osiris_erp_pases_qxurg.folio_de_servicio = '"+ folioservicio.ToString().Trim() +"';";	 ; //    query_sql + "AND osiris_erp_pases_qxurg.folio_de_servicio = '"+ folioservicio.ToString().Trim() +"';";
 				titulo_de_pase = "PASE_A_SERVICIO_MEDICO_QUIRURGICO";
 			}
 			if(tipo_pase=="pase_de_ingreso"){
@@ -556,6 +577,11 @@ namespace osiris
 				cr.MoveTo(430*escala_en_linux_windows,(comienzo_linea+(separacion_linea*2))*escala_en_linux_windows);		layout.SetText("Sello de Dep. Medico");							Pango.CairoHelper.ShowLayout (cr, layout);						
 				cr.MoveTo(150*escala_en_linux_windows,(comienzo_linea+(separacion_linea*21))*escala_en_linux_windows);		layout.SetText("Sello y Firma Cajero");							Pango.CairoHelper.ShowLayout (cr, layout);
 			}
+			if(tipo_pase=="pase_de_ingreso"){
+				cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText("N° Oficio: "+empresa_aseguradora);							Pango.CairoHelper.ShowLayout (cr, layout);
+				comienzo_linea += separacion_linea;
+			}
+			
 			fontSize = 6.5;
 			desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;
 			layout.FontDescription.Weight = Weight.Bold;		// Letra negrita

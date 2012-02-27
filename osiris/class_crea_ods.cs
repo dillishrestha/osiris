@@ -43,8 +43,8 @@ namespace osiris
 				NpgsqlCommand comando; 
 				comando = conexion.CreateCommand ();
 				comando.CommandText = query_sql;
-				comando.ExecuteNonQuery();    comando.Dispose();
 				Console.WriteLine(comando.CommandText);
+				comando.ExecuteNonQuery();    comando.Dispose();
 				NpgsqlDataReader lector = comando.ExecuteReader ();
 				// Creando los nombres de ancabezado de los campos
 				for (int colum_field = 0; colum_field < args_names_field.Length; colum_field++){					

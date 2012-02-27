@@ -1473,9 +1473,9 @@ namespace osiris
 			button_aplica_cargos.Sensitive = true;
 			button_quitar_aplicados.Sensitive = true;
 			button_actualizar.Sensitive = true;
-			this.button_alta_paciente.Sensitive = true;
-			this.button_hoja_cargos.Sensitive = true;
-			this.button_notas_de_cargos.Sensitive = true;
+			button_alta_paciente.Sensitive = true;
+			button_hoja_cargos.Sensitive = true;
+			button_notas_de_cargos.Sensitive = true;
 			
 			NpgsqlConnection conexion; 
 			conexion = new NpgsqlConnection (connectionString+nombrebd);
@@ -1583,9 +1583,9 @@ namespace osiris
 					}
 					//int foliointernodep = (int) lector["folio_de_servicio_dep"];
 					
-					if ( idhabitacion == 1){
-						button_alta_paciente.Sensitive = false;
-					}
+					//if (idhabitacion == 1){
+					//	button_alta_paciente.Sensitive = false;
+					//}
 					
 					if((bool) lector["reservacion"]){
 						button_busca_producto.Sensitive = false;

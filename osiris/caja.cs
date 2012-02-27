@@ -511,7 +511,7 @@ namespace osiris
 		
 		void on_button_exportar_xls_clicked(object sender, EventArgs args)
 		{
-			if(LoginEmpleado == "DOLIVARES" || LoginEmpleado =="ADMIN" || LoginEmpleado =="MARGARITAZ" || LoginEmpleado =="IESPINOZAF" || LoginEmpleado =="ZBAEZH"){
+			if(LoginEmpleado == "DOLIVARES" || LoginEmpleado =="ADMIN" || LoginEmpleado =="MARGARITAZ" || LoginEmpleado =="IESPINOZAF" || LoginEmpleado =="ZBAEZH" || LoginEmpleado == "YTAMEZ"){
 				string query_sql = "SELECT osiris_erp_cobros_deta.folio_de_servicio AS foliodeservicio,descripcion_producto,to_char(osiris_erp_cobros_deta.id_producto,'999999999999') AS idproducto, "+
 					"to_char(osiris_erp_cobros_deta.cantidad_aplicada,'99999.99') AS cantidadaplicada,to_char(osiris_erp_cobros_deta.precio_producto,'99999999.99') AS preciounitario,"+
 						"to_char(osiris_erp_cobros_deta.cantidad_aplicada * osiris_erp_cobros_deta.precio_producto,'99999999.99') AS ppcantidad,"+
@@ -885,7 +885,8 @@ namespace osiris
 		void on_button_abre_folio_clicked(object sender, EventArgs args)
 		{
 			if(LoginEmpleado == "DOLIVARES" || LoginEmpleado =="ADMIN" || LoginEmpleado =="MARGARITAZ" || 
-				LoginEmpleado =="IESPINOZAF" || LoginEmpleado =="ZBAEZH" || LoginEmpleado == "YTAMEZ"){
+				LoginEmpleado =="IESPINOZAF" || LoginEmpleado =="ZBAEZH" || LoginEmpleado == "YTAMEZ" || 
+				LoginEmpleado == "BAMURILLO"){
 				MessageDialog msgBox = new MessageDialog (MyWin,DialogFlags.Modal,
 							MessageType.Question,ButtonsType.YesNo,"¿ Esta seguro de Abrir este Nº de Atencion ?");
 				ResponseType miResultado = (ResponseType)msgBox.Run ();
@@ -1175,10 +1176,10 @@ namespace osiris
 					this.entry_mes1.Text = DateTime.Now.ToString("MM");
 					this.entry_ano1.Text = DateTime.Now.ToString("yyyy");
 					entry_hora_compr.Text = DateTime.Now.ToString("HH:mm:ss");
+									
+					button_guardar_pago.Clicked += new EventHandler(on_button_guardar_pago_honorario_clicked);
 					
-					button_guardar_pago.Clicked += new EventHandler(on_button_guardar_pago_clicked);
-					
-					button_salir.Clicked += new EventHandler(on_cierraventanas_clicked); // esta sub-clase esta en hscmty.cs
+					button_salir.Clicked += new EventHandler(on_cierraventanas_clicked);
 					llenado_formapago();
 				}else{
 					MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,MessageType.Info,ButtonsType.Close, "El Honorario Medico seleccionado ya esta pagado, verifique...");
@@ -1210,6 +1211,12 @@ namespace osiris
 				msgBoxError.Run ();			msgBoxError.Destroy();
 			
 			}
+		}
+		
+		void on_button_guardar_pago_honorario_clicked(object sender, EventArgs args)
+		{
+			pagodehonorario = true;
+			guarda_comprobante(sender,"HONORARIO");
 		}
 
 		
@@ -1904,7 +1911,7 @@ namespace osiris
 				//numerodecomprobante = int.Parse(entry_numero_comprobante.Text);
 			}
 		}
-				
+		
 		void on_button_guardar_pago_clicked(object sender, EventArgs args)
 		{
 			guarda_comprobante(sender,"CAJA");
@@ -1959,8 +1966,6 @@ namespace osiris
 	 											this.entry_numero_factura.Text+"','"+
 	 											(string) entry_numero_comprobante.Text.Trim()+"','"+
 												tipo_de_comprobante+"');";
-							Widget win = (Widget) sender;
-							win.Toplevel.Destroy();
 						}
 						if(tipo_de_comprobante == "CAJA"){
 							//numerodecomprobante = int.Parse((string) classpublic.lee_ultimonumero_registrado("osiris_erp_abonos","numero_recibo_caja","WHERE id_tipo_comprobante = '"+idtipocomprobante.ToString().Trim()+"'"));
@@ -2077,6 +2082,8 @@ namespace osiris
 														entry_ano2.Text.Trim()+"-"+entry_mes2.Text.Trim()+"-"+entry_dia2.Text.Trim()+
 														"');";
 						}
+						
+						
 						bool error = false;
 	 					NpgsqlConnection conexion; 
 						conexion = new NpgsqlConnection (connectionString+nombrebd);
@@ -2113,11 +2120,14 @@ namespace osiris
 												"WHERE id_abono = '"+idhonorariomedico+"';";
 							 		comando1.ExecuteNonQuery();    	    	       	comando1.Dispose();
 							 			
-							 		comando1.CommandText = "UPDATE osiris_erp_cobros_enca "+
-												"SET total_abonos = total_abonos + '"+(string) this.entry_total_comprobante.Text.Trim()+"' "+							
-												"WHERE  folio_de_servicio =  '"+this.folioservicio+"';";
-							 		comando1.ExecuteNonQuery();    	    	       	comando1.Dispose();
-							 			
+							 		//comando1.CommandText = "UPDATE osiris_erp_cobros_enca "+
+									//			"SET total_abonos = total_abonos + '"+(string) this.entry_total_comprobante.Text.Trim()+"' "+							
+									//			"WHERE  folio_de_servicio =  '"+this.folioservicio+"';";
+							 		//comando1.ExecuteNonQuery();    	    	       	comando1.Dispose();
+							 		
+									Widget win = (Widget) sender;
+									win.Toplevel.Destroy();
+									
 							 		llenado_de_honorarios();
 							 							 			 	  
 					 			}catch(NpgsqlException ex){

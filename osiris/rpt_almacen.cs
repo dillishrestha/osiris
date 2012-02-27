@@ -93,7 +93,7 @@ namespace osiris
 				titulo_reporte = "Reporte de Inventario Fisico "+almacen;
 				query_consulta = "SELECT descripcion_producto,eliminado, "+
 								"id_quien_creo,osiris_productos.aplicar_iva,osiris_inventario_almacenes.id_almacen,  "+
-								"descripcion_grupo_producto,descripcion_grupo1_producto,descripcion_grupo2_producto, "+
+								"osiris_productos.id_grupo_producto AS idgrupoproducto,descripcion_grupo_producto,descripcion_grupo1_producto,descripcion_grupo2_producto, "+
 								"to_char(osiris_inventario_almacenes.id_producto,'999999999999') AS idproducto, "+
 								//"to_char(osiris_inventario_almacenes."+mesinventario.ToString()+",'99999.99') AS stock, "+
 								"to_char(osiris_inventario_almacenes.stock,'999999.99') AS stock, "+
@@ -113,7 +113,7 @@ namespace osiris
 								"AND osiris_inventario_almacenes.id_almacen = '"+(int) idalmacen +"' "+
 								"AND osiris_inventario_almacenes.ano_inventario = '"+(string) anoinventario +"' "+
 								"AND osiris_inventario_almacenes.mes_inventario = '"+mesinventario+"' "+
-								"ORDER BY osiris_productos.descripcion_producto,to_char(osiris_inventario_almacenes.fechahora_alta,'yyyy-mm-dd HH:mm:ss');";;
+								"ORDER BY osiris_productos.id_grupo_producto,osiris_productos.descripcion_producto,to_char(osiris_inventario_almacenes.fechahora_alta,'yyyy-mm-dd HH:mm:ss');";;
 			}
 			
 			if(tipo_reporte == "cargos_x_fecha"){
@@ -145,6 +145,8 @@ namespace osiris
 		void ejecutar_consulta_reporte(PrintContext context)
 		{	
 			decimal total_inventario = 0;
+			int idgrupoproducto = 0;
+			decimal totales_x_grupo = 0;
 			Cairo.Context cr = context.CairoContext;
 			Pango.Layout layout = context.CreatePangoLayout ();
 			imprime_encabezado(cr,layout);
@@ -160,13 +162,19 @@ namespace osiris
 	 			conexion.Open ();
 	        	NpgsqlCommand comando; 
 	        	comando = conexion.CreateCommand (); 
-	        	comando.CommandText = query_consulta;
+	        	Console.WriteLine(query_consulta);
+				comando.CommandText = query_consulta;
 							
 	        	NpgsqlDataReader lector = comando.ExecuteReader ();
 				if (lector.Read()){
+					idgrupoproducto = int.Parse(lector["idgrupoproducto"].ToString()); 
 					comienzo_linea = 80;
 					fontSize = 7.0;			layout = null;			layout = context.CreatePangoLayout ();
 					desc.Size = (int)(fontSize * pangoScale);		layout.FontDescription = desc;
+					layout.FontDescription.Weight = Weight.Bold;		// Letra negrita
+					cr.MoveTo(65*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);			layout.SetText(lector["descripcion_grupo_producto"].ToString().Trim());				Pango.CairoHelper.ShowLayout (cr, layout);				
+					layout.FontDescription.Weight = Weight.Normal;
+					comienzo_linea += separacion_linea;
 					cr.MoveTo(05*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);			layout.SetText(lector["idproducto"].ToString().Trim());				Pango.CairoHelper.ShowLayout (cr, layout);				
 					if(lector["descripcion_producto"].ToString().Length > 65){
 						cr.MoveTo(65*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);			layout.SetText(lector["descripcion_producto"].ToString().Trim().Substring(0,65));				Pango.CairoHelper.ShowLayout (cr, layout);				
@@ -177,13 +185,40 @@ namespace osiris
 					cr.MoveTo(420*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);			layout.SetText(string.Format("{0:C}",decimal.Parse(lector["costoproducto"].ToString())));		Pango.CairoHelper.ShowLayout (cr, layout);
 					cr.MoveTo(460*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);			layout.SetText(lector["embalaje"].ToString());		Pango.CairoHelper.ShowLayout (cr, layout);
 					cr.MoveTo(540*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);			layout.SetText(string.Format("{0:C}",decimal.Parse(lector["costoproductounitario"].ToString().Trim())));		Pango.CairoHelper.ShowLayout (cr, layout);
-					cr.MoveTo(600*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);			layout.SetText(string.Format("{0:F}",decimal.Parse(lector["porcentageganancia"].ToString().Trim())));		Pango.CairoHelper.ShowLayout (cr, layout);
-					cr.MoveTo(600*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);			layout.SetText(string.Format("{0:F}",decimal.Parse(lector["porcentageganancia"].ToString().Trim())));		Pango.CairoHelper.ShowLayout (cr, layout);
-					cr.MoveTo(680*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);			layout.SetText(string.Format("{0:C}",decimal.Parse(lector["costoproductounitario"].ToString().Trim()) * decimal.Parse(lector["stock"].ToString())));		Pango.CairoHelper.ShowLayout (cr, layout);
-
+					if(tipo_reporte == "inventario_fisico"){
+						cr.MoveTo(600*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);			layout.SetText(string.Format("{0:F}",decimal.Parse(lector["porcentageganancia"].ToString().Trim())));		Pango.CairoHelper.ShowLayout (cr, layout);
+						cr.MoveTo(680*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);			layout.SetText(string.Format("{0:C}",decimal.Parse(lector["costoproductounitario"].ToString().Trim()) * decimal.Parse(lector["stock"].ToString())));		Pango.CairoHelper.ShowLayout (cr, layout);
+					}					
+					if(tipo_reporte == "cargos_x_fecha"){
+						cr.MoveTo(600*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);			layout.SetText(string.Format("{0:C}",decimal.Parse(lector["costoproductounitario"].ToString().Trim()) * decimal.Parse(lector["stock"].ToString())));		Pango.CairoHelper.ShowLayout (cr, layout);
+					}
+					totales_x_grupo += decimal.Parse(lector["costoproductounitario"].ToString().Trim()) * decimal.Parse(lector["stock"].ToString());
 					total_inventario += decimal.Parse(lector["costoproductounitario"].ToString().Trim()) * decimal.Parse(lector["stock"].ToString());
 					comienzo_linea += separacion_linea;
 					while(lector.Read()){
+						if(idgrupoproducto != int.Parse(lector["idgrupoproducto"].ToString())){
+							desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;
+							layout.FontDescription.Weight = Weight.Bold;		// Letra negrita
+							if(tipo_reporte == "inventario_fisico"){
+								cr.MoveTo(680*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);			layout.SetText(string.Format("{0:C}",totales_x_grupo));		Pango.CairoHelper.ShowLayout (cr, layout);
+							}
+							if(tipo_reporte == "cargos_x_fecha"){
+								cr.MoveTo(600*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);			layout.SetText(string.Format("{0:C}",totales_x_grupo));		Pango.CairoHelper.ShowLayout (cr, layout);
+							}
+							comienzo_linea += separacion_linea;
+							salto_de_pagina(cr,layout);							
+							comienzo_linea += separacion_linea;
+							salto_de_pagina(cr,layout);
+							desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;
+							layout.FontDescription.Weight = Weight.Bold;		// Letra negrita							
+							cr.MoveTo(65*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);			layout.SetText(lector["descripcion_grupo_producto"].ToString().Trim());				Pango.CairoHelper.ShowLayout (cr, layout);				
+							comienzo_linea += separacion_linea;
+							salto_de_pagina(cr,layout);
+							idgrupoproducto = int.Parse(lector["idgrupoproducto"].ToString());
+							totales_x_grupo = 0;
+							desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;
+							layout.FontDescription.Weight = Weight.Normal;		// Letra normal
+						}
 						cr.MoveTo(05*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);			layout.SetText(lector["idproducto"].ToString().Trim());				Pango.CairoHelper.ShowLayout (cr, layout);				
 						if(lector["descripcion_producto"].ToString().Length > 65){
 							cr.MoveTo(65*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);			layout.SetText(lector["descripcion_producto"].ToString().Trim().Substring(0,65));				Pango.CairoHelper.ShowLayout (cr, layout);				
@@ -194,15 +229,32 @@ namespace osiris
 						cr.MoveTo(420*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);			layout.SetText(string.Format("{0:C}",decimal.Parse(lector["costoproducto"].ToString())));		Pango.CairoHelper.ShowLayout (cr, layout);
 						cr.MoveTo(460*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);			layout.SetText(lector["embalaje"].ToString());		Pango.CairoHelper.ShowLayout (cr, layout);
 						cr.MoveTo(540*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);			layout.SetText(string.Format("{0:C}",decimal.Parse(lector["costoproductounitario"].ToString().Trim())));		Pango.CairoHelper.ShowLayout (cr, layout);
-						cr.MoveTo(600*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);			layout.SetText(string.Format("{0:F}",decimal.Parse(lector["porcentageganancia"].ToString().Trim())));		Pango.CairoHelper.ShowLayout (cr, layout);
-						cr.MoveTo(680*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);			layout.SetText(string.Format("{0:C}",decimal.Parse(lector["costoproductounitario"].ToString().Trim()) * decimal.Parse(lector["stock"].ToString())));		Pango.CairoHelper.ShowLayout (cr, layout);
+						if(tipo_reporte == "inventario_fisico"){
+							cr.MoveTo(600*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);			layout.SetText(string.Format("{0:F}",decimal.Parse(lector["porcentageganancia"].ToString().Trim())));		Pango.CairoHelper.ShowLayout (cr, layout);
+							cr.MoveTo(680*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);			layout.SetText(string.Format("{0:C}",decimal.Parse(lector["costoproductounitario"].ToString().Trim()) * decimal.Parse(lector["stock"].ToString())));		Pango.CairoHelper.ShowLayout (cr, layout);
+						}					
+						if(tipo_reporte == "cargos_x_fecha"){
+							cr.MoveTo(600*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);			layout.SetText(string.Format("{0:C}",decimal.Parse(lector["costoproductounitario"].ToString().Trim()) * decimal.Parse(lector["stock"].ToString())));		Pango.CairoHelper.ShowLayout (cr, layout);
+						}
+						totales_x_grupo += decimal.Parse(lector["costoproductounitario"].ToString().Trim()) * decimal.Parse(lector["stock"].ToString());
 						total_inventario += decimal.Parse(lector["costoproductounitario"].ToString().Trim()) * decimal.Parse(lector["stock"].ToString());
 						comienzo_linea += separacion_linea;
 						salto_de_pagina(cr,layout);
 					}
-					comienzo_linea += separacion_linea;
-					cr.MoveTo(680*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);			layout.SetText(string.Format("{0:C}",total_inventario));		Pango.CairoHelper.ShowLayout (cr, layout);
-
+					desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;
+					layout.FontDescription.Weight = Weight.Bold;		// Letra negrita
+					if(tipo_reporte == "inventario_fisico"){
+						cr.MoveTo(680*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);			layout.SetText(string.Format("{0:C}",totales_x_grupo));		Pango.CairoHelper.ShowLayout (cr, layout);
+						comienzo_linea += separacion_linea;
+						salto_de_pagina(cr,layout);
+						cr.MoveTo(680*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);			layout.SetText(string.Format("{0:C}",total_inventario));		Pango.CairoHelper.ShowLayout (cr, layout);
+					}
+					if(tipo_reporte == "cargos_x_fecha"){
+						cr.MoveTo(600*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);			layout.SetText(string.Format("{0:C}",totales_x_grupo));		Pango.CairoHelper.ShowLayout (cr, layout);
+						comienzo_linea += separacion_linea;
+						salto_de_pagina(cr,layout);
+						cr.MoveTo(600*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);			layout.SetText(string.Format("{0:C}",total_inventario));		Pango.CairoHelper.ShowLayout (cr, layout);
+					}
 				}
 			}catch (NpgsqlException ex){
 				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
@@ -250,13 +302,14 @@ namespace osiris
 				fontSize = 8.0;
 				desc.Size = (int)(fontSize * pangoScale);	layout.FontDescription = desc;
 				cr.MoveTo(350*escala_en_linux_windows, 65*escala_en_linux_windows);			layout.SetText("Stock");				Pango.CairoHelper.ShowLayout (cr, layout);
+				cr.MoveTo(590*escala_en_linux_windows, 65*escala_en_linux_windows);			layout.SetText("% Ganancia");				Pango.CairoHelper.ShowLayout (cr, layout);
 				cr.MoveTo(670*escala_en_linux_windows, 65*escala_en_linux_windows);			layout.SetText("$ Inventario");				Pango.CairoHelper.ShowLayout (cr, layout);
 			}else{
 				cr.MoveTo(340*escala_en_linux_windows, 35*escala_en_linux_windows);			layout.SetText("Rango de Fecha : "+rango_fecha);				Pango.CairoHelper.ShowLayout (cr, layout);			
 				fontSize = 8.0;
 				desc.Size = (int)(fontSize * pangoScale);	layout.FontDescription = desc;
 				cr.MoveTo(350*escala_en_linux_windows, 65*escala_en_linux_windows);			layout.SetText("Cargado");				Pango.CairoHelper.ShowLayout (cr, layout);
-				cr.MoveTo(670*escala_en_linux_windows, 65*escala_en_linux_windows);			layout.SetText("$ Consumo");				Pango.CairoHelper.ShowLayout (cr, layout);
+				cr.MoveTo(590*escala_en_linux_windows, 65*escala_en_linux_windows);			layout.SetText("$ Consumo");				Pango.CairoHelper.ShowLayout (cr, layout);
 			}
 			fontSize = 8.0;
 			desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;
@@ -264,7 +317,6 @@ namespace osiris
 			cr.MoveTo(410*escala_en_linux_windows, 65*escala_en_linux_windows);			layout.SetText("Precio Prod.");				Pango.CairoHelper.ShowLayout (cr, layout);
 			cr.MoveTo(480*escala_en_linux_windows, 65*escala_en_linux_windows);			layout.SetText("Pack");				Pango.CairoHelper.ShowLayout (cr, layout);
 			cr.MoveTo(530*escala_en_linux_windows, 65*escala_en_linux_windows);			layout.SetText("Costo Unit.");				Pango.CairoHelper.ShowLayout (cr, layout);
-			cr.MoveTo(590*escala_en_linux_windows, 65*escala_en_linux_windows);			layout.SetText("% Ganancia");				Pango.CairoHelper.ShowLayout (cr, layout);
 			//cr.MoveTo(670*escala_en_linux_windows, 65*escala_en_linux_windows);			layout.SetText("$ Inventario");				Pango.CairoHelper.ShowLayout (cr, layout);
 
 			// Creando el Cuadro de Titulos

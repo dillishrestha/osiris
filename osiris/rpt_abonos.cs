@@ -35,7 +35,6 @@ using Glade;
 using Cairo;
 using Pango;
 
-
 namespace osiris
 {
 	public class reporte_de_abonos
@@ -202,7 +201,6 @@ namespace osiris
 				NpgsqlDataReader lector = comando.ExecuteReader ();
 				imprime_encabezado(cr,layout);
 				while (lector.Read()){
-					
 					cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText((string) lector["folio"].ToString().Trim());	Pango.CairoHelper.ShowLayout (cr, layout);
 					cr.MoveTo(40*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText(string.Format("{0:C}",decimal.Parse(lector["abono"].ToString())));	Pango.CairoHelper.ShowLayout (cr, layout);
 					cr.MoveTo(93*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText(lector["fechaabono"].ToString());	Pango.CairoHelper.ShowLayout (cr, layout);
@@ -212,7 +210,6 @@ namespace osiris
 					comienzo_linea += separacion_linea;
 					total += decimal.Parse((string) lector["abono"]);
 					contadorprocedimientos += 1;
-					
 					/*
 					tomovalor1 = (string) lector["concepto"];
 					if(tomovalor1.Length > 40)
@@ -221,7 +218,6 @@ namespace osiris
 					}
 					ContextoImp.MoveTo(351, filas);		ContextoImp.Show(tomovalor1);
 					ContextoImp.MoveTo(501, filas);		ContextoImp.Show((string) lector["descripago"]);
-					
 					*/
 				}
 				comienzo_linea += separacion_linea;
@@ -268,9 +264,7 @@ namespace osiris
 				}else{
 					cr.MoveTo(235*escala_en_linux_windows, 45*escala_en_linux_windows);		layout.SetText("Rango del "+rango1+" al "+rango2);	Pango.CairoHelper.ShowLayout (cr, layout);
 				}
-			}	
-			
-			
+			}			
 			fontSize = 7.0;
 			desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;
 			layout.FontDescription.Weight = Weight.Normal;		// Letra normal
@@ -282,7 +276,6 @@ namespace osiris
 			cr.Stroke();
 				
 			/*	
-			
 			ContextoImp.MoveTo(26,720);				ContextoImp.Show("FOLIO");			
 			ContextoImp.MoveTo(56,720);				ContextoImp.Show("MONTO");			
 			ContextoImp.MoveTo(93,720); 			ContextoImp.Show("F. ABONO");			
@@ -307,8 +300,7 @@ namespace osiris
 			//Console.WriteLine(args.Event.Key);
 			//Console.WriteLine(Convert.ToChar(args.Event.Key));
 			string misDigitos = ".0123456789ﾰﾱﾲﾳﾴﾵﾶﾷﾸﾹﾮｔｒｓｑ（）";
-			if (Array.IndexOf(misDigitos.ToCharArray(), Convert.ToChar(args.Event.Key)) == -1 && args.Event.Key != Gdk.Key.BackSpace)
-			{
+			if (Array.IndexOf(misDigitos.ToCharArray(), Convert.ToChar(args.Event.Key)) == -1 && args.Event.Key != Gdk.Key.BackSpace){
 				args.RetVal = true;
 			}
 		}

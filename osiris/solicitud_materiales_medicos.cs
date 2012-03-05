@@ -153,7 +153,6 @@ namespace osiris
 			checkbutton_presolicitud.Clicked += new EventHandler(on_checkbutton_presolicitud_clicked);
 			//buscar pacientes
 			button_busca_paciente.Clicked += new EventHandler(on_button_busca_paciente_clicked);
-			
 			button_imprime_solicitud.Clicked += new EventHandler(on_button_imprime_solicitud_clicked);
 			
 			button_guardar_solicitud.Sensitive = false;
@@ -178,11 +177,39 @@ namespace osiris
 			statusbar_hospital.HasResizeGrip = false;			
 			//entry_folio_servicio.Text = "ejemplo";			
 			crea_treeview_solicitud();
-			Console.WriteLine(idalmacen_.ToString());
 			if (idalmacen_ == 16){
 				filtro_query_alta = " ";
 			}
+			// Verificando que pueda crear pre-solicitudes
+			checkbutton_presolicitud.Sensitive = (bool) verifica_sub_almacenes(idalmacen_);
 		}
+		
+		bool verifica_sub_almacenes(int idalmacen_)
+		{
+			bool acceso_a_presolicitud = false;
+			NpgsqlConnection conexion; 
+			conexion = new NpgsqlConnection (connectionString+nombrebd);
+	    	// Verifica que la base de datos este conectada
+			try{
+				conexion.Open ();
+				NpgsqlCommand comando; 
+				comando = conexion.CreateCommand ();
+				comando.CommandText = "SELECT * FROM osiris_almacenes WHERE id_almacen = '"+idalmacen_.ToString().Trim()+"' " +
+					"AND pre_solicitudes = 'true';";
+				NpgsqlDataReader lector = comando.ExecuteReader ();
+				if(lector.Read()){
+					acceso_a_presolicitud = true;
+				}
+			}catch (NpgsqlException ex){
+		   		MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+								MessageType.Error, 
+								ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
+				msgBoxError.Run ();
+				msgBoxError.Destroy();
+			}				
+			return acceso_a_presolicitud;
+		}
+				
 
 		void on_button_busca_producto_clicked(object sender, EventArgs args)
 		{
@@ -228,7 +255,8 @@ namespace osiris
 					button_buscar_solicitudes.Sensitive = false;
 					entry_numero_solicitud.IsEditable = false;	
 					entry_status_solicitud.Text = "";
-					checkbutton_presolicitud.Sensitive = true;
+					// Verificando que pueda crear pre-solicitudes
+					checkbutton_presolicitud.Sensitive = (bool) verifica_sub_almacenes(idalmacen);
 					checkbutton_sol_parastock.Sensitive = true;
 					entry_folio_servicio.Text = "0";
 					entry_pid_paciente.Text = "0";
@@ -649,12 +677,10 @@ namespace osiris
 	    		
 		void crea_treeview_busqueda(string tipo_busqueda)
 		{
-			if (tipo_busqueda == "solicitud")
-			{
+			if (tipo_busqueda == "solicitud"){
 				
 			}
-			if (tipo_busqueda == "producto")
-			{
+			if (tipo_busqueda == "producto"){
 				treeViewEngineBusca2 = new TreeStore(typeof(string),
 													typeof(string),
 													typeof(string),
@@ -669,10 +695,8 @@ namespace osiris
 													typeof(string),
 													typeof(string));
 
-				lista_de_producto.Model = treeViewEngineBusca2;
-			
-				lista_de_producto.RulesHint = true;
-			
+				lista_de_producto.Model = treeViewEngineBusca2;			
+				lista_de_producto.RulesHint = true;			
 				lista_de_producto.RowActivated += on_selecciona_producto_clicked;  // Doble click selecciono paciente*/
 				
 				TreeViewColumn col_idproducto = new TreeViewColumn();

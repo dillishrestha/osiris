@@ -105,8 +105,7 @@ namespace osiris
         	conexion = new NpgsqlConnection (connectionString+nombrebd);
             
         	// Verifica que la base de datos este conectada
-        	try
-        	{
+        	try{
         		conexion.Open ();
         		NpgsqlCommand comando; 
         		comando = conexion.CreateCommand (); 
@@ -452,9 +451,7 @@ namespace osiris
 				lector.Close (); 
 				conexion.Close ();
 				//cr.ShowPage();
-			}
-			catch (NpgsqlException ex)
-			{
+			}catch (NpgsqlException ex){
 				Console.WriteLine ("PostgresSQL error: {0}",ex.Message);
 				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,MessageType.Info,ButtonsType.Close, "PostgresSQL error: {0}",ex.Message);
 				msgBoxError.Run ();	msgBoxError.Destroy();

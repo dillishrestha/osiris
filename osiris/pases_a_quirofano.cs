@@ -87,6 +87,7 @@ namespace osiris
 		[Widget] Gtk.CheckButton checkbutton_todos_envios = null;
 		[Widget] Gtk.CheckButton checkbutton_seleccion_presupuestos = null;
 		[Widget] Gtk.Button button_rep = null;
+		[Widget] Gtk.Button button_buscar = null;
 		[Widget] Gtk.TreeView lista_almacenes = null;
 		
 		TreeStore treeViewEnginePases;
@@ -134,7 +135,7 @@ namespace osiris
 				envio_almacenes.Show();
 				
 				button_salir.Clicked += new EventHandler(on_cierraventanas_clicked);
-				//button_buscar.Clicked += new EventHandler(on_buscar_clicked);
+				button_buscar.Clicked += new EventHandler(on_cancela_pase_clicked);
 	           	button_rep.Clicked += new EventHandler(on_printing_pase_qx_clcked);
 	          	checkbutton_todos_envios.Clicked += new EventHandler(on_create_pases_qxurg_clicked);
 	          	//checkbutton_seleccion_presupuestos.Hide();
@@ -145,6 +146,11 @@ namespace osiris
 				printing_pase();
 			}
 		}
+
+		void on_cancela_pase_clicked(object sender, EventArgs args)
+		{
+			
+		}		
 		
 		void crea_treeview_pases()
 		{
@@ -293,7 +299,6 @@ namespace osiris
 							idempresa_paciente.ToString().Trim()+"','"+
 							idaseguradora_paciente.ToString().Trim()+
 							"');";
-						
 						comando.ExecuteNonQuery();					comando.Dispose();
 						llenado_treeview_pases();
 					}catch (NpgsqlException ex){
@@ -419,8 +424,7 @@ namespace osiris
 						sexopaciente = "MASCULINO";
 					}else{
 						sexopaciente = "FEMENINO";
-					}
-					
+					}					
 					if((int) lector ["id_aseguradora"] > 1){
 						empresa_o_aseguradora = (string) lector["descripcion_aseguradora"];
 					}else{
@@ -557,7 +561,7 @@ namespace osiris
 			cr.MoveTo(400*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText("Habitacion: "+numerohabitacion);		Pango.CairoHelper.ShowLayout (cr, layout);
 			comienzo_linea += separacion_linea;
 			cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText("Usuario: "+quiensolicito);							Pango.CairoHelper.ShowLayout (cr, layout);
-			cr.MoveTo(200*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText("Nom. Cajero: "+nomsolicitante);					Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(200*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText("Nom. Usuario: "+nomsolicitante);					Pango.CairoHelper.ShowLayout (cr, layout);
 			comienzo_linea += separacion_linea;
 			cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText("Tipo de Paciente : "+tipo_paciente);			Pango.CairoHelper.ShowLayout (cr, layout);
 			comienzo_linea += separacion_linea;
@@ -578,7 +582,10 @@ namespace osiris
 				cr.MoveTo(150*escala_en_linux_windows,(comienzo_linea+(separacion_linea*21))*escala_en_linux_windows);		layout.SetText("Sello y Firma Cajero");							Pango.CairoHelper.ShowLayout (cr, layout);
 			}
 			if(tipo_pase=="pase_de_ingreso"){
-				cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText("N° Oficio: "+empresa_aseguradora);							Pango.CairoHelper.ShowLayout (cr, layout);
+				cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText("N° Oficio: ");							Pango.CairoHelper.ShowLayout (cr, layout);
+				cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText("N° Oficio: ");							Pango.CairoHelper.ShowLayout (cr, layout);
+				comienzo_linea += separacion_linea;
+				cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText("DEPARTAMENTO :");							Pango.CairoHelper.ShowLayout (cr, layout);
 				comienzo_linea += separacion_linea;
 			}
 			
@@ -657,4 +664,3 @@ namespace osiris
 		}
 	}
 }
-

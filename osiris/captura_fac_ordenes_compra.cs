@@ -79,7 +79,7 @@ namespace osiris
 		[Widget] Gtk.Entry entry_embalaje_pack = null;
 		[Widget] Gtk.Entry entry_producto_proveedor = null;
 		[Widget] Gtk.Entry entry_codprod_proveedor = null;	
-		
+		[Widget] Gtk.Entry entry_precio = null;
 		//[Widget] Gtk
 		[Widget] Gtk.TreeView lista_de_producto = null;
 		
@@ -397,11 +397,11 @@ namespace osiris
 			col_05 = new TreeViewColumn();
 			cellrt5 = new CellRendererText();
 			col_05.Title = "Ingreso Stock";
-			col_05.PackStart(cellrt4, true);
-			col_05.AddAttribute (cellrt4, "text", 4);
+			col_05.PackStart(cellrt5, true);
+			col_05.AddAttribute (cellrt5, "text", 5);
 			cellrt5.Edited += NumberCellEdited;
 			cellrt5.Editable = true;
-			col_05.SortColumnId = (int) col_productos_recibidos.col_04;
+			col_05.SortColumnId = (int) col_productos_recibidos.col_05;
 			
 			col_06 = new TreeViewColumn();
 			cellrt6 = new CellRendererText();
@@ -983,47 +983,50 @@ namespace osiris
 		
 		void on_selecciona_producto_clicked (object sender, EventArgs args)
 		{	
-			//string toma_valor;
-			TreeModel model;
-			TreeIter iterSelected;
-			if (lista_de_producto.Selection.GetSelected(out model, out iterSelected)){
-				
-				// buscando el codigo del proveedor para agregarlo en su catalogo
-				NpgsqlConnection conexion; 
-				conexion = new NpgsqlConnection (connectionString+nombrebd);
-				try{
-					conexion.Open ();
-					NpgsqlCommand comando; 
-					comando = conexion.CreateCommand ();
-	               	comando.CommandText = "";
-				}catch (NpgsqlException ex){
-	   				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
-								MessageType.Warning, ButtonsType.Ok, "PostgresSQL error: {0}",ex.Message);
-								msgBoxError.Run ();
-								msgBoxError.Destroy();
+			if(entry_num_factura_proveedor.Text.Trim() != ""){
+				TreeModel model;
+				TreeIter iterSelected;
+				if (lista_de_producto.Selection.GetSelected(out model, out iterSelected)){
+					
+					// buscando el codigo del proveedor para agregarlo en su catalogo
+					NpgsqlConnection conexion; 
+					conexion = new NpgsqlConnection (connectionString+nombrebd);
+					try{
+						conexion.Open ();
+						NpgsqlCommand comando; 
+						comando = conexion.CreateCommand ();
+		               	comando.CommandText = "";
+					}catch (NpgsqlException ex){
+		   				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+									MessageType.Warning, ButtonsType.Ok, "PostgresSQL error: {0}",ex.Message);
+									msgBoxError.Run ();
+									msgBoxError.Destroy();
+					}
+					conexion.Close ();
+					
+					treeViewEngineListaProdRequi.AppendValues (true,
+								entry_num_factura_proveedor.Text.Trim(),
+								"0",
+								entry_cantidad_aplicada.Text.Trim(),
+								entry_embalaje_pack.Text.Trim(),
+								Convert.ToString(float.Parse(entry_cantidad_aplicada.Text.Trim()) * float.Parse(entry_embalaje_pack.Text.Trim())),
+								entry_precio.Text.Trim(),
+								"",
+								"",
+								(string) model.GetValue(iterSelected, 1),
+								(string) model.GetValue(iterSelected, 0),
+								entry_embalaje_pack.Text.Trim(),
+								entry_lote.Text.Trim(),
+								entry_caducidad.Text.Trim(),
+								"",
+								"");
+					
+					//cierra la ventana despues que almaceno la informacion en variables
+					Widget win = (Widget) sender;
+					win.Toplevel.Destroy();
 				}
-				conexion.Close ();
+			}else{
 				
-				treeViewEngineListaProdRequi.AppendValues (true,
-							entry_num_factura_proveedor.Text.Trim(),
-							"0",
-							entry_cantidad_aplicada.Text.Trim(),
-							Convert.ToString(float.Parse(entry_cantidad_aplicada.Text.Trim()) * float.Parse(entry_embalaje_pack.Text.Trim())),
-							(string) model.GetValue(iterSelected, 2),
-							//entry_codprod_proveedor.Text.Trim(),
-							(string) model.GetValue(iterSelected, 0),
-							(string) model.GetValue(iterSelected, 1),
-							entry_embalaje_pack.Text.Trim(),
-							entry_lote.Text.Trim(),
-							entry_caducidad.Text.Trim(),
-							"",
-							"",
-							"",
-							"");
-				
-				//cierra la ventana despues que almaceno la informacion en variables
-				Widget win = (Widget) sender;
-				win.Toplevel.Destroy();
 			}
 		}
 		

@@ -80,7 +80,9 @@ namespace osiris
 		string tipo_reporte;
 		
 		string[] args_args = {""};
-		int[] args_id_array = {0,1,2,3,4,5,6,7,8};		
+		int[] args_id_array = {0,1,2,3,4,5,6,7,8,9,10};
+		
+		//string[] almacena_totales;
 			    	
 		string query_departamento = "AND osiris_his_tipo_admisiones.descripcion_admisiones = '0' ";
 		int id_tipo_admisiones = 0; 
@@ -153,9 +155,10 @@ namespace osiris
 				mov_productos.Title = "Mov.Tot. Prod. Cargados por Fechas";
 				entry_descrip_producto.IsEditable = false;
 				button_busca_producto.Sensitive = false;
-				llenado_combobox(1,"",combobox_departamentos,"sql","SELECT * FROM osiris_his_tipo_admisiones "+
-		               						"WHERE cuenta_mayor = 4000 "+
-		               						"ORDER BY descripcion_admisiones;","descripcion_admisiones","id_tipo_admisiones",args_args,args_id_array);
+				query_departamento = " AND osiris_grupo_producto.id_grupo_producto = '0' ";
+				llenado_combobox(1,"",combobox_departamentos,"sql","SELECT * FROM osiris_grupo_producto "+
+		               						"WHERE 	id_grupo_producto > '0' AND activo = 'true' "+
+		               						"ORDER BY descripcion_grupo_producto;","descripcion_grupo_producto","id_grupo_producto",args_args,args_id_array);
 				button_consultar_costos.Clicked += new EventHandler(on_button_consultar_costos_clicked);
 				button_imprimir_movimiento.Clicked += new EventHandler(on_button_rpt_movcargosfecha_clicked);
 			}
@@ -179,7 +182,7 @@ namespace osiris
 			if (checkbutton_todos_departamentos.Active == true){
 				combobox_departamentos.Sensitive = false;
 				query_departamento = "  "; //
-		    	}else{
+		    }else{
 				combobox_departamentos.Sensitive = true;
 				if(tipo_reporte == "envios_subalamcenes"){
 					query_departamento = "AND osiris_his_solicitudes_deta.id_almacen = '"+id_tipo_admisiones.ToString()+"' ";
@@ -191,7 +194,7 @@ namespace osiris
 					query_departamento = "";
 				}
 				if(tipo_reporte == "cargos_x_fecha"){
-				
+					query_departamento = " AND osiris_grupo_producto.id_grupo_producto = '"+id_tipo_admisiones.ToString()+"' ";
 				}
 			}
 		}
@@ -262,19 +265,20 @@ namespace osiris
 				case "combobox_departamentos":
 					id_tipo_admisiones = (int) combobox_departamentos.Model.GetValue(iter,1);
 					if(tipo_reporte == "envios_subalamcenes"){
-						query_departamento = " AND osiris_his_solicitudes_deta.id_almacen = '"+Convert.ToString((int) combobox_departamentos.Model.GetValue(iter,1)).ToString()+"' ";		    			    	
+						query_departamento = " AND osiris_his_solicitudes_deta.id_almacen = '"+Convert.ToString((int) combobox_departamentos.Model.GetValue(iter,1)).ToString()+"' ";	    			    	
 					}
 					if(tipo_reporte == "cargos_pacientes"){
-						query_departamento = " AND osiris_erp_cobros_deta.id_tipo_admisiones = '"+Convert.ToString((int) combobox_departamentos.Model.GetValue(iter,1)).ToString()+"' ";		    			    	
+						query_departamento = " AND osiris_erp_cobros_deta.id_tipo_admisiones = '"+Convert.ToString((int) combobox_departamentos.Model.GetValue(iter,1)).ToString()+"' ";
 					}
 					if(tipo_reporte == "productos_requisados"){
 						query_departamento = "";
-					}
-					if (this.checkbutton_todos_departamentos .Active == true){
-						query_departamento = " ";
+					}					
+					if (tipo_reporte == "cargos_x_fecha"){
+						query_departamento = " AND osiris_grupo_producto.id_grupo_producto = '"+Convert.ToString((int) combobox_departamentos.Model.GetValue(iter,1)).ToString()+"' ";
 					}
 					break;
 				}
+				//Console.WriteLine(query_departamento);
 			}
 		}
 		
@@ -489,6 +493,7 @@ namespace osiris
 		
 		void llena_treeview_aplicados(string productos_seleccionado_,string query_fechas_)
 		{	
+			treeViewEngineSelec.Clear();
 			query_consulta = "";
 			float total_aplicado = 0;
 			if(tipo_reporte == "envios_subalamcenes"){
@@ -557,6 +562,7 @@ namespace osiris
 						"AND osiris_productos.id_grupo_producto = osiris_grupo_producto.id_grupo_producto " +
 						//"AND osiris_erp_cobros_deta.id_producto IN('52502300009','52502300008')
 						query_fechas_+
+						query_departamento+
 						"GROUP BY osiris_erp_cobros_deta.id_producto,descripcion_producto,costo_producto,cantidad_de_embalaje,porcentage_ganancia,costo_por_unidad,osiris_productos.id_grupo_producto,descripcion_grupo_producto " +
 						"ORDER BY osiris_productos.id_grupo_producto,descripcion_producto;";
 			}

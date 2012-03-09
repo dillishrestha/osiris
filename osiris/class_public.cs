@@ -44,10 +44,10 @@ namespace osiris
 		public string idUsuario = "";
 		
 		// Informacion de la Empresa
-		public string nombre_empresa = "CONTROL DE CLINICA S.C."; //"P R A C T I M E D"; "CONTROL DE CLINICA S.C."
-		public string nombre_empresa2 = "CONTROL DE CLINICA";  //"CONTROL DE CLINICA";
-		public string direccion_empresa = "Jose Angel Conchello 2880, Col. Victora"; //"Loma Grande 2703, Col. Loma de San Francisco"; //"Jose Angel Conchello 2880, Col. Victora"
-		public string telefonofax_empresa = "Telefono: (01)(81) 8351-3610"; //"Telefono: (01)(81) 8040-6060"; // "Telefono: (01)(81) 8351-3610"
+		public string nombre_empresa = "P R A C T I M E D"; //"P R A C T I M E D"; "CONTROL DE CLINICA S.C."
+		public string nombre_empresa2 = "PRACTIMED";  //"CONTROL DE CLINICA";
+		public string direccion_empresa = "Loma Grande 2703, Col. Loma de San Francisco"; //"Loma Grande 2703, Col. Loma de San Francisco"; //"Jose Angel Conchello 2880, Col. Victora"
+		public string telefonofax_empresa = "Telefono: (01)(81) 8040-6060"; //"Telefono: (01)(81) 8040-6060"; // "Telefono: (01)(81) 8351-3610"
 		public string version_sistema = "Sistema Hospitalario OSIRIS ver. 1.0";
 		
 		public string ivaparaaplicar = "16.00";
@@ -117,6 +117,50 @@ namespace osiris
 				NpgsqlDataReader lector = comando.ExecuteReader ();				
 				if (lector.Read()){	
 					tomavalor = (int.Parse((string) lector["field_last_number"])+1).ToString();
+					conexion.Close();
+					return tomavalor;					
+				}else{
+					conexion.Close();
+					return tomavalor;					
+				}
+			}catch (NpgsqlException ex){
+		   					MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+							MessageType.Error,ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
+							msgBoxError.Run ();			msgBoxError.Destroy();
+				conexion.Close();
+				return tomavalor;
+			}
+		}
+		
+		/// <summary>
+		/// Lee registro de tabla the specified name table, name field and condition table.
+		/// </summary>
+		/// <param name='name_table'>
+		/// Nombre de la tabla de la busqueda.
+		/// </param>
+		/// <param name='name_field'>
+		/// Nombre del registro
+		/// </param>
+		/// <param name='condition_table'>
+		/// Condicion de la tabla
+		/// </param>
+		public string lee_registro_de_tabla(string name_table,string name_field,string condition_table,string name_field_out)
+		{
+			connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
+			nombrebd = conexion_a_DB._nombrebd;
+			NpgsqlConnection conexion; 
+			conexion = new NpgsqlConnection (connectionString+nombrebd);
+            // Verifica que la base de datos este conectada
+			string tomavalor = "";
+			try{
+				conexion.Open ();
+				NpgsqlCommand comando; 
+				comando = conexion.CreateCommand ();
+				comando.CommandText = "SELECT to_char("+name_field+",'9999999999') AS field_id_name,"+name_field_out+" AS name_fiel_output"+" FROM "+name_table+" "+condition_table+" ORDER BY "+name_field+" DESC LIMIT 1;";
+				Console.WriteLine(comando.CommandText);
+				NpgsqlDataReader lector = comando.ExecuteReader ();				
+				if (lector.Read()){	
+					tomavalor = (string) lector["name_fiel_output"].ToString().Trim();
 					conexion.Close();
 					return tomavalor;					
 				}else{

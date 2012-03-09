@@ -39,7 +39,6 @@ namespace osiris
 {
 	public class imprime_consumo_productos
 	{
-		
 		private static int pangoScale = 1024;
 		private PrintOperation print;
 		private double fontSize = 8.0;
@@ -47,6 +46,9 @@ namespace osiris
 		int comienzo_linea = 70;
 		int separacion_linea = 10;
 		int numpage = 1;
+		
+		int espacio_mese = 23;
+		int comienzo_mese = 250;
 		
 		// Declarando el treeview
 		Gtk.TreeView lista_resumen_productos;
@@ -103,54 +105,48 @@ namespace osiris
 				if(toma_descrip_prod.Length > 61){
 					toma_descrip_prod = toma_descrip_prod.Substring(0,60);
 				}
-				/*
-				ContextoImp.MoveTo(120, filas);	ContextoImp.Show(toma_descrip_prod);
-				ContextoImp.MoveTo(180, filas);	ContextoImp.Show((string) lista_resumen_productos.Model.GetValue (iter,2));
-				// Meses
-				ContextoImp.MoveTo(385, filas);	ContextoImp.Show(float.Parse((string) lista_resumen_productos.Model.GetValue (iter,3)).ToString().Trim());
-				ContextoImp.MoveTo(410, filas);	ContextoImp.Show(float.Parse((string) lista_resumen_productos.Model.GetValue (iter,4)).ToString().Trim());
-				ContextoImp.MoveTo(435, filas);	ContextoImp.Show(float.Parse((string) lista_resumen_productos.Model.GetValue (iter,5)).ToString().Trim());
-				ContextoImp.MoveTo(460, filas);	ContextoImp.Show(float.Parse((string) lista_resumen_productos.Model.GetValue (iter,6)).ToString().Trim());
-				ContextoImp.MoveTo(485, filas);	ContextoImp.Show(float.Parse((string) lista_resumen_productos.Model.GetValue (iter,7)).ToString().Trim());
-				ContextoImp.MoveTo(510, filas);	ContextoImp.Show(float.Parse((string) lista_resumen_productos.Model.GetValue (iter,8)).ToString().Trim());
-				ContextoImp.MoveTo(535, filas);	ContextoImp.Show(float.Parse((string) lista_resumen_productos.Model.GetValue (iter,9)).ToString().Trim());
-				ContextoImp.MoveTo(560, filas);	ContextoImp.Show(float.Parse((string) lista_resumen_productos.Model.GetValue (iter,10)).ToString().Trim());
-				ContextoImp.MoveTo(585, filas);	ContextoImp.Show(float.Parse((string) lista_resumen_productos.Model.GetValue (iter,11)).ToString().Trim());
-				ContextoImp.MoveTo(610, filas);	ContextoImp.Show(float.Parse((string) lista_resumen_productos.Model.GetValue (iter,12)).ToString().Trim());
-				ContextoImp.MoveTo(635, filas);	ContextoImp.Show(float.Parse((string) lista_resumen_productos.Model.GetValue (iter,13)).ToString().Trim());
-				ContextoImp.MoveTo(660, filas);	ContextoImp.Show(float.Parse((string) lista_resumen_productos.Model.GetValue (iter,14)).ToString().Trim());
-				ContextoImp.MoveTo(685, filas);	ContextoImp.Show(float.Parse((string) lista_resumen_productos.Model.GetValue (iter,15)).ToString().Trim());
-				ContextoImp.MoveTo(710, filas);	ContextoImp.Show(float.Parse((string) lista_resumen_productos.Model.GetValue (iter,18)).ToString("F").Trim());
-				ContextoImp.MoveTo(743, filas);	ContextoImp.Show((string) lista_resumen_productos.Model.GetValue (iter,16));
-				*/
+				cr.MoveTo(09*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(toma_descrip_prod);			Pango.CairoHelper.ShowLayout (cr, layout);
+				cr.MoveTo(120*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText((string) lista_resumen_productos.Model.GetValue (iter,2));			Pango.CairoHelper.ShowLayout (cr, layout);
+				cr.MoveTo(comienzo_mese+(espacio_mese*1)*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(float.Parse((string) lista_resumen_productos.Model.GetValue (iter,3)).ToString().Trim());			Pango.CairoHelper.ShowLayout (cr, layout);
+				cr.MoveTo(comienzo_mese+(espacio_mese*2)*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(float.Parse((string) lista_resumen_productos.Model.GetValue (iter,4)).ToString().Trim());			Pango.CairoHelper.ShowLayout (cr, layout);
+				cr.MoveTo(comienzo_mese+(espacio_mese*3)*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(float.Parse((string) lista_resumen_productos.Model.GetValue (iter,5)).ToString().Trim());			Pango.CairoHelper.ShowLayout (cr, layout);
+				cr.MoveTo(comienzo_mese+(espacio_mese*4)*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(float.Parse((string) lista_resumen_productos.Model.GetValue (iter,6)).ToString().Trim());			Pango.CairoHelper.ShowLayout (cr, layout);
+				cr.MoveTo(comienzo_mese+(espacio_mese*5)*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(float.Parse((string) lista_resumen_productos.Model.GetValue (iter,7)).ToString().Trim());			Pango.CairoHelper.ShowLayout (cr, layout);
+				cr.MoveTo(comienzo_mese+(espacio_mese*6)*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(float.Parse((string) lista_resumen_productos.Model.GetValue (iter,8)).ToString().Trim());			Pango.CairoHelper.ShowLayout (cr, layout);
+				cr.MoveTo(comienzo_mese+(espacio_mese*7)*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(float.Parse((string) lista_resumen_productos.Model.GetValue (iter,9)).ToString().Trim());			Pango.CairoHelper.ShowLayout (cr, layout);
+				cr.MoveTo(comienzo_mese+(espacio_mese*8)*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(float.Parse((string) lista_resumen_productos.Model.GetValue (iter,10)).ToString().Trim());			Pango.CairoHelper.ShowLayout (cr, layout);
+				cr.MoveTo(comienzo_mese+(espacio_mese*9)*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(float.Parse((string) lista_resumen_productos.Model.GetValue (iter,11)).ToString().Trim());			Pango.CairoHelper.ShowLayout (cr, layout);
+				cr.MoveTo(comienzo_mese+(espacio_mese*10)*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(float.Parse((string) lista_resumen_productos.Model.GetValue (iter,12)).ToString().Trim());			Pango.CairoHelper.ShowLayout (cr, layout);
+				cr.MoveTo(comienzo_mese+(espacio_mese*11)*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(float.Parse((string) lista_resumen_productos.Model.GetValue (iter,13)).ToString().Trim());			Pango.CairoHelper.ShowLayout (cr, layout);
+				cr.MoveTo(comienzo_mese+(espacio_mese*12)*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(float.Parse((string) lista_resumen_productos.Model.GetValue (iter,14)).ToString().Trim());			Pango.CairoHelper.ShowLayout (cr, layout);
+				cr.MoveTo(685*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(float.Parse((string) lista_resumen_productos.Model.GetValue (iter,15)).ToString().Trim());			Pango.CairoHelper.ShowLayout (cr, layout);
+				cr.MoveTo(710*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(float.Parse((string) lista_resumen_productos.Model.GetValue (iter,18)).ToString().Trim());			Pango.CairoHelper.ShowLayout (cr, layout);
+								comienzo_linea += separacion_linea;
 				while (treeViewEngineResumen.IterNext(ref iter)){
+					toma_descrip_prod = (string) lista_resumen_productos.Model.GetValue (iter,1);
 					if(toma_descrip_prod.Length > 61){
 						toma_descrip_prod = toma_descrip_prod.Substring(0,60);
 					}
-					/*
-					ContextoImp.MoveTo(120, filas);	ContextoImp.Show(toma_descrip_prod);
-					ContextoImp.MoveTo(180, filas);	ContextoImp.Show((string) lista_resumen_productos.Model.GetValue (iter,2));
-					// Meses
-					ContextoImp.MoveTo(385, filas);	ContextoImp.Show(float.Parse((string) lista_resumen_productos.Model.GetValue (iter,3)).ToString().Trim());
-					ContextoImp.MoveTo(410, filas);	ContextoImp.Show(float.Parse((string) lista_resumen_productos.Model.GetValue (iter,4)).ToString().Trim());
-					ContextoImp.MoveTo(435, filas);	ContextoImp.Show(float.Parse((string) lista_resumen_productos.Model.GetValue (iter,5)).ToString().Trim());
-					ContextoImp.MoveTo(460, filas);	ContextoImp.Show(float.Parse((string) lista_resumen_productos.Model.GetValue (iter,6)).ToString().Trim());
-					ContextoImp.MoveTo(485, filas);	ContextoImp.Show(float.Parse((string) lista_resumen_productos.Model.GetValue (iter,7)).ToString().Trim());
-					ContextoImp.MoveTo(510, filas);	ContextoImp.Show(float.Parse((string) lista_resumen_productos.Model.GetValue (iter,8)).ToString().Trim());
-					ContextoImp.MoveTo(535, filas);	ContextoImp.Show(float.Parse((string) lista_resumen_productos.Model.GetValue (iter,9)).ToString().Trim());
-					ContextoImp.MoveTo(560, filas);	ContextoImp.Show(float.Parse((string) lista_resumen_productos.Model.GetValue (iter,10)).ToString().Trim());
-					ContextoImp.MoveTo(585, filas);	ContextoImp.Show(float.Parse((string) lista_resumen_productos.Model.GetValue (iter,11)).ToString().Trim());
-					ContextoImp.MoveTo(610, filas);	ContextoImp.Show(float.Parse((string) lista_resumen_productos.Model.GetValue (iter,12)).ToString().Trim());
-					ContextoImp.MoveTo(635, filas);	ContextoImp.Show(float.Parse((string) lista_resumen_productos.Model.GetValue (iter,13)).ToString().Trim());
-					ContextoImp.MoveTo(660, filas);	ContextoImp.Show(float.Parse((string) lista_resumen_productos.Model.GetValue (iter,14)).ToString().Trim());
-					ContextoImp.MoveTo(685, filas);	ContextoImp.Show(float.Parse((string) lista_resumen_productos.Model.GetValue (iter,15)).ToString().Trim());
-					ContextoImp.MoveTo(710, filas);	ContextoImp.Show(float.Parse((string) lista_resumen_productos.Model.GetValue (iter,18)).ToString("F").Trim());
-					ContextoImp.MoveTo(743, filas);	ContextoImp.Show((string) lista_resumen_productos.Model.GetValue (iter,16));
-					*/
+					cr.MoveTo(09*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(toma_descrip_prod);			Pango.CairoHelper.ShowLayout (cr, layout);
+					cr.MoveTo(120*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText((string) lista_resumen_productos.Model.GetValue (iter,2));			Pango.CairoHelper.ShowLayout (cr, layout);
+					cr.MoveTo(comienzo_mese+(espacio_mese*1)*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(float.Parse((string) lista_resumen_productos.Model.GetValue (iter,3)).ToString().Trim());			Pango.CairoHelper.ShowLayout (cr, layout);
+					cr.MoveTo(comienzo_mese+(espacio_mese*2)*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(float.Parse((string) lista_resumen_productos.Model.GetValue (iter,4)).ToString().Trim());			Pango.CairoHelper.ShowLayout (cr, layout);
+					cr.MoveTo(comienzo_mese+(espacio_mese*3)*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(float.Parse((string) lista_resumen_productos.Model.GetValue (iter,5)).ToString().Trim());			Pango.CairoHelper.ShowLayout (cr, layout);
+					cr.MoveTo(comienzo_mese+(espacio_mese*4)*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(float.Parse((string) lista_resumen_productos.Model.GetValue (iter,6)).ToString().Trim());			Pango.CairoHelper.ShowLayout (cr, layout);
+					cr.MoveTo(comienzo_mese+(espacio_mese*5)*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(float.Parse((string) lista_resumen_productos.Model.GetValue (iter,7)).ToString().Trim());			Pango.CairoHelper.ShowLayout (cr, layout);
+					cr.MoveTo(comienzo_mese+(espacio_mese*6)*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(float.Parse((string) lista_resumen_productos.Model.GetValue (iter,8)).ToString().Trim());			Pango.CairoHelper.ShowLayout (cr, layout);
+					cr.MoveTo(comienzo_mese+(espacio_mese*7)*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(float.Parse((string) lista_resumen_productos.Model.GetValue (iter,9)).ToString().Trim());			Pango.CairoHelper.ShowLayout (cr, layout);
+					cr.MoveTo(comienzo_mese+(espacio_mese*8)*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(float.Parse((string) lista_resumen_productos.Model.GetValue (iter,10)).ToString().Trim());			Pango.CairoHelper.ShowLayout (cr, layout);
+					cr.MoveTo(comienzo_mese+(espacio_mese*9)*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(float.Parse((string) lista_resumen_productos.Model.GetValue (iter,11)).ToString().Trim());			Pango.CairoHelper.ShowLayout (cr, layout);
+					cr.MoveTo(comienzo_mese+(espacio_mese*10)*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(float.Parse((string) lista_resumen_productos.Model.GetValue (iter,12)).ToString().Trim());			Pango.CairoHelper.ShowLayout (cr, layout);
+					cr.MoveTo(comienzo_mese+(espacio_mese*11)*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(float.Parse((string) lista_resumen_productos.Model.GetValue (iter,13)).ToString().Trim());			Pango.CairoHelper.ShowLayout (cr, layout);
+					cr.MoveTo(comienzo_mese+(espacio_mese*12)*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(float.Parse((string) lista_resumen_productos.Model.GetValue (iter,14)).ToString().Trim());			Pango.CairoHelper.ShowLayout (cr, layout);
+					cr.MoveTo(685*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(float.Parse((string) lista_resumen_productos.Model.GetValue (iter,15)).ToString().Trim());			Pango.CairoHelper.ShowLayout (cr, layout);
+					cr.MoveTo(710*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(float.Parse((string) lista_resumen_productos.Model.GetValue (iter,18)).ToString().Trim());			Pango.CairoHelper.ShowLayout (cr, layout);
+									
+					comienzo_linea += separacion_linea;
 				}
 			}
-			
-			
 		}
 		
 		void imprime_encabezado(Cairo.Context cr,Pango.Layout layout)
@@ -193,36 +189,22 @@ namespace osiris
 			fontSize = 7.0;
 			desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;
 			layout.FontDescription.Weight = Weight.Bold;		// Letra negrita
-			//cr.MoveTo(09*escala_en_linux_windows,53*escala_en_linux_windows);			layout.SetText("N° Aten.");			Pango.CairoHelper.ShowLayout (cr, layout);
-			//cr.MoveTo(74*escala_en_linux_windows,53*escala_en_linux_windows);			layout.SetText("Ingreso");				Pango.CairoHelper.ShowLayout (cr, layout);
-			//cr.MoveTo(114*escala_en_linux_windows,53*escala_en_linux_windows);			layout.SetText("N° Expe.");	Pango.CairoHelper.ShowLayout (cr, layout);
-			//cr.MoveTo(300*escala_en_linux_windows,53*escala_en_linux_windows);			layout.SetText("Nombre Paciente");	Pango.CairoHelper.ShowLayout (cr, layout);
-			//cr.MoveTo(400*escala_en_linux_windows,53*escala_en_linux_windows);			layout.SetText("Habitacion");	Pango.CairoHelper.ShowLayout (cr, layout);
-			//cr.MoveTo(480*escala_en_linux_windows,53*escala_en_linux_windows);			layout.SetText("Saldo");	Pango.CairoHelper.ShowLayout (cr, layout);
-			//cr.MoveTo(570*escala_en_linux_windows,53*escala_en_linux_windows);			layout.SetText("Abono");	Pango.CairoHelper.ShowLayout (cr, layout);
-			//cr.MoveTo(570*escala_en_linux_windows,53*escala_en_linux_windows);			layout.SetText("S. Pend.");	Pango.CairoHelper.ShowLayout (cr, layout);
-			//cr.MoveTo(570*escala_en_linux_windows,53*escala_en_linux_windows);			layout.SetText("Doctor");	Pango.CairoHelper.ShowLayout (cr, layout);
-			//cr.MoveTo(570*escala_en_linux_windows,53*escala_en_linux_windows);			layout.SetText("Diagnostico");	Pango.CairoHelper.ShowLayout (cr, layout);
-			//cr.MoveTo(570*escala_en_linux_windows,53*escala_en_linux_windows);			layout.SetText("Tipo Pac.");	Pango.CairoHelper.ShowLayout (cr, layout);
-			//cr.MoveTo(570*escala_en_linux_windows,53*escala_en_linux_windows);			layout.SetText("Empresa");	Pango.CairoHelper.ShowLayout (cr, layout);
-			/*
-			ContextoImp.MoveTo(385, filas);	ContextoImp.Show("ENE");
-			ContextoImp.MoveTo(410, filas);	ContextoImp.Show("FEB");
-			ContextoImp.MoveTo(435, filas);	ContextoImp.Show("MAR");
-			ContextoImp.MoveTo(460, filas);	ContextoImp.Show("ABR");
-			ContextoImp.MoveTo(485, filas);	ContextoImp.Show("MAY");
-			ContextoImp.MoveTo(510, filas);	ContextoImp.Show("JUN");
-			ContextoImp.MoveTo(535, filas);	ContextoImp.Show("JUL");
-			ContextoImp.MoveTo(560, filas);	ContextoImp.Show("AGO");
-			ContextoImp.MoveTo(585, filas);	ContextoImp.Show("SEP");
-			ContextoImp.MoveTo(610, filas);	ContextoImp.Show("OCT");
-			ContextoImp.MoveTo(635, filas);	ContextoImp.Show("NOV");
-			ContextoImp.MoveTo(660, filas);	ContextoImp.Show("DIC");
-			ContextoImp.MoveTo(685, filas);	ContextoImp.Show("TOTAL");
-			ContextoImp.MoveTo(710, filas);	ContextoImp.Show("PROME.");
-			ContextoImp.MoveTo(743, filas);	ContextoImp.Show("$ TOTAL");
-			*/
 			
+			cr.MoveTo(09*escala_en_linux_windows,53*escala_en_linux_windows);			layout.SetText("ID Producto");			Pango.CairoHelper.ShowLayout (cr, layout);
+			//cr.MoveTo(74*escala_en_linux_windows,53*escala_en_linux_windows);			layout.SetText("Ingreso");				Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(comienzo_mese+(espacio_mese*1)*escala_en_linux_windows,53*escala_en_linux_windows);			layout.SetText("ENE");	Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(comienzo_mese+(espacio_mese*2)*escala_en_linux_windows,53*escala_en_linux_windows);			layout.SetText("FEB");	Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(comienzo_mese+(espacio_mese*3)*escala_en_linux_windows,53*escala_en_linux_windows);			layout.SetText("MAR");	Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(comienzo_mese+(espacio_mese*4)*escala_en_linux_windows,53*escala_en_linux_windows);			layout.SetText("ABR");	Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(comienzo_mese+(espacio_mese*5)*escala_en_linux_windows,53*escala_en_linux_windows);			layout.SetText("MAY");	Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(comienzo_mese+(espacio_mese*6)*escala_en_linux_windows,53*escala_en_linux_windows);			layout.SetText("JUN");	Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(comienzo_mese+(espacio_mese*7)*escala_en_linux_windows,53*escala_en_linux_windows);			layout.SetText("JUL");	Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(comienzo_mese+(espacio_mese*8)*escala_en_linux_windows,53*escala_en_linux_windows);			layout.SetText("AGO");	Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(comienzo_mese+(espacio_mese*9)*escala_en_linux_windows,53*escala_en_linux_windows);			layout.SetText("SEP");	Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(comienzo_mese+(espacio_mese*10)*escala_en_linux_windows,53*escala_en_linux_windows);			layout.SetText("OCT");	Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(comienzo_mese+(espacio_mese*11)*escala_en_linux_windows,53*escala_en_linux_windows);			layout.SetText("NUV");	Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(comienzo_mese+(espacio_mese*12)*escala_en_linux_windows,53*escala_en_linux_windows);			layout.SetText("DIC");	Pango.CairoHelper.ShowLayout (cr, layout);
+					
 			layout.FontDescription.Weight = Weight.Normal;		// Letra Normal
 		}
 		

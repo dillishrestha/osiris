@@ -751,17 +751,16 @@ namespace osiris
 		
 		void llenando_lista_de_productos()
 		{
-			treeViewEngineBusca2.Clear(); // Limpia el treeview cuando realiza una nueva busqueda
+			string acceso_a_grupos = classpublic.lee_registro_de_tabla("osiris_almacenes","id_almacen"," WHERE osiris_almacenes.id_almacen = '"+this.idalmacen.ToString().Trim()+"' ","acceso_grupo_producto");
 			
+			treeViewEngineBusca2.Clear(); // Limpia el treeview cuando realiza una nueva busqueda
 			NpgsqlConnection conexion; 
 			conexion = new NpgsqlConnection (connectionString+nombrebd);
-            
-			// Verifica que la base de datos este conectada
+            // Verifica que la base de datos este conectada
 			try{
 				conexion.Open ();
 				NpgsqlCommand comando; 
-				comando = conexion.CreateCommand ();
-               	
+				comando = conexion.CreateCommand ();               	
 				comando.CommandText = "SELECT to_char(osiris_productos.id_producto,'999999999999') AS codProducto,"+
 						"osiris_productos.descripcion_producto,to_char(precio_producto_publico,'99999999.99') AS preciopublico,"+
 						"aplicar_iva,to_char(porcentage_descuento,'999.99') AS porcentagesdesc,aplica_descuento,"+
@@ -776,7 +775,7 @@ namespace osiris
 						"AND osiris_productos.id_grupo2_producto = osiris_grupo2_producto.id_grupo2_producto "+
 						"AND osiris_productos.cobro_activo = true "+
 						//"AND osiris_grupo_producto.agrupacion IN(= 'MD1' "+
-						"AND osiris_productos.id_grupo_producto IN('4','5','6') "+
+						"AND osiris_productos.id_grupo_producto IN("+acceso_a_grupos+") "+
 						"AND osiris_productos.descripcion_producto LIKE '%"+entry_expresion.Text.ToUpper()+"%' ORDER BY descripcion_producto; ";
 				Console.WriteLine(comando.CommandText);
 				NpgsqlDataReader lector = comando.ExecuteReader ();
@@ -784,8 +783,7 @@ namespace osiris
 				float calculodeiva;
 				float preciomasiva;
 				float tomadescue;
-				float preciocondesc;
-							
+				float preciocondesc;							
 				while (lector.Read()){
 					calculodeiva = 0;
 					preciomasiva = 0;

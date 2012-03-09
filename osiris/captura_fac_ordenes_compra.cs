@@ -1011,16 +1011,16 @@ namespace osiris
 								entry_embalaje_pack.Text.Trim(),
 								Convert.ToString(float.Parse(entry_cantidad_aplicada.Text.Trim()) * float.Parse(entry_embalaje_pack.Text.Trim())),
 								entry_precio.Text.Trim(),
-								"",
-								"",
+								string.Format("{0:F}",float.Parse(entry_precio.Text.Trim())/float.Parse(entry_embalaje_pack.Text.Trim())),
+								(string) model.GetValue(iterSelected, 12),
 								(string) model.GetValue(iterSelected, 1),
 								(string) model.GetValue(iterSelected, 0),
-								entry_embalaje_pack.Text.Trim(),
-								entry_lote.Text.Trim(),
-								entry_caducidad.Text.Trim(),
+								"",
+								"",
+								"",
 								"",
 								"");
-					
+					cellrt15.Text = "CAJA";
 					//cierra la ventana despues que almaceno la informacion en variables
 					Widget win = (Widget) sender;
 					win.Toplevel.Destroy();

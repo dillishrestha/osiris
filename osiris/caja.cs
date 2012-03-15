@@ -1969,6 +1969,7 @@ namespace osiris
 						}
 						if(tipo_de_comprobante == "CAJA"){
 							//numerodecomprobante = int.Parse((string) classpublic.lee_ultimonumero_registrado("osiris_erp_abonos","numero_recibo_caja","WHERE id_tipo_comprobante = '"+idtipocomprobante.ToString().Trim()+"'"));
+							entry_numero_comprobante.Text = (string) classpublic.lee_ultimonumero_registrado("osiris_erp_abonos","numero_recibo_caja","WHERE id_tipo_comprobante = '"+idtipocomprobante.ToString().Trim()+"'");
 							numerodecomprobante = int.Parse(entry_numero_comprobante.Text);
 							descrippago = "PAGO DE PROCEDIMIENTO";
 							pago_sino = true;
@@ -2082,8 +2083,7 @@ namespace osiris
 														entry_ano2.Text.Trim()+"-"+entry_mes2.Text.Trim()+"-"+entry_dia2.Text.Trim()+
 														"');";
 						}
-						
-						
+												
 						bool error = false;
 	 					NpgsqlConnection conexion; 
 						conexion = new NpgsqlConnection (connectionString+nombrebd);

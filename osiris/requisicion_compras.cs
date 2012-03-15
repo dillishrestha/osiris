@@ -734,7 +734,7 @@ namespace osiris
 					msgBox1.Run ();		msgBox1.Destroy();					
 					this.button_guardar_requisicion.Sensitive = false;
 					this.button_envio_compras.Sensitive = false;					
-					if((string) LoginEmpleado == "DOLIVARES" || (string) LoginEmpleado == "ADMIN"){
+					if((string) LoginEmpleado == "DOLIVARES" || (string) LoginEmpleado == "ADMIN" || (string) LoginEmpleado == "SANDRASALASL"){
 						this.button_enviopara_autorizar.Sensitive = true;			
 					}					
 				}catch (NpgsqlException ex){
@@ -835,7 +835,7 @@ namespace osiris
 								MessageType.Info,ButtonsType.Ok,"Envie su Autorizacion para Generar ORDEN DE COMPRA "+(string) lector["fechahoraenviocompras"]);
 								msgBox1.Run ();		msgBox1.Destroy();
 								//Console.WriteLine("envio para autorizar");
-								if((string) LoginEmpleado == "DOLIVARES" || (string) LoginEmpleado == "ADMIN"){									
+								if((string) LoginEmpleado == "DOLIVARES" || (string) LoginEmpleado == "ADMIN" || (string) LoginEmpleado == "SANDRASALASL"){									
 									button_autorizar_compra.Sensitive = false;
 									button_enviopara_autorizar.Sensitive = true;									
 								}							

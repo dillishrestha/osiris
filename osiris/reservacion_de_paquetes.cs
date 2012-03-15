@@ -192,7 +192,7 @@ namespace osiris
 						//"AND reservacion = 'false' "+
 						"AND osiris_erp_cobros_enca.cancelado = 'false' "+
 						"AND osiris_erp_cobros_enca.pagado  = 'false' "+
-						"AND osiris_erp_cobros_enca.alta_paciente = 'false' "+
+						//"AND osiris_erp_cobros_enca.alta_paciente = 'false' "+
 						"AND osiris_erp_cobros_enca.cerrado = 'false' "+
 						"AND osiris_erp_cobros_enca.bloqueo_de_folio = 'false' "+
 						"AND id_habitacion = 1 "+
@@ -220,16 +220,12 @@ namespace osiris
 						this.button_liberar_paquete.Sensitive = true;
 						this.button_grabar.Sensitive = false;
 						this.button_busca_cirugia.Sensitive = false;
-						
 						/////////////////////////////////////////////////////////////////////////// 
 						//query que me muestre la informacion del paquete o presupuesto que reservo
 						/////////////////////////////////////////////////////////////////////////// 
-						
 						NpgsqlConnection conexion1;
 						conexion1 = new NpgsqlConnection (connectionString+nombrebd);
-                       			
 						if(this.radiobutton_paquete.Active == true){
-							
 							// Verifica que la base de datos este conectada
 							try{
 								conexion1.Open ();
@@ -246,7 +242,6 @@ namespace osiris
 								
 								Console.WriteLine(comando1.CommandText.ToString());
 								NpgsqlDataReader lector1 = comando1.ExecuteReader ();
-						   
 								if(lector1.Read()){
 									entry_paq_pres.Text = (string) lector1["descripcion_cirugia"];
 									entry_precio_paquete.Text = (string) lector1["valorpaquete"].ToString().Trim();
@@ -294,13 +289,11 @@ namespace osiris
 								msgBoxError.Run ();			msgBoxError.Destroy();						
 							}
 						}
-						conexion1.Close ();					
-						  
+						conexion1.Close ();						  
 					}else{					
 						this.button_liberar_paquete.Sensitive = false;
 						this.button_grabar.Sensitive = true;
-						this.button_busca_cirugia.Sensitive = true;
-						
+						this.button_busca_cirugia.Sensitive = true;						
 					}
 					this.button_imprimir.Sensitive = true;				
 				}else{

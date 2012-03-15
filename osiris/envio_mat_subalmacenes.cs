@@ -1290,6 +1290,7 @@ namespace osiris
 		// llena la lista de productos
  		void llenando_lista_de_productos()
  		{
+			string acceso_a_grupos = classpublic.lee_registro_de_tabla("osiris_almacenes","id_almacen"," WHERE osiris_almacenes.id_almacen = '1' ","acceso_grupo_producto");
  			treeViewEngineBusca2.Clear(); // Limpia el treeview cuando realiza una nueva busqueda
 			
 			NpgsqlConnection conexion; 
@@ -1311,7 +1312,7 @@ namespace osiris
 						"AND osiris_productos.id_grupo1_producto = osiris_grupo1_producto.id_grupo1_producto "+
 						"AND osiris_productos.id_grupo2_producto = osiris_grupo2_producto.id_grupo2_producto "+
 						"AND osiris_productos.cobro_activo = true "+
-						"AND osiris_productos.id_grupo_producto IN( '4','5','6','7','19') "+
+						"AND osiris_productos.id_grupo_producto IN("+acceso_a_grupos+") "+
 						"AND osiris_productos.descripcion_producto LIKE '%"+entry_expresion.Text.ToUpper()+"%' ORDER BY descripcion_producto; ";
 				
 				NpgsqlDataReader lector = comando.ExecuteReader ();

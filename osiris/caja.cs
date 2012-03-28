@@ -901,7 +901,7 @@ namespace osiris
 						NpgsqlCommand comando; 
 						comando = conexion.CreateCommand ();
 				 		comando.CommandText = "UPDATE osiris_erp_cobros_enca "+
-									"SET cerrado = 'false' "+
+									"SET cerrado = 'false',pagado = 'false' "+
 									"WHERE  folio_de_servicio =  '"+this.folioservicio+"';";
 						comando.ExecuteNonQuery();
 				        comando.Dispose();
@@ -925,7 +925,7 @@ namespace osiris
 		       			this.button_traspasa_productos.Sensitive = true;
 						button_pagare.Sensitive = true;
 						button_pase_quirofano.Sensitive = true;
-				        	
+						agregarmasabonos = true;								        	
 				    }catch (NpgsqlException ex){
 					   	MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
 											MessageType.Error, 

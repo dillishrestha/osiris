@@ -555,7 +555,7 @@ namespace osiris
 			layout.FontDescription.Weight = Weight.Normal;
 			comienzo_linea += separacion_linea;
 			cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText("Procedimiento: "+nombredecirugia);	Pango.CairoHelper.ShowLayout (cr, layout);
-			cr.MoveTo(300*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText("Diagnostico Admision: "+descripciondiagnostico);	Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(300*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText("Motivo de Ingreso: "+descripciondiagnostico);	Pango.CairoHelper.ShowLayout (cr, layout);
 			comienzo_linea += separacion_linea;
 			cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText("Medico Tratante: "+medicotratante);	Pango.CairoHelper.ShowLayout (cr, layout);
 			cr.MoveTo(400*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText("Habitacion: "+numerohabitacion);		Pango.CairoHelper.ShowLayout (cr, layout);

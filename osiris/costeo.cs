@@ -108,11 +108,40 @@ namespace osiris
 
 			button_salir.Clicked += new EventHandler(on_cierraventanas_clicked);
 			this.button_imprimir.Clicked += new EventHandler(on_imprime_clicked);
-			this.button_actualiza.Hide();
-			this.button_imprimir.Clicked += new EventHandler(on_imprime_clicked);
+			this.button_actualiza.Clicked += new EventHandler(on_button_exportar_clicked);
 		}
 		
-		public void on_imprime_clicked (object sender, EventArgs args)
+		void on_button_exportar_clicked(object sender, EventArgs args)
+		{
+			//if(LoginEmpleado == "DOLIVARES" || LoginEmpleado =="ADMIN" || LoginEmpleado =="MARGARITAZ"){
+				string query_sql = "SELECT osiris_erp_cobros_deta.folio_de_servicio AS foliodeservicio,descripcion_producto,to_char(osiris_erp_cobros_deta.id_producto,'999999999999') AS idproducto, "+
+					"to_char(osiris_erp_cobros_deta.cantidad_aplicada,'99999.99') AS cantidadaplicada,to_char(osiris_erp_cobros_deta.precio_producto,'99999999.99') AS preciounitario,"+
+						"to_char(osiris_erp_cobros_deta.cantidad_aplicada * osiris_erp_cobros_deta.precio_producto,'99999999.99') AS ppcantidad,"+
+						"to_char(osiris_erp_cobros_deta.fechahora_creacion,'dd-MM-yyyy HH24:mi:ss') AS fechcreacion, osiris_his_tipo_admisiones.descripcion_admisiones,"+
+						"osiris_erp_cobros_deta.id_tipo_admisiones AS idtipoadmision,descripcion_grupo_producto,osiris_productos.aplicar_iva," +
+						"to_char(osiris_erp_cobros_deta.id_secuencia,'9999999999') AS secuencia,costo_producto,costo_por_unidad,cantidad_de_embalaje,porcentage_ganancia " +
+						"FROM osiris_erp_cobros_deta,osiris_productos,osiris_his_tipo_admisiones,osiris_grupo_producto " +
+						"WHERE osiris_erp_cobros_deta.id_producto = osiris_productos.id_producto " +
+						"AND osiris_erp_cobros_deta.id_tipo_admisiones = osiris_his_tipo_admisiones.id_tipo_admisiones " +
+						"AND osiris_productos.id_grupo_producto = osiris_grupo_producto.id_grupo_producto " +
+						"AND osiris_erp_cobros_deta.eliminado = false " +
+						"AND osiris_erp_cobros_deta.folio_de_servicio IN('"+entry_folio_servicio.Text.Trim()+"') " +
+						"ORDER BY to_char(osiris_erp_cobros_deta.fechahora_creacion,'yyyy-MM-dd HH24:mm:ss'),osiris_erp_cobros_deta.id_tipo_admisiones ASC," +
+						 "osiris_productos.id_grupo_producto;";
+				string[] args_names_field = {"foliodeservicio","descripcion_producto","idproducto","cantidadaplicada","preciounitario","ppcantidad","fechcreacion","descripcion_admisiones","descripcion_grupo_producto","costo_producto","costo_por_unidad","cantidad_de_embalaje","porcentage_ganancia"};
+				
+				string[] args_type_field = {"float","string","string","float","float","float","string","string","string","float","float","float","float"};
+				
+				// class_crea_ods.cs
+				new osiris.class_traslate_spreadsheet(query_sql,args_names_field,args_type_field);
+			//}else{
+			//	MessageDialog msgBox = new MessageDialog (MyWin,DialogFlags.Modal,
+			//						MessageType.Info,ButtonsType.Ok,"No tiene Permiso para esta Opcion");
+			//	msgBox.Run ();msgBox.Destroy();
+			//}
+		}
+		
+		void on_imprime_clicked (object sender, EventArgs args)
 		{
 			//new osiris.rpt_costeo(nombrebd);   	
 		}
@@ -889,7 +918,8 @@ namespace osiris
 		
 		decimal busca_medicamento()
 		{
-		decimal porcentageutilidad = 0;
+			
+			decimal porcentageutilidad = 0;
 			
 			NpgsqlConnection conexion; 
 			conexion = new NpgsqlConnection (connectionString+nombrebd );
@@ -919,8 +949,6 @@ namespace osiris
 			return (porcentageutilidad);
 						
 		}
-		
-		
 		
 		decimal busca_porcentage_utilidad (decimal precio_uni)
 		{
@@ -1022,8 +1050,7 @@ namespace osiris
 				NpgsqlDataReader lector = comando.ExecuteReader ();
 				//Console.WriteLine(comando.CommandText.ToString());
 				
-					if(lector.Read())
-					{
+					if(lector.Read()){
 						entry_ingreso.Text = (string) lector["fecha_ingreso"];
 						entry_egreso.Text = (string) lector["fecha_egreso"];
 						entry_numero_factura.Text = (string) lector["numerofactura"];

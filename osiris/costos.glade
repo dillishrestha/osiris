@@ -4459,12 +4459,9 @@ Busqueda de Empresas</property>
 	<widget class="GtkVPaned" id="vpaned7">
 	  <property name="visible">True</property>
 	  <property name="can_focus">True</property>
-	  <property name="position">0</property>
 
 	  <child>
 	    <widget class="GtkFrame" id="frame4">
-	      <property name="width_request">904</property>
-	      <property name="height_request">248</property>
 	      <property name="visible">True</property>
 	      <property name="label_xalign">0</property>
 	      <property name="label_yalign">0.5</property>
@@ -4490,6 +4487,8 @@ Busqueda de Empresas</property>
 
 		      <child>
 			<widget class="GtkScrolledWindow" id="scrolledwindow12">
+			  <property name="width_request">730</property>
+			  <property name="height_request">220</property>
 			  <property name="visible">True</property>
 			  <property name="hscrollbar_policy">GTK_POLICY_ALWAYS</property>
 			  <property name="vscrollbar_policy">GTK_POLICY_ALWAYS</property>
@@ -4498,7 +4497,6 @@ Busqueda de Empresas</property>
 
 			  <child>
 			    <widget class="GtkTreeView" id="lista_producto_seleccionados">
-			      <property name="width_request">820</property>
 			      <property name="visible">True</property>
 			      <property name="headers_visible">True</property>
 			      <property name="rules_hint">False</property>
@@ -4537,7 +4535,7 @@ Busqueda de Empresas</property>
 
 			  <child>
 			    <widget class="GtkButton" id="button_consultar_costos">
-			      <property name="width_request">155</property>
+			      <property name="width_request">80</property>
 			      <property name="visible">True</property>
 			      <property name="relief">GTK_RELIEF_NORMAL</property>
 			      <property name="focus_on_click">True</property>
@@ -4615,7 +4613,7 @@ Busqueda de Empresas</property>
 
 			  <child>
 			    <widget class="GtkButton" id="button_quitar_producto">
-			      <property name="width_request">101</property>
+			      <property name="width_request">80</property>
 			      <property name="visible">True</property>
 			      <property name="can_focus">True</property>
 			      <property name="relief">GTK_RELIEF_NORMAL</property>
@@ -4694,7 +4692,7 @@ Busqueda de Empresas</property>
 
 			  <child>
 			    <widget class="GtkButton" id="button_limpiar">
-			      <property name="width_request">88</property>
+			      <property name="width_request">80</property>
 			      <property name="visible">True</property>
 			      <property name="can_focus">True</property>
 			      <property name="relief">GTK_RELIEF_NORMAL</property>
@@ -4773,7 +4771,7 @@ Busqueda de Empresas</property>
 
 			  <child>
 			    <widget class="GtkFixed" id="fixed145">
-			      <property name="height_request">75</property>
+			      <property name="height_request">70</property>
 			      <property name="visible">True</property>
 			    </widget>
 			    <packing>
@@ -4825,8 +4823,8 @@ Busqueda de Empresas</property>
 
 	  <child>
 	    <widget class="GtkFrame" id="frame5">
-	      <property name="width_request">872</property>
-	      <property name="height_request">245</property>
+	      <property name="width_request">870</property>
+	      <property name="height_request">220</property>
 	      <property name="visible">True</property>
 	      <property name="label_xalign">0</property>
 	      <property name="label_yalign">0.5</property>
@@ -4861,7 +4859,6 @@ Busqueda de Empresas</property>
 
 			  <child>
 			    <widget class="GtkTreeView" id="lista_resumen_productos">
-			      <property name="width_request">910</property>
 			      <property name="visible">True</property>
 			      <property name="headers_visible">True</property>
 			      <property name="rules_hint">False</property>

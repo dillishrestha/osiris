@@ -9254,7 +9254,7 @@ Expediente</property>
 					  </child>
 
 					  <child>
-					    <widget class="GtkButton" id="button_salir9">
+					    <widget class="GtkButton" id="button_guarda_programacion">
 					      <property name="width_request">90</property>
 					      <property name="visible">True</property>
 					      <property name="can_focus">True</property>
@@ -9373,7 +9373,7 @@ Cita&lt;/b&gt;</property>
 					  </child>
 
 					  <child>
-					    <widget class="GtkEntry" id="entry_pid_paciente3">
+					    <widget class="GtkEntry" id="entry_pid_paciente_qx">
 					      <property name="width_request">60</property>
 					      <property name="visible">True</property>
 					      <property name="can_focus">True</property>
@@ -9393,7 +9393,7 @@ Cita&lt;/b&gt;</property>
 					  </child>
 
 					  <child>
-					    <widget class="GtkEntry" id="entry_nombre_paciente5">
+					    <widget class="GtkEntry" id="entry_nombre_paciente_qx1">
 					      <property name="width_request">330</property>
 					      <property name="visible">True</property>
 					      <property name="can_focus">True</property>
@@ -9413,7 +9413,7 @@ Cita&lt;/b&gt;</property>
 					  </child>
 
 					  <child>
-					    <widget class="GtkButton" id="button_salir13">
+					    <widget class="GtkButton" id="button_busca_paciente_qx">
 					      <property name="width_request">90</property>
 					      <property name="visible">True</property>
 					      <property name="can_focus">True</property>
@@ -9490,6 +9490,85 @@ Cita&lt;/b&gt;</property>
 					      <property name="fill">False</property>
 					    </packing>
 					  </child>
+
+					  <child>
+					    <widget class="GtkButton" id="button_infoadmision_qx">
+					      <property name="width_request">90</property>
+					      <property name="visible">True</property>
+					      <property name="can_focus">True</property>
+					      <property name="relief">GTK_RELIEF_NORMAL</property>
+					      <property name="focus_on_click">True</property>
+
+					      <child>
+						<widget class="GtkAlignment" id="alignment44">
+						  <property name="visible">True</property>
+						  <property name="xalign">0.5</property>
+						  <property name="yalign">0.5</property>
+						  <property name="xscale">0</property>
+						  <property name="yscale">0</property>
+						  <property name="top_padding">0</property>
+						  <property name="bottom_padding">0</property>
+						  <property name="left_padding">0</property>
+						  <property name="right_padding">0</property>
+
+						  <child>
+						    <widget class="GtkHBox" id="hbox125">
+						      <property name="visible">True</property>
+						      <property name="homogeneous">False</property>
+						      <property name="spacing">2</property>
+
+						      <child>
+							<widget class="GtkImage" id="image34">
+							  <property name="visible">True</property>
+							  <property name="icon_size">4</property>
+							  <property name="icon_name">gtk-apply</property>
+							  <property name="xalign">0.5</property>
+							  <property name="yalign">0.5</property>
+							  <property name="xpad">0</property>
+							  <property name="ypad">0</property>
+							</widget>
+							<packing>
+							  <property name="padding">0</property>
+							  <property name="expand">False</property>
+							  <property name="fill">False</property>
+							</packing>
+						      </child>
+
+						      <child>
+							<widget class="GtkLabel" id="label194">
+							  <property name="visible">True</property>
+							  <property name="label" translatable="yes">_Admision</property>
+							  <property name="use_underline">True</property>
+							  <property name="use_markup">False</property>
+							  <property name="justify">GTK_JUSTIFY_LEFT</property>
+							  <property name="wrap">False</property>
+							  <property name="selectable">False</property>
+							  <property name="xalign">0.5</property>
+							  <property name="yalign">0.5</property>
+							  <property name="xpad">0</property>
+							  <property name="ypad">0</property>
+							  <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
+							  <property name="width_chars">-1</property>
+							  <property name="single_line_mode">False</property>
+							  <property name="angle">0</property>
+							</widget>
+							<packing>
+							  <property name="padding">0</property>
+							  <property name="expand">False</property>
+							  <property name="fill">False</property>
+							</packing>
+						      </child>
+						    </widget>
+						  </child>
+						</widget>
+					      </child>
+					    </widget>
+					    <packing>
+					      <property name="padding">0</property>
+					      <property name="expand">False</property>
+					      <property name="fill">False</property>
+					    </packing>
+					  </child>
 					</widget>
 					<packing>
 					  <property name="padding">0</property>
@@ -9531,7 +9610,7 @@ Cita&lt;/b&gt;</property>
 					  </child>
 
 					  <child>
-					    <widget class="GtkEntry" id="entry_nombre_paciente_qx">
+					    <widget class="GtkEntry" id="entry_nombre_paciente_qx2">
 					      <property name="width_request">296</property>
 					      <property name="visible">True</property>
 					      <property name="can_focus">True</property>
@@ -9576,7 +9655,7 @@ Cita&lt;/b&gt;</property>
 					  </child>
 
 					  <child>
-					    <widget class="GtkRadioButton" id="radiobutton_hombr">
+					    <widget class="GtkRadioButton" id="radiobutton_hombre_qx">
 					      <property name="width_request">50</property>
 					      <property name="visible">True</property>
 					      <property name="can_focus">True</property>
@@ -9596,7 +9675,7 @@ Cita&lt;/b&gt;</property>
 					  </child>
 
 					  <child>
-					    <widget class="GtkRadioButton" id="radiobutton_muje">
+					    <widget class="GtkRadioButton" id="radiobutton_mujer_qx">
 					      <property name="width_request">50</property>
 					      <property name="visible">True</property>
 					      <property name="can_focus">True</property>
@@ -9607,7 +9686,7 @@ Cita&lt;/b&gt;</property>
 					      <property name="active">False</property>
 					      <property name="inconsistent">False</property>
 					      <property name="draw_indicator">True</property>
-					      <property name="group">radiobutton_hombre_cita</property>
+					      <property name="group">radiobutton_hombre_qx</property>
 					    </widget>
 					    <packing>
 					      <property name="padding">0</property>
@@ -9701,7 +9780,7 @@ Cita&lt;/b&gt;</property>
 					  </child>
 
 					  <child>
-					    <widget class="GtkEntry" id="entry9">
+					    <widget class="GtkEntry" id="entry_edad_paciente_qx">
 					      <property name="width_request">33</property>
 					      <property name="visible">True</property>
 					      <property name="can_focus">True</property>
@@ -9746,7 +9825,7 @@ Cita&lt;/b&gt;</property>
 					  </child>
 
 					  <child>
-					    <widget class="GtkComboBox" id="combobox6">
+					    <widget class="GtkComboBox" id="combobox_estado_civil_qx">
 					      <property name="width_request">156</property>
 					      <property name="visible">True</property>
 					      <property name="add_tearoffs">False</property>
@@ -9798,7 +9877,7 @@ Cita&lt;/b&gt;</property>
 					  </child>
 
 					  <child>
-					    <widget class="GtkEntry" id="entry12">
+					    <widget class="GtkEntry" id="entry_telefono_qx">
 					      <property name="visible">True</property>
 					      <property name="can_focus">True</property>
 					      <property name="editable">True</property>

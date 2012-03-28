@@ -80,6 +80,7 @@ namespace osiris
 		[Widget] Gtk.Entry entry_producto_proveedor = null;
 		[Widget] Gtk.Entry entry_codprod_proveedor = null;	
 		[Widget] Gtk.Entry entry_precio = null;
+		[Widget] Gtk.ComboBox combobox_tipo_unidad2 = null;
 		//[Widget] Gtk
 		[Widget] Gtk.TreeView lista_de_producto = null;
 		
@@ -89,12 +90,12 @@ namespace osiris
 		string ApmEmpleado;
 		string nombreempleado;
 		string connectionString;
-		string nombrebd;	
+		string nombrebd;
+		string tipounidadproducto = " ";
 		class_conexion conexion_a_DB = new class_conexion();
 		class_buscador classfind_data = new class_buscador();
 		class_public classpublic = new class_public();
-		//class_public classpublic = new class_public();
-		
+				
 		//Declaracion de ventana de error
 		protected Gtk.Window MyWinError;
 		protected Gtk.Window MyWin;
@@ -140,7 +141,7 @@ namespace osiris
 		TreeViewColumn col_aplica_iva;			CellRendererText cellrt19;
 		TreeViewColumn col_cobro_activo;		CellRendererText cellrt20;
 		
-		ListStore cell_combox_store;
+		Gtk.ListStore cell_combox_store;
 		
 		public factura_orden_compra(string LoginEmp_,string nombreempleado_,string nombrebd_)
 		{
@@ -182,6 +183,18 @@ namespace osiris
 			statusbar_captura_factura_orden_compra.Pop(0);
 			statusbar_captura_factura_orden_compra.Push(1, "login: "+LoginEmpleado+"  |Usuario: "+nombreempleado);
 			statusbar_captura_factura_orden_compra.HasResizeGrip = false;
+			cell_combox_store = new ListStore(typeof (string));
+			cell_combox_store.AppendValues (" ");
+			cell_combox_store.AppendValues ("PIEZA");
+			cell_combox_store.AppendValues ("KILO");
+			cell_combox_store.AppendValues ("LITRO");
+			cell_combox_store.AppendValues ("GRAMO");
+			cell_combox_store.AppendValues ("METRO");
+			cell_combox_store.AppendValues ("CENTIMETRO");
+			cell_combox_store.AppendValues ("CAJA");
+			cell_combox_store.AppendValues ("PULGADA");
+			cell_combox_store.AppendValues ("FRASCO");
+			cell_combox_store.AppendValues ("GALON");	
 		}
 			
 		// Ademas controla la tecla ENTRER para ver el procedimiento
@@ -256,8 +269,8 @@ namespace osiris
  												//decimal.Parse((string) lista_de_honorarios.Model.GetValue(iter,3))+"','"+
  												//folioservicio+"','"+
  												//DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"','LoginEmpleado+"');";
-		 					comando.ExecuteNonQuery();
-					    	comando.Dispose();
+		 					//comando.ExecuteNonQuery();
+					    	//comando.Dispose();
 					}
 					while (treeViewEngineListaProdRequi.IterNext(ref iter)){
 						/*
@@ -333,6 +346,7 @@ namespace osiris
 			cell_combox_store.AppendValues ("GALON");
 			
 			treeViewEngineListaProdRequi = new TreeStore(typeof(bool), 
+									typeof(string),
 									typeof(string),
 									typeof(string),
 									typeof(string),
@@ -468,17 +482,24 @@ namespace osiris
 			col_14 = new TreeViewColumn();
 			cellrt14 = new CellRendererText();
 			col_14.Title = "Caducidad";
-			col_14.PackStart(cellrt13, true);
-			col_14.AddAttribute (cellrt13, "text", 13);
-			col_14.SortColumnId = (int) col_productos_recibidos.col_13;
+			col_14.PackStart(cellrt14, true);
+			col_14.AddAttribute (cellrt14, "text", 14);
+			col_14.SortColumnId = (int) col_productos_recibidos.col_14;
 			cellrt14.Editable = true;
 			
+			
+			// ComboBox dentro del treeview
 			col_15 = new TreeViewColumn();
-			//cellrt15 = new Gtk.CellRendererCombo();
 			col_15.Title = "Presentacion";
+			col_15.PackStart(cellrt15, true);
+			col_15.AddAttribute (cellrt15, "text", 15);
+			col_15.SortColumnId = (int) col_productos_recibidos.col_15;
+			cellrt15.Editable = true;
+			
+			/*
 			cellrt15 = new Gtk.CellRendererCombo ();
 			(cellrt15 as Gtk.CellRendererCombo).Editable = true;
-			(cellrt15 as Gtk.CellRendererCombo).HasEntry = true;
+			(cellrt15 as Gtk.CellRendererCombo).HasEntry = false;
 			(cellrt15 as Gtk.CellRendererCombo).Edited += OnTaskPriorityEdited;
 			(cellrt15 as Gtk.CellRendererCombo).Model = cell_combox_store;
 			TreeIter iter1;
@@ -487,8 +508,9 @@ namespace osiris
 			}
 			(cellrt15 as Gtk.CellRendererCombo).TextColumn = 0;
 			//cellrt15.Xalign = 0.5f;
-			col_15.PackStart(cellrt15, true);
+			col_15.PackStart(cellrt15, false);
 			col_15.SetCellDataFunc (cellrt15, new Gtk.TreeCellDataFunc (TaskPriorityCellDataFunc));
+			*/
 			
 			lista_productos_a_recibir.AppendColumn(col_00);
 			lista_productos_a_recibir.AppendColumn(col_01);
@@ -523,14 +545,31 @@ namespace osiris
 			col_10,
 			col_11,
 			col_12,
-			col_13
+			col_13,
+			col_14,
+			col_15
 		}
 		
 		void TaskPriorityCellDataFunc (Gtk.TreeViewColumn tree_column,Gtk.CellRenderer cell,Gtk.TreeModel tree_model,Gtk.TreeIter iter)
 		{
 			// TODO: Add bold (for high), light (for None), and also colors to priority?
 			Gtk.CellRendererCombo crc = cell as Gtk.CellRendererCombo;
+			//Console.WriteLine((string) crc.Model.GetValue(iter,0));
+									
+			//if (tree_column.ge   combobox_tipo_unidad2.GetActiveIter (out iter)){
+	    	//	tipounidadproducto = (string) combobox_tipo_unidad2.Model.GetValue(iter,0);    		 
+			//}
+			
+			//Console.Write((string) crc.Model.GetValue(iter,0));
 			//crc.Text = "Hola";
+			//if(tree_model.GetValue(iter,0)){
+			//if (crc.Model.GetIter (out iter,0)){					
+				//bool old = (bool) this.lista_productos_a_recibir.Model.GetValue(iter,0);
+				//this.lista_productos_a_recibir.Model.SetValue(iter,0,!old);
+			
+			//}
+			
+						
 			
 			//ITask task = Model.GetValue (iter, 0) as ITask;
 			//switch (task.Priority) {
@@ -551,11 +590,12 @@ namespace osiris
 		
 		void OnTaskPriorityEdited (object sender, Gtk.EditedArgs args)
 		{
-			//Gtk.TreeIter iter;
-			//Gtk.TreePath path = new TreePath (args.Path);
+			Gtk.TreeIter iter;
+			Gtk.TreePath path = new TreePath (args.Path);
 			//Console.WriteLine( args.NewText.ToString());
 			cellrt15.Text = args.NewText.ToString();
 			//if ( Model.GetIter (out iter, path))
+			//TreeIter iter;
 			return;
 			
 			/*
@@ -575,7 +615,7 @@ namespace osiris
 				task.Priority = newPriority;
 			*/
 		}
-		
+				
 		// Cuando seleccion campos para la autorizacion de compras  
 		void selecciona_fila(object sender, ToggledArgs args)
 		{
@@ -711,16 +751,45 @@ namespace osiris
 				
 		void on_button_busca_producto_clicked(object sender, EventArgs a)
 		{
-			Glade.XML gxml = new Glade.XML (null, "almacen_costos_compras.glade", "busca_producto", null);
-			gxml.Autoconnect (this);
-			busca_producto.Show();
-			crea_treeview_busqueda();
-			button_buscar_busqueda.Clicked += new EventHandler(on_llena_lista_producto_clicked);
-			button_selecciona.Clicked += new EventHandler(on_selecciona_producto_clicked);
-			entry_expresion.KeyPressEvent += onKeyPressEvent_enter;
-			button_salir.Clicked += new EventHandler(on_cierraventanas_clicked); // esta sub-clase esta en hscmty.cs
+			if(entry_num_factura_proveedor.Text != ""){
+				Glade.XML gxml = new Glade.XML (null, "almacen_costos_compras.glade", "busca_producto", null);
+				gxml.Autoconnect (this);
+				busca_producto.Show();
+				crea_treeview_busqueda();
+				button_buscar_busqueda.Clicked += new EventHandler(on_llena_lista_producto_clicked);
+				button_selecciona.Clicked += new EventHandler(on_selecciona_producto_clicked);
+				entry_expresion.KeyPressEvent += onKeyPressEvent_enter;
+				button_salir.Clicked += new EventHandler(on_cierraventanas_clicked);
+				
+				CellRendererText cell3 = new CellRendererText();
+				combobox_tipo_unidad2.PackStart(cell3, true);
+				combobox_tipo_unidad2.AddAttribute(cell3,"text",0);
+		        combobox_tipo_unidad2.Model = cell_combox_store;
+				TreeIter iter3;
+				if (cell_combox_store.GetIterFirst(out iter3)){
+					combobox_tipo_unidad2.SetActiveIter (iter3);
+				}
+				combobox_tipo_unidad2.Changed += new EventHandler (onComboBoxChanged_tipo_unidad);
+			}else{
+				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+									MessageType.Info, 
+									ButtonsType.Close, "Debe tener un numero de Factura, verfique...");
+				msgBoxError.Run ();								msgBoxError.Destroy();
+			}
 		}
-		
+				
+		void onComboBoxChanged_tipo_unidad (object sender, EventArgs args)
+		{
+	    	ComboBox combobox_tipo_unidad2 = sender as ComboBox;
+			if (sender == null){
+	    		return;
+			}
+	  		TreeIter iter;
+	  		if (combobox_tipo_unidad2.GetActiveIter (out iter)){
+	    		tipounidadproducto = (string) combobox_tipo_unidad2.Model.GetValue(iter,0);    		 
+			}
+		}
+				
 		// declara y crea el treeviev de Producto en la busqueda
 		void crea_treeview_busqueda()
 		{
@@ -1020,7 +1089,7 @@ namespace osiris
 								"",
 								"",
 								"");
-					cellrt15.Text = "CAJA";
+					cellrt15.Text = tipounidadproducto;
 					//cierra la ventana despues que almaceno la informacion en variables
 					Widget win = (Widget) sender;
 					win.Toplevel.Destroy();

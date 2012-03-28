@@ -282,6 +282,7 @@ namespace osiris
 		private ListStore store_aseguradora;
 		
 		class_conexion conexion_a_DB = new class_conexion();
+		class_public classpublic = new class_public();
 		
 		public registro_paciente_busca(string _tipo, string LoginEmp, string NomEmpleado_, string AppEmpleado_, string ApmEmpleado_, string nombrebd_,string pidpaciente_) 
 		{
@@ -390,10 +391,10 @@ namespace osiris
 				button_admision.Sensitive = false;
 	        	
 	        	//Desactiva campos de PID y de FOLIO para que no se escriba en ellos
-	        	entry_pid_paciente.Sensitive = false;
-	        	entry_folio_paciente.Sensitive = false;
-	        	entry_folio_interno_dep.Sensitive = false;
-	        	
+	        	entry_pid_paciente.IsEditable = false;
+	        	entry_folio_paciente.IsEditable = false;
+	        	entry_folio_interno_dep.IsEditable = false;
+				        	
 	        	//Lista a las empresas con convenio
 	        	button_lista_empresas.Clicked += new EventHandler(on_button_lista_empresas_clicked);
 	        	
@@ -639,7 +640,8 @@ namespace osiris
 								grabainternamiento ==  true){
 
 								// asignando folio de servicio
-								this.folioservicio = ultimo_numero_atencion();
+								//this.folioservicio = ultimo_numero_atencion();
+								folioservicio = int.Parse(classpublic.lee_ultimonumero_registrado("osiris_erp_movcargos","folio_de_servicio",""));
 								this.button_imprimir_protocolo.Sensitive = true;
 								
 								almaceno_encabezado = almacena_encabezado_de_cobro();
@@ -778,6 +780,7 @@ namespace osiris
 			}
 		}
 		
+		/*
 		public int ultimo_numero_atencion()
 		{
 			int folioservicio_ = 0;
@@ -807,7 +810,8 @@ namespace osiris
 			}
 			conexion.Close ();
 			return folioservicio_;
-		}	
+		}*/
+			
 	    // Imprime protocolo de admision
 		void on_button_imprimir_protocolo_clicked (object sender, EventArgs args)
 		{
@@ -1888,6 +1892,7 @@ namespace osiris
 		
 		public bool almacena_encabezado_de_cobro()
 		{
+			folioservicio = int.Parse(classpublic.lee_ultimonumero_registrado("osiris_erp_movcargos","folio_de_servicio",""));
 			bool grabacion_sino = false;
 			NpgsqlConnection conexion; 
 			conexion = new NpgsqlConnection (connectionString+nombrebd );
@@ -2110,9 +2115,9 @@ namespace osiris
 					button_contrata_paquete.Sensitive = false;
 					
 					//Desactiva campos de PID y de FOLIO para que no se escriba en ellos
-					entry_pid_paciente.Sensitive = false;
-					entry_folio_paciente.Sensitive = false;
-					entry_folio_interno_dep.Sensitive = false;
+					entry_pid_paciente.IsEditable = false;
+					entry_folio_paciente.IsEditable = false;
+					entry_folio_interno_dep.IsEditable = false;
 					
 					// Asugnacion de Cuarto o Cubiculo
 					button_asignacion_habitacion.Clicked += new EventHandler(on_button_asignacion_habitacion_clicked);
@@ -2183,9 +2188,9 @@ namespace osiris
 				button_contrata_paquete.Sensitive = false;
 				
 				//Desactiva campos de PID y de FOLIO para que no se escriba en ellos
-				entry_pid_paciente.Sensitive = false;
-				entry_folio_paciente.Sensitive = false;
-				entry_folio_interno_dep.Sensitive = false;
+				entry_pid_paciente.IsEditable = false;
+				entry_folio_paciente.IsEditable = false;
+				entry_folio_interno_dep.IsEditable = false;
 				
 				// Asugnacion de Cuarto o Cubiculo
 				button_asignacion_habitacion.Clicked += new EventHandler(on_button_asignacion_habitacion_clicked);

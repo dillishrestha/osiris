@@ -99,7 +99,9 @@ namespace osiris
 		[Widget] Gtk.Label label_desc_proveedor = null;
 		[Widget] Gtk.Entry entry_producto_proveedor = null;
 		[Widget] Gtk.Label label_codprod_proveedor = null;
-		[Widget] Gtk.Entry entry_codprod_proveedor = null;		
+		[Widget] Gtk.Entry entry_codprod_proveedor = null;
+		[Widget] Gtk.Label label390 = null;
+ 		[Widget] Gtk.ComboBox combobox_tipo_unidad2 = null;
 		
 		// Para todas las busquedas este es el nombre asignado
 		// se declara una vez
@@ -441,8 +443,8 @@ namespace osiris
 					checkbutton_prod_activo.Sensitive = true;
 					checkbutton_cambia_utilidad.Sensitive = true;
 					checkbutton_descuento.Sensitive = true;
-					this.button_guardar.Sensitive = true;
-					this.combobox_tipo_unidad.Sensitive = true;
+					button_guardar.Sensitive = true;
+					combobox_tipo_unidad.Sensitive = true;
 				}else{
 					checkbutton_nuevo_producto.Active = false;
 				}
@@ -641,6 +643,8 @@ namespace osiris
 			entry_codprod_proveedor.Hide();
 			hbox3.Hide();
 			entry_cantidad_aplicada.Hide();
+			label390.Hide();
+			combobox_tipo_unidad2.Hide();
 			
 			crea_treeview_busqueda();
 			button_salir.Clicked += new EventHandler(on_cierraventanas_clicked); // esta sub-clase esta en hscmty.cs
@@ -1365,7 +1369,7 @@ namespace osiris
 			checkbutton_costounico.Sensitive = valor;
 			checkbutton_descuento.Sensitive = valor;
 			checkbutton_cambia_utilidad.Sensitive = valor;
-			this.precio_sin_iva.Sensitive = valor;
+			precio_sin_iva.Sensitive = valor;
 			combobox_tipo_unidad.Sensitive = valor;
 		}
 		

@@ -47,21 +47,26 @@ namespace osiris
 		
 		// Declarando ventana principal de Admision
 		[Widget] Gtk.Window menu_admision = null;
-		[Widget] Gtk.Button button_reg_admision = null;
 		[Widget] Gtk.Button button_reportes_regadmin = null;
 		[Widget] Gtk.Button button_imprime_prot = null;
+		[Widget] Gtk.Button button_asignacion_habitacion = null;	
+		[Widget] Gtk.Button button_separa_folio = null;	
+		[Widget] Gtk.Button button_cita_paciente = null;
 		[Widget] Gtk.Button button_paquetes = null;
 		[Widget] Gtk.Button button_presupuestos = null;
 		[Widget] Gtk.Button button_cambia_datos_paciente = null;
 		[Widget] Gtk.Button button_cancela_folios = null;
+		[Widget] Gtk.Button button_soli_material = null;
+		[Widget] Gtk.Button button_reportes_varios = null;
+		
+		// Ventana de reportes para admsion
+		[Widget] Gtk.Window menu_rpt_varios_admision = null;
+		[Widget] Gtk.Button button_reg_admision = null;
 		[Widget] Gtk.Button button_reportes_de_ocupacion = null;
 		[Widget] Gtk.Button button_rpt_pacientes_alta = null;
 		[Widget] Gtk.Button button_rpt_presupuestos = null;
 		[Widget] Gtk.Button button_rpt_separacion_paquetes = null;
-		[Widget] Gtk.Button button_asignacion_habitacion = null;	
-		[Widget] Gtk.Button button_separa_folio = null;	
-		[Widget] Gtk.Button button_cita_paciente = null;
-				
+		
 		//Ventana de cancelacion de folios
 		[Widget] Gtk.Window cancelador_folios = null;
 		[Widget] Gtk.Button button_cancelar = null;
@@ -99,24 +104,38 @@ namespace osiris
 			////// Muestra ventana de Glade
 			menu_admision.Show();
 			button_reg_admision.Clicked += new EventHandler(on_button_reg_admision_clicked);
-			button_reportes_regadmin.Clicked += new EventHandler(on_button_reportes_regadmin_click);
+			button_cita_paciente.Clicked += new EventHandler(on_button_cita_paciente_clicked);
 			button_imprime_prot.Clicked += new EventHandler(on_button_imprime_prot_clicked);
 			button_paquetes.Clicked += new EventHandler(on_button_paquetes_clicked);
 			button_presupuestos.Clicked += new EventHandler(on_button_presupuestos_clicked);
 			button_cancela_folios.Clicked += new EventHandler(on_button_cancela_folios_clicked);
 			button_cambia_datos_paciente.Clicked += new EventHandler(on_button_cambia_datos_paciente_clicked);
-			button_reportes_de_ocupacion.Clicked += new EventHandler(on_button_reportes_de_ocupacion_clicked);
-			button_rpt_pacientes_alta.Clicked += new EventHandler(on_button_rpt_pacientes_alta_clicked);
-			button_rpt_presupuestos.Clicked += new EventHandler(on_button_rpt_presupuestos_clicked);
-			button_cita_paciente.Clicked += new EventHandler(on_button_cita_paciente_clicked);
-			
-			button_rpt_separacion_paquetes.Clicked += new EventHandler(on_button_rpt_separacion_paquetes_clicked);
-			
 			button_separa_folio.Clicked += new EventHandler(on_button_separa_folio_clicked);
-			
 			button_asignacion_habitacion.Clicked += new EventHandler(on_button_asignacion_habitacion_clicked);
+			button_soli_material.Clicked += new EventHandler(on_button_soli_material_clicked);
+			button_reportes_varios.Clicked += new EventHandler(on_button_reportes_varios_clicked);
 			button_salir.Clicked += new EventHandler(on_cierraventanas_clicked);
 			button_separa_folio.Sensitive = false;
+		}
+		
+		void on_button_reportes_varios_clicked(object sender, EventArgs args)
+		{
+			Glade.XML gxml = new Glade.XML (null, "registro_admision.glade", "menu_rpt_varios_admision", null);
+			gxml.Autoconnect (this);        
+			////// Muestra ventana de Glade
+			menu_rpt_varios_admision.Show();
+			
+			button_reportes_de_ocupacion.Clicked += new EventHandler(on_button_reportes_de_ocupacion_clicked);
+			button_reportes_regadmin.Clicked += new EventHandler(on_button_reportes_regadmin_click);
+			button_rpt_pacientes_alta.Clicked += new EventHandler(on_button_rpt_pacientes_alta_clicked);
+			button_rpt_presupuestos.Clicked += new EventHandler(on_button_rpt_presupuestos_clicked);
+			button_rpt_separacion_paquetes.Clicked += new EventHandler(on_button_rpt_separacion_paquetes_clicked);
+			button_salir.Clicked += new EventHandler(on_cierraventanas_clicked);
+		}
+		
+		void on_button_soli_material_clicked(object sender, EventArgs args)
+		{
+			new osiris.solicitud_material(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,17);
 		}
 		
 		void on_button_reportes_de_ocupacion_clicked(object sender, EventArgs args)

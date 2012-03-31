@@ -1193,8 +1193,7 @@ namespace osiris
 			CellRendererText cel_total_cobrado = new CellRendererText();
 			col_total_cobrado.Title = "$Cobrado";
 			col_total_cobrado.PackStart(cel_total_cobrado, true);
-			col_total_cobrado.AddAttribute(cel_total_cobrado, "text", 9);
-			
+			col_total_cobrado.AddAttribute(cel_total_cobrado, "text", 9);			
 			
 			TreeViewColumn col_precio_venta = new TreeViewColumn();
 			CellRendererText cel_precio_venta = new CellRendererText();

@@ -4545,7 +4545,7 @@ namespace osiris
 		// Valida entradas que solo sean numericas, se utiliza eb ventana de
 		// carga de producto
 		[GLib.ConnectBefore ()]   	  // Esto es indispensable para que funcione    
-		public void onKeyPressEvent(object o, Gtk.KeyPressEventArgs args)
+		void onKeyPressEvent(object o, Gtk.KeyPressEventArgs args)
 		{
 			//Console.WriteLine(args.Event.Key);
 			//Console.WriteLine(Convert.ToChar(args.Event.Key));

@@ -9921,7 +9921,7 @@ Cita&lt;/b&gt;</property>
 					  </child>
 
 					  <child>
-					    <widget class="GtkEntry" id="entry16">
+					    <widget class="GtkEntry" id="entry_celular_qx">
 					      <property name="visible">True</property>
 					      <property name="can_focus">True</property>
 					      <property name="editable">True</property>
@@ -9978,7 +9978,7 @@ Cita&lt;/b&gt;</property>
 					  </child>
 
 					  <child>
-					    <widget class="GtkEntry" id="entry21">
+					    <widget class="GtkEntry" id="entry_mail_qx">
 					      <property name="width_request">120</property>
 					      <property name="visible">True</property>
 					      <property name="can_focus">True</property>
@@ -10059,7 +10059,7 @@ Cita&lt;/b&gt;</property>
 					  </child>
 
 					  <child>
-					    <widget class="GtkComboBox" id="combobox9">
+					    <widget class="GtkComboBox" id="combobox_tipo_paciente_qx">
 					      <property name="width_request">110</property>
 					      <property name="visible">True</property>
 					      <property name="add_tearoffs">False</property>

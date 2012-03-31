@@ -57,6 +57,9 @@ namespace osiris
 		
 		string titulo = "ORDEN DE COMPRAS ";
 		
+		//Declaracion de ventana de error
+		protected Gtk.Window MyWinError;
+		
 		class_conexion conexion_a_DB = new class_conexion();
 		class_public classpublic = new class_public();
 		
@@ -92,15 +95,76 @@ namespace osiris
 		{
 			Cairo.Context cr = context.CairoContext;
 			Pango.Layout layout = context.CreatePangoLayout ();
-			imprime_encabezado(cr,layout);
 			Pango.FontDescription desc = Pango.FontDescription.FromString ("Sans");									
 			// cr.Rotate(90)  Imprimir Orizontalmente rota la hoja cambian las posiciones de las lineas y columna					
 			fontSize = 8.0;			layout = null;			layout = context.CreatePangoLayout ();
 			desc.Size = (int)(fontSize * pangoScale);		layout.FontDescription = desc;
-			imprime_encabezado(cr,layout);
+			
+			
+			NpgsqlConnection conexion;
+			conexion = new NpgsqlConnection (connectionString+nombrebd);
+        	// Verifica que la base de datos este conectada
+			try{				
+				conexion.Open ();
+				NpgsqlCommand comando; 
+				comando = conexion.CreateCommand ();
+				comando.CommandText = "SELECT osiris_erp_ordenes_compras_enca.id_proveedor,osiris_erp_ordenes_compras_enca.descripcion_proveedor,osiris_erp_ordenes_compras_enca.direccion_proveedor, " +
+					"osiris_erp_ordenes_compras_enca.rfc_proveedor,osiris_erp_ordenes_compras_enca.telefonos_proveedor,osiris_erp_ordenes_compras_enca.fecha_de_entrega,osiris_erp_ordenes_compras_enca.lugar_de_entrega,osiris_erp_ordenes_compras_enca.condiciones_de_pago,osiris_erp_ordenes_compras_enca.dep_solicitante,osiris_erp_ordenes_compras_enca.observaciones,osiris_erp_ordenes_compras_enca.fecha_deorden_compra " +
+					"  " +
+					"FROM osiris_erp_ordenes_compras_enca, osiris_erp_proveedores  " +
+					"WHERE osiris_erp_ordenes_compras_enca.id_proveedor = osiris_erp_proveedores.id_proveedor " +
+					"AND id_orden_compra = '1';";
+				Console.WriteLine(comando.CommandText);
+				NpgsqlDataReader lector = comando.ExecuteReader ();
+				
+				if (lector.Read()){
+					Console.WriteLine((string) lector["descripcion_proveedor"].ToString().Trim());
+					Console.WriteLine((string) lector["direccion_proveedor"].ToString().Trim());
+					Console.WriteLine((string) lector["rfc_proveedor"].ToString().Trim());
+					Console.WriteLine((string) lector["telefonos_proveedor"].ToString().Trim());
+					Console.WriteLine((string) lector["lugar_de_entrega"].ToString().Trim());
+					Console.WriteLine((string) lector["dep_solicitante"].ToString().Trim());
+					Console.WriteLine((string) lector["observaciones"].ToString().Trim());
+					Console.WriteLine((string) lector["fecha_deorden_compra"].ToString().Trim());
+					Console.WriteLine((string) lector["numero_orden_compra"].ToString().Trim());
+					Console.WriteLine((string) lector["fecha_de_entrega"].ToString().Trim());
+					Console.WriteLine((string) lector["condiciones_de_pago"].ToString().Trim());
+					imprime_encabezado(cr,layout,
+						(string) lector["descripcion_proveedor"].ToString().Trim(),
+						(string) lector["direccion_proveedor"].ToString().Trim(),
+						(string) lector["rfc_proveedor"].ToString().Trim(),
+						(string) lector["telefonos_proveedor"].ToString().Trim(),
+						(string) lector["lugar_de_entrega"].ToString().Trim(),
+					    (string) lector["condiciones_de_pago"].ToString().Trim(),
+						(string) lector["dep_solicitante"].ToString().Trim(),
+						(string) lector["observaciones"].ToString().Trim(),
+						(string) lector["fecha_deorden_compra"].ToString().Trim(),
+						(string) lector["numero_orden_compra"].ToString().Trim(),
+						(string) lector["fecha_de_entrega"].ToString().Trim());
+				}
+			}catch(NpgsqlException ex){
+			
+				Console.WriteLine("PostgresSQL error: {0}",ex.Message);
+				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+								MessageType.Error,ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
+				msgBoxError.Run ();		msgBoxError.Destroy();
+			}
 		}
 		
-		void imprime_encabezado(Cairo.Context cr,Pango.Layout layout)
+				
+		void imprime_encabezado(Cairo.Context cr,Pango.Layout layout,
+			                    string descripcion_proveedor_,
+					           	string direccion_proveedor_,
+						        string rfc_proveedor_,
+					        	string telefonos_proveedor_,
+				         		string lugar_de_entrega_,
+				        	    string condiciones_de_pago_,
+					            string dep_solicitante_,
+					        	string observaciones_,
+					        	string fecha_deorden_compra_,
+					        	string numero_orden_compra_,
+					        	string fecha_de_entrega_)
+			
 		{
 			Pango.FontDescription desc = Pango.FontDescription.FromString ("Sans");								
 			//cr.Rotate(90);  //Imprimir Orizontalmente rota la hoja cambian las posiciones de las lineas y columna					
@@ -118,7 +182,119 @@ namespace osiris
 			// Cambiando el tamaño de la fuente			
 			fontSize = 10.0;
 			desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;
-			cr.MoveTo(290*escala_en_linux_windows, 25*escala_en_linux_windows);			layout.SetText("ORDEN DE COMPRAS");					Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(290*escala_en_linux_windows, 25*escala_en_linux_windows);			layout.SetText("ORDEN_DE_COMPRAS");					Pango.CairoHelper.ShowLayout (cr, layout);
+			
+			fontSize = 7.0;
+			desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;
+			layout.FontDescription.Weight = Weight.Normal;		// Letra normal
+			cr.MoveTo(07*escala_en_linux_windows,62*escala_en_linux_windows);			layout.SetText("Descripcion_Proveedor :"+descripcion_proveedor_);	Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(07*escala_en_linux_windows,75*escala_en_linux_windows);			layout.SetText("Direccion_Proveedor :"+direccion_proveedor_);	Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(07*escala_en_linux_windows,90*escala_en_linux_windows);			layout.SetText("R.F.C_Proveedor:"+rfc_proveedor_);	Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(250*escala_en_linux_windows,90*escala_en_linux_windows);			layout.SetText("Telefonos_proveedor:"+telefonos_proveedor_);	Pango.CairoHelper.ShowLayout (cr, layout);
+			
+			cr.MoveTo(555*escala_en_linux_windows,60*escala_en_linux_windows);			layout.SetText("Fech. Orden Compra :");	Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(655*escala_en_linux_windows,60*escala_en_linux_windows);			layout.SetText("Num. Orden Compra :");	Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(07*escala_en_linux_windows,100*escala_en_linux_windows);			layout.SetText("Lugar de Entrega :");	Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(250*escala_en_linux_windows,100*escala_en_linux_windows);			layout.SetText("Dep. Solicitante :");	Pango.CairoHelper.ShowLayout (cr, layout);
+			
+			cr.MoveTo(555*escala_en_linux_windows,100*escala_en_linux_windows);			layout.SetText("Fecha de Entrega :"+fecha_de_entrega_);	Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(07*escala_en_linux_windows,120*escala_en_linux_windows);			layout.SetText("Observaciones :");	Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(555*escala_en_linux_windows,120*escala_en_linux_windows);			layout.SetText("Cond. de Pago :");	Pango.CairoHelper.ShowLayout (cr, layout);
+			
+			cr.MoveTo(07*escala_en_linux_windows, 142*escala_en_linux_windows);			layout.SetText("N°");							Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(07*escala_en_linux_windows, 152*escala_en_linux_windows);			layout.SetText("Part.");						Pango.CairoHelper.ShowLayout (cr, layout);
+			//cr.MoveTo(07*escala_en_linux_windows, 162*escala_en_linux_windows);			layout.SetText("100");					Pango.CairoHelper.ShowLayout (cr, layout);
+			
+			cr.MoveTo(27*escala_en_linux_windows, 142*escala_en_linux_windows);			layout.SetText("Cantid.");					Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(27*escala_en_linux_windows, 152*escala_en_linux_windows);			layout.SetText(" Soli.");					Pango.CairoHelper.ShowLayout (cr, layout);
+			//cr.MoveTo(27*escala_en_linux_windows, 162*escala_en_linux_windows);			layout.SetText("1000.00");					Pango.CairoHelper.ShowLayout (cr, layout);
+			
+			cr.MoveTo(60*escala_en_linux_windows, 142*escala_en_linux_windows);			layout.SetText("Unidad de");					Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(60*escala_en_linux_windows, 152*escala_en_linux_windows);			layout.SetText("Medida");					Pango.CairoHelper.ShowLayout (cr, layout);
+			//cr.MoveTo(60*escala_en_linux_windows, 162*escala_en_linux_windows);			layout.SetText("PIEZA");					Pango.CairoHelper.ShowLayout (cr, layout);
+			
+			cr.MoveTo(102*escala_en_linux_windows, 142*escala_en_linux_windows);			layout.SetText("Empaque");					Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(102*escala_en_linux_windows, 152*escala_en_linux_windows);			layout.SetText("Produc.");					Pango.CairoHelper.ShowLayout (cr, layout);
+			//cr.MoveTo(102*escala_en_linux_windows, 162*escala_en_linux_windows);			layout.SetText("1000.00");					Pango.CairoHelper.ShowLayout (cr, layout);
+			
+			cr.MoveTo(140*escala_en_linux_windows, 142*escala_en_linux_windows);			layout.SetText("Descripcion del");					Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(140*escala_en_linux_windows, 152*escala_en_linux_windows);			layout.SetText("Producto");					Pango.CairoHelper.ShowLayout (cr, layout);
+			//cr.MoveTo(140*escala_en_linux_windows, 162*escala_en_linux_windows);			layout.SetText("BOLSA RECOLECTORA DE ORINA UROTEK DE 2 LTS.");					Pango.CairoHelper.ShowLayout (cr, layout);
+			
+			cr.MoveTo(600*escala_en_linux_windows, 152*escala_en_linux_windows);			layout.SetText("PRECIO");					Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(660*escala_en_linux_windows, 152*escala_en_linux_windows);			layout.SetText("IVA");					Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(710*escala_en_linux_windows, 152*escala_en_linux_windows);			layout.SetText("TOTAL");					Pango.CairoHelper.ShowLayout (cr, layout);
+			//cr.MoveTo(600*escala_en_linux_windows, 152*escala_en_linux_windows);			layout.SetText("1000.00");					Pango.CairoHelper.ShowLayout (cr, layout);
+			
+			cr.MoveTo(55*escala_en_linux_windows, 545*escala_en_linux_windows);			layout.SetText("Firma Autorizado");					Pango.CairoHelper.ShowLayout (cr, layout);	
+			
+			cr.MoveTo(05*escala_en_linux_windows, 60*escala_en_linux_windows);
+			cr.LineTo(05,480);		// vertical 1
+			
+			cr.MoveTo(750*escala_en_linux_windows, 60*escala_en_linux_windows);
+			cr.LineTo(750,500);		// vertical 2
+			
+			cr.MoveTo(550*escala_en_linux_windows, 60*escala_en_linux_windows);
+			cr.LineTo(550,140);		// vertical 3
+			
+			cr.MoveTo(650*escala_en_linux_windows, 60*escala_en_linux_windows);
+			cr.LineTo(650,100);		// vertical 4
+			
+			cr.MoveTo(25*escala_en_linux_windows, 140*escala_en_linux_windows);
+			cr.LineTo(25,480);		// vertical 5
+			
+			cr.MoveTo(57*escala_en_linux_windows, 140*escala_en_linux_windows);
+			cr.LineTo(57,480);		// vertical 6
+			
+			cr.MoveTo(100*escala_en_linux_windows, 140*escala_en_linux_windows);
+			cr.LineTo(100,480);		// vertical 7
+			
+			cr.MoveTo(138*escala_en_linux_windows, 140*escala_en_linux_windows);
+			cr.LineTo(138,480);		// vertical 8
+			
+			cr.MoveTo(585*escala_en_linux_windows, 140*escala_en_linux_windows);
+			cr.LineTo(585,500);		// vertical 11
+			
+			cr.MoveTo(640*escala_en_linux_windows, 140*escala_en_linux_windows);
+			cr.LineTo(640,500);		// vertical 12
+			
+			cr.MoveTo(695*escala_en_linux_windows, 140*escala_en_linux_windows);
+			cr.LineTo(695,500);		// vertical 13
+			
+			
+	
+			
+			cr.MoveTo(750*escala_en_linux_windows, 60*escala_en_linux_windows);
+			cr.LineTo(05,60);		// Linea Horizontal 1
+			
+			cr.MoveTo(750*escala_en_linux_windows, 100*escala_en_linux_windows);
+			cr.LineTo(05,100);		// Linea Horizontal 2
+			
+			cr.MoveTo(750*escala_en_linux_windows, 140*escala_en_linux_windows);
+			cr.LineTo(05,140);		// Linea Horizontal 3
+			
+			cr.MoveTo(750*escala_en_linux_windows, 160*escala_en_linux_windows);
+			cr.LineTo(05,160);		// Linea Horizontal 4
+			
+			cr.MoveTo(750*escala_en_linux_windows, 500*escala_en_linux_windows);
+			cr.LineTo(585,500);		// Linea Horizontal 6
+			
+			cr.MoveTo(750*escala_en_linux_windows, 120*escala_en_linux_windows);
+			cr.LineTo(550,120);		// Linea Hrizontal 7
+			
+			cr.MoveTo(750*escala_en_linux_windows, 480*escala_en_linux_windows);
+			cr.LineTo(585,480);		// Linea Horizontal 8
+			
+			cr.MoveTo(05*escala_en_linux_windows, 480*escala_en_linux_windows);
+			cr.LineTo(590,480);		// Linea Horizontal 9
+			
+			cr.MoveTo(45*escala_en_linux_windows, 545*escala_en_linux_windows);	
+			cr.LineTo(125,545);		// Linea Horizontal 10
+			
+			cr.FillExtents();  //. FillPreserve(); 
+			cr.SetSourceRGB (0, 0, 0);
+			cr.LineWidth = 0.3;
+			cr.Stroke();
 		}
 		
 		private void OnEndPrint (object obj, Gtk.EndPrintArgs args)

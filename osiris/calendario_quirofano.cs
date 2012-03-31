@@ -138,6 +138,9 @@ namespace osiris
 		[Widget] Gtk.Entry entry_edad_paciente_qx = null;
 		[Widget] Gtk.ComboBox combobox_estado_civil_qx = null;
 		[Widget] Gtk.Entry entry_telefono_qx = null;
+		[Widget] Gtk.Entry entry_celular_qx = null;
+		[Widget] Gtk.Entry entry_mail_qx = null;
+		[Widget] Gtk.ComboBox combobox_tipo_paciente_qx = null;
 		
 		//Ventana de cancelacion de folios
 		[Widget] Gtk.Window cancelador_folios = null;
@@ -321,12 +324,11 @@ namespace osiris
 			entry_numero_citaquirofano.ModifyFont(fontdesc);	// Cambia el tipo de letra del Entry
 			entry_numero_citas.ModifyFont(fontdesc);
 			
+			// desactivando la cita a paciente
 			radiobutton_paciente_conexpe_cita.Sensitive = false;
 			radiobutton_paciente_sinexpe_cita.Sensitive = false;
-			
 			entry_pid_paciente_cita.Sensitive = false;
 			entry_nombre_paciente_cita1.Sensitive = false;
-			
 			entry_nombre_paciente_cita2.Sensitive = false;
 			entry_fecha_nac_cita.Sensitive = false;
 			entry_edad_paciente_cita.Sensitive = false;
@@ -336,7 +338,6 @@ namespace osiris
 			entry_mail_cita.Sensitive = false;
 			radiobutton_hombre_cita.Sensitive = false;
 			radiobutton_mujer_cita.Sensitive = false;
-			
 			button_guardar_cita.Sensitive = false;
 			button_busca_paciente_cita.Sensitive = false;
 			button_busca_medicos_cita.Sensitive = false;
@@ -349,8 +350,11 @@ namespace osiris
 			combobox_tipo_admision_cita.Sensitive = false;
 			button_infoadmision.Sensitive = false;
 			
+			// desactivando programacion de cirugia
+			
+			
 			////////////////////////
-			// Calendario de Quirofano
+			// acciones Calendario de Quirofano
 			/////////////////////////
 			checkbutton_crea_citaqx.Clicked += new EventHandler(on_checkbutton_crea_cita_clicked);
 			
@@ -1578,8 +1582,7 @@ namespace osiris
 			ComboBox onComboBoxChanged = sender as ComboBox;
 			if (sender == null){	return; }
 			TreeIter iter;
-			if (onComboBoxChanged.GetActiveIter (out iter)){
-				
+			if (onComboBoxChanged.GetActiveIter (out iter)){				
 				switch (onComboBoxChanged.Name.ToString()){	
 				case "combobox_estado_civil_cita":
 					estadocivil_cita = (string) onComboBoxChanged.Model.GetValue(iter,0);

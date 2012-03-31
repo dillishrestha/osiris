@@ -50,6 +50,9 @@ namespace osiris
 		[Widget] Gtk.Entry entry_estatus_oc = null;
 		[Widget] Gtk.Entry entry_id_quien_hizo = null;
 		[Widget] Gtk.Entry entry_num_factura_proveedor = null;
+		[Widget] Gtk.Entry entry_ano_fechafactura = null;
+		[Widget] Gtk.Entry entry_mes_fechafactura = null;
+		[Widget] Gtk.Entry entry_dia_fechafactura = null;
 		[Widget] Gtk.Entry entry_id_proveedor = null;
 		[Widget] Gtk.Entry entry_nombre_proveedor = null;
 		[Widget] Gtk.Button button_busca_proveedor = null;
@@ -78,6 +81,7 @@ namespace osiris
 		[Widget] Gtk.Entry entry_cantidad_aplicada = null;
 		[Widget] Gtk.Entry entry_embalaje_pack = null;
 		[Widget] Gtk.Entry entry_producto_proveedor = null;
+		
 		[Widget] Gtk.Entry entry_codprod_proveedor = null;	
 		[Widget] Gtk.Entry entry_precio = null;
 		[Widget] Gtk.ComboBox combobox_tipo_unidad2 = null;
@@ -137,7 +141,8 @@ namespace osiris
 		TreeViewColumn col_costoprod_uni;		CellRendererText cellrt12;
 		CellRendererText cellrt13;
 		CellRendererText cellrt14;
-		CellRendererCombo cellrt15;
+		CellRendererText cellrt15;
+		//CellRendererCombo cellrt15;
 		TreeViewColumn col_aplica_iva;			CellRendererText cellrt19;
 		TreeViewColumn col_cobro_activo;		CellRendererText cellrt20;
 		
@@ -228,22 +233,9 @@ namespace osiris
 					comando = conexion.CreateCommand ();
 					TreeIter iter;
 					if (treeViewEngineListaProdRequi.GetIterFirst (out iter)){
-						
-						comando.CommandText = "INSERT INTO osiris_erp_factura_compra_enca(" +
-							//"numero_orden_compra," +
-							//"fechahora_orden_compra," +
-							"id_quien_creo," +
-							//"cancelado," +
-							//"fechahora_cancelado," +
-							"id_proveedor," +
-							"factura_sin orden_compra," +
-							//"id_secuencia," +
-							"numero_de_factura," +
-							"fecha_fatura," +
-							//"id_quien_cancelo," +
-							"fechahora_creacion) VALUES ('"+LoginEmpleado+"','"+entry_id_proveedor.Text.Trim();
-							
-						comando.CommandText = "INSERT INTO osiris_erp_requisicion_deta( "+
+						if((bool) checkbutton_factura_sin_orden.Active == false){
+							// Actualizar la orden de compra
+							comando.CommandText = " UPDATE osiris_erp_requisicion_deta( "+
 			 									"id_producto, "+
 			 									"cantidad_comprada, "+
 			 									"id_quien_compro, "+
@@ -271,6 +263,28 @@ namespace osiris
  												//DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"','LoginEmpleado+"');";
 		 					//comando.ExecuteNonQuery();
 					    	//comando.Dispose();
+							
+						}else{
+							comando.CommandText = "INSERT INTO osiris_erp_factura_compra_enca(" +
+										//"numero_orden_compra," +
+										//"fechahora_orden_compra," +
+										"id_quien_creo," +
+										//"cancelado," +
+										//"fechahora_cancelado," +
+										"id_proveedor," +
+										"factura_sin orden_compra," +
+										//"id_secuencia," +
+										"numero_de_factura," +
+										"fecha_fatura," +
+										//"id_quien_cancelo," +
+										"fechahora_creacion) VALUES ('"+LoginEmpleado+"','"+entry_id_proveedor.Text.Trim()+"','"+
+											checkbutton_factura_sin_orden.Active+"','"+entry_num_factura_proveedor.Text.Trim()+"','"+
+											entry_ano_fechafactura.Text.Trim()+"-"+entry_mes_fechafactura.Text.Trim()+"-"+entry_dia_fechafactura.Text.Trim()+"','"+
+											DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"')";
+							Console.WriteLine(comando.CommandText);
+							comando.ExecuteNonQuery();
+						    comando.Dispose();
+						}					
 					}
 					while (treeViewEngineListaProdRequi.IterNext(ref iter)){
 						/*
@@ -332,7 +346,7 @@ namespace osiris
 		
 		void crea_treeview_capturafactura()
 		{
-			cell_combox_store = new ListStore(typeof (string));
+			/*cell_combox_store = new ListStore(typeof (string));
 			cell_combox_store.AppendValues (" ");
 			cell_combox_store.AppendValues ("PIEZA");
 			cell_combox_store.AppendValues ("KILO");
@@ -343,7 +357,7 @@ namespace osiris
 			cell_combox_store.AppendValues ("CAJA");
 			cell_combox_store.AppendValues ("PULGADA");
 			cell_combox_store.AppendValues ("FRASCO");
-			cell_combox_store.AppendValues ("GALON");
+			cell_combox_store.AppendValues ("GALON");*/
 			
 			treeViewEngineListaProdRequi = new TreeStore(typeof(bool), 
 									typeof(string),
@@ -490,6 +504,7 @@ namespace osiris
 			
 			// ComboBox dentro del treeview
 			col_15 = new TreeViewColumn();
+			cellrt15 = new CellRendererText();
 			col_15.Title = "Presentacion";
 			col_15.PackStart(cellrt15, true);
 			col_15.AddAttribute (cellrt15, "text", 15);
@@ -553,7 +568,7 @@ namespace osiris
 		void TaskPriorityCellDataFunc (Gtk.TreeViewColumn tree_column,Gtk.CellRenderer cell,Gtk.TreeModel tree_model,Gtk.TreeIter iter)
 		{
 			// TODO: Add bold (for high), light (for None), and also colors to priority?
-			Gtk.CellRendererCombo crc = cell as Gtk.CellRendererCombo;
+			//Gtk.CellRendererCombo crc = cell as Gtk.CellRendererCombo;
 			//Console.WriteLine((string) crc.Model.GetValue(iter,0));
 									
 			//if (tree_column.ge   combobox_tipo_unidad2.GetActiveIter (out iter)){
@@ -590,10 +605,10 @@ namespace osiris
 		
 		void OnTaskPriorityEdited (object sender, Gtk.EditedArgs args)
 		{
-			Gtk.TreeIter iter;
-			Gtk.TreePath path = new TreePath (args.Path);
+			   //Gtk.TreeIter iter;
+			   //Gtk.TreePath path = new TreePath (args.Path);
 			//Console.WriteLine( args.NewText.ToString());
-			cellrt15.Text = args.NewText.ToString();
+			   //cellrt15.Text = args.NewText.ToString();
 			//if ( Model.GetIter (out iter, path))
 			//TreeIter iter;
 			return;
@@ -751,7 +766,7 @@ namespace osiris
 				
 		void on_button_busca_producto_clicked(object sender, EventArgs a)
 		{
-			if(entry_num_factura_proveedor.Text != ""){
+			if(entry_num_factura_proveedor.Text != ""  && entry_id_proveedor.Text != "" && entry_id_proveedor.Text != "1"){
 				Glade.XML gxml = new Glade.XML (null, "almacen_costos_compras.glade", "busca_producto", null);
 				gxml.Autoconnect (this);
 				busca_producto.Show();
@@ -760,7 +775,9 @@ namespace osiris
 				button_selecciona.Clicked += new EventHandler(on_selecciona_producto_clicked);
 				entry_expresion.KeyPressEvent += onKeyPressEvent_enter;
 				button_salir.Clicked += new EventHandler(on_cierraventanas_clicked);
-				
+				entry_cantidad_aplicada.KeyPressEvent += onKeyPressEvent_numeric; 
+				entry_embalaje_pack.KeyPressEvent += onKeyPressEvent_numeric;
+				entry_precio.KeyPressEvent += onKeyPressEvent_numeric;
 				CellRendererText cell3 = new CellRendererText();
 				combobox_tipo_unidad2.PackStart(cell3, true);
 				combobox_tipo_unidad2.AddAttribute(cell3,"text",0);
@@ -773,7 +790,7 @@ namespace osiris
 			}else{
 				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
 									MessageType.Info, 
-									ButtonsType.Close, "Debe tener un numero de Factura, verfique...");
+									ButtonsType.Close, "NO tiene un numero de FACTURA o NO ha elegido un PROVEEDOR... Verifique");
 				msgBoxError.Run ();								msgBoxError.Destroy();
 			}
 		}
@@ -1052,7 +1069,7 @@ namespace osiris
 		
 		void on_selecciona_producto_clicked (object sender, EventArgs args)
 		{	
-			if(entry_num_factura_proveedor.Text.Trim() != ""){
+			if(float.Parse(entry_precio.Text.Trim()) > 0){
 				TreeModel model;
 				TreeIter iterSelected;
 				if (lista_de_producto.Selection.GetSelected(out model, out iterSelected)){
@@ -1084,18 +1101,30 @@ namespace osiris
 								(string) model.GetValue(iterSelected, 12),
 								(string) model.GetValue(iterSelected, 1),
 								(string) model.GetValue(iterSelected, 0),
-								"",
-								"",
-								"",
-								"",
-								"");
-					cellrt15.Text = tipounidadproducto;
+								(string) entry_producto_proveedor.Text.Trim().ToUpper(),
+								(string) entry_codprod_proveedor.Text.Trim().ToUpper(),
+								(string) entry_lote.Text.Trim().ToUpper(),
+								(string) entry_caducidad.Text.Trim().ToUpper(),
+								tipounidadproducto);
+					entry_cantidad_aplicada.Text = "0";
+					entry_embalaje_pack.Text = "1";
+					entry_precio.Text = "0";
+					
+					//cellrt15.Text = tipounidadproducto;
 					//cierra la ventana despues que almaceno la informacion en variables
-					Widget win = (Widget) sender;
-					win.Toplevel.Destroy();
+					//Widget win = (Widget) sender;
+					//win.Toplevel.Destroy();
+				}else{
+					MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+									MessageType.Info, 
+									ButtonsType.Close, "No ha seleccionado ningun PRODUCTO... Verifique...");
+				msgBoxError.Run ();								msgBoxError.Destroy();
 				}
 			}else{
-				
+				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+									MessageType.Info, 
+									ButtonsType.Close, "No tiene precio el PRODUCTO... Verifique...");
+				msgBoxError.Run ();								msgBoxError.Destroy();
 			}
 		}
 		
@@ -1125,6 +1154,19 @@ namespace osiris
 			if (args.Event.Key == Gdk.Key.Return || args.Event.Key == Gdk.Key.KP_Enter){
 				args.RetVal = true;		
 				llena_la_lista_de_productos();
+			}
+		}
+		
+		// Valida entradas que solo sean numericas, se utiliza eb ventana de
+		// carga de producto
+		[GLib.ConnectBefore ()]   	  // Esto es indispensable para que funcione    
+		void onKeyPressEvent_numeric(object o, Gtk.KeyPressEventArgs args)
+		{
+			//Console.WriteLine(args.Event.Key);
+			//Console.WriteLine(Convert.ToChar(args.Event.Key));
+			string misDigitos = ".0123456789ﾰﾱﾲﾳﾴﾵﾶﾷﾸﾹﾮｔｒｓｑ（）";
+			if (Array.IndexOf(misDigitos.ToCharArray(), Convert.ToChar(args.Event.Key)) == -1 && args.Event.Key != Gdk.Key.BackSpace){
+				args.RetVal = true;
 			}
 		}
 		

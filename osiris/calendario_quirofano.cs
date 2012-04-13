@@ -353,6 +353,8 @@ namespace osiris
 			// desactivando programacion de cirugia
 			
 			
+			
+			
 			////////////////////////
 			// acciones Calendario de Quirofano
 			/////////////////////////

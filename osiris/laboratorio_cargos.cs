@@ -2295,9 +2295,11 @@ namespace osiris
 		public string idsecuencia = "";
 		public string id_produ = "";
 		public string tipoexamen = "";
-		public string quimicoaut = "";
-		public string idquimico = "0";
-		public string cedulaquimico = "";
+		
+		public string quimicoaut = "Q.C.B. MYRNA GUADALUPE MARTINEZ GONZALEZ";
+		public string idquimico = "1";
+		public string cedulaquimico = "2113615";
+		
 		public string numerosolicitud;
 		public string fechasolicitud;
 		public string sexopaciente;
@@ -2392,7 +2394,7 @@ namespace osiris
 			                                 typeof (string),
 			                                 typeof (string));
 			combobox_quimicos_aut.Model = store1;
-	        store1.AppendValues ("Seleccione un Quimico","0","0");
+	        //store1.AppendValues ("Seleccione un Quimico","0","0");
 	        store1.AppendValues ("Q.C.B. MYRNA GUADALUPE MARTINEZ GONZALEZ","2113615","1");
             //store1.AppendValues ("Q.F.B. QUIMICO 2","4829293","2");
             //store1.AppendValues ("Q.F.B. QUIMICO 3","N000319","3");

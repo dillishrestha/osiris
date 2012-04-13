@@ -3348,7 +3348,7 @@ Busqueda de Almacenes
 				  <property name="label" translatable="yes">&lt;b&gt;N° Factura :&lt;/b&gt;</property>
 				  <property name="use_underline">False</property>
 				  <property name="use_markup">True</property>
-				  <property name="justify">GTK_JUSTIFY_LEFT</property>
+				  <property name="justify">GTK_JUSTIFY_CENTER</property>
 				  <property name="wrap">False</property>
 				  <property name="selectable">False</property>
 				  <property name="xalign">0.5</property>
@@ -3369,7 +3369,7 @@ Busqueda de Almacenes
 
 			      <child>
 				<widget class="GtkEntry" id="entry_num_factura_proveedor">
-				  <property name="width_request">100</property>
+				  <property name="width_request">90</property>
 				  <property name="visible">True</property>
 				  <property name="tooltip" translatable="yes">Este Boton aplica en Numero de Factura del Proveedor</property>
 				  <property name="can_focus">True</property>
@@ -3473,7 +3473,7 @@ Busqueda de Almacenes
 				  <property name="visible">True</property>
 				  <property name="label" translatable="yes">Fech.Fact.</property>
 				  <property name="use_underline">False</property>
-				  <property name="use_markup">False</property>
+				  <property name="use_markup">True</property>
 				  <property name="justify">GTK_JUSTIFY_LEFT</property>
 				  <property name="wrap">False</property>
 				  <property name="selectable">False</property>
@@ -3555,13 +3555,63 @@ Busqueda de Almacenes
 			      </child>
 
 			      <child>
+				<widget class="GtkLabel" id="label397">
+				  <property name="visible">True</property>
+				  <property name="label" translatable="yes">aaaa-mm-dd</property>
+				  <property name="use_underline">False</property>
+				  <property name="use_markup">False</property>
+				  <property name="justify">GTK_JUSTIFY_LEFT</property>
+				  <property name="wrap">False</property>
+				  <property name="selectable">False</property>
+				  <property name="xalign">0.5</property>
+				  <property name="yalign">0.5</property>
+				  <property name="xpad">0</property>
+				  <property name="ypad">0</property>
+				  <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
+				  <property name="width_chars">-1</property>
+				  <property name="single_line_mode">False</property>
+				  <property name="angle">0</property>
+				</widget>
+				<packing>
+				  <property name="padding">0</property>
+				  <property name="expand">False</property>
+				  <property name="fill">False</property>
+				</packing>
+			      </child>
+
+			      <child>
+				<widget class="GtkFixed" id="fixed260">
+				  <property name="width_request">300</property>
+				  <property name="visible">True</property>
+				</widget>
+				<packing>
+				  <property name="padding">0</property>
+				  <property name="expand">False</property>
+				  <property name="fill">False</property>
+				</packing>
+			      </child>
+			    </widget>
+			    <packing>
+			      <property name="padding">0</property>
+			      <property name="expand">True</property>
+			      <property name="fill">True</property>
+			    </packing>
+			  </child>
+
+			  <child>
+			    <widget class="GtkHBox" id="hbox272">
+			      <property name="visible">True</property>
+			      <property name="homogeneous">False</property>
+			      <property name="spacing">0</property>
+
+			      <child>
 				<widget class="GtkLabel" id="label284">
 				  <property name="width_request">80</property>
 				  <property name="visible">True</property>
 				  <property name="label" translatable="yes">Proveedor  :</property>
 				  <property name="use_underline">False</property>
 				  <property name="use_markup">False</property>
-				  <property name="justify">GTK_JUSTIFY_LEFT</property>
+				  <property name="justify">GTK_JUSTIFY_CENTER</property>
 				  <property name="wrap">False</property>
 				  <property name="selectable">False</property>
 				  <property name="xalign">0.5</property>
@@ -3602,7 +3652,7 @@ Busqueda de Almacenes
 
 			      <child>
 				<widget class="GtkEntry" id="entry_nombre_proveedor">
-				  <property name="width_request">240</property>
+				  <property name="width_request">400</property>
 				  <property name="visible">True</property>
 				  <property name="can_default">True</property>
 				  <property name="can_focus">True</property>
@@ -3616,8 +3666,8 @@ Busqueda de Almacenes
 				</widget>
 				<packing>
 				  <property name="padding">0</property>
-				  <property name="expand">False</property>
-				  <property name="fill">False</property>
+				  <property name="expand">True</property>
+				  <property name="fill">True</property>
 				</packing>
 			      </child>
 
@@ -3699,6 +3749,18 @@ Busqueda de Almacenes
 				  <property name="fill">False</property>
 				</packing>
 			      </child>
+
+			      <child>
+				<widget class="GtkFixed" id="fixed259">
+				  <property name="width_request">200</property>
+				  <property name="visible">True</property>
+				</widget>
+				<packing>
+				  <property name="padding">0</property>
+				  <property name="expand">True</property>
+				  <property name="fill">True</property>
+				</packing>
+			      </child>
 			    </widget>
 			    <packing>
 			      <property name="padding">0</property>
@@ -3719,7 +3781,7 @@ Busqueda de Almacenes
 				  <property name="label" translatable="yes">Direccion  </property>
 				  <property name="use_underline">False</property>
 				  <property name="use_markup">False</property>
-				  <property name="justify">GTK_JUSTIFY_LEFT</property>
+				  <property name="justify">GTK_JUSTIFY_CENTER</property>
 				  <property name="wrap">False</property>
 				  <property name="selectable">False</property>
 				  <property name="xalign">0.5</property>
@@ -3867,7 +3929,7 @@ Busqueda de Almacenes
 				  <property name="label" translatable="yes">Contacto de Proveedor  :</property>
 				  <property name="use_underline">False</property>
 				  <property name="use_markup">False</property>
-				  <property name="justify">GTK_JUSTIFY_LEFT</property>
+				  <property name="justify">GTK_JUSTIFY_CENTER</property>
 				  <property name="wrap">False</property>
 				  <property name="selectable">False</property>
 				  <property name="xalign">0.5</property>
@@ -3980,17 +4042,6 @@ Busqueda de Almacenes
 			      <property name="fill">True</property>
 			    </packing>
 			  </child>
-
-			  <child>
-			    <widget class="GtkFixed" id="fixed175">
-			      <property name="visible">True</property>
-			    </widget>
-			    <packing>
-			      <property name="padding">0</property>
-			      <property name="expand">True</property>
-			      <property name="fill">True</property>
-			    </packing>
-			  </child>
 			</widget>
 		      </child>
 		    </widget>
@@ -4069,7 +4120,7 @@ Busqueda de Almacenes
 			  <child>
 			    <widget class="GtkTreeView" id="lista_productos_a_recibir">
 			      <property name="width_request">600</property>
-			      <property name="height_request">350</property>
+			      <property name="height_request">290</property>
 			      <property name="visible">True</property>
 			      <property name="can_focus">True</property>
 			      <property name="headers_visible">True</property>

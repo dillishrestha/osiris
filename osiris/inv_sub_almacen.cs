@@ -85,6 +85,29 @@ namespace osiris
 		string tiposeleccion = "";
 		string descripcionalmacen = "";
 		
+		string query_sql = "SELECT osiris_catalogo_almacenes.id_almacen," +
+							"to_char(osiris_productos.id_producto,'999999999999') AS idproducto,"+
+							"osiris_productos.descripcion_producto, "+
+							"to_char(osiris_catalogo_almacenes.stock,'999999999999.99') AS stock,"+
+							"to_char(osiris_catalogo_almacenes.minimo_stock,'999999999999.99') AS minstock,"+
+							"to_char(osiris_catalogo_almacenes.maximo,'999999999999.99') AS maxstock,"+
+							"to_char(osiris_catalogo_almacenes.punto_de_reorden,'999999999999.99') AS reorden,"+
+							"to_char(osiris_catalogo_almacenes.fechahora_ultimo_surtimiento,'yyyy-MM-dd HH24:mi:ss') AS fechsurti, "+
+							"osiris_productos.id_grupo_producto AS idgrupoproducto,descripcion_grupo_producto,"+ //descripcion_grupo1_producto,descripcion_grupo2_producto, "+
+							"to_char(osiris_productos.precio_producto_publico,'99999999.99') AS preciopublico,"+
+							"to_char(osiris_productos.costo_por_unidad,'999999999.99') AS costoproductounitario,"+
+							"to_char(osiris_productos.costo_producto,'999999999.99') AS costoproducto,"+
+							"to_char(osiris_productos.cantidad_de_embalaje,'999999999.99') AS embalaje, "+
+							"to_char(osiris_productos.porcentage_ganancia,'99999.99') AS porcentageganancia, "+
+							"osiris_catalogo_almacenes.tiene_stock "+
+							"FROM osiris_catalogo_almacenes,osiris_productos,osiris_grupo_producto "+ //,osiris_grupo1_producto,osiris_grupo2_producto "+
+							"WHERE osiris_catalogo_almacenes.id_producto = osiris_productos.id_producto "+ 
+							"AND osiris_productos.id_grupo_producto = osiris_grupo_producto.id_grupo_producto "+
+							"AND osiris_productos.cobro_activo = 'true' "+
+							//"AND osiris_productos.id_grupo1_producto = osiris_grupo1_producto.id_grupo1_producto "+
+							//"AND osiris_productos.id_grupo2_producto = osiris_grupo2_producto.id_grupo2_producto "+
+							"AND osiris_grupo_producto.agrupacion_4 = 'true'"+
+							"AND osiris_catalogo_almacenes.eliminado = 'false' ";
 		string query_grupo = " ";
 		string query_grupo1 = " ";
 		string query_grupo2 = " ";
@@ -260,6 +283,7 @@ namespace osiris
 				switch (onComboBoxChanged.Name.ToString()){	
 				case "combobox_tipo_almacen":
 					idsubalmacen = (int) combobox_tipo_almacen.Model.GetValue(iter,1);
+					descripcionalmacen = (string) combobox_tipo_almacen.Model.GetValue(iter,0);
 					entry_filter.Text = "";
 		    		llenando_busqueda_productos();
 					break;
@@ -768,38 +792,17 @@ namespace osiris
 			conexion = new NpgsqlConnection (connectionString+nombrebd);
 	       
 			// Verifica que la base de datos este conectada
-			try
-			{
+			try{
 				conexion.Open ();
 				NpgsqlCommand comando; 
 				comando = conexion.CreateCommand ();	          	
-				comando.CommandText = "SELECT osiris_catalogo_almacenes.id_almacen,to_char(osiris_productos.id_producto,'999999999999') AS codProducto,"+
-							"osiris_productos.descripcion_producto, "+
-							"to_char(osiris_catalogo_almacenes.stock,'999999999999.99') AS stockactual,"+
-							"to_char(osiris_catalogo_almacenes.minimo_stock,'999999999999.99') AS minstock,"+
-							"to_char(osiris_catalogo_almacenes.maximo,'999999999999.99') AS maxstock,"+
-							"to_char(osiris_catalogo_almacenes.punto_de_reorden,'999999999999.99') AS reorden,"+
-							"to_char(osiris_catalogo_almacenes.fechahora_ultimo_surtimiento,'yyyy-MM-dd HH24:mi:ss') AS fechsurti, "+
-							"descripcion_grupo_producto, "+ //descripcion_grupo1_producto,descripcion_grupo2_producto, "+
-							"to_char(precio_producto_publico,'99999999.99') AS preciopublico,"+
-							"to_char(costo_por_unidad,'999999999.99') AS costoproductounitario,"+
-							"to_char(costo_producto,'999999999.99') AS costoproducto,"+
-							"osiris_catalogo_almacenes.tiene_stock,"+
-							"to_char(cantidad_de_embalaje,'999999999.99') AS embalaje "+
-							"FROM osiris_catalogo_almacenes,osiris_productos,osiris_grupo_producto "+ //,osiris_grupo1_producto,osiris_grupo2_producto "+
-							"WHERE osiris_catalogo_almacenes.id_producto = osiris_productos.id_producto "+ 
-							"AND osiris_productos.id_grupo_producto = osiris_grupo_producto.id_grupo_producto "+
-							"AND osiris_productos.cobro_activo = 'true' "+
-							//"AND osiris_productos.id_grupo1_producto = osiris_grupo1_producto.id_grupo1_producto "+
-							//"AND osiris_productos.id_grupo2_producto = osiris_grupo2_producto.id_grupo2_producto "+
-							"AND osiris_grupo_producto.agrupacion_4 = 'true'"+
-							"AND osiris_catalogo_almacenes.eliminado = 'false' "+
+				comando.CommandText = query_sql+
 							query_grupo+
 							//query_grupo1+
 							//query_grupo2+
 							query_stock+
 							" AND osiris_catalogo_almacenes.id_almacen = '"+idsubalmacen.ToString().Trim()+"' "+
-							"ORDER BY descripcion_producto; ";
+							"ORDER BY descripcion_producto;";
 				//Console.WriteLine(comando.CommandText);
 				NpgsqlDataReader lector = comando.ExecuteReader ();
 				//string tienestock = "";
@@ -808,8 +811,8 @@ namespace osiris
 					//Console.WriteLine(tienestock);
 					if(this.tipoalmacen==1){
 						treeViewEngineBusca.AppendValues ((string) lector["descripcion_producto"],
-														(string) lector["stockactual"], 
-														(string) lector["codProducto"],
+														(string) lector["stock"], 
+														(string) lector["idproducto"],
 														(string) lector["minstock"],
 														(string) lector["maxstock"],
 														(string) lector["reorden"],
@@ -831,8 +834,8 @@ namespace osiris
 					if(this.tipoalmacen==2){
 						treeViewEngineBusca2.AppendValues (false,
 							                                   "0",
-							                                   (string) lector["stockactual"],
-							                                   (string) lector["codProducto"],
+							                                   (string) lector["stock"],
+							                                   (string) lector["idproducto"],
 							                                   (string) lector["descripcion_producto"],
 							                                   (string) lector["costoproductounitario"],
 							                                   (string) lector["preciopublico"]);
@@ -841,8 +844,8 @@ namespace osiris
 					if(this.tipoalmacen==3){
 						treeViewEngineBusca2.AppendValues (false,
 							                                   "0",
-							                                   (string) lector["stockactual"],
-							                                   (string) lector["codProducto"],
+							                                   (string) lector["stock"],
+							                                   (string) lector["idproducto"],
 							                                   (string) lector["descripcion_producto"],
 							                                   (string) lector["costoproductounitario"],
 							                                   (string) lector["preciopublico"],
@@ -1471,7 +1474,9 @@ namespace osiris
 				
 		void imprime_reporte_stock(object sender, EventArgs args)
 		{
-			
+			new osiris.inventario_almacen_reporte (idsubalmacen,descripcionalmacen,"01","0000",
+													LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,"inventario_actual",
+							query_sql+query_grupo+query_stock+" AND osiris_catalogo_almacenes.id_almacen = '"+idsubalmacen.ToString().Trim()+"' "+"ORDER BY osiris_productos.id_grupo_producto,osiris_productos.descripcion_producto;","","","","","","");
 		}
 				
 		void on_checkbutton_articulos_sin_stock_clicked(object sender, EventArgs args)

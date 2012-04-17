@@ -72,6 +72,7 @@ namespace osiris
 		[Widget] Gtk.Entry entry_procedimiento = null;
 		[Widget] Gtk.Entry entry_diagnostico = null;
 		[Widget] Gtk.TreeView lista_produc_solicitados;
+		[Widget] Gtk.Button button_selecciona_pq = null;
 		
 		[Widget] Gtk.Entry entry_rojo;
 		[Widget] Gtk.Entry entry_azul;
@@ -154,7 +155,7 @@ namespace osiris
 			//buscar pacientes
 			button_busca_paciente.Clicked += new EventHandler(on_button_busca_paciente_clicked);
 			button_imprime_solicitud.Clicked += new EventHandler(on_button_imprime_solicitud_clicked);
-			
+			button_selecciona_pq.Clicked += new EventHandler(on_button_selecciona_pq_clicked);
 			button_guardar_solicitud.Sensitive = false;
 			button_envio_solicitud.Sensitive = false;
 			button_quitar_productos.Sensitive = false;
@@ -209,7 +210,11 @@ namespace osiris
 			}				
 			return acceso_a_presolicitud;
 		}
-				
+		
+		void on_button_selecciona_pq_clicked(object sender, EventArgs args)
+		{
+			
+		}
 
 		void on_button_busca_producto_clicked(object sender, EventArgs args)
 		{

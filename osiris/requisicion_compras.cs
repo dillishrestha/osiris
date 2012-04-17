@@ -96,6 +96,14 @@ namespace osiris
 		[Widget] Gtk.TreeView lista_de_producto;
 		[Widget] Gtk.Label label_cantidad = null;
 		[Widget] Gtk.HBox hbox3 = null;
+		[Widget] Gtk.Label label_pack = null;
+		[Widget] Gtk.Entry entry_embalaje_pack = null;
+		[Widget] Gtk.Label label_desc_proveedor = null;
+		[Widget] Gtk.Entry entry_producto_proveedor = null;
+		[Widget] Gtk.Label label_codprod_proveedor = null;
+		[Widget] Gtk.Entry entry_codprod_proveedor = null;
+		[Widget] Gtk.Label label390 = null;
+ 		[Widget] Gtk.ComboBox combobox_tipo_unidad2 = null;		
 		
 		//Declarando la barra de estado
 		[Widget] Gtk.Statusbar statusbar_almacen_requi;
@@ -487,6 +495,15 @@ namespace osiris
 			entry_expresion.KeyPressEvent += onKeyPressEvent_entry_expresion;
 			//this.entry_cantidad_aplicada.CanFocus = true;
 			if(button_buscarproducto.Name == "button_busca_producto"){
+				label_pack.Hide();
+				entry_embalaje_pack.Hide();
+				label_desc_proveedor.Hide();
+				entry_producto_proveedor.Hide();
+				label_codprod_proveedor.Hide();
+				entry_codprod_proveedor.Hide();
+				hbox3.Hide();
+				label390.Hide();
+				combobox_tipo_unidad2.Hide();
 				button_selecciona.Label = "Requisar";
 				button_selecciona.Clicked += new EventHandler(on_selecciona_producto_clicked);			
 				entry_cantidad_aplicada.KeyPressEvent += onKeyPressEvent;	
@@ -494,6 +511,15 @@ namespace osiris
 			if(button_buscarproducto.Name == "button_buscar_prodreq"){
 				label_cantidad.Hide();
 				entry_cantidad_aplicada.Hide();
+				label_pack.Hide();
+				entry_embalaje_pack.Hide();
+				label_desc_proveedor.Hide();
+				entry_producto_proveedor.Hide();
+				label_codprod_proveedor.Hide();
+				entry_codprod_proveedor.Hide();
+				hbox3.Hide();
+				label390.Hide();
+				combobox_tipo_unidad2.Hide();
 			}
 			busca_producto.Show();			
 		}
@@ -502,8 +528,7 @@ namespace osiris
 		{
 			if (float.Parse(entry_cantidad_aplicada.Text) > 0){
 				TreeModel model;
-				TreeIter iterSelected;
-				
+				TreeIter iterSelected;				
 				// Llenando el TreeView para la requisicion
  				if (lista_de_producto.Selection.GetSelected(out model, out iterSelected)){ 				
  					contador_items_requisados  += 1;

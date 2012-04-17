@@ -315,6 +315,7 @@ namespace osiris
 		string enfermedad_padre = "";
 		string enfermedad_madre = "";
 		string enfermedad_hermanos = "";
+		string enfermedad_apaterno = "";
 		
 		//public int tipodellenado;
 		bool editando = false;
@@ -770,9 +771,10 @@ namespace osiris
 		{
 			ComboBox onComboBoxChanged = sender as ComboBox;
 			if (sender == null){	return; }
+			Console.WriteLine(onComboBoxChanged.Name.ToString());
 			TreeIter iter;
 			if (onComboBoxChanged.GetActiveIter (out iter)){
-				switch (onComboBoxChanged.Name.ToString()){	
+				switch (onComboBoxChanged.Name.ToString()){				
 				case "combobox_tabaquismo":
 					pntabaquismo = (string) onComboBoxChanged.Model.GetValue(iter,0);
 					break;
@@ -797,7 +799,10 @@ namespace osiris
 					enfermedad_madre = (string) onComboBoxChanged.Model.GetValue(iter,0);
 					break;
 				case "combobox_enfermedad_hermanos":
-					enfermedad_hermanos  = (string) onComboBoxChanged.Model.GetValue(iter,0);
+					enfermedad_hermanos = (string) onComboBoxChanged.Model.GetValue(iter,0);
+					break;
+				case "combobox_enfermedad_apaternos":
+					enfermedad_apaterno = (string) onComboBoxChanged.Model.GetValue(iter,0);
 					break; 
 				}
 			}
@@ -1437,6 +1442,34 @@ namespace osiris
 							case "EMBOLIA":						book.setText(14, 13, "X");
 								break;
 							case "ENF. MENTALES":				book.setText(14, 15, "X");
+								break;
+						}
+					}
+				}
+				if(spinbutton_novivos_apaternos.Text.ToString()== "0" && spinbutton_nomuertos_apaternos.Text.ToString() == "0"){
+					book.setText(15,1," ");
+				}else{
+					if(spinbutton_novivos_apaternos.Text.ToString() != "0"){
+						book.setText(15,1,"X");
+						book.setText(15,2,"");
+					}
+					if(spinbutton_nomuertos_apaternos.Text.ToString() != "0"){
+						book.setText(15,1,"");
+						book.setText(15,2,"X");
+						switch (enfermedad_apaterno){
+							case "DIABETES":					book.setText(15, 3, "X");
+								break;
+							case "HIPERTENSION":				book.setText(15, 5, "X");
+								break;
+							case "ENF. DEL CORAZON":			book.setText(15, 7, "X");
+								break;
+							case "ENF. DE PULMONES":			book.setText(15, 9, "X");
+								break;
+							case "CANCER O LEUCEMIA":			book.setText(15, 11, "X");
+								break;
+							case "EMBOLIA":						book.setText(15, 13, "X");
+								break;
+							case "ENF. MENTALES":				book.setText(15, 15, "X");
 								break;
 						}
 					}

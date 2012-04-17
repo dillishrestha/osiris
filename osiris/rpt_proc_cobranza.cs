@@ -325,7 +325,7 @@ namespace osiris
 						if (apl_desc == false){
 							totaldesc = 0;
 						}
-						totaladm += total;
+						//totaladm += total;
 						subtotaldelmov += total;
 						
 						//imprime_linea_producto(context,(string) lector["idgrupoproducto"],(string) lector["cantidadaplicada"],datos,(string) lector["preciounitario"],subtotal,ivaprod,total);
@@ -352,7 +352,7 @@ namespace osiris
 							if (apl_desc == false){
 								totaldesc = 0;
 							}
-							//totaladm +=total;
+							totaladm +=total;
 							//subtotaldelmov +=total;
 							//Console.WriteLine("fecha no cambio = sumadesc"+sumadesc.ToString()+" totaladm"+totaladm.ToString());
 							//DATOS TABLA
@@ -416,7 +416,6 @@ namespace osiris
 							}
 							sumadesc +=descuento;
         				
-							totaladm = 0;
 							totaldesc +=descuento;
 							if (apl_desc == false){
 								totaldesc = 0;

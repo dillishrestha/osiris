@@ -158,9 +158,7 @@ namespace osiris
 			Pango.FontDescription desc = Pango.FontDescription.FromString ("Sans");									
 			// cr.Rotate(90)  Imprimir Orizontalmente rota la hoja cambian las posiciones de las lineas y columna					
 			fontSize = 8.0;			layout = null;			layout = context.CreatePangoLayout ();
-			desc.Size = (int)(fontSize * pangoScale);		layout.FontDescription = desc;
-		
-			
+			desc.Size = (int)(fontSize * pangoScale);		layout.FontDescription = desc;			
 		}
 		
 		private void OnEndPrint (object obj, Gtk.EndPrintArgs args)

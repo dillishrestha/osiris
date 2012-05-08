@@ -108,7 +108,8 @@ namespace osiris
 				conexion.Open ();
 				NpgsqlCommand comando; 
 				comando = conexion.CreateCommand ();
-				comando.CommandText = "SELECT osiris_erp_ordenes_compras_enca.id_proveedor,osiris_erp_ordenes_compras_enca.descripcion_proveedor,osiris_erp_ordenes_compras_enca.direccion_proveedor, " +
+				comando.CommandText = "SELECT numero_orden_compra,osiris_erp_ordenes_compras_enca.id_proveedor,osiris_erp_ordenes_compras_enca.descripcion_proveedor," +
+					"osiris_erp_ordenes_compras_enca.direccion_proveedor, " +
 					"osiris_erp_ordenes_compras_enca.rfc_proveedor,osiris_erp_ordenes_compras_enca.telefonos_proveedor,osiris_erp_ordenes_compras_enca.fecha_de_entrega,osiris_erp_ordenes_compras_enca.lugar_de_entrega,osiris_erp_ordenes_compras_enca.condiciones_de_pago,osiris_erp_ordenes_compras_enca.dep_solicitante,osiris_erp_ordenes_compras_enca.observaciones,osiris_erp_ordenes_compras_enca.fecha_deorden_compra " +
 					"  " +
 					"FROM osiris_erp_ordenes_compras_enca, osiris_erp_proveedores  " +

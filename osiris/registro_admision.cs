@@ -632,51 +632,51 @@ namespace osiris
 					if (_tipo_ == "busca1"){						
 						if (almacen_encabezado){
 							if (checkbutton_laboratorio.Active == true ||
-								checkbutton_imagenologia.Active == true ||
-								checkbutton_rehabilitacion.Active == true ||
-								checkbutton_checkup.Active == true ||
-								checkbutton_consulta.Active == true ||
-								checkbutton_otros_servicios.Active == true ||
-								grabainternamiento ==  true){
+									checkbutton_imagenologia.Active == true ||
+									checkbutton_rehabilitacion.Active == true ||
+									checkbutton_checkup.Active == true ||
+									checkbutton_consulta.Active == true ||
+									checkbutton_otros_servicios.Active == true ||
+									grabainternamiento ==  true){
 
 								// asignando folio de servicio
 								//this.folioservicio = ultimo_numero_atencion();
 								folioservicio = int.Parse(classpublic.lee_ultimonumero_registrado("osiris_erp_movcargos","folio_de_servicio",""));
 								this.button_imprimir_protocolo.Sensitive = true;
 								
-								almaceno_encabezado = almacena_encabezado_de_cobro();
+								almaceno_encabezado = almacena_encabezado_de_cobro(folioservicio);
 							}
 						}
 						
 						if (almaceno_encabezado == true){
 							// Almacenando en mov_cargos
 							if (checkbutton_consulta.Active == true){
-								graba_admision("CON-",16);
+								graba_admision("CON-",16,folioservicio,false);
 								checkbutton_consulta.Active = false;
 								checkbutton_consulta.Sensitive = false;
 								entry_folio_paciente.Text = folioservicio.ToString();}
 							if (checkbutton_laboratorio.Active == true && checkbutton_consulta.Active == false){
-								graba_admision("LAB-",400);
+								graba_admision("LAB-",400,folioservicio,false);
 								checkbutton_laboratorio.Active = false;
 								checkbutton_laboratorio.Sensitive = false;
 								entry_folio_paciente.Text = folioservicio.ToString();}
 							if (checkbutton_imagenologia.Active == true && checkbutton_consulta.Active == false){
-								graba_admision("IMG-",300);
+								graba_admision("IMG-",300,folioservicio,false);
 								checkbutton_imagenologia.Active = false;
 								checkbutton_imagenologia.Sensitive = false;
 								entry_folio_paciente.Text = folioservicio.ToString();}
 							if (checkbutton_rehabilitacion.Active == true && checkbutton_consulta.Active == false){
-								graba_admision("REH-",200);
+								graba_admision("REH-",200,folioservicio,false);
 								checkbutton_rehabilitacion.Active = false;
 								checkbutton_rehabilitacion.Sensitive = false;
 								entry_folio_paciente.Text = folioservicio.ToString();}
 							if (checkbutton_checkup.Active == true && checkbutton_consulta.Active == false){
-								graba_admision("CHE-",200);
+								graba_admision("CHE-",200,folioservicio,true);
 								checkbutton_checkup.Active = false;
 								checkbutton_checkup.Sensitive = false;
 								entry_folio_paciente.Text = folioservicio.ToString();}
 							if (checkbutton_otros_servicios.Active == true && checkbutton_consulta.Active == false){
-								graba_admision("OTS-",920);
+								graba_admision("OTS-",920,folioservicio,false);
 								checkbutton_otros_servicios.Active = false;
 								checkbutton_otros_servicios.Sensitive = false;
 								entry_folio_paciente.Text = folioservicio.ToString();}
@@ -690,78 +690,78 @@ namespace osiris
 										this.button_admision.Sensitive = false;
 										this.button_grabar.Sensitive = false;
 										grabainternamiento =  false;
-										graba_admision("URG-",100);
+										graba_admision("URG-",100,folioservicio,false);
 			        					entry_folio_paciente.Text = folioservicio.ToString();}
 					      			if (idtipointernamiento == 500){//Hospital
 					      				this.button_admision.Sensitive = false;
 					      				this.button_grabar.Sensitive = false;
 					      				grabainternamiento =  false;
-										graba_admision("HOS-",500);
+										graba_admision("HOS-",500,folioservicio,false);
 										entry_folio_paciente.Text = folioservicio.ToString();}
 					        		if (idtipointernamiento == 600){//Ginecologia-Tococirugia
 										this.button_admision.Sensitive = false;
 										this.button_grabar.Sensitive = false;
 										grabainternamiento =  false;
-										graba_admision("GINE-",600);
+										graba_admision("GINE-",600,folioservicio,false);
 			        					entry_folio_paciente.Text = folioservicio.ToString();}
 					        		if (idtipointernamiento == 700){//Quirofano
 										this.button_admision.Sensitive = false;
 										this.button_grabar.Sensitive = false;
 										grabainternamiento =  false;
-										graba_admision("QX-",700);
+										graba_admision("QX-",700,folioservicio,false);
 										entry_folio_paciente.Text = folioservicio.ToString();}
 									if (idtipointernamiento == 810){//Terapia Adulto
 										this.button_admision.Sensitive = false;
 										this.button_grabar.Sensitive = false;
 										grabainternamiento =  false;
-										graba_admision("TAD-",810);
+										graba_admision("TAD-",810,folioservicio,false);
 										entry_folio_paciente.Text = folioservicio.ToString();}
 									if (idtipointernamiento == 820){//Terapia Pedriatrica
 										this.button_admision.Sensitive = false;
 										this.button_grabar.Sensitive = false;
 										grabainternamiento =  false;
-										graba_admision("TPE-",820);
+										graba_admision("TPE-",820,folioservicio,false);
 										entry_folio_paciente.Text = folioservicio.ToString();}
 				        			if (idtipointernamiento == 830){//Terapia Neonatal
 										this.button_admision.Sensitive = false;
 										this.button_grabar.Sensitive = false;
 										grabainternamiento =  false;
-										graba_admision("TNE-",830);
+										graba_admision("TNE-",830,folioservicio,false);
 										entry_folio_paciente.Text = folioservicio.ToString();}
 				        			if (idtipointernamiento == 710){//Endoscopia
 										this.button_admision.Sensitive = false;
 										this.button_grabar.Sensitive = false;
-										graba_admision("END-",710);
+										graba_admision("END-",710,folioservicio,false);
 										entry_folio_paciente.Text = folioservicio.ToString();}
 									if (idtipointernamiento == 930){//dontologia
 										this.button_admision.Sensitive = false;
 										this.button_grabar.Sensitive = false;
 										grabainternamiento =  false;
-										graba_admision("ODO-",930);
+										graba_admision("ODO-",930,folioservicio,false);
 										entry_folio_paciente.Text = folioservicio.ToString();}
 									if (idtipointernamiento == 940){//OFTALMOLOGIA
 										this.button_admision.Sensitive = false;
 										this.button_grabar.Sensitive = false;
 										grabainternamiento =  false;
-										graba_admision("OFT-",940);
+										graba_admision("OFT-",940,folioservicio,false);
 										entry_folio_paciente.Text = folioservicio.ToString();}
 									if (idtipointernamiento == 950){// CONSULTA MEDICA
 										this.button_admision.Sensitive = false;
 										this.button_grabar.Sensitive = false;
 										grabainternamiento =  false;
-										graba_admision("CON-",950);
+										graba_admision("CON-",950,folioservicio,false);
 										entry_folio_paciente.Text = folioservicio.ToString();}
 									if (idtipointernamiento == 960){// VISION
 										this.button_admision.Sensitive = false;
 										this.button_grabar.Sensitive = false;
 										grabainternamiento =  false;
-										graba_admision("VIS-",960);
+										graba_admision("VIS-",960,folioservicio,false);
 										entry_folio_paciente.Text = folioservicio.ToString();}
 									if (idtipointernamiento == 970){// OPTICA
 										this.button_admision.Sensitive = false;
 										this.button_grabar.Sensitive = false;
 										grabainternamiento =  false;
-										graba_admision("OPT-",970);
+										graba_admision("OPT-",970,folioservicio,false);
 										entry_folio_paciente.Text = folioservicio.ToString();}
 				        		}
 							}//if de checkeo de internamiento
@@ -1562,8 +1562,8 @@ namespace osiris
 				(string) entry_rfc.Text.Trim() =="" || grabarespocuenta == false || id_tipopaciente == 0 || (string) this.entry_empresa.Text.ToString().Trim() == ""){
 				return false;
 			}else{
-				if (id_tipopaciente == 400)  // Aseguradora
-				{	
+				// Aseguradora
+				if (id_tipopaciente == 400){	
 					if(idaseguradora == 1){
 						return false;
 					}else{
@@ -1839,7 +1839,7 @@ namespace osiris
 		// Actualizando la tabla de movimiento de servicios
 		// para que caja pueda lee la informacion
 		// Se dan de alta valores en movimientos por departamentos 
-		void graba_admision( string tiposervicio , int idtipoadmision)
+		void graba_admision( string tiposervicio , int idtipoadmision, int folioservicio_,bool automatic_cargos)
 		{
 			NpgsqlConnection conexion; 
 			conexion = new NpgsqlConnection (connectionString+nombrebd );
@@ -1863,7 +1863,7 @@ namespace osiris
 					entry_folio_interno_dep.Text = entry_folio_interno_dep.Text+tiposervicio+foliointernodep.ToString()+" | ";
                			
 					lector1.Close();
-               			
+               		folioservicio = int.Parse(classpublic.lee_ultimonumero_registrado("osiris_erp_movcargos","folio_de_servicio",""));	
 					// Agregando el nuevo registro al de movimientos
 					comando.CommandText = "INSERT INTO osiris_erp_movcargos (id_tipo_admisiones, id_empleado,"+
 								"fechahora_admision_registro,folio_de_servicio,folio_de_servicio_dep,pid_paciente,id_tipo_paciente,"+
@@ -1871,7 +1871,7 @@ namespace osiris
 								idtipoadmision+"', '"+
 								LoginEmpleado+"', '"+
 								DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"','"+
-								folioservicio+"','"+
+								folioservicio_.ToString().Trim()+"','"+
 								foliointernodep+"','"+
 								PidPaciente+"','"+
 								id_tipopaciente+"','"+
@@ -1881,6 +1881,13 @@ namespace osiris
 								diagnostico.ToUpper().Trim()+"');";
 					//Console.WriteLine(comando.CommandText);	
 					comando.ExecuteNonQuery();					comando.Dispose();
+					
+					// almacena cargos automaticos cuando es un check-up
+					// afecta a la tabla cobros_deta
+					if(automatic_cargos == true){
+					
+					}
+					
 				}
 			}catch (NpgsqlException ex){
 				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
@@ -1890,9 +1897,9 @@ namespace osiris
 			conexion.Close ();
 		}
 		
-		public bool almacena_encabezado_de_cobro()
+		public bool almacena_encabezado_de_cobro(int folioservicio_)
 		{
-			folioservicio = int.Parse(classpublic.lee_ultimonumero_registrado("osiris_erp_movcargos","folio_de_servicio",""));
+			//folioservicio = int.Parse(classpublic.lee_ultimonumero_registrado("osiris_erp_movcargos","folio_de_servicio",""));
 			bool grabacion_sino = false;
 			NpgsqlConnection conexion; 
 			conexion = new NpgsqlConnection (connectionString+nombrebd );
@@ -1940,7 +1947,7 @@ namespace osiris
 							"cerrado,facturacion,"+
 							"observacion_ingreso,"+
 							"nombre_empresa_encabezado ) VALUES ('"+
-							folioservicio+"','"+
+							folioservicio_.ToString().Trim()+"','"+
 							PidPaciente+"','"+
 							DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"','"+
 							LoginEmpleado+"','"+

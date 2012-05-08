@@ -95,6 +95,7 @@ namespace osiris
 		[Widget] Gtk.Button button_solicitud_lab = null;
 		[Widget] Gtk.Button button_solicitud_rx = null;
 		[Widget] Gtk.Button button_solicitud_vision = null;
+		[Widget] Gtk.Button button_paquetes_qx = null;
 		
 		//Declarando la barra de estado
 		[Widget] Gtk.Statusbar statusbar_caja = null;
@@ -337,6 +338,8 @@ namespace osiris
 			button_solicitud_rx.Clicked += new EventHandler(on_solicitud_labrx_clicked);
 			button_solicitud_vision.Clicked += new EventHandler(on_solicitud_labrx_clicked);
 			button_devoluciones.Clicked += new EventHandler(on_button_devoluciones_clicked);
+			// Busca paquete quirurgioco para cargarlo al procedimiento
+			button_paquetes_qx.Clicked += new EventHandler(on_button_paquetes_qx_clicked);
 			// Desactivando Botones de operacion se activa cuando selecciona una atencion
 			button_busca_producto.Sensitive = false;
 			button_removerItem.Sensitive = false;
@@ -353,6 +356,22 @@ namespace osiris
 			statusbar_caja.Push(1, "login: "+LoginEmpleado+"  |Usuario: "+NomEmpleado+" "+AppEmpleado+" "+ApmEmpleado);
 			statusbar_caja.HasResizeGrip = false;
 	    }
+		
+		void on_button_paquetes_qx_clicked(object sender, EventArgs args)
+		{
+			// Los parametros de del SQL siempre es primero cuando busca todo y la otra por expresion
+			// la clase recibe tambien el orden del query
+			// es importante definir que tipo de busqueda es para que los objetos caigan ahi mismo
+			object[] parametros_objetos = {};
+			string[] parametros_sql = {"SELECT id_tipo_cirugia,descripcion_cirugia,tiene_paquete,to_char(valor_paquete,'999999999.99') AS valorpaquetereal,"+
+										"to_char(precio_de_venta,'999999999.99') AS valorpaquete "+
+										"FROM osiris_his_tipo_cirugias ",															
+										"SELECT id_tipo_cirugia,descripcion_cirugia,tiene_paquete,to_char(valor_paquete,'999999999.99') AS valorpaquetereal,"+
+										"to_char(precio_de_venta,'999999999.99') AS valorpaquete "+
+										"FROM osiris_his_tipo_cirugias "+
+										"WHERE descripcion_cirugia LIKE '%"};			
+			classfind_data.buscandor(parametros_objetos,parametros_sql,"find_cirugia_cargos_modmedicos"," ORDER BY id_tipo_cirugia","%' ",0);
+		}
 		
 		void on_button_devoluciones_clicked(object obj, EventArgs args)
 		{

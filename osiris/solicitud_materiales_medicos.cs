@@ -213,7 +213,18 @@ namespace osiris
 		
 		void on_button_selecciona_pq_clicked(object sender, EventArgs args)
 		{
-			
+			// Los parametros de del SQL siempre es primero cuando busca todo y la otra por expresion
+			// la clase recibe tambien el orden del query
+			// es importante definir que tipo de busqueda es para que los objetos caigan ahi mismo
+			object[] parametros_objetos = {};
+			string[] parametros_sql = {"SELECT id_tipo_cirugia,descripcion_cirugia,tiene_paquete,to_char(valor_paquete,'999999999.99') AS valorpaquetereal,"+
+										"to_char(precio_de_venta,'999999999.99') AS valorpaquete "+
+										"FROM osiris_his_tipo_cirugias ",															
+										"SELECT id_tipo_cirugia,descripcion_cirugia,tiene_paquete,to_char(valor_paquete,'999999999.99') AS valorpaquetereal,"+
+										"to_char(precio_de_venta,'999999999.99') AS valorpaquete "+
+										"FROM osiris_his_tipo_cirugias "+
+										"WHERE descripcion_cirugia LIKE '%"};			
+			classfind_data.buscandor(parametros_objetos,parametros_sql,"find_cirugia_paquetes_soliprod"," ORDER BY id_tipo_cirugia","%' ",0);	
 		}
 
 		void on_button_busca_producto_clicked(object sender, EventArgs args)

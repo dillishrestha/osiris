@@ -455,24 +455,21 @@ namespace osiris
 		/////////////////Acciones del boton todas las fechas
 		void on_checkbutton_todas_fechas_clicked(object sender, EventArgs args)
 		{
+			bool active_checkbutton;			
 			if (checkbutton_todas_fechas.Active == true){
 				query_rango_fechas= " ";
-				entry_dia_inicial.Sensitive = false;
-				entry_mes_inicial.Sensitive = false;
-				entry_ano_inicial.Sensitive = false;
-				entry_dia_final.Sensitive = false;
-				entry_mes_final.Sensitive = false;
-				entry_ano_final.Sensitive = false;
-			}else{	
+				active_checkbutton = false;
+			}else{
 				query_rango_fechas = "AND to_char(osiris_erp_cobros_enca.fechahora_creacion,'yyyy-MM-dd') >= '"+(string) entry_ano_inicial.Text.ToString()+"-"+(string) entry_mes_inicial.Text.ToString()+"-"+(string) entry_dia_inicial.Text.ToString()+"' "+
 									"AND to_char(osiris_erp_cobros_enca.fechahora_creacion,'yyyy-MM-dd') <= '"+(string) entry_ano_final.Text.ToString()+"-"+(string) entry_mes_final.Text.ToString()+"-"+(string) entry_dia_final.Text.ToString()+"' ";
-				entry_dia_inicial.Sensitive = true;
-				entry_mes_inicial.Sensitive = true;
-				entry_ano_inicial.Sensitive = true;
-				entry_dia_final.Sensitive = true;
-				entry_mes_final.Sensitive = true;
-				entry_ano_final.Sensitive = true;
-			}
+				active_checkbutton = true;
+			}				
+			entry_dia_inicial.Sensitive = active_checkbutton;
+			entry_mes_inicial.Sensitive = active_checkbutton;
+			entry_ano_inicial.Sensitive = active_checkbutton;
+			entry_dia_final.Sensitive = active_checkbutton;
+			entry_mes_final.Sensitive = active_checkbutton;
+			entry_ano_final.Sensitive = active_checkbutton;			
 		}
 	
 		// cierra ventanas emergentes

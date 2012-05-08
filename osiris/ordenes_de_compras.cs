@@ -56,9 +56,9 @@ namespace osiris
 		[Widget] Gtk.Entry entry_id_proveedor = null;
 		[Widget] Gtk.Entry entry_nombre_proveedor = null;
 		[Widget] Gtk.Entry entry_formapago = null;
-		[Widget] Gtk.Entry entry_dia = null;
-		[Widget] Gtk.Entry entry_mes = null;
-		[Widget] Gtk.Entry entry_ano = null;
+		[Widget] Gtk.Entry entry_dia_oc = null;
+		[Widget] Gtk.Entry entry_mes_oc = null;
+		[Widget] Gtk.Entry entry_ano_oc = null;
 		[Widget] Gtk.Statusbar statusbar = null;
 		
 		string connectionString;
@@ -108,9 +108,9 @@ namespace osiris
 			////// Muestra ventana de Glade
 			crea_ordenes_compras.Show();
 			//this.entry_formapago.Text = "30 DIAS";
-			this.entry_dia.Text = DateTime.Now.ToString("dd");
-			this.entry_mes.Text = DateTime.Now.ToString("MM");
-			this.entry_ano.Text = DateTime.Now.ToString("yyyy");
+			this.entry_dia_oc.Text = DateTime.Now.ToString("dd");
+			this.entry_mes_oc.Text = DateTime.Now.ToString("MM");
+			this.entry_ano_oc.Text = DateTime.Now.ToString("yyyy");
 			
 			button_orden_compra.Clicked += new EventHandler(on_button_orden_compra_clicked);
 			// 
@@ -181,22 +181,22 @@ namespace osiris
 			 												int.Parse((string) this.lista_productos_a_comprar.Model.GetValue(iterSelected,15))+"','"+//id_prod
 					 										DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"','"+//fechahora_creacion
 					 										DateTime.Now.ToString("yyyy-MM-dd")+"','"+//fechahora_solicitud
-					 										this.entry_ano.Text+"-"+this.entry_mes.Text+"-"+this.entry_dia.Text+"','"+
+					 										this.entry_ano_oc.Text+"-"+this.entry_mes_oc.Text+"-"+this.entry_dia_oc.Text+"','"+
 					 										LoginEmpleado+"','"+//id_empleado
 					 										"HOSPITAL"+"','"+
 					 										"SU CONDUCTO"+"','"+
 					 										this.entry_formapago.Text+"','"+
-			 												(string) lista_productos_a_comprar.Model.GetValue(iterSelected,12)+"','"+
-			 												(string) lista_productos_a_comprar.Model.GetValue(iterSelected,2).ToString().Trim()+"','"+
-			 												(string) lista_productos_a_comprar.Model.GetValue(iterSelected,16)+"','"+
-			 												(string) lista_productos_a_comprar.Model.GetValue(iterSelected,17)+"','"+
-			 												(string) lista_productos_a_comprar.Model.GetValue(iterSelected,18)+"','"+
-			 												(string) lista_productos_a_comprar.Model.GetValue(iterSelected,19)+"','"+
-			 												(string) lista_productos_a_comprar.Model.GetValue(iterSelected,20)+"','"+
-			 												(string) lista_productos_a_comprar.Model.GetValue(iterSelected,21)+"','"+
+			 												(string) lista_productos_a_comprar.Model.GetValue(iterSelected,12).ToString().Trim()+"','"+
+			 												(string) lista_productos_a_comprar.Model.GetValue(iterSelected,02).ToString().Trim()+"','"+
+			 												(string) lista_productos_a_comprar.Model.GetValue(iterSelected,16).ToString().Trim()+"','"+
+			 												(string) lista_productos_a_comprar.Model.GetValue(iterSelected,17).ToString().Trim()+"','"+
+			 												(string) lista_productos_a_comprar.Model.GetValue(iterSelected,18).ToString().Trim()+"','"+
+			 												(string) lista_productos_a_comprar.Model.GetValue(iterSelected,19).ToString().Trim()+"','"+
+			 												(string) lista_productos_a_comprar.Model.GetValue(iterSelected,20).ToString().Trim()+"','"+
+			 												(string) lista_productos_a_comprar.Model.GetValue(iterSelected,21).ToString().Trim()+"','"+
 			 													 												
-			 												this.ultimaorden.ToString()+
-		
+			 												//this.ultimaorden.ToString()+
+															int.Parse(classpublic.lee_ultimonumero_registrado("osiris_erp_ordenes_compras_enca","numero_orden_compra","")).ToString()+	
 			 												"');";
 									//Console.WriteLine(comando.CommandText);							
 									comando.ExecuteNonQuery(); 	    comando.Dispose();
@@ -283,7 +283,7 @@ namespace osiris
 			 												int.Parse((string) this.lista_productos_a_comprar.Model.GetValue(iterSelected,15))+"','"+//id_prod
 					 										DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"','"+//fechahora_creacion
 					 										DateTime.Now.ToString("yyyy-MM-dd")+"','"+//fechahora_solicitud
-					 										this.entry_ano.Text+"-"+this.entry_mes.Text+"-"+this.entry_dia.Text+"','"+
+					 										this.entry_ano_oc.Text+"-"+this.entry_mes_oc.Text+"-"+this.entry_dia_oc.Text+"','"+
 					 										LoginEmpleado+"','"+//id_empleado
 					 										"HOSPITAL"+"','"+
 					 										"SU CONDUCTO"+"','"+

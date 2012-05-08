@@ -365,6 +365,10 @@ namespace osiris
 					entry_id_almacen = (object) args[0] as Gtk.Entry;
 					entry_almacen = (object) args[1] as Gtk.Entry;
 				break;
+					case "find_cirugia_paquetes_soliprod":
+				break;
+					case "find_cirugia_cargos_modmedicos":
+				break;
 			}
 			args_sql = args_sql_;
 			type_find = type_find_;
@@ -671,6 +675,16 @@ namespace osiris
 							                                   	(string) lector["descripcion_cirugia"],
 							                                     (bool) lector["tiene_paquete"]);
 							break;
+							case "find_cirugia_paquetes_soliprod":
+								treeViewEngineBuscador.AppendValues ((int) lector["id_tipo_cirugia"],
+							                                   	(string) lector["descripcion_cirugia"],
+							                                     (bool) lector["tiene_paquete"]);
+							break;
+							case "find_cirugia_cargos_modmedicos":
+									treeViewEngineBuscador.AppendValues ((int) lector["id_tipo_cirugia"],
+							                                   	(string) lector["descripcion_cirugia"],
+							                                     (bool) lector["tiene_paquete"]);
+							break;							
 							case "find_paciente":
 								treeViewEngineBuscador.AppendValues ((int) lector["folio_de_servicio"],	// 0
 													(string) lector["pidpaciente"].ToString().Trim(),
@@ -852,6 +866,12 @@ namespace osiris
 						entry_id_cirugia.Text = tomaid.ToString();
 						entry_cirugia.Text = (string) model.GetValue(iterSelected, 1);
 						checkbutton_paquete_sino.Active = (bool) model.GetValue(iterSelected, 2);
+					break;
+					case "find_cirugia_paquetes_soliprod":
+					
+					break;
+					case "find_cirugia_cargos_modmedicos":
+					
 					break;
 					case "find_paciente":
 						entry_folio_servicio.Text = tomaid.ToString();

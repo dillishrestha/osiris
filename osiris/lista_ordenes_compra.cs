@@ -51,6 +51,10 @@ namespace osiris
 		[Widget] Gtk.Entry entry_ano_termino = null;
 		[Widget] Gtk.HBox hbox1 = null;
 		[Widget] Gtk.CheckButton checkbutton_todos_envios = null;
+		[Widget] Gtk.Label label3 = null;
+		[Widget] Gtk.Entry entry_desc_producto = null;
+		[Widget] Gtk.Button button_buscar_prodreq = null;
+		
 		[Widget] Gtk.CheckButton checkbutton_seleccion_presupuestos = null;
 		[Widget] Gtk.TreeView lista_almacenes = null;
 		[Widget] Gtk.Button button_buscar = null;
@@ -71,11 +75,11 @@ namespace osiris
 		{
 			Glade.XML gxml = new Glade.XML (null, "almacen_costos_compras.glade", "envio_almacenes", null);
 			gxml.Autoconnect (this);
-			
+						
 			connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
 			nombrebd = conexion_a_DB._nombrebd;
 		
-			envio_almacenes.Title = "Lista ORDENES DE COMPRA";
+			envio_almacenes.Title = "LISTA ORDENES DE COMPRA";
 			entry_dia_inicio.Text = DateTime.Now.ToString("dd");
 			entry_mes_inicio.Text = DateTime.Now.ToString("MM");
 			entry_ano_inicio.Text = DateTime.Now.ToString("yyyy");
@@ -85,15 +89,41 @@ namespace osiris
 			entry_ano_termino.Text = DateTime.Now.ToString("yyyy");
 				
 			hbox1.Hide();
+			label3.Hide();
+			entry_desc_producto.Hide();
+			button_buscar_prodreq.Hide();
+			
 			checkbutton_seleccion_presupuestos.Hide();
 			
 			button_salir.Clicked += new EventHandler(on_cierraventanas_clicked);
-            //button_buscar.Clicked += new EventHandler(on_buscar_clicked);
+            button_buscar.Clicked += new EventHandler(on_buscar_ordencompra_clicked);
            	button_rep.Clicked += new EventHandler(on_button_rep_clicked);
           	//checkbutton_todos_envios.Clicked += new EventHandler(on_checkbutton_todos_envios);
 			
 			crea_treeview_ordendecompra();
-			
+		}
+		
+		void on_buscar_ordencompra_clicked(object sender, EventArgs args)
+		{
+			NpgsqlConnection conexion; 
+			conexion = new NpgsqlConnection (connectionString+nombrebd);
+			try{
+				conexion.Open ();
+				NpgsqlCommand comando; 
+				comando = conexion.CreateCommand ();
+				comando.CommandText = "SELECT * FROM osiris_erp_ordenes_compras_enca;";
+				//Console.WriteLine(comando.CommandText);
+				NpgsqlDataReader lector = comando.ExecuteReader ();
+				while (lector.Read()){
+					treeViewEngineordendecompra.AppendValues(false,lector["numero_orden_compra"].ToString().Trim());
+				}
+			}catch (NpgsqlException ex){
+	   			MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+								MessageType.Warning, ButtonsType.Ok, "PostgresSQL error: {0}",ex.Message);
+								msgBoxError.Run ();
+								msgBoxError.Destroy();
+			}
+			conexion.Close ();
 		}
 		
 		void crea_treeview_ordendecompra()
@@ -178,7 +208,8 @@ namespace osiris
 		
 		void on_button_rep_clicked(object sender, EventArgs args)
 		{
-			new osiris.rpt_orden_compras();   // imprime la orden de compra
+			int num_ordencompra = 4;
+			new osiris.rpt_orden_compras(num_ordencompra);   // imprime la orden de compra
 		}
 		// cierra ventanas emergentes
 		void on_cierraventanas_clicked (object sender, EventArgs args)

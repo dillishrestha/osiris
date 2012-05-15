@@ -120,15 +120,15 @@ namespace osiris
 			string query_sql = "SELECT  to_char(osiris_erp_factura_compra_enca.fecha_factura,'yyyy-MM-dd') AS fechafactura,osiris_erp_factura_compra_enca.numero_factura_proveedor AS numerofactura," +
 				"osiris_erp_factura_compra_enca.id_proveedor,descripcion_proveedor," +
 				"to_char(osiris_erp_requisicion_deta.id_producto,'999999999999') AS idproducto_osiris,descripcion_producto AS descrip_prod_osiris," +
-				"osiris_erp_requisicion_deta.precio_producto_publico,costo_producto_osiris," +
-				"osiris_erp_requisicion_deta.costo_producto AS costo_producto_osiris,osiris_erp_requisicion_deta.costo_por_unidad AS costo_x_unidad_osiris,osiris_erp_requisicion_deta.cantidad_de_embalaje," +
-				"osiris_erp_requisicion_deta.precio_costo_prov_selec AS precio_prove " +
+				"osiris_erp_requisicion_deta.precio_producto_publico,costo_producto_osiris,osiris_erp_requisicion_deta.precio_producto_publico AS costo_unitario_osiris,cantidad_de_embalaje_osiris," +
+				"osiris_erp_requisicion_deta.costo_producto AS costo_producto_compra,cantidad_recibida,osiris_erp_requisicion_deta.costo_por_unidad AS costoxunidad_compra,osiris_erp_requisicion_deta.cantidad_de_embalaje," +
+				"osiris_erp_requisicion_deta.precio_costo_prov_selec AS precio_prove,id_producto_proveedor,descripcion_producto_proveedor,osiris_erp_requisicion_deta.tipo_unidad_producto,lote_producto,caducidad_producto " +
 				"FROM osiris_erp_factura_compra_enca,osiris_erp_proveedores,osiris_erp_requisicion_deta,osiris_productos " +
 				"WHERE osiris_erp_factura_compra_enca.id_proveedor = osiris_erp_proveedores.id_proveedor " +
 				"AND osiris_erp_factura_compra_enca.numero_factura_proveedor = osiris_erp_requisicion_deta.numero_factura_proveedor " +
-				"AND osiris_erp_requisicion_deta.id_producto = osiris_productos.id_producto;";
-			string[] args_names_field = {"fechafactura","numerofactura","descripcion_proveedor","idproducto_osiris","descrip_prod_osiris","costo_producto_osiris","costo_x_unidad_osiris","cantidad_de_embalaje","precio_prove"};
-			string[] args_type_field = {"string","string","string","string","string","float","float","float","float"};
+				"AND osiris_erp_requisicion_deta.id_producto = osiris_productos.id_producto ORDER BY to_char(osiris_erp_factura_compra_enca.fecha_factura,'yyyy-MM-dd');";
+			string[] args_names_field = {"fechafactura","numerofactura","descripcion_proveedor","idproducto_osiris","descrip_prod_osiris","costo_producto_compra","cantidad_de_embalaje","costoxunidad_compra","cantidad_recibida","costo_producto_osiris","cantidad_de_embalaje_osiris","costo_unitario_osiris","id_producto_proveedor","descripcion_producto_proveedor","tipo_unidad_producto","lote_producto","caducidad_producto"};
+			string[] args_type_field = {"string","string","string","string","string","float","float","float","float","float","float","float","string","string","string","string","string"};
 			
 			// class_crea_ods.cs
 			new osiris.class_traslate_spreadsheet(query_sql,args_names_field,args_type_field);

@@ -11255,7 +11255,7 @@ Paciente</property>
 					  </child>
 
 					  <child>
-					    <widget class="GtkEntry" id="entry3">
+					    <widget class="GtkEntry" id="entry_desc_producto">
 					      <property name="visible">True</property>
 					      <property name="can_focus">True</property>
 					      <property name="editable">True</property>

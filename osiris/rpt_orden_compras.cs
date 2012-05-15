@@ -54,6 +54,7 @@ namespace osiris
     	string NomEmpleado;
     	string AppEmpleado;
     	string ApmEmpleado;
+		int num_ordencopmpra;
 		
 		string titulo = "ORDEN DE COMPRAS ";
 		
@@ -63,12 +64,12 @@ namespace osiris
 		class_conexion conexion_a_DB = new class_conexion();
 		class_public classpublic = new class_public();
 		
-		public rpt_orden_compras()
+		public rpt_orden_compras(int num_ordencopmpra_)
 		{
 			connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
 			nombrebd = conexion_a_DB._nombrebd;
 			escala_en_linux_windows = classpublic.escala_linux_windows;
-			
+			num_ordencopmpra = num_ordencopmpra_;
 			print = new PrintOperation ();
 			print.JobName = titulo;
 			print.BeginPrint += new BeginPrintHandler (OnBeginPrint);
@@ -114,7 +115,7 @@ namespace osiris
 					"  " +
 					"FROM osiris_erp_ordenes_compras_enca, osiris_erp_proveedores  " +
 					"WHERE osiris_erp_ordenes_compras_enca.id_proveedor = osiris_erp_proveedores.id_proveedor " +
-					"AND id_orden_compra = '1';";
+					"AND id_orden_compra = '"+num_ordencopmpra.ToString().Trim()+"';";
 				Console.WriteLine(comando.CommandText);
 				NpgsqlDataReader lector = comando.ExecuteReader ();
 				

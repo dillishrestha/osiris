@@ -176,7 +176,8 @@ namespace osiris
     	string query_medico = " ";
     	string query_orden =  "ORDER BY osiris_erp_cobros_enca.folio_de_servicio;";
 		
-		string tipo_de_salida = ""; 
+		string tipo_de_salida = "";
+		string tiporeporte = "";
 		
 		string idempresa = "1";
 		string idaseguradora = "1";
@@ -195,12 +196,13 @@ namespace osiris
 		/// <param name="tipo_reporte impresora o archivo">
 		/// A <see cref="System.String"/>
 		/// </param>
-		public rptAdmision (string nombrebd_,string tipo_de_salida_)
+		public rptAdmision (string nombrebd_,string tipo_de_salida_,string tiporeporte_)
 		{
 			connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
 			nombrebd = conexion_a_DB._nombrebd;
 			escala_en_linux_windows = classpublic.escala_linux_windows;
 			tipo_de_salida = tipo_de_salida_;
+			tiporeporte = tiporeporte_;
 			//crea la ventana de glade
 			Glade.XML gxml = new Glade.XML (null, "reportes.glade", "rango_rep_adm", null);
 			gxml.Autoconnect (this);
@@ -511,8 +513,7 @@ namespace osiris
 			if(tipo_de_salida == "impresora"){
 				genera_reporte_admision();
 			}
-			if(tipo_de_salida == "archivo"){
-				
+			if(tipo_de_salida == "archivo"){				
 				if (id_tipopaciente != 400){
 					query_empresa = "AND osiris_erp_comprobante_servicio.id_empresa = '"+entry_id_empaseg_cita.Text.ToString()+"' ";
 				}else{
@@ -541,47 +542,72 @@ namespace osiris
 				//"AND to_char(osiris_erp_cobros_enca.fechahora_creacion,'yyyy') = '2011' " +
 				//"AND osiris_erp_comprobante_servicio.id_empresa = '31' " +
 				//"ORDER BY osiris_erp_cobros_deta.folio_de_servicio ASC;";
-				
-				string query_sql = "SELECT osiris_erp_cobros_deta.folio_de_servicio AS foliodeservicio,osiris_erp_cobros_deta.pid_paciente AS pidpaciente,sexo_paciente,"+
-					"osiris_his_tipo_admisiones.descripcion_admisiones,aplicar_iva, osiris_his_tipo_admisiones.id_tipo_admisiones AS idadmisiones,"+
-						"osiris_grupo_producto.descripcion_grupo_producto, osiris_productos.id_grupo_producto,  to_char(osiris_erp_cobros_deta.porcentage_descuento,'999.99') AS porcdesc," +
-						 "to_char(osiris_erp_cobros_enca.fechahora_creacion,'dd-mm-yyyy') AS fechcreacion,to_char(osiris_erp_cobros_enca.fechahora_creacion,'HH:mm') AS horacreacion," +
-						 "to_char(osiris_erp_cobros_deta.id_producto,'999999999999') AS idproducto,descripcion_producto, to_char(osiris_erp_cobros_deta.cantidad_aplicada,'99999999.99') AS cantidadaplicada," +
-						 "to_char(osiris_erp_cobros_deta.precio_producto,'9999999.99') AS preciounitario, ltrim(to_char(osiris_erp_cobros_deta.precio_producto,'9999999.99')) AS preciounitarioprod," +
-						 "to_char(osiris_erp_cobros_deta.iva_producto,'999999.99') AS ivaproducto," +
-						 "to_char(osiris_erp_cobros_deta.cantidad_aplicada * osiris_erp_cobros_deta.precio_producto,'99999999.99') AS ppcantidad," +
-						 "to_char(osiris_productos.precio_producto_publico,'999999999.99999') AS preciopublico,osiris_erp_comprobante_servicio.numero_comprobante_servicio AS numerorecibo," +
-						 "osiris_his_paciente.nombre1_paciente || ' ' || osiris_his_paciente.nombre2_paciente || ' ' || osiris_his_paciente.apellido_paterno_paciente || ' ' || osiris_his_paciente.apellido_materno_paciente AS nombre_paciente," +
-						 "to_char(osiris_his_paciente.fecha_nacimiento_paciente, 'dd-MM-yyyy') AS fechanacpaciente,to_char(to_number(to_char(age('2011-01-20 05:25:11',osiris_his_paciente.fecha_nacimiento_paciente),'yyyy') ,'9999'),'9999') AS edadpaciente," +
-						 "telefono_particular1_paciente,osiris_erp_comprobante_servicio.observaciones AS nro_oficio,osiris_erp_comprobante_servicio.observaciones2 AS nro_nomina,osiris_erp_comprobante_servicio.observaciones3 AS departamento," +
-						 "osiris_erp_comprobante_servicio.concepto_del_comprobante AS concepto_comprobante,osiris_erp_cobros_enca.id_empresa,descripcion_empresa,osiris_erp_cobros_enca.nombre_medico_encabezado AS medico_tratante," +
-						 "osiris_erp_cobros_enca.id_aseguradora,descripcion_aseguradora "+
-						 "FROM osiris_erp_cobros_deta,osiris_his_tipo_admisiones,osiris_productos,osiris_grupo_producto,osiris_erp_comprobante_servicio,osiris_his_paciente,osiris_erp_cobros_enca,osiris_empresas,osiris_aseguradoras " +
-						 "WHERE osiris_erp_cobros_deta.id_tipo_admisiones = osiris_his_tipo_admisiones.id_tipo_admisiones " +
-						 "AND osiris_erp_cobros_deta.id_producto = osiris_productos.id_producto " +
-						 "AND osiris_productos.id_grupo_producto = osiris_grupo_producto.id_grupo_producto " +
-						 "AND osiris_erp_cobros_deta.pid_paciente = osiris_his_paciente.pid_paciente " +
-						 "AND osiris_erp_cobros_enca.id_empresa = osiris_empresas.id_empresa " +
-						 "AND osiris_aseguradoras.id_aseguradora = osiris_erp_cobros_enca.id_aseguradora "+
-						 "AND osiris_erp_cobros_enca.folio_de_servicio = osiris_erp_cobros_deta.folio_de_servicio " +
-						 "AND osiris_erp_comprobante_servicio.folio_de_servicio = osiris_erp_cobros_deta.folio_de_servicio " +
-						 "AND osiris_erp_cobros_deta.eliminado = 'false' " +
-						
-						query_tipo_paciente + 
-						query_sexo + 
-						query_empresa + 
-						query_aseguradora +
-						query_tipo_reporte +
-						query_rango_fechas + 
-						query_orden;
-								
-				string[] args_names_field = {"foliodeservicio","pidpaciente","descripcion_admisiones","descripcion_grupo_producto","fechcreacion","idproducto","descripcion_producto",
-										"cantidadaplicada","preciounitario","numerorecibo","nombre_paciente","nro_oficio","nro_nomina","departamento","medico_tratante"};
-				string[] args_type_field = {"float","float","string","string","string","float","string","float","float","float","string","string","string","string","string"};
-				
-				// class_crea_ods.cs
-				//Console.WriteLine(query_sql);
-				new osiris.class_traslate_spreadsheet(query_sql,args_names_field,args_type_field);
+				if(tiporeporte == "COMPROBANTES_SERVICIO"){				
+					string query_sql = "SELECT osiris_erp_cobros_deta.folio_de_servicio AS foliodeservicio,osiris_erp_cobros_deta.pid_paciente AS pidpaciente,sexo_paciente,"+
+						"osiris_his_tipo_admisiones.descripcion_admisiones,aplicar_iva, osiris_his_tipo_admisiones.id_tipo_admisiones AS idadmisiones,"+
+							"osiris_grupo_producto.descripcion_grupo_producto, osiris_productos.id_grupo_producto,  to_char(osiris_erp_cobros_deta.porcentage_descuento,'999.99') AS porcdesc," +
+							 "to_char(osiris_erp_cobros_enca.fechahora_creacion,'dd-mm-yyyy') AS fechcreacion,to_char(osiris_erp_cobros_enca.fechahora_creacion,'HH:mm') AS horacreacion," +
+							 "to_char(osiris_erp_cobros_deta.id_producto,'999999999999') AS idproducto,descripcion_producto, to_char(osiris_erp_cobros_deta.cantidad_aplicada,'99999999.99') AS cantidadaplicada," +
+							 "to_char(osiris_erp_cobros_deta.precio_producto,'9999999.99') AS preciounitario, ltrim(to_char(osiris_erp_cobros_deta.precio_producto,'9999999.99')) AS preciounitarioprod," +
+							 "to_char(osiris_erp_cobros_deta.iva_producto,'999999.99') AS ivaproducto," +
+							 "to_char(osiris_erp_cobros_deta.cantidad_aplicada * osiris_erp_cobros_deta.precio_producto,'99999999.99') AS ppcantidad," +
+							 "to_char(osiris_productos.precio_producto_publico,'999999999.99999') AS preciopublico,osiris_erp_comprobante_servicio.numero_comprobante_servicio AS numerorecibo," +
+							 "osiris_his_paciente.nombre1_paciente || ' ' || osiris_his_paciente.nombre2_paciente || ' ' || osiris_his_paciente.apellido_paterno_paciente || ' ' || osiris_his_paciente.apellido_materno_paciente AS nombre_paciente," +
+							 "to_char(osiris_his_paciente.fecha_nacimiento_paciente, 'dd-MM-yyyy') AS fechanacpaciente,to_char(to_number(to_char(age('2011-01-20 05:25:11',osiris_his_paciente.fecha_nacimiento_paciente),'yyyy') ,'9999'),'9999') AS edadpaciente," +
+							 "telefono_particular1_paciente,osiris_erp_comprobante_servicio.observaciones AS nro_oficio,osiris_erp_comprobante_servicio.observaciones2 AS nro_nomina,osiris_erp_comprobante_servicio.observaciones3 AS departamento," +
+							 "osiris_erp_comprobante_servicio.concepto_del_comprobante AS concepto_comprobante,osiris_erp_cobros_enca.id_empresa,descripcion_empresa,osiris_erp_cobros_enca.nombre_medico_encabezado AS medico_tratante," +
+							 "osiris_erp_cobros_enca.id_aseguradora,descripcion_aseguradora "+
+							 "FROM osiris_erp_cobros_deta,osiris_his_tipo_admisiones,osiris_productos,osiris_grupo_producto,osiris_erp_comprobante_servicio,osiris_his_paciente,osiris_erp_cobros_enca,osiris_empresas,osiris_aseguradoras " +
+							 "WHERE osiris_erp_cobros_deta.id_tipo_admisiones = osiris_his_tipo_admisiones.id_tipo_admisiones " +
+							 "AND osiris_erp_cobros_deta.id_producto = osiris_productos.id_producto " +
+							 "AND osiris_productos.id_grupo_producto = osiris_grupo_producto.id_grupo_producto " +
+							 "AND osiris_erp_cobros_deta.pid_paciente = osiris_his_paciente.pid_paciente " +
+							 "AND osiris_erp_cobros_enca.id_empresa = osiris_empresas.id_empresa " +
+							 "AND osiris_aseguradoras.id_aseguradora = osiris_erp_cobros_enca.id_aseguradora "+
+							 "AND osiris_erp_cobros_enca.folio_de_servicio = osiris_erp_cobros_deta.folio_de_servicio " +
+							 "AND osiris_erp_comprobante_servicio.folio_de_servicio = osiris_erp_cobros_deta.folio_de_servicio " +
+							 "AND osiris_erp_cobros_deta.eliminado = 'false' " +
+							
+							query_tipo_paciente + 
+							query_sexo + 
+							query_empresa + 
+							query_aseguradora +
+							query_tipo_reporte +
+							query_rango_fechas + 
+							query_orden;
+									
+					string[] args_names_field = {"foliodeservicio","pidpaciente","descripcion_admisiones","descripcion_grupo_producto","fechcreacion","idproducto","descripcion_producto",
+											"cantidadaplicada","preciounitario","numerorecibo","nombre_paciente","nro_oficio","nro_nomina","departamento","medico_tratante"};
+					string[] args_type_field = {"float","float","string","string","string","float","string","float","float","float","string","string","string","string","string"};
+					
+					// class_crea_ods.cs
+					//Console.WriteLine(query_sql);
+					new osiris.class_traslate_spreadsheet(query_sql,args_names_field,args_type_field);
+				}
+				if(tiporeporte == "PASES_QUIROFANO_URGENCIAS"){
+					string query_sql = "SELECT osiris_erp_pases_qxurg.id_secuencia,osiris_erp_pases_qxurg.folio_de_servicio AS foliodeservicio,to_char(osiris_erp_cobros_enca.pid_paciente,'9999999999') AS pidpaciente," +
+						"nombre1_paciente || ' ' || nombre2_paciente || ' ' || apellido_paterno_paciente || ' ' || apellido_materno_paciente AS nombre_completo," +
+						"to_char(osiris_his_paciente.fecha_nacimiento_paciente, 'dd-MM-yyyy') AS fechanacpaciente,to_char(to_number(to_char(age('2012-02-14 10:45:24',osiris_his_paciente.fecha_nacimiento_paciente),'yyyy') ,'9999'),'9999') AS edadpaciente," +
+						"osiris_his_paciente.sexo_paciente,osiris_erp_cobros_enca.nombre_medico_tratante,osiris_erp_pases_qxurg.id_quien_creo,nombre1_empleado || ' ' || nombre2_empleado || ' ' || apellido_paterno_empleado || ' ' || apellido_materno_empleado AS nombresolicitante," +
+						"to_char(osiris_erp_pases_qxurg.fechahora_creacion,'yyyy-MM-dd HH24:mi:ss') AS fechahoracrea,osiris_erp_pases_qxurg.id_tipo_admisiones,descripcion_admisiones,osiris_erp_cobros_enca.id_empresa AS idempresa,osiris_empresas.descripcion_empresa," +
+						"osiris_erp_cobros_enca.id_aseguradora,osiris_aseguradoras.descripcion_aseguradora,id_quien_creo,descripcion_diagnostico_movcargos,descripcion_tipo_paciente "+
+						"FROM osiris_erp_pases_qxurg,osiris_his_tipo_admisiones,osiris_erp_cobros_enca,osiris_his_paciente,osiris_empleado,osiris_empresas,osiris_aseguradoras,osiris_erp_movcargos,osiris_his_tipo_pacientes "+
+						"WHERE osiris_erp_pases_qxurg.id_tipo_admisiones = osiris_his_tipo_admisiones.id_tipo_admisiones " +
+						"AND osiris_erp_pases_qxurg.pid_paciente = osiris_his_paciente.pid_paciente " +
+						"AND osiris_erp_pases_qxurg.folio_de_servicio = osiris_erp_cobros_enca.folio_de_servicio " +
+						"AND osiris_erp_pases_qxurg.id_quien_creo = osiris_empleado.login_empleado " +
+						"AND osiris_erp_cobros_enca.id_empresa = osiris_empresas.id_empresa " +
+						"AND osiris_erp_cobros_enca.id_aseguradora = osiris_aseguradoras.id_aseguradora "+
+						"AND osiris_erp_movcargos.id_tipo_paciente = osiris_his_tipo_pacientes.id_tipo_paciente "+
+						"AND osiris_erp_movcargos.folio_de_servicio = osiris_erp_pases_qxurg.folio_de_servicio "+
+						query_tipo_paciente+
+						"ORDER BY to_char(osiris_erp_pases_qxurg.fechahora_creacion,'yyyy-MM-dd');";
+					string[] args_names_field = {"foliodeservicio"};
+					string[] args_type_field = {"float"};
+					// class_crea_ods.cs
+					//Console.WriteLine(query_sql);
+					new osiris.class_traslate_spreadsheet(query_sql,args_names_field,args_type_field);
+				}
 			}
 		}
 		

@@ -212,7 +212,7 @@ namespace osiris
 		
 		void on_button_reportes_regadmin_click(object sender, EventArgs args)
 		{
-			new osiris.rptAdmision(nombrebd,"impresora");  // rpt_rep1_admision.cs
+			new osiris.rptAdmision(nombrebd,"impresora","ADMISIONES");  // rpt_rep1_admision.cs
 		}
 		
 		void on_button_cambia_datos_paciente_clicked (object sender, EventArgs args)

@@ -260,7 +260,8 @@ namespace osiris
 					string entrypassword ="";
 					osiris.class_public newpasswd = new osiris.class_public();
 					entrypassword = newpasswd.CreatePasswordMD5(this.entry_password.Text.Trim());
-					Console.WriteLine(entrypassword);
+					Console.WriteLine("MD5 Passwd "+entrypassword);
+					Console.WriteLine("SHA1 Passwd "+(string) newpasswd.CreatePasswordSHA1(this.entry_password.Text.Trim()));
 					
 					if (entrypassword == (string) lector["passwordempleado"]){
 												

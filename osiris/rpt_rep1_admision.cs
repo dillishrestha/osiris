@@ -522,7 +522,12 @@ namespace osiris
 				if (checkbutton_todos_paciente.Active == true){
 					query_tipo_paciente= " ";					
 				}else{
-					query_tipo_paciente = "AND osiris_erp_comprobante_servicio.id_tipo_paciente = '"+id_tipopaciente.ToString()+"' ";					
+					if(tiporeporte == "COMPROBANTES_SERVICIO"){
+						query_tipo_paciente = "AND osiris_erp_comprobante_servicio.id_tipo_paciente = '"+id_tipopaciente.ToString()+"' ";					
+					}
+					if(tiporeporte == "PASES_QUIROFANO_URGENCIAS"){
+						query_tipo_paciente = "AND osiris_erp_pases_qxurg.id_tipo_paciente = '"+id_tipopaciente.ToString()+"' ";
+					}
 				}				
 				if (checkbutton_todas_fechas.Active == true){
 					query_rango_fechas= " ";
@@ -532,9 +537,15 @@ namespace osiris
 					entry_dia_final.Sensitive = false;
 					entry_mes_final.Sensitive = false;
 					entry_ano_final.Sensitive = false;
-				}else{	
-					query_rango_fechas = "AND to_char(osiris_erp_cobros_enca.fechahora_creacion,'yyyy-MM-dd') >= '"+(string) entry_ano_inicial.Text.ToString()+"-"+(string) entry_mes_inicial.Text.ToString()+"-"+(string) entry_dia_inicial.Text.ToString()+"'  "+
+				}else{
+					if(tiporeporte == "COMPROBANTES_SERVICIO"){
+						query_rango_fechas = "AND to_char(osiris_erp_cobros_enca.fechahora_creacion,'yyyy-MM-dd') >= '"+(string) entry_ano_inicial.Text.ToString()+"-"+(string) entry_mes_inicial.Text.ToString()+"-"+(string) entry_dia_inicial.Text.ToString()+"'  "+
 									"AND to_char(osiris_erp_cobros_enca.fechahora_creacion,'yyyy-MM-dd') <= '"+(string) entry_ano_final.Text.ToString()+"-"+(string) entry_mes_final.Text.ToString()+"-"+(string) entry_dia_final.Text.ToString()+"' ";
+					}
+					if(tiporeporte == "PASES_QUIROFANO_URGENCIAS"){
+						query_rango_fechas = "AND to_char(osiris_erp_pases_qxurg.fechahora_creacion,'yyyy-MM-dd') >= '"+(string) entry_ano_inicial.Text.ToString()+"-"+(string) entry_mes_inicial.Text.ToString()+"-"+(string) entry_dia_inicial.Text.ToString()+"'  "+
+									"AND to_char(osiris_erp_pases_qxurg.fechahora_creacion,'yyyy-MM-dd') <= '"+(string) entry_ano_final.Text.ToString()+"-"+(string) entry_mes_final.Text.ToString()+"-"+(string) entry_dia_final.Text.ToString()+"' ";
+					}
 				}
 				
 				//"AND osiris_erp_comprobante_servicio.id_tipo_paciente = '102' " +
@@ -585,12 +596,12 @@ namespace osiris
 					new osiris.class_traslate_spreadsheet(query_sql,args_names_field,args_type_field);
 				}
 				if(tiporeporte == "PASES_QUIROFANO_URGENCIAS"){
-					string query_sql = "SELECT osiris_erp_pases_qxurg.id_secuencia,osiris_erp_pases_qxurg.folio_de_servicio AS foliodeservicio,to_char(osiris_erp_cobros_enca.pid_paciente,'9999999999') AS pidpaciente," +
+					string query_sql = "SELECT DISTINCT ON (osiris_erp_pases_qxurg.folio_de_servicio) osiris_erp_pases_qxurg.folio_de_servicio, osiris_erp_pases_qxurg.id_secuencia,osiris_erp_pases_qxurg.folio_de_servicio AS foliodeservicio,to_char(osiris_erp_cobros_enca.pid_paciente,'9999999999') AS pidpaciente," +
 						"nombre1_paciente || ' ' || nombre2_paciente || ' ' || apellido_paterno_paciente || ' ' || apellido_materno_paciente AS nombre_completo," +
 						"to_char(osiris_his_paciente.fecha_nacimiento_paciente, 'dd-MM-yyyy') AS fechanacpaciente,to_char(to_number(to_char(age('2012-02-14 10:45:24',osiris_his_paciente.fecha_nacimiento_paciente),'yyyy') ,'9999'),'9999') AS edadpaciente," +
 						"osiris_his_paciente.sexo_paciente,osiris_erp_cobros_enca.nombre_medico_tratante,osiris_erp_pases_qxurg.id_quien_creo,nombre1_empleado || ' ' || nombre2_empleado || ' ' || apellido_paterno_empleado || ' ' || apellido_materno_empleado AS nombresolicitante," +
-						"to_char(osiris_erp_pases_qxurg.fechahora_creacion,'yyyy-MM-dd HH24:mi:ss') AS fechahoracrea,osiris_erp_pases_qxurg.id_tipo_admisiones,descripcion_admisiones,osiris_erp_cobros_enca.id_empresa AS idempresa,osiris_empresas.descripcion_empresa," +
-						"osiris_erp_cobros_enca.id_aseguradora,osiris_aseguradoras.descripcion_aseguradora,id_quien_creo,descripcion_diagnostico_movcargos,descripcion_tipo_paciente "+
+						"to_char(osiris_erp_pases_qxurg.fechahora_creacion,'yyyy-MM-dd') AS fechapaseqx,osiris_erp_pases_qxurg.id_tipo_admisiones,descripcion_admisiones,osiris_erp_cobros_enca.id_empresa AS idempresa,osiris_empresas.descripcion_empresa," +
+						"osiris_erp_cobros_enca.id_aseguradora,osiris_aseguradoras.descripcion_aseguradora,id_quien_creo,descripcion_diagnostico_movcargos AS motivo_ingreso,descripcion_tipo_paciente "+
 						"FROM osiris_erp_pases_qxurg,osiris_his_tipo_admisiones,osiris_erp_cobros_enca,osiris_his_paciente,osiris_empleado,osiris_empresas,osiris_aseguradoras,osiris_erp_movcargos,osiris_his_tipo_pacientes "+
 						"WHERE osiris_erp_pases_qxurg.id_tipo_admisiones = osiris_his_tipo_admisiones.id_tipo_admisiones " +
 						"AND osiris_erp_pases_qxurg.pid_paciente = osiris_his_paciente.pid_paciente " +
@@ -601,9 +612,10 @@ namespace osiris
 						"AND osiris_erp_movcargos.id_tipo_paciente = osiris_his_tipo_pacientes.id_tipo_paciente "+
 						"AND osiris_erp_movcargos.folio_de_servicio = osiris_erp_pases_qxurg.folio_de_servicio "+
 						query_tipo_paciente+
-						"ORDER BY to_char(osiris_erp_pases_qxurg.fechahora_creacion,'yyyy-MM-dd');";
-					string[] args_names_field = {"foliodeservicio"};
-					string[] args_type_field = {"float"};
+						query_rango_fechas+
+						"ORDER BY osiris_erp_pases_qxurg.folio_de_servicio;";
+					string[] args_names_field = {"fechapaseqx","foliodeservicio","pidpaciente","nombre_completo","motivo_ingreso","descripcion_tipo_paciente"};
+					string[] args_type_field = {"string","float","float","string","string","string"};
 					// class_crea_ods.cs
 					//Console.WriteLine(query_sql);
 					new osiris.class_traslate_spreadsheet(query_sql,args_names_field,args_type_field);

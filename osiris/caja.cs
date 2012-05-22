@@ -1788,25 +1788,12 @@ namespace osiris
 			}else{
 				query = "AND to_char(osiris_erp_cobros_deta.fechahora_creacion,'yyyy-MM-dd') >= '"+entry_ano1.Text.Trim()+"-"+entry_mes1.Text+"-"+entry_dia1.Text+"' "+
 						"AND to_char(osiris_erp_cobros_deta.fechahora_creacion,'yyyy-MM-dd') <= '"+entry_ano2.Text.Trim()+"-"+entry_mes2.Text+"-"+entry_dia2.Text+"' ";
-			}
-			
-			if (tipodereporte == "procedimiento"){
-				
-				new osiris. proc_cobranza (PidPaciente,folioservicio,nombrebd,
+			}				
+			new osiris.rpt_proc_cobranza (PidPaciente,folioservicio,nombrebd,
 						entry_ingreso.Text,entry_egreso.Text,entry_numero_factura.Text,
 						entry_nombre_paciente.Text,entry_telefono_paciente.Text,entry_doctor.Text,
 						entry_tipo_paciente.Text,entry_aseguradora.Text,edadpac+" Años y "+mesespac.Trim()+" Meses",fecha_nacimiento,dir_pac,
-						cirugia,empresapac,id_tipopaciente,query,entry_habitacion.Text,entry_especialidad.Text,entry_diagnostico.Text);   // rpt_proc_cobranza.cs
-				
-			}
-			if (tipodereporte == "resumen_factura"){
-				// rpt_proc_totales.cs
-				new proc_totales (PidPaciente,this.folioservicio,nombrebd,
-						entry_ingreso.Text,entry_egreso.Text,entry_numero_factura.Text,
-						entry_nombre_paciente.Text,entry_telefono_paciente.Text,entry_doctor.Text,
-						entry_tipo_paciente.Text,entry_aseguradora.Text,edadpac+" Años y "+mesespac+" Meses",fecha_nacimiento,dir_pac,
-						cirugia,empresapac,id_tipopaciente,query);				
-			}			
+						cirugia,empresapac,id_tipopaciente,query,entry_habitacion.Text,entry_especialidad.Text,entry_diagnostico.Text,tipodereporte);   // rpt_proc_cobranza.cs
 			rango_de_fecha.Destroy();
 		}
 		

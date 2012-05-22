@@ -190,6 +190,10 @@ namespace osiris
 		protected Gtk.Window MyWinError;
 		protected Gtk.Window MyWin;
 		
+		string[] args_args = {""};
+		string[] args_tipounidad = {"","PIEZA","KILO","LITRO","GRAMO","METRO","CENTIMETRO","CAJA","PULGADA","FRASCO","GALON"};
+		int[] args_id_array = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15};
+		
 		class_conexion conexion_a_DB = new class_conexion();
 		class_public classpublic = new class_public();
 						
@@ -250,49 +254,86 @@ namespace osiris
 			entry_precio_publico.Sensitive = false;
 			precio_sin_iva.Sensitive = false;
 			crea_treeview_principal();
-			llena_combo_tipounidad("selecciona");
 			this.treeview_productos_anidados.Sensitive = false;
 		}
 		
-		void llena_combo_tipounidad(string tipo_)
-		{
-			combobox_tipo_unidad.Clear();
-			CellRendererText cell3 = new CellRendererText();
-			combobox_tipo_unidad.PackStart(cell3, true);
-			combobox_tipo_unidad.AddAttribute(cell3,"text",0);
-	        
-			ListStore store3 = new ListStore( typeof (string));
-			combobox_tipo_unidad.Model = store3;
-			if(tipo_ == "selecciona"){
-				store3.AppendValues (" ");
-				store3.AppendValues ("PIEZA");
-				store3.AppendValues ("KILO");
-				store3.AppendValues ("LITRO");
-				store3.AppendValues ("GRAMO");
-				store3.AppendValues ("METRO");
-				store3.AppendValues ("CENTIMETRO");
-				store3.AppendValues ("CAJA");
-				store3.AppendValues ("PULGADA");
-				store3.AppendValues ("FRASCO");
-				store3.AppendValues ("GALON");
+		void llenado_combobox(int tipodellenado,string descrip_defaul,object obj,string sql_or_array,string query_SQL,string name_field_desc,string name_field_id,string[] args_array,int[] args_id_array)
+		{			
+			Gtk.ComboBox combobox_llenado = (Gtk.ComboBox) obj;
+			//Gtk.ComboBox combobox_pos_neg = obj as Gtk.ComboBox;
+			combobox_llenado.Clear();
+			CellRendererText cell = new CellRendererText();
+			combobox_llenado.PackStart(cell, true);
+			combobox_llenado.AddAttribute(cell,"text",0);	        
+			ListStore store = new ListStore( typeof (string),typeof (int));
+			combobox_llenado.Model = store;			
+			if ((int) tipodellenado == 1){
+				store.AppendValues ((string) descrip_defaul,0);
+			}			
+			if(sql_or_array == "array"){			
+				for (int colum_field = 0; colum_field < args_array.Length; colum_field++){
+					store.AppendValues (args_array[colum_field],args_id_array[colum_field]);
+				}
 			}
-	      
-			TreeIter iter3;
-			if (store3.GetIterFirst(out iter3)){
-				combobox_tipo_unidad.SetActiveIter (iter3);
+			if(sql_or_array == "sql"){			
+				NpgsqlConnection conexion; 
+				conexion = new NpgsqlConnection (connectionString+nombrebd);
+	            // Verifica que la base de datos este conectada
+				try{
+					conexion.Open ();
+					NpgsqlCommand comando; 
+					comando = conexion.CreateCommand ();
+	               	comando.CommandText = query_SQL;					
+					NpgsqlDataReader lector = comando.ExecuteReader ();
+	               	while (lector.Read()){
+						store.AppendValues ((string) lector[ name_field_desc ], (int) lector[ name_field_id]);
+					}
+				}catch (NpgsqlException ex){
+					MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+											MessageType.Error,ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
+					msgBoxError.Run ();				msgBoxError.Destroy();
+				}
+				conexion.Close ();
 			}
-			combobox_tipo_unidad.Changed += new EventHandler (onComboBoxChanged_tipo_unidad);
+			TreeIter iter;
+			if (store.GetIterFirst(out iter)){
+				combobox_llenado.SetActiveIter (iter);
+			}
+			combobox_llenado.Changed += new EventHandler (onComboBoxChanged_llenado);			
 		}
 		
-		void onComboBoxChanged_tipo_unidad (object sender, EventArgs args)
+		void onComboBoxChanged_llenado (object sender, EventArgs args)
 		{
-	    	ComboBox combobox_tipo_unidad = sender as ComboBox;
-			if (sender == null){
-	    		return;
-			}
-	  		TreeIter iter;
-	  		if (combobox_tipo_unidad.GetActiveIter (out iter)){
-	    		tipounidadproducto = (string) combobox_tipo_unidad.Model.GetValue(iter,0);    		 
+			ComboBox onComboBoxChanged = sender as ComboBox;
+			if (sender == null){	return; }
+			TreeIter iter;
+			if (onComboBoxChanged.GetActiveIter (out iter)){
+				switch (onComboBoxChanged.Name.ToString()){				
+				case "combobox_tipo_unidad":
+					tipounidadproducto = (string) onComboBoxChanged.Model.GetValue(iter,0);
+					break;
+				case "combobox_grupo":
+					idtipogrupo = (int) combobox_grupo.Model.GetValue(iter,1);
+		    		descripgrupo = (string) combobox_grupo.Model.GetValue(iter,0);
+		    		if((bool) this.checkbutton_nuevo_producto.Active == true){
+		    			ultimo_id_prod(idtipogrupo,idtipogrupo1,idtipogrupo2);
+		    		}
+					break;
+				case "combobox_grupo1":
+					idtipogrupo1 = (int) combobox_grupo1.Model.GetValue(iter,1);
+		    		descripgrupo1 = (string) combobox_grupo1.Model.GetValue(iter,0);
+		    		if((bool) this.checkbutton_nuevo_producto.Active == true){
+		    			ultimo_id_prod(idtipogrupo,idtipogrupo1,idtipogrupo2);
+		    		}
+					break;
+				case "combobox_grupo2":
+					idtipogrupo2 = (int) combobox_grupo2.Model.GetValue(iter,1);
+		    		descripgrupo2 = (string) combobox_grupo2.Model.GetValue(iter,0);
+		    		if((bool) this.checkbutton_nuevo_producto.Active == true){
+		    			ultimo_id_prod(idtipogrupo,idtipogrupo1,(int) combobox_grupo2.Model.GetValue(iter,1));
+		    		}
+					break;
+				}
 			}
 		}
 		
@@ -412,9 +453,10 @@ namespace osiris
 				ResponseType miResultado = (ResponseType)
 				msgBox.Run ();				msgBox.Destroy();
 		 		if (miResultado == ResponseType.Yes){
-		 			llenado_grupo("","",0);
-		 			llenado_grupo1("","",0);
-					llenado_grupo2("","",0);
+		 			llenado_combobox(0,"",combobox_grupo,"sql","SELECT * FROM osiris_grupo_producto ORDER BY descripcion_grupo_producto;","descripcion_grupo_producto","id_grupo_producto",args_args,args_id_array);
+					llenado_combobox(0,"",combobox_grupo1,"sql","SELECT * FROM osiris_grupo1_producto ORDER BY descripcion_grupo1_producto;","descripcion_grupo1_producto","id_grupo1_producto",args_args,args_id_array);
+					llenado_combobox(0,"",combobox_grupo2,"sql","SELECT * FROM osiris_grupo2_producto ORDER BY descripcion_grupo2_producto;","descripcion_grupo2_producto","id_grupo2_producto",args_args,args_id_array);
+					llenado_combobox(0,"",combobox_tipo_unidad,"array","","","",args_tipounidad,args_id_array);
 					limpia_textos(true);
 					activa_campos(true);
 					button_calcular.Sensitive = true;
@@ -675,7 +717,8 @@ namespace osiris
 													typeof(bool),
 													typeof(bool),
 													typeof(string),
-			                                        typeof(bool));
+			                                        typeof(bool),
+													typeof(string));
 				lista_de_producto.Model = treeViewEngineBusca2;
 			
 				lista_de_producto.RulesHint = true;
@@ -685,16 +728,16 @@ namespace osiris
 				col_idproducto = new TreeViewColumn();
 				cellr0 = new CellRendererText();
 				
-				col_idproducto.Title = "ID Producto"; // titulo de la cabecera de la columna, si está visible
+				col_idproducto.Title = "ID Producto";
 				col_idproducto.PackStart(cellr0, true);
-				col_idproducto.AddAttribute (cellr0, "text", 0);    // la siguiente columna será 1 en vez de 1
+				col_idproducto.AddAttribute (cellr0, "text", 0);
 				col_idproducto.SortColumnId = (int) Column_prod.col_idproducto;
 			
 				col_desc_producto = new TreeViewColumn();
 				cellr1 = new CellRendererText();
-				col_desc_producto.Title = "Descripcion de Producto"; // titulo de la cabecera de la columna, si está visible
+				col_desc_producto.Title = "Descripcion de Producto";
 				col_desc_producto.PackStart(cellr1, true);
-				col_desc_producto.AddAttribute (cellr1, "text", 1);    // la siguiente columna será 1 en vez de 1
+				col_desc_producto.AddAttribute (cellr1, "text", 1);
 				col_desc_producto.Resizable = true;
 				cellr1.Width = 450;
 				col_desc_producto.SortColumnId = (int) Column_prod.col_desc_producto;
@@ -703,77 +746,77 @@ namespace osiris
 				cellrt2 = new CellRendererText();
 				col_precioprod.Title = "Precio Producto";
 				col_precioprod.PackStart(cellrt2, true);
-				col_precioprod.AddAttribute (cellrt2, "text", 2); // la siguiente columna será 1 en vez de 2
+				col_precioprod.AddAttribute (cellrt2, "text", 2);
 				col_precioprod.SortColumnId = (int) Column_prod.col_precioprod;
             
 				col_ivaprod = new TreeViewColumn();
 				cellrt3 = new CellRendererText();
 				col_ivaprod.Title = "I.V.A.";
 				col_ivaprod.PackStart(cellrt3, true);
-				col_ivaprod.AddAttribute (cellrt3, "text", 3); // la siguiente columna será 2 en vez de 3
+				col_ivaprod.AddAttribute (cellrt3, "text", 3);
 				col_ivaprod.SortColumnId = (int) Column_prod.col_ivaprod;
             
 				col_totalprod = new TreeViewColumn();
 				cellrt4 = new CellRendererText();
 				col_totalprod.Title = "Total";
 				col_totalprod.PackStart(cellrt4, true);
-				col_totalprod.AddAttribute (cellrt4, "text", 4); // la siguiente columna será 3 en vez de 4
+				col_totalprod.AddAttribute (cellrt4, "text", 4);
 				col_totalprod.SortColumnId = (int) Column_prod.col_totalprod;
             
 				col_descuentoprod = new TreeViewColumn();
 				cellrt5 = new CellRendererText();
 				col_descuentoprod.Title = "% Descuento";
 				col_descuentoprod.PackStart(cellrt5, true);
-				col_descuentoprod.AddAttribute (cellrt5, "text", 5); // la siguiente columna será 5 en vez de 6
+				col_descuentoprod.AddAttribute (cellrt5, "text", 5);
 				col_descuentoprod.SortColumnId = (int) Column_prod.col_descuentoprod;
       
 				col_preciocondesc = new TreeViewColumn();
 				cellrt6 = new CellRendererText();
 				col_preciocondesc.Title = "Precio con Desc.";
 				col_preciocondesc.PackStart(cellrt6, true);
-				col_preciocondesc.AddAttribute (cellrt6, "text", 6);     // la siguiente columna será 6 en vez de 7
+				col_preciocondesc.AddAttribute (cellrt6, "text", 6);
 				col_preciocondesc.SortColumnId = (int) Column_prod.col_preciocondesc;
             
 				col_grupoprod = new TreeViewColumn();
 				cellrt7 = new CellRendererText();
 				col_grupoprod.Title = "Grupo Producto";
 				col_grupoprod.PackStart(cellrt7, true);
-				col_grupoprod.AddAttribute (cellrt7, "text", 7); // la siguiente columna será 7 en vez de 8
+				col_grupoprod.AddAttribute (cellrt7, "text", 7);
 				col_grupoprod.SortColumnId = (int) Column_prod.col_grupoprod;
             
 				col_grupo1prod = new TreeViewColumn();
 				cellrt8 = new CellRendererText();
 				col_grupo1prod.Title = "Grupo1 Producto";
 				col_grupo1prod.PackStart(cellrt8, true);
-				col_grupo1prod.AddAttribute (cellrt8, "text", 8); // la siguiente columna será 9 en vez de 
+				col_grupo1prod.AddAttribute (cellrt8, "text", 8);
 				col_grupo1prod.SortColumnId = (int) Column_prod.col_grupo1prod;
                         
 				col_grupo2prod = new TreeViewColumn();
 				cellrt9 = new CellRendererText();
 				col_grupo2prod.Title = "Grupo2 Producto";
 				col_grupo2prod.PackStart(cellrt9, true);
-				col_grupo2prod.AddAttribute (cellrt9, "text", 9); // la siguiente columna será 10 en vez de 9
+				col_grupo2prod.AddAttribute (cellrt9, "text", 9);
 				col_grupo2prod.SortColumnId = (int) Column_prod.col_grupo2prod;
 				
 				col_costoprod_uni = new TreeViewColumn();
 				cellrt12 = new CellRendererText();
 				col_costoprod_uni.Title = "Precio Unitario";
 				col_costoprod_uni.PackStart(cellrt12, true);
-				col_costoprod_uni.AddAttribute (cellrt12, "text", 12); // la siguiente columna será 1 en vez de 2
+				col_costoprod_uni.AddAttribute (cellrt12, "text", 12);
 				col_costoprod_uni.SortColumnId = (int) Column_prod.col_costoprod_uni;
 				
 				col_aplica_iva = new TreeViewColumn();
 				cellrt19 = new CellRendererText();
 				col_aplica_iva.Title = "Iva Activo?";
 				col_aplica_iva.PackStart(cellrt19, true);
-				col_aplica_iva.AddAttribute (cellrt19, "text", 19); // la siguiente columna será 10 en vez de 9
+				col_aplica_iva.AddAttribute (cellrt19, "text", 19);
 				col_aplica_iva.SortColumnId = (int) Column_prod.col_aplica_iva;
 				
 				col_cobro_activo = new TreeViewColumn();
 				cellrt20 = new CellRendererText();
 				col_cobro_activo.Title = "Prod. Activo?";
 				col_cobro_activo.PackStart(cellrt20, true);
-				col_cobro_activo.AddAttribute (cellrt20, "text", 20); // la siguiente columna será 10 en vez de 9
+				col_cobro_activo.AddAttribute (cellrt20, "text", 20);
 				col_cobro_activo.SortColumnId = (int) Column_prod.col_cobro_activo;
 				
 				lista_de_producto.AppendColumn(col_idproducto);  // 0
@@ -1032,7 +1075,7 @@ namespace osiris
 							"to_char(osiris_productos.id_grupo1_producto,'9999999') AS idgrupo1producto,osiris_productos.id_grupo1_producto,"+
 							"to_char(osiris_productos.id_grupo2_producto,'9999999') AS idgrupo2producto,osiris_productos.id_grupo2_producto,"+
 							"to_char(porcentage_ganancia,'99999.999') AS porcentageutilidad,to_char(costo_producto,'999999999.99') AS costoproducto,"+
-						    "tiene_kit "+
+						    "tiene_kit,tipo_unidad_producto "+
 							"FROM osiris_productos,osiris_grupo_producto,osiris_grupo1_producto,osiris_grupo2_producto "+
 							"WHERE osiris_productos.id_grupo_producto = osiris_grupo_producto.id_grupo_producto "+
 							"AND osiris_productos.id_grupo1_producto = osiris_grupo1_producto.id_grupo1_producto "+
@@ -1087,7 +1130,8 @@ namespace osiris
 									(bool) lector["cobro_activo"],//20
 									(bool) lector["aplica_descuento"],//21
 									(string) lector["preciopublico1"],//22
-					                (bool) lector["tiene_kit"]);//23
+					                (bool) lector["tiene_kit"],	//23
+									(string) lector["tipo_unidad_producto"]);//24
 					col_idproducto.SetCellDataFunc(cellr0, new Gtk.TreeCellDataFunc(cambia_colores_fila));
 					col_desc_producto.SetCellDataFunc(cellr1, new Gtk.TreeCellDataFunc(cambia_colores_fila));
 					col_precioprod.SetCellDataFunc(cellrt2, new Gtk.TreeCellDataFunc(cambia_colores_fila));
@@ -1211,40 +1255,42 @@ namespace osiris
 					}
 				
 				    utilidad_anterior = decimal.Parse((string) model.GetValue(iterSelected,14));
-					this.entry_descripcion.Text = (string) model.GetValue(iterSelected, 1);
-					this.entry_nombre_articulo.Text = (string) model.GetValue(iterSelected, 10); 
-					this.entry_nombre_generico.Text = (string) model.GetValue(iterSelected, 11);
+					entry_descripcion.Text = (string) model.GetValue(iterSelected, 1);
+					entry_nombre_articulo.Text = (string) model.GetValue(iterSelected, 10); 
+					entry_nombre_generico.Text = (string) model.GetValue(iterSelected, 11);
 					toma_valor = (string) model.GetValue(iterSelected, 0);
-	 				this.entry_codigo_producto.Text = (string) model.GetValue(iterSelected, 0);
+	 				entry_codigo_producto.Text = (string) model.GetValue(iterSelected, 0);
 					toma_valor = (string) model.GetValue(iterSelected, 2);
 					//this.entry_precio_publico.Text = toma_valor.TrimStart();
 					precio_sin_iva.Text = toma_valor.TrimStart();
 					valor_anterior_descuento = (string) model.GetValue(iterSelected, 5);
-					this.entry_descuento_en_porciento.Text = valor_anterior_descuento.TrimStart();
+					entry_descuento_en_porciento.Text = valor_anterior_descuento.TrimStart();
 					toma_valor = (string) model.GetValue(iterSelected, 12);					
-					this.entry_precio_unitario.Text = toma_valor.TrimStart();
+					entry_precio_unitario.Text = toma_valor.TrimStart();
 					toma_valor = (string) model.GetValue(iterSelected, 13);
-					this.entry_porciento_utilidad.Text = toma_valor.TrimStart();
+					entry_porciento_utilidad.Text = toma_valor.TrimStart();
 					toma_valor = (string) model.GetValue(iterSelected, 14);
-					this.entry_costo.Text = toma_valor.TrimStart();
+					entry_costo.Text = toma_valor.TrimStart();
 					toma_valor = (string) model.GetValue(iterSelected, 15);
-					this.entry_embalaje.Text = toma_valor.TrimStart();
+					entry_embalaje.Text = toma_valor.TrimStart();
 					// Lineas especial para municipio de San Nicolas
 					toma_valor = (string) model.GetValue(iterSelected, 22);
 					//this.entry_precios_costunitario_sannico.Text = toma_valor.Trim();
-					this.descripgrupo = (string) model.GetValue(iterSelected, 7);
-					this.idtipogrupo = int.Parse((string) model.GetValue(iterSelected, 16));
-					this.descripgrupo1 = (string) model.GetValue(iterSelected, 8);
-					this.idtipogrupo1 = int.Parse((string) model.GetValue(iterSelected, 17));
-					this.descripgrupo2 = (string) model.GetValue(iterSelected, 9);
-					this.idtipogrupo2 = int.Parse((string) model.GetValue(iterSelected, 18));
+					descripgrupo = (string) model.GetValue(iterSelected, 7);
+					idtipogrupo = int.Parse((string) model.GetValue(iterSelected, 16));
+					descripgrupo1 = (string) model.GetValue(iterSelected, 8);
+					idtipogrupo1 = int.Parse((string) model.GetValue(iterSelected, 17));
+					descripgrupo2 = (string) model.GetValue(iterSelected, 9);
+					idtipogrupo2 = int.Parse((string) model.GetValue(iterSelected, 18));
 					toma_valor = (string) model.GetValue(iterSelected, 14);
-					llenado_grupo("selecciona",descripgrupo,idtipogrupo);
-		 			llenado_grupo1("selecciona",descripgrupo1,idtipogrupo1);
-					llenado_grupo2("selecciona",descripgrupo2,idtipogrupo2);
-					this.checkbutton_apl_iva.Active = (bool) model.GetValue(iterSelected, 19);
-					this.checkbutton_prod_activo.Active = (bool) model.GetValue(iterSelected, 20);
-					this.checkbutton_cambia_utilidad.Active = false;
+					//llenado_grupo("selecciona",descripgrupo,idtipogrupo);
+					llenado_combobox(1,descripgrupo,combobox_grupo,"sql","SELECT * FROM osiris_grupo_producto ORDER BY descripcion_grupo_producto;","descripcion_grupo_producto","id_grupo_producto",args_args,args_id_array);
+					llenado_combobox(1,descripgrupo1,combobox_grupo1,"sql","SELECT * FROM osiris_grupo1_producto ORDER BY descripcion_grupo1_producto;","descripcion_grupo1_producto","id_grupo1_producto",args_args,args_id_array);
+					llenado_combobox(1,descripgrupo2,combobox_grupo2,"sql","SELECT * FROM osiris_grupo2_producto ORDER BY descripcion_grupo2_producto;","descripcion_grupo2_producto","id_grupo2_producto",args_args,args_id_array);
+					llenado_combobox(1,(string) model.GetValue(iterSelected,24),combobox_tipo_unidad,"array","","","",args_tipounidad,args_id_array);
+					checkbutton_apl_iva.Active = (bool) model.GetValue(iterSelected, 19);
+					checkbutton_prod_activo.Active = (bool) model.GetValue(iterSelected, 20);
+					checkbutton_cambia_utilidad.Active = false;
 					
 					calculando_utilidad();
 					 					
@@ -1268,7 +1314,7 @@ namespace osiris
 					button_editar.Sensitive = true;
 					checkbutton_nuevo_producto.Active = false;
     	    	    checkbutton_nuevo_producto.Sensitive = true;
-					button_editar.Sensitive = true;			
+					button_editar.Sensitive = true;
 					//cierra la ventana despues que almaceno la informacion en variables
 					Widget win = (Widget) sender;
 					win.Toplevel.Destroy();
@@ -1373,190 +1419,17 @@ namespace osiris
 			combobox_tipo_unidad.Sensitive = valor;
 		}
 		
-		void llenado_grupo(string tipo_, string descripciongrupo_,int idgrupoproducto_ )
-		{
-			combobox_grupo.Clear();
-			CellRendererText cell3 = new CellRendererText();
-			combobox_grupo.PackStart(cell3, true);
-			combobox_grupo.AddAttribute(cell3,"text",0);
-	        
-			ListStore store1 = new ListStore( typeof (string), typeof (int));
-			combobox_grupo.Model = store1;
-			if(tipo_ == "selecciona"){
-				store1.AppendValues ((string)descripciongrupo_,(int) idgrupoproducto_);
-			}
-	      
-	        NpgsqlConnection conexion; 
-			conexion = new NpgsqlConnection (connectionString+nombrebd);
-            // Verifica que la base de datos este conectada
-			try{
-				conexion.Open ();
-				NpgsqlCommand comando; 
-				comando = conexion.CreateCommand ();
-               	comando.CommandText = "SELECT * FROM osiris_grupo_producto ORDER BY descripcion_grupo_producto ;";				
-				NpgsqlDataReader lector = comando.ExecuteReader ();
-               	while (lector.Read())
-				{
-					store1.AppendValues ((string) lector["descripcion_grupo_producto"],
-									 	(int) lector["id_grupo_producto"] );
-				}
-			}catch (NpgsqlException ex){
-				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
-										MessageType.Error,ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
-				msgBoxError.Run ();				msgBoxError.Destroy();
-			}
-			conexion.Close ();
-	        
-			TreeIter iter1;
-			if (store1.GetIterFirst(out iter1)){
-				combobox_grupo.SetActiveIter (iter1);
-			}
-			combobox_grupo.Changed += new EventHandler (onComboBoxChanged_grupo);
-		}
-		
-		void llenado_grupo1(string tipo_,string descripciongrupo1_,int idgrupoproducto1_)
-		{
-			combobox_grupo1.Clear();
-			CellRendererText cell3 = new CellRendererText();
-			combobox_grupo1.PackStart(cell3, true);
-			combobox_grupo1.AddAttribute(cell3,"text",0);
-	        
-			ListStore store2 = new ListStore( typeof (string), typeof (int), typeof (string));
-			combobox_grupo1.Model = store2;
-			if(tipo_ == "selecciona"){
-				store2.AppendValues ((string)descripciongrupo1_,(int) idgrupoproducto1_);
-			}
-	      
-	        NpgsqlConnection conexion; 
-			conexion = new NpgsqlConnection (connectionString+nombrebd);
-            // Verifica que la base de datos este conectada
-			try{
-				conexion.Open ();
-				NpgsqlCommand comando; 
-				comando = conexion.CreateCommand ();
-               	comando.CommandText = "SELECT * FROM osiris_grupo1_producto ORDER BY descripcion_grupo1_producto ;";				
-				NpgsqlDataReader lector = comando.ExecuteReader ();
-               	while (lector.Read())
-				{
-					store2.AppendValues ((string) lector["descripcion_grupo1_producto"],
-									 	(int) lector["id_grupo1_producto"]);
-									 	
-				}
-			}catch (NpgsqlException ex){
-				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
-										MessageType.Error,ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
-				msgBoxError.Run ();				msgBoxError.Destroy();
-			}
-			conexion.Close ();
-	        
-			TreeIter iter2;
-			if (store2.GetIterFirst(out iter2)){
-				combobox_grupo1.SetActiveIter (iter2);
-			}
-			combobox_grupo1.Changed += new EventHandler (onComboBoxChanged_grupo1);
-		}
-		
-		void llenado_grupo2(string tipo_,string descripciongrupo2_,int idgrupoproducto2_)
-		{
-			combobox_grupo2.Clear();
-			CellRendererText cell3 = new CellRendererText();
-			combobox_grupo2.PackStart(cell3, true);
-			combobox_grupo2.AddAttribute(cell3,"text",0);
-	        
-			ListStore store3 = new ListStore( typeof (string), typeof (int));
-			combobox_grupo2.Model = store3;
-			if(tipo_ == "selecciona"){
-				store3.AppendValues ((string)descripciongrupo2_,(int) idgrupoproducto2_);
-			}
-	      
-	        NpgsqlConnection conexion; 
-			conexion = new NpgsqlConnection (connectionString+nombrebd);
-            // Verifica que la base de datos este conectada
-			try{
-				conexion.Open ();
-				NpgsqlCommand comando; 
-				comando = conexion.CreateCommand ();
-               	comando.CommandText = "SELECT * FROM osiris_grupo2_producto ORDER BY descripcion_grupo2_producto ;";
-				
-				NpgsqlDataReader lector = comando.ExecuteReader ();
-               	while (lector.Read())
-				{
-					store3.AppendValues ((string) lector["descripcion_grupo2_producto"],
-									 	(int) lector["id_grupo2_producto"] );
-				}
-			}catch (NpgsqlException ex){
-				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
-										MessageType.Error,ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
-				msgBoxError.Run ();				msgBoxError.Destroy();
-			}
-			conexion.Close ();
-	        
-			TreeIter iter3;
-			if (store3.GetIterFirst(out iter3)){
-				combobox_grupo2.SetActiveIter (iter3);
-			}
-			combobox_grupo2.Changed += new EventHandler (onComboBoxChanged_grupo2);
-		}
-		
-		void onComboBoxChanged_grupo (object sender, EventArgs args)
-		{
-	    	ComboBox combobox_grupo = sender as ComboBox;
-			if (sender == null){
-	    		return;
-			}
-	  		TreeIter iter;
-	  		if (combobox_grupo.GetActiveIter (out iter)){
-	    		idtipogrupo = (int) combobox_grupo.Model.GetValue(iter,1);
-	    		descripgrupo = (string) combobox_grupo.Model.GetValue(iter,0);
-	    		if((bool) this.checkbutton_nuevo_producto.Active == true){
-	    			ultimo_id_prod((int) combobox_grupo.Model.GetValue(iter,1),idtipogrupo1,idtipogrupo2);
-	    		} 
-			}
-		}
-		
-		void onComboBoxChanged_grupo1(object sender, EventArgs args)
-		{
-	    	ComboBox combobox_grupo1 = sender as ComboBox;
-			if (sender == null){
-	    		return;
-			}
-	  		TreeIter iter;
-	  		if (combobox_grupo1.GetActiveIter (out iter)){
-	    		idtipogrupo1 = (int) combobox_grupo1.Model.GetValue(iter,1);
-	    		descripgrupo1 = (string) combobox_grupo1.Model.GetValue(iter,0);
-	    		if((bool) this.checkbutton_nuevo_producto.Active == true){
-	    			ultimo_id_prod(idtipogrupo,idtipogrupo1,idtipogrupo2);
-	    		}
-			}
-		}
-		
-		void onComboBoxChanged_grupo2(object sender, EventArgs args)
-		{		
-	    	ComboBox combobox_grupo2 = sender as ComboBox;
-			if (sender == null){
-	    		return;
-			}
-	  		TreeIter iter;
-	  		if (combobox_grupo2.GetActiveIter (out iter)){
-	    		idtipogrupo2 = (int) combobox_grupo2.Model.GetValue(iter,1);
-	    		descripgrupo2 = (string) combobox_grupo2.Model.GetValue(iter,0);
-	    		if((bool) this.checkbutton_nuevo_producto.Active == true){
-	    			ultimo_id_prod(idtipogrupo,idtipogrupo1,(int) combobox_grupo2.Model.GetValue(iter,1));
-	    		}
-	     	}
-		}
-		
-		public void on_checkbutton_producto_anidado_cliked(object sender, EventArgs args)
+		void on_checkbutton_producto_anidado_cliked(object sender, EventArgs args)
 		{
 			
 		}
 		
-		public void llenado_productos_anidados()
+		void llenado_productos_anidados()
 		{
 			
 		}
 		
-		public void ultimo_id_prod(int idtipogrupo_,int idtipogrupo1_, int idtipogrupo2_)
+		void ultimo_id_prod(int idtipogrupo_,int idtipogrupo1_, int idtipogrupo2_)
 		{
 			long primera = Convert.ToInt64(idtipogrupo_ ) * 10000000000;
 			long segundo = Convert.ToInt64(idtipogrupo1_) * 100000000;
@@ -1599,7 +1472,7 @@ namespace osiris
 		
 		// Activa el enter en la busqueda de los productos
 		[GLib.ConnectBefore ()]   	  // Esto es indispensable para que funcione
-		public void onKeyPressEvent_enter(object o, Gtk.KeyPressEventArgs args)
+		void onKeyPressEvent_enter(object o, Gtk.KeyPressEventArgs args)
 		{
 			//Console.WriteLine(args.Event.Key);
 			if (args.Event.Key == Gdk.Key.Return || args.Event.Key == Gdk.Key.KP_Enter){

@@ -25,9 +25,10 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 // 
 //////////////////////////////////////////////////////////
-// Programa		: hscmty.cs
-// Proposito	: Impresion del procedimiento de cobranza 
-// Objeto		: rpt_proc_cobranza.cs
+// Programa		:
+// Proposito	: 
+// Objeto		:
+//////////////////////////////////////////////////////////
 using System;
 using Gtk;
 using Npgsql;

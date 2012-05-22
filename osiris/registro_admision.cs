@@ -643,6 +643,7 @@ namespace osiris
 								//this.folioservicio = ultimo_numero_atencion();
 								folioservicio = int.Parse(classpublic.lee_ultimonumero_registrado("osiris_erp_movcargos","folio_de_servicio",""));
 								this.button_imprimir_protocolo.Sensitive = true;
+								entry_folio_paciente.Text = folioservicio.ToString().Trim();
 								
 								almaceno_encabezado = almacena_encabezado_de_cobro(folioservicio);
 							}
@@ -1863,7 +1864,8 @@ namespace osiris
 					entry_folio_interno_dep.Text = entry_folio_interno_dep.Text+tiposervicio+foliointernodep.ToString()+" | ";
                			
 					lector1.Close();
-               		folioservicio = int.Parse(classpublic.lee_ultimonumero_registrado("osiris_erp_movcargos","folio_de_servicio",""));	
+               		folioservicio = int.Parse(classpublic.lee_ultimonumero_registrado("osiris_erp_movcargos","folio_de_servicio",""));
+					entry_folio_paciente.Text = folioservicio_.ToString();
 					// Agregando el nuevo registro al de movimientos
 					comando.CommandText = "INSERT INTO osiris_erp_movcargos (id_tipo_admisiones, id_empleado,"+
 								"fechahora_admision_registro,folio_de_servicio,folio_de_servicio_dep,pid_paciente,id_tipo_paciente,"+

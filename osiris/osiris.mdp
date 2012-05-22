@@ -92,7 +92,6 @@
     <File subtype="Code" buildaction="Compile" name="rpt_proc_cerrados.cs" />
     <File subtype="Code" buildaction="Compile" name="rpt_proc_cobranza.cs" />
     <File subtype="Code" buildaction="Compile" name="rpt_proc_facturados.cs" />
-    <File subtype="Code" buildaction="Compile" name="rpt_proc_totales.cs" />
     <File subtype="Code" buildaction="Compile" name="rpt_prot_admision.cs" />
     <File subtype="Code" buildaction="Compile" name="rpt_reg_pac_lab_rx.cs" />
     <File subtype="Code" buildaction="Compile" name="rpt_rep1_admision.cs" />

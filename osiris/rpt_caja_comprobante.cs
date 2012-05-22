@@ -186,7 +186,7 @@ namespace osiris
 						fontSize = 8.0;			layout = null;			layout = context.CreatePangoLayout ();
 						desc.Size = (int)(fontSize * pangoScale);		layout.FontDescription = desc;
 						layout.FontDescription.Weight = Weight.Normal;		// Letra normal
-						if ((int) lector["idadmisiones"] == 300 || (int) lector["idadmisiones"] == 400 || (int) lector["idadmisiones"] == 950 || (int) lector["idadmisiones"] == 960){	
+						if ((int) lector["idadmisiones"] == 300 || (int) lector["idadmisiones"] == 400 || (int) lector["idadmisiones"] == 920 || (int) lector["idadmisiones"] == 950 || (int) lector["idadmisiones"] == 960){	
 							cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText((string) lector["descripcion_admisiones"].ToString().Trim());	Pango.CairoHelper.ShowLayout (cr, layout);
 							comienzo_linea += separacion_linea;
 							cr.MoveTo(15*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText((string) lector["descripcion_grupo_producto"].ToString().Trim());	Pango.CairoHelper.ShowLayout (cr, layout);

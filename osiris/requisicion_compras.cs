@@ -194,6 +194,7 @@ namespace osiris
 		TreeViewColumn col_grupoprod;		CellRendererText cellrt8;
 		TreeViewColumn col_grupo1prod;		CellRendererText cellrt9;
 		TreeViewColumn col_grupo2prod;		CellRendererText cellrt10;
+		TreeViewColumn col_empaque;			CellRendererText cellrt16;
 		TreeViewColumn col_aplica_iva;		CellRendererText cellrt20;
 		TreeViewColumn col_cobro_activo;	CellRendererText cellrt21;
 		
@@ -1534,7 +1535,7 @@ namespace osiris
 									(string) lector["preciopublico1"]);
 					col_idproducto.SetCellDataFunc(cellr0, new Gtk.TreeCellDataFunc(cambia_colores_fila));
 					col_desc_producto.SetCellDataFunc(cellr1, new Gtk.TreeCellDataFunc(cambia_colores_fila));
-					col_precioprod.SetCellDataFunc(cellrt2, new Gtk.TreeCellDataFunc(cambia_colores_fila));
+					col_empaque.SetCellDataFunc(cellrt16, new Gtk.TreeCellDataFunc(cambia_colores_fila));
 					col_ivaprod.SetCellDataFunc(cellrt3, new Gtk.TreeCellDataFunc(cambia_colores_fila));
 					col_totalprod.SetCellDataFunc(cellrt4, new Gtk.TreeCellDataFunc(cambia_colores_fila));
 					col_descuentoprod.SetCellDataFunc(cellrt5, new Gtk.TreeCellDataFunc(cambia_colores_fila));
@@ -1847,85 +1848,87 @@ namespace osiris
 				
 				col_idproducto = new TreeViewColumn();
 				cellr0 = new CellRendererText();
-				col_idproducto.Title = "ID Producto"; // titulo de la cabecera de la columna, si está visible
+				col_idproducto.Title = "ID Producto";
 				col_idproducto.PackStart(cellr0, true);
-				col_idproducto.AddAttribute (cellr0, "text", 0);    // la siguiente columna será 1 en vez de 1
+				col_idproducto.AddAttribute (cellr0, "text", 0);
 				col_idproducto.SortColumnId = (int) Column_prod.col_idproducto;
 			
 				col_desc_producto = new TreeViewColumn();
 				cellr1 = new CellRendererText();
-				col_desc_producto.Title = "Descripcion de Producto"; // titulo de la cabecera de la columna, si está visible
+				col_desc_producto.Title = "Descripcion de Producto";
 				col_desc_producto.PackStart(cellr1, true);
-				col_desc_producto.AddAttribute (cellr1, "text", 1);    // la siguiente columna será 1 en vez de 1
+				col_desc_producto.AddAttribute (cellr1, "text", 1);
 				col_desc_producto.SortColumnId = (int) Column_prod.col_desc_producto;
+				col_desc_producto.Resizable = true;
+				cellr1.Width = 380;
 				//cellr0.Editable = true;   // Permite edita este campo
             
-				col_precioprod = new TreeViewColumn();
-				cellrt2 = new CellRendererText();
-				col_precioprod.Title = "Precio Producto";
-				col_precioprod.PackStart(cellrt2, true);
-				col_precioprod.AddAttribute (cellrt2, "text", 2); // la siguiente columna será 1 en vez de 2
-				col_precioprod.SortColumnId = (int) Column_prod.col_precioprod;
+				col_empaque = new TreeViewColumn();
+				cellrt16 = new CellRendererText();
+				col_empaque.Title = "Empaque/Pack";
+				col_empaque.PackStart(cellrt16, true);
+				col_empaque.AddAttribute (cellrt16, "text", 16);
+				col_empaque.SortColumnId = (int) Column_prod.col_empaque;
             
 				col_ivaprod = new TreeViewColumn();
 				cellrt3 = new CellRendererText();
 				col_ivaprod.Title = "I.V.A.";
 				col_ivaprod.PackStart(cellrt3, true);
-				col_ivaprod.AddAttribute (cellrt3, "text", 3); // la siguiente columna será 2 en vez de 3
+				col_ivaprod.AddAttribute (cellrt3, "text", 3);
 				col_ivaprod.SortColumnId = (int) Column_prod.col_ivaprod;
             
 				col_totalprod = new TreeViewColumn();
 				cellrt4 = new CellRendererText();
 				col_totalprod.Title = "Total";
 				col_totalprod.PackStart(cellrt4, true);
-				col_totalprod.AddAttribute (cellrt4, "text", 4); // la siguiente columna será 3 en vez de 4
+				col_totalprod.AddAttribute (cellrt4, "text", 4);
 				col_totalprod.SortColumnId = (int) Column_prod.col_totalprod;
             
 				col_descuentoprod = new TreeViewColumn();
 				cellrt5 = new CellRendererText();
 				col_descuentoprod.Title = "% Descuento";
 				col_descuentoprod.PackStart(cellrt5, true);
-				col_descuentoprod.AddAttribute (cellrt5, "text", 5); // la siguiente columna será 5 en vez de 6
+				col_descuentoprod.AddAttribute (cellrt5, "text", 5);
 				col_descuentoprod.SortColumnId = (int) Column_prod.col_descuentoprod;
       
 				col_preciocondesc = new TreeViewColumn();
 				cellrt6 = new CellRendererText();
 				col_preciocondesc.Title = "Precio con Desc.";
 				col_preciocondesc.PackStart(cellrt6, true);
-				col_preciocondesc.AddAttribute (cellrt6, "text", 6);     // la siguiente columna será 6 en vez de 7
+				col_preciocondesc.AddAttribute (cellrt6, "text", 6);
 				col_preciocondesc.SortColumnId = (int) Column_prod.col_preciocondesc;
 				
 				col_stock_actual = new TreeViewColumn();
 				cellrt7 = new CellRendererText();
 				col_stock_actual.Title = "Stock Almacen";
 				col_stock_actual.PackStart(cellrt7, true);
-				col_stock_actual.AddAttribute (cellrt7, "text", 7);     // la siguiente columna será 6 en vez de 7
+				col_stock_actual.AddAttribute (cellrt7, "text", 7);
 				col_stock_actual.SortColumnId = (int) Column_prod.col_stock_actual;
             	            	
 				col_grupoprod = new TreeViewColumn();
 				cellrt8 = new CellRendererText();
 				col_grupoprod.Title = "Grupo Producto";
 				col_grupoprod.PackStart(cellrt8, true);
-				col_grupoprod.AddAttribute (cellrt8, "text", 8); // la siguiente columna será 7 en vez de 8
+				col_grupoprod.AddAttribute (cellrt8, "text", 8);
 				col_grupoprod.SortColumnId = (int) Column_prod.col_grupoprod;
             
 				col_grupo1prod = new TreeViewColumn();
 				cellrt9 = new CellRendererText();
 				col_grupo1prod.Title = "Grupo1 Producto";
 				col_grupo1prod.PackStart(cellrt9, true);
-				col_grupo1prod.AddAttribute (cellrt9, "text", 9); // la siguiente columna será 9 en vez de 
+				col_grupo1prod.AddAttribute (cellrt9, "text", 9);
 				col_grupo1prod.SortColumnId = (int) Column_prod.col_grupo1prod;
                         
 				col_grupo2prod = new TreeViewColumn();
 				cellrt10 = new CellRendererText();
 				col_grupo2prod.Title = "Grupo2 Producto";
 				col_grupo2prod.PackStart(cellrt10, true);
-				col_grupo2prod.AddAttribute (cellrt10, "text", 10); // la siguiente columna será 10 en vez de 9
+				col_grupo2prod.AddAttribute (cellrt10, "text", 10);
 				col_grupo2prod.SortColumnId = (int) Column_prod.col_grupo2prod;
 								
 				lista_de_producto.AppendColumn(col_idproducto);  // 0
 				lista_de_producto.AppendColumn(col_desc_producto); // 1
-				//lista_de_producto.AppendColumn(col_precioprod);	//2
+				lista_de_producto.AppendColumn(col_empaque);	//2
 				//lista_de_producto.AppendColumn(col_ivaprod);	// 3
 				//lista_de_producto.AppendColumn(col_totalprod); // 4
 				//lista_de_producto.AppendColumn(col_descuentoprod); //5
@@ -1940,7 +1943,7 @@ namespace osiris
 		enum Column_prod
 		{
 			col_idproducto,			col_desc_producto,
-			col_precioprod,			col_ivaprod,
+			col_empaque,			col_ivaprod,
 			col_totalprod,			col_descuentoprod,
 			col_preciocondesc,		col_grupoprod,
 			col_grupo1prod,			col_grupo2prod,

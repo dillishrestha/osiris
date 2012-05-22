@@ -1,20 +1,21 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="osiris/cagos_modulos_medicos.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="osiris/rpt_proc_cobranza.cs">
     <Files>
-      <File FileName="osiris/class_conexion.cs" Line="10" Column="51" />
-      <File FileName="osiris/solicitud_materiales_medicos.cs" Line="1" Column="1" />
-      <File FileName="osiris/movimientos_productos.cs" Line="794" Column="1" />
-      <File FileName="osiris/rpt_almacen.cs" Line="1" Column="1" />
-      <File FileName="osiris/pases_a_quirofano.cs" Line="98" Column="3" />
-      <File FileName="osiris/cagos_modulos_medicos.cs" Line="1501" Column="3" />
+      <File FileName="osiris/class_public.cs" Line="59" Column="81" />
+      <File FileName="osiris/class_conexion.cs" Line="16" Column="2" />
+      <File FileName="osiris/captura_fac_ordenes_compra.cs" Line="1" Column="1" />
+      <File FileName="osiris/rpt_prot_admision.cs" Line="1" Column="1" />
+      <File FileName="osiris/registro_admision.cs" Line="1" Column="1" />
+      <File FileName="osiris/rpt_conceptos_proveedores.cs" Line="135" Column="95" />
+      <File FileName="osiris/rpt_proc_cobranza.cs" Line="279" Column="26" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
         <State expanded="True">
           <Node name="osiris" expanded="True">
             <Node name="References" expanded="True" />
-            <Node name="cagos_modulos_medicos.cs" selected="True" />
+            <Node name="rpt_proc_cobranza.cs" selected="True" />
           </Node>
         </State>
       </Pad>

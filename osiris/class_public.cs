@@ -46,7 +46,7 @@ namespace osiris
 		// Informacion de la Empresa
 		public string nombre_empresa = "CONTROL DE CLINICA S.C."; //"P R A C T I M E D"; "CONTROL DE CLINICA S.C."
 		public string nombre_empresa2 = "CONTROL DE CLINICA";  //"CONTROL DE CLINICA";
-		public string direccion_empresa = "Jose Angel Conchello 2880, Col. Victora"; //"Loma Grande 2703, Col. Loma de San Francisco"; //"Jose Angel Conchello 2880, Col. Victora"
+		public string direccion_empresa = "Loma Grande 2703, Col. Loma de San Francisco"; //"Loma Grande 2703, Col. Loma de San Francisco"; //"Jose Angel Conchello 2880, Col. Victora"
 		public string telefonofax_empresa = "Telefono: (01)(81) 8351-3610"; //"Telefono: (01)(81) 8040-6060"; // "Telefono: (01)(81) 8351-3610"
 		public string version_sistema = "Sistema Hospitalario OSIRIS ver. 1.0";
 		
@@ -82,10 +82,30 @@ namespace osiris
 		/// </returns>
 		public string CreatePasswordMD5(string password)
 		{
-			//SHA1CryptoServiceProvider sha1 = new SHA1CryptoServiceProvider();
 			MD5CryptoServiceProvider md5 = new MD5CryptoServiceProvider();
 			byte[] bs = System.Text.Encoding.UTF8.GetBytes(password);
 			bs = md5.ComputeHash(bs);
+			System.Text.StringBuilder s = new System.Text.StringBuilder();
+			foreach (byte b in bs){
+				s.Append(b.ToString("x2").ToLower());
+			}
+			return s.ToString();			
+		}
+		
+		/// <summary>
+		/// Creates the password SHA1.
+		/// </summary>
+		/// <returns>
+		/// The password SHA1.
+		/// </returns>
+		/// <param name='password'>
+		/// Password.
+		/// </param>
+		public string CreatePasswordSHA1(string password)
+		{
+			SHA1CryptoServiceProvider sha1 = new SHA1CryptoServiceProvider();
+			byte[] bs = System.Text.Encoding.UTF8.GetBytes(password);
+			bs = sha1.ComputeHash(bs);
 			System.Text.StringBuilder s = new System.Text.StringBuilder();
 			foreach (byte b in bs){
 				s.Append(b.ToString("x2").ToLower());

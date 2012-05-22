@@ -143,7 +143,7 @@ namespace osiris
 		TreeViewColumn col_costoprod_uni;		CellRendererText cellrt12;
 		CellRendererText cellrt13;
 		CellRendererText cellrt14;
-		CellRendererText cellrt15;
+		TreeViewColumn col_embalajeprod;		CellRendererText cellrt15;
 		//CellRendererCombo cellrt15;
 		TreeViewColumn col_aplica_iva;			CellRendererText cellrt19;
 		TreeViewColumn col_cobro_activo;		CellRendererText cellrt20;
@@ -196,6 +196,7 @@ namespace osiris
 			statusbar_captura_factura_orden_compra.Pop(0);
 			statusbar_captura_factura_orden_compra.Push(1, "login: "+LoginEmpleado+"  |Usuario: "+nombreempleado);
 			statusbar_captura_factura_orden_compra.HasResizeGrip = false;
+			
 			cell_combox_store = new ListStore(typeof (string));
 			cell_combox_store.AppendValues (" ");
 			cell_combox_store.AppendValues ("PIEZA");
@@ -1237,16 +1238,16 @@ namespace osiris
 			
 			col_idproducto = new TreeViewColumn();
 			cellrt0 = new CellRendererText();
-			col_idproducto.Title = "ID Producto"; // titulo de la cabecera de la columna, si está visible
+			col_idproducto.Title = "ID Producto";
 			col_idproducto.PackStart(cellrt0, true);
-			col_idproducto.AddAttribute (cellrt0, "text", 0);    // la siguiente columna será 1 en vez de 1
+			col_idproducto.AddAttribute (cellrt0, "text", 0);
 			col_idproducto.SortColumnId = (int) Column_prod.col_idproducto;
 			
 			col_desc_producto = new TreeViewColumn();
 			cellrt1 = new CellRendererText();
-			col_desc_producto.Title = "Descripcion de Producto"; // titulo de la cabecera de la columna, si está visible
+			col_desc_producto.Title = "Descripcion de Producto";
 			col_desc_producto.PackStart(cellrt1, true);
-			col_desc_producto.AddAttribute (cellrt1, "text", 1);    // la siguiente columna será 1 en vez de 1
+			col_desc_producto.AddAttribute (cellrt1, "text", 1);
 			col_desc_producto.SortColumnId = (int) Column_prod.col_desc_producto;
 			col_desc_producto.Resizable = true;
 			//cellr0.Editable = true;   // Permite edita este campo
@@ -1255,77 +1256,84 @@ namespace osiris
 			cellrt2 = new CellRendererText();
 			col_precioprod.Title = "Precio Producto";
 			col_precioprod.PackStart(cellrt2, true);
-			col_precioprod.AddAttribute (cellrt2, "text", 2); // la siguiente columna será 1 en vez de 2
+			col_precioprod.AddAttribute (cellrt2, "text", 2);
 			col_precioprod.SortColumnId = (int) Column_prod.col_precioprod;
 			
 			col_ivaprod = new TreeViewColumn();
 			cellrt3 = new CellRendererText();
 			col_ivaprod.Title = "I.V.A.";
 			col_ivaprod.PackStart(cellrt3, true);
-			col_ivaprod.AddAttribute (cellrt3, "text", 3); // la siguiente columna será 2 en vez de 3
+			col_ivaprod.AddAttribute (cellrt3, "text", 3);
 			col_ivaprod.SortColumnId = (int) Column_prod.col_ivaprod;
 			
 			col_totalprod = new TreeViewColumn();
 			cellrt4 = new CellRendererText();
 			col_totalprod.Title = "Total";
 			col_totalprod.PackStart(cellrt4, true);
-			col_totalprod.AddAttribute (cellrt4, "text", 4); // la siguiente columna será 3 en vez de 4
+			col_totalprod.AddAttribute (cellrt4, "text", 4);
 			col_totalprod.SortColumnId = (int) Column_prod.col_totalprod;
 			
 			col_descuentoprod = new TreeViewColumn();
 			cellrt5 = new CellRendererText();
 			col_descuentoprod.Title = "% Descuento";
 			col_descuentoprod.PackStart(cellrt5, true);
-			col_descuentoprod.AddAttribute (cellrt5, "text", 5); // la siguiente columna será 5 en vez de 6
+			col_descuentoprod.AddAttribute (cellrt5, "text", 5);
 			col_descuentoprod.SortColumnId = (int) Column_prod.col_descuentoprod;
 			
 			col_preciocondesc = new TreeViewColumn();
 			cellrt6 = new CellRendererText();
 			col_preciocondesc.Title = "Precio con Desc.";
 			col_preciocondesc.PackStart(cellrt6, true);
-			col_preciocondesc.AddAttribute (cellrt6, "text", 6);     // la siguiente columna será 6 en vez de 7
+			col_preciocondesc.AddAttribute (cellrt6, "text", 6);
 			col_preciocondesc.SortColumnId = (int) Column_prod.col_preciocondesc;
 			
 			col_grupoprod = new TreeViewColumn();
 			cellrt7 = new CellRendererText();
 			col_grupoprod.Title = "Grupo Producto";
 			col_grupoprod.PackStart(cellrt7, true);
-			col_grupoprod.AddAttribute (cellrt7, "text", 7); // la siguiente columna será 7 en vez de 8
+			col_grupoprod.AddAttribute (cellrt7, "text", 7);
 			col_grupoprod.SortColumnId = (int) Column_prod.col_grupoprod;
 			
 			col_grupo1prod = new TreeViewColumn();
 			cellrt8 = new CellRendererText();
 			col_grupo1prod.Title = "Grupo1 Producto";
 			col_grupo1prod.PackStart(cellrt8, true);
-			col_grupo1prod.AddAttribute (cellrt8, "text", 8); // la siguiente columna será 9 en vez de 
+			col_grupo1prod.AddAttribute (cellrt8, "text", 8);
 			col_grupo1prod.SortColumnId = (int) Column_prod.col_grupo1prod;
 			
 			col_grupo2prod = new TreeViewColumn();
 			cellrt9 = new CellRendererText();
 			col_grupo2prod.Title = "Grupo2 Producto";
 			col_grupo2prod.PackStart(cellrt9, true);
-			col_grupo2prod.AddAttribute (cellrt9, "text", 9); // la siguiente columna será 10 en vez de 9
+			col_grupo2prod.AddAttribute (cellrt9, "text", 9);
 			col_grupo2prod.SortColumnId = (int) Column_prod.col_grupo2prod;
 			
 			col_costoprod_uni = new TreeViewColumn();
 			cellrt12 = new CellRendererText();
 			col_costoprod_uni.Title = "Precio Unitario";
 			col_costoprod_uni.PackStart(cellrt12, true);
-			col_costoprod_uni.AddAttribute (cellrt12, "text", 12); // la siguiente columna será 1 en vez de 2
+			col_costoprod_uni.AddAttribute (cellrt12, "text", 12);
 			col_costoprod_uni.SortColumnId = (int) Column_prod.col_costoprod_uni;
+			
+			col_embalajeprod = new TreeViewColumn();
+			cellrt15 = new CellRendererText();
+			col_embalajeprod.Title = "Embalaje/Pack";
+			col_embalajeprod.PackStart(cellrt15, true);
+			col_embalajeprod.AddAttribute (cellrt15, "text", 15);
+			col_embalajeprod.SortColumnId = (int) Column_prod.col_embalajeprod;
 				
 			col_aplica_iva = new TreeViewColumn();
 			cellrt19 = new CellRendererText();
-			col_aplica_iva.Title = "Iva Activo?";
+			col_aplica_iva.Title = "Iva Activo";
 			col_aplica_iva.PackStart(cellrt19, true);
-			col_aplica_iva.AddAttribute (cellrt19, "text", 19); // la siguiente columna será 10 en vez de 9
+			col_aplica_iva.AddAttribute (cellrt19, "text", 19);
 			col_aplica_iva.SortColumnId = (int) Column_prod.col_aplica_iva;
 				
 			col_cobro_activo = new TreeViewColumn();
 			cellrt20 = new CellRendererText();
-			col_cobro_activo.Title = "Prod. Activo?";
+			col_cobro_activo.Title = "Prod. Activo";
 			col_cobro_activo.PackStart(cellrt20, true);
-			col_cobro_activo.AddAttribute (cellrt20, "text", 20); // la siguiente columna será 10 en vez de 9
+			col_cobro_activo.AddAttribute (cellrt20, "text", 20);
 			col_cobro_activo.SortColumnId = (int) Column_prod.col_cobro_activo;
 				
 			lista_de_producto.AppendColumn(col_idproducto);  // 0
@@ -1339,6 +1347,7 @@ namespace osiris
 			lista_de_producto.AppendColumn(col_grupo1prod);	//8
 			lista_de_producto.AppendColumn(col_grupo2prod);	//9
 			lista_de_producto.AppendColumn(col_costoprod_uni); //12
+			lista_de_producto.AppendColumn(col_embalajeprod);	//15
 			lista_de_producto.AppendColumn(col_aplica_iva);//19
 			lista_de_producto.AppendColumn(col_cobro_activo);//20
 		}
@@ -1352,7 +1361,9 @@ namespace osiris
 			col_grupo1prod,			col_grupo2prod,
 			col_nom_art,			col_nom_gen,
 			col_costoprod_uni,		col_porc_util,
-			col_costo_prod,			col_cant_embalaje,
+			col_costo_prod,
+			col_embalajeprod,
+			col_cant_embalaje,
 			col_id_gpo_prod,		col_id_gpo_prod1,
 			col_id_gpo_prod2,		col_aplica_iva,
 			col_cobro_activo,		col_aplica_desc

@@ -580,8 +580,8 @@ namespace osiris
 		void on_graba_informacion_clicked (object sender, EventArgs a)
 		{
 			// Validando Informacion vacia, minimo Nombre1-App-Apm-Fecha Nacimiento
-			bool validainfocaptura = (bool) verifica_datos();
-			if(validainfocaptura == false){	
+			//bool validainfocaptura = ;
+			if((bool) verifica_datos() == false){	
 				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
 											MessageType.Error, 
 											ButtonsType.Close, "Complete Informacion de Nombres, Apellidos, Fecha y RFC \n"+
@@ -597,25 +597,22 @@ namespace osiris
  
 				if (miResultado == ResponseType.Yes){					
 					if (_tipo_ == "nuevo"){						
-						bool verifica_pac = (bool) verifica_paciente();          		        		        		
-						if (verifica_pac == true){
+						//bool verifica_pac = ;          		        		        		
+						if ((bool) verifica_paciente() == true){
 							// Alamacena los datos del paciente cuando es nuevo
-							// Ademas valida los datos
-								
-							if ((bool) grabar_informacion()){
+							// Ademas valida los datos								
+							if ((bool) grabar_informacion_paciente()){
 	        					MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
 												MessageType.Info, 
 												ButtonsType.Close, "Nombre de Paciente : "+entry_nombre_1.Text.Trim()+" "+entry_apellido_paterno.Text.Trim()+"\n"+	
 												entry_apellido_materno.Text.Trim()+"\n Pid del Paciente : "+PidPaciente.ToString());
 								msgBoxError.Run ();
-								msgBoxError.Destroy();
-								
+								msgBoxError.Destroy();								
 								activa_los_entry(false);
 	               				combobox_tipo_paciente.Sensitive = false;
 	               				button_admision.Sensitive = true;  // Activando Boton de Internamiento de Paciente
 	               				entry_pid_paciente.Text = PidPaciente.ToString();
 								_tipo_ = "busca1";
-								//Console.WriteLine(_tipo_);
 									
 							}else{
 								MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
@@ -624,60 +621,51 @@ namespace osiris
 								msgBoxError.Run ();								msgBoxError.Destroy();
 							}	
 						}
-					}
-										
-					// Almaceno el encabezado de cobro
-					bool almaceno_encabezado = false;
-					
+					}										
+					// Almaceno en movcargos y despues en encabezado
+					bool almaceno_movcargos = true;					
 					if (_tipo_ == "busca1"){						
-						if (almacen_encabezado){
-							if (checkbutton_laboratorio.Active == true ||
+						if (checkbutton_laboratorio.Active == true ||
 									checkbutton_imagenologia.Active == true ||
 									checkbutton_rehabilitacion.Active == true ||
 									checkbutton_checkup.Active == true ||
 									checkbutton_consulta.Active == true ||
 									checkbutton_otros_servicios.Active == true ||
 									grabainternamiento ==  true){
-
-								// asignando folio de servicio
-								//this.folioservicio = ultimo_numero_atencion();
-								folioservicio = int.Parse(classpublic.lee_ultimonumero_registrado("osiris_erp_movcargos","folio_de_servicio",""));
-								this.button_imprimir_protocolo.Sensitive = true;
-								entry_folio_paciente.Text = folioservicio.ToString().Trim();
-								
-								almaceno_encabezado = almacena_encabezado_de_cobro(folioservicio);
-							}
-						}
-						
-						if (almaceno_encabezado == true){
+							// asignando folio de servicio
+							//this.folioservicio = ultimo_numero_atencion();
+							folioservicio = int.Parse(classpublic.lee_ultimonumero_registrado("osiris_erp_movcargos","folio_de_servicio",""));
+							button_imprimir_protocolo.Sensitive = true;
+							entry_folio_paciente.Text = folioservicio.ToString().Trim();
+							
 							// Almacenando en mov_cargos
 							if (checkbutton_consulta.Active == true){
-								graba_admision("CON-",16,folioservicio,false);
+								almaceno_movcargos = graba_admision("CENTRO MEDICO ",16,folioservicio,false);
 								checkbutton_consulta.Active = false;
 								checkbutton_consulta.Sensitive = false;
 								entry_folio_paciente.Text = folioservicio.ToString();}
 							if (checkbutton_laboratorio.Active == true && checkbutton_consulta.Active == false){
-								graba_admision("LAB-",400,folioservicio,false);
+								almaceno_movcargos = graba_admision("LABORATORIO ",400,folioservicio,false);
 								checkbutton_laboratorio.Active = false;
 								checkbutton_laboratorio.Sensitive = false;
 								entry_folio_paciente.Text = folioservicio.ToString();}
 							if (checkbutton_imagenologia.Active == true && checkbutton_consulta.Active == false){
-								graba_admision("IMG-",300,folioservicio,false);
+								almaceno_movcargos = graba_admision("IMAGENOLOGIA-RX ",300,folioservicio,false);
 								checkbutton_imagenologia.Active = false;
 								checkbutton_imagenologia.Sensitive = false;
 								entry_folio_paciente.Text = folioservicio.ToString();}
 							if (checkbutton_rehabilitacion.Active == true && checkbutton_consulta.Active == false){
-								graba_admision("REH-",200,folioservicio,false);
+								almaceno_movcargos = graba_admision("REHABILITACION ",200,folioservicio,false);
 								checkbutton_rehabilitacion.Active = false;
 								checkbutton_rehabilitacion.Sensitive = false;
-								entry_folio_paciente.Text = folioservicio.ToString();}
+								entry_folio_paciente.Text = folioservicio.ToString();}							
 							if (checkbutton_checkup.Active == true && checkbutton_consulta.Active == false){
-								graba_admision("CHE-",200,folioservicio,true);
+								almaceno_movcargos = graba_admision("CHECK-UP ",200,folioservicio,true);
 								checkbutton_checkup.Active = false;
 								checkbutton_checkup.Sensitive = false;
-								entry_folio_paciente.Text = folioservicio.ToString();}
+								entry_folio_paciente.Text = folioservicio.ToString();}							
 							if (checkbutton_otros_servicios.Active == true && checkbutton_consulta.Active == false){
-								graba_admision("OTS-",920,folioservicio,false);
+								almaceno_movcargos = graba_admision("OTROS SERVICIOS ",920,folioservicio,false);
 								checkbutton_otros_servicios.Active = false;
 								checkbutton_otros_servicios.Sensitive = false;
 								entry_folio_paciente.Text = folioservicio.ToString();}
@@ -685,134 +673,35 @@ namespace osiris
 							if (grabainternamiento ==  true && checkbutton_consulta.Active == false){
 								if ((bool)button_admision.Sensitive == true){
 									button_imprimir_protocolo.Sensitive = true;
-									//button_cons_informado.Sensitive = true;
-									//button_contrato_prest.Sensitive = true;
-									if (idtipointernamiento == 100){//Urgencias
-										this.button_admision.Sensitive = false;
-										this.button_grabar.Sensitive = false;
-										grabainternamiento =  false;
-										graba_admision("URG-",100,folioservicio,false);
-			        					entry_folio_paciente.Text = folioservicio.ToString();}
-					      			if (idtipointernamiento == 500){//Hospital
-					      				this.button_admision.Sensitive = false;
-					      				this.button_grabar.Sensitive = false;
-					      				grabainternamiento =  false;
-										graba_admision("HOS-",500,folioservicio,false);
-										entry_folio_paciente.Text = folioservicio.ToString();}
-					        		if (idtipointernamiento == 600){//Ginecologia-Tococirugia
-										this.button_admision.Sensitive = false;
-										this.button_grabar.Sensitive = false;
-										grabainternamiento =  false;
-										graba_admision("GINE-",600,folioservicio,false);
-			        					entry_folio_paciente.Text = folioservicio.ToString();}
-					        		if (idtipointernamiento == 700){//Quirofano
-										this.button_admision.Sensitive = false;
-										this.button_grabar.Sensitive = false;
-										grabainternamiento =  false;
-										graba_admision("QX-",700,folioservicio,false);
-										entry_folio_paciente.Text = folioservicio.ToString();}
-									if (idtipointernamiento == 810){//Terapia Adulto
-										this.button_admision.Sensitive = false;
-										this.button_grabar.Sensitive = false;
-										grabainternamiento =  false;
-										graba_admision("TAD-",810,folioservicio,false);
-										entry_folio_paciente.Text = folioservicio.ToString();}
-									if (idtipointernamiento == 820){//Terapia Pedriatrica
-										this.button_admision.Sensitive = false;
-										this.button_grabar.Sensitive = false;
-										grabainternamiento =  false;
-										graba_admision("TPE-",820,folioservicio,false);
-										entry_folio_paciente.Text = folioservicio.ToString();}
-				        			if (idtipointernamiento == 830){//Terapia Neonatal
-										this.button_admision.Sensitive = false;
-										this.button_grabar.Sensitive = false;
-										grabainternamiento =  false;
-										graba_admision("TNE-",830,folioservicio,false);
-										entry_folio_paciente.Text = folioservicio.ToString();}
-				        			if (idtipointernamiento == 710){//Endoscopia
-										this.button_admision.Sensitive = false;
-										this.button_grabar.Sensitive = false;
-										graba_admision("END-",710,folioservicio,false);
-										entry_folio_paciente.Text = folioservicio.ToString();}
-									if (idtipointernamiento == 930){//dontologia
-										this.button_admision.Sensitive = false;
-										this.button_grabar.Sensitive = false;
-										grabainternamiento =  false;
-										graba_admision("ODO-",930,folioservicio,false);
-										entry_folio_paciente.Text = folioservicio.ToString();}
-									if (idtipointernamiento == 940){//OFTALMOLOGIA
-										this.button_admision.Sensitive = false;
-										this.button_grabar.Sensitive = false;
-										grabainternamiento =  false;
-										graba_admision("OFT-",940,folioservicio,false);
-										entry_folio_paciente.Text = folioservicio.ToString();}
-									if (idtipointernamiento == 950){// CONSULTA MEDICA
-										this.button_admision.Sensitive = false;
-										this.button_grabar.Sensitive = false;
-										grabainternamiento =  false;
-										graba_admision("CON-",950,folioservicio,false);
-										entry_folio_paciente.Text = folioservicio.ToString();}
-									if (idtipointernamiento == 960){// VISION
-										this.button_admision.Sensitive = false;
-										this.button_grabar.Sensitive = false;
-										grabainternamiento =  false;
-										graba_admision("VIS-",960,folioservicio,false);
-										entry_folio_paciente.Text = folioservicio.ToString();}
-									if (idtipointernamiento == 970){// OPTICA
-										this.button_admision.Sensitive = false;
-										this.button_grabar.Sensitive = false;
-										grabainternamiento =  false;
-										graba_admision("OPT-",970,folioservicio,false);
-										entry_folio_paciente.Text = folioservicio.ToString();}
+									button_admision.Sensitive = false;
+									button_grabar.Sensitive = false;
+									grabainternamiento =  false;
+									almaceno_movcargos = graba_admision(tipointernamiento,idtipointernamiento,folioservicio,false);
+			        				//button_cons_informado.Sensitive = true;
+									//button_contrato_prest.Sensitive = true;									
 				        		}
-							}//if de checkeo de internamiento
-							llena_servicios_realizados(PidPaciente.ToString().Trim());
-							button_asignacion_habitacion.Clicked += new EventHandler(on_button_asignacion_habitacion_clicked);
-							
+							}
+							if (almaceno_movcargos == true){ 
+								bool almaceno_encabezado = almacena_encabezado_de_cobro(folioservicio);
+								llena_servicios_realizados(PidPaciente.ToString().Trim());
+								button_asignacion_habitacion.Clicked += new EventHandler(on_button_asignacion_habitacion_clicked);
+							}else{
+								MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+									MessageType.Error,ButtonsType.Close,"OSIRIS no grabo nada... contacte al administrador del Sistema");
+							msgBoxError.Run ();				msgBoxError.Destroy();
+							}
 						}else{
 							MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
-									MessageType.Info,ButtonsType.Close, 
-									"No se almacenan registros de cobranza ya que no eligio ningun tipo de ADMISION,"+
-									" solo se guardo la informacion del PACIENTE, NO se creo folio de Atencion");
+									MessageType.Error,ButtonsType.Close, 
+									"No eligio ningun un tipo de ADMISION,"+
+									" solo existe el numero de expediente del PACIENTE, OSIRS no ha podido crear el numero de Atencion");
 							msgBoxError.Run ();				msgBoxError.Destroy();
-						}
+						}	
 					}
 				}
 			}
 		}
 		
-		/*
-		public int ultimo_numero_atencion()
-		{
-			int folioservicio_ = 0;
-			NpgsqlConnection conexion; 
-			conexion = new NpgsqlConnection (connectionString+nombrebd );
-            
-			// Verifica que la base de datos este conectada
-			try{
-				conexion.Open ();
-				NpgsqlCommand comando; 
-				comando = conexion.CreateCommand ();
-
-				// asigna el numero de folio de ingreso de paciente (FOLIO)
-				comando.CommandText = "SELECT folio_de_servicio FROM osiris_erp_movcargos "+
-									"ORDER BY folio_de_servicio DESC LIMIT 1;";
-                              	
-				NpgsqlDataReader lector = comando.ExecuteReader ();
-				if ((bool) lector.Read())
-				{
-					folioservicio_ = (int) lector["folio_de_servicio"] + 1;
-					lector.Close ();
-				}
-			}catch (NpgsqlException ex){
-	   			MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
-							MessageType.Error,ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
-				msgBoxError.Run ();		msgBoxError.Destroy();
-			}
-			conexion.Close ();
-			return folioservicio_;
-		}*/
-			
 	    // Imprime protocolo de admision
 		void on_button_imprimir_protocolo_clicked (object sender, EventArgs args)
 		{
@@ -1765,7 +1654,7 @@ namespace osiris
 		// Graba informacion datos el paciente asignandole un numero de expediente
 		// ademas verifica que que si marco alguna admision grabe los datos correspondiente
 		// para que los pueda ver caja u urgencias, hospitalizacion, terapias
-		public bool grabar_informacion()
+		public bool grabar_informacion_paciente()
 		{
 			//bool agregar_registro = false;
 			
@@ -1840,34 +1729,19 @@ namespace osiris
 		// Actualizando la tabla de movimiento de servicios
 		// para que caja pueda lee la informacion
 		// Se dan de alta valores en movimientos por departamentos 
-		void graba_admision( string tiposervicio , int idtipoadmision, int folioservicio_,bool automatic_cargos)
+		bool graba_admision( string tiposervicio , int idtipoadmision, int folioservicio_,bool automatic_cargos)
 		{
+			bool validation_save = true;
 			NpgsqlConnection conexion; 
-			conexion = new NpgsqlConnection (connectionString+nombrebd );
-			           
-			// Verifica que la base de datos este conectada
-						
+			conexion = new NpgsqlConnection (connectionString+nombrebd );			           
+			// Verifica que la base de datos este conectada						
 			try{
+				int foliointernodep = int.Parse(classpublic.lee_ultimonumero_registrado("osiris_erp_movcargos","folio_de_servicio_dep","WHERE id_tipo_admisiones = '"+idtipoadmision.ToString()+"'"));               			
+				entry_folio_interno_dep.Text = entry_folio_interno_dep.Text+tiposervicio+foliointernodep.ToString()+" | ";
 				conexion.Open ();
 				NpgsqlCommand comando; 
 				comando = conexion.CreateCommand ();
-				
-				// Agregando Folios internos por departamento
-				comando.CommandText = "SELECT id_tipo_admisiones,folio_de_servicio_dep "+
-							"FROM osiris_erp_movcargos WHERE id_tipo_admisiones = '"+idtipoadmision.ToString()+"'"+
-							" ORDER BY folio_de_servicio_dep DESC LIMIT 1;";
-				//Console.WriteLine(comando.CommandText);
-				NpgsqlDataReader lector1 = comando.ExecuteReader ();
-				if ((bool) lector1.Read()){
-					int foliointernodep = (int) lector1["folio_de_servicio_dep"] + 1;
-               			
-					entry_folio_interno_dep.Text = entry_folio_interno_dep.Text+tiposervicio+foliointernodep.ToString()+" | ";
-               			
-					lector1.Close();
-               		folioservicio = int.Parse(classpublic.lee_ultimonumero_registrado("osiris_erp_movcargos","folio_de_servicio",""));
-					entry_folio_paciente.Text = folioservicio_.ToString();
-					// Agregando el nuevo registro al de movimientos
-					comando.CommandText = "INSERT INTO osiris_erp_movcargos (id_tipo_admisiones, id_empleado,"+
+				comando.CommandText = "INSERT INTO osiris_erp_movcargos (id_tipo_admisiones, id_empleado,"+
 								"fechahora_admision_registro,folio_de_servicio,folio_de_servicio_dep,pid_paciente,id_tipo_paciente,"+
 								"id_tipo_cirugia,nombre_de_cirugia,tipo_cirugia,descripcion_diagnostico_movcargos ) VALUES ('"+
 								idtipoadmision+"', '"+
@@ -1879,27 +1753,27 @@ namespace osiris
 								id_tipopaciente+"','"+
 								idcirugia+"','"+
 								"','"+
-								decirugia+"','"+
+								decirugia.ToUpper().Trim()+"','"+
 								diagnostico.ToUpper().Trim()+"');";
 					//Console.WriteLine(comando.CommandText);	
-					comando.ExecuteNonQuery();					comando.Dispose();
-					
+					comando.ExecuteNonQuery();				comando.Dispose();				
 					// almacena cargos automaticos cuando es un check-up
 					// afecta a la tabla cobros_deta
 					if(automatic_cargos == true){
 					
 					}
-					
-				}
+				validation_save = true;
 			}catch (NpgsqlException ex){
 				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
 										MessageType.Error, ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
 				msgBoxError.Run ();			msgBoxError.Destroy();
+				validation_save = false;
 			}
 			conexion.Close ();
+			return validation_save;
 		}
 		
-		public bool almacena_encabezado_de_cobro(int folioservicio_)
+		bool almacena_encabezado_de_cobro(int folioservicio_)
 		{
 			//folioservicio = int.Parse(classpublic.lee_ultimonumero_registrado("osiris_erp_movcargos","folio_de_servicio",""));
 			bool grabacion_sino = false;
@@ -2258,8 +2132,11 @@ namespace osiris
 			                 "descripcion_tipo_paciente","id_tipo_paciente",args_args,args_id_array);
 			entry_empresa.Sensitive = false;			        		        
 			// Creacion de Liststore
-			treeViewEngine = new TreeStore(typeof (string),typeof (string),typeof (string), typeof (string), 
-							typeof (string),typeof (string),typeof (string), typeof (string), typeof (string),typeof (string),typeof (bool));
+			treeViewEngine = new TreeStore(typeof (string),typeof (string),
+							typeof (string), typeof (string), 
+							typeof (string),typeof (string),typeof (string),
+							typeof (string), typeof (string),typeof (string),
+							typeof (string),typeof (bool));
 	        							   
 			treeview_servicios.Model = treeViewEngine;
 			treeViewEngine.SetSortColumnId (0, Gtk.SortType.Ascending);
@@ -2325,11 +2202,17 @@ namespace osiris
 			col_admitio.AddAttribute (cellrt1, "text", 9);
 			col_admitio.SortColumnId = (int) Column_serv.col_admitio;
 			
+			TreeViewColumn col_servmedico = new TreeViewColumn();
+			col_servmedico.Title = "Serv. Medico";
+			col_servmedico.PackStart(cellrt1, true);
+			col_servmedico.AddAttribute (cellrt1, "text", 10);
+			col_servmedico.SortColumnId = (int) Column_serv.col_servmedico;
+			
 			TreeViewColumn col_separacion = new TreeViewColumn();
 			CellRendererToggle cellrtogg = new  CellRendererToggle();
 			col_separacion.Title = "Separacion PQ.";
 			col_separacion.PackStart(cellrtogg, true);
-			col_separacion.AddAttribute (cellrtogg, "active", 10);
+			col_separacion.AddAttribute (cellrtogg, "active", 11);
 			col_separacion.SortColumnId = (int) Column_serv.col_separacion;
                         
 			treeview_servicios.AppendColumn(col_fecha);
@@ -2342,6 +2225,7 @@ namespace osiris
 			treeview_servicios.AppendColumn(col_tipo_paciente);
 			treeview_servicios.AppendColumn(col_empresaasegu);
 			treeview_servicios.AppendColumn(col_admitio);
+			treeview_servicios.AppendColumn(col_servmedico);
 		 	treeview_servicios.AppendColumn(col_separacion);
 			
 			//Llena treview de servicio realizados
@@ -2372,6 +2256,7 @@ namespace osiris
 			col_tipo_paciente,
 			col_empresaasegu,
 			col_admitio,
+			col_servmedico,
 			col_separacion
 		}
 		
@@ -2395,7 +2280,7 @@ namespace osiris
 									"osiris_his_tipo_pacientes.descripcion_tipo_paciente,osiris_erp_cobros_enca.id_empleado_admision,"+
 									"osiris_erp_cobros_enca.id_aseguradora,descripcion_aseguradora,"+
 									"osiris_erp_cobros_enca.id_empresa,descripcion_empresa,"+
-									"osiris_erp_cobros_enca.reservacion,"+
+									"osiris_erp_cobros_enca.reservacion,observacion_ingreso,"+
 									"osiris_erp_cobros_enca.fecha_reservacion,"+
 									"osiris_his_tipo_cirugias.descripcion_cirugia,"+
 									"to_char(osiris_erp_cobros_enca.numero_factura,'9999999999') AS numerofactura "+
@@ -2437,6 +2322,7 @@ namespace osiris
 															(string) lector["descripcion_tipo_paciente"],
 															aseguradora_empresa,
 															(string) lector["id_empleado_admision"],
+															(string) lector["observacion_ingreso"],
 						                             		(bool) lector["reservacion"]);
 					}
 					if (folioreservado == false && (bool) lector["reservacion"] == true){

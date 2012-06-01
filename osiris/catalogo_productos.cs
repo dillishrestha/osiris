@@ -1277,12 +1277,9 @@ namespace osiris
 					toma_valor = (string) model.GetValue(iterSelected, 22);
 					//this.entry_precios_costunitario_sannico.Text = toma_valor.Trim();
 					descripgrupo = (string) model.GetValue(iterSelected, 7);
-					idtipogrupo = int.Parse((string) model.GetValue(iterSelected, 16));
 					descripgrupo1 = (string) model.GetValue(iterSelected, 8);
-					idtipogrupo1 = int.Parse((string) model.GetValue(iterSelected, 17));
 					descripgrupo2 = (string) model.GetValue(iterSelected, 9);
-					idtipogrupo2 = int.Parse((string) model.GetValue(iterSelected, 18));
-					toma_valor = (string) model.GetValue(iterSelected, 14);
+					toma_valor = (string) model.GetValue(iterSelected, 14);					
 					//llenado_grupo("selecciona",descripgrupo,idtipogrupo);
 					llenado_combobox(1,descripgrupo,combobox_grupo,"sql","SELECT * FROM osiris_grupo_producto ORDER BY descripcion_grupo_producto;","descripcion_grupo_producto","id_grupo_producto",args_args,args_id_array);
 					llenado_combobox(1,descripgrupo1,combobox_grupo1,"sql","SELECT * FROM osiris_grupo1_producto ORDER BY descripcion_grupo1_producto;","descripcion_grupo1_producto","id_grupo1_producto",args_args,args_id_array);
@@ -1291,9 +1288,10 @@ namespace osiris
 					checkbutton_apl_iva.Active = (bool) model.GetValue(iterSelected, 19);
 					checkbutton_prod_activo.Active = (bool) model.GetValue(iterSelected, 20);
 					checkbutton_cambia_utilidad.Active = false;
-					
-					calculando_utilidad();
-					 					
+					idtipogrupo = int.Parse((string) model.GetValue(iterSelected, 16));
+					idtipogrupo1 = int.Parse((string) model.GetValue(iterSelected, 17));
+					idtipogrupo2 = int.Parse((string) model.GetValue(iterSelected, 18));
+					calculando_utilidad();					 					
 					if ((bool) model.GetValue(iterSelected, 21) == true){ 
 						this.checkbutton_descuento.Active = true;
 						apldesc = "true";

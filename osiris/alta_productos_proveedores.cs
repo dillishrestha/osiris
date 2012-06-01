@@ -92,6 +92,10 @@ namespace osiris
 		
 		string connectionString;
 		string nombrebd;
+		
+		string[] args_tipounidad = {"","PIEZA","KILO","LITRO","GRAMO","METRO","CENTIMETRO","CAJA","PULGADA","FRASCO","GALON","BOLSA"};
+		int[] args_id_array = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15};
+		
 		class_conexion conexion_a_DB = new class_conexion();
 		class_buscador classfind_data = new class_buscador();
 		
@@ -145,7 +149,7 @@ namespace osiris
 			entry_embalaje.KeyPressEvent += onKeyPressEvent_enter_valida;
 			entry_precio.KeyPressEvent += onKeyPressEvent_enter_valida;
 			entry_nombre_proveedor.IsEditable = false;			
-			llena_combo_tipounidad();
+			llenado_combobox(0,"",combobox_tipo_unidad,"array","","","",args_tipounidad,args_id_array);
 			statusbar_alta_producto.Pop(0);
 			statusbar_alta_producto.Push(1, "login: "+LoginEmpleado+"  |Usuario: "+NomEmpleado+" "+AppEmpleado+" "+ApmEmpleado);
 			statusbar_alta_producto.HasResizeGrip = false;
@@ -159,13 +163,11 @@ namespace osiris
 				NpgsqlConnection conexion; 
 				conexion = new NpgsqlConnection (connectionString+nombrebd);
 				// Verifica que la base de datos este conectada
-				try
-				{
+				try{
 					conexion.Open ();
 					NpgsqlCommand comando; 
-					comando = conexion.CreateCommand ();
-				
-								comando.CommandText = "SELECT descripcion_proveedor,direccion_proveedor,rfc_proveedor,curp_proveedor, "+
+					comando = conexion.CreateCommand ();				
+					comando.CommandText = "SELECT descripcion_proveedor,direccion_proveedor,rfc_proveedor,curp_proveedor, "+
 								"colonia_proveedor,municipio_proveedor,estado_proveedor,telefono1_proveedor, "+ 
 								"telefono2_proveedor,celular_proveedor,cp_proveedor, proveedor_activo, "+
 								"id_proveedor,contacto1_proveedor,mail_proveedor,pagina_web_proveedor, "+
@@ -193,46 +195,65 @@ namespace osiris
 			}
 		}
 		
-		void llena_combo_tipounidad()
-		{
-			combobox_tipo_unidad.Clear();
-			CellRendererText cell3 = new CellRendererText();
-			combobox_tipo_unidad.PackStart(cell3, true);
-			combobox_tipo_unidad.AddAttribute(cell3,"text",0);
-	        
-			ListStore store3 = new ListStore( typeof (string));
-			combobox_tipo_unidad.Model = store3;
-			
-				store3.AppendValues (" ");
-				store3.AppendValues ("PIEZA");
-				store3.AppendValues ("KILO");
-				store3.AppendValues ("LITRO");
-				store3.AppendValues ("GRAMO");
-				store3.AppendValues ("METRO");
-				store3.AppendValues ("CENTIMETRO");
-				store3.AppendValues ("CAJA");
-				store3.AppendValues ("PULGADA");
-				store3.AppendValues ("PAQUETE");
-			
-			TreeIter iter3;
-			if (store3.GetIterFirst(out iter3)){
-				combobox_tipo_unidad.SetActiveIter (iter3);
+		void llenado_combobox(int tipodellenado,string descrip_defaul,object obj,string sql_or_array,string query_SQL,string name_field_desc,string name_field_id,string[] args_array,int[] args_id_array)
+		{			
+			Gtk.ComboBox combobox_llenado = (Gtk.ComboBox) obj;
+			//Gtk.ComboBox combobox_pos_neg = obj as Gtk.ComboBox;
+			combobox_llenado.Clear();
+			CellRendererText cell = new CellRendererText();
+			combobox_llenado.PackStart(cell, true);
+			combobox_llenado.AddAttribute(cell,"text",0);	        
+			ListStore store = new ListStore( typeof (string),typeof (int));
+			combobox_llenado.Model = store;			
+			if ((int) tipodellenado == 1){
+				store.AppendValues ((string) descrip_defaul,0);
+			}			
+			if(sql_or_array == "array"){			
+				for (int colum_field = 0; colum_field < args_array.Length; colum_field++){
+					store.AppendValues (args_array[colum_field],args_id_array[colum_field]);
+				}
 			}
-			combobox_tipo_unidad.Changed += new EventHandler (onComboBoxChanged_tipo_unidad);
+			if(sql_or_array == "sql"){			
+				NpgsqlConnection conexion; 
+				conexion = new NpgsqlConnection (connectionString+nombrebd);
+	            // Verifica que la base de datos este conectada
+				try{
+					conexion.Open ();
+					NpgsqlCommand comando; 
+					comando = conexion.CreateCommand ();
+	               	comando.CommandText = query_SQL;					
+					NpgsqlDataReader lector = comando.ExecuteReader ();
+	               	while (lector.Read()){
+						store.AppendValues ((string) lector[ name_field_desc ], (int) lector[ name_field_id]);
+					}
+				}catch (NpgsqlException ex){
+					MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+											MessageType.Error,ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
+					msgBoxError.Run ();				msgBoxError.Destroy();
+				}
+				conexion.Close ();
+			}
+			TreeIter iter;
+			if (store.GetIterFirst(out iter)){
+				combobox_llenado.SetActiveIter (iter);
+			}
+			combobox_llenado.Changed += new EventHandler (onComboBoxChanged_llenado);			
 		}
 		
-		void onComboBoxChanged_tipo_unidad (object sender, EventArgs args)
+		void onComboBoxChanged_llenado (object sender, EventArgs args)
 		{
-	    	ComboBox combobox_tipo_unidad = sender as ComboBox;
-			if (sender == null){
-	    		return;
+			ComboBox onComboBoxChanged = sender as ComboBox;
+			if (sender == null){	return; }
+			TreeIter iter;
+			if (onComboBoxChanged.GetActiveIter (out iter)){
+				switch (onComboBoxChanged.Name.ToString()){				
+				case "combobox_tipo_unidad":
+					tipounidadproducto = (string) onComboBoxChanged.Model.GetValue(iter,0);
+					break;
+				}
 			}
-	  		TreeIter iter;
-	  		if (combobox_tipo_unidad.GetActiveIter (out iter)){
-				tipounidadproducto = (string) combobox_tipo_unidad.Model.GetValue(iter,0);    		 
-			}
-		}		
-		
+		}
+				
 		void on_button_quitar_aplicados_clicked (object sender, EventArgs args)
 		{
 			TreeIter iter;
@@ -276,8 +297,12 @@ namespace osiris
 		
 		void on_button_agrega_clicked(object sender, EventArgs args)	
 		{
+			agrega_producto_a_lista(false);
+		}
 		
-			this.button_guarda.Sensitive = true;
+		void agrega_producto_a_lista(bool type_action_addedit)
+		{
+			button_guarda.Sensitive = true;
 			if(entry_embalaje.Text == "" || entry_embalaje.Text == "0" || entry_codigo.Text == "" ||
 			   entry_clave.Text == "" || entry_producto.Text == "" || entry_id_proveedor.Text == "" ||
 			   entry_nombre_proveedor.Text == "" || this.entry_precio.Text == ""){
@@ -296,7 +321,7 @@ namespace osiris
 				precio_unitario = Convert.ToDecimal(precio)/Convert.ToDecimal(embalaje);
 
 
-				this.treeViewEngineproductos.AppendValues (false,
+				treeViewEngineproductos.AppendValues (type_action_addedit,
 				                                           id_provedor,
 				                                           entry_producto.Text.ToUpper(),
 				                                           float.Parse(this.entry_precio.Text).ToString("F"),precio_unitario.ToString("F"),
@@ -371,7 +396,7 @@ namespace osiris
 			
 			TreeViewColumn col_autorizar = new TreeViewColumn();
 			CellRendererToggle cel_autorizar = new CellRendererToggle();
-			col_autorizar.Title = "Autorizar"; // titulo de la cabecera de la columna, si está visible
+			col_autorizar.Title = "Grabado"; // titulo de la cabecera de la columna, si está visible
 			col_autorizar.PackStart(cel_autorizar, true);
 			col_autorizar.AddAttribute (cel_autorizar, "active", 0);
 			cel_autorizar.Activatable = true;
@@ -441,7 +466,7 @@ namespace osiris
             col_codigo_provedor.AddAttribute(cellrt8,"text", 9); // la siguiente columna será 7
             col_codigo_provedor.SortColumnId = (int) Col_productos.col_codigo_provedor;
             
-			//lista_productos_agregados.AppendColumn(col_autorizar);
+			lista_productos_agregados.AppendColumn(col_autorizar);
 			//lista_productos_agregados.AppendColumn(col_idproveedor);
 			lista_productos_agregados.AppendColumn(col_proveedor);
 			lista_productos_agregados.AppendColumn(col_precio);
@@ -775,7 +800,9 @@ namespace osiris
 						comando3.ExecuteNonQuery();
 						comando3.Dispose();
 						conexion3.Close();
-						togglebutton_editar.Active = false;	
+						agrega_producto_a_lista(true);
+						llenando_lista_de_aprobados();
+						togglebutton_editar.Active = false;
 					}catch (NpgsqlException ex){
 						MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
 							                                               MessageType.Error, 
@@ -786,7 +813,7 @@ namespace osiris
 				}
 			}else{
 				TreeIter iterSelected;
-				TreeIter iter;
+				//TreeIter iter;
 				MessageDialog msgBox1 = new MessageDialog (MyWin,DialogFlags.Modal,
 									MessageType.Question,ButtonsType.YesNo,"¿ Esta seguro que desea Guardar ?");
 				ResponseType miResultado = (ResponseType)msgBox1.Run ();
@@ -800,68 +827,73 @@ namespace osiris
 						conexion.Open ();
 						NpgsqlCommand comando; 
 						comando = conexion.CreateCommand();
-						if (this.treeViewEngineproductos.GetIterFirst (out iterSelected)){ 
-							comando.CommandText = "INSERT INTO osiris_catalogo_productos_proveedores("+
-								            "fechahora_creacion,"+
-									        "id_quien_creo,"+
-								            "id_proveedor,"+
-											"codigo_de_barra,"+ 
-											"codigo_producto_proveedor,"+
-											"cantidad_de_embalaje,"+
-											"tipo_unidad_producto,"+
-									        "precio_costo_unitario,"+
-								            "precio_costo,"+
-								            "clave,"+
-											"descripcion_producto) "+
-											"VALUES ('"+
-									        DateTime.Now.ToString("yyyy-MM-dd")+"','"+
-									        LoginEmpleado+"','"+
-											this.entry_id_proveedor.Text+"','"+//(int)this.lista_productos_agregados.Model.GetValue (iterSelected,1)+"','"+
-											(string)this.lista_productos_agregados.Model.GetValue (iterSelected,8)+"','"+
-											(string)this.lista_productos_agregados.Model.GetValue (iterSelected,9)+"','"+
-									        (string)this.lista_productos_agregados.Model.GetValue (iterSelected,6)+"','"+
-											(string)this.lista_productos_agregados.Model.GetValue (iterSelected,5)+"','"+
-											(string)this.lista_productos_agregados.Model.GetValue (iterSelected,4)+"','"+
-											(string)this.lista_productos_agregados.Model.GetValue (iterSelected,3)+"','"+
-											(string)this.lista_productos_agregados.Model.GetValue (iterSelected,7)+"','"+
-											(string)this.lista_productos_agregados.Model.GetValue (iterSelected,2)+"');";
-											//Console.WriteLine(comando.CommandText);
-							comando.ExecuteNonQuery();
-							comando.Dispose();	
-						
-							while (treeViewEngineproductos.IterNext(ref iterSelected)){
+						if (this.treeViewEngineproductos.GetIterFirst (out iterSelected)){
+							if((bool) lista_productos_agregados.Model.GetValue (iterSelected,0) == false){
+								treeViewEngineproductos.SetValue(iterSelected,0,true);
 								comando.CommandText = "INSERT INTO osiris_catalogo_productos_proveedores("+
 									            "fechahora_creacion,"+
-									            "id_quien_creo,"+
-											    "id_proveedor,"+
-							            		"codigo_de_barra,"+ 
-						                        "codigo_producto_proveedor,"+
-						                        "cantidad_de_embalaje,"+
-						                        "tipo_unidad_producto,"+
-						                        "precio_costo_unitario,"+
+										        "id_quien_creo,"+
+									            "id_proveedor,"+
+												"codigo_de_barra,"+ 
+												"codigo_producto_proveedor,"+
+												"cantidad_de_embalaje,"+
+												"tipo_unidad_producto,"+
+										        "precio_costo_unitario,"+
 									            "precio_costo,"+
 									            "clave,"+
-											    "descripcion_producto) "+
-											    "VALUES ('"+
+												"descripcion_producto) "+
+												"VALUES ('"+
 										        DateTime.Now.ToString("yyyy-MM-dd")+"','"+
-									            LoginEmpleado+"','"+
-										        this.entry_id_proveedor.Text+"','"+//(int)this.lista_productos_agregados.Model.GetValue (iterSelected,1)+"','"+
-											    (string)this.lista_productos_agregados.Model.GetValue (iterSelected,8)+"','"+
-									            (string)this.lista_productos_agregados.Model.GetValue (iterSelected,9)+"','"+
-											    (string)this.lista_productos_agregados.Model.GetValue (iterSelected,6)+"','"+
-											    (string)this.lista_productos_agregados.Model.GetValue (iterSelected,5)+"','"+
-											    (string)this.lista_productos_agregados.Model.GetValue (iterSelected,4)+"','"+
-											    (string)this.lista_productos_agregados.Model.GetValue (iterSelected,3)+"','"+
+										        LoginEmpleado+"','"+
+												this.entry_id_proveedor.Text+"','"+//(int)this.lista_productos_agregados.Model.GetValue (iterSelected,1)+"','"+
+												(string)this.lista_productos_agregados.Model.GetValue (iterSelected,8)+"','"+
+												(string)this.lista_productos_agregados.Model.GetValue (iterSelected,9)+"','"+
+										        (string)this.lista_productos_agregados.Model.GetValue (iterSelected,6)+"','"+
+												(string)this.lista_productos_agregados.Model.GetValue (iterSelected,5)+"','"+
+												(string)this.lista_productos_agregados.Model.GetValue (iterSelected,4)+"','"+
+												(string)this.lista_productos_agregados.Model.GetValue (iterSelected,3)+"','"+
 												(string)this.lista_productos_agregados.Model.GetValue (iterSelected,7)+"','"+
 												(string)this.lista_productos_agregados.Model.GetValue (iterSelected,2)+"');";
+												//Console.WriteLine(comando.CommandText);
 								comando.ExecuteNonQuery();
-								comando.Dispose();		
+								comando.Dispose();
+							}	
+							while (treeViewEngineproductos.IterNext(ref iterSelected)){
+								if((bool) lista_productos_agregados.Model.GetValue (iterSelected,0) == false){
+									treeViewEngineproductos.SetValue(iterSelected,0,true);
+									comando.CommandText = "INSERT INTO osiris_catalogo_productos_proveedores("+
+										            "fechahora_creacion,"+
+										            "id_quien_creo,"+
+												    "id_proveedor,"+
+								            		"codigo_de_barra,"+ 
+							                        "codigo_producto_proveedor,"+
+							                        "cantidad_de_embalaje,"+
+							                        "tipo_unidad_producto,"+
+							                        "precio_costo_unitario,"+
+										            "precio_costo,"+
+										            "clave,"+
+												    "descripcion_producto) "+
+												    "VALUES ('"+
+											        DateTime.Now.ToString("yyyy-MM-dd")+"','"+
+										            LoginEmpleado+"','"+
+											        this.entry_id_proveedor.Text+"','"+//(int)this.lista_productos_agregados.Model.GetValue (iterSelected,1)+"','"+
+												    (string)this.lista_productos_agregados.Model.GetValue (iterSelected,8)+"','"+
+										            (string)this.lista_productos_agregados.Model.GetValue (iterSelected,9)+"','"+
+												    (string)this.lista_productos_agregados.Model.GetValue (iterSelected,6)+"','"+
+												    (string)this.lista_productos_agregados.Model.GetValue (iterSelected,5)+"','"+
+												    (string)this.lista_productos_agregados.Model.GetValue (iterSelected,4)+"','"+
+												    (string)this.lista_productos_agregados.Model.GetValue (iterSelected,3)+"','"+
+													(string)this.lista_productos_agregados.Model.GetValue (iterSelected,7)+"','"+
+													(string)this.lista_productos_agregados.Model.GetValue (iterSelected,2)+"');";
+									comando.ExecuteNonQuery();
+									comando.Dispose();
+								}
 							}
 						}
 						MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
 						                                               MessageType.Info,ButtonsType.Close, " Los Productos se Grabaron Correctamente ");
 						msgBoxError.Run ();			msgBoxError.Destroy();
-						
+						llenando_lista_de_aprobados();
 					}catch (NpgsqlException ex){
 						MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
 						                                               MessageType.Error, 
@@ -1029,10 +1061,8 @@ namespace osiris
 						this.entry_embalaje.Text = (string) lector["cantidadembalaje"];
 						this.entry_codigo.Text = (string) lector["codigo_producto_proveedor"].ToString().ToUpper();
 						this.entry_cod_barras.Text = (string) lector["codigo_de_barra"];		
-						this.entry_clave.Text = (string) lector["clave"].ToString().ToUpper();	
-						//this.combobox_tipo_unidad = (string) lector["tipo_unidad_producto"];	
-						
-						llena_combo_tipounidad();
+						this.entry_clave.Text = (string) lector["clave"].ToString().ToUpper();
+						llenado_combobox(1,(string) lector["tipo_unidad_producto"],combobox_tipo_unidad,"array","","","",args_tipounidad,args_id_array);
 						
 					}				
 				}catch (NpgsqlException ex){

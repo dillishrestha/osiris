@@ -2042,7 +2042,8 @@ namespace osiris
  		}
  		void llenando_lista_de_productos()
  		{
- 			//Console.WriteLine("busco");
+ 			//string acceso_a_grupos = classpublic.lee_registro_de_tabla("osiris_almacenes","id_almacen"," WHERE osiris_almacenes.id_almacen = '"+idsubalmacen.ToString().Trim()+"' ","acceso_grupo_producto");
+			//Console.WriteLine("busco");
  			treeViewEngineBusca2.Clear(); // Limpia el treeview cuando realiza una nueva busqueda
 			string precio_a_tomar = "";    // en esta variable dejo el precio que va tomar para los direfentes clientes
 			
@@ -2099,6 +2100,7 @@ namespace osiris
 						"AND osiris_productos.id_grupo1_producto = osiris_grupo1_producto.id_grupo1_producto "+
 						"AND osiris_productos.id_grupo2_producto = osiris_grupo2_producto.id_grupo2_producto "+
 						"AND osiris_grupo_producto.agrupacion = 'MD1' "+
+						//"AND osiris_productos.id_grupo_producto IN("+acceso_a_grupos+") "+
 						"AND osiris_productos.cobro_activo = 'true' "+
 						"AND osiris_productos.descripcion_producto LIKE '%"+entry_expresion.Text.ToUpper().Trim()+"%' ORDER BY descripcion_producto;";
 				//Console.WriteLine(comando.CommandText.ToString());

@@ -153,6 +153,7 @@ namespace osiris
 		string descripcion_tipo_requi = "";	// descripcion del tipo de requisicion
 		bool requi_ordinaria = false;
 		bool requi_urgente = false;
+		int idtiporequi;
 		bool enviadacompras = false;			// Verifica que la requisicion este enviada a compras
 				
 		string nombre_proveedor1;
@@ -161,6 +162,7 @@ namespace osiris
 		
 		string centrocosto = "";
     	string campoacceso = "";
+		string accesocentrocosto = "";
     	
     	int idrequisicion = 0;
     	int accesomodulo = 0;
@@ -173,6 +175,9 @@ namespace osiris
     	
     	int contador_items_requisados = 0;	// cuenta los items que son requisados
     	int contador_items_autorizadoscompra = 0;	// cuenta los items autorizados para comprar
+		
+		string[] args_args = {""};
+		int[] args_id_array = {0,1,2,3,4,5,6,7,8,9};
 		    	
     	TreeStore treeViewEngineBusca2;				// Para la busqueda de Productos
     	TreeStore treeViewEngineRequisicion; 		// Lista de proctos en una requisicion
@@ -267,7 +272,7 @@ namespace osiris
 			button_enviopara_autorizar.Clicked += new EventHandler(on_button_enviopara_autorizar_clicked);
 			
 			// Autorizar productos para poder comprar
-			this.button_autorizar_compra.Clicked += new EventHandler(on_button_autorizar_compra_clicked);
+			button_autorizar_compra.Clicked += new EventHandler(on_button_autorizar_compra_clicked);
 			
 			// Busca proveedores
 			button_busca_proveedores1.Clicked += new EventHandler(on_button_busca_proveedores1_clicked);
@@ -278,26 +283,35 @@ namespace osiris
 			button_exportar.Clicked += new EventHandler(on_button_exportar_clicked);
 						
 			// Desactivando Entrys y Combobox
-			this.entry_fecha_solicitud.Sensitive = false;
+			entry_fecha_solicitud.Sensitive = false;
 			
-			this.entry_dia_requerida.Sensitive = false;
-			this.entry_mes_requerida.Sensitive = false;
-			this.entry_ano_requerida.Sensitive = false;
+			entry_dia_requerida.Sensitive = false;
+			entry_mes_requerida.Sensitive = false;
+			entry_ano_requerida.Sensitive = false;
 			
-			this.combobox_tipo_admision.Sensitive = false;
-			this.combobox_tipo_admision2.Sensitive = false;
-			this.entry_observaciones.Sensitive = false;
+			combobox_tipo_admision.Sensitive = false;
+			combobox_tipo_admision2.Sensitive = false;
+			entry_observaciones.Sensitive = false;
 			entry_motivo.Sensitive = false;
 			entry_solicitado_por.Sensitive = false;
-			this.button_guardar_requisicion.Sensitive = false;
-			this.button_envio_compras.Sensitive = false;
-			this.button_autorizar_compra.Sensitive = false;
-			this.button_enviopara_autorizar.Sensitive = false;
-			this.combobox_tipo_requisicion.Sensitive = false;
-			this.button_busca_proveedores1.Sensitive = false;
-			this.button_busca_proveedores2.Sensitive = false;
-			this.button_busca_proveedores3.Sensitive = false;
+			button_guardar_requisicion.Sensitive = false;
+			button_envio_compras.Sensitive = false;
+			button_autorizar_compra.Sensitive = false;
+			button_enviopara_autorizar.Sensitive = false;
+			combobox_tipo_requisicion.Sensitive = false;
+			button_busca_proveedores1.Sensitive = false;
+			button_busca_proveedores2.Sensitive = false;
+			button_busca_proveedores3.Sensitive = false;
 			button_exportar.Sensitive = false;
+			bool primero = true;
+			foreach (int i in this.array_idtipoadmisiones){
+				if (primero == true){
+					accesocentrocosto = i.ToString();
+					primero = false;
+				}else{
+					accesocentrocosto = accesocentrocosto + "','"+i.ToString();
+				}				
+			}
 									
 			statusbar_almacen_requi.Pop(0);
 			statusbar_almacen_requi.Push(1, "login: "+LoginEmpleado+"  |Usuario: "+NomEmpleado+" "+AppEmpleado+" "+ApmEmpleado);
@@ -390,38 +404,42 @@ namespace osiris
 		 			// Limpiando TreeView
 		 			treeViewEngineRequisicion.Clear();
 		 			// Desactivando los botones
-		 			this.entry_requisicion.Text = "";
-		 			this.button_busca_requisicion.Sensitive = false;
-		 			this.entry_fecha_solicitud.Sensitive = false;		 			
-					this.entry_dia_requerida.Sensitive = true;
-					this.entry_mes_requerida.Sensitive = true;
-					this.entry_ano_requerida.Sensitive = true;			
-					this.combobox_tipo_admision.Sensitive = true;
-					this.combobox_tipo_admision2.Sensitive = true;
-					this.entry_observaciones.Sensitive = true;
-					this.button_guardar_requisicion.Sensitive = true;
-					this.entry_requisicion.Sensitive = false;
-					this.button_selecciona_requisicion.Sensitive = false;
-					this.button_enviopara_autorizar.Sensitive = false;
-					this.combobox_tipo_requisicion.Sensitive = true;
-					this.button_busca_producto.Sensitive = true;
-					this.button_busca_proveedores1.Sensitive = true;
-					this.button_busca_proveedores2.Sensitive = true;
-					this.button_busca_proveedores3.Sensitive = true;
+		 			entry_requisicion.Text = "";
+		 			button_busca_requisicion.Sensitive = false;
+		 			entry_fecha_solicitud.Sensitive = false;		 			
+					entry_dia_requerida.Sensitive = true;
+					entry_mes_requerida.Sensitive = true;
+					entry_ano_requerida.Sensitive = true;			
+					combobox_tipo_admision.Sensitive = true;
+					combobox_tipo_admision2.Sensitive = true;
+					entry_observaciones.Sensitive = true;
+					button_guardar_requisicion.Sensitive = true;
+					entry_requisicion.Sensitive = false;
+					button_selecciona_requisicion.Sensitive = false;
+					button_enviopara_autorizar.Sensitive = false;
+					combobox_tipo_requisicion.Sensitive = true;
+					button_busca_producto.Sensitive = true;
+					button_busca_proveedores1.Sensitive = true;
+					button_busca_proveedores2.Sensitive = true;
+					button_busca_proveedores3.Sensitive = true;
 					entry_motivo.Sensitive = true;
 					button_exportar.Sensitive = false;
 					entry_solicitado_por.Sensitive = true;
 					// Limpiando Variables
-					this.entry_observaciones.Text = "";
-					this.entry_status_requisicion.Text = "";					
+					entry_observaciones.Text = "";
+					entry_status_requisicion.Text = "";					
 					editar = false;										
-					creacion_del_combobox(1,"","",false,false,"");
-					this.requi_ordinaria = false;
-					this.requi_urgente = false;
-					this.enviadacompras = false;
-					this.descripinternamiento = "";
-					this.descripinternamiento2 = "";
-					this.descripcion_tipo_requi = "";													
+					//creacion_del_combobox(1,"","",false,false,"");
+					llenado_combobox(0,"",combobox_tipo_admision,"sql","SELECT * FROM osiris_his_tipo_admisiones WHERE id_tipo_admisiones IN('"+accesocentrocosto+"') AND id_tipo_admisiones ='"+idcentrocosto.ToString().Trim()+"' ORDER BY descripcion_admisiones;","descripcion_admisiones","id_tipo_admisiones",args_args,args_id_array);
+					llenado_combobox(0,"",combobox_tipo_admision2,"sql","SELECT * FROM osiris_his_tipo_admisiones WHERE id_tipo_admisiones IN('"+accesocentrocosto+"') ORDER BY descripcion_admisiones;","descripcion_admisiones","id_tipo_admisiones",args_args,args_id_array);
+					llenado_combobox(0,"",combobox_tipo_requisicion,"sql","SELECT * FROM osiris_erp_tipo_requisiciones_compra WHERE activo = 'true' ORDER BY id_tipo_requisicion_compra;","descripcion_tipo_requisicion","id_tipo_requisicion_compra",args_args,args_id_array);
+					
+					requi_ordinaria = false;
+					requi_urgente = false;
+					enviadacompras = false;
+					descripinternamiento = "";
+					descripinternamiento2 = "";
+					descripcion_tipo_requi = "";													
 		 		}else{
 		 			checkbutton_nueva_requisicion.Active = false;
 		 			this.entry_requisicion.Sensitive = true;
@@ -446,40 +464,6 @@ namespace osiris
 				entry_solicitado_por.Sensitive = false;
 				button_exportar.Sensitive = false;
 		 	}
-		 }
-		
-		void onComboBoxChanged_tipo_admision (object sender, EventArgs args)
-		{
-    		ComboBox combobox_tipo_admision = sender as ComboBox;
-			if (sender == null){return;}
-	  		TreeIter iter;
-	  		if (combobox_tipo_admision.GetActiveIter (out iter)){
-		    	idtipointernamiento = (int) combobox_tipo_admision.Model.GetValue(iter,1);
-		    	descripinternamiento = (string) combobox_tipo_admision.Model.GetValue(iter,0);
-	     	}
-		}
-		
-		void onComboBoxChanged_tipo_admision2 (object sender, EventArgs args)
-		{
-    		ComboBox combobox_tipo_admision2 = sender as ComboBox;
-			if (sender == null){return;}
-	  		TreeIter iter;
-	  		if (combobox_tipo_admision2.GetActiveIter (out iter)){
-		    	idtipointernamiento2 = (int) combobox_tipo_admision2.Model.GetValue(iter,1);
-		    	descripinternamiento2 = (string) combobox_tipo_admision2.Model.GetValue(iter,0);
-	     	}
-		}
-		
-		void onComboBoxChanged_combobox_tipo_requisicion(object sender, EventArgs args)
-		{
-    		ComboBox combobox_tipo_requisicion = sender as ComboBox;
-			if (sender == null){return;}
-	  		TreeIter iter;
-	  		if (this.combobox_tipo_requisicion.GetActiveIter (out iter)){
-		    	descripcion_tipo_requi = (string) combobox_tipo_requisicion.Model.GetValue(iter,0);
-		    	requi_ordinaria = (bool) combobox_tipo_requisicion.Model.GetValue(iter,1);
-				requi_urgente = (bool) combobox_tipo_requisicion.Model.GetValue(iter,2);
-	     	}
 		}
 		
 		void on_button_busca_producto_clicked (object sender, EventArgs args)
@@ -807,11 +791,13 @@ namespace osiris
 									"requisicion_ordinaria,requisicion_urgente,"+
 									"enviada_a_compras,fechahora_envio_compras,observaciones,motivo_requisicion,"+
 									"cancelado,nombre1_empleado,nombre2_empleado,apellido_paterno_empleado,apellido_materno_empleado,"+
-									"fechahora_autorizacion_comprar,autorizacion_para_comprar,items_autorizados_paracomprar,total_items_comprados "+
-				  					"FROM osiris_erp_requisicion_enca,osiris_his_tipo_admisiones,osiris_empleado "+
+									"fechahora_autorizacion_comprar,autorizacion_para_comprar,items_autorizados_paracomprar,total_items_comprados, " +
+									"osiris_erp_requisicion_enca.id_tipo_requisicion_compra AS idtiporequicompra,osiris_erp_tipo_requisiciones_compra.descripcion_tipo_requisicion "+
+				  					"FROM osiris_erp_requisicion_enca,osiris_his_tipo_admisiones,osiris_empleado,osiris_erp_tipo_requisiciones_compra "+
 									"WHERE osiris_erp_requisicion_enca.id_tipo_admisiones = osiris_his_tipo_admisiones.id_tipo_admisiones "+
 									"AND osiris_erp_requisicion_enca.id_quien_requiso = osiris_empleado.login_empleado "+
-									"AND cancelado = 'false' "+
+									"AND cancelado = 'false' " +
+									"AND osiris_erp_requisicion_enca.id_tipo_requisicion_compra = osiris_erp_tipo_requisiciones_compra.id_tipo_requisicion_compra "+
 									"AND id_requisicion = '"+this.entry_requisicion.Text.Trim()+"';";
 				
 				//Console.WriteLine(comando.CommandText);
@@ -821,15 +807,11 @@ namespace osiris
 					editar = true;
 					button_exportar.Sensitive = true;
 					if (centrocosto == "COMPRAS" && accesomodulo == 0){
-						if ((bool) lector["requisicion_ordinaria"] == true){
-							tiporequisicion_ = "ORDINARIA";
-						}
-						if ((bool) lector["requisicion_urgente"] == true){
-							tiporequisicion_ = "URGENTE";
-						}
+						tiporequisicion_ = (string) lector["descripcion_tipo_requisicion"];
 						
-						creacion_del_combobox(0,(string) lector["descripcion_admisiones"] ,(string) lector["descripcion_admisiones_cargada"],
-												(bool) lector["requisicion_ordinaria"],(bool) lector["requisicion_urgente"],(string) tiporequisicion_);
+						llenado_combobox(1,(string) lector["descripcion_admisiones"],combobox_tipo_admision,"sql","SELECT * FROM osiris_his_tipo_admisiones WHERE id_tipo_admisiones IN('"+accesocentrocosto+"') AND id_tipo_admisiones ='"+idcentrocosto.ToString().Trim()+"' ORDER BY descripcion_admisiones;","descripcion_admisiones","id_tipo_admisiones",args_args,args_id_array);
+						llenado_combobox(1,(string) lector["descripcion_admisiones_cargada"],combobox_tipo_admision2,"sql","SELECT * FROM osiris_his_tipo_admisiones WHERE id_tipo_admisiones IN('"+accesocentrocosto+"') ORDER BY descripcion_admisiones;","descripcion_admisiones","id_tipo_admisiones",args_args,args_id_array);
+						llenado_combobox(1,(string) lector["descripcion_tipo_requisicion"],combobox_tipo_requisicion,"sql","SELECT * FROM osiris_erp_tipo_requisiciones_compra WHERE activo = 'true' ORDER BY id_tipo_requisicion_compra;","descripcion_tipo_requisicion","id_tipo_requisicion_compra",args_args,args_id_array);
 						
 						idrequisicion = int.Parse((string) this.entry_requisicion.Text.Trim());
 						entry_motivo.Text = (string) lector["motivo_requisicion"].ToString().Trim();
@@ -982,16 +964,18 @@ namespace osiris
 						this.entry_totalitems_productos.Text = contador_items_requisados.ToString().Trim();					
     				}else{
     					if ( idcentrocosto == (int) lector["id_tipo_admisiones"]){
+							tiporequisicion_ = (string) lector["descripcion_tipo_requisicion"];
 						
-							if ((bool) lector["requisicion_ordinaria"] == true){
-								tiporequisicion_ = "ORDINARIA";
-							}
-							if ((bool) lector["requisicion_urgente"] == true){
-								tiporequisicion_ = "URGENTE";
-							}
+							llenado_combobox(1,(string) lector["descripcion_admisiones"],combobox_tipo_admision,"sql","SELECT * FROM osiris_his_tipo_admisiones WHERE id_tipo_admisiones IN('"+accesocentrocosto+"') AND id_tipo_admisiones ='"+idcentrocosto.ToString().Trim()+"' ORDER BY descripcion_admisiones;","descripcion_admisiones","id_tipo_admisiones",args_args,args_id_array);
+							llenado_combobox(1,(string) lector["descripcion_admisiones_cargada"],combobox_tipo_admision2,"sql","SELECT * FROM osiris_his_tipo_admisiones WHERE id_tipo_admisiones IN('"+accesocentrocosto+"') ORDER BY descripcion_admisiones;","descripcion_admisiones","id_tipo_admisiones",args_args,args_id_array);
+							llenado_combobox(1,(string) lector["descripcion_tipo_requisicion"],combobox_tipo_requisicion,"sql","SELECT * FROM osiris_erp_tipo_requisiciones_compra WHERE activo = 'true' ORDER BY id_tipo_requisicion_compra;","descripcion_tipo_requisicion","id_tipo_requisicion_compra",args_args,args_id_array);
+						
 							
-							creacion_del_combobox(0,(string) lector["descripcion_admisiones"] ,(string) lector["descripcion_admisiones_cargada"],
-													(bool) lector["requisicion_ordinaria"],(bool) lector["requisicion_urgente"],(string) tiporequisicion_);
+							//llenado_combobox(0,(string) lector["descripcion_admisiones"],combobox_tipo_admision,"sql","SELECT * FROM osiris_his_tipo_admisiones WHERE id_tipo_admisiones IN('"+accesocentrocosto+"') AND id_tipo_admisiones ='"+idcentrocosto.ToString().Trim()+"' ORDER BY descripcion_admisiones;","descripcion_admisiones","id_tipo_admisiones",args_args,args_id_array);
+							//llenado_combobox(0,"",combobox_estado_civil,"array","","","",args_estado_civil,args_id_array);
+							
+							//creacion_del_combobox(0,(string) lector["descripcion_admisiones"] ,(string) lector["descripcion_admisiones_cargada"],
+							//						(bool) lector["requisicion_ordinaria"],(bool) lector["requisicion_urgente"],(string) tiporequisicion_);
 							
 							idrequisicion = int.Parse((string) this.entry_requisicion.Text.Trim());
 							entry_motivo.Text = (string) lector["motivo_requisicion"].ToString().Trim();
@@ -1132,44 +1116,25 @@ namespace osiris
 			conexion.Close();
  		}
 		
-		void creacion_del_combobox(int tipocombobox,string solicitadopor,string concargoa,bool ordinaria_,bool urgente_,string tiporequisicion_)
-		{
-			idtipointernamiento = idcentrocosto;
-			string accesocentrocosto = "";
-			bool primero = true;
-			
-			// Declarando Combobox
-			combobox_tipo_admision.Clear();
-			CellRendererText cell1 = new CellRendererText();
-			combobox_tipo_admision.PackStart(cell1, true);
-			combobox_tipo_admision.AddAttribute(cell1,"text",0);
-			ListStore store1 = new ListStore( typeof (string), typeof (int));
-			combobox_tipo_admision.Model = store1;
-			
-			combobox_tipo_admision2.Clear();
-			CellRendererText cell2 = new CellRendererText();
-			combobox_tipo_admision2.PackStart(cell2, true);
-			combobox_tipo_admision2.AddAttribute(cell2,"text",0);
-	        ListStore store2 = new ListStore( typeof (string), typeof (int));
-			combobox_tipo_admision2.Model = store2;
-			
-			combobox_tipo_requisicion.Clear();
-			CellRendererText cell3 = new CellRendererText();
-			combobox_tipo_requisicion.PackStart(cell3, true);
-			combobox_tipo_requisicion.AddAttribute(cell3,"text",0);
-			ListStore store3 = new ListStore( typeof (string), typeof (bool),typeof (bool));
-			combobox_tipo_requisicion.Model = store3;
-						
-			if(tipocombobox == 1){			
-				foreach (int i in this.array_idtipoadmisiones){
-					if (primero == true){
-						accesocentrocosto = i.ToString();
-						primero = false;
-					}else{
-						accesocentrocosto = accesocentrocosto + "','"+i.ToString();
-					}				
+		void llenado_combobox(int tipodellenado,string descrip_defaul,object obj,string sql_or_array,string query_SQL,string name_field_desc,string name_field_id,string[] args_array,int[] args_id_array)
+		{			
+			Gtk.ComboBox combobox_llenado = (Gtk.ComboBox) obj;
+			//Gtk.ComboBox combobox_pos_neg = obj as Gtk.ComboBox;
+			combobox_llenado.Clear();
+			CellRendererText cell = new CellRendererText();
+			combobox_llenado.PackStart(cell, true);
+			combobox_llenado.AddAttribute(cell,"text",0);	        
+			ListStore store = new ListStore( typeof (string),typeof (int));
+			combobox_llenado.Model = store;			
+			if ((int) tipodellenado == 1){
+				store.AppendValues ((string) descrip_defaul,0);
+			}			
+			if(sql_or_array == "array"){			
+				for (int colum_field = 0; colum_field < args_array.Length; colum_field++){
+					store.AppendValues (args_array[colum_field],args_id_array[colum_field]);
 				}
-				// lleno de la tabla de his_tipo_de_admisiones
+			}
+			if(sql_or_array == "sql"){			
 				NpgsqlConnection conexion; 
 				conexion = new NpgsqlConnection (connectionString+nombrebd);
 	            // Verifica que la base de datos este conectada
@@ -1177,16 +1142,10 @@ namespace osiris
 					conexion.Open ();
 					NpgsqlCommand comando; 
 					comando = conexion.CreateCommand ();
-	               	comando.CommandText = "SELECT * FROM osiris_his_tipo_admisiones "+
-	               						"WHERE id_tipo_admisiones IN('"+accesocentrocosto+"')"+
-	               						"ORDER BY descripcion_admisiones;";
-					//Console.WriteLine(comando.CommandText);
+	               	comando.CommandText = query_SQL;					
 					NpgsqlDataReader lector = comando.ExecuteReader ();
 	               	while (lector.Read()){
-	               		if((int) lector["id_tipo_admisiones"] == idtipointernamiento){
-							store1.AppendValues ((string) lector["descripcion_admisiones"], (int) lector["id_tipo_admisiones"]);
-						}
-						store2.AppendValues ((string) lector["descripcion_admisiones"], (int) lector["id_tipo_admisiones"]);					
+						store.AppendValues ((string) lector[ name_field_desc ], (int) lector[ name_field_id]);
 					}
 				}catch (NpgsqlException ex){
 					MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
@@ -1194,34 +1153,43 @@ namespace osiris
 					msgBoxError.Run ();				msgBoxError.Destroy();
 				}
 				conexion.Close ();
-				
-				// Llenado de combobox3 
-				store3.AppendValues ("",false,false);
-				store3.AppendValues ("ORDINARIA",true,false);
-				store3.AppendValues ("URGENTE",false,true);
-			}else{
-				store1.AppendValues ((string) solicitadopor,0);
-				store2.AppendValues ((string) concargoa,0);
-				store3.AppendValues ((string) tiporequisicion_,(bool) ordinaria_,(bool) urgente_);
+			}			
+			TreeIter iter;
+			if (store.GetIterFirst(out iter)){
+				combobox_llenado.SetActiveIter (iter);
 			}
-			TreeIter iter1;
-			if (store1.GetIterFirst(out iter1)){
-				//Console.WriteLine(iter2);
-				combobox_tipo_admision.SetActiveIter (iter1);
-			}			
-			TreeIter iter2;
-			if (store2.GetIterFirst(out iter2)){
-				//Console.WriteLine(iter2);
-				combobox_tipo_admision2.SetActiveIter (iter2);
-			}			
-			TreeIter iter3;
-			if (store3.GetIterFirst(out iter3)){
-				//Console.WriteLine(iter2);
-				combobox_tipo_requisicion.SetActiveIter (iter3);
-			}						
-			combobox_tipo_admision.Changed += new EventHandler (onComboBoxChanged_tipo_admision);
-			combobox_tipo_admision2.Changed += new EventHandler (onComboBoxChanged_tipo_admision2);
-			combobox_tipo_requisicion.Changed += new EventHandler (onComboBoxChanged_combobox_tipo_requisicion);
+			combobox_llenado.Changed += new EventHandler (onComboBoxChanged_llenado);			
+		}
+		
+		void onComboBoxChanged_llenado (object sender, EventArgs args)
+		{
+			ComboBox onComboBoxChanged = sender as ComboBox;
+			if (sender == null){	return; }
+			TreeIter iter;
+			if (onComboBoxChanged.GetActiveIter (out iter)){
+				switch (onComboBoxChanged.Name.ToString()){	
+				case "combobox_tipo_admision":
+					idtipointernamiento = (int) combobox_tipo_admision.Model.GetValue(iter,1);
+		    		descripinternamiento = (string) combobox_tipo_admision.Model.GetValue(iter,0);
+					break;
+				case "combobox_tipo_admision2":
+					idtipointernamiento2 = (int) combobox_tipo_admision2.Model.GetValue(iter,1);
+		    		descripinternamiento2 = (string) combobox_tipo_admision2.Model.GetValue(iter,0);					
+					break;
+				case "combobox_tipo_requisicion":
+					idtiporequi = (int) combobox_tipo_requisicion.Model.GetValue(iter,1);
+					descripcion_tipo_requi = (string) combobox_tipo_requisicion.Model.GetValue(iter,0);
+					if(idtiporequi == 2){
+						requi_ordinaria = true;
+						requi_urgente = false;
+					}
+					if(idtiporequi == 3){
+						requi_ordinaria = false;
+						requi_urgente = true;
+					}					
+					break;
+				}
+			}
 		}
  		 		
  		void on_button_guardar_requisicion_clicked(object sender, EventArgs args)
@@ -1245,7 +1213,7 @@ namespace osiris
 		{
 			string ultima_requisicion = this.entry_requisicion.Text;
 			// Validando que capture toda la informacion
-			if(this.descripinternamiento2 != "" && this.descripcion_tipo_requi != "" && this.entry_observaciones.Text != ""){			
+			if(descripinternamiento2 != "" && descripcion_tipo_requi != "" && entry_observaciones.Text != ""){			
 				if(enviadacompras == false){
 					if (editar == false){
 						this.entry_requisicion.Text = classpublic.lee_ultimonumero_registrado("osiris_erp_requisicion_enca","id_requisicion","");
@@ -1377,7 +1345,8 @@ namespace osiris
 											"motivo_requisicion,"+
 											"requisicion_ordinaria,"+
 											"requisicion_urgente,"+
-											"descripcion_tipo_requisicion,"+
+											"descripcion_tipo_requisicion," +
+											"id_tipo_requisicion_compra,"+
 											"total_items_solicitados) "+
 											"VALUES ('"+
 											DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"','"+
@@ -1391,7 +1360,8 @@ namespace osiris
 											entry_motivo.Text.ToString().Trim().ToUpper()+"','"+
 											requi_ordinaria.ToString()+"','"+
 											requi_urgente.ToString()+"','"+
-											descripcion_tipo_requi+"','"+																					
+											descripcion_tipo_requi+"','"+
+											idtiporequi.ToString().Trim()+"','"+
 											this.entry_totalitems_productos.Text+"');";																	
 								//Console.WriteLine(comando.CommandText);						
 								comando.ExecuteNonQuery();

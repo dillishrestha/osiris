@@ -69,9 +69,10 @@ namespace osiris
 		[Widget] Gtk.CheckButton checkbutton_nueva_solicitud;
 		[Widget] Gtk.CheckButton checkbutton_sol_parastock = null;
 		[Widget] Gtk.CheckButton checkbutton_presolicitud = null;
-		[Widget] Gtk.Entry entry_procedimiento = null;
+		[Widget] Gtk.Entry entry_id_cirugia = null;
+		[Widget] Gtk.Entry entry_cirugia = null;
 		[Widget] Gtk.Entry entry_diagnostico = null;
-		[Widget] Gtk.TreeView lista_produc_solicitados;
+		[Widget] Gtk.TreeView lista_produc_solicitados = null;
 		[Widget] Gtk.Button button_selecciona_pq = null;
 		
 		[Widget] Gtk.Entry entry_rojo;
@@ -110,6 +111,9 @@ namespace osiris
 		int contador = 1;
 		int numpage = 1;
 		
+		string[] args_args = {""};
+		int[] args_id_array = {0,1,2,3,4,5,6,7,8};
+		
 		//Declaracion de ventana de error y pregunta
 		protected Gtk.Window MyWinError;
 		protected Gtk.Window MyWin;
@@ -128,7 +132,7 @@ namespace osiris
 			connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
 			nombrebd = conexion_a_DB._nombrebd;
 			valoriva = float.Parse(classpublic.ivaparaaplicar);
-			
+						
 			Glade.XML gxml = new Glade.XML (null, "hospitalizacion.glade", "solicitud_materiales", null);
 			gxml.Autoconnect (this);        
 			////// Muestra ventana de Glade
@@ -161,11 +165,13 @@ namespace osiris
 			button_quitar_productos.Sensitive = false;
 			button_busca_producto.Sensitive = false;
 			button_imprime_solicitud.Sensitive = true;
-			entry_procedimiento.Sensitive = false;
+			entry_id_cirugia.Sensitive = false;
+			entry_cirugia.Sensitive = false;
 			entry_diagnostico.Sensitive = false;
 			checkbutton_presolicitud.Sensitive = false;
 			checkbutton_sol_parastock.Sensitive = false;
-			
+			entry_id_cirugia.IsEditable = false;
+						
 			entry_quien_solicita.Text = NomEmpleado+" "+AppEmpleado+" "+ApmEmpleado;
 			////// Sale de la ventana
 			button_salir.Clicked += new EventHandler(on_cierraventanas_clicked);
@@ -216,7 +222,7 @@ namespace osiris
 			// Los parametros de del SQL siempre es primero cuando busca todo y la otra por expresion
 			// la clase recibe tambien el orden del query
 			// es importante definir que tipo de busqueda es para que los objetos caigan ahi mismo
-			object[] parametros_objetos = {};
+			object[] parametros_objetos = {entry_id_cirugia,entry_cirugia,lista_produc_solicitados,treeViewEngineSolicitud};
 			string[] parametros_sql = {"SELECT id_tipo_cirugia,descripcion_cirugia,tiene_paquete,to_char(valor_paquete,'999999999.99') AS valorpaquetereal,"+
 										"to_char(precio_de_venta,'999999999.99') AS valorpaquete "+
 										"FROM osiris_his_tipo_cirugias ",															
@@ -224,9 +230,9 @@ namespace osiris
 										"to_char(precio_de_venta,'999999999.99') AS valorpaquete "+
 										"FROM osiris_his_tipo_cirugias "+
 										"WHERE descripcion_cirugia LIKE '%"};			
-			classfind_data.buscandor(parametros_objetos,parametros_sql,"find_cirugia_paquetes_soliprod"," ORDER BY id_tipo_cirugia","%' ",0);	
+			classfind_data.buscandor(parametros_objetos,parametros_sql,"find_cirugia_paquetes_soliprod"," ORDER BY id_tipo_cirugia","%' ",0);
 		}
-
+		
 		void on_button_busca_producto_clicked(object sender, EventArgs args)
 		{
 			Glade.XML gxml = new Glade.XML (null, "hospitalizacion.glade", "busca_producto", null);
@@ -295,54 +301,59 @@ namespace osiris
 		
 		void on_button_busca_paciente_clicked(object sender, EventArgs args)
 		{
+			string sql1 = "SELECT osiris_erp_cobros_enca.folio_de_servicio,osiris_his_paciente.pid_paciente AS pidpaciente,nombre1_paciente,nombre2_paciente, apellido_paterno_paciente,id_quienlocreo_paciente,"+
+									"apellido_materno_paciente, to_char(fecha_nacimiento_paciente,'yyyy-MM-dd') AS fech_nacimiento,sexo_paciente,"+
+									"to_char(to_number(to_char(age('"+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"',osiris_his_paciente.fecha_nacimiento_paciente),'yyyy') ,'9999'),'9999') AS edad,"+
+									"to_char(to_number(to_char(age('"+DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss")+"',osiris_his_paciente.fecha_nacimiento_paciente),'MM'),'99'),'99') AS mesesedad,"+
+									"to_char(fechahora_registro_paciente,'dd-MM-yyyy HH:mi:ss') AS fech_creacion,activo " +
+									"FROM osiris_his_paciente,osiris_erp_cobros_enca WHERE activo = 'true' "+
+										"AND osiris_his_paciente.pid_paciente = osiris_erp_cobros_enca.pid_paciente "+
+										"AND osiris_erp_cobros_enca.cancelado = 'false' "+
+										filtro_query_alta+
+										"AND osiris_erp_cobros_enca.pagado = 'false' "+
+										"AND osiris_erp_cobros_enca.cerrado = 'false' "+
+										"AND osiris_erp_cobros_enca.reservacion = 'false' ";
+			string sql2 = "SELECT osiris_erp_cobros_enca.folio_de_servicio,osiris_his_paciente.pid_paciente AS pidpaciente,nombre1_paciente,nombre2_paciente, apellido_paterno_paciente,id_quienlocreo_paciente,"+
+									"apellido_materno_paciente, to_char(fecha_nacimiento_paciente,'yyyy-MM-dd') AS fech_nacimiento,sexo_paciente,"+
+									"to_char(to_number(to_char(age('"+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"',osiris_his_paciente.fecha_nacimiento_paciente),'yyyy') ,'9999'),'9999') AS edad,"+
+									"to_char(to_number(to_char(age('"+DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss")+"',osiris_his_paciente.fecha_nacimiento_paciente),'MM'),'99'),'99') AS mesesedad,"+
+									"to_char(fechahora_registro_paciente,'dd-MM-yyyy HH:mi:ss') AS fech_creacion,activo " +
+									"FROM osiris_his_paciente,osiris_erp_cobros_enca WHERE activo = 'true' "+
+										"AND osiris_his_paciente.pid_paciente = osiris_erp_cobros_enca.pid_paciente "+
+										"AND osiris_erp_cobros_enca.cancelado = 'false' "+
+										filtro_query_alta+
+										"AND osiris_erp_cobros_enca.pagado = 'false' "+
+										"AND osiris_erp_cobros_enca.cerrado = 'false' "+
+										"AND osiris_erp_cobros_enca.reservacion = 'false' "+
+										"AND apellido_paterno_paciente LIKE '%";
+			string sql3 = "SELECT osiris_erp_cobros_enca.folio_de_servicio,osiris_his_paciente.pid_paciente AS pidpaciente,nombre1_paciente,nombre2_paciente, apellido_paterno_paciente,id_quienlocreo_paciente,"+
+									"apellido_materno_paciente, to_char(fecha_nacimiento_paciente,'yyyy-MM-dd') AS fech_nacimiento,sexo_paciente,"+
+									"to_char(to_number(to_char(age('"+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"',osiris_his_paciente.fecha_nacimiento_paciente),'yyyy') ,'9999'),'9999') AS edad,"+
+									"to_char(to_number(to_char(age('"+DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss")+"',osiris_his_paciente.fecha_nacimiento_paciente),'MM'),'99'),'99') AS mesesedad,"+
+									"to_char(fechahora_registro_paciente,'dd-MM-yyyy HH:mi:ss') AS fech_creacion,activo " +
+									"FROM osiris_his_paciente,osiris_erp_cobros_enca WHERE activo = 'true' "+
+										"AND osiris_his_paciente.pid_paciente = osiris_erp_cobros_enca.pid_paciente "+
+										"AND osiris_erp_cobros_enca.cancelado = 'false' "+
+										filtro_query_alta+
+										"AND osiris_erp_cobros_enca.pagado = 'false' "+
+										"AND osiris_erp_cobros_enca.cerrado = 'false' "+
+										"AND osiris_erp_cobros_enca.reservacion = 'false' "+
+										"AND nombre1_paciente LIKE '%";
+			string sql4 = "SELECT osiris_erp_cobros_enca.folio_de_servicio,osiris_his_paciente.pid_paciente AS pidpaciente,nombre1_paciente,nombre2_paciente, apellido_paterno_paciente,id_quienlocreo_paciente,"+
+									"apellido_materno_paciente, to_char(fecha_nacimiento_paciente,'yyyy-MM-dd') AS fech_nacimiento,sexo_paciente,"+
+									"to_char(to_number(to_char(age('"+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"',osiris_his_paciente.fecha_nacimiento_paciente),'yyyy') ,'9999'),'9999') AS edad,"+
+									"to_char(to_number(to_char(age('"+DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss")+"',osiris_his_paciente.fecha_nacimiento_paciente),'MM'),'99'),'99') AS mesesedad,"+
+									"to_char(fechahora_registro_paciente,'dd-MM-yyyy HH:mi:ss') AS fech_creacion,activo " +
+									"FROM osiris_his_paciente,osiris_erp_cobros_enca WHERE activo = 'true' "+
+										"AND osiris_his_paciente.pid_paciente = osiris_erp_cobros_enca.pid_paciente "+
+										"AND osiris_erp_cobros_enca.cancelado = 'false' "+
+										filtro_query_alta+
+										"AND osiris_erp_cobros_enca.pagado = 'false' "+
+										"AND osiris_erp_cobros_enca.cerrado = 'false' "+
+										"AND osiris_erp_cobros_enca.reservacion = 'false' "+
+										"AND osiris_his_paciente.pid_paciente = '";
 			object[] parametros_objetos = {entry_folio_servicio,entry_pid_paciente,entry_nombre_paciente};
-			string[] parametros_sql = {"SELECT osiris_erp_cobros_enca.folio_de_servicio,osiris_his_paciente.pid_paciente AS pidpaciente,nombre1_paciente,nombre2_paciente, apellido_paterno_paciente,id_quienlocreo_paciente,"+
-									"apellido_materno_paciente, to_char(fecha_nacimiento_paciente,'yyyy-MM-dd') AS fech_nacimiento,sexo_paciente,"+
-									"to_char(to_number(to_char(age('"+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"',osiris_his_paciente.fecha_nacimiento_paciente),'yyyy') ,'9999'),'9999') AS edad,"+
-									"to_char(to_number(to_char(age('"+DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss")+"',osiris_his_paciente.fecha_nacimiento_paciente),'MM'),'99'),'99') AS mesesedad,"+
-									"to_char(fechahora_registro_paciente,'dd-MM-yyyy HH:mi:ss') AS fech_creacion,activo FROM osiris_his_paciente,osiris_erp_cobros_enca WHERE activo = 'true' "+
-										"AND osiris_his_paciente.pid_paciente = osiris_erp_cobros_enca.pid_paciente "+
-										"AND osiris_erp_cobros_enca.cancelado = 'false' "+
-										filtro_query_alta+
-										"AND osiris_erp_cobros_enca.pagado = 'false' "+
-										"AND osiris_erp_cobros_enca.cerrado = 'false' "+
-										"AND osiris_erp_cobros_enca.reservacion = 'false' ",															
-									"SELECT osiris_erp_cobros_enca.folio_de_servicio,osiris_his_paciente.pid_paciente AS pidpaciente,nombre1_paciente,nombre2_paciente, apellido_paterno_paciente,id_quienlocreo_paciente,"+
-									"apellido_materno_paciente, to_char(fecha_nacimiento_paciente,'yyyy-MM-dd') AS fech_nacimiento,sexo_paciente,"+
-									"to_char(to_number(to_char(age('"+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"',osiris_his_paciente.fecha_nacimiento_paciente),'yyyy') ,'9999'),'9999') AS edad,"+
-									"to_char(to_number(to_char(age('"+DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss")+"',osiris_his_paciente.fecha_nacimiento_paciente),'MM'),'99'),'99') AS mesesedad,"+
-									"to_char(fechahora_registro_paciente,'dd-MM-yyyy HH:mi:ss') AS fech_creacion,activo FROM osiris_his_paciente,osiris_erp_cobros_enca WHERE activo = 'true' "+
-										"AND osiris_his_paciente.pid_paciente = osiris_erp_cobros_enca.pid_paciente "+
-										"AND osiris_erp_cobros_enca.cancelado = 'false' "+
-										filtro_query_alta+
-										"AND osiris_erp_cobros_enca.pagado = 'false' "+
-										"AND osiris_erp_cobros_enca.cerrado = 'false' "+
-										"AND osiris_erp_cobros_enca.reservacion = 'false' "+
-										"AND apellido_paterno_paciente LIKE '%",
-									"SELECT osiris_erp_cobros_enca.folio_de_servicio,osiris_his_paciente.pid_paciente AS pidpaciente,nombre1_paciente,nombre2_paciente, apellido_paterno_paciente,id_quienlocreo_paciente,"+
-									"apellido_materno_paciente, to_char(fecha_nacimiento_paciente,'yyyy-MM-dd') AS fech_nacimiento,sexo_paciente,"+
-									"to_char(to_number(to_char(age('"+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"',osiris_his_paciente.fecha_nacimiento_paciente),'yyyy') ,'9999'),'9999') AS edad,"+
-									"to_char(to_number(to_char(age('"+DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss")+"',osiris_his_paciente.fecha_nacimiento_paciente),'MM'),'99'),'99') AS mesesedad,"+
-									"to_char(fechahora_registro_paciente,'dd-MM-yyyy HH:mi:ss') AS fech_creacion,activo FROM osiris_his_paciente,osiris_erp_cobros_enca WHERE activo = 'true' "+
-										"AND osiris_his_paciente.pid_paciente = osiris_erp_cobros_enca.pid_paciente "+
-										"AND osiris_erp_cobros_enca.cancelado = 'false' "+
-										filtro_query_alta+
-										"AND osiris_erp_cobros_enca.pagado = 'false' "+
-										"AND osiris_erp_cobros_enca.cerrado = 'false' "+
-										"AND osiris_erp_cobros_enca.reservacion = 'false' "+
-										"AND nombre1_paciente LIKE '%",
-									"SELECT osiris_erp_cobros_enca.folio_de_servicio,osiris_his_paciente.pid_paciente AS pidpaciente,nombre1_paciente,nombre2_paciente, apellido_paterno_paciente,id_quienlocreo_paciente,"+
-									"apellido_materno_paciente, to_char(fecha_nacimiento_paciente,'yyyy-MM-dd') AS fech_nacimiento,sexo_paciente,"+
-									"to_char(to_number(to_char(age('"+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"',osiris_his_paciente.fecha_nacimiento_paciente),'yyyy') ,'9999'),'9999') AS edad,"+
-									"to_char(to_number(to_char(age('"+DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss")+"',osiris_his_paciente.fecha_nacimiento_paciente),'MM'),'99'),'99') AS mesesedad,"+
-									"to_char(fechahora_registro_paciente,'dd-MM-yyyy HH:mi:ss') AS fech_creacion,activo FROM osiris_his_paciente,osiris_erp_cobros_enca WHERE activo = 'true' "+
-										"AND osiris_his_paciente.pid_paciente = osiris_erp_cobros_enca.pid_paciente "+
-										"AND osiris_erp_cobros_enca.cancelado = 'false' "+
-										filtro_query_alta+
-										"AND osiris_erp_cobros_enca.pagado = 'false' "+
-										"AND osiris_erp_cobros_enca.cerrado = 'false' "+
-										"AND osiris_erp_cobros_enca.reservacion = 'false' "+
-										"AND osiris_his_paciente.pid_paciente = '"};			
+			string[] parametros_sql = {sql1, sql2, sql3, sql4};			
 			classfind_data.buscandor(parametros_objetos,parametros_sql,"find_paciente"," ORDER BY osiris_his_paciente.pid_paciente","%' ",1);
 		}
 	    
@@ -471,7 +482,7 @@ namespace osiris
 																		(bool) checkbutton_sol_parastock.Active+"','"+
 																		(bool) checkbutton_presolicitud.Active+"','"+
 																		(string) entry_nombre_paciente.Text.ToString().Trim().ToUpper()+"','"+
-																		(string) entry_procedimiento.Text.ToString().Trim().ToUpper()+"','"+
+																		(string) entry_cirugia.Text.ToString().Trim().ToUpper()+"','"+
 																		(string) entry_diagnostico.Text.ToString().Trim().ToUpper()+"');";
 																	
 							//Console.WriteLine(comando.CommandText);
@@ -519,7 +530,7 @@ namespace osiris
 																		(bool) checkbutton_sol_parastock.Active+"','"+
 																		(bool) checkbutton_presolicitud.Active+"','"+
 																		(string) entry_nombre_paciente.Text.ToString().Trim().ToUpper()+"','"+
-																		(string) entry_procedimiento.Text.ToString().Trim().ToUpper()+"','"+
+																		(string) entry_cirugia.Text.ToString().Trim().ToUpper()+"','"+
 																		(string) entry_diagnostico.Text.ToString().Trim().ToUpper()+"');";
 																	
 							//Console.WriteLine(comando.CommandText);
@@ -629,7 +640,7 @@ namespace osiris
 												(string) lector["apellido_paterno_paciente"].ToString().Trim()+" "+
 												(string) lector["apellido_materno_paciente"].ToString().Trim();
 					entry_diagnostico.Text = (string) lector["diagnostico_qx"].ToString().Trim();
-					entry_procedimiento.Text = (string) lector["procedimiento_qx"].ToString().Trim();
+					entry_cirugia.Text = (string) lector["procedimiento_qx"].ToString().Trim();
 					if((bool) lector["status"] == false){
 						editar = false;
 					}
@@ -916,8 +927,7 @@ namespace osiris
 			lista_produc_solicitados.AppendColumn(col_cant_solicitado);
 			lista_produc_solicitados.AppendColumn(col_fecha_solicitado);
 			lista_produc_solicitados.AppendColumn(col_cant_recibido);
-			lista_produc_solicitados.AppendColumn(col_fecha_recibido);
-						
+			lista_produc_solicitados.AppendColumn(col_fecha_recibido);						
 		}
 		
 		enum colum_solicitudes
@@ -1024,7 +1034,8 @@ namespace osiris
 				entry_pid_paciente.Sensitive = false;
 				entry_nombre_paciente.Sensitive = false;
 				button_busca_paciente.Sensitive = false;
-				entry_procedimiento.Sensitive = false;
+				entry_id_cirugia.Sensitive = false;
+				entry_cirugia.Sensitive = false;
 				entry_diagnostico.Sensitive = false;
 				checkbutton_presolicitud.Active = false;
 			}else{
@@ -1032,7 +1043,8 @@ namespace osiris
 				entry_pid_paciente.Sensitive = true;
 				entry_nombre_paciente.Sensitive = true;
 				button_busca_paciente.Sensitive = true;
-				entry_procedimiento.Sensitive = false;
+				entry_id_cirugia.Sensitive = false;
+				entry_cirugia.Sensitive = false;
 				entry_diagnostico.Sensitive = false;
 			}
 		}
@@ -1044,15 +1056,17 @@ namespace osiris
 				entry_folio_servicio.Sensitive = false;
 				entry_pid_paciente.Sensitive = false;
 				entry_nombre_paciente.IsEditable = true;
-				button_busca_paciente.Sensitive = false;
-				entry_procedimiento.Sensitive = true;
+				button_busca_paciente.Sensitive = true;
+				entry_id_cirugia.Sensitive = true;
+				entry_cirugia.Sensitive = true;
 				entry_diagnostico.Sensitive = true;
 			}else{
 				entry_folio_servicio.Sensitive = true;
 				entry_pid_paciente.Sensitive = true;
 				entry_nombre_paciente.IsEditable = false;
 				button_busca_paciente.Sensitive = true;
-				entry_procedimiento.Sensitive = false;
+				entry_id_cirugia.Sensitive = false;
+				entry_cirugia.Sensitive = false;
 				entry_diagnostico.Sensitive = false;
 			}
 		}

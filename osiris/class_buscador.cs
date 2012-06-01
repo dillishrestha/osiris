@@ -54,7 +54,9 @@ namespace osiris
 		[Widget] Gtk.Label labelcantidad = null;
 		[Widget] Gtk.Entry entry_cantidad_producto = null;
 								
-		TreeStore treeViewEngineBuscador;	// Busqueda de Clientes
+		TreeStore treeViewEngineBuscador;
+		ListStore treeViewEngine;
+		Gtk.TreeView treeviewobject;		
 		
 		// Busqueda de Clientes para los reportes
 		Gtk.Entry entry_nombre_cliente = null;
@@ -155,13 +157,16 @@ namespace osiris
 		Gtk.Entry entry_almacen = null;
 		
 		class_conexion conexion_a_DB = new class_conexion();
-		
+				
 		string[] args_sql;
 		string type_find = "";
 		string order_sql = "";
 		string comodin = "";
 		int typeseek = 0;
 		string string_sql="";
+		string connectionString;
+		string nombrebd;
+		
 		//declaracion de columnas y celdas de treeview de busqueda
 		TreeViewColumn col_buscador0;	CellRendererText cellrt0;
 		TreeViewColumn col_buscador1;	CellRendererText cellrt1;
@@ -176,6 +181,8 @@ namespace osiris
 		
 		public void buscandor(object[] args, string[] args_sql_, string type_find_,string order_sql_,string comodin_,int typeseek_)		
 		{
+			connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
+			nombrebd = conexion_a_DB._nombrebd;	
 			Glade.XML gxml = new Glade.XML (null, "osiris.glade", "buscador", null);
 			gxml.Autoconnect(this);
 			buscador.Title = "Buscador "+type_find_;
@@ -190,7 +197,7 @@ namespace osiris
 			labelcantidad.Hide();
 			entry_cantidad_producto.Hide();
 			crea_treeview_busqueda();
-						
+									
 			//Console.WriteLine("nº de argumentos: {0}", args.Length);
 			//for (int i = 0; i < args.Length; i++)
         	//Console.WriteLine("args[{0}] = {1} {2}", i, args[i],@args[i]);  
@@ -365,7 +372,11 @@ namespace osiris
 					entry_id_almacen = (object) args[0] as Gtk.Entry;
 					entry_almacen = (object) args[1] as Gtk.Entry;
 				break;
-					case "find_cirugia_paquetes_soliprod":
+				case "find_cirugia_paquetes_soliprod":
+					entry_id_cirugia = (object) args[0] as Gtk.Entry;
+					entry_cirugia = (object) args[1] as Gtk.Entry;
+					treeviewobject = (object) args[2] as Gtk.TreeView;
+					treeViewEngine = (object) args[3] as Gtk.ListStore;
 				break;
 					case "find_cirugia_cargos_modmedicos":
 				break;
@@ -868,7 +879,9 @@ namespace osiris
 						checkbutton_paquete_sino.Active = (bool) model.GetValue(iterSelected, 2);
 					break;
 					case "find_cirugia_paquetes_soliprod":
-					
+						entry_id_cirugia.Text = tomaid.ToString();
+						entry_cirugia.Text = (string) model.GetValue(iterSelected, 1);
+						carga_valores_treeview(tomaid,treeviewobject,treeViewEngine);
 					break;
 					case "find_cirugia_cargos_modmedicos":
 					
@@ -923,10 +936,62 @@ namespace osiris
 			Widget win = (Widget) sender;
 			win.Toplevel.Destroy();
 		}
-		
-		public void selecciona(object[] args, string[] args_sql, string type_find_,string order_sql_,string comodin_)
+			
+		public void carga_valores_treeview(int idcode_find,object treeview_,object listotree_store_)
 		{
-		
+			string query_sql_llenado_treeview = "SELECT descripcion_producto,osiris_his_tipo_admisiones.descripcion_admisiones, "+
+							"id_empleado,osiris_his_cirugias_deta.eliminado,osiris_productos.aplicar_iva,osiris_his_cirugias_deta.id_tipo_admisiones,  "+
+							"to_char(osiris_his_cirugias_deta.id_producto,'999999999999') AS idproducto, "+
+							"to_char(osiris_his_cirugias_deta.cantidad_aplicada,'99999.99') AS cantidadaplicada, "+
+							"to_char(osiris_productos.precio_producto_publico,'99999999.99') AS preciopublico,"+
+							"to_char(osiris_productos.costo_por_unidad,'999999999.99') AS costoproductounitario, "+
+							"to_char(osiris_productos.porcentage_ganancia,'99999.99') AS porcentageutilidad, "+
+							"to_char(osiris_productos.costo_producto,'999999999.99') AS costoproducto, "+
+							"to_char(osiris_his_cirugias_deta.fechahora_creacion,'dd-MM-yyyy HH:mi:ss') AS fechcreacion ,"+
+							"to_char(osiris_his_cirugias_deta.id_secuencia,'9999999999') AS secuencia "+
+							"FROM "+
+							"osiris_his_cirugias_deta,osiris_productos,osiris_his_tipo_cirugias,osiris_his_tipo_admisiones "+
+							"WHERE "+
+							"osiris_his_cirugias_deta.id_producto = osiris_productos.id_producto "+
+							"AND osiris_his_cirugias_deta.id_tipo_cirugia = osiris_his_tipo_cirugias.id_tipo_cirugia "+
+							"AND id_grupo_producto IN('4','5') "+
+							"AND osiris_his_cirugias_deta.eliminado = false "+ 
+							"AND osiris_his_cirugias_deta.id_tipo_admisiones = osiris_his_tipo_admisiones.id_tipo_admisiones "+
+							"AND osiris_his_cirugias_deta.id_tipo_cirugia = '"+idcode_find.ToString().Trim()+"' "+
+						    "AND osiris_his_cirugias_deta.eliminado = 'false' "+
+							"ORDER BY osiris_productos.descripcion_producto,to_char(osiris_his_cirugias_deta.fechahora_creacion,'yyyy-mm-dd HH:mm:ss');";
+			NpgsqlConnection conexion; 
+			conexion = new NpgsqlConnection (connectionString+nombrebd);
+			            
+			// Verifica que la base de datos este conectada
+			try{
+				conexion.Open ();
+				NpgsqlCommand comando; 
+				comando = conexion.CreateCommand ();
+				comando.CommandText = query_sql_llenado_treeview;
+				NpgsqlDataReader lector = comando.ExecuteReader ();
+				while (lector.Read()){
+					treeViewEngine.AppendValues((string) lector["descripcion_producto"],
+														(string) lector["idproducto"],
+														(string) lector["cantidadaplicada"],
+														(string) DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
+														"",
+														"",
+														(string) lector["costoproductounitario"],
+														(string) lector["preciopublico"],
+														false,
+														false,
+														"");
+					
+				}
+			}catch (NpgsqlException ex){
+	   			Console.WriteLine ("PostgresSQL error: {0}",ex.Message);
+   				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+									MessageType.Info,ButtonsType.Close, "PostgresSQL error: {0} ",ex.Message);
+				msgBoxError.Run ();		msgBoxError.Destroy();
+			}
+			conexion.Close ();
+				
 		}
-	}	
+	}
 }

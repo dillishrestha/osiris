@@ -2077,7 +2077,7 @@ namespace osiris
 		[GLib.ConnectBefore ()]   	  // Esto es indispensable para que funcione 
 		public void onKeyPressEvent_enter_exp(object o, Gtk.KeyPressEventArgs args)
 		{	
-			if (args.Event.Key == Gdk.Key.Return || args.Event.Key == Gdk.Key.KP_Enter){
+			if (args.Event.Key.ToString() == "Return" || args.Event.Key.ToString() == "KP_Enter"){
 				args.RetVal = true;			llenando_lista_de_productos();			
 			}
 		}
@@ -2088,13 +2088,13 @@ namespace osiris
 		public void onKeyPressEvent_enter_id(object o, Gtk.KeyPressEventArgs args)
 		{
 			//Console.WriteLine(args.Event.Key);
-			if (args.Event.Key == Gdk.Key.Return || args.Event.Key == Gdk.Key.KP_Enter){
+			if (args.Event.Key.ToString() == "Return" || args.Event.Key.ToString() == "KP_Enter"){
 				args.RetVal = true;
 				idpresupuesto = entry_id_presupuesto.Text.Trim();
 				llenado_de_presupuesto( entry_id_presupuesto.Text );			
 			}
 			string misDigitos = ".0123456789ﾰﾱﾲﾳﾴﾵﾶﾷﾸﾹﾮｔｒｓｑ（）";
-			if (Array.IndexOf(misDigitos.ToCharArray(), Convert.ToChar(args.Event.Key)) == -1 && args.Event.Key != Gdk.Key.BackSpace)
+			if (Array.IndexOf(misDigitos.ToCharArray(), Convert.ToChar(args.Event.Key)) == -1 && args.Event.Key.ToString()  != "BackSpace")
 			{
 				//Console.WriteLine(Convert.ToChar(args.Event.Key));
 				args.RetVal = true;

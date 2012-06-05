@@ -1509,7 +1509,7 @@ namespace osiris
 		[GLib.ConnectBefore ()]   	  // Esto es indispensable para que funcione 
 		public void onKeyPressEvent_enter_exp(object o, Gtk.KeyPressEventArgs args)
 		{	
-			if (args.Event.Key == Gdk.Key.Return || args.Event.Key == Gdk.Key.KP_Enter){
+			if (args.Event.Key.ToString() == "Return" || args.Event.Key.ToString() == "KP_Enter"){
 				args.RetVal = true;			llenando_lista_de_productos();			
 			}
 		}
@@ -1523,7 +1523,7 @@ namespace osiris
 			//Console.WriteLine(args.Event.Key.ToString());
 			//Console.WriteLine(Convert.ToChar(args.Event.Key));
 			//Console.WriteLine(Array.IndexOf(misDigitos.ToCharArray(), Convert.ToChar(args.Event.Key)));
-			if (args.Event.Key == Gdk.Key.Return || args.Event.Key == Gdk.Key.KP_Enter){
+			if (args.Event.Key.ToString() == "Return" || args.Event.Key.ToString() == "KP_Enter"){
 				args.RetVal = true;
 				llenado_de_cirugia( entry_id_cirugia.Text );			
 			}

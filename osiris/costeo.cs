@@ -1091,13 +1091,13 @@ namespace osiris
 		[GLib.ConnectBefore ()]   	  // Esto es indispensable para que funcione    
 		public void onKeyPressEvent_enter_folio(object o, Gtk.KeyPressEventArgs args)
 		{
-			if (args.Event.Key == Gdk.Key.Return || args.Event.Key == Gdk.Key.KP_Enter){
+			if (args.Event.Key.ToString() == "Return" || args.Event.Key.ToString() == "KP_Enter"){
 				args.RetVal = true;
 				llenado_de_productos_aplicados();	
 				llenado_de_treeview_costeo();
 			}
 			string misDigitos = ".0123456789ﾰﾱﾲﾳﾴﾵﾶﾷﾸﾹﾮｔｒｓｑ（）";
-			if (Array.IndexOf(misDigitos.ToCharArray(), Convert.ToChar(args.Event.Key)) == -1 && args.Event.Key != Gdk.Key.BackSpace)
+			if (Array.IndexOf(misDigitos.ToCharArray(), Convert.ToChar(args.Event.Key)) == -1 && args.Event.Key.ToString()  != "BackSpace")
 			{
 				args.RetVal = true;
 			}

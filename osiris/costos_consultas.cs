@@ -1501,7 +1501,7 @@ namespace osiris
 		public void onKeyPressEvent_busqueda(object o, Gtk.KeyPressEventArgs args)
 		{
 			//Console.WriteLine(args.Event.Key);
-			if (args.Event.Key == Gdk.Key.Return || args.Event.Key == Gdk.Key.KP_Enter){
+			if (args.Event.Key.ToString() == "Return" || args.Event.Key.ToString() == "KP_Enter"){
 				args.RetVal = true;
 				if(busqueda == "productos") { 
 					llenando_lista_de_productos();

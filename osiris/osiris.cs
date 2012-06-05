@@ -673,7 +673,8 @@ namespace osiris
 		[GLib.ConnectBefore ()]   	  // Esto es indispensable para que funcione    
 		void onKeyPressEvent_enter(object o, Gtk.KeyPressEventArgs args)
 		{
-			if (args.Event.Key == Gdk.Key.Return || args.Event.Key == Gdk.Key.KP_Enter){
+			//Console.WriteLine(args.Event.Key.ToString());
+			if (args.Event.Key.ToString() == "Return" || args.Event.Key.ToString() == "KP_Enter"){
 				args.RetVal = true;				
 				 verifica_usuariopasswd();
 			}
@@ -685,7 +686,7 @@ namespace osiris
 		void onKeyPressEvent_enter_pass(object o, Gtk.KeyPressEventArgs args)
 		{
 			//Console.WriteLine(args.Event.Key);
-			if (args.Event.Key == Gdk.Key.Return || args.Event.Key == Gdk.Key.KP_Enter){
+			if (args.Event.Key.ToString() == "Return" || args.Event.Key.ToString() == "KP_Enter"){
 				args.RetVal = true;
 				if(enter_en == "contraseña") {cambiando_contraseña(o);}
 				if(enter_en == "medicos") { llenando_lista_de_medicos(); }			

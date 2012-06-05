@@ -2300,7 +2300,7 @@ namespace osiris
 		public void onKeyPressEventdd(object o, Gtk.KeyPressEventArgs args)
 		{
 			string misDigitos = ".0123456789ﾰﾱﾲﾳﾴﾵﾶﾷﾸﾹﾮ";
-			if (Array.IndexOf(misDigitos.ToCharArray(), Convert.ToChar(args.Event.Key)) == -1 && args.Event.Key != Gdk.Key.BackSpace  && args.Event.Key != Gdk.Key.Delete )
+			if (Array.IndexOf(misDigitos.ToCharArray(), Convert.ToChar(args.Event.Key)) == -1 && args.Event.Key.ToString()  != "BackSpace"  && args.Event.Key != Gdk.Key.Delete )
 			{
 				args.RetVal = true;
 			}
@@ -2439,7 +2439,7 @@ namespace osiris
 		[GLib.ConnectBefore ()] 
 		public void onKeyPressEvent_enterbucar_empleado(object o, Gtk.KeyPressEventArgs args)
 		{
-			if (args.Event.Key == Gdk.Key.Return || args.Event.Key == Gdk.Key.KP_Enter){
+			if (args.Event.Key.ToString() == "Return" || args.Event.Key.ToString() == "KP_Enter"){
 				args.RetVal = true;
 				llena_lista_empleados();
 				//Console.WriteLine ("key press");							
@@ -2597,7 +2597,7 @@ namespace osiris
 			//Console.WriteLine(args.Event.Key);
 			//Console.WriteLine(Convert.ToChar(args.Event.Key));
 			string misDigitos = ".0123456789ﾰﾱﾲﾳﾴﾵﾶﾷﾸﾹﾮｔｒｓｑ（）";
-			if (Array.IndexOf(misDigitos.ToCharArray(), Convert.ToChar(args.Event.Key)) == -1 && args.Event.Key != Gdk.Key.BackSpace  && args.Event.Key != Gdk.Key.Delete)
+			if (Array.IndexOf(misDigitos.ToCharArray(), Convert.ToChar(args.Event.Key)) == -1 && args.Event.Key.ToString()  != "BackSpace"  && args.Event.Key != Gdk.Key.Delete)
 			{
 				args.RetVal = true;
 			}
@@ -2609,7 +2609,7 @@ namespace osiris
 		public void onKeyPressEventactual(object o, Gtk.KeyPressEventArgs args)
 		{
 			string misDigitos = ".0123456789ﾰﾱﾲﾳﾴﾵﾶﾷﾸﾹﾮｔｒｓｑ（）";
-			if (Array.IndexOf(misDigitos.ToCharArray(), Convert.ToChar(args.Event.Key)) == -1 && args.Event.Key != Gdk.Key.BackSpace  && args.Event.Key != Gdk.Key.Delete)
+			if (Array.IndexOf(misDigitos.ToCharArray(), Convert.ToChar(args.Event.Key)) == -1 && args.Event.Key.ToString()  != "BackSpace"  && args.Event.Key != Gdk.Key.Delete)
 			{
 				args.RetVal = true;
 			}
@@ -2620,7 +2620,7 @@ namespace osiris
 		public void onKeyPressEvent_enter_empleado(object o, Gtk.KeyPressEventArgs args)
 		{
 			//Console.WriteLine(args.Event.Key);
-			if (args.Event.Key == Gdk.Key.Return || args.Event.Key == Gdk.Key.KP_Enter){
+			if (args.Event.Key.ToString() == "Return" || args.Event.Key.ToString() == "KP_Enter"){
 				args.RetVal = true;
 				//llenado_de_factura();
 				if (checkbutton_empleado_nuevo.Active == true)
@@ -2631,7 +2631,7 @@ namespace osiris
 			
 			}
 			string misDigitos = ".0123456789ﾰﾱﾲﾳﾴﾵﾶﾷﾸﾹﾮｔｒｓｑ（）npexTNPEXTt";
-			if (Array.IndexOf(misDigitos.ToCharArray(), Convert.ToChar(args.Event.Key)) == -1 && args.Event.Key != Gdk.Key.BackSpace && args.Event.Key != Gdk.Key.Delete)
+			if (Array.IndexOf(misDigitos.ToCharArray(), Convert.ToChar(args.Event.Key)) == -1 && args.Event.Key.ToString()  != "BackSpace" && args.Event.Key != Gdk.Key.Delete)
 			{
 				args.RetVal = true;
 			}

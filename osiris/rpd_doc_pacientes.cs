@@ -713,7 +713,7 @@ namespace osiris
 		public void onKeyPressEvent_enter(object o, Gtk.KeyPressEventArgs args)
 		{
 			//Console.WriteLine(args.Event.Key);
-			if (args.Event.Key == Gdk.Key.Return || args.Event.Key == Gdk.Key.KP_Enter){
+			if (args.Event.Key.ToString() == "Return" || args.Event.Key.ToString() == "KP_Enter"){
 				args.RetVal = true;
 				if(busqueda == "medicos") {llenando_lista_de_medicos();}
 				//if(busqueda == "cirugia") {llenando_lista_de_cirugias();}				
@@ -799,7 +799,7 @@ namespace osiris
 	 	[GLib.ConnectBefore ()] 
 		public void onKeyPressEvent_enterbucar_busqueda(object o, Gtk.KeyPressEventArgs args)
 		{
-			if (args.Event.Key == Gdk.Key.Return || args.Event.Key == Gdk.Key.KP_Enter){
+			if (args.Event.Key.ToString() == "Return" || args.Event.Key.ToString() == "KP_Enter"){
 				args.RetVal = true;
 				llenando_lista_de_productos();
 				//Console.WriteLine ("key press");
@@ -1026,7 +1026,7 @@ namespace osiris
 		[GLib.ConnectBefore ()] 
 		public void onKeyPressEvent_enterbucar_cirugia(object o, Gtk.KeyPressEventArgs args)
 		{
-			if (args.Event.Key == Gdk.Key.Return || args.Event.Key == Gdk.Key.KP_Enter){
+			if (args.Event.Key.ToString() == "Return" || args.Event.Key.ToString() == "KP_Enter"){
 				args.RetVal = true;
 				llena_lista_cirugias();
 			}	
@@ -1659,12 +1659,12 @@ namespace osiris
 		public void onKeyPressEvent_enter_folio(object o, Gtk.KeyPressEventArgs args)
 		{
 			//Console.WriteLine(args.Event.Key);
-			if (args.Event.Key == Gdk.Key.Return || args.Event.Key == Gdk.Key.KP_Enter){
+			if (args.Event.Key.ToString() == "Return" || args.Event.Key.ToString() == "KP_Enter"){
 				args.RetVal = true;
 				llenado_de_datos_paciente( (string) entry_folio_servicio.Text );				
 			}
 			string misDigitos = ".0123456789ﾰﾱﾲﾳﾴﾵﾶﾷﾸﾹﾮｔｒｓｑ（）";
-			if (Array.IndexOf(misDigitos.ToCharArray(), Convert.ToChar(args.Event.Key)) == -1 && args.Event.Key != Gdk.Key.BackSpace)
+			if (Array.IndexOf(misDigitos.ToCharArray(), Convert.ToChar(args.Event.Key)) == -1 && args.Event.Key.ToString()  != "BackSpace")
 			{
 				args.RetVal = true;
 			}
@@ -1674,7 +1674,7 @@ namespace osiris
 		public void onKeyPressEvent_expresion(object o, Gtk.KeyPressEventArgs args)
 		{
 			//Console.WriteLine(args.Event.Key);
-			if (args.Event.Key == Gdk.Key.Return || args.Event.Key == Gdk.Key.KP_Enter){
+			if (args.Event.Key.ToString() == "Return" || args.Event.Key.ToString() == "KP_Enter"){
 				args.RetVal = true;
 				this.buscando_paciente();				
 			}

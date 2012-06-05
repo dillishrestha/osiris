@@ -772,7 +772,7 @@ namespace osiris
 		[GLib.ConnectBefore ()]   	      
 		void onKeyPressEvent_enter(object o, Gtk.KeyPressEventArgs args)
 		{
-			if (args.Event.Key == Gdk.Key.Return || args.Event.Key == Gdk.Key.KP_Enter){				
+			if (args.Event.Key.ToString() == "Return" || args.Event.Key.ToString() == "KP_Enter"){				
 				args.RetVal = true;
 				llena_lista_paciente();
 			}

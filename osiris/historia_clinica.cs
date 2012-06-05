@@ -1351,7 +1351,7 @@ namespace osiris
 		public void onKeyPressEventactual(object o, Gtk.KeyPressEventArgs args)
 		{
 			string misDigitos = ".0123456789ﾰﾱﾲﾳﾴﾵﾶﾷﾸﾹﾮº/*";
-			if (Array.IndexOf(misDigitos.ToCharArray(), Convert.ToChar(args.Event.Key)) == -1 && args.Event.Key != Gdk.Key.BackSpace  && args.Event.Key != Gdk.Key.Delete)
+			if (Array.IndexOf(misDigitos.ToCharArray(), Convert.ToChar(args.Event.Key)) == -1 && args.Event.Key.ToString()  != "BackSpace"  && args.Event.Key != Gdk.Key.Delete)
 			{
 				args.RetVal = true;
 			}

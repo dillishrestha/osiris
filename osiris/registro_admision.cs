@@ -1437,7 +1437,7 @@ namespace osiris
 				//Console.WriteLine("Presione Enter");
 			}
 			string misDigitos = ".0123456789ﾰﾱﾲﾳﾴﾵﾶﾷﾸﾹﾮｔｒｓｑ（）";
-			if (Array.IndexOf(misDigitos.ToCharArray(), Convert.ToChar(args.Event.Key)) == -1 && args.Event.Key != Gdk.Key.BackSpace){
+			if (Array.IndexOf(misDigitos.ToCharArray(), Convert.ToChar(args.Event.Key)) == -1 && args.Event.Key.ToString()  != "BackSpace"){
 				args.RetVal = true;
 			}
 		}
@@ -2524,7 +2524,7 @@ namespace osiris
 		public void onKeyPressEvent_enter(object o, Gtk.KeyPressEventArgs args)
 		{
 		//Console.WriteLine(args.Event.Key);
-			if (args.Event.Key == Gdk.Key.Return || args.Event.Key == Gdk.Key.KP_Enter){
+			if (args.Event.Key.ToString() == "Return" || args.Event.Key.ToString() == "KP_Enter"){
 				args.RetVal = true;
 				if(busqueda == "paciente") { llena_lista_paciente();}
 				if(busqueda == "medicos") {llenando_lista_de_medicos();}

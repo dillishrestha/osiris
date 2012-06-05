@@ -3005,7 +3005,7 @@ namespace osiris
 		[GLib.ConnectBefore ()]   	  // Esto es indispensable para que funcione    
 		public void onKeyPressEvent_enter(object o, Gtk.KeyPressEventArgs args)
 		{
-			if (args.Event.Key == Gdk.Key.Return || args.Event.Key == Gdk.Key.KP_Enter){
+			if (args.Event.Key.ToString() == "Return" || args.Event.Key.ToString() == "KP_Enter"){
 				args.RetVal = true;		
 				if(busqueda == "medicos") { llenando_lista_de_medicos(); }
 				if(busqueda == "clientes") { llenando_lista_de_clientes(); }

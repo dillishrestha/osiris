@@ -1102,7 +1102,7 @@ namespace osiris
 	 	[GLib.ConnectBefore ()] 
 		public void onKeyPressEvent_enterbucar_busqueda(object o, Gtk.KeyPressEventArgs args)
 		{
-			if (args.Event.Key == Gdk.Key.Return || args.Event.Key == Gdk.Key.KP_Enter){
+			if (args.Event.Key.ToString() == "Return" || args.Event.Key.ToString() == "KP_Enter"){
 				args.RetVal = true;
 				llenando_lista_de_productos();
 				//Console.WriteLine ("key press");
@@ -1115,7 +1115,7 @@ namespace osiris
 		public void onKeyPressEventactual(object o, Gtk.KeyPressEventArgs args)
 		{
 			string misDigitos = ".0123456789ﾰﾱﾲﾳﾴﾵﾶﾷﾸﾹﾮｔｒｓｑ（）";
-			if (Array.IndexOf(misDigitos.ToCharArray(), Convert.ToChar(args.Event.Key)) == -1 && args.Event.Key != Gdk.Key.BackSpace  && args.Event.Key != Gdk.Key.Delete)
+			if (Array.IndexOf(misDigitos.ToCharArray(), Convert.ToChar(args.Event.Key)) == -1 && args.Event.Key.ToString()  != "BackSpace"  && args.Event.Key != Gdk.Key.Delete)
 			{
 				args.RetVal = true;
 			}

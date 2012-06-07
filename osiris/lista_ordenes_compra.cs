@@ -208,8 +208,13 @@ namespace osiris
 		
 		void on_button_rep_clicked(object sender, EventArgs args)
 		{
-			int num_ordencompra = 4;
-			new osiris.rpt_orden_compras(num_ordencompra);   // imprime la orden de compra
+			int num_ordencompra = 0;
+			TreeModel model;
+			TreeIter iterSelected;
+ 			if (lista_almacenes.Selection.GetSelected(out model, out iterSelected)){
+				num_ordencompra = int.Parse((string) lista_almacenes.Model.GetValue (iterSelected,1));
+				new osiris.rpt_orden_compras(num_ordencompra);   // imprime la orden de compra
+			}
 		}
 		// cierra ventanas emergentes
 		void on_cierraventanas_clicked (object sender, EventArgs args)

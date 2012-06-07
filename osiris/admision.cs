@@ -67,6 +67,7 @@ namespace osiris
 		[Widget] Gtk.Button button_rpt_pacientes_alta = null;
 		[Widget] Gtk.Button button_rpt_presupuestos = null;
 		[Widget] Gtk.Button button_rpt_separacion_paquetes = null;
+		[Widget] Gtk.Button button_rpt_no_entraron_caja = null;
 		
 		//Ventana de cancelacion de folios
 		[Widget] Gtk.Window cancelador_folios = null;
@@ -132,6 +133,7 @@ namespace osiris
 			button_rpt_pacientes_alta.Clicked += new EventHandler(on_button_rpt_pacientes_alta_clicked);
 			button_rpt_presupuestos.Clicked += new EventHandler(on_button_rpt_presupuestos_clicked);
 			button_rpt_separacion_paquetes.Clicked += new EventHandler(on_button_rpt_separacion_paquetes_clicked);
+			button_rpt_no_entraron_caja.Clicked += new EventHandler(on_button_rpt_no_entraron_caja_clicked);
 			button_salir.Clicked += new EventHandler(on_cierraventanas_clicked);
 		}
 		
@@ -230,6 +232,11 @@ namespace osiris
 		void on_button_rpt_pacientes_alta_clicked(object sender, EventArgs args)
 		{
 			new osiris.reporte_pacientes_con_alta(nombrebd);
+		}
+		
+		void on_button_rpt_no_entraron_caja_clicked(object sender, EventArgs args)
+		{
+			new osiris.rpt_no_ingreso_caja(nombrebd,"pantalla");
 		}
 				
 		void on_button_presupuestos_clicked (object sender, EventArgs args)

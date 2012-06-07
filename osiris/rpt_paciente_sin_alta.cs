@@ -284,7 +284,7 @@ namespace osiris
 								"AND osiris_erp_cobros_enca.reservacion = 'false' "+
 								"AND osiris_erp_cobros_enca.alta_paciente = 'false' "+
 								"AND osiris_erp_cobros_enca.cancelado = 'false' "+
-								"AND osiris_erp_movcargos.id_tipo_admisiones > '16' "+
+								//"AND osiris_erp_movcargos.id_tipo_admisiones > '16' "+
 								/*
 								"AND osiris_erp_movcargos.id_tipo_admisiones <> '940' "+
 								"AND osiris_erp_movcargos.id_tipo_admisiones <> '930' "+

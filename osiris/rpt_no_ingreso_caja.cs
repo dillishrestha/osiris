@@ -59,24 +59,13 @@ namespace osiris
 		private PrintOperation print;
 		private double fontSize = 8.0;
 		int escala_en_linux_windows; // Linux = 1  Windows = 8
-		int comienzo_linea = 95;
+		int comienzo_linea = 70;
 		int separacion_linea = 10;
-		int numerpage = 1;
-		int contador = 0;
+		int numpage = 1;
+		
 		string connectionString;
 		string nombrebd;
-		string tipointernamiento = "CENTRO MEDICO";
-		int idtipointernamiento = 10;
-		string tipopaciente = "Membresias";
-		int id_tipopaciente = 100;
-		string motivo = "";
-		//string tipobusqueda = "AND osiris_his_medicos.nombre1_medico LIKE '";
-		string busqueda = "";
-		
-		string idempresa = "1";
-		string idaseguradora = "1";
-		string idmedico = "1";
-		   
+				   
 		class_conexion conexion_a_DB = new class_conexion();
 		class_buscador classfind_data = new class_buscador();
 		class_public classpublic = new class_public();
@@ -161,9 +150,10 @@ namespace osiris
 		
 		void ejecutar_consulta_reporte(PrintContext context)
 		{
-			string fechas_registros = "";
-			string edad;
-			int contador = 0;
+			string mesage_1 = "NO Tiene Comprobante de Servicio";
+			string mesage_2 = "NO Tiene Comprobante de PAGO o ABONO";
+			string mesage_3 = "NO Tiene Comprobante de PAGARE";
+			string mesage_4 = "NO Tiene PASE QX/URGENCIA";
 			Cairo.Context cr = context.CairoContext;
 			Pango.Layout layout = context.CreatePangoLayout ();
 			Pango.FontDescription desc = Pango.FontDescription.FromString ("Sans");
@@ -183,22 +173,29 @@ namespace osiris
 				int folioservicio = 0;
 				string query_fechas = " AND to_char(osiris_erp_cobros_enca.fechahora_creacion,'yyyy-MM-dd') >= '"+entry_ano1.Text+"-"+entry_mes1.Text+"-"+entry_dia1.Text+"' "+
 									" AND to_char(osiris_erp_cobros_enca.fechahora_creacion,'yyyy-MM-dd') <= '"+entry_ano2.Text+"-"+entry_mes2.Text+"-"+entry_dia2.Text+"' ";								
-				comando.CommandText = "SELECT osiris_erp_cobros_enca.folio_de_servicio,osiris_erp_cobros_enca.pid_paciente " +
-							"FROM osiris_erp_cobros_enca,osiris_his_paciente " +
-							"WHERE osiris_erp_cobros_enca.pid_paciente = osiris_his_paciente.pid_paciente"+query_fechas+" ORDER BY osiris_erp_cobros_enca.folio_de_servicio;";
+				comando.CommandText = "SELECT osiris_erp_cobros_enca.folio_de_servicio,osiris_erp_cobros_enca.pid_paciente AS pidpaciente, " +
+										"osiris_his_paciente.nombre1_paciente || ' ' || osiris_his_paciente.nombre2_paciente || ' ' || osiris_his_paciente.apellido_paterno_paciente || ' ' || osiris_his_paciente.apellido_materno_paciente AS nombre_completo," +
+										"osiris_erp_cobros_enca.fechahora_creacion "+
+										"FROM osiris_erp_cobros_enca,osiris_his_paciente " +
+										"WHERE osiris_erp_cobros_enca.pid_paciente = osiris_his_paciente.pid_paciente " +
+										"AND cancelado = 'false' "+
+										query_fechas+" ORDER BY osiris_erp_cobros_enca.folio_de_servicio;";
 				Console.WriteLine(comando.CommandText.ToString());
 				NpgsqlDataReader lector = comando.ExecuteReader ();
 				while(lector.Read()){
 					folioservicio = (int) lector["folio_de_servicio"];
 					//Console.WriteLine(folioservicio.ToString());
 					if((string) classpublic.lee_registro_de_tabla("osiris_erp_comprobante_servicio","folio_de_servicio","WHERE folio_de_servicio = '"+folioservicio.ToString().Trim()+"'","folio_de_servicio") == ""){
-						Console.WriteLine(folioservicio.ToString().Trim()+" NO Tiene Comprobante de Servicio ");
+						//Console.WriteLine(folioservicio.ToString().Trim()+" NO Tiene Comprobante de Servicio ");
 						if((string) classpublic.lee_registro_de_tabla("osiris_erp_abonos","folio_de_servicio","WHERE folio_de_servicio = '"+folioservicio.ToString().Trim()+"' AND honorario_medico = 'false' ","folio_de_servicio") == ""){
-							Console.WriteLine(folioservicio.ToString().Trim()+" NO Tiene Comprobante de PAGO o ABONO ");
+							//Console.WriteLine(folioservicio.ToString().Trim()+" NO Tiene Comprobante de PAGO o ABONO ");
 							if((string) classpublic.lee_registro_de_tabla("osiris_erp_comprobante_pagare","folio_de_servicio","WHERE folio_de_servicio = '"+folioservicio.ToString().Trim()+"' ","folio_de_servicio") == ""){
-								Console.WriteLine(folioservicio.ToString().Trim()+" NO Tiene Comprobante de PAGARE ");
+								//Console.WriteLine(folioservicio.ToString().Trim()+" NO Tiene Comprobante de PAGARE ");
 								if((string) classpublic.lee_registro_de_tabla("osiris_erp_pases_qxurg","folio_de_servicio","WHERE folio_de_servicio = '"+folioservicio.ToString().Trim()+"' ","folio_de_servicio") == ""){
-									Console.WriteLine(folioservicio.ToString().Trim()+" NO Tiene PASE QX/URGENCIA ");
+									//Console.WriteLine(folioservicio.ToString().Trim()+" NO Tiene PASE QX/URGENCIA ");
+									cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText("FECHA :"+(string) lector["fechahora_creacion"].ToString()+"N° Atencion :"+folioservicio.ToString()+"      Expediente: "+(string) lector["pidpaciente"].ToString()+"  Paciente: "+(string) lector["nombre_completo"].ToString());	Pango.CairoHelper.ShowLayout (cr, layout);
+									comienzo_linea += separacion_linea;
+									salto_de_pagina(cr,layout);
 								}
 							}
 						}					
@@ -215,6 +212,18 @@ namespace osiris
 		private void OnEndPrint (object obj, Gtk.EndPrintArgs args)
 		{
 			
+		}
+		
+		void salto_de_pagina(Cairo.Context cr,Pango.Layout layout)			
+		{
+			if(comienzo_linea >660){
+				cr.ShowPage();
+				Pango.FontDescription desc = Pango.FontDescription.FromString ("Sans");								
+				fontSize = 8.0;		desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;
+				comienzo_linea = 70;
+				numpage += 1;
+				//imprime_encabezado(cr,layout);
+			}
 		}
 		
 		// Valida entradas que solo sean numericas, se utiliza eb ventana de

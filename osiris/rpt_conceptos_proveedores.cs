@@ -52,6 +52,7 @@ namespace osiris
 		[Widget] Gtk.Entry entry_ano_final = null;
 		[Widget] Gtk.CheckButton checkbutton_todos_proveedores = null;
 		[Widget] Gtk.CheckButton checkbutton_todas_fechas = null;
+		[Widget] Gtk.CheckButton checkbutton_todos_grupos = null;
 		[Widget] Gtk.Entry entry_nombre_proveedor = null;
 		[Widget] Gtk.Button button_busca_proveedor = null;
 		[Widget] Gtk.TreeView treeview_lista_grupoprod = null;
@@ -62,6 +63,7 @@ namespace osiris
 		string query_rango_fechas = "AND to_char(osiris_erp_cobros_enca.fechahora_creacion,'yyyy-MM-dd') >= '"+DateTime.Now.ToString("yyyy")+"-"+DateTime.Now.ToString("MM")+"-"+DateTime.Now.ToString("dd")+"' "+
 										"AND to_char(osiris_erp_cobros_enca.fechahora_creacion,'yyyy-MM-dd') <= '"+DateTime.Now.ToString("yyyy")+"-"+DateTime.Now.ToString("MM")+"-"+DateTime.Now.ToString("dd")+"' "; 
 		string query_proveedores = "";
+		string query_in_grupo = "";
 		
 		TreeStore treeViewEngineListaGrupoProd;
 		
@@ -91,12 +93,13 @@ namespace osiris
 			button_busca_proveedor.Clicked += new EventHandler(on_busca_proveedores_clicked);
 			checkbutton_todas_fechas.Clicked += new EventHandler(on_checkbutton_todas_fechas_clicked);
 			checkbutton_todos_proveedores.Clicked += new EventHandler(on_checkbutton_todos_proveedore_clicked);
+			checkbutton_todos_grupos.Clicked += new EventHandler(on_checkbutton_todos_grupos_clicked);
 			button_exportar_sheet.Clicked += new EventHandler(on_button_exportar_sheet_clicked);
 			entry_id_proveedor.KeyPressEvent += onKeyPressEvent_enter;
 			checkbutton_todos_proveedores.Active = true;
-			
 			creartreeviewgrupoprod();
 			llenadogrupoprod();
+			checkbutton_todos_grupos.Active = true;
 		}
 		
 		// Valida entradas que solo sean numericas, se utiliza en ventana
@@ -120,6 +123,7 @@ namespace osiris
 		{
 			verifica_checkbutton_prov();
 			verifica_checkbutton_fechas();
+			verifica_grupo_prodctos();
 			string query_sql = "SELECT  to_char(osiris_erp_factura_compra_enca.fecha_factura,'yyyy-MM-dd') AS fechafactura,osiris_erp_factura_compra_enca.numero_factura_proveedor AS numerofactura," +
 				"osiris_erp_factura_compra_enca.id_proveedor,descripcion_proveedor," +
 				"to_char(osiris_erp_requisicion_deta.id_producto,'999999999999') AS idproducto_osiris,descripcion_producto AS descrip_prod_osiris," +
@@ -132,6 +136,7 @@ namespace osiris
 				"AND osiris_erp_requisicion_deta.id_producto = osiris_productos.id_producto " +
 				query_proveedores+
 				query_rango_fechas+
+				query_in_grupo+
 				"ORDER BY to_char(osiris_erp_factura_compra_enca.fecha_factura,'yyyy-MM-dd'),numerofactura;";
 			string[] args_names_field = {"fechafactura","numerofactura","descripcion_proveedor","idproducto_osiris","descrip_prod_osiris","cantidad_comprada","costo_producto_compra","cantidad_de_embalaje","costoxunidad_compra","cantidad_recibida","costo_producto_osiris","cantidad_de_embalaje_osiris","costo_unitario_osiris","id_producto_proveedor","descripcion_producto_proveedor","tipo_unidad_producto","lote_producto","caducidad_producto"};
 			string[] args_type_field = {"string","string","string","string","string","float","float","float","float","float","float","float","float","string","string","string","string","string"};
@@ -158,6 +163,32 @@ namespace osiris
 			entry_id_proveedor.Sensitive = active_checkbutton;
 			entry_nombre_proveedor.Sensitive = active_checkbutton;
 			button_busca_proveedor.Sensitive = active_checkbutton;
+		}
+		
+		string crea_string_grupoproductos()
+		{
+			int variable_paso_02_1 = 0;
+			string variable_paso_03 = "";
+			string numeros_seleccionado = "";
+			TreeIter iter;			
+			if (treeViewEngineListaGrupoProd.GetIterFirst (out iter)){
+ 				if ((bool) treeview_lista_grupoprod.Model.GetValue (iter,0) == true){
+ 					numeros_seleccionado = (string) treeview_lista_grupoprod.Model.GetValue (iter,2);
+ 					variable_paso_02_1 += 1;		
+ 				}
+ 				while (treeViewEngineListaGrupoProd.IterNext(ref iter)){
+ 					if ((bool) treeview_lista_grupoprod.Model.GetValue (iter,0) == true){
+ 				    	if (variable_paso_02_1 == 0){ 				    	
+ 							numeros_seleccionado = (string) treeview_lista_grupoprod.Model.GetValue (iter,2);
+ 							variable_paso_02_1 += 1;
+ 						}else{
+ 							variable_paso_03 = (string) treeview_lista_grupoprod.Model.GetValue (iter,2);
+ 							numeros_seleccionado = numeros_seleccionado.Trim() + "','" + variable_paso_03.Trim();
+ 						}
+ 					}
+ 				}
+ 			}
+			return " AND osiris_productos.id_grupo_producto IN ('"+numeros_seleccionado+"') ";
 		}
 		
 		void on_checkbutton_todas_fechas_clicked(object sender, EventArgs args)
@@ -209,6 +240,32 @@ namespace osiris
 			classfind_data.buscandor(parametros_objetos,parametros_sql,"find_proveedores_catalogo_producto"," ORDER BY descripcion_proveedor;","%' ",0);
 		}
 		
+		void on_checkbutton_todos_grupos_clicked(object sender, EventArgs args)
+		{
+			verifica_grupo_prodctos();
+		}
+		
+		void verifica_grupo_prodctos()
+		{
+			TreeIter iter2;
+			if ((bool)checkbutton_todos_grupos.Active == true){
+				if (treeViewEngineListaGrupoProd.GetIterFirst (out iter2)){
+					treeview_lista_grupoprod.Model.SetValue(iter2,0,true);
+					while (treeViewEngineListaGrupoProd.IterNext(ref iter2)){
+						treeview_lista_grupoprod.Model.SetValue(iter2,0,true);
+					}
+				}
+				query_in_grupo = "";
+			}else{
+				if (treeViewEngineListaGrupoProd.GetIterFirst (out iter2)){
+					treeview_lista_grupoprod.Model.SetValue(iter2,0,false);
+					while (treeViewEngineListaGrupoProd.IterNext(ref iter2)){
+						treeview_lista_grupoprod.Model.SetValue(iter2,0,false);
+					}
+				}
+			}
+		}
+		
 		void creartreeviewgrupoprod()
 		{
 			treeViewEngineListaGrupoProd = new TreeStore(typeof(bool),
@@ -244,7 +301,7 @@ namespace osiris
 				conexion.Open ();
 				NpgsqlCommand comando; 
 				comando = conexion.CreateCommand ();
-               	comando.CommandText = "SELECT id_grupo_producto,descripcion_grupo_producto FROM osiris_grupo_producto ORDER BY descripcion_grupo_producto";
+               	comando.CommandText = "SELECT id_grupo_producto,descripcion_grupo_producto FROM osiris_grupo_producto WHERE descripcion_grupo_producto <> '' ORDER BY descripcion_grupo_producto";
 				//Console.WriteLine(comando.CommandText);
 				NpgsqlDataReader lector = comando.ExecuteReader ();
 				while(lector.Read()){

@@ -440,10 +440,9 @@ namespace osiris
 			                                        typeof(string), // 17
 			                                        typeof(string)); // 18
 												
-			lista_de_busqueda.Model = treeViewEngineBuscador;
-			
+			lista_de_busqueda.Model = treeViewEngineBuscador;			
 			lista_de_busqueda.RulesHint = true;
-							
+			
 			lista_de_busqueda.RowActivated += on_selecciona_busqueda;  // Doble click selecciono cliente*/
 			col_buscador0 = new TreeViewColumn();
 			cellrt0 = new CellRendererText();

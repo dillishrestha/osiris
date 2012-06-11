@@ -339,8 +339,7 @@ namespace osiris
 				}
 				NpgsqlDataReader lector = comando.ExecuteReader ();
 				//bool verifica_activacion;
-				while (lector.Read())
-				{	
+				while (lector.Read()){	
 					treeViewEngineaseguradoras.AppendValues ((int) lector["id_aseguradora"],//0
 													(string) lector["descripcion_aseguradora"]);//1
 				}
@@ -543,8 +542,7 @@ namespace osiris
 				
 				NpgsqlDataReader lector = comando.ExecuteReader ();
 				//bool verifica_activacion;
-				while (lector.Read())
-				{	
+				while (lector.Read()){	
 					treeViewEnginegrupos1.AppendValues (false,
 													(string) lector["descripcion_grupo1_producto"],//0
 													(string) lector["idgrupo1producto"]);//1

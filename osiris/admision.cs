@@ -139,7 +139,7 @@ namespace osiris
 		
 		void on_button_tarjeta_medica_clicked(object sender, EventArgs args)
 		{
-			new osiris.tarjeta_medica();
+			//new osiris.tarjeta_medica();
 		}
 		
 		void on_button_soli_material_clicked(object sender, EventArgs args)
@@ -236,7 +236,7 @@ namespace osiris
 		
 		void on_button_rpt_no_entraron_caja_clicked(object sender, EventArgs args)
 		{
-			new osiris.rpt_no_ingreso_caja(nombrebd,"pantalla");
+			//new osiris.rpt_no_ingreso_caja(nombrebd,"pantalla");
 		}
 				
 		void on_button_presupuestos_clicked (object sender, EventArgs args)

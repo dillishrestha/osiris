@@ -1,18 +1,20 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="osiris/envio_mat_subalmacenes.cs">
+  <MonoDevelop.Ide.Workbench>
     <Files>
       <File FileName="osiris/captura_fac_ordenes_compra.cs" Line="1" Column="1" />
       <File FileName="osiris/class_public.cs" Line="1" Column="1" />
-      <File FileName="osiris/class_conexion.cs" Line="14" Column="41" />
+      <File FileName="osiris/class_conexion.cs" Line="10" Column="51" />
       <File FileName="osiris/envio_mat_subalmacenes.cs" Line="398" Column="15" />
+      <File FileName="osiris/rpt_analisis_devoluciones.cs" Line="1" Column="1" />
+      <File FileName="osiris/admision.cs" Line="132" Column="13" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
         <State expanded="True">
           <Node name="osiris" expanded="True">
             <Node name="References" expanded="True" />
-            <Node name="envio_mat_subalmacenes.cs" selected="True" />
+            <Node name="admision.cs" selected="True" />
           </Node>
         </State>
       </Pad>

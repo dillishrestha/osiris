@@ -2155,7 +2155,7 @@ namespace osiris
 			col_servicio.SortColumnId = (int) Column_serv.col_servicio ;
       
 			TreeViewColumn col_desc_servicio = new TreeViewColumn();
-			col_desc_servicio.Title = "Diagnostico Admision";
+			col_desc_servicio.Title = "Motivo de Ingreso";
 			col_desc_servicio.PackStart(cellrt1, true);
 			col_desc_servicio.AddAttribute (cellrt1, "text", 2);
 			col_desc_servicio.SortColumnId = (int) Column_serv.col_desc_servicio;

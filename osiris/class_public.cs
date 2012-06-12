@@ -44,10 +44,10 @@ namespace osiris
 		public string idUsuario = "";
 		
 		// Informacion de la Empresa
-		public string nombre_empresa = "CONTROL DE CLINICA S.C."; //"P R A C T I M E D"; "CONTROL DE CLINICA S.C."
-		public string nombre_empresa2 = "CONTROL DE CLINICA";  //"CONTROL DE CLINICA";
-		public string direccion_empresa = "Jose Angel Conchello 2880, Col. Victora"; //"Loma Grande 2703, Col. Loma de San Francisco"; //"Jose Angel Conchello 2880, Col. Victora"
-		public string telefonofax_empresa = "Telefono: (01)(81) 8351-3610"; //"Telefono: (01)(81) 8040-6060"; // "Telefono: (01)(81) 8351-3610"
+		public string nombre_empresa = "P R A C T I M E D"; //"P R A C T I M E D"; "CONTROL DE CLINICA S.C."
+		public string nombre_empresa2 = "PRACTIMED";  //"CONTROL DE CLINICA";
+		public string direccion_empresa = "Loma Grande 2703, Col. Loma de San Francisco"; //"Loma Grande 2703, Col. Loma de San Francisco"; //"Jose Angel Conchello 2880, Col. Victora"
+		public string telefonofax_empresa = "Telefono: (01)(81) 8040-6060"; //"Telefono: (01)(81) 8040-6060"; // "Telefono: (01)(81) 8351-3610"
 		public string version_sistema = "Sistema Hospitalario OSIRIS ver. 1.0";
 		
 		public string ivaparaaplicar = "16.00";

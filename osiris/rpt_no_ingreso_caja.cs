@@ -63,6 +63,9 @@ namespace osiris
 		int separacion_linea = 10;
 		int numpage = 1;
 		
+		PrintContext context;
+		Pango.FontDescription desc = Pango.FontDescription.FromString ("Sans");
+		
 		string connectionString;
 		string nombrebd;
 				   
@@ -88,13 +91,11 @@ namespace osiris
 			//crea la ventana de glade
 			Glade.XML  gxml = new Glade.XML  (null, "caja.glade", "rango_de_fecha", null);
 			gxml.Autoconnect  (this);
-			rango_de_fecha.Show();
-			
+			rango_de_fecha.Show();			
 			
 			checkbutton_impr_todo_proce.Label = "Imprime TODO";
 			entry_referencia_inicial.IsEditable = false;
-			entry_referencia_inicial.Text = DateTime.Now.ToString("dd-MM-yyyy");
-			
+			entry_referencia_inicial.Text = DateTime.Now.ToString("dd-MM-yyyy");			
 			
 			entry_dia1.KeyPressEvent += onKeyPressEvent;
 			entry_mes1.KeyPressEvent += onKeyPressEvent;
@@ -143,22 +144,20 @@ namespace osiris
 		
 		private void OnDrawPage (object obj, Gtk.DrawPageArgs args)
 		{
-			PrintContext context = args.Context;
+			context = args.Context;
 			//imprime_encabezado(cr,layou);
 			ejecutar_consulta_reporte(context);
 		}
 		
 		void ejecutar_consulta_reporte(PrintContext context)
 		{
-			string mesage_1 = "NO Tiene Comprobante de Servicio";
-			string mesage_2 = "NO Tiene Comprobante de PAGO o ABONO";
-			string mesage_3 = "NO Tiene Comprobante de PAGARE";
-			string mesage_4 = "NO Tiene PASE QX/URGENCIA";
+			//string mesage_1 = "NO Tiene Comprobante de Servicio";
+			//string mesage_2 = "NO Tiene Comprobante de PAGO o ABONO";
+			//string mesage_3 = "NO Tiene Comprobante de PAGARE";
+			//string mesage_4 = "NO Tiene PASE QX/URGENCIA";
 			Cairo.Context cr = context.CairoContext;
 			Pango.Layout layout = context.CreatePangoLayout ();
-			Pango.FontDescription desc = Pango.FontDescription.FromString ("Sans");
-			fontSize = 7.0; layout = context.CreatePangoLayout ();
-			desc.Size = (int)(fontSize * pangoScale); layout.FontDescription = desc;
+			
 			
 			comienzo_linea = 85;
 			NpgsqlConnection conexion;
@@ -166,6 +165,10 @@ namespace osiris
 			           
 			// Verifica que la base de datos este conectada
 			try{
+				imprime_encabezado(cr,layout);
+				fontSize = 8.0; layout = context.CreatePangoLayout ();
+				desc.Size = (int)(fontSize * pangoScale); layout.FontDescription = desc;
+				
 				conexion.Open ();
 				NpgsqlCommand comando;
 				comando = conexion.CreateCommand ();
@@ -196,6 +199,8 @@ namespace osiris
 									cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText("FECHA :"+(string) lector["fechahora_creacion"].ToString()+"N° Atencion :"+folioservicio.ToString()+"      Expediente: "+(string) lector["pidpaciente"].ToString()+"  Paciente: "+(string) lector["nombre_completo"].ToString());	Pango.CairoHelper.ShowLayout (cr, layout);
 									comienzo_linea += separacion_linea;
 									salto_de_pagina(cr,layout);
+									fontSize = 8.0; layout = context.CreatePangoLayout ();
+									desc.Size = (int)(fontSize * pangoScale); layout.FontDescription = desc;
 								}
 							}
 						}					
@@ -214,15 +219,48 @@ namespace osiris
 			
 		}
 		
+		void imprime_encabezado(Cairo.Context cr,Pango.Layout layout)
+		{
+			//cr.Rotate(90);  //Imprimir Orizontalmente rota la hoja cambian las posiciones de las lineas y columna					
+			fontSize = 8.0;
+			desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;
+			layout.FontDescription.Weight = Weight.Bold;		// Letra negrita
+			cr.MoveTo(05*escala_en_linux_windows,05*escala_en_linux_windows);			layout.SetText(classpublic.nombre_empresa);			Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(05*escala_en_linux_windows,15*escala_en_linux_windows);			layout.SetText(classpublic.direccion_empresa);		Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(05*escala_en_linux_windows,25*escala_en_linux_windows);			layout.SetText(classpublic.telefonofax_empresa);	Pango.CairoHelper.ShowLayout (cr, layout);
+			fontSize = 6.0;
+			desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;
+			cr.MoveTo(650*escala_en_linux_windows,05*escala_en_linux_windows);			layout.SetText("Fech.Rpt:"+(string) DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));		Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(650*escala_en_linux_windows,15*escala_en_linux_windows);			layout.SetText("N° Page :"+numpage.ToString().Trim());		Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(05*escala_en_linux_windows,35*escala_en_linux_windows);			layout.SetText("Sistema Hospitalario OSIRIS");		Pango.CairoHelper.ShowLayout (cr, layout);
+			
+			fontSize = 11.0;
+			desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;
+			layout.FontDescription.Weight = Weight.Bold;		// Letra negrita
+			layout.Alignment = Pango.Alignment.Center;
+			
+			double width = context.Width;
+			layout.Width = (int) width;
+			layout.Alignment = Pango.Alignment.Center;
+			//layout.Wrap = Pango.WrapMode.Word;
+			//layout.SingleParagraphMode = true;
+			layout.Justify =  false;
+			cr.MoveTo(width/2,45*escala_en_linux_windows);	layout.SetText("PACIENTES_NO_INGRESADOS_A_CAJA");	Pango.CairoHelper.ShowLayout (cr, layout);
+			//cr.MoveTo(225*escala_en_linux_windows, 35*escala_en_linux_windows);			layout.SetText(titulo_rpt);				Pango.CairoHelper.ShowLayout (cr, layout);
+			fontSize = 8.0;			layout = null;			layout = context.CreatePangoLayout ();
+			desc.Size = (int)(fontSize * pangoScale);		layout.FontDescription = desc;
+			layout.FontDescription.Weight = Weight.Normal;		// Letra negrita
+		}
+		
 		void salto_de_pagina(Cairo.Context cr,Pango.Layout layout)			
 		{
 			if(comienzo_linea >660){
 				cr.ShowPage();
-				Pango.FontDescription desc = Pango.FontDescription.FromString ("Sans");								
+				desc = Pango.FontDescription.FromString ("Sans");								
 				fontSize = 8.0;		desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;
 				comienzo_linea = 70;
 				numpage += 1;
-				//imprime_encabezado(cr,layout);
+				imprime_encabezado(cr,layout);
 			}
 		}
 		

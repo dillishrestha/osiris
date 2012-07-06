@@ -125,7 +125,7 @@ namespace osiris
 		[Widget] Gtk.Entry entry_telcasa = null;
 		[Widget] Gtk.Entry entry_teloficina = null;
 		[Widget] Gtk.Entry entry_telcelular = null;
-		[Widget] Gtk.Entry entry_religion_paciente = null;
+		[Widget] Gtk.ComboBox combobox_religion_paciente = null;
 		[Widget] Gtk.Entry entry_alergia_paciente = null;
 		[Widget] Gtk.Label label8 = null;
 		[Widget] Gtk.Entry entry_observacion_ingreso = null;
@@ -197,6 +197,8 @@ namespace osiris
 		[Widget] Gtk.Entry entry_poliza_responsable = null;
 		[Widget] Gtk.Entry entry_certificado_acta = null;
 		[Widget] Gtk.Entry entry_tel_emp_responsable = null;
+		[Widget] Gtk.TreeView treeview_documentos = null;
+		[Widget] Gtk.Entry entry_empresa_convenio = null;
 		
 		[Widget] Gtk.ComboBox combobox_parent_responsable = null;
 		
@@ -215,8 +217,9 @@ namespace osiris
 		string horaregadmision;   // Toma el valor de la hora de admision
 		string tipopaciente = ""; // toma el valor del texto de tipo de paciente
 		int id_tipopaciente = 0;  // toma el valor del tipo de paciente Privado = 200
+		int id_tipopaciente_valid = 0;	// toma valor de tipo paciente para validarlo
 		int folioservicio = 0;	 // Toma el valor de numero de atencion de paciente
-		
+		int id_tipodocumentopx = 1; // Toma el valor del tipo de documento que necesitan llenar para cada paciente
 		string tipointernamiento = "URGENCIAS";//"Urgencias";  // Toma el valor del tipo de internamiento
 		int idtipointernamiento = 0;       // Toma el valor del id de internamiento
 		bool grabainternamiento = false; // me indica que debe grabar el internamiento del paciente
@@ -239,6 +242,7 @@ namespace osiris
 		string busqueda = "";
 		string tipobusqueda = "AND osiris_his_medicos.nombre1_medico LIKE '";
 		bool ventana_principal = true;
+		string religionpaciente = "";
 		
 		// Variables publicas medico quien interna
 		int idmedico = 1;
@@ -273,14 +277,19 @@ namespace osiris
 		
 		string[] args_args = {""};
 		string[] args_estado_civil = {"","CASADO(A)","SOLTERO(A)","SEPARADO(A)","VIUDO(A)","UNION LIBRE","DIVORCIADO(A)"};
-		int[] args_id_array = {0,1,2,3,4,5,6,7,8};
+		string[] args_tipos_cirugias = {"","CIRUGIA AMBULATORIA","CIRUGIA PROGRAMADA","SIN CIRUGIA"};
+		string[] args_parentesco = {"SIN PARENTESCO","Esposo(a)","Papa","Mama","Abuelo(a)","Hermano(a)","Primo(a)","Tio(a)","Cuñado(a)","Tutor","Hijo(a)","Concuño(a)"};
+		int[] args_id_array = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20};
 		
 		protected Gtk.Window MyWin;
 		protected Gtk.Window MyWinError;
 		
 		private TreeStore treeViewEngine;
 		private ListStore store_aseguradora;
+		private ListStore treeViewEngineDocumentos;
 		
+		private ArrayList arraydocumentos;
+						
 		class_conexion conexion_a_DB = new class_conexion();
 		class_public classpublic = new class_public();
 		
@@ -295,6 +304,7 @@ namespace osiris
 			nombrebd = conexion_a_DB._nombrebd;
 			_tipo_ = _tipo;
 			ventana_principal = true;
+			arraydocumentos = new ArrayList();
 			if(_tipo == "selecciona"){
 				llena_datos_del_paciente("seleccion_no_admision",pidpaciente_);
 			}else{
@@ -381,7 +391,7 @@ namespace osiris
 				label8.Text = "Serv.Medico :";
 	        	
 				// Activa boton de responsable
-				button_responsable.Clicked += new EventHandler(on_button_responsable_clicked);
+				button_responsable.Clicked += new EventHandler(on_button_validaadmision_clicked);
 	        	
 				//Activa boton para imprimir el protocolo
 				button_imprimir_protocolo.Clicked += new EventHandler(on_button_imprimir_protocolo_clicked);
@@ -416,9 +426,9 @@ namespace osiris
 				checkbutton_checkup.Clicked += new EventHandler(on_checkbutton_checkup_clicked);
 	        	
 	        	// lenado de los ComboBox
-				llenado_combobox(0,"",combobox_estado,"sql","SELECT * FROM osiris_estados ORDER BY descripcion_estado;","descripcion_estado","id_estado",args_args,args_id_array);
-				llenado_combobox(0,"",combobox_estado_civil,"array","","","",args_estado_civil,args_id_array);
-	        	
+				llenado_combobox(0,"",combobox_estado,"sql","SELECT * FROM osiris_estados ORDER BY descripcion_estado;","descripcion_estado","id_estado",args_args,args_id_array,"");
+				llenado_combobox(0,"",combobox_estado_civil,"array","","","",args_estado_civil,args_id_array,"");
+	        	llenado_combobox(0,"",combobox_religion_paciente,"sql","SELECT * FROM osiris_tipos_religiones WHERE activo = 'true' ORDER BY id_tipo_religion;","descripcion_religion","id_tipo_religion",args_args,args_id_array,"");
 				// Sexo Paciente
 				radiobutton_masculino.Clicked += new EventHandler(on_cambioHM_clicked);
 				radiobutton_femenino.Clicked += new EventHandler(on_cambioHM_clicked);
@@ -436,7 +446,7 @@ namespace osiris
 				if(idempresa_paciente > 0 ){
 					combobox_paquete_check_up.Sensitive = true;
 					button_admision.Sensitive = false;
-					llenado_combobox(1,"",combobox_paquete_check_up,"sql","SELECT * FROM osiris_his_tipo_cirugias WHERE paquete_checkup = 'true';","descripcion_cirugia","id_tipo_cirugia",args_args,args_id_array);
+					llenado_combobox(1,"",combobox_paquete_check_up,"sql","SELECT * FROM osiris_his_tipo_cirugias WHERE paquete_checkup = 'true';","descripcion_cirugia","id_tipo_cirugia",args_args,args_id_array,"");
 				
 				}
 			}else{
@@ -445,7 +455,7 @@ namespace osiris
 			}
 		}
 		
-		void llenado_combobox(int tipodellenado,string descrip_defaul,object obj,string sql_or_array,string query_SQL,string name_field_desc,string name_field_id,string[] args_array,int[] args_id_array)
+		void llenado_combobox(int tipodellenado,string descrip_defaul,object obj,string sql_or_array,string query_SQL,string name_field_desc,string name_field_id,string[] args_array,int[] args_id_array,string name_field_id2)
 		{			
 			Gtk.ComboBox combobox_llenado = (Gtk.ComboBox) obj;
 			//Gtk.ComboBox combobox_pos_neg = obj as Gtk.ComboBox;
@@ -453,14 +463,14 @@ namespace osiris
 			CellRendererText cell = new CellRendererText();
 			combobox_llenado.PackStart(cell, true);
 			combobox_llenado.AddAttribute(cell,"text",0);	        
-			ListStore store = new ListStore( typeof (string),typeof (int));
+			ListStore store = new ListStore( typeof (string),typeof (int),typeof (int));
 			combobox_llenado.Model = store;			
 			if ((int) tipodellenado == 1){
 				store.AppendValues ((string) descrip_defaul,0);
 			}			
 			if(sql_or_array == "array"){			
 				for (int colum_field = 0; colum_field < args_array.Length; colum_field++){
-					store.AppendValues (args_array[colum_field],args_id_array[colum_field]);
+					store.AppendValues (args_array[colum_field],args_id_array[colum_field],0);
 				}
 			}
 			if(sql_or_array == "sql"){			
@@ -471,10 +481,14 @@ namespace osiris
 					conexion.Open ();
 					NpgsqlCommand comando; 
 					comando = conexion.CreateCommand ();
-	               	comando.CommandText = query_SQL;					
+	               	comando.CommandText = query_SQL;
 					NpgsqlDataReader lector = comando.ExecuteReader ();
 	               	while (lector.Read()){
-						store.AppendValues ((string) lector[ name_field_desc ], (int) lector[ name_field_id]);
+						if(name_field_id2 == ""){
+							store.AppendValues ((string) lector[ name_field_desc ], (int) lector[ name_field_id],0);
+						}else{
+							store.AppendValues ((string) lector[ name_field_desc ], (int) lector[ name_field_id],(int) lector[ name_field_id2]);
+						}
 					}
 				}catch (NpgsqlException ex){
 					MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
@@ -501,7 +515,7 @@ namespace osiris
 					estado = (string) combobox_estado.Model.GetValue(iter,0); //Console.WriteLine(estado.ToString());
 					idestado = (int) combobox_estado.Model.GetValue(iter,1);
 					llenado_combobox(0,"",combobox_municipios,"sql","SELECT * FROM osiris_municipios WHERE id_estado = '"+idestado.ToString()+"' "+
-               						"ORDER BY descripcion_municipio;","descripcion_municipio","id_municipio",args_args,args_id_array);
+               						"ORDER BY descripcion_municipio;","descripcion_municipio","id_municipio",args_args,args_id_array,"");
 					break;
 				case "combobox_municipios":
 					municipios = (string) combobox_municipios.Model.GetValue(iter,0);
@@ -513,34 +527,71 @@ namespace osiris
 				case "combobox_tipo_paciente":
 					tipopaciente = (string) combobox_tipo_paciente.Model.GetValue(iter,0);
 					id_tipopaciente = (int) combobox_tipo_paciente.Model.GetValue(iter,1);
-					if (id_tipopaciente == 400){
-						boolaseguradora = true;
-						combobox_aseguradora.Sensitive = true;
-						llenado_combobox(0,"",combobox_aseguradora,"sql","SELECT * FROM osiris_aseguradoras WHERE activa = 'true' ORDER BY descripcion_aseguradora;","descripcion_aseguradora","id_aseguradora",args_args,args_id_array);
-					}else{
-						boolaseguradora = false;
-						combobox_aseguradora.Sensitive = false;
-					}
-					if (id_tipopaciente == 102 || id_tipopaciente == 300 || id_tipopaciente == 500 ){
-						//if (_tipo_ == "nuevo"){
-						//	this.entry_empresa.Sensitive = true;
-						//}else{
-							this.entry_empresa.Sensitive = false;
-						//}
-					}else{
-						this.entry_empresa.Sensitive = true;
+					id_tipodocumentopx = (int) combobox_tipo_paciente.Model.GetValue(iter,2);
+					switch (id_tipopaciente){	
+						case 400:
+							boolaseguradora = true;
+							combobox_aseguradora.Sensitive = true;
+							llenado_combobox(0,"",combobox_aseguradora,"sql","SELECT * FROM osiris_aseguradoras WHERE activa = 'true' ORDER BY descripcion_aseguradora;","descripcion_aseguradora","id_aseguradora",args_args,args_id_array,"id_tipo_documento");
+							idempresa_paciente = 1;
+							empre_respo = "";
+							entry_empresa.Text = "";
+							this.entry_empresa.Sensitive = true;
+							break;
+						case 102:
+							entry_empresa.Sensitive = false;
+							boolaseguradora = false;
+							combobox_aseguradora.Sensitive = false;
+							idaseguradora = 1;
+							llenado_combobox(0,"",combobox_aseguradora,"sql","SELECT * FROM osiris_aseguradoras WHERE activa = 'true' ORDER BY descripcion_aseguradora;","descripcion_aseguradora","id_aseguradora",args_args,args_id_array,"id_tipo_documento");
+							break;
+						case 300:
+							entry_empresa.Sensitive = false;
+							boolaseguradora = false;
+							combobox_aseguradora.Sensitive = false;
+							idaseguradora = 1;
+							llenado_combobox(0,"",combobox_aseguradora,"sql","SELECT * FROM osiris_aseguradoras WHERE activa = 'true' ORDER BY descripcion_aseguradora;","descripcion_aseguradora","id_aseguradora",args_args,args_id_array,"id_tipo_documento");
+							break;
+						case 500:
+							entry_empresa.Sensitive = false;
+							boolaseguradora = false;
+							combobox_aseguradora.Sensitive = false;
+							idaseguradora = 1;
+							llenado_combobox(0,"",combobox_aseguradora,"sql","SELECT * FROM osiris_aseguradoras WHERE activa = 'true' ORDER BY descripcion_aseguradora;","descripcion_aseguradora","id_aseguradora",args_args,args_id_array,"id_tipo_documento");
+							break;
+						default:
+							idempresa_paciente = 1;
+							idaseguradora = 1;
+							empre_respo = "";
+							entry_empresa.Text = "";
+							entry_empresa.Sensitive = true;
+							combobox_aseguradora.Sensitive = false;
+							break;
 					}
 					break;
 				case "combobox_aseguradora":
 					nombre_aseguradora = (string) combobox_aseguradora.Model.GetValue(iter,0);
 					idaseguradora = (int) combobox_aseguradora.Model.GetValue(iter,1);
+					id_tipodocumentopx = (int) combobox_aseguradora.Model.GetValue(iter,2);
+					//idempresa_paciente = 1;
+					//empre_respo = "";
+					//entry_empresa.Text = "";
 					break;
 				case "combobox_tipo_admision":
 					tipointernamiento = (string) combobox_tipo_admision.Model.GetValue(iter,0);//Console.WriteLine(tipointernamiento);
 					idtipointernamiento = (int) combobox_tipo_admision.Model.GetValue(iter,1);//Console.WriteLine(idtipointernamiento);
 					break;
 				case "combobox_paquete_check_up":
-					break;	
+					break;
+				case "combobox_religion_paciente":
+					religionpaciente = (string) combobox_religion_paciente.Model.GetValue(iter,0);
+					break;
+				case "combobox_tipo_cirugia":
+					decirugia = (string) combobox_tipo_cirugia.Model.GetValue(iter,0);
+					break;
+				case "combobox_parent_responsable":
+					parentezcoresponsable = (string) combobox_parent_responsable.Model.GetValue(iter,0);
+					break;
 				}
 			}
 		}
@@ -738,7 +789,7 @@ namespace osiris
 			    		
 		// Admite a paciente Urgencias y Hospital
 		// Internamiento de paciente
-		void on_button_admision_clicked (object sender, EventArgs args)
+		void admision_para_internamiento()
 		{
 			Glade.XML gxml = new Glade.XML (null, "registro_admision.glade", "admision", null);
 			gxml.Autoconnect (this);
@@ -769,41 +820,12 @@ namespace osiris
 			button_busca_medico.Clicked += new EventHandler(on_button_busca_medicos_clicked);
 			
 			// Llenado de combobox con los tipos de Admisiones y centros de costos
-			
 			llenado_combobox(1,"",combobox_tipo_admision,"sql","SELECT * FROM osiris_his_tipo_admisiones WHERE servicio_directo = 'false' "+
 	           							"AND cuenta_mayor = '4000' "+
-	               						"ORDER BY id_tipo_admisiones;","descripcion_admisiones","id_tipo_admisiones",args_args,args_id_array);
-			// Llenado de combobox con los tipos de cirugia
-			this.combobox_tipo_cirugia.Clear();
-			CellRendererText cell3 = new CellRendererText();
-			combobox_tipo_cirugia.PackStart(cell3, true);
-			combobox_tipo_cirugia.AddAttribute(cell3,"text",0);
-	        
-			ListStore store3 = new ListStore( typeof (string), typeof (int));
-			combobox_tipo_cirugia.Model = store3;
-			store3.AppendValues ("", 0);
-			store3.AppendValues ("CIRUGIA AMBULATORIA", 0);
-			store3.AppendValues ("CIRUGIA PROGRAMADA", 0);
-			store3.AppendValues ("SIN CIRUGIA", 0);
-			
-			TreeIter iter;
-			if (store3.GetIterFirst(out iter)){
-				combobox_tipo_cirugia.SetActiveIter (iter);
-			}			
-			combobox_tipo_cirugia.Changed += new EventHandler (onComboBoxChanged_combobox_tipo_cirugia);
+	               						"ORDER BY id_tipo_admisiones;","descripcion_admisiones","id_tipo_admisiones",args_args,args_id_array,"");
+			llenado_combobox(0,"",combobox_tipo_cirugia,"array","","","",args_tipos_cirugias,args_id_array,"");
 		}
-		
-		void onComboBoxChanged_combobox_tipo_cirugia(object sender, EventArgs args)
-		{
-			ComboBox combobox_tipo_cirugia = sender as ComboBox;
-			if (sender == null)	{	return;	}
-			TreeIter iter;			
-			int numbusqueda = 0;
-			if (combobox_tipo_cirugia.GetActiveIter (out iter)){
-				decirugia = (string) combobox_tipo_cirugia.Model.GetValue(iter,0);
-			}
-		}
-		
+				
 		// Ventana de Busqueda de Medico
 		void on_button_busca_medicos_clicked (object sender, EventArgs args)
 		{
@@ -1222,7 +1244,7 @@ namespace osiris
 			// Llena treeview 
 			button_busca_empresas.Clicked += new EventHandler(on_button_llena_empresas_clicked);
 			
-			treeViewEngineBuscaEmpresa = new ListStore( typeof(int), typeof(string));
+			treeViewEngineBuscaEmpresa = new ListStore( typeof(int), typeof(string), typeof (int));
 			lista_empresas.Model = treeViewEngineBuscaEmpresa;
 			lista_empresas.RulesHint = true;
 			
@@ -1258,17 +1280,18 @@ namespace osiris
 				comando = conexion.CreateCommand ();
 				
 				if ((string) entry_expresion.Text.ToUpper() == "*"){
-					comando.CommandText = "SELECT * FROM osiris_empresas "+
+					comando.CommandText = "SELECT * FROM osiris_empresas WHERE id_tipo_paciente = '"+id_tipopaciente+"' "+
 								"ORDER BY descripcion_empresa;";
 				}else{
-					comando.CommandText = "SELECT * FROM osiris_empresas "+
-								"WHERE descripcion_empresa LIKE '%"+(string) entry_expresion.Text.ToUpper()+"%' "+
+					comando.CommandText = "SELECT * FROM osiris_empresas WHERE id_tipo_paciente = '"+id_tipopaciente+"' "+
+								"AND descripcion_empresa LIKE '%"+(string) entry_expresion.Text.ToUpper()+"%' "+
 								"ORDER BY descripcion_empresa;";
 				}
 				NpgsqlDataReader lector = comando.ExecuteReader ();
 				while (lector.Read()){
 					treeViewEngineBuscaEmpresa.AppendValues ((int) lector["id_empresa"],//TreeIter iter = 
-											(string)lector["descripcion_empresa"]);
+											(string)lector["descripcion_empresa"],
+					                        (int) lector["id_tipo_documento"]);
 				}					
             }catch (NpgsqlException ex){
 	   			MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
@@ -1287,6 +1310,7 @@ namespace osiris
 			if (lista_empresas.Selection.GetSelected(out model, out iterSelected)) {
 				idempresa_paciente = (int) model.GetValue(iterSelected, 0);
 				empre_respo = (string) model.GetValue(iterSelected, 1);
+				id_tipodocumentopx = (int) model.GetValue(iterSelected, 2);
 				
 				entry_empresa.Text = empre_respo.Trim();
 				//entry_descrip_cirugia.Text = (string) model.GetValue(iterSelected, 1);
@@ -1344,7 +1368,7 @@ namespace osiris
 					}else{
 						radiobutton_femenino.Active = true;
 					}
-					
+					religionpaciente = lector["religion_paciente"].ToString();
 					entry_calle.Text = (string) lector["direccion_paciente"];
 					entry_numero.Text = (string) lector["numero_casa_paciente"];
 					entry_colonia.Text = (string) lector["colonia_paciente"];
@@ -1352,65 +1376,23 @@ namespace osiris
 					entry_telcasa.Text = (string) lector["telefono_particular1_paciente"];
 					entry_teloficina.Text = (string) lector["telefono_trabajo1_paciente"];
 					entry_telcelular.Text = (string) lector["celular1_paciente"];
-					entry_religion_paciente.Text = (string) lector["religion_paciente"];
+					
+					//entry_religion_paciente.Text = (string) lector["religion_paciente"];
+					//llenado_combobox(1,(string) lector["religion_paciente"],"sql","SELECT * FROM osiris_tipos_religiones WHERE activo = 'true' ORDER BY id_tipo_religion;","descripcion_religion","id_tipo_religion",args_args,args_id_array);
+					llenado_combobox(1,lector["religion_paciente"].ToString(),combobox_religion_paciente,"sql","SELECT * FROM osiris_tipos_religiones WHERE activo = 'true' ORDER BY id_tipo_religion;","descripcion_religion","id_tipo_religion",args_args,args_id_array,"");
 					entry_alergia_paciente.Text = (string) lector["alegias_paciente"];
 					entry_lugar_nacimiento.Text = (string) lector["lugar_nacimiento_paciente"];
-					
 					estadocivil = (string) lector["estado_civil_paciente"];
-					// Estado Civil
-					combobox_estado_civil.Clear();
-					CellRendererText cell = new CellRendererText();
-					combobox_estado_civil.PackStart(cell, true);
-					combobox_estado_civil.AddAttribute(cell,"text",0);
-	        
-					ListStore store = new ListStore( typeof (string));
-					combobox_estado_civil.Model = store;
-	        
-					store.AppendValues ((string) lector["estado_civil_paciente"]);
-	        		
-					TreeIter iter;
-					if (store.GetIterFirst(out iter)){
-						combobox_estado_civil.SetActiveIter (iter);
-					}
-					//combobox_estado_civil.Changed += new EventHandler (onComboBoxChanged_estadocivil);
-	        		
+					llenado_combobox(1,estadocivil,combobox_estado_civil,"array","","","",args_estado_civil,args_id_array,"");
 					// Llenado de Municipios
 					municipios = (string) lector["municipio_paciente"];
-					combobox_municipios.Clear();
-					CellRendererText cell3 = new CellRendererText();
-					combobox_municipios.PackStart(cell3, true);
-					combobox_municipios.AddAttribute(cell3,"text",0);
-	        
-					ListStore store3 = new ListStore( typeof (string));
-					combobox_municipios.Model = store3;
-	        		
-					store3.AppendValues ((string) municipios);
-	        		
-					TreeIter iter3;
-					if (store3.GetIterFirst(out iter3)){
-						combobox_municipios.SetActiveIter (iter3);
-					}
-					//combobox_municipios.Changed += new EventHandler (onComboBoxChanged_municipios);
-					
+					llenado_combobox(1,municipios,combobox_municipios,"sql","SELECT * FROM osiris_municipios WHERE id_estado = '"+idestado.ToString()+"' "+
+               						"ORDER BY descripcion_municipio;","descripcion_municipio","id_municipio",args_args,args_id_array,"");
 					// Llenado de Estados
 					estado = (string) lector["estado_paciente"];
-					combobox_estado.Clear();
-					CellRendererText cell4 = new CellRendererText();
-					combobox_estado.PackStart(cell4, true);
-					combobox_estado.AddAttribute(cell4,"text",0);
-	        
-					ListStore store4 = new ListStore( typeof (string));
-					combobox_estado.Model = store4;
-	        		
-					store4.AppendValues ((string) estado);
-	        		
-					TreeIter iter4;
-					if (store4.GetIterFirst(out iter4)){
-						combobox_estado.SetActiveIter (iter4);
-					}
-					//combobox_estado.Changed += new EventHandler (onComboBoxChanged_estado);
-	        		
-				}
+					llenado_combobox(1,estado,combobox_estado,"sql","SELECT * FROM osiris_estados ORDER BY descripcion_estado;","descripcion_estado","id_estado",args_args,args_id_array,"");
+					
+	        	}
 			}catch (NpgsqlException ex){
 	   			MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
 										MessageType.Error, 
@@ -1448,9 +1430,9 @@ namespace osiris
 			if ((string) entry_nombre_1.Text.Trim() == "" || (string) entry_apellido_paterno.Text.Trim() == "" ||	
 				(string) entry_apellido_materno.Text.Trim() == "" || (string) entry_dia_nacimiento.Text.Trim() == "" ||
 				(string) entry_mes_nacimiento.Text.Trim() == "" || (string) entry_ano_nacimiento.Text.Trim() == "" ||
-			    (string) entry_religion_paciente.Text.Trim() == "" || entry_alergia_paciente.Text.Trim() == "" || entry_observacion_ingreso.Text.Trim() == "" ||
+			    religionpaciente == "" || entry_alergia_paciente.Text.Trim() == "" || entry_observacion_ingreso.Text.Trim() == "" ||
 				(string) entry_rfc.Text.Trim() =="" || grabarespocuenta == false || id_tipopaciente == 0 || (string) this.entry_empresa.Text.ToString().Trim() == ""){
-				return false;
+				return false;				
 			}else{
 				// Aseguradora
 				if (id_tipopaciente == 400){	
@@ -1712,7 +1694,7 @@ namespace osiris
                 					PidPaciente+"','"+
                 					idempresa_paciente+"','"+
                 					"true"+"','"+
-									entry_religion_paciente.Text.ToUpper()+"','"+
+									religionpaciente+"','"+
 									entry_alergia_paciente.Text.ToUpper()+"','"+
 									entry_lugar_nacimiento.Text.ToUpper()+"');";
                 	//Console.WriteLine("Grabo informacion del Paciente "+PidPaciente.ToString());
@@ -1978,7 +1960,7 @@ namespace osiris
 					button_grabar.Clicked += new EventHandler(on_graba_informacion_clicked);
 					
 					// Activa boton de responsable
-					button_responsable.Clicked += new EventHandler(on_button_responsable_clicked);
+					button_responsable.Clicked += new EventHandler(on_button_validaadmision_clicked);
 					// Activa boton de admision Urgenacias/Hospital/Quirofano
 					//button_admision.Clicked += new EventHandler(on_button_admision_clicked);
 					// Activacion de boton de busqueda
@@ -2051,7 +2033,7 @@ namespace osiris
 				//button_graba_admision.Clicked += new EventHandler(on_graba_admision_clicked);
 				
 				// Activa boton de responsable
-				button_responsable.Clicked += new EventHandler(on_button_responsable_clicked);
+				button_responsable.Clicked += new EventHandler(on_button_validaadmision_clicked);
 				// Activa boton de admision Urgenacias/Hospital/Quirofano
 				//button_admision.Clicked += new EventHandler(on_button_admision_clicked);
 				// Activacion de boton de busqueda
@@ -2115,7 +2097,7 @@ namespace osiris
 			// Cierra Ventana
 			button_salir.Clicked += new EventHandler(on_cierraventanas_clicked);
 			button_cancelar_pid.Sensitive = false;
-			button_admision.Clicked += new EventHandler(on_button_admision_clicked);			
+			button_admision.Clicked += new EventHandler(on_button_validaadmision_clicked);			
 			// desactiva botton de intermaniento de paciente
 			button_admision.Sensitive = true;
 			//Entrada de Fecha de Nacimiento valida solo numeros
@@ -2129,7 +2111,7 @@ namespace osiris
 			checkbutton_consulta.Sensitive = false;
 			// llenado de comobobox
 			llenado_combobox(1,"",combobox_tipo_paciente,"sql","SELECT * FROM osiris_his_tipo_pacientes ORDER BY descripcion_tipo_paciente;",
-			                 "descripcion_tipo_paciente","id_tipo_paciente",args_args,args_id_array);
+			                 "descripcion_tipo_paciente","id_tipo_paciente",args_args,args_id_array,"id_tipo_documento");
 			entry_empresa.Sensitive = false;			        		        
 			// Creacion de Liststore
 			treeViewEngine = new TreeStore(typeof (string),typeof (string),
@@ -2380,7 +2362,7 @@ namespace osiris
 			entry_teloficina.Sensitive = valor;
 			entry_telcelular.Sensitive = valor;
 			combobox_estado_civil.Sensitive = valor;
-			entry_religion_paciente.Sensitive = valor;
+			combobox_religion_paciente.Sensitive = valor;
 			entry_alergia_paciente.Sensitive = valor;
 			entry_observacion_ingreso.Sensitive = valor;
 			entry_lugar_nacimiento.Sensitive = valor;
@@ -2390,8 +2372,57 @@ namespace osiris
 			combobox_estado.Sensitive = valor;
 		}
 		
-		void on_button_responsable_clicked (object sender, EventArgs a) 
+		void on_button_validaadmision_clicked (object sender, EventArgs a) 
 		{
+			Gtk.Button onButton = sender as Gtk.Button;
+			validando_admsion(onButton.Name);
+		}
+		
+		void validando_admsion(string name_button_validation)
+		{
+			bool validando_tipo_paciente = false;
+			string nombre_error = "Error";
+			if(tipopaciente != ""){
+				validando_tipo_paciente = true;
+			}else{
+				nombre_error = "Elija el tipo de Paciente... Verifique...";
+				validando_tipo_paciente = false;
+			}				
+			if(id_tipopaciente == 102){
+				if(idempresa_paciente == 1){
+					nombre_error = "La admision es "+tipopaciente+" elija una Empresa... Verifique...";
+					validando_tipo_paciente = false;
+				}
+			}
+			if(id_tipopaciente == 400){ 
+			   if(idaseguradora == 1){
+					nombre_error = "La admision es "+tipopaciente+" elija una Aseguradora... Verifique...";
+					validando_tipo_paciente = false;
+				}
+			}
+			if(id_tipopaciente == 500){ 
+			   if(idaseguradora == 1){
+					nombre_error = "La admision es "+tipopaciente+" elija un Municipio... Verifique...";
+					validando_tipo_paciente = false;
+				}
+			}
+			if(validando_tipo_paciente == true){
+				if(name_button_validation == "button_responsable"){
+					responsablepaciente();
+				}
+				if(name_button_validation == "button_admision"){
+					admision_para_internamiento();
+				}
+			}else{
+				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+							MessageType.Info,ButtonsType.Close,nombre_error);
+				msgBoxError.Run ();			msgBoxError.Destroy();
+			}
+		}
+		
+		void responsablepaciente()
+		{
+			bool valida_el_treeview = false;
 			Glade.XML gxml = new Glade.XML (null, "registro_admision.glade", "datos_del_responsable", null);
 			gxml.Autoconnect (this);
 	                	
@@ -2409,55 +2440,217 @@ namespace osiris
 			button_misma_direccion.Clicked += new EventHandler(on_button_misma_direccion_clicked);
 			
 			// Traspasa aseguradora si se selecciono aseguradora
-			entry_aseguradora_responsable.Text = (string) nombre_aseguradora;
+			//entry_aseguradora_responsable.Text = (string) nombre_aseguradora;
 			
 			// graba datos del responsable de la cuenta
 			button_graba_responsable.Clicked += new EventHandler(on_button_graba_responsable_clicked);
 			// Verifica si grabo anteriormente y traspasa los valores
-			
-			// Parentezco del Responsable de la cuenta
-			combobox_parent_responsable.Clear();
-			CellRendererText cell3 = new CellRendererText();
-			combobox_parent_responsable.PackStart(cell3, true);
-			combobox_parent_responsable.AddAttribute(cell3,"text",0);
-	        
-			ListStore store3 = new ListStore( typeof (string));
-			combobox_parent_responsable.Model = store3;
-	        		
-			store3.AppendValues ("Sin Parentesco");
-			store3.AppendValues ("Esposo(a)");
-			store3.AppendValues ("Papa");
-			store3.AppendValues ("Mama");
-			store3.AppendValues ("Abuelo(a)");
-			store3.AppendValues ("Hermano(a)");
-			store3.AppendValues ("Primo(a)");
-			store3.AppendValues ("Tio(a)");
-			store3.AppendValues ("Cuñado(a)");
-			store3.AppendValues ("Tutor");
-			store3.AppendValues ("Hijo(a)");
-			store3.AppendValues ("Concuño(a)");
-	        		
-			TreeIter iter3;
-			if (store3.GetIterFirst(out iter3)){
-				combobox_parent_responsable.SetActiveIter (iter3);
-			}
-			combobox_parent_responsable.Changed += new EventHandler (onComboBoxChanged_parent_responsable);
-	        
-			if (grabarespocuenta == true)
-			{
+				        
+			if (grabarespocuenta == true){
+				if(id_tipopaciente != id_tipopaciente_valid){ 
+					id_tipopaciente_valid = id_tipopaciente;
+					valida_el_treeview = true;
+					grabarespocuenta = false;
+				}else{
+					valida_el_treeview = false;
+				}
 				entry_nombre_responsable.Text = (string) nombr_respo;
 				entry_telefono_responsable.Text = (string) telef_respo;
 				entry_direcc_responsable.Text = (string) direc_respo;
-				entry_empresa_responsable.Text = (string) empre_respo;
 				entry_ocupacion_responsable.Text = (string) ocupa_respo;
-				entry_aseguradora_responsable.Text = (string) asegu_respo;
-				entry_poliza_responsable.Text = (string) poliz_respo;
-				entry_certificado_acta.Text = (string) certif_respo;
-				entry_dire_emp_responsable.Text = (string) direc_empre_respo;
-				entry_tel_emp_responsable.Text = (string) telef_empre_respo;
-				//combobox_parent_responsable.Text = (string) parentezcoresponsable;
+				
+				//entry_empresa_responsable.Text = (string) empre_respo;
+				//entry_aseguradora_responsable.Text = (string) asegu_respo;
+				//entry_poliza_responsable.Text = (string) poliz_respo;
+				//entry_certificado_acta.Text = (string) certif_respo;
+				//entry_dire_emp_responsable.Text = (string) direc_empre_respo;
+				//entry_tel_emp_responsable.Text = (string) telef_empre_respo;
+				// Parentezco del Responsable de la cuenta
+				crea_treeview_documentos(valida_el_treeview);
+				llenado_tipos_documentos(valida_el_treeview);
+				llenado_combobox(1,parentezcoresponsable,combobox_parent_responsable,"array","","","",args_parentesco,args_id_array,"");
+			}else{
+				crea_treeview_documentos(true);
+				llenado_tipos_documentos(true);
+				llenado_combobox(0,"",combobox_parent_responsable,"array","","","",args_parentesco,args_id_array,"");
 			}
 		}
+		
+		void crea_treeview_documentos(bool llenado_treeview)
+		{
+			//if(llenado_treeview == true){
+			
+			//}
+			
+			treeViewEngineDocumentos = new ListStore(typeof (string),typeof (string),typeof (string));
+	        							   
+			treeview_documentos.Model = treeViewEngineDocumentos;
+			
+			TreeViewColumn col00 = new TreeViewColumn();
+			CellRendererText cellrt00 = new CellRendererText();
+			col00.Title = "Documento";
+			col00.PackStart(cellrt00, true);
+			col00.AddAttribute (cellrt00, "text", 0);
+			col00.SortColumnId = (int) colum_documentos.col00;
+			
+			TreeViewColumn col01 = new TreeViewColumn();
+			CellRendererText cellrt01 = new CellRendererText();
+			col01.Title = "Captura";
+			col01.PackStart(cellrt01, true);
+			col01.AddAttribute (cellrt01, "text", 1);
+			cellrt01.Editable = true;
+			cellrt01.Edited += NumberCellEdited;
+			col01.SortColumnId = (int) colum_documentos.col01;
+			
+			treeview_documentos.AppendColumn(col00);
+			treeview_documentos.AppendColumn(col01);
+		}
+		
+		enum colum_documentos
+		{
+			col00,col01
+		}
+		
+		/// <summary>
+		/// Llenado_tipos_documentos the specified read ArrayList.
+		/// </summary>
+		/// <param name='llenado_treeview'>
+		/// Llenado_treeview.
+		/// </param>
+		void llenado_tipos_documentos(bool llenado_treeview)
+		{
+			if(llenado_treeview == true){
+				NpgsqlConnection conexion; 
+				conexion = new NpgsqlConnection (connectionString+nombrebd);
+				try{
+					conexion.Open ();
+					NpgsqlCommand comando; 
+					comando = conexion.CreateCommand ();
+					comando.CommandText = "SELECT * FROM osiris_erp_documentos_convenio WHERE id_tipo_documento = '" +id_tipodocumentopx.ToString().Trim()+"';";
+					Console.WriteLine(comando.CommandText);
+					NpgsqlDataReader lector = comando.ExecuteReader ();
+					while (lector.Read()){
+						Item documento_foo;
+						documento_foo = new Item (lector["descripcion_documento"].ToString().Trim(),"");
+						arraydocumentos.Add(documento_foo);
+						documentos_pacientes p = new documentos_pacientes("",DateTime.Now,0);
+						//treeViewEngineDocumentos.AppendValues(p,p,p);
+						treeViewEngineDocumentos.AppendValues(lector["descripcion_documento"].ToString().Trim(),"");
+					}
+				}catch (NpgsqlException ex){
+		   				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+											MessageType.Error, ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
+						msgBoxError.Run ();			msgBoxError.Destroy();
+				}
+				conexion.Close ();
+			}else{
+				//Console.WriteLine(arraydocumentos.Count);
+				//Console.WriteLine((string) foo.col00_);
+				for (int i = 0; i < arraydocumentos.Count; i++) {
+      				Item documento_foo = (Item) arraydocumentos[i];
+					//documento_foo.col01_ = "Porque esta en blanco";
+					Console.WriteLine(documento_foo.col01_+"   "+i.ToString());
+					//Console.WriteLine(arraydocumentos[i] = arraydocumentos[i]);
+					treeViewEngineDocumentos.AppendValues(documento_foo.col00_,documento_foo.col01_);
+    			}
+				
+				IEnumerator myEnumerator = arraydocumentos.GetEnumerator();
+			    while (myEnumerator.MoveNext()){
+			      Console.WriteLine("myEnumerator.Current = " + myEnumerator.Current);
+			    }				
+			}
+			entry_empresa_convenio.Text = tipopaciente+" "+nombre_aseguradora+" "+empre_respo;
+		}
+		
+		struct Item
+ 		{
+ 			public string col00_{
+				get { return col_item_00; }
+				set { col_item_00 = value; }
+			}
+			public string col01_{
+				get { return col_item_01; }
+				set { col_item_01 = value; }
+			}
+			private string col_item_00;
+			private string col_item_01;
+			
+			public Item (string col_item_00,string col_item_01)
+			{
+				this.col_item_00 = col_item_00;
+				this.col_item_01 = col_item_01;
+			}
+		}
+		
+		class documentos_pacientes
+		{
+			public string valor_string;
+			public DateTime valor_fecha;
+			public int valor_numerico;
+			public documentos_pacientes (string valor_string, DateTime valor_fecha,int valor_numerico)
+			{
+				this.valor_string = valor_string;
+				this.valor_fecha = valor_fecha;
+				this.valor_numerico = valor_numerico;
+           }
+       }
+		
+		void NumberCellEdited (object sender, EditedArgs args)
+		{
+			if (sender.GetType().Name == "CellRendererText"){
+				
+			}
+			TreePath path = new TreePath (args.Path);
+ 			TreeIter iter;
+			int i = path.Indices[0];
+			//Console.WriteLine(i.ToString());
+			try{
+				Item documento_foo;
+				documento_foo = (Item) arraydocumentos[i];
+				documento_foo.col01_ = args.NewText.ToUpper();
+				treeViewEngineDocumentos.GetIter (out iter, path);
+				treeViewEngineDocumentos.SetValue(iter,(int) colum_documentos.col01, documento_foo.col01_.ToUpper());
+			}catch (Exception e) {
+				Console.WriteLine(e.Message);
+				return;
+			}
+		}
+		
+		void NumberCellEdited_Autorizado (object o, EditedArgs args)
+		{
+			Gtk.TreeIter iter;
+			bool esnumerico = false;
+			int var_paso = 0;
+			int largo_variable = args.NewText.ToString().Length;
+			string toma_variable = args.NewText.ToString();
+			
+			treeViewEngineDocumentos.GetIter (out iter, new Gtk.TreePath (args.Path));
+			
+			while (var_paso < largo_variable){				
+				if ((string) toma_variable.Substring(var_paso,1).ToString() == "." || 
+					(string) toma_variable.Substring(var_paso,1).ToString() == "0" ||
+					(string) toma_variable.Substring(var_paso,1).ToString() == "1" || 
+					(string) toma_variable.Substring(var_paso,1).ToString() == "2" ||
+					(string) toma_variable.Substring(var_paso,1).ToString() == "3" ||
+					(string) toma_variable.Substring(var_paso,1).ToString() == "4" ||
+					(string) toma_variable.Substring(var_paso,1).ToString() == "5" || 
+					(string) toma_variable.Substring(var_paso,1).ToString() == "6" || 
+					(string) toma_variable.Substring(var_paso,1).ToString() == "7" || 
+					(string) toma_variable.Substring(var_paso,1).ToString() == "8" ||
+					(string) toma_variable.Substring(var_paso,1).ToString() == "9") {
+					esnumerico = true;
+				}else{
+				 	esnumerico = false;
+				 	var_paso = largo_variable;
+				}
+				var_paso += 1;
+			}
+			if (esnumerico == true){		
+				//treeViewEngineDocumentos.SetValue(iter,(int) Col_traspaso.col_autorizado,args.NewText);
+				//bool old = (bool) filter.Model.GetValue (iter,0);
+				//filter.Model.SetValue(iter,0,!old);
+			}
+ 		}
 		
 		void on_button_paciente_responsable_clicked (object sender, EventArgs a)
 		{
@@ -2466,7 +2659,7 @@ namespace osiris
 			
 			entry_direcc_responsable.Text = (string) entry_calle.Text+" "+entry_numero.Text+" Col. "+entry_colonia.Text+" CP. "+
 							(string) entry_CP.Text+", "+(string) municipios+", "+(string) estado;
-			entry_empresa_responsable.Text = (string) entry_empresa.Text;
+			//entry_empresa_responsable.Text = (string) entry_empresa.Text;
 			entry_ocupacion_responsable.Text = (string) entry_ocupacion.Text;
 			
 		}
@@ -2481,19 +2674,19 @@ namespace osiris
 		
 		void on_button_graba_responsable_clicked (object sender, EventArgs a)
 		{
-			if(entry_nombre_responsable.Text.Trim() != "" && entry_poliza_responsable.Text.Trim() != "" &&
-				entry_certificado_acta.Text.Trim() != "" )
-			{
+			// Validacion del TreeView para grabar
+			
+			if(entry_nombre_responsable.Text.Trim() != ""){
 				nombr_respo = (string) entry_nombre_responsable.Text;
 				telef_respo = (string) entry_telefono_responsable.Text;
 				direc_respo = (string) entry_direcc_responsable.Text;
-				empre_respo = (string) entry_empresa_responsable.Text;
+				//empre_respo = (string) entry_empresa_responsable.Text;
 				ocupa_respo = (string) entry_ocupacion_responsable.Text;
-				asegu_respo = (string) nombre_aseguradora;
-				poliz_respo = (string) entry_poliza_responsable.Text;
-				certif_respo = (string) entry_certificado_acta.Text;
-				direc_empre_respo = (string) entry_dire_emp_responsable.Text;
-				telef_empre_respo = (string) entry_tel_emp_responsable.Text;
+				//asegu_respo = (string) nombre_aseguradora;
+				//poliz_respo = (string) entry_poliza_responsable.Text;
+				//certif_respo = (string) entry_certificado_acta.Text;
+				//direc_empre_respo = (string) entry_dire_emp_responsable.Text;
+				//telef_empre_respo = (string) entry_tel_emp_responsable.Text;
 				grabarespocuenta = true;
 				
 				// cierra la ventana despues que almaceno la informacion en variables
@@ -2506,19 +2699,7 @@ namespace osiris
 				msgBoxError.Run ();			msgBoxError.Destroy();
 			}
 		}
-		// Parentezco del paciente
-		public void onComboBoxChanged_parent_responsable (object sender, EventArgs args)
-		{
-			ComboBox combobox_parent_responsable = sender as ComboBox;
-			if (sender == null){
-				return;
-			}
-			TreeIter iter;
-			if (combobox_parent_responsable.GetActiveIter (out iter)){
-				parentezcoresponsable = (string) combobox_parent_responsable.Model.GetValue(iter,0);
-			}
-		}
-		
+				
 		// Activa en enter en la busqueda de los productos
 		[GLib.ConnectBefore ()]   	  // Esto es indispensable para que funcione    
 		public void onKeyPressEvent_enter(object o, Gtk.KeyPressEventArgs args)
@@ -2532,4 +2713,17 @@ namespace osiris
 			}
 		}
 	}
+	
+	class documentos_pacientes
+	{
+		public string valor_string;
+		public DateTime valor_fecha;
+		public int valor_numerico;
+		public documentos_pacientes (string valor_string, DateTime valor_fecha,int valor_numerico)
+		{
+			this.valor_string = valor_string;
+			this.valor_fecha = valor_fecha;
+			this.valor_numerico = valor_numerico;
+       }
+   }
 }

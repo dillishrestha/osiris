@@ -126,6 +126,7 @@ namespace osiris
 		bool autorizaHIS = false;
 		bool autorizaERP =  false;
 		bool autorizaGENERAL = false;
+		bool accesoabrirfolio = false;
 		
 		string tipobusqueda = "AND osiris_his_medicos.nombre1_medico LIKE '";
 		
@@ -246,7 +247,7 @@ namespace osiris
 				comando.CommandText = "SELECT osiris_empleado.id_empleado,login_empleado,nombre1_empleado,nombre2_empleado, "+
                						 "apellido_paterno_empleado,apellido_materno_empleado,departamento,puesto,"+
                						 "password_empleado AS passwordempleado,acceso_his,acceso_erp,acceso_general,autoriza_his,autoriza_erp,autoriza_general,"+
-               						 "acceso_osiris "+	
+               						 "acceso_osiris,acceso_abrir_folio "+	
                                      "FROM osiris_empleado,osiris_empleado_detalle "+ 
                                      "WHERE osiris_empleado.id_empleado = osiris_empleado_detalle.id_empleado "+
                                      "AND baja_empleado = 'false' "+
@@ -278,6 +279,8 @@ namespace osiris
 						autorizaHIS = (bool) lector["autoriza_his"];
 						autorizaERP =  (bool) lector["autoriza_erp"];
 						autorizaGENERAL = (bool) lector["autoriza_general"];
+						
+						accesoabrirfolio = (bool) lector["acceso_abrir_folio"];
 												
 						//nombre_empresa = conexion_a_DB.nombre_empresa;
 						//direccion_empresa = conexion_a_DB.direccion_empresa;
@@ -473,7 +476,7 @@ namespace osiris
 		// llamada de modulo de caja caja.cs	
 		void on_button_caja_clicked (object sender, EventArgs args)
 		{
-			new osiris.tesoreria(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
+			new osiris.tesoreria(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,accesoabrirfolio);
 		}
 		
 		void on_button_costos_clicked (object sender, EventArgs args)

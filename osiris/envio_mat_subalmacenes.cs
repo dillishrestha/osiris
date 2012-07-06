@@ -483,13 +483,14 @@ namespace osiris
 															"WHERE id_secuencia =  '"+(string) lista_de_materiales_solicitados.Model.GetValue (iterSelected,7)+"';";
 													//Console.WriteLine(comando.CommandText);
 													comando.ExecuteNonQuery();
-													
-													insert_a_procedimiento((string) entry_folio_servicio.Text.ToString(),
+													if((bool) cargo_automatico == true){
+														insert_a_procedimiento((string) entry_folio_servicio.Text.ToString(),
 																			(string) lista_de_materiales_solicitados.Model.GetValue (iterSelected,5),
 																			(string) entry_pid_paciente.Text.ToString(),
 																			(string) lista_de_materiales_solicitados.Model.GetValue (iterSelected,2),
 																			(string) lista_de_materiales_solicitados.Model.GetValue (iterSelected,16),
 																			(string) lista_de_materiales_solicitados.Model.GetValue (iterSelected,17));
+													}
 												}else{
 													MessageDialog msgBox3 = new MessageDialog (MyWin,DialogFlags.Modal,
 															MessageType.Info,ButtonsType.Ok,"Debe elegir al paciente para hacer su envio, verifique...");										
@@ -723,12 +724,14 @@ namespace osiris
 															"WHERE id_secuencia =  '"+(string) lista_de_materiales_solicitados.Model.GetValue (iterSelected,7)+"';";
 														//Console.WriteLine(comando.CommandText);
 														comando2.ExecuteNonQuery();
-														insert_a_procedimiento((string) entry_folio_servicio.Text.ToString(),
+														if((bool) cargo_automatico == true){
+															insert_a_procedimiento((string) entry_folio_servicio.Text.ToString(),
 																				(string) lista_de_materiales_solicitados.Model.GetValue (iterSelected,5),
 																				(string) entry_pid_paciente.Text.ToString(),
 																				(string) lista_de_materiales_solicitados.Model.GetValue (iterSelected,2),
 																				(string) lista_de_materiales_solicitados.Model.GetValue (iterSelected,16),
 																				(string) lista_de_materiales_solicitados.Model.GetValue (iterSelected,17));
+														}
 													}else{
 														MessageDialog msgBox3 = new MessageDialog (MyWin,DialogFlags.Modal,
 															MessageType.Info,ButtonsType.Ok,"Debe elegir al paciente para hacer su envio, verifique...");										
@@ -837,57 +840,59 @@ namespace osiris
 		void insert_a_procedimiento(string numero_de_atencion,string idproducto,string pidpaciente,string cantidadaplicada,
 									string idtipoadmision_,string preciocostounitario_)
 		{
-			Console.WriteLine(numero_de_atencion);					
-			NpgsqlConnection conexion; 
-			conexion = new NpgsqlConnection (connectionString+nombrebd);
-			try{
-				conexion.Open ();
-				NpgsqlCommand comando; 
-				comando = conexion.CreateCommand();
-				comando.CommandText = "INSERT INTO osiris_erp_cobros_deta("+
-		 														"id_producto,"+
-		 														"folio_de_servicio,"+
-		 														"pid_paciente,"+						
-		 														"cantidad_aplicada,"+	 														
-																"id_tipo_admisiones,"+						
-																"precio_costo_unitario,"+
-						
-																"precio_producto, "+
-		 														//"precio_por_cantidad,"+
-		 														"iva_producto,"+
-		 														"porcentage_utilidad,"+
-		 														"porcentage_descuento,"+						
-		 														"id_empleado,"+
-		 														"fechahora_creacion,"+
-		 														"porcentage_iva,"+
-		 														"id_almacen,"+
-		 														"precio_costo "+
-		 														") VALUES ('"+
-		 														idproducto+"','"+//id_producto
-		 														numero_de_atencion+"','"+//folio_de_servicio
-		 														pidpaciente+"','"+      //"','"+//pid_paciente
-																cantidadaplicada+"','"+															
-		 														idtipoadmision_+"','"+	//id_tipo_admisiones
-																preciocostounitario_+"','"+
-																"0','"+
-																//"0','"+
-																"0','"+
-																"0','"+
-																"0','"+
-																LoginEmpleado+"','"+//id_empleado
-		 														DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"','"+//fechahora_creacion
-		 														valoriva+"','"+//porcentage_iva
-		 														idsubalmacen.ToString().Trim()+"','"+
-		 														"0"+//precio_costo*/
-		 														"');";
-				comando.ExecuteNonQuery();
-				comando.Dispose();
-			}catch (NpgsqlException ex){
-				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
-											MessageType.Error,ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
-				msgBoxError.Run ();				msgBoxError.Destroy();
+			if((bool) cargo_automatico == true){
+				Console.WriteLine(numero_de_atencion);					
+				NpgsqlConnection conexion; 
+				conexion = new NpgsqlConnection (connectionString+nombrebd);
+				try{
+					conexion.Open ();
+					NpgsqlCommand comando; 
+					comando = conexion.CreateCommand();
+					comando.CommandText = "INSERT INTO osiris_erp_cobros_deta("+
+			 														"id_producto,"+
+			 														"folio_de_servicio,"+
+			 														"pid_paciente,"+						
+			 														"cantidad_aplicada,"+	 														
+																	"id_tipo_admisiones,"+						
+																	"precio_costo_unitario,"+
+							
+																	"precio_producto, "+
+			 														//"precio_por_cantidad,"+
+			 														"iva_producto,"+
+			 														"porcentage_utilidad,"+
+			 														"porcentage_descuento,"+						
+			 														"id_empleado,"+
+			 														"fechahora_creacion,"+
+			 														"porcentage_iva,"+
+			 														"id_almacen,"+
+			 														"precio_costo "+
+			 														") VALUES ('"+
+			 														idproducto+"','"+//id_producto
+			 														numero_de_atencion+"','"+//folio_de_servicio
+			 														pidpaciente+"','"+      //"','"+//pid_paciente
+																	cantidadaplicada+"','"+															
+			 														idtipoadmision_+"','"+	//id_tipo_admisiones
+																	preciocostounitario_+"','"+
+																	"0','"+
+																	//"0','"+
+																	"0','"+
+																	"0','"+
+																	"0','"+
+																	LoginEmpleado+"','"+//id_empleado
+			 														DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"','"+//fechahora_creacion
+			 														valoriva+"','"+//porcentage_iva
+			 														idsubalmacen.ToString().Trim()+"','"+
+			 														"0"+//precio_costo*/
+			 														"');";
+					comando.ExecuteNonQuery();
+					comando.Dispose();
+				}catch (NpgsqlException ex){
+					MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+												MessageType.Error,ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
+					msgBoxError.Run ();				msgBoxError.Destroy();
+				}
+				conexion.Close();
 			}
-			conexion.Close();
 			
 			
 			/* 

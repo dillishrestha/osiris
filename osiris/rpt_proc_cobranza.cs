@@ -263,6 +263,7 @@ namespace osiris
 						ivaprod = 0;
 					}
 					sumaiva += ivaprod;
+					Console.WriteLine("sumaiva ="+sumaiva.ToString()+"  ivaprod="+ivaprod.ToString()+"   "+(string) lector["descripcion_producto"].ToString());
 					total = subtotal + ivaprod;
 					if(apl_desc == true && apl_desc_siempre == true && porcentajedes > 0){
 						descsiniva = (subtotal*(porcentajedes/100));
@@ -331,7 +332,7 @@ namespace osiris
 							ivaprod = 0;
 						}
 						sumaiva += ivaprod;
-						//Console.WriteLine(sumaiva.ToString());
+						Console.WriteLine("sumaiva ="+sumaiva.ToString()+"  ivaprod="+ivaprod.ToString()+"   "+(string) lector["descripcion_producto"].ToString());
 						total = subtotal + ivaprod;
 						if(apl_desc == true && apl_desc_siempre == true && porcentajedes > 0){
 							descsiniva = (subtotal*(porcentajedes/100));

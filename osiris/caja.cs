@@ -311,6 +311,7 @@ namespace osiris
 		string fecha_rango_2;
 		
 		bool aplico_cargos = false;
+		bool accesoabrirfolio = false;
 				
 		string LoginEmpleado;
 		string NomEmpleado = "";
@@ -392,7 +393,7 @@ namespace osiris
 			}
 		}
 		
-		public caja_cobro(string LoginEmp, string NomEmpleado_, string AppEmpleado_, string ApmEmpleado_, string nombrebd_, int idsubalmacen_, int idcentro_costo_ ) 
+		public caja_cobro(string LoginEmp, string NomEmpleado_, string AppEmpleado_, string ApmEmpleado_, string nombrebd_, int idsubalmacen_, int idcentro_costo_, bool accesoabrirfolio_) 
 		{
 			LoginEmpleado = LoginEmp;
 			NomEmpleado = NomEmpleado_;
@@ -403,6 +404,7 @@ namespace osiris
 			valoriva = float.Parse(classpublic.ivaparaaplicar);
 			idsubalmacen = idsubalmacen_;
 			idcentro_costo = idcentro_costo_;
+			accesoabrirfolio = accesoabrirfolio_;
 			
 			Glade.XML gxml = new Glade.XML (null, "caja.glade", "caja", null);
 			gxml.Autoconnect (this);
@@ -884,9 +886,7 @@ namespace osiris
 		
 		void on_button_abre_folio_clicked(object sender, EventArgs args)
 		{
-			if(LoginEmpleado == "DOLIVARES" || LoginEmpleado =="ADMIN" || LoginEmpleado =="MARGARITAZ" || 
-				LoginEmpleado =="IESPINOZAF" || LoginEmpleado =="ZBAEZH" || LoginEmpleado == "YTAMEZ" || 
-				LoginEmpleado == "BAMURILLO"){
+			if(accesoabrirfolio == true){
 				MessageDialog msgBox = new MessageDialog (MyWin,DialogFlags.Modal,
 							MessageType.Question,ButtonsType.YesNo,"¿ Esta seguro de Abrir este Nº de Atencion ?");
 				ResponseType miResultado = (ResponseType)msgBox.Run ();
@@ -4737,19 +4737,18 @@ namespace osiris
  				}else{
  					iva_linea = float.Parse(foo.col_iva);
  				}
- 				total1_linea = precio_linea + iva_linea; 
- 				
-			} catch (Exception e) {
+ 				total1_linea = precio_linea + iva_linea;
+				treeViewEngineExtras.SetValue (iter, (int) Colum_cargos_extras.col_cantidad, foo.col_cantidad);
+	 			treeViewEngineExtras.SetValue (iter, (int) Colum_cargos_extras.col_ppor_cantidad,precio_linea.ToString("F"));
+	 			treeViewEngineExtras.SetValue (iter, (int) Colum_cargos_extras.col_iva,iva_linea.ToString("F"));
+	 			treeViewEngineExtras.SetValue (iter, (int) Colum_cargos_extras.col_sub_total,total1_linea.ToString("F"));
+	 			
+	 			treeViewEngineExtras.SetValue (iter, (int) Colum_cargos_extras.col_valor_desc,valor_descuento.ToString("F"));
+	 			treeViewEngineExtras.SetValue (iter, (int) Colum_cargos_extras.col_total,precio_con_desc.ToString("F"));
+			}catch (Exception e){
 				Console.WriteLine(e.Message);
 				return;
 			}
- 			treeViewEngineExtras.SetValue (iter, (int) Colum_cargos_extras.col_cantidad, foo.col_cantidad);
- 			treeViewEngineExtras.SetValue (iter, (int) Colum_cargos_extras.col_ppor_cantidad,precio_linea.ToString("F"));
- 			treeViewEngineExtras.SetValue (iter, (int) Colum_cargos_extras.col_iva,iva_linea.ToString("F"));
- 			treeViewEngineExtras.SetValue (iter, (int) Colum_cargos_extras.col_sub_total,total1_linea.ToString("F"));
- 			
- 			treeViewEngineExtras.SetValue (iter, (int) Colum_cargos_extras.col_valor_desc,valor_descuento.ToString("F"));
- 			treeViewEngineExtras.SetValue (iter, (int) Colum_cargos_extras.col_total,precio_con_desc.ToString("F"));
 		}
 		
 		// cierra ventanas emergentes

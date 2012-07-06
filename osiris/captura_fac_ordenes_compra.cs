@@ -34,6 +34,7 @@ using Gtk;
 using Npgsql;
 using System.Data;
 using Glade;
+using System.Xml;
 
 namespace osiris
 {
@@ -61,7 +62,8 @@ namespace osiris
 		[Widget] Gtk.Entry entry_contacto_proveedor = null;
 		[Widget] Gtk.Entry entry_formapago = null;
 		[Widget] Gtk.TreeView lista_productos_a_recibir = null;
-		
+		[Widget] Gtk.Button button_carga_xml = null;
+				
 		[Widget] Gtk.Entry entry_producto = null;
 		[Widget] Gtk.Button button_busca_producto = null;
 		[Widget] Gtk.Button button_quitar_producto = null;
@@ -98,6 +100,9 @@ namespace osiris
 		string nombrebd;
 		string tipounidadproducto = " ";
 		int idsubalmacen = 1;
+		
+		XmlDocument xml;
+		
 		class_conexion conexion_a_DB = new class_conexion();
 		class_buscador classfind_data = new class_buscador();
 		class_public classpublic = new class_public();
@@ -105,7 +110,7 @@ namespace osiris
 		//Declaracion de ventana de error
 		protected Gtk.Window MyWinError;
 		protected Gtk.Window MyWin;
-				
+		
 		TreeStore treeViewEngineListaProdRequi;	// Lista de proctos que se van a comprar
 		TreeStore treeViewEngineBusca2;
 		
@@ -171,6 +176,7 @@ namespace osiris
 			
 			button_salir.Clicked += new EventHandler(on_cierraventanas_clicked);
 			button_busca_proveedor.Clicked += new EventHandler(on_busca_proveedores_clicked);
+			button_carga_xml.Clicked += new EventHandler(on_button_carga_xml_clicked);
 			button_busca_producto.Clicked += new EventHandler(on_button_busca_producto_clicked);
 			checkbutton_factura_sin_orden.Clicked += new EventHandler(on_checkbutton_factura_sin_orden_clicked);
 			button_guardar.Clicked += new EventHandler(on_button_guardar_clicked);
@@ -228,6 +234,150 @@ namespace osiris
 			}
 		}
 		
+		void on_button_carga_xml_clicked(object sender, EventArgs args)
+		{
+			Gtk.FileChooserDialog select_file_xml = new Gtk.FileChooserDialog("Select file XML to Open",
+		        captura_facturas_orden_compra,
+		        FileChooserAction.Open,
+		        "Cancel",ResponseType.Cancel,
+		        "Accept",ResponseType.Accept);
+			
+			Gtk.FileFilter filter = new Gtk.FileFilter();
+			filter.AddPattern("*.XML");
+			filter.AddPattern("*.xml");
+			select_file_xml.AddFilter(filter);			
+			
+			int resp = select_file_xml.Run();
+			select_file_xml.Hide();
+			
+			if( resp == (int) ResponseType.Accept ){				
+				Console.WriteLine(select_file_xml.Filename);
+				LeerXML(select_file_xml.Filename);				
+			}
+		    select_file_xml.Destroy();
+		}
+		
+		void LeerXML(string filename_xml)
+		{
+			XmlTextReader reader_xml = new XmlTextReader(filename_xml);
+			while (reader_xml.Read()){
+				switch (reader_xml.NodeType){
+					case XmlNodeType.Element:
+						// version 3.2
+						if (reader_xml.MoveToContent() == XmlNodeType.Element && reader_xml.Name == "cfdi:Comprobante"){
+							if (reader_xml.HasAttributes){
+								entry_num_factura_proveedor.Text = reader_xml.GetAttribute("serie")+reader_xml.GetAttribute("folio");
+							}
+						}
+						if (reader_xml.MoveToContent() == XmlNodeType.Element && reader_xml.Name == "cfdi:Emisor"){
+							if (reader_xml.HasAttributes){
+								entry_nombre_proveedor.Text = reader_xml.GetAttribute("nombre");
+							}
+						}
+						if (reader_xml.MoveToContent() == XmlNodeType.Element && reader_xml.Name == "cfdi:Concepto"){
+							if (reader_xml.HasAttributes){
+								treeViewEngineListaProdRequi.AppendValues (true,
+										entry_num_factura_proveedor.Text.Trim().ToUpper(),
+							                                           "0",
+							                                           reader_xml.GetAttribute("cantidad"),
+							                                           "0",
+							                                           "0",
+							                                           reader_xml.GetAttribute("valorUnitario"),
+							                                           "0",
+							                                           "0",
+							                                           "",
+							                                           "",
+							                                           reader_xml.GetAttribute("descripcion").ToUpper(),
+							                                           reader_xml.GetAttribute("noIdentificacion"),
+							                                           "",
+							                                           "",
+							                                           reader_xml.GetAttribute("unidad"),
+							                                           "",
+							                                           "",
+							                                           "");
+								/*treeViewEngineListaProdRequi.AppendValues (true,
+								entry_num_factura_proveedor.Text.Trim().ToUpper(),
+								"0",
+								entry_cantidad_aplicada.Text.Trim(),
+								entry_embalaje_pack.Text.Trim(),
+								Convert.ToString(float.Parse(entry_cantidad_aplicada.Text.Trim()) * float.Parse(entry_embalaje_pack.Text.Trim())),
+								entry_precio.Text.Trim(),
+								string.Format("{0:F}",float.Parse(entry_precio.Text.Trim())/float.Parse(entry_embalaje_pack.Text.Trim())),
+								(string) model.GetValue(iterSelected, 12),
+								(string) model.GetValue(iterSelected, 1),
+								(string) model.GetValue(iterSelected, 0),
+								(string) entry_producto_proveedor.Text.Trim().ToUpper(),
+								(string) entry_codprod_proveedor.Text.Trim().ToUpper(),
+								(string) entry_lote.Text.Trim().ToUpper(),
+								(string) entry_caducidad.Text.Trim().ToUpper(),
+								tipounidadproducto,
+								(string) model.GetValue(iterSelected, 13),
+								(string) model.GetValue(iterSelected, 14),
+								(string) model.GetValue(iterSelected, 15));*/
+							}
+						}
+					
+						// Version 2.2
+						if (reader_xml.MoveToContent() == XmlNodeType.Element && reader_xml.Name == "Comprobante"){
+                            if (reader_xml.HasAttributes){
+								entry_num_factura_proveedor.Text = reader_xml.GetAttribute("serie")+reader_xml.GetAttribute("folio");
+							}
+						}
+						if (reader_xml.MoveToContent() == XmlNodeType.Element && reader_xml.Name == "Emisor"){
+							if (reader_xml.HasAttributes){
+								entry_nombre_proveedor.Text = reader_xml.GetAttribute("nombre");
+							}
+						}
+						if (reader_xml.MoveToContent() == XmlNodeType.Element && reader_xml.Name == "Concepto"){
+							if (reader_xml.HasAttributes){
+								Console.WriteLine(reader_xml.GetAttribute("cantidad"));
+								treeViewEngineListaProdRequi.AppendValues (true,
+										entry_num_factura_proveedor.Text.Trim().ToUpper(),
+							                                           "0",
+							                                           reader_xml.GetAttribute("cantidad"),
+							                                           "0",
+							                                           "0",
+							                                           reader_xml.GetAttribute("valorUnitario"),
+							                                           "0",
+							                                           "0",
+							                                           "",
+							                                           "",
+							                                           reader_xml.GetAttribute("descripcion").ToUpper(),
+							                                           reader_xml.GetAttribute("noIdentificacion"),
+							                                           "",
+							                                           "",
+							                                           reader_xml.GetAttribute("unidad"),
+							                                           "",
+							                                           "",
+							                                           "");
+								/*treeViewEngineListaProdRequi.AppendValues (true,
+								entry_num_factura_proveedor.Text.Trim().ToUpper(),
+								"0",
+								entry_cantidad_aplicada.Text.Trim(),
+								entry_embalaje_pack.Text.Trim(),
+								Convert.ToString(float.Parse(entry_cantidad_aplicada.Text.Trim()) * float.Parse(entry_embalaje_pack.Text.Trim())),
+								entry_precio.Text.Trim(),
+								string.Format("{0:F}",float.Parse(entry_precio.Text.Trim())/float.Parse(entry_embalaje_pack.Text.Trim())),
+								(string) model.GetValue(iterSelected, 12),
+								(string) model.GetValue(iterSelected, 1),
+								(string) model.GetValue(iterSelected, 0),
+								(string) entry_producto_proveedor.Text.Trim().ToUpper(),
+								(string) entry_codprod_proveedor.Text.Trim().ToUpper(),
+								(string) entry_lote.Text.Trim().ToUpper(),
+								(string) entry_caducidad.Text.Trim().ToUpper(),
+								tipounidadproducto,
+								(string) model.GetValue(iterSelected, 13),
+								(string) model.GetValue(iterSelected, 14),
+								(string) model.GetValue(iterSelected, 15));*/
+							}
+						}
+						break;
+					default:
+						break;
+				}							
+			}
+		}
+						
 		void on_button_reporte_clicked(object sender, EventArgs args)
 		{
 			new osiris.rpt_conceptos_proveedores();
@@ -774,6 +924,8 @@ namespace osiris
 			
 			lista_productos_a_recibir.Model = treeViewEngineListaProdRequi;			
 			lista_productos_a_recibir.RulesHint = true;
+			lista_productos_a_recibir.RowActivated += on_selecciona_prodprove_clicked;  // Doble click selecciono producto*/
+			//lista_productos_a_recibir.MoveCursor += on_packproductos_clicked;
 						
 			col_00 = new TreeViewColumn();
 			CellRendererToggle cellrToggle = new CellRendererToggle();
@@ -1039,14 +1191,11 @@ namespace osiris
 		
 		void NumberCellEdited (object sender, EditedArgs args)
 		{
-			Console.WriteLine(args.ToString());
-			Console.WriteLine(args.Path.ToString());
-			Console.WriteLine(sender.ToString());
-			if (sender.ToString() == "Gtk.CellRendererText"){
-				Gtk.CellRendererText cellRenderer_treeview = (object) sender as Gtk.CellRendererText;
-				//cellRenderer_treeview.Data.
-			}
 			Gtk.TreeIter iter;
+			treeViewEngineListaProdRequi.GetIter (out iter, new Gtk.TreePath (args.Path));
+			if (sender.GetType().Name == "CellRendererText"){
+				
+			}			
 			//treeViewEngineListaProdRequi.GetIter (out iter, new Gtk.TreePath (args.Path));
 			//treeViewEngineListaProdRequi.SetValue(iter,(int) col_productos_recibidos.col_numerofactura,args.NewText);			
 		}
@@ -1079,9 +1228,8 @@ namespace osiris
 				var_paso += 1;
 			}
 			if (esnumerico == true){
-				//treeViewEngineListaProdRequi.SetValue(iter,(int) col_productos_recibidos.col_cant_recibida,args.NewText);
-				//bool old = (bool) lista_productos_a_recibir.Model.GetValue (iter,0);
-				//lista_productos_a_recibir.Model.SetValue(iter,0,!old);
+				treeViewEngineListaProdRequi.GetIter (out iter, new Gtk.TreePath (args.Path));
+				treeViewEngineListaProdRequi.SetValue(iter,(int) col_productos_recibidos.col_03,args.NewText);
 			}
  		}
 		
@@ -1161,6 +1309,11 @@ namespace osiris
 		}
 				
 		void on_button_busca_producto_clicked(object sender, EventArgs a)
+		{
+			busca_productos_catalogo(false);
+		}
+		
+		void busca_productos_catalogo(bool llenavalores)
 		{
 			if(entry_num_factura_proveedor.Text != ""  && entry_id_proveedor.Text != "" && entry_id_proveedor.Text != "1"){
 				Glade.XML gxml = new Glade.XML (null, "almacen_costos_compras.glade", "busca_producto", null);
@@ -1471,6 +1624,11 @@ namespace osiris
 								msgBoxError.Destroy();
 			}
 			conexion.Close ();
+		}
+		
+		void on_selecciona_prodprove_clicked(object sender, EventArgs args)
+		{
+			busca_productos_catalogo(true);
 		}
 		
 		void on_selecciona_producto_clicked (object sender, EventArgs args)

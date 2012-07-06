@@ -122,6 +122,7 @@ namespace osiris
  		string diagnostico="";
 		////
 		string facturas_="";
+		bool accesoabrirfolio = false;
 		
 		string tipobusqueda = "AND osiris_his_medicos.nombre1_medico LIKE '";
 		
@@ -136,7 +137,7 @@ namespace osiris
 		
 		class_conexion conexion_a_DB = new class_conexion();
 		
-		public tesoreria(string LoginEmp_, string NomEmpleado_, string AppEmpleado_, string ApmEmpleado_, string nombrebd_) 
+		public tesoreria(string LoginEmp_, string NomEmpleado_, string AppEmpleado_, string ApmEmpleado_, string nombrebd_, bool accesoabrirfolio_) 
 		{
 			LoginEmpleado = LoginEmp_;
 			NomEmpleado = NomEmpleado_;
@@ -144,6 +145,7 @@ namespace osiris
 			ApmEmpleado = ApmEmpleado_;
 			connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
 			nombrebd = conexion_a_DB._nombrebd;
+			accesoabrirfolio = accesoabrirfolio_;
 						
 			Glade.XML gxml = new Glade.XML (null, "caja.glade", "menu_tesoreria", null);
 			gxml.Autoconnect (this);        
@@ -168,7 +170,7 @@ namespace osiris
 		{
 			//15 es el sub-almacen (tabla osiris_almacenes)
 			//16 es el centro de costo (tabla osiris_his_tipo_admisiones)			
-			new osiris.caja_cobro(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,15,13);
+			new osiris.caja_cobro(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,15,13,accesoabrirfolio);
 		}
 		
 		void on_button_facturador_clicked(object sender, EventArgs args)

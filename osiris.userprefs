@@ -1,20 +1,20 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="osiris/registro_admision.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="osiris/rpt_conceptos_proveedores.cs">
     <Files>
       <File FileName="../cronos/cronos/cambio_passwd.cs" Line="1" Column="1" />
-      <File FileName="osiris/captura_fac_ordenes_compra.cs" Line="276" Column="37" />
-      <File FileName="osiris/class_conexion.cs" Line="10" Column="53" />
-      <File FileName="osiris/registro_admision.cs" Line="2558" Column="27" />
-      <File FileName="osiris/osiris.cs" Line="479" Column="100" />
-      <File FileName="osiris/caja.cs" Line="4437" Column="12" />
+      <File FileName="osiris/captura_fac_ordenes_compra.cs" Line="404" Column="20" />
+      <File FileName="osiris/class_conexion.cs" Line="14" Column="56" />
+      <File FileName="osiris/registro_admision.cs" Line="432" Column="5" />
+      <File FileName="osiris/tesoreria.cs" Line="298" Column="83" />
+      <File FileName="osiris/rpt_conceptos_proveedores.cs" Line="281" Column="97" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
         <State expanded="True">
           <Node name="osiris" expanded="True">
             <Node name="References" expanded="True" />
-            <Node name="registro_admision.cs" selected="True" />
+            <Node name="rpt_conceptos_proveedores.cs" selected="True" />
           </Node>
         </State>
       </Pad>

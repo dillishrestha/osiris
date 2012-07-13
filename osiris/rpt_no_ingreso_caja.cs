@@ -188,13 +188,13 @@ namespace osiris
 				while(lector.Read()){
 					folioservicio = (int) lector["folio_de_servicio"];
 					//Console.WriteLine(folioservicio.ToString());
-					if((string) classpublic.lee_registro_de_tabla("osiris_erp_comprobante_servicio","folio_de_servicio","WHERE folio_de_servicio = '"+folioservicio.ToString().Trim()+"'","folio_de_servicio") == ""){
+					if((string) classpublic.lee_registro_de_tabla("osiris_erp_comprobante_servicio","folio_de_servicio","WHERE folio_de_servicio = '"+folioservicio.ToString().Trim()+"'","folio_de_servicio","int") == ""){
 						//Console.WriteLine(folioservicio.ToString().Trim()+" NO Tiene Comprobante de Servicio ");
-						if((string) classpublic.lee_registro_de_tabla("osiris_erp_abonos","folio_de_servicio","WHERE folio_de_servicio = '"+folioservicio.ToString().Trim()+"' AND honorario_medico = 'false' ","folio_de_servicio") == ""){
+						if((string) classpublic.lee_registro_de_tabla("osiris_erp_abonos","folio_de_servicio","WHERE folio_de_servicio = '"+folioservicio.ToString().Trim()+"' AND honorario_medico = 'false' ","folio_de_servicio","int") == ""){
 							//Console.WriteLine(folioservicio.ToString().Trim()+" NO Tiene Comprobante de PAGO o ABONO ");
-							if((string) classpublic.lee_registro_de_tabla("osiris_erp_comprobante_pagare","folio_de_servicio","WHERE folio_de_servicio = '"+folioservicio.ToString().Trim()+"' ","folio_de_servicio") == ""){
+							if((string) classpublic.lee_registro_de_tabla("osiris_erp_comprobante_pagare","folio_de_servicio","WHERE folio_de_servicio = '"+folioservicio.ToString().Trim()+"' ","folio_de_servicio","int") == ""){
 								//Console.WriteLine(folioservicio.ToString().Trim()+" NO Tiene Comprobante de PAGARE ");
-								if((string) classpublic.lee_registro_de_tabla("osiris_erp_pases_qxurg","folio_de_servicio","WHERE folio_de_servicio = '"+folioservicio.ToString().Trim()+"' ","folio_de_servicio") == ""){
+								if((string) classpublic.lee_registro_de_tabla("osiris_erp_pases_qxurg","folio_de_servicio","WHERE folio_de_servicio = '"+folioservicio.ToString().Trim()+"' ","folio_de_servicio","int") == ""){
 									//Console.WriteLine(folioservicio.ToString().Trim()+" NO Tiene PASE QX/URGENCIA ");
 									cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText("FECHA :"+(string) lector["fechahora_creacion"].ToString()+"N° Atencion :"+folioservicio.ToString()+"      Expediente: "+(string) lector["pidpaciente"].ToString()+"  Paciente: "+(string) lector["nombre_completo"].ToString());	Pango.CairoHelper.ShowLayout (cr, layout);
 									comienzo_linea += separacion_linea;

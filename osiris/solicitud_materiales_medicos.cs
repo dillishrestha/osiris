@@ -778,7 +778,7 @@ namespace osiris
 		
 		void llenando_lista_de_productos()
 		{
-			string acceso_a_grupos = classpublic.lee_registro_de_tabla("osiris_almacenes","id_almacen"," WHERE osiris_almacenes.id_almacen = '"+this.idalmacen.ToString().Trim()+"' ","acceso_grupo_producto");
+			string acceso_a_grupos = classpublic.lee_registro_de_tabla("osiris_almacenes","id_almacen"," WHERE osiris_almacenes.id_almacen = '"+this.idalmacen.ToString().Trim()+"' ","acceso_grupo_producto","int");
 			
 			treeViewEngineBusca2.Clear(); // Limpia el treeview cuando realiza una nueva busqueda
 			NpgsqlConnection conexion; 

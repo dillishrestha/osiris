@@ -57,6 +57,8 @@ namespace osiris
 		[Widget] Gtk.Button button_busca_proveedor = null;
 		[Widget] Gtk.TreeView treeview_lista_grupoprod = null;
 		[Widget] Gtk.Button button_exportar_sheet = null;
+		[Widget] Gtk.ComboBox combobox_herr_adicionales = null;
+		[Widget] Gtk.CheckButton checkbutton_herr_adicionales = null;
 		
 		string connectionString = "";
 		string nombrebd = "";
@@ -64,6 +66,10 @@ namespace osiris
 										"AND to_char(osiris_erp_cobros_enca.fechahora_creacion,'yyyy-MM-dd') <= '"+DateTime.Now.ToString("yyyy")+"-"+DateTime.Now.ToString("MM")+"-"+DateTime.Now.ToString("dd")+"' "; 
 		string query_proveedores = "";
 		string query_in_grupo = "";
+		
+		string[] args_args = {""};
+		string[] args_herr_adicional = {"","ANALISIS COMPRAS PRODUCTOS"};
+		int[] args_id_array = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20};
 		
 		TreeStore treeViewEngineListaGrupoProd;
 		
@@ -94,12 +100,76 @@ namespace osiris
 			checkbutton_todas_fechas.Clicked += new EventHandler(on_checkbutton_todas_fechas_clicked);
 			checkbutton_todos_proveedores.Clicked += new EventHandler(on_checkbutton_todos_proveedore_clicked);
 			checkbutton_todos_grupos.Clicked += new EventHandler(on_checkbutton_todos_grupos_clicked);
+			checkbutton_herr_adicionales.Clicked += new EventHandler(on_checkbutton_herr_adicionales_clicked);
 			button_exportar_sheet.Clicked += new EventHandler(on_button_exportar_sheet_clicked);
 			entry_id_proveedor.KeyPressEvent += onKeyPressEvent_enter;
 			checkbutton_todos_proveedores.Active = true;
+			combobox_herr_adicionales.Sensitive = false;
 			creartreeviewgrupoprod();
 			llenadogrupoprod();
 			checkbutton_todos_grupos.Active = true;
+		}
+		
+		void llenado_combobox(int tipodellenado,string descrip_defaul,object obj,string sql_or_array,string query_SQL,string name_field_desc,string name_field_id,string[] args_array,int[] args_id_array,string name_field_id2)
+		{			
+			Gtk.ComboBox combobox_llenado = (Gtk.ComboBox) obj;
+			//Gtk.ComboBox combobox_pos_neg = obj as Gtk.ComboBox;
+			combobox_llenado.Clear();
+			CellRendererText cell = new CellRendererText();
+			combobox_llenado.PackStart(cell, true);
+			combobox_llenado.AddAttribute(cell,"text",0);	        
+			ListStore store = new ListStore( typeof (string),typeof (int),typeof (int));
+			combobox_llenado.Model = store;			
+			if ((int) tipodellenado == 1){
+				store.AppendValues ((string) descrip_defaul,0);
+			}			
+			if(sql_or_array == "array"){			
+				for (int colum_field = 0; colum_field < args_array.Length; colum_field++){
+					store.AppendValues (args_array[colum_field],args_id_array[colum_field],0);
+				}
+			}
+			if(sql_or_array == "sql"){			
+				NpgsqlConnection conexion; 
+				conexion = new NpgsqlConnection (connectionString+nombrebd);
+	            // Verifica que la base de datos este conectada
+				try{
+					conexion.Open ();
+					NpgsqlCommand comando; 
+					comando = conexion.CreateCommand ();
+	               	comando.CommandText = query_SQL;
+					NpgsqlDataReader lector = comando.ExecuteReader ();
+	               	while (lector.Read()){
+						if(name_field_id2 == ""){
+							store.AppendValues ((string) lector[ name_field_desc ], (int) lector[ name_field_id],0);
+						}else{
+							store.AppendValues ((string) lector[ name_field_desc ], (int) lector[ name_field_id],(int) lector[ name_field_id2]);
+						}
+					}
+				}catch (NpgsqlException ex){
+					MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+											MessageType.Error,ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
+					msgBoxError.Run ();				msgBoxError.Destroy();
+				}
+				conexion.Close ();
+			}			
+			TreeIter iter;
+			if (store.GetIterFirst(out iter)){
+				combobox_llenado.SetActiveIter (iter);
+			}
+			combobox_llenado.Changed += new EventHandler (onComboBoxChanged_llenado);			
+		}
+		
+		void onComboBoxChanged_llenado (object sender, EventArgs args)
+		{
+			ComboBox onComboBoxChanged = sender as ComboBox;
+			if (sender == null){	return; }
+			TreeIter iter;
+			if (onComboBoxChanged.GetActiveIter (out iter)){
+				switch (onComboBoxChanged.Name.ToString()){	
+				case "combobox_herr_adicionales":
+					break;
+				}
+			}
 		}
 		
 		// Valida entradas que solo sean numericas, se utiliza en ventana
@@ -111,7 +181,7 @@ namespace osiris
 			//Console.WriteLine(args.Event.Key);
 			if (args.Event.Key.ToString() == "Return" || args.Event.Key.ToString() == "KP_Enter"){
 				args.RetVal = true;
-				entry_nombre_proveedor.Text = classpublic.lee_registro_de_tabla("osiris_erp_proveedores","id_proveedor"," WHERE osiris_erp_proveedores.id_proveedor = '"+entry_id_proveedor.Text.Trim()+"' AND proveedor_activo = 'true' ","descripcion_proveedor");
+				entry_nombre_proveedor.Text = classpublic.lee_registro_de_tabla("osiris_erp_proveedores","id_proveedor"," WHERE osiris_erp_proveedores.id_proveedor = '"+entry_id_proveedor.Text.Trim()+"' AND proveedor_activo = 'true' ","descripcion_proveedor","int");
 			}
 			string misDigitos = ".0123456789ﾰﾱﾲﾳﾴﾵﾶﾷﾸﾹﾮｔｒｓｑ（）";
 			if (Array.IndexOf(misDigitos.ToCharArray(), Convert.ToChar(args.Event.Key)) == -1 && args.Event.Key.ToString()  != "BackSpace"){
@@ -121,28 +191,43 @@ namespace osiris
 		
 		void on_button_exportar_sheet_clicked(object sender, EventArgs args)
 		{
-			verifica_checkbutton_prov();
-			verifica_checkbutton_fechas();
-			verifica_grupo_prodctos();
-			string query_sql = "SELECT  to_char(osiris_erp_factura_compra_enca.fecha_factura,'yyyy-MM-dd') AS fechafactura,osiris_erp_factura_compra_enca.numero_factura_proveedor AS numerofactura," +
-				"osiris_erp_factura_compra_enca.id_proveedor,descripcion_proveedor," +
-				"to_char(osiris_erp_requisicion_deta.id_producto,'999999999999') AS idproducto_osiris,descripcion_producto AS descrip_prod_osiris," +
-				"osiris_erp_requisicion_deta.precio_producto_publico,costo_producto_osiris,osiris_erp_requisicion_deta.precio_producto_publico AS costo_unitario_osiris,cantidad_de_embalaje_osiris,cantidad_comprada," +
-				"osiris_erp_requisicion_deta.costo_producto AS costo_producto_compra,cantidad_recibida,osiris_erp_requisicion_deta.costo_por_unidad AS costoxunidad_compra,osiris_erp_requisicion_deta.cantidad_de_embalaje," +
-				"osiris_erp_requisicion_deta.precio_costo_prov_selec AS precio_prove,id_producto_proveedor,descripcion_producto_proveedor,osiris_erp_requisicion_deta.tipo_unidad_producto,lote_producto,caducidad_producto " +
-				"FROM osiris_erp_factura_compra_enca,osiris_erp_proveedores,osiris_erp_requisicion_deta,osiris_productos " +
-				"WHERE osiris_erp_factura_compra_enca.id_proveedor = osiris_erp_proveedores.id_proveedor " +
-				"AND osiris_erp_factura_compra_enca.numero_factura_proveedor = osiris_erp_requisicion_deta.numero_factura_proveedor " +
-				"AND osiris_erp_requisicion_deta.id_producto = osiris_productos.id_producto " +
-				query_proveedores+
-				query_rango_fechas+
-				query_in_grupo+
-				"ORDER BY to_char(osiris_erp_factura_compra_enca.fecha_factura,'yyyy-MM-dd'),numerofactura;";
-			string[] args_names_field = {"fechafactura","numerofactura","descripcion_proveedor","idproducto_osiris","descrip_prod_osiris","cantidad_comprada","costo_producto_compra","cantidad_de_embalaje","costoxunidad_compra","cantidad_recibida","costo_producto_osiris","cantidad_de_embalaje_osiris","costo_unitario_osiris","id_producto_proveedor","descripcion_producto_proveedor","tipo_unidad_producto","lote_producto","caducidad_producto"};
-			string[] args_type_field = {"string","string","string","string","string","float","float","float","float","float","float","float","float","string","string","string","string","string"};
-			
-			// class_crea_ods.cs
-			new osiris.class_traslate_spreadsheet(query_sql,args_names_field,args_type_field);
+			if ((bool)checkbutton_herr_adicionales.Active == true){
+				
+				string query_consulta = "SELECT osiris_erp_requisicion_deta.id_producto,descripcion_producto,to_char(osiris_erp_factura_compra_enca.fecha_factura,'yyyy-MM') AS ano_mes," +
+					"AVG(osiris_erp_requisicion_deta.costo_producto)," +
+					"MAX(osiris_erp_requisicion_deta.costo_producto)," +
+					"MIN(osiris_erp_requisicion_deta.costo_producto)," +
+					"COUNT(*) AS Total,SUM(osiris_erp_requisicion_deta.costo_producto) AS Total1 " +
+					"FROM osiris_erp_requisicion_deta,osiris_erp_factura_compra_enca,osiris_productos " +
+					"WHERE osiris_erp_requisicion_deta.numero_factura_proveedor = osiris_erp_factura_compra_enca.numero_factura_proveedor " +
+					"AND osiris_productos.id_producto = osiris_erp_requisicion_deta.id_producto " +
+					"GROUP BY osiris_erp_requisicion_deta.id_producto,descripcion_producto," +
+					"to_char(osiris_erp_factura_compra_enca.fecha_factura,'yyyy-MM') " +
+					"ORDER BY descripcion_producto;";
+			}else{
+				verifica_checkbutton_prov();
+				verifica_checkbutton_fechas();
+				verifica_grupo_prodctos();
+				string query_sql = "SELECT to_char(osiris_erp_factura_compra_enca.fecha_factura,'yyyy-MM-dd') AS fechafactura,osiris_erp_factura_compra_enca.numero_factura_proveedor AS numerofactura," +
+					"osiris_erp_factura_compra_enca.id_proveedor,descripcion_proveedor," +
+					"to_char(osiris_erp_requisicion_deta.id_producto,'999999999999') AS idproducto_osiris,descripcion_producto AS descrip_prod_osiris," +
+					"osiris_erp_requisicion_deta.precio_producto_publico,costo_producto_osiris,osiris_erp_requisicion_deta.precio_producto_publico AS costo_unitario_osiris,cantidad_de_embalaje_osiris,cantidad_comprada," +
+					"osiris_erp_requisicion_deta.costo_producto AS costo_producto_compra,cantidad_recibida,osiris_erp_requisicion_deta.costo_por_unidad AS costoxunidad_compra,osiris_erp_requisicion_deta.cantidad_de_embalaje," +
+					"osiris_erp_requisicion_deta.precio_costo_prov_selec AS precio_prove,id_producto_proveedor,descripcion_producto_proveedor,osiris_erp_requisicion_deta.tipo_unidad_producto,lote_producto,caducidad_producto " +
+					"FROM osiris_erp_factura_compra_enca,osiris_erp_proveedores,osiris_erp_requisicion_deta,osiris_productos " +
+					"WHERE osiris_erp_factura_compra_enca.id_proveedor = osiris_erp_proveedores.id_proveedor " +
+					"AND osiris_erp_factura_compra_enca.numero_factura_proveedor = osiris_erp_requisicion_deta.numero_factura_proveedor " +
+					"AND osiris_erp_requisicion_deta.id_producto = osiris_productos.id_producto " +
+					query_proveedores+
+					query_rango_fechas+
+					query_in_grupo+
+					"ORDER BY to_char(osiris_erp_factura_compra_enca.fecha_factura,'yyyy-MM-dd'),numerofactura;";
+				string[] args_names_field = {"fechafactura","numerofactura","descripcion_proveedor","idproducto_osiris","descrip_prod_osiris","cantidad_comprada","costo_producto_compra","cantidad_de_embalaje","costoxunidad_compra","cantidad_recibida","costo_producto_osiris","cantidad_de_embalaje_osiris","costo_unitario_osiris","id_producto_proveedor","descripcion_producto_proveedor","tipo_unidad_producto","lote_producto","caducidad_producto"};
+				string[] args_type_field = {"string","string","string","string","string","float","float","float","float","float","float","float","float","string","string","string","string","string"};
+				
+				// class_crea_ods.cs
+				new osiris.class_traslate_spreadsheet(query_sql,args_names_field,args_type_field);
+			}
 		}
 		
 		void on_checkbutton_todos_proveedore_clicked(object sender, EventArgs args)
@@ -263,6 +348,16 @@ namespace osiris
 						treeview_lista_grupoprod.Model.SetValue(iter2,0,false);
 					}
 				}
+			}
+		}
+		
+		void on_checkbutton_herr_adicionales_clicked(object sender, EventArgs args)
+		{
+			if ((bool)checkbutton_herr_adicionales.Active == true){
+				combobox_herr_adicionales.Sensitive = true;
+				llenado_combobox(0,"",combobox_herr_adicionales,"array","","","",args_herr_adicional,args_id_array,"");
+			}else{
+				combobox_herr_adicionales.Sensitive = false;
 			}
 		}
 		

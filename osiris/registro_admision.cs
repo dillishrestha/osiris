@@ -220,6 +220,7 @@ namespace osiris
 		int id_tipopaciente_valid = 0;	// toma valor de tipo paciente para validarlo
 		int folioservicio = 0;	 // Toma el valor de numero de atencion de paciente
 		int id_tipodocumentopx = 1; // Toma el valor del tipo de documento que necesitan llenar para cada paciente
+		int id_tipodocumentopx2 = 1; // para cuando ya tiene asignado un municipio o una empresa
 		string tipointernamiento = "URGENCIAS";//"Urgencias";  // Toma el valor del tipo de internamiento
 		int idtipointernamiento = 0;       // Toma el valor del id de internamiento
 		bool grabainternamiento = false; // me indica que debe grabar el internamiento del paciente
@@ -280,6 +281,7 @@ namespace osiris
 		string[] args_tipos_cirugias = {"","CIRUGIA AMBULATORIA","CIRUGIA PROGRAMADA","SIN CIRUGIA"};
 		string[] args_parentesco = {"SIN PARENTESCO","Esposo(a)","Papa","Mama","Abuelo(a)","Hermano(a)","Primo(a)","Tio(a)","Cuñado(a)","Tutor","Hijo(a)","Concuño(a)"};
 		int[] args_id_array = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20};
+		Item documento_foo;
 		
 		protected Gtk.Window MyWin;
 		protected Gtk.Window MyWinError;
@@ -287,7 +289,7 @@ namespace osiris
 		private TreeStore treeViewEngine;
 		private ListStore store_aseguradora;
 		private ListStore treeViewEngineDocumentos;
-		
+				
 		private ArrayList arraydocumentos;
 						
 		class_conexion conexion_a_DB = new class_conexion();
@@ -557,10 +559,10 @@ namespace osiris
 							boolaseguradora = false;
 							combobox_aseguradora.Sensitive = false;
 							idaseguradora = 1;
+							id_tipodocumentopx = id_tipodocumentopx2;
 							llenado_combobox(0,"",combobox_aseguradora,"sql","SELECT * FROM osiris_aseguradoras WHERE activa = 'true' ORDER BY descripcion_aseguradora;","descripcion_aseguradora","id_aseguradora",args_args,args_id_array,"id_tipo_documento");
 							break;
 						default:
-							idempresa_paciente = 1;
 							idaseguradora = 1;
 							empre_respo = "";
 							entry_empresa.Text = "";
@@ -580,6 +582,10 @@ namespace osiris
 				case "combobox_tipo_admision":
 					tipointernamiento = (string) combobox_tipo_admision.Model.GetValue(iter,0);//Console.WriteLine(tipointernamiento);
 					idtipointernamiento = (int) combobox_tipo_admision.Model.GetValue(iter,1);//Console.WriteLine(idtipointernamiento);
+					// Validando la cantidad de consultas
+					if(idtipointernamiento == 950){
+						
+					}
 					break;
 				case "combobox_paquete_check_up":
 					break;
@@ -734,6 +740,7 @@ namespace osiris
 							}
 							if (almaceno_movcargos == true){ 
 								bool almaceno_encabezado = almacena_encabezado_de_cobro(folioservicio);
+								
 								llena_servicios_realizados(PidPaciente.ToString().Trim());
 								button_asignacion_habitacion.Clicked += new EventHandler(on_button_asignacion_habitacion_clicked);
 							}else{
@@ -1340,7 +1347,7 @@ namespace osiris
 							"colonia_paciente, codigo_postal_paciente, telefono_particular1_paciente,"+
 							"telefono_trabajo1_paciente, celular1_paciente, municipio_paciente, estado_paciente, "+
 							"osiris_his_paciente.id_empresa AS idempresapaciente, osiris_empresas.descripcion_empresa,"+
-							"religion_paciente,alegias_paciente,lugar_nacimiento_paciente "+
+							"religion_paciente,alegias_paciente,lugar_nacimiento_paciente,id_tipo_documento "+
 							"FROM osiris_his_paciente, osiris_empresas WHERE osiris_his_paciente.id_empresa=osiris_empresas.id_empresa "+
 							"AND pid_paciente = '"+pidpaciente_.ToString()+"'"+
 							"AND activo = 'true' "+
@@ -1359,6 +1366,7 @@ namespace osiris
 					entry_ocupacion.Text = (string) lector["ocupacion_paciente"];
 					descripcion_empresa_paciente = (string) lector["descripcion_empresa"];
 					idempresa_paciente = (int) lector["idempresapaciente"];
+					id_tipodocumentopx2 = (int) lector["id_tipo_documento"];
 					entry_empresa.Text = (string) descripcion_empresa_paciente.ToString().Trim();
 					empre_respo = descripcion_empresa_paciente;
 					
@@ -1445,7 +1453,7 @@ namespace osiris
 					return true;
 				}
 				if (id_tipopaciente == 500)	{
-					if(idempresa_paciente <= 1){
+					if(idempresa_paciente == 1){
 						return false;
 					}else{
 						return true;
@@ -1738,12 +1746,7 @@ namespace osiris
 								decirugia.ToUpper().Trim()+"','"+
 								diagnostico.ToUpper().Trim()+"');";
 					//Console.WriteLine(comando.CommandText);	
-					comando.ExecuteNonQuery();				comando.Dispose();				
-					// almacena cargos automaticos cuando es un check-up
-					// afecta a la tabla cobros_deta
-					if(automatic_cargos == true){
-					
-					}
+					comando.ExecuteNonQuery();				comando.Dispose();
 				validation_save = true;
 			}catch (NpgsqlException ex){
 				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
@@ -1830,6 +1833,25 @@ namespace osiris
 							this.entry_empresa.Text.ToString().Trim().ToUpper()+"');";
 				//Console.WriteLine("Graba Encabezado");
 				comando.ExecuteNonQuery();			comando.Dispose();
+				
+				for (int i = 0; i < arraydocumentos.Count; i++) {
+      				Item documento_foo = (Item) arraydocumentos[i];
+					//treeViewEngineDocumentos.AppendValues(documento_foo.col00_,documento_foo.col01_);
+					comando.CommandText = "INSERT INTO osiris_erp_movimiento_documentos (" +
+									"pid_paciente," +
+									"folio_de_servicio," +
+									"descripcion_documento," +
+									"informacion_capturada," +
+									"id_tipo_documento) VALUES ('"+
+									PidPaciente.ToString().Trim()+"','"+
+									folioservicio_.ToString().Trim()+"','"+
+									documento_foo.col00_+"','"+
+									documento_foo.col01_+"','"+
+									id_tipodocumentopx.ToString().Trim()+"');";
+					comando.ExecuteNonQuery();			comando.Dispose();
+    			}
+				
+				
 				grabacion_sino = true;
 			}catch (NpgsqlException ex){
 	   			MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
@@ -2290,7 +2312,7 @@ namespace osiris
 					if((int) lector ["id_aseguradora"] > 1){
 						aseguradora_empresa = (string) lector["descripcion_aseguradora"];
 					}else{
-						aseguradora_empresa = (string) lector["descripcion_empresa"];						
+						aseguradora_empresa = (string) lector["descripcion_empresa"];
 					}
 					
 					if (!(bool) lector["cancelado"]){ 
@@ -2401,7 +2423,7 @@ namespace osiris
 				}
 			}
 			if(id_tipopaciente == 500){ 
-			   if(idaseguradora == 1){
+			   if(idempresa_paciente == 1){
 					nombre_error = "La admision es "+tipopaciente+" elija un Municipio... Verifique...";
 					validando_tipo_paciente = false;
 				}
@@ -2530,11 +2552,8 @@ namespace osiris
 					Console.WriteLine(comando.CommandText);
 					NpgsqlDataReader lector = comando.ExecuteReader ();
 					while (lector.Read()){
-						Item documento_foo;
-						documento_foo = new Item (lector["descripcion_documento"].ToString().Trim(),"");
+						documento_foo = new Item (lector["descripcion_documento"].ToString().Trim(),"","");
 						arraydocumentos.Add(documento_foo);
-						documentos_pacientes p = new documentos_pacientes("",DateTime.Now,0);
-						//treeViewEngineDocumentos.AppendValues(p,p,p);
 						treeViewEngineDocumentos.AppendValues(lector["descripcion_documento"].ToString().Trim(),"");
 					}
 				}catch (NpgsqlException ex){
@@ -2548,16 +2567,8 @@ namespace osiris
 				//Console.WriteLine((string) foo.col00_);
 				for (int i = 0; i < arraydocumentos.Count; i++) {
       				Item documento_foo = (Item) arraydocumentos[i];
-					//documento_foo.col01_ = "Porque esta en blanco";
-					Console.WriteLine(documento_foo.col01_+"   "+i.ToString());
-					//Console.WriteLine(arraydocumentos[i] = arraydocumentos[i]);
 					treeViewEngineDocumentos.AppendValues(documento_foo.col00_,documento_foo.col01_);
-    			}
-				
-				IEnumerator myEnumerator = arraydocumentos.GetEnumerator();
-			    while (myEnumerator.MoveNext()){
-			      Console.WriteLine("myEnumerator.Current = " + myEnumerator.Current);
-			    }				
+    			}		
 			}
 			entry_empresa_convenio.Text = tipopaciente+" "+nombre_aseguradora+" "+empre_respo;
 		}
@@ -2572,28 +2583,21 @@ namespace osiris
 				get { return col_item_01; }
 				set { col_item_01 = value; }
 			}
+			public string col02_{
+				get { return col_item_02; }
+				set { col_item_02 = value; }
+			}
 			private string col_item_00;
 			private string col_item_01;
+			private string col_item_02;
 			
-			public Item (string col_item_00,string col_item_01)
+			public Item (string col_item_00,string col_item_01,string col_item_02)
 			{
 				this.col_item_00 = col_item_00;
 				this.col_item_01 = col_item_01;
+				this.col_item_02 = col_item_02;
 			}
 		}
-		
-		class documentos_pacientes
-		{
-			public string valor_string;
-			public DateTime valor_fecha;
-			public int valor_numerico;
-			public documentos_pacientes (string valor_string, DateTime valor_fecha,int valor_numerico)
-			{
-				this.valor_string = valor_string;
-				this.valor_fecha = valor_fecha;
-				this.valor_numerico = valor_numerico;
-           }
-       }
 		
 		void NumberCellEdited (object sender, EditedArgs args)
 		{
@@ -2605,11 +2609,12 @@ namespace osiris
 			int i = path.Indices[0];
 			//Console.WriteLine(i.ToString());
 			try{
-				Item documento_foo;
-				documento_foo = (Item) arraydocumentos[i];
-				documento_foo.col01_ = args.NewText.ToUpper();
+				string cambio_datos = args.NewText.ToUpper();
+				Item documento_foo_tmp;
+				documento_foo_tmp = (Item) arraydocumentos[i];
+				arraydocumentos[i] = new Item (documento_foo_tmp.col00_,cambio_datos,"");
 				treeViewEngineDocumentos.GetIter (out iter, path);
-				treeViewEngineDocumentos.SetValue(iter,(int) colum_documentos.col01, documento_foo.col01_.ToUpper());
+				treeViewEngineDocumentos.SetValue(iter,(int) colum_documentos.col01,cambio_datos);
 			}catch (Exception e) {
 				Console.WriteLine(e.Message);
 				return;
@@ -2688,6 +2693,7 @@ namespace osiris
 				//direc_empre_respo = (string) entry_dire_emp_responsable.Text;
 				//telef_empre_respo = (string) entry_tel_emp_responsable.Text;
 				grabarespocuenta = true;
+				id_tipopaciente_valid = id_tipopaciente;
 				
 				// cierra la ventana despues que almaceno la informacion en variables
 				Widget win = (Widget) sender;

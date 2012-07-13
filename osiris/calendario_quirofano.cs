@@ -1054,7 +1054,7 @@ namespace osiris
 				comando.CommandText = sql_calendario_citaqx+sql_fecha1+sql_fecha2+sql_doctor+sql_tipo_paciente+sql_tipo_admision+sql_especialidad+
 									sql_citas_canceladas+sql_paciente+" ORDER BY to_char(fecha_programacion,'yyyy-MM-dd'),hora_programacion ASC;";
 				
-				//Console.WriteLine(comando.CommandText);
+				Console.WriteLine(comando.CommandText);
 				NpgsqlDataReader lector = comando.ExecuteReader ();				
 				while (lector.Read()){					
 					// Verificando que los pacientes de la citas tengan su numero de atencion

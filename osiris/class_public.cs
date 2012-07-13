@@ -164,7 +164,7 @@ namespace osiris
 		/// <param name='condition_table'>
 		/// Condicion de la tabla
 		/// </param>
-		public string lee_registro_de_tabla(string name_table,string name_field,string condition_table,string name_field_out)
+		public string lee_registro_de_tabla(string name_table,string name_field,string condition_table,string name_field_out,string type_field)
 		{
 			connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
 			nombrebd = conexion_a_DB._nombrebd;
@@ -176,7 +176,12 @@ namespace osiris
 				conexion.Open ();
 				NpgsqlCommand comando; 
 				comando = conexion.CreateCommand ();
-				comando.CommandText = "SELECT to_char("+name_field+",'9999999999') AS field_id_name,"+name_field_out+" AS name_fiel_output"+" FROM "+name_table+" "+condition_table+" ORDER BY "+name_field+" DESC LIMIT 1;";
+				if(type_field == "string"){
+					comando.CommandText = "SELECT "+name_field+" AS field_id_name,"+name_field_out+" AS name_fiel_output"+" FROM "+name_table+" "+condition_table+" ORDER BY "+name_field+" DESC LIMIT 1;";
+				}
+				if(type_field == "int"){
+					comando.CommandText = "SELECT to_char("+name_field+",'9999999999') AS field_id_name,"+name_field_out+" AS name_fiel_output"+" FROM "+name_table+" "+condition_table+" ORDER BY "+name_field+" DESC LIMIT 1;";
+				}
 				//Console.WriteLine(comando.CommandText);
 				NpgsqlDataReader lector = comando.ExecuteReader ();				
 				if (lector.Read()){	

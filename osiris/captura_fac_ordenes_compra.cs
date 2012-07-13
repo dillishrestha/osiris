@@ -259,6 +259,7 @@ namespace osiris
 		
 		void LeerXML(string filename_xml)
 		{
+			treeViewEngineListaProdRequi.Clear();
 			XmlTextReader reader_xml = new XmlTextReader(filename_xml);
 			while (reader_xml.Read()){
 				switch (reader_xml.NodeType){
@@ -267,11 +268,21 @@ namespace osiris
 						if (reader_xml.MoveToContent() == XmlNodeType.Element && reader_xml.Name == "cfdi:Comprobante"){
 							if (reader_xml.HasAttributes){
 								entry_num_factura_proveedor.Text = reader_xml.GetAttribute("serie")+reader_xml.GetAttribute("folio");
+								//fecha="2012-06-28T14:06:29"
+								entry_ano_fechafactura.Text = reader_xml.GetAttribute("fecha").Substring(0,4);
+								entry_mes_fechafactura.Text = reader_xml.GetAttribute("fecha").Substring(5,2);
+								entry_dia_fechafactura.Text = reader_xml.GetAttribute("fecha").Substring(8,2);
 							}
 						}
 						if (reader_xml.MoveToContent() == XmlNodeType.Element && reader_xml.Name == "cfdi:Emisor"){
 							if (reader_xml.HasAttributes){
 								entry_nombre_proveedor.Text = reader_xml.GetAttribute("nombre");
+								entry_id_proveedor.Text = (string) classpublic.lee_registro_de_tabla("osiris_erp_proveedores","rfc_proveedor","WHERE rfc_proveedor = '"+reader_xml.GetAttribute("rfc")+"'","id_proveedor","string");
+							}
+						}
+						if (reader_xml.MoveToContent() == XmlNodeType.Element && reader_xml.Name == "cfdi:DomicilioFiscal"){
+							if (reader_xml.HasAttributes){
+								entry_direccion_proveedor.Text = reader_xml.GetAttribute("calle");
 							}
 						}
 						if (reader_xml.MoveToContent() == XmlNodeType.Element && reader_xml.Name == "cfdi:Concepto"){
@@ -321,11 +332,21 @@ namespace osiris
 						if (reader_xml.MoveToContent() == XmlNodeType.Element && reader_xml.Name == "Comprobante"){
                             if (reader_xml.HasAttributes){
 								entry_num_factura_proveedor.Text = reader_xml.GetAttribute("serie")+reader_xml.GetAttribute("folio");
+								//fecha="2012-06-28T14:06:29"
+								entry_ano_fechafactura.Text = reader_xml.GetAttribute("fecha").Substring(0,4);
+								entry_mes_fechafactura.Text = reader_xml.GetAttribute("fecha").Substring(5,2);
+								entry_dia_fechafactura.Text = reader_xml.GetAttribute("fecha").Substring(8,2);
 							}
 						}
 						if (reader_xml.MoveToContent() == XmlNodeType.Element && reader_xml.Name == "Emisor"){
 							if (reader_xml.HasAttributes){
 								entry_nombre_proveedor.Text = reader_xml.GetAttribute("nombre");
+								entry_id_proveedor.Text = (string) classpublic.lee_registro_de_tabla("osiris_erp_proveedores","rfc_proveedor","WHERE rfc_proveedor = '"+reader_xml.GetAttribute("rfc")+"'","id_proveedor","string");
+							}
+						}
+						if (reader_xml.MoveToContent() == XmlNodeType.Element && reader_xml.Name == "DomicilioFiscal"){
+							if (reader_xml.HasAttributes){
+								entry_direccion_proveedor.Text = reader_xml.GetAttribute("calle");
 							}
 						}
 						if (reader_xml.MoveToContent() == XmlNodeType.Element && reader_xml.Name == "Concepto"){

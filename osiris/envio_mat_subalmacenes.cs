@@ -1440,7 +1440,7 @@ namespace osiris
 		// llena la lista de productos
  		void llenando_lista_de_productos()
  		{
-			string acceso_a_grupos = classpublic.lee_registro_de_tabla("osiris_almacenes","id_almacen"," WHERE osiris_almacenes.id_almacen = '1' ","acceso_grupo_producto");
+			string acceso_a_grupos = classpublic.lee_registro_de_tabla("osiris_almacenes","id_almacen"," WHERE osiris_almacenes.id_almacen = '1' ","acceso_grupo_producto","int");
  			treeViewEngineBusca2.Clear(); // Limpia el treeview cuando realiza una nueva busqueda
 			
 			NpgsqlConnection conexion; 
@@ -1523,7 +1523,7 @@ namespace osiris
 		void on_selecciona_producto_clicked(object sender, EventArgs args)
 		{
 			bool valida_paciente = true;
-			string idtipoadmision = classpublic.lee_registro_de_tabla("osiris_almacenes","id_almacen"," WHERE osiris_almacenes.id_almacen = '"+idsubalmacen.ToString().Trim()+"' ","id_tipo_admisiones");
+			string idtipoadmision = classpublic.lee_registro_de_tabla("osiris_almacenes","id_almacen"," WHERE osiris_almacenes.id_almacen = '"+idsubalmacen.ToString().Trim()+"' ","id_tipo_admisiones","int");
 			Console.WriteLine(idtipoadmision);
 			TreeModel model;
 			TreeIter iterSelected;

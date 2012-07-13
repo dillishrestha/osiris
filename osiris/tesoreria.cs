@@ -294,7 +294,8 @@ namespace osiris
 		
 		void on_button_exportar_compserv_clicked(object sender, EventArgs args)
 		{
-			if(LoginEmpleado == "DOLIVARES" || LoginEmpleado =="ADMIN" || LoginEmpleado =="MARGARITAZ" || LoginEmpleado =="IESPINOZAF" || LoginEmpleado =="ZBAEZH" || LoginEmpleado == "YTAMEZ"){
+			if(LoginEmpleado == "DOLIVARES" || LoginEmpleado =="ADMIN" || LoginEmpleado =="MARGARITAZ" || LoginEmpleado =="IESPINOZAF" || 
+			   LoginEmpleado =="ZBAEZH" || LoginEmpleado == "YTAMEZ"  || LoginEmpleado == "ELVIAVM"){
 				new osiris.rptAdmision(nombrebd,"archivo","COMPROBANTES_SERVICIO");  // rpt_rep1_admision.cs
 			}else{
 				MessageDialog msgBox = new MessageDialog (MyWinError,DialogFlags.Modal,
@@ -305,7 +306,8 @@ namespace osiris
 		
 		void on_button_exportar_paseqx_clicked(object sender, EventArgs args)
 		{
-			if(LoginEmpleado == "DOLIVARES" || LoginEmpleado =="ADMIN" || LoginEmpleado =="MARGARITAZ" || LoginEmpleado =="IESPINOZAF" || LoginEmpleado =="ZBAEZH" || LoginEmpleado == "YTAMEZ"){
+			if(LoginEmpleado == "DOLIVARES" || LoginEmpleado =="ADMIN" || LoginEmpleado =="MARGARITAZ" || LoginEmpleado =="IESPINOZAF" || 
+			   LoginEmpleado =="ZBAEZH" || LoginEmpleado == "YTAMEZ" || LoginEmpleado == "ELVIAVM"){
 				new osiris.rptAdmision(nombrebd,"archivo","PASES_QUIROFANO_URGENCIAS");  // rpt_rep1_admision.cs
 			}else{
 				MessageDialog msgBox = new MessageDialog (MyWinError,DialogFlags.Modal,

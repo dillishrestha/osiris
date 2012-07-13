@@ -498,7 +498,7 @@ namespace osiris
 			//cr.Fill();
 			//cr.Paint();
 			//cr.Restore();
-			
+			int comienzo_linea_interno = 0;
 			comienzo_linea = 60;
 			Pango.FontDescription desc = Pango.FontDescription.FromString ("Sans");								
 			//cr.Rotate(90);  //Imprimir Orizontalmente rota la hoja cambian las posiciones de las lineas y columna					
@@ -563,10 +563,12 @@ namespace osiris
 			cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText("Usuario: "+quiensolicito);							Pango.CairoHelper.ShowLayout (cr, layout);
 			cr.MoveTo(200*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText("Nom. Usuario: "+nomsolicitante);					Pango.CairoHelper.ShowLayout (cr, layout);
 			comienzo_linea += separacion_linea;
+			layout.FontDescription.Weight = Weight.Bold;		// Letra negrita
 			cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText("Tipo de Paciente : "+tipo_paciente);			Pango.CairoHelper.ShowLayout (cr, layout);
+			layout.FontDescription.Weight = Weight.Normal;		// Letra negrita
+			cr.MoveTo(220*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText("Empresa o Municipio : "+empresa_aseguradora);							Pango.CairoHelper.ShowLayout (cr, layout);
 			comienzo_linea += separacion_linea;
-			cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText("Empresa o Municipio : "+empresa_aseguradora);							Pango.CairoHelper.ShowLayout (cr, layout);
-			comienzo_linea += separacion_linea;
+			comienzo_linea_interno = comienzo_linea;
 			//comienzo_linea += separacion_linea;
 			if(tipo_pase == "pase_qx_urg"){
 				cr.MoveTo(10*escala_en_linux_windows,(comienzo_linea+(separacion_linea*2))*escala_en_linux_windows);		layout.SetText("Cirugia :___________________________________________");							Pango.CairoHelper.ShowLayout (cr, layout);						
@@ -582,32 +584,60 @@ namespace osiris
 				cr.MoveTo(150*escala_en_linux_windows,(comienzo_linea+(separacion_linea*21))*escala_en_linux_windows);		layout.SetText("Sello y Firma Cajero");							Pango.CairoHelper.ShowLayout (cr, layout);
 			}
 			if(tipo_pase=="pase_de_ingreso"){
-				cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText("N° Oficio: ");							Pango.CairoHelper.ShowLayout (cr, layout);
-				cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText("N° Oficio: ");							Pango.CairoHelper.ShowLayout (cr, layout);
-				comienzo_linea += separacion_linea;
-				cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText("DEPARTAMENTO :");							Pango.CairoHelper.ShowLayout (cr, layout);
-				comienzo_linea += separacion_linea;
+				//cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText("N° Oficio: ");							Pango.CairoHelper.ShowLayout (cr, layout);
+				//cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText("N° Oficio: ");							Pango.CairoHelper.ShowLayout (cr, layout);
+				//comienzo_linea += separacion_linea;
+				//cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText("DEPARTAMENTO :");							Pango.CairoHelper.ShowLayout (cr, layout);
+				//comienzo_linea += separacion_linea;
+				NpgsqlConnection conexion; 
+	        	conexion = new NpgsqlConnection (connectionString+nombrebd);
+	        	// Verifica que la base de datos este conectada
+	        	try{
+					comienzo_linea += separacion_linea;
+	 				conexion.Open ();
+	        		NpgsqlCommand comando; 
+	        		comando = conexion.CreateCommand (); 
+	           		comando.CommandText = "SELECT * FROM osiris_erp_movimiento_documentos WHERE folio_de_servicio ='"+numerodeatencion+"'; ";
+	        		Console.WriteLine(comando.CommandText);
+					NpgsqlDataReader lector = comando.ExecuteReader();					
+					while(lector.Read()){
+						cr.MoveTo(07*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText(lector["descripcion_documento"].ToString());							Pango.CairoHelper.ShowLayout (cr, layout);
+						cr.MoveTo(150*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText(lector["informacion_capturada"].ToString());							Pango.CairoHelper.ShowLayout (cr, layout);
+						comienzo_linea += separacion_linea;
+					}
+				}catch (NpgsqlException ex){
+					MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+					MessageType.Warning, ButtonsType.Ok, "PostgresSQL error: {0}",ex.Message);
+					msgBoxError.Run ();
+					msgBoxError.Destroy();
+					Console.WriteLine ("PostgresSQL error: {0}",ex.Message);
+					return; 
+				}
+				conexion.Close();	
 			}
 			
 			fontSize = 6.5;
 			desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;
 			layout.FontDescription.Weight = Weight.Bold;		// Letra negrita
-			cr.MoveTo(405*escala_en_linux_windows,(comienzo_linea+(separacion_linea*19))*escala_en_linux_windows);		layout.SetText(nombrepaciente);							Pango.CairoHelper.ShowLayout (cr, layout);
-			cr.MoveTo(405*escala_en_linux_windows,(comienzo_linea+(separacion_linea*20))*escala_en_linux_windows);		layout.SetText("Edad: "+edadpaciente+" Años");				Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(405*escala_en_linux_windows,(comienzo_linea_interno+(separacion_linea*19))*escala_en_linux_windows);		layout.SetText(nombrepaciente);							Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(405*escala_en_linux_windows,(comienzo_linea_interno+(separacion_linea*20))*escala_en_linux_windows);		layout.SetText("Edad: "+edadpaciente+" Años");				Pango.CairoHelper.ShowLayout (cr, layout);
 			if(medicotratante != ""){
-				cr.MoveTo(405*escala_en_linux_windows,(comienzo_linea+(separacion_linea*21))*escala_en_linux_windows);		layout.SetText("Dr. "+medicotratante);				Pango.CairoHelper.ShowLayout (cr, layout);
+				cr.MoveTo(405*escala_en_linux_windows,(comienzo_linea_interno+(separacion_linea*21))*escala_en_linux_windows);		layout.SetText("Dr. "+medicotratante);				Pango.CairoHelper.ShowLayout (cr, layout);
 			}
-			cr.MoveTo(405*escala_en_linux_windows,(comienzo_linea+(separacion_linea*22))*escala_en_linux_windows);		layout.SetText("Fecha: "+(string) DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));				Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(405*escala_en_linux_windows,(comienzo_linea_interno+(separacion_linea*22))*escala_en_linux_windows);		layout.SetText("Fecha: "+(string) DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));				Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(005*escala_en_linux_windows,(comienzo_linea_interno+(separacion_linea*22))*escala_en_linux_windows);		layout.SetText("Nombre y Firma Admisión ");				Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(140*escala_en_linux_windows,(comienzo_linea_interno+(separacion_linea*22))*escala_en_linux_windows);		layout.SetText("Nombre y Firma Paciente ");				Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(270*escala_en_linux_windows,(comienzo_linea_interno+(separacion_linea*22))*escala_en_linux_windows);		layout.SetText("Nombre y Firma Autorización ");				Pango.CairoHelper.ShowLayout (cr, layout);
 
 			layout.FontDescription.Weight = Weight.Normal;		// Letra normal
 			fontSize = 8.0;
 			desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;
 			//Console.WriteLine(comienzo_linea.ToString());
-			cr.Rectangle (05*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows, 565*escala_en_linux_windows, (separacion_linea*18)*escala_en_linux_windows);
+			cr.Rectangle (05*escala_en_linux_windows, comienzo_linea_interno*escala_en_linux_windows, 565*escala_en_linux_windows, (separacion_linea*18)*escala_en_linux_windows);
 			
 			if(tipo_pase == "pase_qx_urg"){
 				// Linea Vertical
-				cr.MoveTo(400*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);
+				cr.MoveTo(400*escala_en_linux_windows, comienzo_linea_interno*escala_en_linux_windows);
 				cr.LineTo(400*escala_en_linux_windows,330);
 			}
 			//cr.MoveTo(565*escala_en_linux_windows, 383*escala_en_linux_windows);

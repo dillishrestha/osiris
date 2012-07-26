@@ -520,8 +520,9 @@ namespace osiris
 										"SELECT id_tipo_cirugia,descripcion_cirugia,tiene_paquete,to_char(valor_paquete,'999999999.99') AS valorpaquetereal,"+
 										"to_char(precio_de_venta,'999999999.99') AS valorpaquete "+
 										"FROM osiris_his_tipo_cirugias "+
-										"WHERE descripcion_cirugia LIKE '%"};			
-			classfind_data.buscandor(parametros_objetos,parametros_sql,"find_cirugia_paquetes"," ORDER BY id_tipo_cirugia","%' ",0);
+										"WHERE descripcion_cirugia LIKE '%"};
+			string[] parametros_string = {};
+			classfind_data.buscandor(parametros_objetos,parametros_sql,parametros_string,"find_cirugia_paquetes"," ORDER BY id_tipo_cirugia","%' ",0);
 		}
 		
 		void on_button_buscar_especialidad_clicked (object sender, EventArgs args)
@@ -532,8 +533,9 @@ namespace osiris
 			object[] parametros_objetos = {entry_id_especialidad,entry_descripcion_especialidad};
 			string[] parametros_sql = {"SELECT * FROM osiris_his_tipo_especialidad ",															
 										"SELECT * FROM osiris_his_tipo_especialidad "+
-										"WHERE descripcion_especialidad LIKE '%"};			
-			classfind_data.buscandor(parametros_objetos,parametros_sql,"find_especialidad_medica"," ORDER BY id_especialidad","%' ",0);
+										"WHERE descripcion_especialidad LIKE '%"};
+			string[] parametros_string = {};
+			classfind_data.buscandor(parametros_objetos,parametros_sql,parametros_string,"find_especialidad_medica"," ORDER BY id_especialidad","%' ",0);
 		}
 				
 		void on_button_copia_procedimiento_clicked(object sender, EventArgs args)

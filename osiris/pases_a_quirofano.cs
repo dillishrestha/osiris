@@ -58,6 +58,7 @@ namespace osiris
 		// variable publicas
 		int pidpaciente;
 		int folioservicio;
+		int nrodecita;
 		int idcentro_costo;
 		string LoginEmpleado;
 		int idtipopaciente;
@@ -108,6 +109,7 @@ namespace osiris
 			nombrebd = conexion_a_DB._nombrebd;
 			pidpaciente = pidpaciente_;
 			folioservicio = folioservicio_;
+			nrodecita = folioservicio_;
 			idcentro_costo = idcentro_costo_;
 			LoginEmpleado = LoginEmpleado_;
 			idtipopaciente = idtipopaciente_;
@@ -143,6 +145,9 @@ namespace osiris
 				llenado_treeview_pases();
 			}
 			if(tipo_pase == "pase_de_ingreso"){
+				printing_pase();
+			}
+			if(tipo_pase == "cita_a_paciente"){
 				printing_pase();
 			}
 		}
@@ -323,7 +328,7 @@ namespace osiris
 		void printing_pase()
 		{
 			print = new PrintOperation ();
-			print.JobName = "Pase para Servicios Medicos";	// Name of the report
+			print.JobName = "Pase para Servicios Medicos o Citas";	// Name of the report
 			print.BeginPrint += new BeginPrintHandler (OnBeginPrint);
 			print.DrawPage += new DrawPageHandler (OnDrawPage);
 			print.EndPrint += new EndPrintHandler (OnEndPrint);
@@ -350,6 +355,14 @@ namespace osiris
 			string empresa_o_aseguradora = "";
 			string titulo_de_pase = "";
 			string query_sql_ = "";
+			
+			Cairo.Context cr = context.CairoContext;
+			Pango.Layout layout = context.CreatePangoLayout ();
+						
+			Pango.FontDescription desc = Pango.FontDescription.FromString ("Sans");									
+			//cr.Rotate(90);  //Imprimir Orizontalmente rota la hoja cambian las posiciones de las lineas y columna					
+			fontSize = 8.0;
+			desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;
 			
 			if(tipo_pase=="pase_qx_urg"){
 				query_slq = "SELECT osiris_erp_pases_qxurg.id_secuencia,osiris_erp_pases_qxurg.folio_de_servicio AS foliodeservicio," +
@@ -400,86 +413,133 @@ namespace osiris
 							"AND osiris_erp_cobros_enca.folio_de_servicio = '"+ folioservicio.ToString().Trim() +"';";
 				titulo_de_pase = "PASE_DE_INGRESO";
 			}
-			
-			Cairo.Context cr = context.CairoContext;
-			Pango.Layout layout = context.CreatePangoLayout ();
-						
-			Pango.FontDescription desc = Pango.FontDescription.FromString ("Sans");									
-			//cr.Rotate(90);  //Imprimir Orizontalmente rota la hoja cambian las posiciones de las lineas y columna					
-			fontSize = 8.0;
-			desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;
-			
-			NpgsqlConnection conexion; 
-	        conexion = new NpgsqlConnection (connectionString+nombrebd);
-	        // Verifica que la base de datos este conectada
-	        try{
-	 			conexion.Open ();
-	        	NpgsqlCommand comando; 
-	        	comando = conexion.CreateCommand (); 
-	           	comando.CommandText = query_slq;
-	        	Console.WriteLine(comando.CommandText);
-				NpgsqlDataReader lector = comando.ExecuteReader();
-				if (lector.Read()){
-					if (lector["sexo_paciente"].ToString().Trim() == "H"){
-						sexopaciente = "MASCULINO";
-					}else{
-						sexopaciente = "FEMENINO";
-					}					
-					if((int) lector ["id_aseguradora"] > 1){
-						empresa_o_aseguradora = (string) lector["descripcion_aseguradora"];
-					}else{
-						empresa_o_aseguradora = (string) lector["descripcion_empresa"];						
-					}
-					buscar_en_movcargos(lector["foliodeservicio"].ToString().Trim());
-					imprime_encabezado(cr,
-					                   layout,
-					                   lector["descripcion_admisiones"].ToString().Trim(),
-					                   lector["id_secuencia"].ToString().Trim(),
-					                   lector["fechahoracrea"].ToString().Trim(),
-					               		lector["foliodeservicio"].ToString().Trim(),
-					                   lector["pidpaciente"].ToString().Trim(),
-					                   lector["nombre_completo"].ToString().Trim(),
-					               		lector["fechanacpaciente"].ToString().Trim(),
-					                   lector["edadpaciente"].ToString().Trim(),
-					                   sexopaciente,
-					               		diagnostico_movcargo,
-					                   nombrecirugia_movcargo,
-					                   lector["nombre_medico_tratante"].ToString().Trim(),
-					                   "",
-					               		lector["id_quien_creo"].ToString().Trim(),
-					                   lector["nombresolicitante"].ToString().Trim(),
-					              	 	descripciontipopaciente,
-					                 empresa_o_aseguradora,titulo_de_pase);
-					/*
-					imprime_encabezado(cr,
-									layout,
-									(string) lector["area_quien_solicita"],
-					                   lector["folio_de_solicitud"].ToString().Trim(),
-					               lector["fechahora_solicitud"].ToString().Trim(),
-					                   lector["foliodeservicio"].ToString().Trim(),
-					                   lector["pidpaciente"].ToString().Trim(),
-					               lector["nombre_completo"].ToString().Trim(),
-					                   lector["fechanacpaciente"].ToString().Trim(),
-					                   lector["edadpaciente"].ToString().Trim(),
-					               sexopaciente,
-					               diagnostico_movcargo,
-					                   nombrecirugia_movcargo,
-					                   lector["nombre_medico_tratante"].ToString().Trim(),
-					               lector["descripcion_cuarto"].ToString().Trim()+" "+lector["numero_cuarto"].ToString().Trim(),
-					                   lector["id_quien_solicito"].ToString().Trim(),
-					               lector["nombresolicitante"].ToString().Trim(),
-					                   lector["descripcion_proveedor"].ToString().Trim());
-					                  */
-				}				
-			}catch (NpgsqlException ex){
-				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
-					MessageType.Warning, ButtonsType.Ok, "PostgresSQL error: {0}",ex.Message);
-					msgBoxError.Run ();
-					msgBoxError.Destroy();
-				Console.WriteLine ("PostgresSQL error: {0}",ex.Message);
-				return; 
+			if(tipo_pase == "cita_a_paciente"){
+				titulo_de_pase = "CITA_A_PACIENTE";
+				query_slq = "SELECT to_char(fecha_programacion,'dd-MM-yyyy') AS fechaprogramacion,hora_programacion,id_numero_citaqx,osiris_his_calendario_citaqx.id_secuencia AS idsecuencia," +
+					"osiris_his_calendario_citaqx.pid_paciente AS pidpaciente," +
+					"osiris_his_calendario_citaqx.nombre_paciente," +
+					"nombre1_paciente || ' ' || nombre2_paciente || ' ' || apellido_paterno_paciente || ' ' || apellido_materno_paciente AS nombre_completo,"+
+					"osiris_his_paciente.celular1_paciente,osiris_his_paciente.telefono_particular1_paciente AS telefonoparticular1_paciente," +
+					"osiris_his_calendario_citaqx.celular1_paciente AS celular1paciente_cita,osiris_his_calendario_citaqx.telefono_paciente AS telefonopaciente_cita," +
+					"osiris_his_paciente.email_paciente,osiris_his_calendario_citaqx.email_paciente AS emailpaciente_cita,osiris_his_calendario_citaqx.id_tipo_paciente," +
+					"descripcion_tipo_paciente,osiris_his_calendario_citaqx.id_tipo_admisiones,descripcion_admisiones,osiris_his_medicos.id_medico,osiris_his_medicos.nombre_medico AS nombremedico," +
+					"osiris_his_tipo_especialidad.id_especialidad,osiris_his_tipo_especialidad.descripcion_especialidad AS descripcionespecialidad,motivo_consulta," +
+					"osiris_his_calendario_citaqx.observaciones AS observaciones_citaqx,referido_por,osiris_his_calendario_citaqx.cancelado AS cancelacitaqx," +
+					"id_quiencreo_cita,osiris_his_calendario_citaqx.fechahora_creacion AS fechahoracreacion,motivo_cancelacion_citaqx," +
+					"osiris_empresas.id_empresa AS idempresa,descripcion_empresa,osiris_aseguradoras.id_aseguradora AS idaseguradora," +
+					"descripcion_aseguradora," +
+					"to_char(to_number(to_char(age('"+DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss")+"',osiris_his_paciente.fecha_nacimiento_paciente),'yyyy') ,'9999'),'9999') AS edad," +
+					"to_char(to_number(to_char(age('"+DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss")+"',osiris_his_paciente.fecha_nacimiento_paciente),'MM'),'99'),'99') AS mesesedad " +
+					"FROM osiris_his_calendario_citaqx,osiris_his_paciente,osiris_his_tipo_pacientes,osiris_his_tipo_admisiones,osiris_his_medicos,osiris_his_tipo_especialidad,osiris_empresas,osiris_aseguradoras " +
+					"WHERE osiris_his_calendario_citaqx.pid_paciente = osiris_his_paciente.pid_paciente " +
+					"AND osiris_his_tipo_pacientes.id_tipo_paciente = osiris_his_calendario_citaqx.id_tipo_paciente " +
+					"AND osiris_his_tipo_admisiones.id_tipo_admisiones = osiris_his_calendario_citaqx.id_tipo_admisiones " +
+					"AND osiris_his_medicos.id_medico = osiris_his_calendario_citaqx.id_medico " +
+					"AND osiris_his_tipo_especialidad.id_especialidad = osiris_his_calendario_citaqx.id_especialidad " +
+					"AND osiris_empresas.id_empresa = osiris_his_calendario_citaqx.id_empresa " +
+					"AND osiris_aseguradoras.id_aseguradora = osiris_his_calendario_citaqx.id_aseguradora " +
+					"AND osiris_his_calendario_citaqx.cancelado = 'false' " +
+					"AND id_numero_citaqx = '"+nrodecita.ToString()+"' " +
+					"ORDER BY to_char(fecha_programacion,'yyyy-MM-dd'),hora_programacion ASC;";
+				NpgsqlConnection conexion; 
+		        conexion = new NpgsqlConnection (connectionString+nombrebd);
+		        // Verifica que la base de datos este conectada
+		        try{
+		 			conexion.Open ();
+		        	NpgsqlCommand comando; 
+		        	comando = conexion.CreateCommand (); 
+		           	comando.CommandText = query_slq;
+		        	//Console.WriteLine(comando.CommandText);
+					NpgsqlDataReader lector = comando.ExecuteReader();
+					if (lector.Read()){
+						imprime_encabezado_cita(cr,layout,titulo_de_pase,nrodecita.ToString().Trim(),lector["fechaprogramacion"].ToString(),
+						                        lector["hora_programacion"].ToString(),lector["nombre_completo"].ToString(),lector["nombremedico"].ToString(),
+						                        lector["descripcion_admisiones"].ToString().Trim(),lector["descripcion_tipo_paciente"].ToString(),
+						                        lector["motivo_consulta"].ToString().Trim());
+					}				
+				}catch (NpgsqlException ex){
+					MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+						MessageType.Warning, ButtonsType.Ok, "PostgresSQL error: {0}",ex.Message);
+						msgBoxError.Run ();
+						msgBoxError.Destroy();
+					Console.WriteLine ("PostgresSQL error: {0}",ex.Message);
+					return; 
+				}
+				conexion.Close();
 			}
-			conexion.Close();
+			if(tipo_pase == "pase_qx_urg" || tipo_pase=="pase_de_ingreso"){
+				NpgsqlConnection conexion; 
+		        conexion = new NpgsqlConnection (connectionString+nombrebd);
+		        // Verifica que la base de datos este conectada
+		        try{
+		 			conexion.Open ();
+		        	NpgsqlCommand comando; 
+		        	comando = conexion.CreateCommand (); 
+		           	comando.CommandText = query_slq;
+		        	Console.WriteLine(comando.CommandText);
+					NpgsqlDataReader lector = comando.ExecuteReader();
+					if (lector.Read()){
+						if (lector["sexo_paciente"].ToString().Trim() == "H"){
+							sexopaciente = "MASCULINO";
+						}else{
+							sexopaciente = "FEMENINO";
+						}					
+						if((int) lector ["id_aseguradora"] > 1){
+							empresa_o_aseguradora = (string) lector["descripcion_aseguradora"];
+						}else{
+							empresa_o_aseguradora = (string) lector["descripcion_empresa"];						
+						}
+						buscar_en_movcargos(lector["foliodeservicio"].ToString().Trim());
+						imprime_encabezado(cr,
+						                   layout,
+						                   lector["descripcion_admisiones"].ToString().Trim(),
+						                   lector["id_secuencia"].ToString().Trim(),
+						                   lector["fechahoracrea"].ToString().Trim(),
+						               		lector["foliodeservicio"].ToString().Trim(),
+						                   lector["pidpaciente"].ToString().Trim(),
+						                   lector["nombre_completo"].ToString().Trim(),
+						               		lector["fechanacpaciente"].ToString().Trim(),
+						                   lector["edadpaciente"].ToString().Trim(),
+						                   sexopaciente,
+						               		diagnostico_movcargo,
+						                   nombrecirugia_movcargo,
+						                   lector["nombre_medico_tratante"].ToString().Trim(),
+						                   "",
+						               		lector["id_quien_creo"].ToString().Trim(),
+						                   lector["nombresolicitante"].ToString().Trim(),
+						              	 	descripciontipopaciente,
+						                 empresa_o_aseguradora,titulo_de_pase);
+						/*
+						imprime_encabezado(cr,
+										layout,
+										(string) lector["area_quien_solicita"],
+						                   lector["folio_de_solicitud"].ToString().Trim(),
+						               lector["fechahora_solicitud"].ToString().Trim(),
+						                   lector["foliodeservicio"].ToString().Trim(),
+						                   lector["pidpaciente"].ToString().Trim(),
+						               lector["nombre_completo"].ToString().Trim(),
+						                   lector["fechanacpaciente"].ToString().Trim(),
+						                   lector["edadpaciente"].ToString().Trim(),
+						               sexopaciente,
+						               diagnostico_movcargo,
+						                   nombrecirugia_movcargo,
+						                   lector["nombre_medico_tratante"].ToString().Trim(),
+						               lector["descripcion_cuarto"].ToString().Trim()+" "+lector["numero_cuarto"].ToString().Trim(),
+						                   lector["id_quien_solicito"].ToString().Trim(),
+						               lector["nombresolicitante"].ToString().Trim(),
+						                   lector["descripcion_proveedor"].ToString().Trim());
+						                  */
+					}				
+				}catch (NpgsqlException ex){
+					MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+						MessageType.Warning, ButtonsType.Ok, "PostgresSQL error: {0}",ex.Message);
+						msgBoxError.Run ();
+						msgBoxError.Destroy();
+					Console.WriteLine ("PostgresSQL error: {0}",ex.Message);
+					return; 
+				}
+				conexion.Close();
+			}
 		}
 		
 		void imprime_encabezado(Cairo.Context cr,Pango.Layout layout,string areaquiensolicita,string numerosolicitud,string fechasolicitud, 
@@ -531,13 +591,20 @@ namespace osiris
 			fontSize = 9.0;			layout = null;			layout = context.CreatePangoLayout ();
 			desc.Size = (int)(fontSize * pangoScale);		layout.FontDescription = desc;
 			layout.FontDescription.Weight = Weight.Bold;		// Letra negrita						
-								
+			if(tipo_pase=="pase_de_ingreso"){
+				layout.FontDescription.Weight = Weight.Bold;		// Letra negrita
+				cr.MoveTo(05*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);		layout.SetText("Admitido a : "+areaquiensolicita);	Pango.CairoHelper.ShowLayout (cr, layout);
+				layout.FontDescription.Weight = Weight.Normal;		// Letra normal
+			}
+			if(tipo_pase == "pase_qx_urg"){
+				layout.FontDescription.Weight = Weight.Bold;		// Letra negrita
+				cr.MoveTo(05*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);		layout.SetText("Area quien Solicito : "+areaquiensolicita);	Pango.CairoHelper.ShowLayout (cr, layout);
+				layout.FontDescription.Weight = Weight.Normal;		// Letra normal
+			}
 			desc = Pango.FontDescription.FromString ("Sans");									 
 			//cr.Rotate(90);  //Imprimir Orizontalmente rota la hoja cambian las posiciones de las lineas y columna					
 			fontSize = 8.0;
 			desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;
-			
-			cr.MoveTo(05*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);		layout.SetText("Area quien Solicito: "+areaquiensolicita);	Pango.CairoHelper.ShowLayout (cr, layout);
 			//cr.MoveTo(250*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText("N° de Solicitud: ");			Pango.CairoHelper.ShowLayout (cr, layout);
 			cr.MoveTo(400*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText("Fecha : "+fechasolicitud);						Pango.CairoHelper.ShowLayout (cr, layout);
 			comienzo_linea += separacion_linea;
@@ -648,6 +715,69 @@ namespace osiris
 			cr.LineWidth = 0.3;
 			cr.Stroke();
 			
+		}
+		
+		void imprime_encabezado_cita(Cairo.Context cr,Pango.Layout layout,string titulo_de_pase,string nrocita,
+		                             string fechaprogramacion,string horaprogramacion,string nombrepaciente,
+		                             string nombremedico,string tipodecita,string descripcionadmisiones,string motivocita)
+		{
+			comienzo_linea = 60;
+			Pango.FontDescription desc = Pango.FontDescription.FromString ("Sans");								
+			//cr.Rotate(90);  //Imprimir Orizontalmente rota la hoja cambian las posiciones de las lineas y columna					
+			fontSize = 8.0;
+			desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;
+			layout.FontDescription.Weight = Weight.Bold;		// Letra negrita
+			cr.MoveTo(05*escala_en_linux_windows,05*escala_en_linux_windows);			layout.SetText(classpublic.nombre_empresa);			Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(05*escala_en_linux_windows,15*escala_en_linux_windows);			layout.SetText(classpublic.direccion_empresa);		Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(05*escala_en_linux_windows,25*escala_en_linux_windows);			layout.SetText(classpublic.telefonofax_empresa);	Pango.CairoHelper.ShowLayout (cr, layout);
+			fontSize = 6.0;
+			desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;
+			cr.MoveTo(479*escala_en_linux_windows,05*escala_en_linux_windows);			layout.SetText("Fech.Rpt:"+(string) DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));		Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(479*escala_en_linux_windows,15*escala_en_linux_windows);			layout.SetText("N° Page :"+numpage.ToString().Trim());		Pango.CairoHelper.ShowLayout (cr, layout);
+
+			cr.MoveTo(05*escala_en_linux_windows,35*escala_en_linux_windows);			layout.SetText("Sistema Hospitalario OSIRIS");		Pango.CairoHelper.ShowLayout (cr, layout);
+			// Cambiando el tamaño de la fuente			
+			fontSize = 10.0;		
+			desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;
+			layout.FontDescription.Weight = Weight.Bold;		// Letra negrita
+			layout.Alignment = Pango.Alignment.Center;
+			double width = context.Width;
+			layout.Width = (int) width;
+			layout.Alignment = Pango.Alignment.Center;
+			//layout.Wrap = Pango.WrapMode.Word;
+			//layout.SingleParagraphMode = true;
+			layout.Justify =  false;
+			cr.MoveTo(width/2,45*escala_en_linux_windows);	layout.SetText(titulo_de_pase);	Pango.CairoHelper.ShowLayout (cr, layout);
+			
+			fontSize = 9.0;			layout = null;			layout = context.CreatePangoLayout ();
+			desc.Size = (int)(fontSize * pangoScale);		layout.FontDescription = desc;
+			layout.FontDescription.Weight = Weight.Bold;		// Letra negrita						
+			comienzo_linea += separacion_linea;
+			cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText("N° CITA: "+nrocita);			Pango.CairoHelper.ShowLayout (cr, layout);
+			comienzo_linea += separacion_linea;
+			cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText("FECHA CITA: "+fechaprogramacion);			Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(250*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText("HORA : "+horaprogramacion);		Pango.CairoHelper.ShowLayout (cr, layout);
+			comienzo_linea += separacion_linea;
+			comienzo_linea += separacion_linea;
+			fontSize = 8.0;			layout = null;			layout = context.CreatePangoLayout ();
+			desc.Size = (int)(fontSize * pangoScale);		layout.FontDescription = desc;
+			layout.FontDescription.Weight = Weight.Normal;		// Letra normal
+			cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText("Nombre Paciente: "+nombrepaciente);		Pango.CairoHelper.ShowLayout (cr, layout);
+			comienzo_linea += separacion_linea;
+			cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText("Tiene cita con el Dr. : "+nombremedico);		Pango.CairoHelper.ShowLayout (cr, layout);
+			comienzo_linea += separacion_linea;			
+			cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText("Tipo de Cita : "+tipodecita);		Pango.CairoHelper.ShowLayout (cr, layout);
+			comienzo_linea += separacion_linea;			
+			cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText("Tipo de Paciente : "+descripcionadmisiones);		Pango.CairoHelper.ShowLayout (cr, layout);
+			comienzo_linea += separacion_linea;	
+			comienzo_linea += separacion_linea;
+			cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText("Motivo de la Cita : "+motivocita);		Pango.CairoHelper.ShowLayout (cr, layout);
+			comienzo_linea += separacion_linea;	
+			comienzo_linea += separacion_linea;
+			cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText("Para cualquier información y/o cancelacion de su cita favor de comunicarse.");		Pango.CairoHelper.ShowLayout (cr, layout);
+			comienzo_linea += separacion_linea;
+			cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText("Telefonos 8351-3610 / 8331-3683");		Pango.CairoHelper.ShowLayout (cr, layout);
+
 		}
 		
 		void buscar_en_movcargos(string foliodeservicio)

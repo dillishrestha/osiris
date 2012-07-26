@@ -229,8 +229,9 @@ namespace osiris
 										"SELECT id_tipo_cirugia,descripcion_cirugia,tiene_paquete,to_char(valor_paquete,'999999999.99') AS valorpaquetereal,"+
 										"to_char(precio_de_venta,'999999999.99') AS valorpaquete "+
 										"FROM osiris_his_tipo_cirugias "+
-										"WHERE descripcion_cirugia LIKE '%"};			
-			classfind_data.buscandor(parametros_objetos,parametros_sql,"find_cirugia_paquetes_soliprod"," ORDER BY id_tipo_cirugia","%' ",0);
+										"WHERE descripcion_cirugia LIKE '%"};
+			string[] parametros_string = {};
+			classfind_data.buscandor(parametros_objetos,parametros_sql,parametros_string,"find_cirugia_paquetes_soliprod"," ORDER BY id_tipo_cirugia","%' ",0);
 		}
 		
 		void on_button_busca_producto_clicked(object sender, EventArgs args)
@@ -353,8 +354,9 @@ namespace osiris
 										"AND osiris_erp_cobros_enca.reservacion = 'false' "+
 										"AND osiris_his_paciente.pid_paciente = '";
 			object[] parametros_objetos = {entry_folio_servicio,entry_pid_paciente,entry_nombre_paciente};
-			string[] parametros_sql = {sql1, sql2, sql3, sql4};			
-			classfind_data.buscandor(parametros_objetos,parametros_sql,"find_paciente"," ORDER BY osiris_his_paciente.pid_paciente","%' ",1);
+			string[] parametros_sql = {sql1, sql2, sql3, sql4};
+			string[] parametros_string = {};
+			classfind_data.buscandor(parametros_objetos,parametros_sql,parametros_string,"find_paciente"," ORDER BY osiris_his_paciente.pid_paciente","%' ",1);
 		}
 	    
 	    void on_button_selecciona_solicitud_clicked(object sender, EventArgs args)

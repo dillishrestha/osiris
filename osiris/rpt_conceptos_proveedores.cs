@@ -32,6 +32,8 @@ using Npgsql;
 using System.Data;
 using Gtk;
 using Glade;
+using Cairo;
+using Pango;
 
 namespace osiris
 {
@@ -63,13 +65,28 @@ namespace osiris
 		string connectionString = "";
 		string nombrebd = "";
 		string query_rango_fechas = "AND to_char(osiris_erp_cobros_enca.fechahora_creacion,'yyyy-MM-dd') >= '"+DateTime.Now.ToString("yyyy")+"-"+DateTime.Now.ToString("MM")+"-"+DateTime.Now.ToString("dd")+"' "+
-										"AND to_char(osiris_erp_cobros_enca.fechahora_creacion,'yyyy-MM-dd') <= '"+DateTime.Now.ToString("yyyy")+"-"+DateTime.Now.ToString("MM")+"-"+DateTime.Now.ToString("dd")+"' "; 
+									"AND to_char(osiris_erp_cobros_enca.fechahora_creacion,'yyyy-MM-dd') <= '"+DateTime.Now.ToString("yyyy")+"-"+DateTime.Now.ToString("MM")+"-"+DateTime.Now.ToString("dd")+"' "; 
+		string query_rango_fechas2 = "AND to_char(osiris_erp_factura_compra_enca.fechahora_creacion,'yyyy') >= '"+DateTime.Now.ToString("yyyy")+"' "+
+									 "AND to_char(osiris_erp_factura_compra_enca.fechahora_creacion,'yyyy') <= '"+DateTime.Now.ToString("yyyy")+"' " +
+									 "AND to_char(osiris_erp_factura_compra_enca.fechahora_creacion,'MM') >= '"+DateTime.Now.ToString("MM")+"' "+
+									 "AND to_char(osiris_erp_factura_compra_enca.fechahora_creacion,'MM') <= '"+DateTime.Now.ToString("MM")+"' ";
 		string query_proveedores = "";
 		string query_in_grupo = "";
+		string query_consulta = "";
 		
 		string[] args_args = {""};
 		string[] args_herr_adicional = {"","ANALISIS COMPRAS PRODUCTOS"};
 		int[] args_id_array = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20};
+		
+		private static int pangoScale = 1024;
+		private PrintOperation print;
+		private double fontSize = 8.0;
+		int escala_en_linux_windows;		// Linux = 1  Windows = 8
+		int comienzo_linea = 70;
+		int separacion_linea = 10;
+		int numpage = 1;
+		
+		PrintContext context;
 		
 		TreeStore treeViewEngineListaGrupoProd;
 		
@@ -84,6 +101,7 @@ namespace osiris
 		{
 			connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
 			nombrebd = conexion_a_DB._nombrebd;
+			escala_en_linux_windows = classpublic.escala_linux_windows;
 			
 			Glade.XML gxml = new Glade.XML (null, "impr_documentos.glade", "reporte_proveedores", null);
 			gxml.Autoconnect(this);
@@ -191,9 +209,14 @@ namespace osiris
 		
 		void on_button_exportar_sheet_clicked(object sender, EventArgs args)
 		{
+			comienzo_linea = 70;
+			separacion_linea = 10;
+			numpage = 1;
 			if ((bool)checkbutton_herr_adicionales.Active == true){
-				
-				string query_consulta = "SELECT osiris_erp_requisicion_deta.id_producto,descripcion_producto,to_char(osiris_erp_factura_compra_enca.fecha_factura,'yyyy-MM') AS ano_mes," +
+				verifica_checkbutton_fechas();
+				query_consulta = "SELECT osiris_erp_requisicion_deta.id_producto AS idproducto_osiris,descripcion_producto," +
+					"to_char(osiris_erp_factura_compra_enca.fecha_factura,'yyyy') AS ano," +
+					"to_char(osiris_erp_factura_compra_enca.fecha_factura,'MM') AS mes," +
 					"AVG(osiris_erp_requisicion_deta.costo_producto)," +
 					"MAX(osiris_erp_requisicion_deta.costo_producto)," +
 					"MIN(osiris_erp_requisicion_deta.costo_producto)," +
@@ -201,14 +224,26 @@ namespace osiris
 					"FROM osiris_erp_requisicion_deta,osiris_erp_factura_compra_enca,osiris_productos " +
 					"WHERE osiris_erp_requisicion_deta.numero_factura_proveedor = osiris_erp_factura_compra_enca.numero_factura_proveedor " +
 					"AND osiris_productos.id_producto = osiris_erp_requisicion_deta.id_producto " +
+					query_rango_fechas2+
 					"GROUP BY osiris_erp_requisicion_deta.id_producto,descripcion_producto," +
-					"to_char(osiris_erp_factura_compra_enca.fecha_factura,'yyyy-MM') " +
-					"ORDER BY descripcion_producto;";
+					"to_char(osiris_erp_factura_compra_enca.fecha_factura,'yyyy')," +
+					"to_char(osiris_erp_factura_compra_enca.fecha_factura,'MM') " +
+					"ORDER BY descripcion_producto,to_char(osiris_erp_factura_compra_enca.fecha_factura,'yyyy')," +
+					"to_char(osiris_erp_factura_compra_enca.fecha_factura,'MM');";
+				// cambiar el query si elije por provedores
+				// desabiliar los 
+				print = new PrintOperation ();			
+				print.JobName = "Analisis de Costos";	// Name of the report
+				print.BeginPrint += new BeginPrintHandler (OnBeginPrint);
+				print.DrawPage += new DrawPageHandler (OnDrawPage);
+				print.EndPrint += new EndPrintHandler (OnEndPrint);
+				print.Run(PrintOperationAction.PrintDialog, null);
+				
 			}else{
 				verifica_checkbutton_prov();
 				verifica_checkbutton_fechas();
 				verifica_grupo_prodctos();
-				string query_sql = "SELECT to_char(osiris_erp_factura_compra_enca.fecha_factura,'yyyy-MM-dd') AS fechafactura,osiris_erp_factura_compra_enca.numero_factura_proveedor AS numerofactura," +
+				query_consulta = "SELECT to_char(osiris_erp_factura_compra_enca.fecha_factura,'yyyy-MM-dd') AS fechafactura,osiris_erp_factura_compra_enca.numero_factura_proveedor AS numerofactura," +
 					"osiris_erp_factura_compra_enca.id_proveedor,descripcion_proveedor," +
 					"to_char(osiris_erp_requisicion_deta.id_producto,'999999999999') AS idproducto_osiris,descripcion_producto AS descrip_prod_osiris," +
 					"osiris_erp_requisicion_deta.precio_producto_publico,costo_producto_osiris,osiris_erp_requisicion_deta.precio_producto_publico AS costo_unitario_osiris,cantidad_de_embalaje_osiris,cantidad_comprada," +
@@ -226,9 +261,246 @@ namespace osiris
 				string[] args_type_field = {"string","string","string","string","string","float","float","float","float","float","float","float","float","string","string","string","string","string"};
 				
 				// class_crea_ods.cs
-				new osiris.class_traslate_spreadsheet(query_sql,args_names_field,args_type_field);
+				new osiris.class_traslate_spreadsheet(query_consulta,args_names_field,args_type_field);
 			}
 		}
+		
+		private void OnBeginPrint (object obj, Gtk.BeginPrintArgs args)
+		{
+			print.NPages = 1;  // crea cantidad de copias del reporte			
+			// para imprimir horizontalmente el reporte
+			print.PrintSettings.Orientation = PageOrientation.Landscape;
+			//Console.WriteLine(print.PrintSettings.Orientation.ToString());
+		}
+		
+		private void OnDrawPage (object obj, Gtk.DrawPageArgs args)
+		{			
+			context = args.Context;		
+			ejecutar_consulta_reporte(context);
+		}
+						
+		void ejecutar_consulta_reporte(PrintContext context)
+		{
+			string codigoproducto = "";
+			Cairo.Context cr = context.CairoContext;
+			Pango.Layout layout = context.CreatePangoLayout ();
+			imprime_encabezado(cr,layout);
+			Pango.FontDescription desc = Pango.FontDescription.FromString ("Sans");									
+			// cr.Rotate(90)  Imprimir Orizontalmente rota la hoja cambian las posiciones de las lineas y columna					
+			fontSize = 8.0;			layout = null;			layout = context.CreatePangoLayout ();
+			desc.Size = (int)(fontSize * pangoScale);		layout.FontDescription = desc;
+			NpgsqlConnection conexion; 
+			conexion = new NpgsqlConnection (connectionString+nombrebd);
+			// Verifica que la base de datos este conectada
+			try{
+				conexion.Open ();
+				NpgsqlCommand comando; 
+				comando = conexion.CreateCommand ();
+				comando.CommandText = query_consulta;
+				Console.WriteLine(comando.CommandText);
+				NpgsqlDataReader lector = comando.ExecuteReader ();
+               	if(lector.Read()){
+					codigoproducto = lector["idproducto_osiris"].ToString().Trim();
+					switch (lector["mes"].ToString().Trim()){	
+						case "01":
+							cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(codigoproducto);		Pango.CairoHelper.ShowLayout (cr, layout);
+						break;
+						case "02":
+							cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(codigoproducto);		Pango.CairoHelper.ShowLayout (cr, layout);
+						break;
+						case "03":
+							cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(codigoproducto);		Pango.CairoHelper.ShowLayout (cr, layout);
+						break;
+						case "04":
+							cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(codigoproducto);		Pango.CairoHelper.ShowLayout (cr, layout);
+						break;
+						case "05":
+							cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(codigoproducto);		Pango.CairoHelper.ShowLayout (cr, layout);
+						break;
+						case "06":
+							cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(codigoproducto);		Pango.CairoHelper.ShowLayout (cr, layout);
+						break;
+						case "07":
+							cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(codigoproducto);		Pango.CairoHelper.ShowLayout (cr, layout);
+						break;
+						case "08":
+							cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(codigoproducto);		Pango.CairoHelper.ShowLayout (cr, layout);
+						break;
+						case "09":
+							cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(codigoproducto);		Pango.CairoHelper.ShowLayout (cr, layout);
+						break;
+						case "10":
+							cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(codigoproducto);		Pango.CairoHelper.ShowLayout (cr, layout);
+						break;
+						case "11":
+							cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(codigoproducto);		Pango.CairoHelper.ShowLayout (cr, layout);
+						break;
+						case "12":
+							cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(codigoproducto);		Pango.CairoHelper.ShowLayout (cr, layout);
+						break;
+					}						
+					cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(codigoproducto);		Pango.CairoHelper.ShowLayout (cr, layout);
+					cr.MoveTo(75*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText((string) lector["descripcion_producto"]);		Pango.CairoHelper.ShowLayout (cr, layout);
+					salto_de_pagina(cr,layout);
+					comienzo_linea += separacion_linea;
+					while(lector.Read()){
+						if(codigoproducto != lector["idproducto_osiris"].ToString().Trim()){
+							codigoproducto = lector["idproducto_osiris"].ToString().Trim();
+							switch (lector["mes"].ToString().Trim()){	
+								case "01":
+									cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(codigoproducto);		Pango.CairoHelper.ShowLayout (cr, layout);
+								break;
+								case "02":
+									cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(codigoproducto);		Pango.CairoHelper.ShowLayout (cr, layout);
+								break;
+								case "03":
+									cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(codigoproducto);		Pango.CairoHelper.ShowLayout (cr, layout);
+								break;
+								case "04":
+									cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(codigoproducto);		Pango.CairoHelper.ShowLayout (cr, layout);
+								break;
+								case "05":
+									cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(codigoproducto);		Pango.CairoHelper.ShowLayout (cr, layout);
+								break;
+								case "06":
+									cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(codigoproducto);		Pango.CairoHelper.ShowLayout (cr, layout);
+								break;
+								case "07":
+									cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(codigoproducto);		Pango.CairoHelper.ShowLayout (cr, layout);
+								break;
+								case "08":
+									cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(codigoproducto);		Pango.CairoHelper.ShowLayout (cr, layout);
+								break;
+								case "09":
+									cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(codigoproducto);		Pango.CairoHelper.ShowLayout (cr, layout);
+								break;
+								case "10":
+									cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(codigoproducto);		Pango.CairoHelper.ShowLayout (cr, layout);
+								break;
+								case "11":
+									cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(codigoproducto);		Pango.CairoHelper.ShowLayout (cr, layout);
+								break;
+								case "12":
+									cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(codigoproducto);		Pango.CairoHelper.ShowLayout (cr, layout);
+								break;
+							}						
+							cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(codigoproducto);		Pango.CairoHelper.ShowLayout (cr, layout);
+							cr.MoveTo(75*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText((string) lector["descripcion_producto"]);		Pango.CairoHelper.ShowLayout (cr, layout);
+							salto_de_pagina(cr,layout);
+							comienzo_linea += separacion_linea;
+						}else{
+							switch (lector["mes"].ToString().Trim()){	
+								case "01":
+									cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(codigoproducto);		Pango.CairoHelper.ShowLayout (cr, layout);
+								break;
+								case "02":
+									cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(codigoproducto);		Pango.CairoHelper.ShowLayout (cr, layout);
+								break;
+								case "03":
+									cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(codigoproducto);		Pango.CairoHelper.ShowLayout (cr, layout);
+								break;
+								case "04":
+									cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(codigoproducto);		Pango.CairoHelper.ShowLayout (cr, layout);
+								break;
+								case "05":
+									cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(codigoproducto);		Pango.CairoHelper.ShowLayout (cr, layout);
+								break;
+								case "06":
+									cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(codigoproducto);		Pango.CairoHelper.ShowLayout (cr, layout);
+								break;
+								case "07":
+									cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(codigoproducto);		Pango.CairoHelper.ShowLayout (cr, layout);
+								break;
+								case "08":
+									cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(codigoproducto);		Pango.CairoHelper.ShowLayout (cr, layout);
+								break;
+								case "09":
+									cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(codigoproducto);		Pango.CairoHelper.ShowLayout (cr, layout);
+								break;
+								case "10":
+									cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(codigoproducto);		Pango.CairoHelper.ShowLayout (cr, layout);
+								break;
+								case "11":
+									cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(codigoproducto);		Pango.CairoHelper.ShowLayout (cr, layout);
+								break;
+								case "12":
+									cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(codigoproducto);		Pango.CairoHelper.ShowLayout (cr, layout);
+								break;
+							}						
+							//cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(codigoproducto);		Pango.CairoHelper.ShowLayout (cr, layout);
+							//cr.MoveTo(75*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText((string) lector["descripcion_producto"]);		Pango.CairoHelper.ShowLayout (cr, layout);
+							//salto_de_pagina(cr,layout);
+						}
+					}
+				}
+			}catch (NpgsqlException ex){
+				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+										MessageType.Error,ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
+				msgBoxError.Run ();				msgBoxError.Destroy();
+			}
+			conexion.Close ();			
+		}
+		
+		private void OnEndPrint (object obj, Gtk.EndPrintArgs args)
+		{
+			
+		}
+		
+		void imprime_encabezado(Cairo.Context cr,Pango.Layout layout)
+		{
+			//Gtk.Image image5 = new Gtk.Image();
+            //image5.Name = "image5";
+			//image5.Pixbuf = new Gdk.Pixbuf(System.IO.Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, "osiris.jpg"));
+			//image5.Pixbuf = new Gdk.Pixbuf("/opt/osiris/bin/OSIRISLogo.jpg");   // en Linux
+			//image5.Pixbuf.ScaleSimple(128, 128, Gdk.InterpType.Bilinear);
+			//Gdk.CairoHelper.SetSourcePixbuf(cr,image5.Pixbuf,1,-30);
+			//Gdk.CairoHelper.SetSourcePixbuf(cr,image5.Pixbuf.ScaleSimple(145, 50, Gdk.InterpType.Bilinear),1,1);
+			//Gdk.CairoHelper.SetSourcePixbuf(cr,image5.Pixbuf.ScaleSimple(180, 64, Gdk.InterpType.Hyper),1,1);
+			//cr.Fill();
+			//cr.Paint();
+			//cr.Restore();
+								
+			Pango.FontDescription desc = Pango.FontDescription.FromString ("Sans");								
+			//cr.Rotate(90);  //Imprimir Orizontalmente rota la hoja cambian las posiciones de las lineas y columna					
+			fontSize = 8.0;
+			desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;
+			layout.FontDescription.Weight = Weight.Bold;		// Letra negrita
+			cr.MoveTo(05*escala_en_linux_windows,05*escala_en_linux_windows);			layout.SetText(classpublic.nombre_empresa);			Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(05*escala_en_linux_windows,15*escala_en_linux_windows);			layout.SetText(classpublic.direccion_empresa);		Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(05*escala_en_linux_windows,25*escala_en_linux_windows);			layout.SetText(classpublic.telefonofax_empresa);	Pango.CairoHelper.ShowLayout (cr, layout);
+			fontSize = 6.0;
+			desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;
+			cr.MoveTo(650*escala_en_linux_windows,05*escala_en_linux_windows);			layout.SetText("Fech.Rpt:"+(string) DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));		Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(650*escala_en_linux_windows,15*escala_en_linux_windows);			layout.SetText("N° Page :"+numpage.ToString().Trim());		Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(05*escala_en_linux_windows,35*escala_en_linux_windows);			layout.SetText("Sistema Hospitalario OSIRIS");		Pango.CairoHelper.ShowLayout (cr, layout);
+			// Cambiando el tamaño de la fuente			
+			fontSize = 10.0;
+			desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;
+			
+			double width = context.Width;
+			layout.Width = (int) width;
+			layout.Alignment = Pango.Alignment.Center;
+			//layout.Wrap = Pango.WrapMode.Word;
+			//layout.SingleParagraphMode = true;
+			layout.Justify =  false;
+			cr.MoveTo(width/2,45*escala_en_linux_windows);	layout.SetText("REPORTE");	Pango.CairoHelper.ShowLayout (cr, layout);
+			//cr.MoveTo(225*escala_en_linux_windows, 35*escala_en_linux_windows);			layout.SetText(titulo_rpt);				Pango.CairoHelper.ShowLayout (cr, layout);
+			
+			fontSize = 7.0;			layout = null;			layout = context.CreatePangoLayout ();
+			desc.Size = (int)(fontSize * pangoScale);		layout.FontDescription = desc;			
+		}
+		
+		void salto_de_pagina(Cairo.Context cr,Pango.Layout layout)           
+        {
+            if(comienzo_linea >530){
+                cr.ShowPage();
+                Pango.FontDescription desc = Pango.FontDescription.FromString ("Sans");                               
+                fontSize = 8.0;        desc.Size = (int)(fontSize * pangoScale);                    layout.FontDescription = desc;
+                comienzo_linea = 70;
+                numpage += 1;
+                imprime_encabezado(cr,layout);
+            }
+        }
 		
 		void on_checkbutton_todos_proveedore_clicked(object sender, EventArgs args)
 		{
@@ -285,11 +557,16 @@ namespace osiris
 		{
 			bool active_checkbutton;
 			if(checkbutton_todas_fechas.Active == true){
-				query_rango_fechas= " ";
+				query_rango_fechas = " ";
+				query_rango_fechas2 = " ";
 				active_checkbutton = false;
 			}else{
 				query_rango_fechas = "AND to_char(osiris_erp_factura_compra_enca.fecha_factura,'yyyy-MM-dd') >= '"+(string) entry_ano_inicial.Text.ToString()+"-"+(string) entry_mes_inicial.Text.ToString()+"-"+(string) entry_dia_inicial.Text.ToString()+"' "+
 									"AND to_char(osiris_erp_factura_compra_enca.fecha_factura,'yyyy-MM-dd') <= '"+(string) entry_ano_final.Text.ToString()+"-"+(string) entry_mes_final.Text.ToString()+"-"+(string) entry_dia_final.Text.ToString()+"' ";
+				query_rango_fechas2 = "AND to_char(osiris_erp_factura_compra_enca.fechahora_creacion,'yyyy') >= '"+(string) entry_ano_inicial.Text.ToString()+"' "+
+									 "AND to_char(osiris_erp_factura_compra_enca.fechahora_creacion,'yyyy') <= '"+(string) entry_ano_final.Text.ToString()+"' " +
+									 "AND to_char(osiris_erp_factura_compra_enca.fechahora_creacion,'MM') >= '"+(string) entry_mes_inicial.Text.ToString()+"' "+
+									 "AND to_char(osiris_erp_factura_compra_enca.fechahora_creacion,'MM') <= '"+(string) entry_mes_final.Text.ToString()+"' ";
 				active_checkbutton = true;
 			}			
 			entry_dia_inicial.Sensitive = active_checkbutton;
@@ -321,8 +598,9 @@ namespace osiris
 								"FROM osiris_erp_proveedores, osiris_erp_forma_de_pago "+
 								"WHERE osiris_erp_proveedores.id_forma_de_pago = osiris_erp_forma_de_pago.id_forma_de_pago "+
 								"AND proveedor_activo = 'true' " +
-								"AND descripcion_proveedor LIKE '%"};			
-			classfind_data.buscandor(parametros_objetos,parametros_sql,"find_proveedores_catalogo_producto"," ORDER BY descripcion_proveedor;","%' ",0);
+								"AND descripcion_proveedor LIKE '%"};
+			string[] parametros_string = {};
+			classfind_data.buscandor(parametros_objetos,parametros_sql,parametros_string,"find_proveedores_catalogo_producto"," ORDER BY descripcion_proveedor;","%' ",0);
 		}
 		
 		void on_checkbutton_todos_grupos_clicked(object sender, EventArgs args)
@@ -356,8 +634,12 @@ namespace osiris
 			if ((bool)checkbutton_herr_adicionales.Active == true){
 				combobox_herr_adicionales.Sensitive = true;
 				llenado_combobox(0,"",combobox_herr_adicionales,"array","","","",args_herr_adicional,args_id_array,"");
+				entry_dia_inicial.Sensitive = false;
+				entry_dia_final.Sensitive = false;
 			}else{
 				combobox_herr_adicionales.Sensitive = false;
+				entry_dia_inicial.Sensitive = true;
+				entry_dia_final.Sensitive = true;
 			}
 		}
 		

@@ -182,6 +182,9 @@ namespace osiris
 				if(type_field == "int"){
 					comando.CommandText = "SELECT to_char("+name_field+",'9999999999') AS field_id_name,"+name_field_out+" AS name_fiel_output"+" FROM "+name_table+" "+condition_table+" ORDER BY "+name_field+" DESC LIMIT 1;";
 				}
+				if(type_field == "bool"){
+					comando.CommandText = "SELECT "+name_field+" AS field_id_name,"+name_field_out+" AS name_fiel_output"+" FROM "+name_table+" "+condition_table+" ORDER BY "+name_field+" DESC LIMIT 1;";
+				}
 				//Console.WriteLine(comando.CommandText);
 				NpgsqlDataReader lector = comando.ExecuteReader ();				
 				if (lector.Read()){	

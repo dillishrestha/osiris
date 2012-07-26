@@ -568,6 +568,7 @@ namespace osiris
 							entry_empresa.Text = "";
 							entry_empresa.Sensitive = true;
 							combobox_aseguradora.Sensitive = false;
+							llenado_combobox(0,"",combobox_aseguradora,"sql","SELECT * FROM osiris_aseguradoras WHERE activa = 'true' ORDER BY descripcion_aseguradora;","descripcion_aseguradora","id_aseguradora",args_args,args_id_array,"id_tipo_documento");
 							break;
 					}
 					break;
@@ -1238,25 +1239,22 @@ namespace osiris
 	    // Crea la lista de empresas que tienen convenio con el hospital
 	    void on_button_lista_empresas_clicked(object sender, EventArgs args)
 	    {
-	    	Glade.XML gxml = new Glade.XML (null, "registro_admision.glade", "busca_empresas", null);
+	    	busqueda = "empresas";
+			Glade.XML gxml = new Glade.XML (null, "registro_admision.glade", "busca_empresas", null);
 			gxml.Autoconnect (this);
-	        
-	        // Muestra ventana de Glade
+			// Muestra ventana de Glade
 			busca_empresas.Show();
-			
 			// Activa la salida de la ventana
 			button_salir.Clicked += new EventHandler(on_cierraventanas_clicked);
 			// Activa la seleccion de Medico
 			button_selecciona.Clicked += new EventHandler(on_selecciona_empresa_clicked);
 			// Llena treeview 
 			button_busca_empresas.Clicked += new EventHandler(on_button_llena_empresas_clicked);
-			
+			entry_expresion.KeyPressEvent += onKeyPressEvent_enter;
 			treeViewEngineBuscaEmpresa = new ListStore( typeof(int), typeof(string), typeof (int));
 			lista_empresas.Model = treeViewEngineBuscaEmpresa;
 			lista_empresas.RulesHint = true;
-			
 			lista_empresas.RowActivated += on_selecciona_empresa_clicked;  // Doble click selecciono empresa*/
-			
 			TreeViewColumn col_idempresa = new TreeViewColumn();
 			CellRendererText cellr0 = new CellRendererText();
 			col_idempresa.Title = "ID Empresa"; // titulo de la cabecera de la columna, si está visible
@@ -1275,11 +1273,14 @@ namespace osiris
 		
 		void on_button_llena_empresas_clicked(object sender, EventArgs args)
 		{
-			treeViewEngineBuscaEmpresa.Clear(); // Limpia el treeview cuando realiza una nueva busqueda
-			
+			llenado_lista_empresas();			
+		}
+		
+		void llenado_lista_empresas()
+		{
+			treeViewEngineBuscaEmpresa.Clear(); // Limpia el treeview cuando realiza una nueva busqueda			
 			NpgsqlConnection conexion; 
-			conexion = new NpgsqlConnection (connectionString+nombrebd );
-            
+			conexion = new NpgsqlConnection (connectionString+nombrebd );            
 			// Verifica que la base de datos este conectada
 			try{
 				conexion.Open ();
@@ -1331,14 +1332,12 @@ namespace osiris
 		public void llena_inf_de_paciente(string pidpaciente_)
 		{
 			NpgsqlConnection conexion; 
-			conexion = new NpgsqlConnection (connectionString+nombrebd );
-            
+			conexion = new NpgsqlConnection (connectionString+nombrebd );            
 			// Verifica que la base de datos este conectada
 			try{
 				conexion.Open ();
 				NpgsqlCommand comando; 
-				comando = conexion.CreateCommand ();
-               	
+				comando = conexion.CreateCommand ();               	
 				comando.CommandText = "SELECT pid_paciente, nombre1_paciente,nombre2_paciente, apellido_paterno_paciente,"+
 							"apellido_materno_paciente, to_char(fecha_nacimiento_paciente,'dd') AS dia_nacimiento,"+
 							"to_char(fecha_nacimiento_paciente,'MM') AS mes_nacimiento,"+
@@ -1476,20 +1475,15 @@ namespace osiris
 				entry_apellido_materno.Text = (string) entry_apellido_materno.Text.ToUpper();
 				entry_rfc.Text = (string) entry_rfc.Text.ToUpper();
 				entry_curp.Text = (string) entry_curp.Text.ToUpper();
-        				
-				string rfcpaciente =  "";            //crea_rfc();
-        		
-				conexion.Open ();
+        		string rfcpaciente =  "";            //crea_rfc();
+        		conexion.Open ();
 				NpgsqlCommand comando; 
-				comando = conexion.CreateCommand (); 
-             
+				comando = conexion.CreateCommand ();             
 				comando.CommandText = "SELECT rfc_paciente,activo "+
 							"FROM osiris_his_paciente "+ 
 							"WHERE activo = true and rfc_paciente = '"+entry_rfc.Text.ToUpper()+"';";
-            	
-				NpgsqlDataReader lector = comando.ExecuteReader ();
-               	
-				// Verificando la consulta si esta vacia
+            	NpgsqlDataReader lector = comando.ExecuteReader ();
+               	// Verificando la consulta si esta vacia
 				if ((bool) lector.Read()){
 					if ((bool) lector["activo"] == true){
 						// Asignacion de Variables para verificar RFC
@@ -1513,8 +1507,7 @@ namespace osiris
 				}else{
 					conexion.Close ();
 					return true;	
-				}
-				
+				}				
 	   		}catch (NpgsqlException ex){
 				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
 										MessageType.Error, 
@@ -1523,14 +1516,12 @@ namespace osiris
 				msgBoxError.Destroy();
 				conexion.Close ();
 				return false; 
-			}
-			
+			}			
 		}
 		
 		//---------------------------------------------------------
 		public string crea_rfc()
 		{
-			
 			return "RFC";
 		}
 		
@@ -1850,8 +1841,6 @@ namespace osiris
 									id_tipodocumentopx.ToString().Trim()+"');";
 					comando.ExecuteNonQuery();			comando.Dispose();
     			}
-				
-				
 				grabacion_sino = true;
 			}catch (NpgsqlException ex){
 	   			MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
@@ -1872,10 +1861,8 @@ namespace osiris
 		void llena_lista_paciente()
 		{
 			treeViewEngineBusca.Clear(); // Limpia el treeview cuando realiza una nueva busqueda
-			
 			NpgsqlConnection conexion; 
 			conexion = new NpgsqlConnection (connectionString+nombrebd );
-            
 			// Verifica que la base de datos este conectada
 			try{
 				conexion.Open ();
@@ -2028,19 +2015,16 @@ namespace osiris
 			}
 			if(opcion_ == "seleccion_no_admision"){
 				Glade.XML gxml = new Glade.XML (null, "registro_admision.glade", "registro", null);
-				gxml.Autoconnect (this);
-		        		        
+				gxml.Autoconnect (this);		        		        
 				// Muestra ventana de Glade
-				registro.Show();
-				
+				registro.Show();				
 				// Cambio para VENEZUELA
 				//label37.Text = "RIF";			// RFC
 				//label43.Text = "C.I.";		// CURP
 				label8.Text = "Serv.Medico :";	
 				llena_Ventana_de_datos(pidpaciente_.ToString().Trim());
 				llena_inf_de_paciente(pidpaciente_.ToString().Trim());
-				activa_los_entry(false);
-				
+				activa_los_entry(false);				
 				button_admision.Sensitive = true;  // Activando Boton de Internamiento de Paciente
 				//Activa el boton para editar datos de paciente
 				checkbutton_modificar.Sensitive = false;
@@ -2052,8 +2036,7 @@ namespace osiris
 		           	}
 				// activa boton de grabacion de informacion
 				button_grabar.Clicked += new EventHandler(on_graba_informacion_clicked);
-				//button_graba_admision.Clicked += new EventHandler(on_graba_admision_clicked);
-				
+				//button_graba_admision.Clicked += new EventHandler(on_graba_admision_clicked);				
 				// Activa boton de responsable
 				button_responsable.Clicked += new EventHandler(on_button_validaadmision_clicked);
 				// Activa boton de admision Urgenacias/Hospital/Quirofano
@@ -2064,36 +2047,26 @@ namespace osiris
 				entry_medico_cm.Sensitive = false;
 				button_busca_medicos.Sensitive = false;
 				entry_esp_med_cm.Sensitive = false;
-				checkbutton_consulta.Clicked += new EventHandler(on_checkbutton_consulta_clicked);
-				
+				checkbutton_consulta.Clicked += new EventHandler(on_checkbutton_consulta_clicked);				
 				//Activa boton para imprimir el protocolo
 				button_imprimir_protocolo.Clicked += new EventHandler(on_button_imprimir_protocolo_clicked);
-				button_imprimir_protocolo.Sensitive = false;
-				
+				button_imprimir_protocolo.Sensitive = false;				
 				// Contratacion de paquetes
 				button_contrata_paquete.Clicked += new EventHandler(on_button_contrata_paquete_clicked);
-				button_contrata_paquete.Sensitive = false;
-				
+				button_contrata_paquete.Sensitive = false;				
 				//Desactiva campos de PID y de FOLIO para que no se escriba en ellos
 				entry_pid_paciente.IsEditable = false;
 				entry_folio_paciente.IsEditable = false;
-				entry_folio_interno_dep.IsEditable = false;
-				
+				entry_folio_interno_dep.IsEditable = false;				
 				// Asugnacion de Cuarto o Cubiculo
-				button_asignacion_habitacion.Clicked += new EventHandler(on_button_asignacion_habitacion_clicked);
-				
+				button_asignacion_habitacion.Clicked += new EventHandler(on_button_asignacion_habitacion_clicked);				
 				//Lista a las empresas con convenio
-				button_lista_empresas.Clicked += new EventHandler(on_button_lista_empresas_clicked);
-				
+				button_lista_empresas.Clicked += new EventHandler(on_button_lista_empresas_clicked);				
 				// este entry se activa cuando el paciente solicita otros servicios
 				//entry_observacion.Sensitive = false;
-				
 				button_separa_folio.Clicked += new EventHandler(on_button_separa_folio_clicked);
-				
 				PidPaciente = int.Parse(pidpaciente_);
-								
 				entry_observacion_ingreso.Sensitive = true;
-				
 				checkbutton_checkup.Clicked += new EventHandler(on_checkbutton_checkup_clicked);
 				// Cambio para VENEZUELA
 				//label37.Text = "RIF";			// RFC
@@ -2305,16 +2278,13 @@ namespace osiris
 				string aseguradora_empresa = "";
 				string foliosseparados = "";
 				bool folioreservado = false;
-				while (lector.Read()){
-					
-					diagnostico_cirugia = (string) lector["descripcion_diagnostico_movcargos"];
-									
+				while (lector.Read()){					
+					diagnostico_cirugia = (string) lector["descripcion_diagnostico_movcargos"];									
 					if((int) lector ["id_aseguradora"] > 1){
 						aseguradora_empresa = (string) lector["descripcion_aseguradora"];
 					}else{
 						aseguradora_empresa = (string) lector["descripcion_empresa"];
-					}
-					
+					}					
 					if (!(bool) lector["cancelado"]){ 
 						treeViewEngine.AppendValues ((string) lector["fechahoraadm"],
 															(string) lector["descripcion_admisiones"],
@@ -2444,37 +2414,33 @@ namespace osiris
 		
 		void responsablepaciente()
 		{
-			bool valida_el_treeview = false;
 			Glade.XML gxml = new Glade.XML (null, "registro_admision.glade", "datos_del_responsable", null);
-			gxml.Autoconnect (this);
-	                	
+			gxml.Autoconnect (this);	                	
 			// Muestra ventana de Glade
-			datos_del_responsable.Show();
-			
+			datos_del_responsable.Show();			
 			// Salir de ventana de responsable
-			button_salir.Clicked += new EventHandler(on_cierraventanas_clicked);
-					
+			button_salir.Clicked += new EventHandler(on_cierraventanas_clicked);					
 			// Paciente es el Responsable
 			//button_paciente_responsable.Sensitive = false; 
-			button_paciente_responsable.Clicked += new EventHandler(on_button_paciente_responsable_clicked);
-			
+			button_paciente_responsable.Clicked += new EventHandler(on_button_paciente_responsable_clicked);			
 			// Misma direccion del responsable
-			button_misma_direccion.Clicked += new EventHandler(on_button_misma_direccion_clicked);
-			
+			button_misma_direccion.Clicked += new EventHandler(on_button_misma_direccion_clicked);			
 			// Traspasa aseguradora si se selecciono aseguradora
-			//entry_aseguradora_responsable.Text = (string) nombre_aseguradora;
-			
+			//entry_aseguradora_responsable.Text = (string) nombre_aseguradora;			
 			// graba datos del responsable de la cuenta
 			button_graba_responsable.Clicked += new EventHandler(on_button_graba_responsable_clicked);
-			// Verifica si grabo anteriormente y traspasa los valores
-				        
+			// Verifica si grabo anteriormente y traspasa los valores				        
 			if (grabarespocuenta == true){
 				if(id_tipopaciente != id_tipopaciente_valid){ 
 					id_tipopaciente_valid = id_tipopaciente;
-					valida_el_treeview = true;
 					grabarespocuenta = false;
 				}else{
-					valida_el_treeview = false;
+					for (int i = 0; i < arraydocumentos.Count; i++) {
+      					Item documento_foo = (Item) arraydocumentos[i];
+						if (documento_foo.col01_ == ""){
+							grabarespocuenta = false;
+						}
+    				}
 				}
 				entry_nombre_responsable.Text = (string) nombr_respo;
 				entry_telefono_responsable.Text = (string) telef_respo;
@@ -2488,10 +2454,11 @@ namespace osiris
 				//entry_dire_emp_responsable.Text = (string) direc_empre_respo;
 				//entry_tel_emp_responsable.Text = (string) telef_empre_respo;
 				// Parentezco del Responsable de la cuenta
-				crea_treeview_documentos(valida_el_treeview);
-				llenado_tipos_documentos(valida_el_treeview);
+				crea_treeview_documentos(false);
+				llenado_tipos_documentos(false);
 				llenado_combobox(1,parentezcoresponsable,combobox_parent_responsable,"array","","","",args_parentesco,args_id_array,"");
 			}else{
+				grabarespocuenta = false;
 				crea_treeview_documentos(true);
 				llenado_tipos_documentos(true);
 				llenado_combobox(0,"",combobox_parent_responsable,"array","","","",args_parentesco,args_id_array,"");
@@ -2504,10 +2471,8 @@ namespace osiris
 			
 			//}
 			
-			treeViewEngineDocumentos = new ListStore(typeof (string),typeof (string),typeof (string));
-	        							   
-			treeview_documentos.Model = treeViewEngineDocumentos;
-			
+			treeViewEngineDocumentos = new ListStore(typeof (string),typeof (string),typeof (string));	        							   
+			treeview_documentos.Model = treeViewEngineDocumentos;			
 			TreeViewColumn col00 = new TreeViewColumn();
 			CellRendererText cellrt00 = new CellRendererText();
 			col00.Title = "Documento";
@@ -2621,16 +2586,15 @@ namespace osiris
 			}
 		}
 		
+		/*
 		void NumberCellEdited_Autorizado (object o, EditedArgs args)
 		{
 			Gtk.TreeIter iter;
 			bool esnumerico = false;
 			int var_paso = 0;
 			int largo_variable = args.NewText.ToString().Length;
-			string toma_variable = args.NewText.ToString();
-			
-			treeViewEngineDocumentos.GetIter (out iter, new Gtk.TreePath (args.Path));
-			
+			string toma_variable = args.NewText.ToString();			
+			treeViewEngineDocumentos.GetIter (out iter, new Gtk.TreePath (args.Path));			
 			while (var_paso < largo_variable){				
 				if ((string) toma_variable.Substring(var_paso,1).ToString() == "." || 
 					(string) toma_variable.Substring(var_paso,1).ToString() == "0" ||
@@ -2655,7 +2619,7 @@ namespace osiris
 				//bool old = (bool) filter.Model.GetValue (iter,0);
 				//filter.Model.SetValue(iter,0,!old);
 			}
- 		}
+ 		}*/
 		
 		void on_button_paciente_responsable_clicked (object sender, EventArgs a)
 		{
@@ -2681,7 +2645,7 @@ namespace osiris
 		{
 			// Validacion del TreeView para grabar
 			
-			if(entry_nombre_responsable.Text.Trim() != ""){
+			if(entry_nombre_responsable.Text.Trim() != "" && (bool) verifica_los_documentos() == true ){
 				nombr_respo = (string) entry_nombre_responsable.Text;
 				telef_respo = (string) entry_telefono_responsable.Text;
 				direc_respo = (string) entry_direcc_responsable.Text;
@@ -2705,6 +2669,11 @@ namespace osiris
 				msgBoxError.Run ();			msgBoxError.Destroy();
 			}
 		}
+		
+		bool verifica_los_documentos()
+		{			
+			return true;
+		}
 				
 		// Activa en enter en la busqueda de los productos
 		[GLib.ConnectBefore ()]   	  // Esto es indispensable para que funcione    
@@ -2715,7 +2684,7 @@ namespace osiris
 				args.RetVal = true;
 				if(busqueda == "paciente") { llena_lista_paciente();}
 				if(busqueda == "medicos") {llenando_lista_de_medicos();}
-				//if(busqueda == "cirugia") {llenando_lista_de_cirugias();}				
+				if(busqueda == "empresas") {llenado_lista_empresas();;}				
 			}
 		}
 	}
@@ -2725,11 +2694,13 @@ namespace osiris
 		public string valor_string;
 		public DateTime valor_fecha;
 		public int valor_numerico;
-		public documentos_pacientes (string valor_string, DateTime valor_fecha,int valor_numerico)
+		public bool valor_boleano;
+		public documentos_pacientes (string valor_string, DateTime valor_fecha,int valor_numerico,bool valor_boleano)
 		{
 			this.valor_string = valor_string;
 			this.valor_fecha = valor_fecha;
 			this.valor_numerico = valor_numerico;
+			this.valor_boleano = valor_boleano;
        }
    }
 }

@@ -33,6 +33,8 @@ using Gdk;
 using System;
 using Glade;
 using Npgsql;
+using System.Data;
+using System.Collections;
 
 namespace osiris
 {		
@@ -58,6 +60,7 @@ namespace osiris
 		ListStore treeViewEngine;
 		Gtk.TreeView treeviewobject;		
 		
+		ArrayList arraylistobject;
 		// Busqueda de Clientes para los reportes
 		Gtk.Entry entry_nombre_cliente = null;
 		Gtk.Entry entry_id_cliente = null;
@@ -166,6 +169,7 @@ namespace osiris
 		string string_sql="";
 		string connectionString;
 		string nombrebd;
+		string LoginEmpleado;
 		
 		//declaracion de columnas y celdas de treeview de busqueda
 		TreeViewColumn col_buscador0;	CellRendererText cellrt0;
@@ -179,7 +183,7 @@ namespace osiris
 		//Declaracion de ventana de error y mensaje
 		protected Gtk.Window MyWinError;
 		
-		public void buscandor(object[] args, string[] args_sql_, string type_find_,string order_sql_,string comodin_,int typeseek_)		
+		public void buscandor(object[] args, string[] args_sql_, string[] args_varible_, string type_find_,string order_sql_,string comodin_,int typeseek_)		
 		{
 			connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
 			nombrebd = conexion_a_DB._nombrebd;	
@@ -378,7 +382,11 @@ namespace osiris
 					treeviewobject = (object) args[2] as Gtk.TreeView;
 					treeViewEngine = (object) args[3] as Gtk.ListStore;
 				break;
-					case "find_cirugia_cargos_modmedicos":
+				case "find_cirugia_cargos_modmedicos":
+					arraylistobject = (object) args[0] as ArrayList;
+					treeviewobject = (object) args[1] as Gtk.TreeView;
+					treeViewEngine = (object) args[2] as Gtk.ListStore;
+					LoginEmpleado = (string) args_varible_[0];				
 				break;
 			}
 			args_sql = args_sql_;
@@ -883,7 +891,7 @@ namespace osiris
 						carga_valores_treeview(tomaid,treeviewobject,treeViewEngine);
 					break;
 					case "find_cirugia_cargos_modmedicos":
-					
+						carga_valores_treeview_pq_modcargos(tomaid,treeviewobject,treeViewEngine);
 					break;
 					case "find_paciente":
 						entry_folio_servicio.Text = tomaid.ToString();
@@ -936,7 +944,7 @@ namespace osiris
 			win.Toplevel.Destroy();
 		}
 			
-		public void carga_valores_treeview(int idcode_find,object treeview_,object listotree_store_)
+		void carga_valores_treeview(int idcode_find,object treeview_,object listotree_store_)
 		{
 			string query_sql_llenado_treeview = "SELECT descripcion_producto,osiris_his_tipo_admisiones.descripcion_admisiones, "+
 							"id_empleado,osiris_his_cirugias_deta.eliminado,osiris_productos.aplicar_iva,osiris_his_cirugias_deta.id_tipo_admisiones,  "+
@@ -989,8 +997,68 @@ namespace osiris
 									MessageType.Info,ButtonsType.Close, "PostgresSQL error: {0} ",ex.Message);
 				msgBoxError.Run ();		msgBoxError.Destroy();
 			}
-			conexion.Close ();
-				
+			conexion.Close ();				
+		}
+		
+		void carga_valores_treeview_pq_modcargos(int idcode_find,object treeview_,object listotree_store_)
+		{
+			string query_sql_llenado_treeview = "SELECT descripcion_producto,osiris_his_tipo_admisiones.descripcion_admisiones, "+
+							"id_empleado,osiris_his_cirugias_deta.eliminado,osiris_productos.aplicar_iva,osiris_his_cirugias_deta.id_tipo_admisiones,  "+
+							"to_char(osiris_his_cirugias_deta.id_producto,'999999999999') AS idproducto, "+
+							"to_char(osiris_his_cirugias_deta.cantidad_aplicada,'99999.99') AS cantidadaplicada, "+
+							"to_char(osiris_productos.precio_producto_publico,'99999999.99') AS preciopublico,"+
+							"to_char(osiris_productos.costo_por_unidad,'999999999.99') AS costoproductounitario, "+
+							"to_char(osiris_productos.porcentage_ganancia,'99999.99') AS porcentageutilidad, "+
+							"to_char(osiris_productos.costo_producto,'999999999.99') AS costoproducto, "+
+							"to_char(osiris_his_cirugias_deta.fechahora_creacion,'dd-MM-yyyy HH:mi:ss') AS fechcreacion ,"+
+							"to_char(osiris_his_cirugias_deta.id_secuencia,'9999999999') AS secuencia "+
+							"FROM "+
+							"osiris_his_cirugias_deta,osiris_productos,osiris_his_tipo_cirugias,osiris_his_tipo_admisiones "+
+							"WHERE "+
+							"osiris_his_cirugias_deta.id_producto = osiris_productos.id_producto "+
+							"AND osiris_his_cirugias_deta.id_tipo_cirugia = osiris_his_tipo_cirugias.id_tipo_cirugia "+
+							"AND id_grupo_producto IN('4','5') "+
+							"AND osiris_his_cirugias_deta.eliminado = false "+ 
+							"AND osiris_his_cirugias_deta.id_tipo_admisiones = osiris_his_tipo_admisiones.id_tipo_admisiones "+
+							"AND osiris_his_cirugias_deta.id_tipo_cirugia = '"+idcode_find.ToString().Trim()+"' "+
+						    "AND osiris_his_cirugias_deta.eliminado = 'false' "+
+							"ORDER BY osiris_productos.descripcion_producto,to_char(osiris_his_cirugias_deta.fechahora_creacion,'yyyy-mm-dd HH:mm:ss');";
+			NpgsqlConnection conexion; 
+			conexion = new NpgsqlConnection (connectionString+nombrebd);
+			            
+			// Verifica que la base de datos este conectada
+			try{
+				conexion.Open ();
+				NpgsqlCommand comando; 
+				comando = conexion.CreateCommand ();
+				comando.CommandText = query_sql_llenado_treeview;
+				Console.WriteLine(comando.CommandText);
+				NpgsqlDataReader lector = comando.ExecuteReader ();
+				while (lector.Read()){
+					osiris.cargos_modulos_medicos.Item foo = new osiris.cargos_modulos_medicos.Item(false,
+					                float.Parse( (string) lector["cantidadaplicada"]),
+					                (string) lector["idproducto"],
+					                (string) lector["descripcion_producto"],
+					                LoginEmpleado,
+									(string) DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
+					                (string) lector["descripcion_admisiones"],
+					                "","","","","","","",0,"","","");
+					arraylistobject.Add(foo);
+					treeViewEngine.AppendValues(false,
+					                            float.Parse((string) lector["cantidadaplicada"]),
+					            				(string) lector["idproducto"],
+					                			(string) lector["descripcion_producto"],
+					                            LoginEmpleado,
+					                            (string) DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
+					                            (string) lector["descripcion_admisiones"]);
+				}
+			}catch (NpgsqlException ex){
+	   			Console.WriteLine ("PostgresSQL error: {0}",ex.Message);
+   				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+									MessageType.Info,ButtonsType.Close, "PostgresSQL error: {0} ",ex.Message);
+				msgBoxError.Run ();		msgBoxError.Destroy();
+			}
+			conexion.Close ();				
 		}
 	}
 }

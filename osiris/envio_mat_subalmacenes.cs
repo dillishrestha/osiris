@@ -1136,8 +1136,9 @@ namespace osiris
 										"AND osiris_erp_cobros_enca.pagado = 'false' "+
 										"AND osiris_erp_cobros_enca.cerrado = 'false' "+
 										"AND osiris_erp_cobros_enca.reservacion = 'false' "+
-										"AND osiris_his_paciente.pid_paciente = '"};			
-			classfind_data.buscandor(parametros_objetos,parametros_sql,"find_paciente"," ORDER BY osiris_his_paciente.pid_paciente","%' ",1);
+										"AND osiris_his_paciente.pid_paciente = '"};
+			string[] parametros_string = {};
+			classfind_data.buscandor(parametros_objetos,parametros_sql,parametros_string,"find_paciente"," ORDER BY osiris_his_paciente.pid_paciente","%' ",1);
 		}
 			
 		void llenado_de_material_solicitado()

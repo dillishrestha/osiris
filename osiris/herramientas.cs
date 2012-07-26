@@ -252,7 +252,7 @@ namespace osiris
 				varpaso = "SISTEMAS";
 				return varpaso;
 			}
-			if(LoginEmpleado == "DOLIVARES" || LoginEmpleado == "ADMIN" || LoginEmpleado == "RIOSGARCIA"){
+			if(LoginEmpleado == "DOLIVARES" || LoginEmpleado == "ADMIN" || LoginEmpleado == "ANAMARIA"){
 			  varpaso = "MEDICOS";
 			  return varpaso;
 			}

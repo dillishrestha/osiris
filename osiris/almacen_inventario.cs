@@ -384,8 +384,9 @@ namespace osiris
 			// es importante definir que tipo de busqueda es para que los objetos caigan ahi mismo
 			object[] parametros_objetos = {entry_id_almacen,entry_almacen};
 			string[] parametros_sql = {"SELECT * FROM osiris_almacenes ",															
-										"SELECT * FROM osiris_almacenes WHERE descripcion_almacen LIKE '%"};			
-			classfind_data.buscandor(parametros_objetos,parametros_sql,"find_almacen_inventario"," ORDER BY id_almacen","%' ",0);
+										"SELECT * FROM osiris_almacenes WHERE descripcion_almacen LIKE '%"};
+			string[] parametros_string = {};
+			classfind_data.buscandor(parametros_objetos,parametros_sql,parametros_string,"find_almacen_inventario"," ORDER BY id_almacen","%' ",0);
 		}
 		
 		void llenado_de_almacen(string idalmacen)

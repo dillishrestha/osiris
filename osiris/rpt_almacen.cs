@@ -152,8 +152,8 @@ namespace osiris
 			string descriopciongrupoproducto = "";
 			decimal totales_x_grupo = 0;
 			
-			Array stringArray = Array.CreateInstance(typeof(String), 20, 2);
-			stringArray.SetValue("Mahesh", 0,0);
+			//Array stringArray = Array.CreateInstance(typeof(String), 20, 2);
+			//stringArray.SetValue("Mahesh", 0,0);
 			
 			Cairo.Context cr = context.CairoContext;
 			Pango.Layout layout = context.CreatePangoLayout ();

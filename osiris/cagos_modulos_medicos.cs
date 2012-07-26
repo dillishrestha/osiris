@@ -362,15 +362,20 @@ namespace osiris
 			// Los parametros de del SQL siempre es primero cuando busca todo y la otra por expresion
 			// la clase recibe tambien el orden del query
 			// es importante definir que tipo de busqueda es para que los objetos caigan ahi mismo
-			object[] parametros_objetos = {};
+			
+			
+			//arraycargosextras = new ArrayList();
+			//treeViewEngineExtras
+			object[] parametros_objetos = {arraycargosextras,lista_cargos_extras,treeViewEngineExtras,LoginEmpleado};
 			string[] parametros_sql = {"SELECT id_tipo_cirugia,descripcion_cirugia,tiene_paquete,to_char(valor_paquete,'999999999.99') AS valorpaquetereal,"+
 										"to_char(precio_de_venta,'999999999.99') AS valorpaquete "+
 										"FROM osiris_his_tipo_cirugias ",															
 										"SELECT id_tipo_cirugia,descripcion_cirugia,tiene_paquete,to_char(valor_paquete,'999999999.99') AS valorpaquetereal,"+
 										"to_char(precio_de_venta,'999999999.99') AS valorpaquete "+
 										"FROM osiris_his_tipo_cirugias "+
-										"WHERE descripcion_cirugia LIKE '%"};			
-			classfind_data.buscandor(parametros_objetos,parametros_sql,"find_cirugia_cargos_modmedicos"," ORDER BY id_tipo_cirugia","%' ",0);
+										"WHERE descripcion_cirugia LIKE '%"};
+			string[] parametros_string = {LoginEmpleado};
+			classfind_data.buscandor(parametros_objetos,parametros_sql,parametros_string,"find_cirugia_cargos_modmedicos"," ORDER BY id_tipo_cirugia","%' ",0);
 		}
 		
 		void on_button_devoluciones_clicked(object obj, EventArgs args)
@@ -1907,8 +1912,9 @@ namespace osiris
 										"AND osiris_erp_cobros_enca.pagado = 'false' "+
 										"AND osiris_erp_cobros_enca.cerrado = 'false' "+
 										"AND osiris_erp_cobros_enca.reservacion = 'false' "+
-										"AND osiris_his_paciente.pid_paciente = '"};			
-			classfind_data.buscandor(parametros_objetos,parametros_sql,"find_paciente"," ORDER BY osiris_his_paciente.pid_paciente","%' ",1);
+										"AND osiris_his_paciente.pid_paciente = '"};
+			string[] parametros_string = {};
+			classfind_data.buscandor(parametros_objetos,parametros_sql,parametros_string,"find_paciente"," ORDER BY osiris_his_paciente.pid_paciente","%' ",1);
 		}
 	    
 		void on_button_busca_producto_clicked (object sender, EventArgs args)
@@ -2375,7 +2381,7 @@ namespace osiris
 			}
 		}
 
-		struct Item
+		public struct Item
  		{
  			public bool col_seleccion{
 				get { return col0_car_extr; }
@@ -2494,8 +2500,7 @@ namespace osiris
 				this.col14_car_extr = col14_car_extr;
 				this.col15_car_extr = col15_car_extr;
 				this.col16_car_extr = col16_car_extr;
-				this.col17_car_extr = col17_car_extr;
-				
+				this.col17_car_extr = col17_car_extr;				
 			}
  		}
  		

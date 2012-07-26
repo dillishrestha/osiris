@@ -81,6 +81,7 @@ namespace osiris
 		[Widget] Gtk.Entry entry_numero_citas = null;
 		[Widget] Gtk.Button button_cancela_cita = null;
 		[Widget] Gtk.Button button_imprimir_calendario = null;
+		[Widget] Gtk.Button button_ticket_cita = null;
 		
 		[Widget] Gtk.Statusbar statusbar_citasqx = null;
 							
@@ -291,6 +292,7 @@ namespace osiris
 			button_aplica_filtroespecialidad.Clicked += new EventHandler(on_button_aplica_filtroespecialidad_clicked);				
 			button_cancela_cita.Clicked += new EventHandler(on_button_cancela_cita_clicked);
 			button_imprimir_calendario.Clicked += new EventHandler(on_button_imprimir_calendario_clicked);
+			button_ticket_cita.Clicked += new EventHandler(on_button_ticket_cita_clicked);
 			checkbutton_px_no_asistieron.Clicked += new EventHandler(on_checkbutton_px_no_asistieron_clicked);
 					
 			// Action the Click for Citas
@@ -351,9 +353,6 @@ namespace osiris
 			button_infoadmision.Sensitive = false;
 			
 			// desactivando programacion de cirugia
-			
-			
-			
 			
 			////////////////////////
 			// acciones Calendario de Quirofano
@@ -822,8 +821,9 @@ namespace osiris
 									"to_char(to_number(to_char(age('"+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"',osiris_his_paciente.fecha_nacimiento_paciente),'yyyy') ,'9999'),'9999') AS edad,"+
 									"to_char(to_number(to_char(age('"+DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss")+"',osiris_his_paciente.fecha_nacimiento_paciente),'MM'),'99'),'99') AS mesesedad,"+
 									"to_char(fechahora_registro_paciente,'dd-MM-yyyy HH:mi:ss') AS fech_creacion,activo FROM osiris_his_paciente WHERE activo = 'true' "+
-										"AND pid_paciente = '"};			
-			classfind_data.buscandor(parametros_objetos,parametros_sql,"find_paciente_cita"," ORDER BY pid_paciente","%' ",1);
+										"AND pid_paciente = '"};
+			string[] parametros_string = {};
+			classfind_data.buscandor(parametros_objetos,parametros_sql,parametros_string,"find_paciente_cita"," ORDER BY pid_paciente","%' ",1);
 		}
 		
 		void on_button_busca_empresas_cita_clicked(object sender, EventArgs args)
@@ -842,8 +842,9 @@ namespace osiris
 				object[] parametros_objetos = {entry_id_empaseg_cita,entry_nombre_empaseg_cita};
 				string[] parametros_sql = {"SELECT * FROM osiris_empresas WHERE id_tipo_paciente = '"+id_tipopaciente.ToString().Trim()+"' ",															
 										"SELECT * FROM osiris_empresas  WHERE id_tipo_paciente = '"+id_tipopaciente.ToString().Trim()+"' "+
-										"AND descripcion_empresa LIKE '%"};			
-				classfind_data.buscandor(parametros_objetos,parametros_sql,"find_empresa_cita"," ORDER BY descripcion_empresa","%' ",0);
+										"AND descripcion_empresa LIKE '%"};
+				string[] parametros_string = {};
+				classfind_data.buscandor(parametros_objetos,parametros_sql,parametros_string,"find_empresa_cita"," ORDER BY descripcion_empresa","%' ",0);
 				idempresa = entry_id_empaseg_cita.Text.ToString().Trim();
 				idaseguradora = "1";		
 			}else{
@@ -852,8 +853,9 @@ namespace osiris
 				object[] parametros_objetos = {entry_id_empaseg_cita,entry_nombre_empaseg_cita};
 				string[] parametros_sql = {"SELECT * FROM osiris_aseguradoras ",															
 										"SELECT * FROM osiris_aseguradoras "+
-										"WHERE descripcion_aseguradora LIKE '%"};			
-				classfind_data.buscandor(parametros_objetos,parametros_sql,"find_aseguradoras_cita"," ORDER BY descripcion_aseguradora","%' ",0);
+										"WHERE descripcion_aseguradora LIKE '%"};
+				string[] parametros_string = {};
+				classfind_data.buscandor(parametros_objetos,parametros_sql,parametros_string,"find_aseguradoras_cita"," ORDER BY descripcion_aseguradora","%' ",0);
 				idaseguradora = entry_id_empaseg_cita.Text.ToString().Trim();
 				idempresa = "1";
 			}			
@@ -868,15 +870,17 @@ namespace osiris
 				object[] parametros_objetos = {entry_id_doctor_cita,entry_nombre_doctor_cita};
 				string[] parametros_sql = {"SELECT * FROM osiris_his_medicos WHERE medico_activo = 'true' ",															
 										"SELECT * FROM osiris_his_medicos WHERE medico_activo = 'true' "+
-										"AND nombre_medico LIKE '%"};			
-				classfind_data.buscandor(parametros_objetos,parametros_sql,"find_medico_cita"," ORDER BY nombre_medico","%' ",0);
+										"AND nombre_medico LIKE '%"};
+				string[] parametros_string = {};
+				classfind_data.buscandor(parametros_objetos,parametros_sql,parametros_string,"find_medico_cita"," ORDER BY nombre_medico","%' ",0);
 			}
 			if(button_busca_medicos.Name.ToString() == "button_busca_medicos_consulta"){
 				object[] parametros_objetos = {entry_id_doctor_consulta,entry_nombre_doctor_consulta};
 				string[] parametros_sql = {"SELECT * FROM osiris_his_medicos WHERE medico_activo = 'true' ",															
 										"SELECT * FROM osiris_his_medicos WHERE medico_activo = 'true' "+
-										"AND nombre_medico LIKE '%"};			
-				classfind_data.buscandor(parametros_objetos,parametros_sql,"find_medico_consulta"," ORDER BY nombre_medico","%' ",0);
+										"AND nombre_medico LIKE '%"};
+				string[] parametros_string = {};
+				classfind_data.buscandor(parametros_objetos,parametros_sql,parametros_string,"find_medico_consulta"," ORDER BY nombre_medico","%' ",0);
 			}
 		}
 		
@@ -887,15 +891,17 @@ namespace osiris
 				object[] parametros_objetos = {entry_id_especialidad_cita,entry_nombre_especialidad_cita};
 				string[] parametros_sql = {"SELECT * FROM osiris_his_tipo_especialidad ",															
 										"SELECT * FROM osiris_his_tipo_especialidad "+
-										"WHERE descripcion_especialidad LIKE '%"};			
-				classfind_data.buscandor(parametros_objetos,parametros_sql,"find_especialidad_cita"," ORDER BY descripcion_especialidad","%' ",0);
+										"WHERE descripcion_especialidad LIKE '%"};
+				string[] parametros_string = {};
+				classfind_data.buscandor(parametros_objetos,parametros_sql,parametros_string,"find_especialidad_cita"," ORDER BY descripcion_especialidad","%' ",0);
 			}
 			if(button_busca_especialidad.Name.ToString()== "button_busca_especialidad_consulta"){
 				object[] parametros_objetos = {entry_id_especialidad_consulta,entry_nombre_especialidad_consulta};
 				string[] parametros_sql = {"SELECT * FROM osiris_his_tipo_especialidad ",															
 										"SELECT * FROM osiris_his_tipo_especialidad "+
-										"WHERE descripcion_especialidad LIKE '%"};			
-				classfind_data.buscandor(parametros_objetos,parametros_sql,"find_especialidad_consulta"," ORDER BY descripcion_especialidad","%' ",0);
+										"WHERE descripcion_especialidad LIKE '%"};
+				string[] parametros_string = {};
+				classfind_data.buscandor(parametros_objetos,parametros_sql,parametros_string,"find_especialidad_consulta"," ORDER BY descripcion_especialidad","%' ",0);
 			}
 			
 		}
@@ -1519,8 +1525,9 @@ namespace osiris
 									"to_char(to_number(to_char(age('"+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"',osiris_his_paciente.fecha_nacimiento_paciente),'yyyy') ,'9999'),'9999') AS edad,"+
 									"to_char(to_number(to_char(age('"+DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss")+"',osiris_his_paciente.fecha_nacimiento_paciente),'MM'),'99'),'99') AS mesesedad,"+
 									"to_char(fechahora_registro_paciente,'dd-MM-yyyy HH:mi:ss') AS fech_creacion,activo FROM osiris_his_paciente WHERE activo = 'true' "+
-										"AND pid_paciente = '"};			
-			classfind_data.buscandor(parametros_objetos,parametros_sql,"find_paciente1"," ORDER BY osiris_his_paciente.pid_paciente","%' ",1);
+										"AND pid_paciente = '"};
+			string[] parametros_string = {};
+			classfind_data.buscandor(parametros_objetos,parametros_sql,parametros_string,"find_paciente1"," ORDER BY osiris_his_paciente.pid_paciente","%' ",1);
 		}
 		
 		void on_button_infoadmision_clicked(object sender, EventArgs args)
@@ -1531,6 +1538,16 @@ namespace osiris
 		void on_button_imprimir_calendario_clicked(object sender, EventArgs args)
 		{
 			new osiris.rpt_reporte_citasqx(treeview_lista_agenda,treeViewEngineListaCitas);			
+		}
+		
+		void on_button_ticket_cita_clicked(object sender, EventArgs args)
+		{
+			TreeModel model;
+			TreeIter iterSelected;
+			if ( treeview_lista_agenda.Selection.GetSelected(out model, out iterSelected)){
+				
+				new osiris.pases_a_quirofano(0,int.Parse((string) model.GetValue(iterSelected, 2)),0,LoginEmpleado,0,0,0,false,"cita_a_paciente");
+			}
 		}
 		
 		void llenado_combobox(int tipodellenado,string descrip_defaul,object obj,string sql_or_array,string query_SQL,string name_field_desc,string name_field_id,string[] args_array,int[] args_id_array)

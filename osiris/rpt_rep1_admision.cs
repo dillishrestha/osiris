@@ -361,8 +361,9 @@ namespace osiris
 			object[] parametros_objetos = {entry_id_doctor_consulta,entry_nombre_doctor_consulta};
 			string[] parametros_sql = {"SELECT * FROM osiris_his_medicos WHERE medico_activo = 'true' ",															
 										"SELECT * FROM osiris_his_medicos WHERE medico_activo = 'true' "+
-										"AND nombre_medico LIKE '%"};			
-			classfind_data.buscandor(parametros_objetos,parametros_sql,"find_medico_consulta"," ORDER BY nombre_medico","%' ",0);
+										"AND nombre_medico LIKE '%"};
+			string[] parametros_string = {};
+			classfind_data.buscandor(parametros_objetos,parametros_sql,parametros_string,"find_medico_consulta"," ORDER BY nombre_medico","%' ",0);
 			idmedico = entry_id_doctor_consulta.Text.ToString().Trim();
 		}
 		
@@ -386,8 +387,9 @@ namespace osiris
 					object[] parametros_objetos = {entry_id_empaseg_cita,entry_nombre_empaseg_cita};
 					string[] parametros_sql = {"SELECT * FROM osiris_empresas WHERE id_tipo_paciente = '"+id_tipopaciente.ToString().Trim()+"' ",															
 											"SELECT * FROM osiris_empresas  WHERE id_tipo_paciente = '"+id_tipopaciente.ToString().Trim()+"' "+
-											"AND descripcion_empresa LIKE '%"};			
-					classfind_data.buscandor(parametros_objetos,parametros_sql,"find_empresa_cita"," ORDER BY descripcion_empresa","%' ",0);
+											"AND descripcion_empresa LIKE '%"};
+					string[] parametros_string = {};
+					classfind_data.buscandor(parametros_objetos,parametros_sql,parametros_string,"find_empresa_cita"," ORDER BY descripcion_empresa","%' ",0);
 					idempresa = entry_id_empaseg_cita.Text.ToString().Trim();					
 					idaseguradora = "1";		
 				}else{
@@ -396,8 +398,9 @@ namespace osiris
 					object[] parametros_objetos = {entry_id_empaseg_cita,entry_nombre_empaseg_cita};
 					string[] parametros_sql = {"SELECT * FROM osiris_aseguradoras ",															
 											"SELECT * FROM osiris_aseguradoras "+
-											"WHERE descripcion_aseguradora LIKE '%"};			
-					classfind_data.buscandor(parametros_objetos,parametros_sql,"find_aseguradoras_cita"," ORDER BY descripcion_aseguradora","%' ",0);
+											"WHERE descripcion_aseguradora LIKE '%"};
+					string[] parametros_string = {};
+					classfind_data.buscandor(parametros_objetos,parametros_sql,parametros_string,"find_aseguradoras_cita"," ORDER BY descripcion_aseguradora","%' ",0);
 					idaseguradora = entry_id_empaseg_cita.Text.ToString().Trim();
 					idempresa = "1";					
 				}

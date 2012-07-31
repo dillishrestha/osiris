@@ -3387,8 +3387,9 @@ namespace osiris
 					// Validando que tenga asignada una habitacion
             		idhabitacion = (int) lector["id_habitacion"];
             		if ((int) lector["idtipoadmision"] == 300 || (int) lector["idtipoadmision"] == 400  || 
-            		(int) lector["idtipoadmision"] == 930 || (int) lector["idtipoadmision"] == 200 && idhabitacion == 1 || 
-            		(int) lector["idtipoadmision"] == 920 || (int) lector["idtipoadmision"] == 940 || (int) lector["idtipoadmision"] == 950){            		
+            			(int) lector["idtipoadmision"] == 930 || (int) lector["idtipoadmision"] == 200 && idhabitacion == 1 || 
+            			(int) lector["idtipoadmision"] == 920 || (int) lector["idtipoadmision"] == 940 || (int) lector["idtipoadmision"] == 950 ||
+					    (int) lector["idtipoadmision"] == 960 | (int) lector["idtipoadmision"] == 970){            		
 	            		button_alta_paciente.Sensitive = true;	            		
 	            	}else{
 	            		button_alta_paciente.Sensitive = false;

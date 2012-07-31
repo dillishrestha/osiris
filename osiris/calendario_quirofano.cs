@@ -82,6 +82,7 @@ namespace osiris
 		[Widget] Gtk.Button button_cancela_cita = null;
 		[Widget] Gtk.Button button_imprimir_calendario = null;
 		[Widget] Gtk.Button button_ticket_cita = null;
+		[Widget] Gtk.Button button_reagendar_cita = null;
 		
 		[Widget] Gtk.Statusbar statusbar_citasqx = null;
 							
@@ -149,7 +150,10 @@ namespace osiris
 		[Widget] Gtk.Entry entry_folio = null;
 		[Widget] Gtk.Entry entry_motivo = null;
 		[Widget] Gtk.Label label247 = null;
-							
+		
+		// ventana para reagendar cita		
+		[Widget] Gtk.Window reangendar_cita = null;
+		
 		string LoginEmpleado;
 		string NomEmpleado;
 		string AppEmpleado;
@@ -293,6 +297,7 @@ namespace osiris
 			button_cancela_cita.Clicked += new EventHandler(on_button_cancela_cita_clicked);
 			button_imprimir_calendario.Clicked += new EventHandler(on_button_imprimir_calendario_clicked);
 			button_ticket_cita.Clicked += new EventHandler(on_button_ticket_cita_clicked);
+			button_reagendar_cita.Clicked += new EventHandler(on_button_reagendar_cita_clicked);
 			checkbutton_px_no_asistieron.Clicked += new EventHandler(on_checkbutton_px_no_asistieron_clicked);
 					
 			// Action the Click for Citas
@@ -1639,6 +1644,17 @@ namespace osiris
 					break;
 				}
 			}
+		}
+		
+		void on_button_reagendar_cita_clicked(object sender, EventArgs args)
+		{			
+			Glade.XML gxml = new Glade.XML (null, "quirofano.glade", "reangendar_cita", null);
+			gxml.Autoconnect (this);        
+			
+			// show the window
+			reangendar_cita.Show();
+			
+			button_salir.Clicked += new EventHandler(on_cierraventanas_clicked);
 		}
 		
 		void on_cierraventanas_clicked(object sender, EventArgs args)

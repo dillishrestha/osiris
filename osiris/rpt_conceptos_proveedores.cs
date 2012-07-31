@@ -82,9 +82,10 @@ namespace osiris
 		private PrintOperation print;
 		private double fontSize = 8.0;
 		int escala_en_linux_windows;		// Linux = 1  Windows = 8
-		int comienzo_linea = 70;
+		int comienzo_linea = 80;
 		int separacion_linea = 10;
 		int numpage = 1;
+		Pango.FontDescription desc = Pango.FontDescription.FromString ("Sans");
 		
 		PrintContext context;
 		
@@ -209,7 +210,7 @@ namespace osiris
 		
 		void on_button_exportar_sheet_clicked(object sender, EventArgs args)
 		{
-			comienzo_linea = 70;
+			comienzo_linea = 80;
 			separacion_linea = 10;
 			numpage = 1;
 			if ((bool)checkbutton_herr_adicionales.Active == true){
@@ -217,9 +218,9 @@ namespace osiris
 				query_consulta = "SELECT osiris_erp_requisicion_deta.id_producto AS idproducto_osiris,descripcion_producto," +
 					"to_char(osiris_erp_factura_compra_enca.fecha_factura,'yyyy') AS ano," +
 					"to_char(osiris_erp_factura_compra_enca.fecha_factura,'MM') AS mes," +
-					"AVG(osiris_erp_requisicion_deta.costo_producto)," +
-					"MAX(osiris_erp_requisicion_deta.costo_producto)," +
-					"MIN(osiris_erp_requisicion_deta.costo_producto)," +
+					"AVG(osiris_erp_requisicion_deta.costo_producto) AS avg," +
+					"MAX(osiris_erp_requisicion_deta.costo_producto) AS max," +
+					"MIN(osiris_erp_requisicion_deta.costo_producto) AS min," +
 					"COUNT(*) AS Total,SUM(osiris_erp_requisicion_deta.costo_producto) AS Total1 " +
 					"FROM osiris_erp_requisicion_deta,osiris_erp_factura_compra_enca,osiris_productos " +
 					"WHERE osiris_erp_requisicion_deta.numero_factura_proveedor = osiris_erp_factura_compra_enca.numero_factura_proveedor " +
@@ -282,13 +283,9 @@ namespace osiris
 		void ejecutar_consulta_reporte(PrintContext context)
 		{
 			string codigoproducto = "";
+			string descriproducto = "";
 			Cairo.Context cr = context.CairoContext;
 			Pango.Layout layout = context.CreatePangoLayout ();
-			imprime_encabezado(cr,layout);
-			Pango.FontDescription desc = Pango.FontDescription.FromString ("Sans");									
-			// cr.Rotate(90)  Imprimir Orizontalmente rota la hoja cambian las posiciones de las lineas y columna					
-			fontSize = 8.0;			layout = null;			layout = context.CreatePangoLayout ();
-			desc.Size = (int)(fontSize * pangoScale);		layout.FontDescription = desc;
 			NpgsqlConnection conexion; 
 			conexion = new NpgsqlConnection (connectionString+nombrebd);
 			// Verifica que la base de datos este conectada
@@ -300,136 +297,153 @@ namespace osiris
 				Console.WriteLine(comando.CommandText);
 				NpgsqlDataReader lector = comando.ExecuteReader ();
                	if(lector.Read()){
+					imprime_encabezado(cr,layout);
+					desc = Pango.FontDescription.FromString ("Sans");
+					fontSize = 6.0;			layout = null;			layout = context.CreatePangoLayout ();
+					desc.Size = (int)(fontSize * pangoScale);		layout.FontDescription = desc;
+					layout.FontDescription.Weight = Weight.Normal;		// Letra normal
+					
 					codigoproducto = lector["idproducto_osiris"].ToString().Trim();
+					descriproducto = lector["descripcion_producto"].ToString().Trim();
+					cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(codigoproducto);		Pango.CairoHelper.ShowLayout (cr, layout);
+					if(lector["descripcion_producto"].ToString().Length > 60){
+						cr.MoveTo(60*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);			layout.SetText(lector["descripcion_producto"].ToString().Trim().Substring(0,60));				Pango.CairoHelper.ShowLayout (cr, layout);				
+					}else{
+						cr.MoveTo(60*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);			layout.SetText(lector["descripcion_producto"].ToString().Trim());				Pango.CairoHelper.ShowLayout (cr, layout);				
+					}
+					int columna_sepa = 35;
+					int columna_inicio = 300;
 					switch (lector["mes"].ToString().Trim()){	
 						case "01":
-							cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(codigoproducto);		Pango.CairoHelper.ShowLayout (cr, layout);
+							cr.MoveTo(columna_inicio*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(string.Format("{0:F}",decimal.Parse(lector["max"].ToString())));		Pango.CairoHelper.ShowLayout (cr, layout);
 						break;
 						case "02":
-							cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(codigoproducto);		Pango.CairoHelper.ShowLayout (cr, layout);
+							cr.MoveTo((columna_inicio+(columna_sepa*1))*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(string.Format("{0:F}",decimal.Parse(lector["max"].ToString())));		Pango.CairoHelper.ShowLayout (cr, layout);
 						break;
 						case "03":
-							cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(codigoproducto);		Pango.CairoHelper.ShowLayout (cr, layout);
+							cr.MoveTo((columna_inicio+(columna_sepa*2))*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(string.Format("{0:F}",decimal.Parse(lector["max"].ToString())));		Pango.CairoHelper.ShowLayout (cr, layout);
 						break;
 						case "04":
-							cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(codigoproducto);		Pango.CairoHelper.ShowLayout (cr, layout);
+							cr.MoveTo((columna_inicio+(columna_sepa*3))*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(string.Format("{0:F}",decimal.Parse(lector["max"].ToString())));		Pango.CairoHelper.ShowLayout (cr, layout);
 						break;
 						case "05":
-							cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(codigoproducto);		Pango.CairoHelper.ShowLayout (cr, layout);
+							cr.MoveTo((columna_inicio+(columna_sepa*4))*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(string.Format("{0:F}",decimal.Parse(lector["max"].ToString())));		Pango.CairoHelper.ShowLayout (cr, layout);
 						break;
 						case "06":
-							cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(codigoproducto);		Pango.CairoHelper.ShowLayout (cr, layout);
+							cr.MoveTo((columna_inicio+(columna_sepa*5))*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(string.Format("{0:F}",decimal.Parse(lector["max"].ToString())));		Pango.CairoHelper.ShowLayout (cr, layout);
 						break;
 						case "07":
-							cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(codigoproducto);		Pango.CairoHelper.ShowLayout (cr, layout);
+							cr.MoveTo((columna_inicio+(columna_sepa*6))*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(string.Format("{0:F}",decimal.Parse(lector["max"].ToString())));		Pango.CairoHelper.ShowLayout (cr, layout);
 						break;
 						case "08":
-							cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(codigoproducto);		Pango.CairoHelper.ShowLayout (cr, layout);
+							cr.MoveTo((columna_inicio+(columna_sepa*7))*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(string.Format("{0:F}",decimal.Parse(lector["max"].ToString())));		Pango.CairoHelper.ShowLayout (cr, layout);
 						break;
 						case "09":
-							cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(codigoproducto);		Pango.CairoHelper.ShowLayout (cr, layout);
+							cr.MoveTo((columna_inicio+(columna_sepa*8))*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(string.Format("{0:F}",decimal.Parse(lector["max"].ToString())));		Pango.CairoHelper.ShowLayout (cr, layout);
 						break;
 						case "10":
-							cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(codigoproducto);		Pango.CairoHelper.ShowLayout (cr, layout);
+							cr.MoveTo((columna_inicio+(columna_sepa*9))*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(string.Format("{0:F}",decimal.Parse(lector["max"].ToString())));		Pango.CairoHelper.ShowLayout (cr, layout);
 						break;
 						case "11":
-							cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(codigoproducto);		Pango.CairoHelper.ShowLayout (cr, layout);
+							cr.MoveTo((columna_inicio+(columna_sepa*10))*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(string.Format("{0:F}",decimal.Parse(lector["max"].ToString())));		Pango.CairoHelper.ShowLayout (cr, layout);
 						break;
 						case "12":
-							cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(codigoproducto);		Pango.CairoHelper.ShowLayout (cr, layout);
+							cr.MoveTo((columna_inicio+(columna_sepa*11))*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(string.Format("{0:F}",decimal.Parse(lector["max"].ToString())));		Pango.CairoHelper.ShowLayout (cr, layout);
 						break;
-					}						
-					cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(codigoproducto);		Pango.CairoHelper.ShowLayout (cr, layout);
-					cr.MoveTo(75*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText((string) lector["descripcion_producto"]);		Pango.CairoHelper.ShowLayout (cr, layout);
-					salto_de_pagina(cr,layout);
-					comienzo_linea += separacion_linea;
+					}
 					while(lector.Read()){
 						if(codigoproducto != lector["idproducto_osiris"].ToString().Trim()){
-							codigoproducto = lector["idproducto_osiris"].ToString().Trim();
+							comienzo_linea += separacion_linea;
+							cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(codigoproducto);		Pango.CairoHelper.ShowLayout (cr, layout);
+							if(lector["descripcion_producto"].ToString().Length > 60){
+								cr.MoveTo(60*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);			layout.SetText(lector["descripcion_producto"].ToString().Trim().Substring(0,60));				Pango.CairoHelper.ShowLayout (cr, layout);				
+							}else{
+								cr.MoveTo(60*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);			layout.SetText(lector["descripcion_producto"].ToString().Trim());				Pango.CairoHelper.ShowLayout (cr, layout);				
+							}
 							switch (lector["mes"].ToString().Trim()){	
 								case "01":
-									cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(codigoproducto);		Pango.CairoHelper.ShowLayout (cr, layout);
+									cr.MoveTo(columna_inicio*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(string.Format("{0:F}",decimal.Parse(lector["max"].ToString())));		Pango.CairoHelper.ShowLayout (cr, layout);
 								break;
 								case "02":
-									cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(codigoproducto);		Pango.CairoHelper.ShowLayout (cr, layout);
+									cr.MoveTo((columna_inicio+(columna_sepa*1))*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(string.Format("{0:F}",decimal.Parse(lector["max"].ToString())));		Pango.CairoHelper.ShowLayout (cr, layout);
 								break;
 								case "03":
-									cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(codigoproducto);		Pango.CairoHelper.ShowLayout (cr, layout);
+									cr.MoveTo((columna_inicio+(columna_sepa*2))*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(string.Format("{0:F}",decimal.Parse(lector["max"].ToString())));		Pango.CairoHelper.ShowLayout (cr, layout);
 								break;
 								case "04":
-									cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(codigoproducto);		Pango.CairoHelper.ShowLayout (cr, layout);
+									cr.MoveTo((columna_inicio+(columna_sepa*3))*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(string.Format("{0:F}",decimal.Parse(lector["max"].ToString())));		Pango.CairoHelper.ShowLayout (cr, layout);
 								break;
 								case "05":
-									cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(codigoproducto);		Pango.CairoHelper.ShowLayout (cr, layout);
+									cr.MoveTo((columna_inicio+(columna_sepa*4))*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(string.Format("{0:F}",decimal.Parse(lector["max"].ToString())));		Pango.CairoHelper.ShowLayout (cr, layout);
 								break;
 								case "06":
-									cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(codigoproducto);		Pango.CairoHelper.ShowLayout (cr, layout);
+									cr.MoveTo((columna_inicio+(columna_sepa*5))*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(string.Format("{0:F}",decimal.Parse(lector["max"].ToString())));		Pango.CairoHelper.ShowLayout (cr, layout);
 								break;
 								case "07":
-									cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(codigoproducto);		Pango.CairoHelper.ShowLayout (cr, layout);
+									cr.MoveTo((columna_inicio+(columna_sepa*6))*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(string.Format("{0:F}",decimal.Parse(lector["max"].ToString())));		Pango.CairoHelper.ShowLayout (cr, layout);
 								break;
 								case "08":
-									cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(codigoproducto);		Pango.CairoHelper.ShowLayout (cr, layout);
+									cr.MoveTo((columna_inicio+(columna_sepa*7))*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(string.Format("{0:F}",decimal.Parse(lector["max"].ToString())));		Pango.CairoHelper.ShowLayout (cr, layout);
 								break;
 								case "09":
-									cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(codigoproducto);		Pango.CairoHelper.ShowLayout (cr, layout);
+									cr.MoveTo((columna_inicio+(columna_sepa*8))*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(string.Format("{0:F}",decimal.Parse(lector["max"].ToString())));		Pango.CairoHelper.ShowLayout (cr, layout);
 								break;
 								case "10":
-									cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(codigoproducto);		Pango.CairoHelper.ShowLayout (cr, layout);
+									cr.MoveTo((columna_inicio+(columna_sepa*9))*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(string.Format("{0:F}",decimal.Parse(lector["max"].ToString())));		Pango.CairoHelper.ShowLayout (cr, layout);
 								break;
 								case "11":
-									cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(codigoproducto);		Pango.CairoHelper.ShowLayout (cr, layout);
+									cr.MoveTo((columna_inicio+(columna_sepa*10))*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(string.Format("{0:F}",decimal.Parse(lector["max"].ToString())));		Pango.CairoHelper.ShowLayout (cr, layout);
 								break;
 								case "12":
-									cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(codigoproducto);		Pango.CairoHelper.ShowLayout (cr, layout);
+									cr.MoveTo((columna_inicio+(columna_sepa*11))*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(string.Format("{0:F}",decimal.Parse(lector["max"].ToString())));		Pango.CairoHelper.ShowLayout (cr, layout);
 								break;
-							}						
-							cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(codigoproducto);		Pango.CairoHelper.ShowLayout (cr, layout);
-							cr.MoveTo(75*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText((string) lector["descripcion_producto"]);		Pango.CairoHelper.ShowLayout (cr, layout);
+							}
+							codigoproducto = lector["idproducto_osiris"].ToString().Trim();
+							descriproducto = lector["descripcion_producto"].ToString().Trim();
 							salto_de_pagina(cr,layout);
-							comienzo_linea += separacion_linea;
+							desc = Pango.FontDescription.FromString ("Sans");
+							fontSize = 6.0;			layout = null;			layout = context.CreatePangoLayout ();
+							desc.Size = (int)(fontSize * pangoScale);		layout.FontDescription = desc;
+							layout.FontDescription.Weight = Weight.Normal;		// Letra normal
 						}else{
 							switch (lector["mes"].ToString().Trim()){	
 								case "01":
-									cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(codigoproducto);		Pango.CairoHelper.ShowLayout (cr, layout);
+									cr.MoveTo(columna_inicio*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(string.Format("{0:F}",decimal.Parse(lector["max"].ToString())));		Pango.CairoHelper.ShowLayout (cr, layout);
 								break;
 								case "02":
-									cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(codigoproducto);		Pango.CairoHelper.ShowLayout (cr, layout);
+									cr.MoveTo((columna_inicio+(columna_sepa*1))*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(string.Format("{0:F}",decimal.Parse(lector["max"].ToString())));		Pango.CairoHelper.ShowLayout (cr, layout);
 								break;
 								case "03":
-									cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(codigoproducto);		Pango.CairoHelper.ShowLayout (cr, layout);
+									cr.MoveTo((columna_inicio+(columna_sepa*2))*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(string.Format("{0:F}",decimal.Parse(lector["max"].ToString())));		Pango.CairoHelper.ShowLayout (cr, layout);
 								break;
 								case "04":
-									cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(codigoproducto);		Pango.CairoHelper.ShowLayout (cr, layout);
+									cr.MoveTo((columna_inicio+(columna_sepa*3))*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(string.Format("{0:F}",decimal.Parse(lector["max"].ToString())));		Pango.CairoHelper.ShowLayout (cr, layout);
 								break;
 								case "05":
-									cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(codigoproducto);		Pango.CairoHelper.ShowLayout (cr, layout);
+									cr.MoveTo((columna_inicio+(columna_sepa*4))*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(string.Format("{0:F}",decimal.Parse(lector["max"].ToString())));		Pango.CairoHelper.ShowLayout (cr, layout);
 								break;
 								case "06":
-									cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(codigoproducto);		Pango.CairoHelper.ShowLayout (cr, layout);
+									cr.MoveTo((columna_inicio+(columna_sepa*5))*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(string.Format("{0:F}",decimal.Parse(lector["max"].ToString())));		Pango.CairoHelper.ShowLayout (cr, layout);
 								break;
 								case "07":
-									cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(codigoproducto);		Pango.CairoHelper.ShowLayout (cr, layout);
+									cr.MoveTo((columna_inicio+(columna_sepa*6))*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(string.Format("{0:F}",decimal.Parse(lector["max"].ToString())));		Pango.CairoHelper.ShowLayout (cr, layout);
 								break;
 								case "08":
-									cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(codigoproducto);		Pango.CairoHelper.ShowLayout (cr, layout);
+									cr.MoveTo((columna_inicio+(columna_sepa*7))*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(string.Format("{0:F}",decimal.Parse(lector["max"].ToString())));		Pango.CairoHelper.ShowLayout (cr, layout);
 								break;
 								case "09":
-									cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(codigoproducto);		Pango.CairoHelper.ShowLayout (cr, layout);
+									cr.MoveTo((columna_inicio+(columna_sepa*8))*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(string.Format("{0:F}",decimal.Parse(lector["max"].ToString())));		Pango.CairoHelper.ShowLayout (cr, layout);
 								break;
 								case "10":
-									cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(codigoproducto);		Pango.CairoHelper.ShowLayout (cr, layout);
+									cr.MoveTo((columna_inicio+(columna_sepa*9))*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(string.Format("{0:F}",decimal.Parse(lector["max"].ToString())));		Pango.CairoHelper.ShowLayout (cr, layout);
 								break;
 								case "11":
-									cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(codigoproducto);		Pango.CairoHelper.ShowLayout (cr, layout);
+									cr.MoveTo((columna_inicio+(columna_sepa*10))*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(string.Format("{0:F}",decimal.Parse(lector["max"].ToString())));		Pango.CairoHelper.ShowLayout (cr, layout);
 								break;
 								case "12":
-									cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(codigoproducto);		Pango.CairoHelper.ShowLayout (cr, layout);
+									cr.MoveTo((columna_inicio+(columna_sepa*11))*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(string.Format("{0:F}",decimal.Parse(lector["max"].ToString())));		Pango.CairoHelper.ShowLayout (cr, layout);
 								break;
-							}						
-							//cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(codigoproducto);		Pango.CairoHelper.ShowLayout (cr, layout);
-							//cr.MoveTo(75*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText((string) lector["descripcion_producto"]);		Pango.CairoHelper.ShowLayout (cr, layout);
-							//salto_de_pagina(cr,layout);
+							}
 						}
 					}
 				}
@@ -486,8 +500,16 @@ namespace osiris
 			cr.MoveTo(width/2,45*escala_en_linux_windows);	layout.SetText("REPORTE");	Pango.CairoHelper.ShowLayout (cr, layout);
 			//cr.MoveTo(225*escala_en_linux_windows, 35*escala_en_linux_windows);			layout.SetText(titulo_rpt);				Pango.CairoHelper.ShowLayout (cr, layout);
 			
-			fontSize = 7.0;			layout = null;			layout = context.CreatePangoLayout ();
-			desc.Size = (int)(fontSize * pangoScale);		layout.FontDescription = desc;			
+			fontSize = 6.0;			layout = null;			layout = context.CreatePangoLayout ();
+			desc.Size = (int)(fontSize * pangoScale);		layout.FontDescription = desc;
+			layout.FontDescription.Weight = Weight.Normal;		// Letra negrita
+			
+			// Creando el Cuadro de Titulos
+			cr.Rectangle (05*escala_en_linux_windows, 60*escala_en_linux_windows, 750*escala_en_linux_windows, 15*escala_en_linux_windows);
+			cr.FillExtents();  //. FillPreserve(); 
+			cr.SetSourceRGB (0, 0, 0);
+			cr.LineWidth = 0.5;
+			cr.Stroke();
 		}
 		
 		void salto_de_pagina(Cairo.Context cr,Pango.Layout layout)           
@@ -495,8 +517,8 @@ namespace osiris
             if(comienzo_linea >530){
                 cr.ShowPage();
                 Pango.FontDescription desc = Pango.FontDescription.FromString ("Sans");                               
-                fontSize = 8.0;        desc.Size = (int)(fontSize * pangoScale);                    layout.FontDescription = desc;
-                comienzo_linea = 70;
+                fontSize = 6.0;        desc.Size = (int)(fontSize * pangoScale);  		layout.FontDescription = desc;
+                comienzo_linea = 80;
                 numpage += 1;
                 imprime_encabezado(cr,layout);
             }

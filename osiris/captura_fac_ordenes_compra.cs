@@ -1376,7 +1376,7 @@ namespace osiris
 						entry_codprod_proveedor.Text = (string) model.GetValue(iter,12);
 						entry_cantidad_aplicada.Sensitive = false;
 						entry_precio.Sensitive = false;
-						entry_producto_proveedor.Sensitive = false;
+						entry_producto_proveedor.IsEditable = false;
 						//entry_codprod_proveedor.Sensitive = false;
 					}
 				}

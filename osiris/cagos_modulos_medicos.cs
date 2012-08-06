@@ -366,7 +366,7 @@ namespace osiris
 			
 			//arraycargosextras = new ArrayList();
 			//treeViewEngineExtras
-			object[] parametros_objetos = {arraycargosextras,lista_cargos_extras,treeViewEngineExtras,LoginEmpleado};
+			object[] parametros_objetos = {arraycargosextras,lista_cargos_extras,treeViewEngineExtras};
 			string[] parametros_sql = {"SELECT id_tipo_cirugia,descripcion_cirugia,tiene_paquete,to_char(valor_paquete,'999999999.99') AS valorpaquetereal,"+
 										"to_char(precio_de_venta,'999999999.99') AS valorpaquete "+
 										"FROM osiris_his_tipo_cirugias ",															
@@ -374,7 +374,8 @@ namespace osiris
 										"to_char(precio_de_venta,'999999999.99') AS valorpaquete "+
 										"FROM osiris_his_tipo_cirugias "+
 										"WHERE descripcion_cirugia LIKE '%"};
-			string[] parametros_string = {LoginEmpleado};
+			string[] parametros_string = {LoginEmpleado,id_tipopaciente.ToString(),idempresa_paciente.ToString(),idaseguradora_paciente.ToString(),
+						aplica_precios_aseguradoras.ToString(),aplica_precios_empresas.ToString(),idtipointernamiento.ToString(),idsubalmacen.ToString()};
 			classfind_data.buscandor(parametros_objetos,parametros_sql,parametros_string,"find_cirugia_cargos_modmedicos"," ORDER BY id_tipo_cirugia","%' ",0);
 		}
 		

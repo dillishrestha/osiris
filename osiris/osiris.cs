@@ -127,6 +127,7 @@ namespace osiris
 		bool autorizaERP =  false;
 		bool autorizaGENERAL = false;
 		bool accesoabrirfolio = false;
+		bool accesocatalogoprod = false;
 		
 		string tipobusqueda = "AND osiris_his_medicos.nombre1_medico LIKE '";
 		
@@ -244,7 +245,7 @@ namespace osiris
 				conexion.Open();
 				NpgsqlCommand comando;
 				comando = conexion.CreateCommand();             
-				comando.CommandText = "SELECT osiris_empleado.id_empleado,login_empleado,nombre1_empleado,nombre2_empleado, "+
+				comando.CommandText = "SELECT *,osiris_empleado.id_empleado,login_empleado,nombre1_empleado,nombre2_empleado, "+
                						 "apellido_paterno_empleado,apellido_materno_empleado,departamento,puesto,"+
                						 "password_empleado AS passwordempleado,acceso_his,acceso_erp,acceso_general,autoriza_his,autoriza_erp,autoriza_general,"+
                						 "acceso_osiris,acceso_abrir_folio "+	
@@ -281,6 +282,7 @@ namespace osiris
 						autorizaGENERAL = (bool) lector["autoriza_general"];
 						
 						accesoabrirfolio = (bool) lector["acceso_abrir_folio"];
+						accesocatalogoprod = (bool) lector["acceso_catalogo_producto"];
 												
 						//nombre_empresa = conexion_a_DB.nombre_empresa;
 						//direccion_empresa = conexion_a_DB.direccion_empresa;
@@ -482,7 +484,7 @@ namespace osiris
 		void on_button_costos_clicked (object sender, EventArgs args)
 		{	
 			// new osiris.nuevos_prod(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
-			new osiris.costos_consultas(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
+			new osiris.costos_consultas(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,accesocatalogoprod);
 		}
 		
 		void on_button_herramientas_clicked (object sender, EventArgs args)
@@ -608,7 +610,7 @@ namespace osiris
 					button_imagenologia.Sensitive = true;
 				}				
 				if ((string) accesoHIS.Substring(10,1) == "1"){
-					button_oftalmologia.Sensitive = true;
+					button_oftalmologia.Sensitive = false;
 				}
 				if ((string) accesoHIS.Substring(11,1) == "1"){
 					button_vision.Sensitive = true;

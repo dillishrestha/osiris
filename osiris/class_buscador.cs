@@ -160,6 +160,7 @@ namespace osiris
 		Gtk.Entry entry_almacen = null;
 		
 		class_conexion conexion_a_DB = new class_conexion();
+		class_public classpublic = new class_public();
 				
 		string[] args_sql;
 		string type_find = "";
@@ -170,7 +171,14 @@ namespace osiris
 		string connectionString;
 		string nombrebd;
 		string LoginEmpleado;
-		
+		int id_tipopaciente;
+		int idempresa_paciente;
+		int idaseguradora_paciente;
+		float valoriva;
+		bool aplica_precios_aseguradoras;	// Toma el valor de si se tiene creado la lista de precio en la tabla de Productos
+		bool aplica_precios_empresas;		// Toma el valor de si se tiene creado la lista de precio en la tabla
+		int idtipointernamiento; 
+		int idsubalmacen;
 		//declaracion de columnas y celdas de treeview de busqueda
 		TreeViewColumn col_buscador0;	CellRendererText cellrt0;
 		TreeViewColumn col_buscador1;	CellRendererText cellrt1;
@@ -186,7 +194,8 @@ namespace osiris
 		public void buscandor(object[] args, string[] args_sql_, string[] args_varible_, string type_find_,string order_sql_,string comodin_,int typeseek_)		
 		{
 			connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
-			nombrebd = conexion_a_DB._nombrebd;	
+			nombrebd = conexion_a_DB._nombrebd;
+			valoriva = float.Parse(classpublic.ivaparaaplicar);
 			Glade.XML gxml = new Glade.XML (null, "osiris.glade", "buscador", null);
 			gxml.Autoconnect(this);
 			buscador.Title = "Buscador "+type_find_;
@@ -386,7 +395,14 @@ namespace osiris
 					arraylistobject = (object) args[0] as ArrayList;
 					treeviewobject = (object) args[1] as Gtk.TreeView;
 					treeViewEngine = (object) args[2] as Gtk.ListStore;
-					LoginEmpleado = (string) args_varible_[0];				
+					LoginEmpleado = (string) args_varible_[0];
+					id_tipopaciente = int.Parse((string) args_varible_[1]);
+					idempresa_paciente = int.Parse((string) args_varible_[2]);
+					idaseguradora_paciente = int.Parse((string) args_varible_[3]);
+					aplica_precios_aseguradoras = (bool) Convert.ToBoolean((string) args_varible_[4]);
+					aplica_precios_empresas = (bool) Convert.ToBoolean((string) args_varible_[5]);
+					idtipointernamiento = int.Parse((string) args_varible_[6]);
+					idsubalmacen = int.Parse((string) args_varible_[7]);
 				break;
 			}
 			args_sql = args_sql_;
@@ -1002,16 +1018,51 @@ namespace osiris
 		
 		void carga_valores_treeview_pq_modcargos(int idcode_find,object treeview_,object listotree_store_)
 		{
+			string precio_a_tomar = "";    // en esta variable dejo el precio que va tomar para los direfentes clientes
+			float calculodeiva = 0;
+			float ppcantidad = 0;
+			float suma_total = 0;
+			float preciocondesc = 0;
+			float tomaprecio = 0;
+			float tomadescue = 0;
+			float valor_descuento = 0;
+			//// para las diferentes listas de precios \\\\\\\\\\\\\			
+			if (id_tipopaciente == 500 || id_tipopaciente == 102) {  // Municipio y Empresas			
+				// verifica si ese cliente tiene una lista de precio asignada
+				if (this.aplica_precios_empresas == true || aplica_precios_aseguradoras == true){     
+					precio_a_tomar = "precio_producto_"+id_tipopaciente.ToString().Trim()+idempresa_paciente.ToString().Trim();
+					//precio_a_tomar = "precio_producto_publico1";
+				}else{
+					precio_a_tomar = "precio_producto_publico";
+				}
+			}else{				
+				if (id_tipopaciente == 400 ) { // Aseguradora
+					// verifica si ese cliente tiene una lista de precio asignada
+					if (this.aplica_precios_empresas == true || aplica_precios_aseguradoras == true){    
+						precio_a_tomar = "precio_producto_"+id_tipopaciente.ToString().Trim()+this.idaseguradora_paciente.ToString().Trim();
+						//precio_a_tomar = "precio_producto_publico1";
+					}else{
+						precio_a_tomar = "precio_producto_publico";
+					}
+				}else{
+					precio_a_tomar = "precio_producto_publico";
+				}
+			}
+			
 			string query_sql_llenado_treeview = "SELECT descripcion_producto,osiris_his_tipo_admisiones.descripcion_admisiones, "+
-							"id_empleado,osiris_his_cirugias_deta.eliminado,osiris_productos.aplicar_iva,osiris_his_cirugias_deta.id_tipo_admisiones,  "+
+							"id_empleado,osiris_his_cirugias_deta.eliminado,osiris_productos.aplicar_iva,osiris_his_cirugias_deta.id_tipo_admisiones AS idtipoadmisiones,"+
 							"to_char(osiris_his_cirugias_deta.id_producto,'999999999999') AS idproducto, "+
 							"to_char(osiris_his_cirugias_deta.cantidad_aplicada,'99999.99') AS cantidadaplicada, "+
 							"to_char(osiris_productos.precio_producto_publico,'99999999.99') AS preciopublico,"+
 							"to_char(osiris_productos.costo_por_unidad,'999999999.99') AS costoproductounitario, "+
 							"to_char(osiris_productos.porcentage_ganancia,'99999.99') AS porcentageutilidad, "+
 							"to_char(osiris_productos.costo_producto,'999999999.99') AS costoproducto, "+
+							"to_char(osiris_productos.porcentage_descuento,'999.99') AS porcentagesdesc, " +
+							"osiris_productos.aplica_descuento,"+
 							"to_char(osiris_his_cirugias_deta.fechahora_creacion,'dd-MM-yyyy HH:mi:ss') AS fechcreacion ,"+
-							"to_char(osiris_his_cirugias_deta.id_secuencia,'9999999999') AS secuencia "+
+							"to_char(osiris_his_cirugias_deta.id_secuencia,'9999999999') AS secuencia,"+
+							"to_char("+precio_a_tomar+",'99999999.99') AS preciopublico_cliente "+
+							// "to_char(stock,'999999999.99') AS stock_subalmacen "+
 							"FROM "+
 							"osiris_his_cirugias_deta,osiris_productos,osiris_his_tipo_cirugias,osiris_his_tipo_admisiones "+
 							"WHERE "+
@@ -1021,6 +1072,7 @@ namespace osiris
 							"AND osiris_his_cirugias_deta.eliminado = false "+ 
 							"AND osiris_his_cirugias_deta.id_tipo_admisiones = osiris_his_tipo_admisiones.id_tipo_admisiones "+
 							"AND osiris_his_cirugias_deta.id_tipo_cirugia = '"+idcode_find.ToString().Trim()+"' "+
+							"AND osiris_his_cirugias_deta.id_tipo_admisiones = '"+idtipointernamiento.ToString().Trim()+"' "+
 						    "AND osiris_his_cirugias_deta.eliminado = 'false' "+
 							"ORDER BY osiris_productos.descripcion_producto,to_char(osiris_his_cirugias_deta.fechahora_creacion,'yyyy-mm-dd HH:mm:ss');";
 			NpgsqlConnection conexion; 
@@ -1034,7 +1086,23 @@ namespace osiris
 				comando.CommandText = query_sql_llenado_treeview;
 				Console.WriteLine(comando.CommandText);
 				NpgsqlDataReader lector = comando.ExecuteReader ();
-				while (lector.Read()){
+				while (lector.Read()){					
+					if (float.Parse((string) lector["preciopublico_cliente"].ToString().Trim()) > 0){
+						tomaprecio = float.Parse((string) lector["preciopublico_cliente"]);
+					}else{
+						tomaprecio = float.Parse((string) lector["preciopublico"]);
+					}
+					tomadescue = float.Parse((string) lector["porcentagesdesc"],System.Globalization.NumberStyles.Float,new System.Globalization.CultureInfo("es-MX"));
+					preciocondesc = tomaprecio;
+					if ((bool) lector["aplicar_iva"]){
+						calculodeiva = ((tomaprecio * valoriva)/100)*float.Parse((string) lector["cantidadaplicada"]);
+					}
+					if ((bool) lector["aplica_descuento"]){
+						preciocondesc = (tomaprecio-((tomaprecio * tomadescue)/100)) * float.Parse((string) lector["cantidadaplicada"]);
+					}
+					ppcantidad = tomaprecio * float.Parse((string) lector["cantidadaplicada"]);
+					suma_total = ppcantidad + calculodeiva;
+					valor_descuento = ppcantidad - preciocondesc;
 					osiris.cargos_modulos_medicos.Item foo = new osiris.cargos_modulos_medicos.Item(false,
 					                float.Parse( (string) lector["cantidadaplicada"]),
 					                (string) lector["idproducto"],
@@ -1042,7 +1110,17 @@ namespace osiris
 					                LoginEmpleado,
 									(string) DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
 					                (string) lector["descripcion_admisiones"],
-					                "","","","","","","",0,"","","");
+					                (string) lector["preciopublico_cliente"],
+					                ppcantidad.ToString(),
+									calculodeiva.ToString("F").PadLeft(10),
+					                suma_total.ToString("F").PadLeft(10),
+					                (string) lector["porcentagesdesc"],
+					                valor_descuento.ToString("F").PadLeft(10),
+					                preciocondesc.ToString("F").PadLeft(10),
+					                int.Parse((string) lector["idtipoadmisiones"].ToString()),
+					                (string) lector["costoproductounitario"],
+					                (string) lector["porcentageutilidad"],
+					                (string) lector["costoproducto"]);
 					arraylistobject.Add(foo);
 					treeViewEngine.AppendValues(false,
 					                            float.Parse((string) lector["cantidadaplicada"]),
@@ -1050,7 +1128,18 @@ namespace osiris
 					                			(string) lector["descripcion_producto"],
 					                            LoginEmpleado,
 					                            (string) DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
-					                            (string) lector["descripcion_admisiones"]);
+					                            (string) lector["descripcion_admisiones"],
+					                            (string) lector["preciopublico_cliente"],
+					                            ppcantidad.ToString(),
+												calculodeiva.ToString("F").PadLeft(10),
+					                            suma_total.ToString("F").PadLeft(10),
+					                            (string) lector["porcentagesdesc"],
+					                			valor_descuento.ToString("F").PadLeft(10),
+					                            preciocondesc.ToString("F").PadLeft(10),
+					                             int.Parse((string) lector["idtipoadmisiones"].ToString()),
+					                            (string) lector["costoproductounitario"],
+					                            (string) lector["porcentageutilidad"],
+					                            (string) lector["costoproducto"]);
 				}
 			}catch (NpgsqlException ex){
 	   			Console.WriteLine ("PostgresSQL error: {0}",ex.Message);

@@ -3790,7 +3790,7 @@ namespace osiris
 				comando = conexion.CreateCommand ();
                	comando.CommandText = "SELECT * FROM osiris_his_tipo_admisiones "+
                						"WHERE cuenta_mayor = 4000 "+
-               						"AND activo_caja = 'true' "+
+									"AND activo_caja = 'true' "+
                						"ORDER BY descripcion_admisiones;";
 				
 				NpgsqlDataReader lector = comando.ExecuteReader ();

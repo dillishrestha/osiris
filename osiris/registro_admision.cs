@@ -829,7 +829,8 @@ namespace osiris
 			
 			// Llenado de combobox con los tipos de Admisiones y centros de costos
 			llenado_combobox(1,"",combobox_tipo_admision,"sql","SELECT * FROM osiris_his_tipo_admisiones WHERE servicio_directo = 'false' "+
-	           							"AND cuenta_mayor = '4000' "+
+	           							"AND cuenta_mayor = '4000' " +
+	           							"AND activo_admision = 'true' "+
 	               						"ORDER BY id_tipo_admisiones;","descripcion_admisiones","id_tipo_admisiones",args_args,args_id_array,"");
 			llenado_combobox(0,"",combobox_tipo_cirugia,"array","","","",args_tipos_cirugias,args_id_array,"");
 		}

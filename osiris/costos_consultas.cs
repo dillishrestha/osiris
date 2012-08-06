@@ -89,7 +89,8 @@ namespace osiris
 		int id_tipopaciente = 0;  // toma el valor del tipo de paciente
 		int id_empresa = 0;
 		int id_aseguradora = 0;
-		string idgrupoproducto;   
+		string idgrupoproducto;  
+		bool accesocatalogoprod;
     	    
     	//Declaracion de ventana de error
 		protected Gtk.Window MyWinError;
@@ -108,12 +109,13 @@ namespace osiris
 		
 		class_conexion conexion_a_DB = new class_conexion();
 		
-		public costos_consultas(string LoginEmp_, string NomEmpleado_, string AppEmpleado_, string ApmEmpleado_, string nombrebd_ )
+		public costos_consultas(string LoginEmp_, string NomEmpleado_, string AppEmpleado_, string ApmEmpleado_, string nombrebd_,bool accesocatalogoprod_ )
 		{
 			LoginEmpleado = LoginEmp_;
     		NomEmpleado = NomEmpleado_;
     		AppEmpleado = AppEmpleado_;
     		ApmEmpleado = ApmEmpleado_;
+			accesocatalogoprod = accesocatalogoprod_;
     		connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
 			nombrebd = conexion_a_DB._nombrebd;
     		
@@ -153,8 +155,7 @@ namespace osiris
 		
 		void on_button_catalogo_productos_clicked (object sender, EventArgs args)
 		{
-			if(LoginEmpleado == "ADMIN" || LoginEmpleado == "ROLVEDAFLORES" || 
-			   LoginEmpleado == "SAMANTHA" || LoginEmpleado == "SANDRASALASL" || LoginEmpleado == "ADRIANLOPEZ"){
+			if(accesocatalogoprod == true){
 				new osiris.catalogo_productos_nuevos(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
 			}else{
 				msgBox = new MessageDialog (MyWin,DialogFlags.Modal,

@@ -69,6 +69,7 @@ namespace osiris
 		[Widget] Gtk.Entry entry_edad = null;
 		[Widget] Gtk.Entry entry_descrip_cirugia = null;
 		[Widget] Gtk.Entry entry_id_habitacion = null;
+		//[Widget] Gtk.Label label194 = null; // label del doctor
 						
 		[Widget] Gtk.TreeView lista_de_servicios = null;
 		[Widget] Gtk.TreeView lista_cargos_extras = null;
@@ -96,6 +97,7 @@ namespace osiris
 		[Widget] Gtk.Button button_solicitud_rx = null;
 		[Widget] Gtk.Button button_solicitud_vision = null;
 		[Widget] Gtk.Button button_paquetes_qx = null;
+		[Widget] Gtk.Button button_documentos_medicos = null;
 		
 		//Declarando la barra de estado
 		[Widget] Gtk.Statusbar statusbar_caja = null;
@@ -300,9 +302,9 @@ namespace osiris
 			entry_folio_servicio.KeyPressEvent += onKeyPressEvent_enter_folio;
 			entry_folio_servicio.ModifyBase(StateType.Normal, new Gdk.Color(255,243,169)); // Color Amarillo
 			// Activacion de grabacion de informacion
-	    	button_graba_pago.Clicked += new EventHandler(on_button_graba_pago_clicked);
-	    	//boton para dar de alta al paciente
-	    	button_alta_paciente.Clicked += new EventHandler(on_button_alta_paciente_clicked);
+			button_graba_pago.Clicked += new EventHandler(on_button_graba_pago_clicked); 
+			//boton para dar de alta al paciente
+	    		button_alta_paciente.Clicked += new EventHandler(on_button_alta_paciente_clicked);
 			//imprime la hoja de cargos
 			button_hoja_cargos.Clicked += new EventHandler(on_button_hoja_cargos_clicked);
 			//imprime la hoja de cargos
@@ -340,6 +342,7 @@ namespace osiris
 			button_devoluciones.Clicked += new EventHandler(on_button_devoluciones_clicked);
 			// Busca paquete quirurgioco para cargarlo al procedimiento
 			button_paquetes_qx.Clicked += new EventHandler(on_button_paquetes_qx_clicked);
+			button_documentos_medicos.Clicked += new EventHandler(on_button_documentos_medicos_clicked);
 			// Desactivando Botones de operacion se activa cuando selecciona una atencion
 			button_busca_producto.Sensitive = false;
 			button_removerItem.Sensitive = false;
@@ -356,6 +359,11 @@ namespace osiris
 			statusbar_caja.Push(1, "login: "+LoginEmpleado+"  |Usuario: "+NomEmpleado+" "+AppEmpleado+" "+ApmEmpleado);
 			statusbar_caja.HasResizeGrip = false;
 	    }
+		
+		void on_button_documentos_medicos_clicked(object sender, EventArgs args)
+		{
+			new osiris.impr_doc_pacientes(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,entry_folio_servicio.Text,1);//,nombmedico);
+		}
 		
 		void on_button_paquetes_qx_clicked(object sender, EventArgs args)
 		{
@@ -1528,17 +1536,17 @@ namespace osiris
 				            	"osiris_his_paciente.direccion_paciente,osiris_his_paciente.numero_casa_paciente,osiris_his_paciente.numero_departamento_paciente, "+
 								"osiris_his_paciente.colonia_paciente,osiris_his_paciente.municipio_paciente,osiris_his_paciente.codigo_postal_paciente,osiris_his_paciente.estado_paciente,  "+
             					"osiris_erp_movcargos.id_tipo_paciente AS idtipopaciente,descripcion_tipo_paciente,"+
-						        "osiris_his_tipo_cirugias.descripcion_cirugia,"+
+						        "osiris_erp_movcargos.id_tipo_cirugia,osiris_his_tipo_cirugias.descripcion_cirugia,"+
 						        "alta_paciente,"+
             					"osiris_erp_movcargos.id_tipo_admisiones AS idtipoadmision,descripcion_admisiones,osiris_his_tipo_especialidad.descripcion_especialidad,"+
 				            	"osiris_empresas.lista_de_precio AS listadeprecio_empresa,"+
 				            	"osiris_erp_cobros_enca.id_habitacion,to_char(osiris_his_habitaciones.numero_cuarto,'999999999') AS numerocuarto,osiris_his_habitaciones.descripcion_cuarto,osiris_his_habitaciones.id_tipo_admisiones AS idtipoadmisiones_habitacion,"+
 				            	"osiris_his_paciente.sexo_paciente,osiris_erp_cobros_enca.reservacion,"+			            	
-				            	"osiris_erp_cobros_enca.nombre_medico_tratante,"+
+				            	"osiris_erp_cobros_enca.nombre_medico_tratante,id_medico_tratante, "+
 				            	"osiris_erp_movcargos.nombre_de_cirugia,"+
 				            	"osiris_aseguradoras.lista_de_precio AS listadeprecio_aseguradora,"+
 				            	"osiris_erp_cobros_enca.id_aseguradora,descripcion_aseguradora, osiris_erp_cobros_enca.id_medico,nombre_medico,descripcion_diagnostico_movcargos,"+
-				            	"osiris_erp_cobros_enca.id_empresa AS idempresa "+
+				            	"osiris_erp_cobros_enca.id_empresa AS idempresa,osiris_his_tipo_admisiones.asigna_med_trantante,osiris_his_tipo_admisiones.asigna_cirugia "+
 				            	"FROM "+ 
 				            	"osiris_erp_cobros_enca,osiris_his_paciente,osiris_erp_movcargos,osiris_his_tipo_admisiones,osiris_his_tipo_pacientes, "+
 				            	"osiris_his_habitaciones, "+
@@ -1608,6 +1616,7 @@ namespace osiris
 					}
 					//int foliointernodep = (int) lector["folio_de_servicio_dep"];
 					
+					// Validando que asigne una habitacion (Qx, HOS, URG) sino no puede dar el alta medica
 					//if (idhabitacion == 1){
 					//	button_alta_paciente.Sensitive = false;
 					//}
@@ -1618,8 +1627,7 @@ namespace osiris
 						MessageType.Error, 
 						ButtonsType.Close, "Este procedimiento se encuentra RESERVADO \n"+
 									"solo el personal de CAJA podra liberarlo....");
-						msgBoxError.Run ();
-						msgBoxError.Destroy();
+						msgBoxError.Run ();					msgBoxError.Destroy();
 					}
 					
 					PidPaciente = int.Parse(entry_pid_paciente.Text);		    // Toma la actualizacion del pid del paciente
@@ -1643,6 +1651,33 @@ namespace osiris
 										if ((bool) lector ["bloqueo_de_folio"] == false){
 											//Console.WriteLine("bloqueo_de_folio "+lector ["bloqueo_de_folio"]);
 											button_busca_producto.Sensitive = true;
+											//Console.WriteLine(lector["asigna_med_trantante"].ToString());
+											if((bool) lector["asigna_med_trantante"]){
+												if(int.Parse((string) lector["id_medico_tratante"].ToString().Trim()) == 1){
+													entry_doctor.Text = (string) lector["nombre_medico_tratante"].ToString().Trim();
+													button_busca_producto.Sensitive = false;
+													button_paquetes_qx.Sensitive = false;
+													MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+																MessageType.Error, 
+																ButtonsType.Close, "Tiene asignado un doctor de ingreso, debe Asignar un Medico Tratante para hacer Cargos, verifique...");
+													msgBoxError.Run ();			msgBoxError.Destroy();
+												}else{
+													entry_id_doctor.Text = (string) lector["id_medico_tratante"].ToString().Trim();
+													entry_doctor.Text = (string) lector["nombre_medico_tratante"].ToString().Trim();
+												}
+											}
+											if((bool) lector["asigna_cirugia"]){
+												if(int.Parse((string) lector["id_tipo_cirugia"].ToString().Trim()) == 1){
+													button_busca_producto.Sensitive = false;
+													button_paquetes_qx.Sensitive = false;
+													MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+																MessageType.Error, 
+																ButtonsType.Close, "Debe asignar el tratamiento o Cirugia para hacer Cargos, verifique...");
+													msgBoxError.Run ();			msgBoxError.Destroy();
+												}
+											}
+											// 
+											
 										}else{
 											button_busca_producto.Sensitive = false;
 											MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,

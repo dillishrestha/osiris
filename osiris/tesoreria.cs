@@ -7,7 +7,7 @@
 //				  Daniel Olivares - arcangeldoc@gmail.com (Diseño de Pantallas Glade)
 // 				  
 // Licencia		: GLP
-// S.O. 		: GNU/Linux Ubuntu 6.06 LTS (Dapper Drake)
+// S.O. 		: GNU/Linux
 //////////////////////////////////////////////////////////
 //
 // proyect osiris is free software; you can redistribute it and/or modify
@@ -50,7 +50,7 @@ namespace osiris
 		[Widget] Gtk.Button button_clientes = null;
 		[Widget] Gtk.Button button_envio_de_facturas = null;
 		[Widget] Gtk.Button button_solicitud_material = null;
-		[Widget] Gtk.Button button_exportar_cortecaja = null;
+		[Widget] Gtk.Button button_cortecaja = null;
 		[Widget] Gtk.Button button_exportar_compserv = null;
 		[Widget] Gtk.Button button_exportar_paseqx = null;
 		[Widget] Gtk.Button button_reportes = null;
@@ -70,21 +70,23 @@ namespace osiris
 		//declarando la ventana de rango de fechas
 		[Widget] Gtk.Window rango_de_fecha;
 		[Widget] Gtk.Entry entry_dia1;
-		[Widget] Gtk.Entry entry_mes1;
-		[Widget] Gtk.Entry entry_ano1;
 		[Widget] Gtk.Entry entry_dia2;
+		[Widget] Gtk.Entry entry_mes1;
 		[Widget] Gtk.Entry entry_mes2;
+		[Widget] Gtk.Entry entry_ano1;
 		[Widget] Gtk.Entry entry_ano2;
+		[Widget] Gtk.Entry entry_referencia_inicial;
+		[Widget] Gtk.Entry entry_cliente;
 		[Widget] Gtk.Label label_orden;
+		[Widget] Gtk.Label label_nom_cliente;
+		[Widget] Gtk.Label label142;
 		[Widget] Gtk.RadioButton radiobutton_cliente;
 		[Widget] Gtk.RadioButton radiobutton_fecha;
-		[Widget] Gtk.CheckButton  checkbutton_impr_todo_proce;
-		[Widget] Gtk.Label label_nom_cliente;
-		[Widget] Gtk.Entry entry_cliente;
 		[Widget] Gtk.Button button_busca_cliente;
-		[Widget] Gtk.CheckButton checkbutton_todos_los_clientes;
-		[Widget] Gtk.Entry entry_referencia_inicial;
 		[Widget] Gtk.Button button_imprime_rangofecha;
+		[Widget] Gtk.CheckButton checkbutton_impr_todo_proce;
+		[Widget] Gtk.CheckButton checkbutton_todos_los_clientes;
+		[Widget] Gtk.CheckButton checkbutton_export_to = null;
 		
 		///VENTANA buscadora de clientes
 		[Widget] Gtk.Button button_selecciona;
@@ -126,6 +128,11 @@ namespace osiris
 		
 		string tipobusqueda = "AND osiris_his_medicos.nombre1_medico LIKE '";
 		
+		string query_fechas = " ";
+		string orden = " ";
+		string rango1 = "";
+		string rango2 = "";
+		
 		private TreeStore treeViewEngineMedicos;
 		private TreeStore treeViewEngineClientes;
 		 
@@ -156,7 +163,7 @@ namespace osiris
 			button_facturador.Clicked += new EventHandler(on_button_facturador_clicked);
 			button_envio_de_facturas.Clicked += new EventHandler(on_button_envio_facturas_clicked);
 			button_exportar_compserv.Clicked += new EventHandler(on_button_exportar_compserv_clicked);
-			button_exportar_cortecaja.Clicked += new EventHandler(on_button_exportar_cortecaja_clicked);
+			button_cortecaja.Clicked += new EventHandler(on_button_cortecaja_clicked);
 			button_exportar_paseqx.Clicked += new EventHandler(on_button_exportar_paseqx_clicked);
 			button_separa_folio.Clicked += new EventHandler(on_button_separa_folio_clicked);
 			button_solicitud_material.Clicked += new EventHandler(on_button_solicitud_material_clicked);
@@ -236,60 +243,9 @@ namespace osiris
 			}
 		}
 		
-		void on_button_exportar_cortecaja_clicked(object sender, EventArgs args)
+		void on_button_cortecaja_clicked(object sender, EventArgs args)
 		{
-			Glade.XML gxml = new Glade.XML  (null, "caja.glade", "rango_de_fecha", null);
-			gxml.Autoconnect (this);  
-			rango_de_fecha.Show();
-			
-			entry_dia1.KeyPressEvent += onKeyPressEvent;
-			entry_mes1.KeyPressEvent += onKeyPressEvent;
-			entry_ano1.KeyPressEvent += onKeyPressEvent;
-			entry_dia2.KeyPressEvent += onKeyPressEvent;
-			entry_mes2.KeyPressEvent += onKeyPressEvent;
-			entry_ano2.KeyPressEvent += onKeyPressEvent;
-			entry_dia1.Text =DateTime.Now.ToString("dd");
-			entry_mes1.Text =DateTime.Now.ToString("MM");
-			entry_ano1.Text =DateTime.Now.ToString("yyyy");
-			entry_dia2.Text =DateTime.Now.ToString("dd");
-			entry_mes2.Text =DateTime.Now.ToString("MM");
-			entry_ano2.Text =DateTime.Now.ToString("yyyy");
-			
-			button_imprime_rangofecha.Clicked += new EventHandler(on_exporta_cortecaja_clicked);
-			button_salir.Clicked += new EventHandler(on_cierraventanas_clicked);
-		}
-		
-		void on_exporta_cortecaja_clicked(object sender, EventArgs args)
-		{
-			if(LoginEmpleado == "DOLIVARES" || LoginEmpleado =="ADMIN" || LoginEmpleado =="MARGARITAZ" || LoginEmpleado =="IESPINOZAF" || LoginEmpleado =="ZBAEZH" || LoginEmpleado == "YTAMEZ"){
-				string query_fechas = "AND to_char(osiris_erp_abonos.fecha_abono,'yyyy-MM-dd') >= '"+entry_ano1.Text+"-"+entry_mes1.Text+"-"+entry_dia1.Text+"' "+
-								"AND to_char(osiris_erp_abonos.fecha_abono,'yyyy-MM-dd') <= '"+entry_ano2.Text+"-"+entry_mes2.Text+"-"+entry_dia2.Text+"' ";
-			
-				string query_sql = "SELECT DISTINCT (osiris_erp_movcargos.folio_de_servicio),to_char(osiris_erp_abonos.fecha_abono,'yyyy-MM-dd') AS fechaabonopago,"+
-									"osiris_erp_abonos.id_abono,"+
-									"to_char(osiris_erp_abonos.folio_de_servicio,'9999999999') AS foliodeservicio,"+
-									"osiris_his_paciente.pid_paciente AS pidpaciente,nombre1_paciente || ' ' || nombre2_paciente || ' ' || apellido_paterno_paciente || ' ' || apellido_materno_paciente AS nombrepaciente,"+
-									"osiris_erp_abonos.monto_de_abono_procedimiento AS monto_comprobante,osiris_erp_abonos.concepto_del_abono,numero_recibo_caja AS numerorecibo,"+
-									"osiris_erp_tipo_comprobante.descripcion_tipo_comprobante,osiris_erp_forma_de_pago.descripcion_forma_de_pago AS forma_de_pago,osiris_erp_abonos.monto_convenio," +
-									"osiris_erp_movcargos.id_tipo_paciente,descripcion_tipo_paciente "+
-									"FROM osiris_erp_cobros_enca, osiris_erp_abonos,osiris_erp_tipo_comprobante, osiris_his_paciente, osiris_erp_forma_de_pago,osiris_erp_movcargos,osiris_his_tipo_pacientes "+
-									"WHERE osiris_erp_abonos.eliminado = false "+
-									"AND osiris_erp_abonos.folio_de_servicio = osiris_erp_cobros_enca.folio_de_servicio "+
-									"AND osiris_erp_movcargos.folio_de_servicio = osiris_erp_abonos.folio_de_servicio "+
-									"AND osiris_erp_abonos.id_forma_de_pago = osiris_erp_forma_de_pago.id_forma_de_pago "+ 
-									"AND osiris_erp_cobros_enca.pid_paciente = osiris_his_paciente.pid_paciente "+
-									"AND osiris_erp_abonos.id_tipo_comprobante = osiris_erp_tipo_comprobante.id_tipo_comprobante " +
-									"AND osiris_his_tipo_pacientes.id_tipo_paciente = osiris_erp_movcargos.id_tipo_paciente "+
-									query_fechas+
-									";";
-								
-				string[] args_names_field = {"foliodeservicio","pidpaciente","nombrepaciente","numerorecibo","descripcion_tipo_comprobante","monto_comprobante","forma_de_pago","concepto_del_abono","monto_convenio","descripcion_tipo_paciente"};
-				string[] args_type_field = {"float","float","string","float","string","float","string","string","float","string"};
-				
-				// class_crea_ods.cs
-				//Console.WriteLine(query_sql);
-				new osiris.class_traslate_spreadsheet(query_sql,args_names_field,args_type_field);
-			}
+			new osiris.reporte_de_abonos(nombrebd,"corte_caja",LoginEmpleado);
 		}
 		
 		void on_button_exportar_compserv_clicked(object sender, EventArgs args)
@@ -336,7 +292,7 @@ namespace osiris
 				
 		void on_button_button_rpt_abonos_clicked(object sender, EventArgs args)
 		{
-			new osiris.reporte_de_abonos(nombrebd);	
+			new osiris.reporte_de_abonos(nombrebd,"abonos_pagos",LoginEmpleado);	
 		}
 		
 		void button_rpt_facturas_pendientes_clicked(object sender, EventArgs args)

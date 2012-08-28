@@ -84,6 +84,12 @@ namespace osiris
 		[Widget] Gtk.Button button_cambio_contraseña = null;
 		[Widget] Gtk.Button button_agredecimientos = null;
 		
+		
+		[Widget] Gtk.MenuBar menubar_osiris = null;
+		[Widget] Gtk.MenuItem menuitem_hospital = null;
+		
+		
+		
 		// Salir
 		[Widget] Gtk.Button button_salir  = null;
 		[Widget] Gtk.Image hscmtylogo = null;
@@ -381,6 +387,8 @@ namespace osiris
 			//button_ginecologia.Hide();
 			//button_endoscopia.Hide();
 			
+			
+			//menuitem_hospital.Sensitive = false;
 			//new osiris.class_crea_ods();
 				
 			// Actulizando statusbar

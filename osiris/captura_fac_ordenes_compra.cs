@@ -43,10 +43,13 @@ namespace osiris
 		[Widget] Gtk.Button button_salir = null;		
 		//Declarando ventana de captura de facturas de ordenes de compra
 		[Widget] Gtk.Window captura_facturas_orden_compra = null;
-		[Widget] Gtk.CheckButton checkbutton_factura_sin_orden = null;
+		[Widget] Gtk.RadioButton radiobutton_sin_orden = null;
+		[Widget] Gtk.RadioButton radiobutton_orden_compra = null;
+		[Widget] Gtk.RadioButton radiobutton_requisicion = null;
 		[Widget] Gtk.Entry entry_orden_de_compra = null;
 		[Widget] Gtk.Button button_selecciona_ordencompra = null;
 		[Widget] Gtk.Button button_busca_orden_compra = null;
+		[Widget] Gtk.Button button_asigna_factura = null;
 		[Widget] Gtk.Entry entry_fecha_orden_compra = null;
 		[Widget] Gtk.Entry entry_estatus_oc = null;
 		[Widget] Gtk.Entry entry_id_quien_hizo = null;
@@ -131,6 +134,7 @@ namespace osiris
 		TreeViewColumn col_13;
 		TreeViewColumn col_14;
 		TreeViewColumn col_15;
+		TreeViewColumn col_19;
 		
 		//declaracion de columnas y celdas de treeview de busqueda
 		TreeViewColumn col_idproducto;			CellRendererText cellrt0;
@@ -172,17 +176,21 @@ namespace osiris
 			fontdesc.Weight = Pango.Weight.Bold; // Letra Negrita			
 			
 			entry_orden_de_compra.KeyPressEvent += onKeyPressEvent_enter_ordencompra;
-			button_selecciona_ordencompra.Clicked += new EventHandler(on_button_selecciona_ordencompra_clicked);
+			button_selecciona_ordencompra.Clicked += new EventHandler(on_button_selecciona_clicked);
 			
 			button_salir.Clicked += new EventHandler(on_cierraventanas_clicked);
 			button_busca_proveedor.Clicked += new EventHandler(on_busca_proveedores_clicked);
 			button_carga_xml.Clicked += new EventHandler(on_button_carga_xml_clicked);
 			button_busca_producto.Clicked += new EventHandler(on_button_busca_producto_clicked);
-			checkbutton_factura_sin_orden.Clicked += new EventHandler(on_checkbutton_factura_sin_orden_clicked);
+			radiobutton_orden_compra.Clicked += new EventHandler(on_radiobutton_clicked);
+			radiobutton_requisicion.Clicked += new EventHandler(on_radiobutton_clicked);
+			radiobutton_sin_orden.Clicked += new EventHandler(on_radiobutton_clicked);
 			button_guardar.Clicked += new EventHandler(on_button_guardar_clicked);
 			button_reporte.Clicked += new EventHandler(on_button_reporte_clicked);
 			button_quitar_producto.Clicked += new EventHandler(on_button_quitar_producto_clicked);
-						
+			button_busca_orden_compra.Clicked += new EventHandler(on_button_busca_orden_compra_clicked);
+			button_asigna_factura.Clicked += new EventHandler(on_button_asigna_factura_clicked);
+				
 			entry_num_factura_proveedor.ModifyBase(StateType.Normal, new Gdk.Color(255,243,169)); // Color Amarillo
 			entry_orden_de_compra.ModifyBase(StateType.Normal, new Gdk.Color(255,243,169)); // Color Amarillo
 			entry_num_factura_proveedor.ModifyFont(fontdesc);  // Arial y Negrita
@@ -193,7 +201,10 @@ namespace osiris
 			button_quitar_producto.Sensitive = false;
 			button_busca_proveedor.Sensitive = false;
 			button_guardar.Sensitive = false;
-			
+			entry_estatus_oc.IsEditable = false;
+			entry_id_quien_hizo.IsEditable = false;
+			button_carga_xml.Sensitive = false;
+						
 			entry_dia_fechafactura.Text = DateTime.Now.ToString("dd");
 			entry_mes_fechafactura.Text = DateTime.Now.ToString("MM");
 			entry_ano_fechafactura.Text = DateTime.Now.ToString("yyyy");
@@ -226,7 +237,12 @@ namespace osiris
 			//Console.WriteLine(args.Event.Key);
 			if (args.Event.Key.ToString() == "Return" || args.Event.Key.ToString() == "KP_Enter"){
 				args.RetVal = true;
-				llenado_orden_de_compra();
+				if((bool) radiobutton_orden_compra.Active == true){
+					llenado_orden_de_compra();
+				}
+				if((bool) radiobutton_requisicion.Active == true){
+					llenado_de_requisicion_compra();
+				}
 			}
 			string misDigitos = ".0123456789ﾰﾱﾲﾳﾴﾵﾶﾷﾸﾹﾮｔｒｓｑ（）";
 			if (Array.IndexOf(misDigitos.ToCharArray(), Convert.ToChar(args.Event.Key)) == -1 && args.Event.Key.ToString()  != "BackSpace"){
@@ -267,8 +283,8 @@ namespace osiris
 						// version 3.2
 						if (reader_xml.MoveToContent() == XmlNodeType.Element && reader_xml.Name == "cfdi:Comprobante"){
 							if (reader_xml.HasAttributes){
-								entry_num_factura_proveedor.Text = reader_xml.GetAttribute("serie")+reader_xml.GetAttribute("folio");
-								//fecha="2012-06-28T14:06:29"
+								//entry_num_factura_proveedor.Text = reader_xml.GetAttribute("serie")+reader_xml.GetAttribute("folio");
+							//fecha="2012-06-28T14:06:29"
 								entry_ano_fechafactura.Text = reader_xml.GetAttribute("fecha").Substring(0,4);
 								entry_mes_fechafactura.Text = reader_xml.GetAttribute("fecha").Substring(5,2);
 								entry_dia_fechafactura.Text = reader_xml.GetAttribute("fecha").Substring(8,2);
@@ -293,9 +309,9 @@ namespace osiris
 					
 						if (reader_xml.MoveToContent() == XmlNodeType.Element && reader_xml.Name == "cfdi:Concepto"){
 							if (reader_xml.HasAttributes){
-								treeViewEngineListaProdRequi.AppendValues (false,
-										entry_num_factura_proveedor.Text.Trim().ToUpper(),
-							                                           "0",
+								treeViewEngineListaProdRequi.AppendValues (true,
+																		entry_num_factura_proveedor.Text,
+							                                           reader_xml.GetAttribute("cantidad"),
 							                                           reader_xml.GetAttribute("cantidad"),
 							                                           "0",
 							                                           "0",
@@ -333,7 +349,8 @@ namespace osiris
 								(string) model.GetValue(iterSelected, 15));*/
 							}
 						}
-					
+						
+						
 						// Version 2.2
 						if (reader_xml.MoveToContent() == XmlNodeType.Element && reader_xml.Name == "Comprobante"){
                             if (reader_xml.HasAttributes){
@@ -358,9 +375,9 @@ namespace osiris
 						if (reader_xml.MoveToContent() == XmlNodeType.Element && reader_xml.Name == "Concepto"){
 							if (reader_xml.HasAttributes){
 								//Console.WriteLine(reader_xml.GetAttribute("cantidad"));
-								treeViewEngineListaProdRequi.AppendValues (false,
+								treeViewEngineListaProdRequi.AppendValues (true,
 										entry_num_factura_proveedor.Text.Trim().ToUpper(),
-							                                           "0",
+							                                           reader_xml.GetAttribute("cantidad"),
 							                                           reader_xml.GetAttribute("cantidad"),
 							                                           "0",
 							                                           "0",
@@ -398,6 +415,7 @@ namespace osiris
 								(string) model.GetValue(iterSelected, 15));*/
 							}
 						}
+						llenado_treeview_nro_factura();
 						break;
 					default:
 						break;
@@ -409,8 +427,30 @@ namespace osiris
 									ButtonsType.Close, "FACTURA Electronica ha sido Cargada a los Inventarios, verifique...");
 				msgBoxError.Run ();								msgBoxError.Destroy();
 				button_guardar.Sensitive = false;
-				checkbutton_factura_sin_orden.Active = false;
+				radiobutton_sin_orden.Active = false;
 			}
+		}
+		
+		void on_button_busca_orden_compra_clicked(object sender, EventArgs args)
+		{
+			
+		}
+		
+		void on_button_asigna_factura_clicked(object sender, EventArgs args)
+		{
+			llenado_treeview_nro_factura();
+		}
+		
+		void llenado_treeview_nro_factura()
+		{
+			TreeIter iter2;
+			if (treeViewEngineListaProdRequi.GetIterFirst (out iter2)){
+				lista_productos_a_recibir.Model.SetValue(iter2,1,entry_num_factura_proveedor.Text);
+				while (treeViewEngineListaProdRequi.IterNext(ref iter2)){
+					lista_productos_a_recibir.Model.SetValue(iter2,1,entry_num_factura_proveedor.Text);
+				}
+			}
+			button_guardar.Sensitive = true;
 		}
 						
 		void on_button_reporte_clicked(object sender, EventArgs args)
@@ -450,10 +490,42 @@ namespace osiris
 					TreeIter iter;
 					if (treeViewEngineListaProdRequi.GetIterFirst (out iter)){
 						// verificando la 
-						if((bool) checkbutton_factura_sin_orden.Active == false){
-							// Actualizar la orden de compra
+						if((bool) radiobutton_orden_compra.Active == true){
+													
+														
+						}
+						if((bool) radiobutton_requisicion.Active == true){
+							comando.CommandText = "INSERT INTO osiris_erp_factura_compra_enca(" +
+										//"numero_orden_compra," +
+										//"fechahora_orden_compra," +
+										"id_quien_creo," +
+										//"cancelado," +
+										//"fechahora_cancelado," +
+										"id_proveedor," +
+										"factura_sin_orden_compra," +
+										//"id_secuencia," +
+										"numero_factura_proveedor," +
+										"fecha_factura," +
+										//"id_quien_cancelo," +
+										"fechahora_creacion," +
+										"numero_serie_cfd," +
+										"ano_aprobacion_cfd," +
+										"numero_aprobacion_cfd) " +
+										"VALUES " +
+										"('"+LoginEmpleado+"','"+
+											entry_id_proveedor.Text.Trim()+"','"+
+											radiobutton_sin_orden.Active+"','"+
+											entry_num_factura_proveedor.Text.Trim().ToUpper()+"','"+
+											entry_ano_fechafactura.Text.Trim()+"-"+entry_mes_fechafactura.Text.Trim()+"-"+entry_dia_fechafactura.Text.Trim()+"','"+
+											DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"',"+
+										"''," +
+										"''," +
+										"'')";
+							//Console.WriteLine(comando.CommandText);
+							comando.ExecuteNonQuery();
+						    comando.Dispose();
+							
 							comando.CommandText = "UPDATE osiris_erp_requisicion_deta( "+
-			 									"id_producto, "+
 			 									"cantidad_comprada, "+
 			 									"id_quien_compro, "+
 			 									"fechahora_compra, "+
@@ -481,8 +553,11 @@ namespace osiris
  												//folioservicio+"','"+
  												//DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"','LoginEmpleado+"');";
 		 					//comando.ExecuteNonQuery();
-					    	//comando.Dispose();							
-						}else{
+					    	//comando.Dispose();
+							
+						}
+						
+						if((bool) radiobutton_sin_orden.Active == true){
 							comando.CommandText = "INSERT INTO osiris_erp_factura_compra_enca(" +
 										//"numero_orden_compra," +
 										//"fechahora_orden_compra," +
@@ -502,7 +577,7 @@ namespace osiris
 										"VALUES " +
 										"('"+LoginEmpleado+"','"+
 											entry_id_proveedor.Text.Trim()+"','"+
-											checkbutton_factura_sin_orden.Active+"','"+
+											radiobutton_sin_orden.Active+"','"+
 											entry_num_factura_proveedor.Text.Trim().ToUpper()+"','"+
 											entry_ano_fechafactura.Text.Trim()+"-"+entry_mes_fechafactura.Text.Trim()+"-"+entry_dia_fechafactura.Text.Trim()+"','"+
 											DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"',"+
@@ -721,7 +796,7 @@ namespace osiris
 							conexion3.Close();*/
 						}
 						while (treeViewEngineListaProdRequi.IterNext(ref iter)){
-							if((bool) checkbutton_factura_sin_orden.Active == false){
+							if((bool) radiobutton_sin_orden.Active == false){
 								
 							}else{
 								comando.CommandText = "INSERT INTO osiris_erp_requisicion_deta( "+
@@ -887,22 +962,35 @@ namespace osiris
 			}			
 		}
 		
-		void on_checkbutton_factura_sin_orden_clicked(object sender, EventArgs args)
+		void on_radiobutton_clicked(object sender, EventArgs args)
 		{
-			if (checkbutton_factura_sin_orden.Active == true){
+			Gtk.RadioButton radiobutton_recive = (object) sender as Gtk.RadioButton;
+			if(radiobutton_recive.Name == "radiobutton_orden_compra"){
+				entry_num_factura_proveedor.ModifyBase(StateType.Normal, new Gdk.Color(255,243,169)); // Color Amarillo
+				button_busca_proveedor.Sensitive = false;
+				button_carga_xml.Sensitive = false;
+				button_busca_orden_compra.Sensitive = true;
+				entry_orden_de_compra.Sensitive = true;
+				button_selecciona_ordencompra.Sensitive = true;
+			}
+			if(radiobutton_recive.Name == "radiobutton_requisicion"){
+				entry_num_factura_proveedor.ModifyBase(StateType.Normal, new Gdk.Color(113,249,136)); // Color Verde
+				button_busca_proveedor.Sensitive = true;
+				button_carga_xml.Sensitive = false;
+				entry_orden_de_compra.Sensitive = true;
+				button_selecciona_ordencompra.Sensitive = true;
+				button_busca_orden_compra.Sensitive = false;
+			}
+			if(radiobutton_recive.Name == "radiobutton_sin_orden"){
 				button_busca_proveedor.Sensitive = true;
 				button_busca_producto.Sensitive = true;
 				button_quitar_producto.Sensitive = true;
 				button_busca_proveedor.Sensitive = true;
-				entry_fecha_orden_compra.Text = DateTime.Now.ToString("yyyy-MM-dd");//("dd-MM-yyyy");
-				// Desactivando las ordenes de Compra
 				entry_orden_de_compra.Sensitive = false;
 				button_selecciona_ordencompra.Sensitive = false;
 				button_busca_orden_compra.Sensitive = false;
-				entry_fecha_orden_compra.Sensitive = false;
-				entry_id_quien_hizo.Sensitive = false;
-				entry_estatus_oc.Sensitive = false;
 				button_guardar.Sensitive = true;
+				button_carga_xml.Sensitive = true;
 				treeViewEngineListaProdRequi.Clear();
 				entry_id_proveedor.Text = "";
 				entry_nombre_proveedor.Text = "";
@@ -911,20 +999,8 @@ namespace osiris
 				entry_contacto_proveedor.Text = "";
 				entry_formapago.Text = "";
 				entry_num_factura_proveedor.Text = "";
-			}else{
-				button_busca_proveedor.Sensitive = false;
-				button_busca_producto.Sensitive = false;
-				button_quitar_producto.Sensitive = false;
-				button_busca_proveedor.Sensitive = false;
-				entry_fecha_orden_compra.Text = "";
-				// Desactiv las ordenes de Compra
-				entry_orden_de_compra.Sensitive = true;
-				button_selecciona_ordencompra.Sensitive = true;
-				button_busca_orden_compra.Sensitive = true;
-				entry_fecha_orden_compra.Sensitive = true;
-				entry_id_quien_hizo.Sensitive = true;
-				entry_estatus_oc.Sensitive = true;
-		 	}
+				entry_num_factura_proveedor.ModifyBase(StateType.Normal, new Gdk.Color(255,80,80)); // Color Rojo Claro
+			}
 		}
 		
 		void crea_treeview_capturafactura()
@@ -960,7 +1036,8 @@ namespace osiris
 									typeof(string),
 									typeof(string),
 									typeof(string),
-									typeof(string));
+									typeof(string),
+			                        typeof(string));
 			
 			lista_productos_a_recibir.Model = treeViewEngineListaProdRequi;			
 			lista_productos_a_recibir.RulesHint = true;
@@ -987,7 +1064,7 @@ namespace osiris
 										
 			col_02 = new TreeViewColumn();
 			cellrt2 = new CellRendererText();
-			col_02.Title = "Cant. O.C.";
+			col_02.Title = "Cantidad";
 			col_02.PackStart(cellrt2, true);
 			col_02.AddAttribute (cellrt2, "text", 2);
 			col_02.SortColumnId = (int) col_productos_recibidos.col_02;
@@ -1100,6 +1177,14 @@ namespace osiris
 			col_15.SortColumnId = (int) col_productos_recibidos.col_15;
 			//cellrt15.Editable = true;
 			
+			col_19 = new TreeViewColumn();
+			cellrt19 = new CellRendererText();
+			col_19.Title = "Cargar a Px.";
+			col_19.PackStart(cellrt19, true);
+			col_19.AddAttribute (cellrt19, "text", 19);
+			//col_19.SortColumnId = (int) col_productos_recibidos.col_14;
+			//cellrt14.Editable = true;
+			
 			/*
 			cellrt15 = new Gtk.CellRendererCombo ();
 			(cellrt15 as Gtk.CellRendererCombo).Editable = true;
@@ -1119,6 +1204,7 @@ namespace osiris
 			lista_productos_a_recibir.AppendColumn(col_00);
 			lista_productos_a_recibir.AppendColumn(col_01);
 			lista_productos_a_recibir.AppendColumn(col_02);
+			lista_productos_a_recibir.AppendColumn(col_19);
 			lista_productos_a_recibir.AppendColumn(col_03);
 			lista_productos_a_recibir.AppendColumn(col_04);
 			lista_productos_a_recibir.AppendColumn(col_05);
@@ -1224,9 +1310,11 @@ namespace osiris
 		void selecciona_fila(object sender, ToggledArgs args)
 		{
 			TreeIter iter;
-			if (this.lista_productos_a_recibir.Model.GetIter (out iter, new TreePath (args.Path))){					
-				bool old = (bool) this.lista_productos_a_recibir.Model.GetValue(iter,0);
-				this.lista_productos_a_recibir.Model.SetValue(iter,0,!old);
+			if (lista_productos_a_recibir.Model.GetIter (out iter, new TreePath (args.Path))){					
+				bool old = (bool) lista_productos_a_recibir.Model.GetValue(iter,0);
+				lista_productos_a_recibir.Model.SetValue(iter,0,!old);
+				treeViewEngineListaProdRequi.SetValue(iter,(int) col_productos_recibidos.col_03,lista_productos_a_recibir.Model.GetValue(iter,2));
+				treeViewEngineListaProdRequi.SetValue(iter,(int) col_productos_recibidos.col_05,float.Parse(Convert.ToString(float.Parse((string) lista_productos_a_recibir.Model.GetValue(iter,2)) * float.Parse((string) lista_productos_a_recibir.Model.GetValue(iter,4)))).ToString("F"));
 			}				
 		}
 		
@@ -1270,13 +1358,20 @@ namespace osiris
 			}
 			if (esnumerico == true){
 				treeViewEngineListaProdRequi.GetIter (out iter, new Gtk.TreePath (args.Path));
-				treeViewEngineListaProdRequi.SetValue(iter,(int) col_productos_recibidos.col_03,args.NewText);
+				treeViewEngineListaProdRequi.SetValue(iter,(int) col_productos_recibidos.col_03,float.Parse((string) args.NewText).ToString("F"));
+				treeViewEngineListaProdRequi.SetValue(iter,(int) col_productos_recibidos.col_05,float.Parse(Convert.ToString(float.Parse((string) args.NewText) * float.Parse((string) lista_productos_a_recibir.Model.GetValue(iter,4)))).ToString("F"));
 			}
  		}
 		
-		void on_button_selecciona_ordencompra_clicked(object sender, EventArgs args)
+		void on_button_selecciona_clicked(object sender, EventArgs args)
 		{
-			llenado_orden_de_compra();
+			if((bool) radiobutton_orden_compra.Active == true){
+				llenado_orden_de_compra();
+			}
+			if((bool) radiobutton_requisicion.Active == true){
+				llenado_de_requisicion_compra();
+			}
+		
 		}
 		
 		void llenado_orden_de_compra()
@@ -1306,23 +1401,83 @@ namespace osiris
 					entry_formapago.Text  = (string) lector["condiciones_de_pago"];
 				}
 				comando = conexion.CreateCommand ();				
-				comando.CommandText = "SELECT * "+
-					"FROM osiris_erp_requisicion_deta WHERE numero_orden_compra = '"+entry_orden_de_compra.Text.Trim()+"';";
-				//Console.WriteLine(comando.CommandText);
+				comando.CommandText = "SELECT cantidad_solicitada,osiris_erp_requisicion_deta.id_producto,descripcion_producto,osiris_erp_requisicion_deta.cantidad_de_embalaje," +
+								 	"osiris_erp_requisicion_deta.costo_producto,osiris_erp_requisicion_deta.costo_por_unidad "+
+									"FROM osiris_erp_requisicion_deta,osiris_productos WHERE numero_orden_compra = '"+entry_orden_de_compra.Text.Trim()+"' "+
+									"AND osiris_erp_requisicion_deta.id_producto = osiris_productos.id_producto;";
+				Console.WriteLine(comando.CommandText);
 				NpgsqlDataReader lector1 = comando.ExecuteReader ();							
 				while (lector1.Read()){
-					treeViewEngineListaProdRequi.AppendValues (false,this.entry_num_factura_proveedor.Text.Trim(),
-					                                           float.Parse(Convert.ToString((decimal) lector1["cantidad_solicitada"]).ToString()).ToString("F"));
-				}
-								
+					treeViewEngineListaProdRequi.AppendValues (false,
+					                                           entry_num_factura_proveedor.Text.Trim(),
+					                                           float.Parse(Convert.ToString((decimal) lector1["cantidad_solicitada"]).ToString()).ToString("F"),
+					                                           "0.00",
+					                                           float.Parse(Convert.ToString((decimal) lector["cantidad_de_embalaje"]).ToString()).ToString("F"),
+					                                           0.00,
+					                                           float.Parse(Convert.ToString((decimal) lector["costo_producto"]).ToString()).ToString("F"),
+					                                           float.Parse(Convert.ToString((decimal) lector["costo_por_unidad"]).ToString()).ToString("F"));
+				}								
 			}catch (NpgsqlException ex){
 	   			MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
 								MessageType.Warning, ButtonsType.Ok, "PostgresSQL error: {0}",ex.Message);
 								msgBoxError.Run ();
 								msgBoxError.Destroy();
 			}
-			conexion.Close ();
-
+			conexion.Close();
+		}
+		
+		void llenado_de_requisicion_compra()
+		{
+			treeViewEngineListaProdRequi.AppendValues(false,"99099","10","10");
+			
+			//osiris_erp_requisicion_deta
+			treeViewEngineListaProdRequi.Clear(); // Limpia el treeview cuando realiza una nueva busqueda
+			NpgsqlConnection conexion; 
+			conexion = new NpgsqlConnection (connectionString+nombrebd);
+			// Verifica que la base de datos este conectada		
+			try{
+				conexion.Open ();
+				NpgsqlCommand comando; 
+				comando = conexion.CreateCommand ();
+				comando.CommandText = "SELECT cantidad_solicitada,to_char(osiris_erp_requisicion_deta.id_producto,'999999999999') AS codProducto,descripcion_producto,to_char(osiris_productos.costo_producto,'999999999.99') AS costoproducto," +
+								"osiris_erp_requisicion_deta.cantidad_de_embalaje," +
+							 	"osiris_erp_requisicion_deta.costo_producto,osiris_erp_requisicion_deta.costo_por_unidad "+
+								"FROM osiris_erp_requisicion_deta,osiris_productos,osiris_erp_requisicion_enca,osiris_erp_tipo_requisiciones_compra " +
+								"WHERE osiris_erp_requisicion_deta.id_requisicion = '"+entry_orden_de_compra.Text.Trim()+"' " +
+								"AND osiris_erp_requisicion_deta.id_producto = osiris_productos.id_producto " +
+								"AND osiris_erp_requisicion_deta.id_requisicion = osiris_erp_requisicion_enca.id_requisicion " +
+								"AND osiris_erp_requisicion_enca.id_tipo_requisicion_compra = osiris_erp_tipo_requisiciones_compra.id_tipo_requisicion_compra;";
+				Console.WriteLine(comando.CommandText);
+				NpgsqlDataReader lector = comando.ExecuteReader ();							
+				while (lector.Read()){
+					treeViewEngineListaProdRequi.AppendValues (false,
+					                                           entry_num_factura_proveedor.Text.Trim(),
+					                                           float.Parse(Convert.ToString((decimal) lector["cantidad_solicitada"]).ToString()).ToString("F"),
+					                                           "0.00",
+					                                           float.Parse(Convert.ToString((decimal) lector["cantidad_de_embalaje"]).ToString()).ToString("F"),
+					                                           "0.00",
+					                                           float.Parse(Convert.ToString((decimal) lector["costo_producto"]).ToString()).ToString("F"),
+					                                           float.Parse(Convert.ToString((decimal) lector["costo_por_unidad"]).ToString()).ToString("F"),
+					                                           (string) lector["costoproducto"],
+					                                           (string) lector["descripcion_producto"].ToString().Trim(),
+					                                           (string) lector["codProducto"].ToString().Trim(),
+							                                   "",
+							                                   "",
+							                                   "",
+							                                   "",
+							                                   "",
+							                                   "",
+							                                   "",
+					                                           "",
+					                                           "");
+				}	
+			}catch (NpgsqlException ex){
+	   			MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+								MessageType.Warning, ButtonsType.Ok, "PostgresSQL error: {0}",ex.Message);
+								msgBoxError.Run ();
+								msgBoxError.Destroy();
+			}
+			conexion.Close();
 		}
 		
 		void on_busca_proveedores_clicked(object sender, EventArgs args)
@@ -1376,7 +1531,11 @@ namespace osiris
 						entry_codprod_proveedor.Text = (string) model.GetValue(iter,12);
 						entry_cantidad_aplicada.Sensitive = false;
 						entry_precio.Sensitive = false;
-						entry_producto_proveedor.IsEditable = false;
+						if((bool) radiobutton_requisicion.Active == true){
+							entry_producto_proveedor.IsEditable = true;
+						}else{
+							entry_producto_proveedor.IsEditable = false;
+						}
 						//entry_codprod_proveedor.Sensitive = false;
 					}
 				}
@@ -1641,7 +1800,6 @@ namespace osiris
 						preciocondesc = tomaprecio-((tomaprecio*tomadescue)/100);
 					}
 					preciomasiva = tomaprecio + calculodeiva;
-					 
 					treeViewEngineBusca2.AppendValues (
 									(string) lector["codProducto"] ,//0
 									(string) lector["descripcion_producto"],
@@ -1759,8 +1917,7 @@ namespace osiris
 		void on_selecciona_producto_prov_clicked(object sender, EventArgs args)
 		{
 			TreeModel model;
-			TreeIter iter;
-			
+			TreeIter iter;			
 			TreeModel model1;
 			TreeIter iter1;
 			if (lista_productos_a_recibir.Selection.GetSelected(out model, out iter)){

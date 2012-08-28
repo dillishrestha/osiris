@@ -159,6 +159,10 @@ namespace osiris
 		Gtk.Entry entry_id_almacen = null;
 		Gtk.Entry entry_almacen = null;
 		
+		// busqueda del producto con id y descripcion de producto
+		Gtk.Entry entry_id_producto = null;
+		Gtk.Entry entry_descripcion_producto = null;
+		
 		class_conexion conexion_a_DB = new class_conexion();
 		class_public classpublic = new class_public();
 				
@@ -404,6 +408,10 @@ namespace osiris
 					idtipointernamiento = int.Parse((string) args_varible_[6]);
 					idsubalmacen = int.Parse((string) args_varible_[7]);
 				break;
+				case "find_producto_doc_medicos":
+					entry_id_producto = (object) args[0] as Gtk.Entry;
+					entry_descripcion_producto = (object) args[1] as Gtk.Entry;
+				break;
 			}
 			args_sql = args_sql_;
 			type_find = type_find_;
@@ -444,7 +452,7 @@ namespace osiris
 		
 		void crea_treeview_busqueda()
 		{
-			treeViewEngineBuscador = new TreeStore(typeof(int),//0
+			treeViewEngineBuscador = new TreeStore(typeof(string),//0
 													typeof(string),//1
 													typeof(bool),//2
 													typeof(string),//3
@@ -581,24 +589,24 @@ namespace osiris
 							comando.CommandText = string_sql+(string) entry_expresion.Text.ToUpper()+comodin+order_sql;
 						}
 					}
-					Console.WriteLine(comando.CommandText);
+					//Console.WriteLine(comando.CommandText);
 					NpgsqlDataReader lector = comando.ExecuteReader ();				
 					while (lector.Read()){
 						switch (type_find){	
 							case "find_client":
-								treeViewEngineBuscador.AppendValues ((int) lector["id_cliente"],//0
+								treeViewEngineBuscador.AppendValues ((string) lector["id_cliente"].ToString(),//0
 													(string) lector["descripcion_cliente"]);
 							break;			
 							case "find_estado_region":
-								treeViewEngineBuscador.AppendValues ((int) lector["id_estado"],//0
+								treeViewEngineBuscador.AppendValues ((string) lector["id_estado"].ToString(),//0
 													(string) lector["descripcion_estado"]);//1
 							break;			
 							case "find_municipio":
-								treeViewEngineBuscador.AppendValues( (int) lector["id_municipio"],
+								treeViewEngineBuscador.AppendValues( (string) lector["id_municipio"].ToString(),
 														(string) lector["descripcion_municipio"]);
 							break;							
 							case "find_grupo_producto":
-								treeViewEngineBuscador.AppendValues( (int) lector["id_grupo_producto"],
+								treeViewEngineBuscador.AppendValues( (string) lector["id_grupo_producto"].ToString(),
 														(string) lector["descripcion_grupo_producto"],
 							                            (bool) lector["activo_gp"],
 							                            (string) Convert.ToString(lector["porcentage_utilidad_grupo"]),
@@ -609,7 +617,7 @@ namespace osiris
 								col_buscador1.SetCellDataFunc(cellrt1, new Gtk.TreeCellDataFunc(cambia_colores_fila));
 							break;							
 							case "find_grupo1_producto":
-								treeViewEngineBuscador.AppendValues( (int) lector["id_grupo1_producto"],
+								treeViewEngineBuscador.AppendValues( (string) lector["id_grupo1_producto"].ToString(),
 														(string) lector["descripcion_grupo1_producto"],
 							                            (bool) lector["activo"]);
 							
@@ -617,7 +625,7 @@ namespace osiris
 								col_buscador1.SetCellDataFunc(cellrt1, new Gtk.TreeCellDataFunc(cambia_colores_fila));
 							break;							
 							case "find_grupo2_producto":
-								treeViewEngineBuscador.AppendValues( (int) lector["id_grupo2_producto"],
+								treeViewEngineBuscador.AppendValues( (string) lector["id_grupo2_producto"].ToString(),
 														(string) lector["descripcion_grupo2_producto"],
 							                            (bool) lector["activo"]);
 							
@@ -625,16 +633,16 @@ namespace osiris
 								col_buscador1.SetCellDataFunc(cellrt1, new Gtk.TreeCellDataFunc(cambia_colores_fila));
 							break;							
 							case "find_centrodecosto":
-								treeViewEngineBuscador.AppendValues( (int) lector["id_centro_de_costos"],
+								treeViewEngineBuscador.AppendValues( (string) lector["id_centro_de_costos"].ToString(),
 														(string) lector["descripcion_centro_de_costo"]);
 							
 							break;							
 							case "find_marca_producto":
-								treeViewEngineBuscador.AppendValues ((int) lector["id_marca_producto"], //0
+								treeViewEngineBuscador.AppendValues ((string) lector["id_marca_producto"].ToString(), //0
 													(string) lector["descripcion"]);//1
 							break;							
 							case "find_proveedores":
-								treeViewEngineBuscador.AppendValues ((int) lector["id_proveedor"],//0
+								treeViewEngineBuscador.AppendValues ((string) lector["id_proveedor"].ToString(),//0
 													(string) lector["descripcion_proveedor"],//1
 							                        (bool) lector["proveedor_activo"], //, // 2
 													(string) lector["direccion_proveedor"],//3
@@ -650,7 +658,7 @@ namespace osiris
 							                        //(int) lector["id_forma_de_pago"]);//13
 							break;							
 							case "find_proveedores_catalogo_producto":
-								treeViewEngineBuscador.AppendValues ((int) lector["id_proveedor"],//0
+								treeViewEngineBuscador.AppendValues ((string) lector["id_proveedor"].ToString(),//0
 													(string) lector["descripcion_proveedor"],//1
 							                        (bool) lector["proveedor_activo"], //, // 2
 													(string) lector["direccion_proveedor"],//3
@@ -666,36 +674,36 @@ namespace osiris
 							                        //(int) lector["id_forma_de_pago"]);//13
 							break;							
 							case "find_especialidad_medica":
-								treeViewEngineBuscador.AppendValues ((int) lector["id_especialidad"],	// 0
+								treeViewEngineBuscador.AppendValues ((string) lector["id_especialidad"].ToString(),	// 0
 													(string) lector["descripcion_especialidad"]);		// 1
 								
 							break;
 							case "find_empresa_cita":
-								treeViewEngineBuscador.AppendValues ((int) lector["id_empresa"],	// 0
+								treeViewEngineBuscador.AppendValues ((string) lector["id_empresa"].ToString(),	// 0
 													(string)lector["descripcion_empresa"]);		// 1
 							break;
 							case "find_aseguradoras_cita":
-								treeViewEngineBuscador.AppendValues ((int) lector["id_aseguradora"],	// 0
+								treeViewEngineBuscador.AppendValues ((string) lector["id_aseguradora"].ToString(),	// 0
 													(string)lector["descripcion_aseguradora"]);		// 1
 							break;
 							case "find_medico_cita":
-								treeViewEngineBuscador.AppendValues ((int) lector["id_medico"],	// 0
+								treeViewEngineBuscador.AppendValues ((string) lector["id_medico"].ToString(),	// 0
 													(string)lector["nombre_medico"]);		// 1
 							break;
 							case "find_medico_consulta":
-								treeViewEngineBuscador.AppendValues ((int) lector["id_medico"],	// 0
+								treeViewEngineBuscador.AppendValues ((string) lector["id_medico"].ToString(),	// 0
 													(string)lector["nombre_medico"]);		// 1
 							break;
 							case "find_especialidad_cita":
-								treeViewEngineBuscador.AppendValues ((int) lector["id_especialidad"],	// 0
+								treeViewEngineBuscador.AppendValues ((string) lector["id_especialidad"].ToString(),	// 0
 													(string)lector["descripcion_especialidad"]);		// 1
 							break;
 							case "find_especialidad_consulta":
-								treeViewEngineBuscador.AppendValues ((int) lector["id_especialidad"],	// 0
+								treeViewEngineBuscador.AppendValues ((string) lector["id_especialidad"].ToString(),	// 0
 													(string)lector["descripcion_especialidad"]);		// 1
 							break;
 							case "find_paciente_cita":
-								treeViewEngineBuscador.AppendValues ((int) lector["pid_paciente"],	// 0
+								treeViewEngineBuscador.AppendValues ((string) lector["pid_paciente"].ToString(),	// 0
 													(string) lector["nombre1_paciente"].ToString().Trim(),
 							                        (bool) lector["activo"],
 							                        (string) lector["nombre2_paciente"].ToString().Trim(),
@@ -705,22 +713,22 @@ namespace osiris
 							              			(string) lector["edad"]);
 							break;
 							case "find_cirugia_paquetes":
-								treeViewEngineBuscador.AppendValues ((int) lector["id_tipo_cirugia"],
+								treeViewEngineBuscador.AppendValues ((string) lector["id_tipo_cirugia"].ToString(),
 							                                   	(string) lector["descripcion_cirugia"],
 							                                     (bool) lector["tiene_paquete"]);
 							break;
 							case "find_cirugia_paquetes_soliprod":
-								treeViewEngineBuscador.AppendValues ((int) lector["id_tipo_cirugia"],
+								treeViewEngineBuscador.AppendValues ((string) lector["id_tipo_cirugia"].ToString(),
 							                                   	(string) lector["descripcion_cirugia"],
 							                                     (bool) lector["tiene_paquete"]);
 							break;
 							case "find_cirugia_cargos_modmedicos":
-									treeViewEngineBuscador.AppendValues ((int) lector["id_tipo_cirugia"],
+									treeViewEngineBuscador.AppendValues ((string) lector["id_tipo_cirugia"].ToString(),
 							                                   	(string) lector["descripcion_cirugia"],
 							                                     (bool) lector["tiene_paquete"]);
 							break;							
 							case "find_paciente":
-								treeViewEngineBuscador.AppendValues ((int) lector["folio_de_servicio"],	// 0
+								treeViewEngineBuscador.AppendValues ((string) lector["folio_de_servicio"].ToString(),	// 0
 													(string) lector["pidpaciente"].ToString().Trim(),
 							                        (bool) lector["activo"],
 							                        (string) lector["nombre1_paciente"].ToString().Trim(),
@@ -731,7 +739,7 @@ namespace osiris
 							              			(string) lector["edad"]);
 							break;
 							case "find_paciente1":
-								treeViewEngineBuscador.AppendValues ((int) lector["pid_paciente"],	// 0
+								treeViewEngineBuscador.AppendValues ((string) lector["pid_paciente"].ToString(),	// 0
 													(string) lector["nombre1_paciente"].ToString().Trim(),
 							                        (bool) lector["activo"],
 							                        (string) lector["nombre2_paciente"].ToString().Trim(),
@@ -741,7 +749,7 @@ namespace osiris
 							              			(string) lector["edad"]);
 							break;
 							case "find_proveedores_OC":
-								treeViewEngineBuscador.AppendValues ((int) lector["id_proveedor"],//0
+								treeViewEngineBuscador.AppendValues ((string) lector["id_proveedor"].ToString(),//0
 													(string) lector["descripcion_proveedor"],//1
 							                        (bool) lector["proveedor_activo"], //, // 2
 													(string) lector["direccion_proveedor"],//3
@@ -757,10 +765,13 @@ namespace osiris
 							                        //(int) lector["id_forma_de_pago"]);//13
 							break;
 							case "find_almacen_inventario":
-								treeViewEngineBuscador.AppendValues((int) lector["id_almacen"],
+								treeViewEngineBuscador.AppendValues((string) lector["id_almacen"].ToString(),
 							                                  (string) lector["descripcion_almacen"]);
 							break;
-							
+							case "find_producto_doc_medicos":
+								treeViewEngineBuscador.AppendValues((string) lector["codProducto"].ToString(),
+							                                  (string) lector["descripcion_producto"]);
+							break;
 						}
 					}
 				}catch (NpgsqlException ex){
@@ -777,7 +788,7 @@ namespace osiris
 			TreeModel model;
 			TreeIter iterSelected;			
 			if (lista_de_busqueda.Selection.GetSelected(out model, out iterSelected)){										
-				int tomaid = (int) model.GetValue(iterSelected, 0);												
+				string tomaid = (string) model.GetValue(iterSelected, 0);												
 				switch (type_find){	
 					case "find_client":
 						entry_id_cliente.Text = tomaid.ToString();
@@ -904,10 +915,10 @@ namespace osiris
 					case "find_cirugia_paquetes_soliprod":
 						entry_id_cirugia.Text = tomaid.ToString();
 						entry_cirugia.Text = (string) model.GetValue(iterSelected, 1);
-						carga_valores_treeview(tomaid,treeviewobject,treeViewEngine);
+						carga_valores_treeview(int.Parse(tomaid),treeviewobject,treeViewEngine);
 					break;
 					case "find_cirugia_cargos_modmedicos":
-						carga_valores_treeview_pq_modcargos(tomaid,treeviewobject,treeViewEngine);
+						carga_valores_treeview_pq_modcargos(int.Parse(tomaid),treeviewobject,treeViewEngine);
 					break;
 					case "find_paciente":
 						entry_folio_servicio.Text = tomaid.ToString();
@@ -937,6 +948,10 @@ namespace osiris
 					case "find_almacen_inventario":
 						entry_id_almacen.Text = tomaid.ToString();
 						entry_almacen.Text = (string) model.GetValue(iterSelected, 1);
+					break;
+					case "find_producto_doc_medicos":
+						entry_id_producto.Text = tomaid.ToString();;
+						entry_descripcion_producto.Text = (string) model.GetValue(iterSelected, 1);
 					break;
 				}				
 			}

@@ -58,7 +58,8 @@ namespace osiris
 		[Widget] Gtk.Button button_salir;
 		[Widget] Gtk.Button button_imprime_rangofecha;
 		[Widget] Gtk.CheckButton checkbutton_impr_todo_proce;
-		[Widget] Gtk.CheckButton checkbutton_todos_los_clientes;		
+		[Widget] Gtk.CheckButton checkbutton_todos_los_clientes;
+		[Widget] Gtk.CheckButton checkbutton_export_to = null;
 		
 		private static int pangoScale = 1024;
 		private PrintOperation print;
@@ -78,6 +79,8 @@ namespace osiris
 		string orden = " ";
 		string rango1 = "";
 		string rango2 = "";
+		string tiporpt = "";
+		string LoginEmpleado = "";
 		
 		//Declaracion de ventana de error
 		protected Gtk.Window MyWinError;
@@ -85,11 +88,13 @@ namespace osiris
 		class_conexion conexion_a_DB = new class_conexion();
 		class_public classpublic = new class_public();
 		
-		public reporte_de_abonos(string _nombrebd_)
+		public reporte_de_abonos(string _nombrebd_,string tiporpt_,string LoginEmpleado_)
 		{
 			connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
 			nombrebd = conexion_a_DB._nombrebd;
 			escala_en_linux_windows = classpublic.escala_linux_windows;
+			tiporpt = tiporpt_;
+			LoginEmpleado = LoginEmpleado_;
 			Glade.XML gxml = new Glade.XML (null, "caja.glade", "rango_de_fecha", null);
 			gxml.Autoconnect                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 (this);
         	rango_de_fecha.Show();
@@ -135,13 +140,47 @@ namespace osiris
 								"AND to_char(osiris_erp_abonos.fecha_abono,'yyyy-MM-dd') <= '"+entry_ano2.Text+"-"+entry_mes2.Text+"-"+entry_dia2.Text+"' ";			
 			}
 			
-			print = new PrintOperation ();
-			print.JobName = "Reporte de Abonos y Pagos";
-			print.BeginPrint += new BeginPrintHandler (OnBeginPrint);
-			print.DrawPage += new DrawPageHandler (OnDrawPage);
-			print.EndPrint += new EndPrintHandler (OnEndPrint);
-			print.Run (PrintOperationAction.PrintDialog, null);	
-			rango_de_fecha.Destroy();
+			if(tiporpt == "abonos_pagos"){			
+				print = new PrintOperation ();
+				print.JobName = "Reporte de Abonos y Pagos";
+				print.BeginPrint += new BeginPrintHandler (OnBeginPrint);
+				print.DrawPage += new DrawPageHandler (OnDrawPage);
+				print.EndPrint += new EndPrintHandler (OnEndPrint);
+				print.Run (PrintOperationAction.PrintDialog, null);	
+				rango_de_fecha.Destroy();
+			}
+			if(tiporpt == "corte_caja"){
+				if(LoginEmpleado == "DOLIVARES" || LoginEmpleado =="ADMIN" || LoginEmpleado =="MARGARITAZ" || LoginEmpleado =="IESPINOZAF" || LoginEmpleado =="ZBAEZH" || LoginEmpleado == "YTAMEZ"){
+					string query_sql = "SELECT DISTINCT (osiris_erp_movcargos.folio_de_servicio),to_char(osiris_erp_abonos.fecha_abono,'yyyy-MM-dd') AS fechaabonopago,"+
+										"osiris_erp_abonos.id_abono,"+
+										"to_char(osiris_erp_abonos.folio_de_servicio,'9999999999') AS foliodeservicio,"+
+										"osiris_his_paciente.pid_paciente AS pidpaciente,nombre1_paciente || ' ' || nombre2_paciente || ' ' || apellido_paterno_paciente || ' ' || apellido_materno_paciente AS nombrepaciente,"+
+										"osiris_erp_abonos.monto_de_abono_procedimiento AS monto_comprobante,osiris_erp_abonos.concepto_del_abono,numero_recibo_caja AS numerorecibo,"+
+										"osiris_erp_tipo_comprobante.descripcion_tipo_comprobante,osiris_erp_forma_de_pago.descripcion_forma_de_pago AS forma_de_pago,osiris_erp_abonos.monto_convenio," +
+										"osiris_erp_movcargos.id_tipo_paciente,descripcion_tipo_paciente "+
+										"FROM osiris_erp_cobros_enca, osiris_erp_abonos,osiris_erp_tipo_comprobante, osiris_his_paciente, osiris_erp_forma_de_pago,osiris_erp_movcargos,osiris_his_tipo_pacientes "+
+										"WHERE osiris_erp_abonos.eliminado = false "+
+										"AND osiris_erp_abonos.folio_de_servicio = osiris_erp_cobros_enca.folio_de_servicio "+
+										"AND osiris_erp_movcargos.folio_de_servicio = osiris_erp_abonos.folio_de_servicio "+
+										"AND osiris_erp_abonos.id_forma_de_pago = osiris_erp_forma_de_pago.id_forma_de_pago "+ 
+										"AND osiris_erp_cobros_enca.pid_paciente = osiris_his_paciente.pid_paciente "+
+										"AND osiris_erp_abonos.id_tipo_comprobante = osiris_erp_tipo_comprobante.id_tipo_comprobante " +
+										"AND osiris_his_tipo_pacientes.id_tipo_paciente = osiris_erp_movcargos.id_tipo_paciente "+
+										query_fechas+
+										";";
+									
+					string[] args_names_field = {"foliodeservicio","pidpaciente","nombrepaciente","numerorecibo","descripcion_tipo_comprobante","monto_comprobante","forma_de_pago","concepto_del_abono","monto_convenio","descripcion_tipo_paciente"};
+					string[] args_type_field = {"float","float","string","float","string","float","string","string","float","string"};
+					
+					// class_crea_ods.cs
+					//Console.WriteLine(query_sql);
+					if(checkbutton_export_to.Active == true){
+						new osiris.class_traslate_spreadsheet(query_sql,args_names_field,args_type_field);
+					}else{
+						
+					}
+				}
+			}
 		}	
 			
 		private void OnBeginPrint (object obj, Gtk.BeginPrintArgs args)

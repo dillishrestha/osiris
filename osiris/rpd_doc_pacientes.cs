@@ -6,7 +6,7 @@
 // Autor   Ing. Juan Antonio Peña Gzz.(Programation & Glade's window)
 // ayuda:  Ing. Erick Eduardo Gonzalez Reyes (Programation & Glade's window)
 //         Ing. R. Israel Peña Gonzalez	(Programation & Glade's window)
-// mejoras Ing. Daniel Olivares Cuevas 28/05/2010 arcangeldoc@gmail.com (Programation & Glade's window)
+// mejoras Ing. Daniel Olivares Cuevas 22/08/2012 arcangeldoc@gmail.com (Programation & Glade's window)
 //
 // Licencia		: GLP
 //////////////////////////////////////////////////////////
@@ -80,9 +80,23 @@ namespace osiris
 		[Widget] Gtk.Button button_historia_clinica = null;
 		[Widget] Gtk.Button button_pase_de_ingreso = null;
 		[Widget] Gtk.RadioButton radiobutton_tipo_cirugia  = null;
-		[Widget] Gtk.ComboBox  combobox_tipo_cirugia = null;
+		[Widget] Gtk.ComboBox combobox_tipo_cirugia = null;
 		[Widget] Gtk.CheckButton checkbutton_camb_dats;
 		[Widget] Gtk.ComboBox combobox_diagprimeravez = null;
+		
+		// declarando tab2
+		[Widget] Gtk.CheckButton checkbutton_lente = null;
+		[Widget] Gtk.Entry entry_id_producto = null;
+		[Widget] Gtk.Entry entry_descripcion_producto = null;
+		[Widget] Gtk.Button button_busca_producto = null;
+		[Widget] Gtk.Entry entry_nroserie = null;
+		[Widget] Gtk.CheckButton checkbutton_tipo_anestesia = null;
+		[Widget] Gtk.ComboBox combobox_tipo_anestecia = null;
+		[Widget] Gtk.CheckButton checkbutton_anestesiologo = null;
+		[Widget] Gtk.Entry entry_id_anestesiologo = null;
+		[Widget] Gtk.Entry entry_anestesiologo = null;
+		[Widget] Gtk.Button button_buscar_anestesiologo = null;
+		[Widget] Gtk.Button button_guardar_tabqx = null;
 				
 		//Declarando la barra de estado
 		[Widget] Gtk.Statusbar statusbar_caja;
@@ -110,8 +124,7 @@ namespace osiris
 		[Widget] Gtk.Entry entry_medic_diag;
 		[Widget] Gtk.Entry entry_med_trat;
 		[Widget] Gtk.Entry entry_diag;
-		[Widget] Gtk.Entry entry_docimp_cirugia;
-		
+		[Widget] Gtk.Entry entry_docimp_cirugia;		
 		
 		// busqueda de Medicos
 		[Widget] Gtk.Window buscador_medicos;
@@ -178,6 +191,7 @@ namespace osiris
  		string tipobusqueda = "AND osiris_his_medicos.nombre1_medico LIKE '";
 		string descrip_tipo_cirugia = "";
 		string diag_primeravez = "";
+		string tipoanestecia = "";
 		
 		bool tipomedico = true;
 		
@@ -192,7 +206,24 @@ namespace osiris
 		
 		string fechanacimientopx;
 		string sexopacientepx;
+		
+		string idproducto = "";
+		string descripcionproducto = "";
+		string nroserielente = "";
+		string tipoantestesia = "";
+		string idanestesiologo = "";
+		string nombreantestesiologo = "";
+		
+		string[] args_args = {""};
+		int[] args_id_array = {0,1,2,3,4,5,6,7,8,9};
+		string[] args_tipos_cirugias = {"","CIRUGIA AMBULATORIA","CIRUGIA PROGRAMADA","SIN CIRUGIA"};
+		string[] args_diag_primeravez = {"","SI","NO"};
+		string[] args_tipobusqueda = {"","PRIMER NOMBRE","SEGUNDO NOMBRE","APELLIDO PATERNO","APELLIDO MATERNO","CEDULA MEDICA","ESPECIALIDAD"};
+		string[] args_tipoanestecia = {"","INTRACAM + SEDACION","RETROBULVAR + SEDACION","EPIDURAL O RAQUEA","LOCAL + SEDACION","GENERAL","ENDOVENOSA"};
+		
 		class_conexion conexion_a_DB = new class_conexion();
+		class_public classpublic = new class_public();
+		class_buscador classfind_data = new class_buscador();
 		
 		public impr_doc_pacientes(string LoginEmp, string NomEmpleado_, string AppEmpleado_, string ApmEmpleado_, string nombrebd_,string folioserv_,int control)//,string entry_nombre_medico) 
 		{
@@ -247,6 +278,7 @@ namespace osiris
 			radiobutton_diag_primeravez.Sensitive = false;
 			combobox_tipo_cirugia.Sensitive = false;
 			combobox_diagprimeravez.Sensitive = false;
+			button_guardar_tabqx.Sensitive = false;
 									
 			if( control == 1){
 				entry_folio_servicio.Sensitive = false;
@@ -254,22 +286,15 @@ namespace osiris
 				llenado_de_datos_paciente( (string) entry_folio_servicio.Text );
 			}
 				
-			this.entry_folio_servicio.KeyPressEvent += onKeyPressEvent_enter_folio;
-			// Activacion de boton de busqueda
+			entry_folio_servicio.KeyPressEvent += onKeyPressEvent_enter_folio;
 			button_buscar_paciente.Clicked += new EventHandler(on_button_buscar_paciente_clicked);
-			// Voy a buscar el folio que capturo
 			button_selec_folio.Clicked += new EventHandler(on_selec_folio_clicked);
-			// Imprimir
 			button_imprimir_protocolo.Clicked += new EventHandler(on_button_imprimir_protocolo_clicked);
-			// Imprimir
 			button_cons_informado.Clicked += new EventHandler(on_button_cons_informado_clicked);
-			// Imprimir
 			button_contrato_prest.Clicked += new EventHandler(on_button_contrato_prest_clicked);
-			// Historia Clinica del Paciente
 			button_historia_clinica.Clicked += new EventHandler(on_button_historia_clinica_clicked);
-			// pase de ingreso
 			button_pase_de_ingreso.Clicked += new EventHandler(on_button_pase_de_ingreso_clicked);
-			
+			button_busca_producto.Clicked += new EventHandler(on_button_busca_producto_clicked);
 			// Sale de la ventana
 			button_salir.Clicked += new EventHandler(on_cierraventanas_clicked);	    	
 	    	checkbutton_camb_dats.Clicked  += new EventHandler(on_checkbutton_camb_dats_clicked);			
@@ -287,80 +312,225 @@ namespace osiris
 			radiobutton_cirugia.Clicked += new EventHandler(on_radio_clicked);			
 			radiobutton_tipo_cirugia.Clicked += new EventHandler(on_radio_clicked);			
 			radiobutton_diag_primeravez.Clicked += new EventHandler(on_radio_clicked);
-						   	
+			
+			// tab quirofano
+			checkbutton_lente.Clicked += new EventHandler(on_checkbutton_clicked);
+			checkbutton_tipo_anestesia.Clicked += new EventHandler(on_checkbutton_clicked);
+			checkbutton_anestesiologo.Clicked += new EventHandler(on_checkbutton_clicked);
+			button_buscar_anestesiologo.Clicked += new EventHandler(on_button_busca_medicos_clicked);
+			button_guardar_tabqx.Clicked += new EventHandler(on_button_guardar_tabqx_clicked);
+			
+			entry_id_producto.Sensitive = false;
+			entry_descripcion_producto.Sensitive = false;
+			button_busca_producto.Sensitive = false;
+			entry_nroserie.Sensitive = false;
+			
+			combobox_tipo_anestecia.Sensitive = false;
+			
+			entry_id_anestesiologo.Sensitive = false;
+			entry_anestesiologo.Sensitive = false;
+			button_buscar_anestesiologo.Sensitive = false;
+			
+			// tab quirofano
+			llenado_combobox(0,"",combobox_tipo_cirugia,"array","","","",args_tipos_cirugias,args_id_array,"");
+			llenado_combobox(0,"",combobox_diagprimeravez,"array","","","",args_diag_primeravez,args_id_array,"");
+			llenado_combobox(0,"",combobox_tipo_anestecia,"array","","","",args_tipoanestecia,args_id_array,"");
+			
 			statusbar_caja.Pop(0);
 			statusbar_caja.Push(1, "login: "+LoginEmpleado+"  |Usuario: "+NomEmpleado+" "+AppEmpleado+" "+ApmEmpleado);
 			statusbar_caja.HasResizeGrip = false;
+			
+			//char[] delimiterChars = {';'}; // delimitador de Cadenas
+			//char[] delimiterChars = {' '}; // delimitador de Cadenas
+			//string texto = (string) lector["prueba"]; // puede ser una campo de la base de datos tipo Text
+			//string texto = "1;daniel; ;olivares;cuevas";
+			//"2;genaro;cuevas;bazaldua\n"+
+			//"3;gladys;perez;orellana\n";
+			//string[] words = texto.Split(delimiterChars); // Separa las Cadenas
+			//string lineas_texto = "";
+			
+			// Recorre la variable
+			//int contador = 1;
+			//foreach (string s in words){
+			//	if (s.Length > 0){
+			//		Console.WriteLine(s.ToString()+"    "+contador.ToString());
+			//		lineas_texto += s;
+			//		contador += 1;
+			//	}
+			//}
+			
+			
+			
 		}
 		
-		void llenado_combobox_diagprimeravez(string diag_primeravez_)
+		void on_button_busca_producto_clicked(object sender, EventArgs args)
 		{
-			// Llenado de combobox con los tipos de cirugia
-			this.combobox_diagprimeravez.Clear();
-			CellRendererText cell3 = new CellRendererText();
-			combobox_diagprimeravez.PackStart(cell3, true);
-			combobox_diagprimeravez.AddAttribute(cell3,"text",0);
-	        
-			ListStore store3 = new ListStore( typeof (string), typeof (int));
-			combobox_diagprimeravez.Model = store3;
-			store3.AppendValues (diag_primeravez_, 0);
-			store3.AppendValues ("", 0);
-			store3.AppendValues ("SI", 0);
-			store3.AppendValues ("NO", 0);
+			//string acceso_a_grupos = classpublic.lee_registro_de_tabla("osiris_almacenes","id_almacen"," WHERE osiris_almacenes.id_almacen = '"+this.idalmacen.ToString().Trim()+"' ","acceso_grupo_producto","int");
+			// Los parametros de del SQL siempre es primero cuando busca todo y la otra por expresion
+			// la clase recibe tambien el orden del query
+			// es importante definir que tipo de busqueda es para que los objetos caigan ahi mismo
+			/*
+			comando.CommandText = "SELECT to_char(osiris_productos.id_producto,'999999999999') AS codProducto,"+
+						"osiris_productos.descripcion_producto,to_char(precio_producto_publico,'99999999.99') AS preciopublico,"+
+						"aplicar_iva,to_char(porcentage_descuento,'999.99') AS porcentagesdesc,aplica_descuento,"+
+						"descripcion_grupo_producto,descripcion_grupo1_producto,descripcion_grupo2_producto,to_char(costo_por_unidad,'999999999.99') AS costoproductounitario, "+
+						"to_char(porcentage_ganancia,'99999.99') AS porcentageutilidad,to_char(costo_producto,'999999999.99') AS costoproducto "+
+						"FROM osiris_productos,osiris_catalogo_almacenes,osiris_grupo_producto,osiris_grupo1_producto,osiris_grupo2_producto "+
+						"WHERE osiris_productos.id_grupo_producto = osiris_grupo_producto.id_grupo_producto "+
+						"AND osiris_productos.id_producto = osiris_catalogo_almacenes.id_producto "+
+						"AND osiris_catalogo_almacenes.id_almacen = '"+this.idalmacen.ToString().Trim()+"' "+
+						"AND osiris_catalogo_almacenes.eliminado = 'false' "+	
+						"AND osiris_productos.id_grupo1_producto = osiris_grupo1_producto.id_grupo1_producto "+
+						"AND osiris_productos.id_grupo2_producto = osiris_grupo2_producto.id_grupo2_producto "+
+						"AND osiris_productos.cobro_activo = true "+
+						//"AND osiris_grupo_producto.agrupacion IN(= 'MD1' "+
+						"AND osiris_productos.id_grupo_producto IN("+acceso_a_grupos+") "+
+						"AND osiris_productos.descripcion_producto LIKE '%"+entry_expresion.Text.ToUpper()+"%' ORDER BY descripcion_producto; ";
+				//Console.WriteLine(comando.CommandText);*/
 			
+			
+			int idalmacen = 5;   // quirofano
+			
+			object[] parametros_objetos = {entry_id_producto,entry_descripcion_producto};
+			string[] parametros_sql = {"SELECT to_char(osiris_productos.id_producto,'999999999999') AS codProducto,"+
+						"osiris_productos.descripcion_producto,to_char(precio_producto_publico,'99999999.99') AS preciopublico,"+
+						"aplicar_iva,to_char(porcentage_descuento,'999.99') AS porcentagesdesc,aplica_descuento,"+
+						"descripcion_grupo_producto,descripcion_grupo1_producto,descripcion_grupo2_producto,to_char(costo_por_unidad,'999999999.99') AS costoproductounitario, "+
+						"to_char(porcentage_ganancia,'99999.99') AS porcentageutilidad,to_char(costo_producto,'999999999.99') AS costoproducto "+
+						"FROM osiris_productos,osiris_catalogo_almacenes,osiris_grupo_producto,osiris_grupo1_producto,osiris_grupo2_producto "+
+						"WHERE osiris_productos.id_grupo_producto = osiris_grupo_producto.id_grupo_producto "+
+						"AND osiris_productos.id_producto = osiris_catalogo_almacenes.id_producto "+
+						"AND osiris_catalogo_almacenes.id_almacen = '"+idalmacen.ToString().Trim()+"' "+
+						"AND osiris_catalogo_almacenes.eliminado = 'false' "+	
+						"AND osiris_productos.id_grupo1_producto = osiris_grupo1_producto.id_grupo1_producto "+
+						"AND osiris_productos.id_grupo2_producto = osiris_grupo2_producto.id_grupo2_producto "+
+						"AND osiris_productos.cobro_activo = true "+
+						//"AND osiris_productos.id_grupo_producto IN("+acceso_a_grupos+") "+
+						"AND osiris_productos.descripcion_producto ",
+										"SELECT to_char(osiris_productos.id_producto,'999999999999') AS codProducto,"+
+						"osiris_productos.descripcion_producto,to_char(precio_producto_publico,'99999999.99') AS preciopublico,"+
+						"aplicar_iva,to_char(porcentage_descuento,'999.99') AS porcentagesdesc,aplica_descuento,"+
+						"descripcion_grupo_producto,descripcion_grupo1_producto,descripcion_grupo2_producto,to_char(costo_por_unidad,'999999999.99') AS costoproductounitario, "+
+						"to_char(porcentage_ganancia,'99999.99') AS porcentageutilidad,to_char(costo_producto,'999999999.99') AS costoproducto "+
+						"FROM osiris_productos,osiris_catalogo_almacenes,osiris_grupo_producto,osiris_grupo1_producto,osiris_grupo2_producto "+
+						"WHERE osiris_productos.id_grupo_producto = osiris_grupo_producto.id_grupo_producto "+
+						"AND osiris_productos.id_producto = osiris_catalogo_almacenes.id_producto "+
+						"AND osiris_catalogo_almacenes.id_almacen = '"+idalmacen.ToString().Trim()+"' "+
+						"AND osiris_catalogo_almacenes.eliminado = 'false' "+	
+						"AND osiris_productos.id_grupo1_producto = osiris_grupo1_producto.id_grupo1_producto "+
+						"AND osiris_productos.id_grupo2_producto = osiris_grupo2_producto.id_grupo2_producto "+
+						"AND osiris_productos.cobro_activo = true "+
+						//"AND osiris_productos.id_grupo_producto IN("+acceso_a_grupos+") "+
+						"AND osiris_productos.descripcion_producto LIKE '%"};
+			string[] parametros_string = {};
+			classfind_data.buscandor(parametros_objetos,parametros_sql,parametros_string,"find_producto_doc_medicos"," ORDER BY osiris_productos.descripcion_producto","%' ",0);
+		}
+		
+		void llenado_combobox(int tipodellenado,string descrip_defaul,object obj,string sql_or_array,string query_SQL,string name_field_desc,string name_field_id,string[] args_array,int[] args_id_array,string name_field_id2)
+		{			
+			Gtk.ComboBox combobox_llenado = (Gtk.ComboBox) obj;
+			//Gtk.ComboBox combobox_pos_neg = obj as Gtk.ComboBox;
+			combobox_llenado.Clear();
+			CellRendererText cell = new CellRendererText();
+			combobox_llenado.PackStart(cell, true);
+			combobox_llenado.AddAttribute(cell,"text",0);	        
+			ListStore store = new ListStore( typeof (string),typeof (int));
+			combobox_llenado.Model = store;			
+			if ((int) tipodellenado == 1){
+				store.AppendValues ((string) descrip_defaul,0);
+			}			
+			if(sql_or_array == "array"){			
+				for (int colum_field = 0; colum_field < args_array.Length; colum_field++){
+					store.AppendValues (args_array[colum_field],args_id_array[colum_field]);
+				}
+			}
+			if(sql_or_array == "sql"){			
+				NpgsqlConnection conexion; 
+				conexion = new NpgsqlConnection (connectionString+nombrebd);
+	            // Verifica que la base de datos este conectada
+				try{
+					conexion.Open ();
+					NpgsqlCommand comando; 
+					comando = conexion.CreateCommand ();
+	               	comando.CommandText = query_SQL;					
+					NpgsqlDataReader lector = comando.ExecuteReader ();
+	               	while (lector.Read()){
+						store.AppendValues ((string) lector[ name_field_desc ], (int) lector[ name_field_id]);
+					}
+				}catch (NpgsqlException ex){
+					MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+											MessageType.Error,ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
+					msgBoxError.Run ();				msgBoxError.Destroy();
+				}
+				conexion.Close ();
+			}			
 			TreeIter iter;
-			if (store3.GetIterFirst(out iter)){
-				combobox_diagprimeravez.SetActiveIter (iter);
+			if (store.GetIterFirst(out iter)){
+				combobox_llenado.SetActiveIter (iter);
 			}
-			
-			combobox_diagprimeravez.Changed += new EventHandler (onComboBoxChanged_combobox_diagprimeravez);
+			combobox_llenado.Changed += new EventHandler (onComboBoxChanged_llenado);			
 		}
 		
-		void onComboBoxChanged_combobox_diagprimeravez(object sender, EventArgs args)
+		void onComboBoxChanged_llenado (object sender, EventArgs args)
 		{
-	    	ComboBox combobox_diagprimeravez = sender as ComboBox;
-			if (sender == null)	{	return;	}
-			TreeIter iter;			
-			int numbusqueda = 0;
-			if (combobox_diagprimeravez.GetActiveIter (out iter)){
-				diag_primeravez = (string) combobox_diagprimeravez.Model.GetValue(iter,0);
-			}
-			Console.WriteLine(diag_primeravez);
-		}
-						
-		void llenado_combobox_tipocirugia(string descrip_tipo_cirugia_)
-		{
-			// Llenado de combobox con los tipos de cirugia
-			this.combobox_tipo_cirugia.Clear();
-			CellRendererText cell3 = new CellRendererText();
-			combobox_tipo_cirugia.PackStart(cell3, true);
-			combobox_tipo_cirugia.AddAttribute(cell3,"text",0);
-	        
-			ListStore store3 = new ListStore( typeof (string), typeof (int));
-			combobox_tipo_cirugia.Model = store3;
-			store3.AppendValues (descrip_tipo_cirugia_, 0);
-			store3.AppendValues ("CIRUGIA AMBULATORIA", 0);
-			store3.AppendValues ("CIRUGIA PROGRAMADA", 0);
-			store3.AppendValues ("SIN CIRUGIA", 0);
-			
+			ComboBox onComboBoxChanged = sender as ComboBox;
+			if (sender == null){	return; }
 			TreeIter iter;
-			if (store3.GetIterFirst(out iter)){
-				combobox_tipo_cirugia.SetActiveIter (iter);
+			if (onComboBoxChanged.GetActiveIter (out iter)){
+				switch (onComboBoxChanged.Name.ToString()){	
+					case "combobox_diagprimeravez":
+						diag_primeravez = (string) onComboBoxChanged.Model.GetValue(iter,0);
+					break;
+					case "combobox_tipo_cirugia":
+						descrip_tipo_cirugia = (string) onComboBoxChanged.Model.GetValue(iter,0);
+					break;
+					case "combobox_tipo_busqueda":
+						if((int) onComboBoxChanged.Model.GetValue(iter,1) == 1)  { tipobusqueda = "AND osiris_his_medicos.nombre1_medico LIKE '";}//Console.WriteLine(tipobusqueda); }
+						if((int) onComboBoxChanged.Model.GetValue(iter,1) == 2)  { tipobusqueda = "AND osiris_his_medicos.nombre2_medico LIKE '";}
+						if((int) onComboBoxChanged.Model.GetValue(iter,1) == 3)  { tipobusqueda = "AND osiris_his_medicos.apellido_paterno_medico LIKE '";}
+						if((int) onComboBoxChanged.Model.GetValue(iter,1) == 4)  { tipobusqueda = "AND osiris_his_medicos.apellido_materno_medico LIKE '";}
+						if((int) onComboBoxChanged.Model.GetValue(iter,1) == 5)  { tipobusqueda = "AND osiris_his_medicos.cedula_medico LIKE '";}
+						if((int) onComboBoxChanged.Model.GetValue(iter,1) == 6)  { tipobusqueda = "AND osiris_his_tipo_especialidad.descripcion_especialidad LIKE '";}
+						llenando_lista_de_medicos();	
+					break;
+					case "combobox_tipo_anestecia":
+						tipoanestecia = (string) onComboBoxChanged.Model.GetValue(iter,0);
+					break;
+				}
 			}
-			
-			combobox_tipo_cirugia.Changed += new EventHandler (onComboBoxChanged_combobox_tipo_cirugia);
 		}
 		
-		void onComboBoxChanged_combobox_tipo_cirugia(object sender, EventArgs args)
+		void on_checkbutton_clicked(object sender, EventArgs args)
 		{
-	    	ComboBox combobox_tipo_cirugia = sender as ComboBox;
-			if (sender == null)	{	return;	}
-			TreeIter iter;
-			if (combobox_tipo_cirugia.GetActiveIter (out iter)){
-				descrip_tipo_cirugia = (string) combobox_tipo_cirugia.Model.GetValue(iter,0);
+			CheckButton onCheckBoxChanged = sender as CheckButton;
+			if (sender == null){	return; }
+			
+			bool activalinea = false;
+			
+			switch (onCheckBoxChanged.Name.ToString()){	
+			case "checkbutton_lente":
+				entry_id_producto.Sensitive = onCheckBoxChanged.Active;
+				entry_descripcion_producto.Sensitive = onCheckBoxChanged.Active;
+				button_busca_producto.Sensitive = onCheckBoxChanged.Active;
+				entry_nroserie.Sensitive = onCheckBoxChanged.Active;
+				break;
+			case "checkbutton_tipo_anestesia":
+				combobox_tipo_anestecia.Sensitive = onCheckBoxChanged.Active;
+				break;
+			case "checkbutton_anestesiologo":
+				entry_id_anestesiologo.Sensitive = onCheckBoxChanged.Active;
+				entry_anestesiologo.Sensitive = onCheckBoxChanged.Active;
+				button_buscar_anestesiologo.Sensitive = onCheckBoxChanged.Active;
+				break;
+			}
+			if((bool)checkbutton_lente.Active == true || (bool) checkbutton_tipo_anestesia.Active == true || (bool) checkbutton_anestesiologo.Active == true){
+				button_guardar_tabqx.Sensitive = true;
+			}else{
+				button_guardar_tabqx.Sensitive = false;
 			}
 		}
 		
+							
 		void on_button_historia_clinica_clicked(object sender, EventArgs args)
 		{
 			new osiris.historia_clinica(entry_nombre_paciente.Text,entry_pid_paciente.Text,entry_edad_paciente.Text,
@@ -372,7 +542,12 @@ namespace osiris
 			new osiris.pases_a_quirofano(PidPaciente,folioservicio,idtipointernamiento,LoginEmpleado,id_tipopaciente,idempresa_paciente,idaseguradora_paciente,false,"pase_de_ingreso");
 		}
 		
-		void on_radio_clicked (object sender, EventArgs args)
+		void on_combobox_tipo_anestecia_clicked(object sender, EventArgs args)
+		{
+				
+		}
+		
+		void on_radio_clicked(object sender, EventArgs args)
 		{
 			verifica_radiobutton();	
 		}
@@ -403,7 +578,7 @@ namespace osiris
 				if (radiobutton_diag.Active == true){
 					button_busc_diag.Sensitive = false;
 					button_diag_final.Sensitive = false;
-					this.entry_diag.Sensitive = true;
+					entry_diag.Sensitive = true;
 					button_busc_cirugia.Sensitive = false;
 					button_busc_medic_diag.Sensitive = false;
 					button_busc_medic_trat.Sensitive =false;
@@ -413,7 +588,7 @@ namespace osiris
 				if (radiobutton_cirugia.Active == true){
 					button_busc_cirugia.Sensitive = true;
 					button_busc_medic_trat.Sensitive =false;
-					this.entry_diag.Sensitive = false;
+					entry_diag.Sensitive = false;
 					button_busc_medic_diag.Sensitive = false;
 					button_busc_diag.Sensitive = false;
 					button_diag_final.Sensitive = false;
@@ -421,7 +596,7 @@ namespace osiris
 					combobox_diagprimeravez.Sensitive = false;
 				}
 				if (radiobutton_diag_cie10.Active == true){
-					this.button_busc_diag.Sensitive = true;
+					button_busc_diag.Sensitive = true;
 					button_diag_final.Sensitive = true;
 					button_busc_medic_trat.Sensitive =false;
 					button_busc_medic_diag.Sensitive = false;
@@ -454,7 +629,7 @@ namespace osiris
 					combobox_diagprimeravez.Sensitive = true;
 					button_busc_cirugia.Sensitive = false;
 					button_busc_medic_trat.Sensitive =false;
-					this.entry_diag.Sensitive = false;
+					entry_diag.Sensitive = false;
 					button_busc_medic_diag.Sensitive = false;
 					button_busc_diag.Sensitive = false;
 					button_diag_final.Sensitive = false;
@@ -509,9 +684,8 @@ namespace osiris
 			gxml.Autoconnect                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 (this);
 			buscador_medicos.Show();
 			crea_treeview_busqueda("medicos");
-			
-			llenado_cmbox_tipo_busqueda();
-	        entry_expresion.KeyPressEvent += onKeyPressEvent_enter;
+			llenado_combobox(0,"",combobox_tipo_busqueda,"array","","","",args_tipobusqueda,args_id_array,"");
+			entry_expresion.KeyPressEvent += onKeyPressEvent_enter;
 			button_buscar_busqueda.Clicked += new EventHandler(on_button_llena_medicos_clicked);
 			button_selecciona.Clicked += new EventHandler(on_selecciona_medico_clicked);
 	        button_salir.Clicked +=  new EventHandler(on_cierraventanas_clicked);
@@ -639,54 +813,6 @@ namespace osiris
 			}
 		}
 		
-		void llenado_cmbox_tipo_busqueda()
-		{
-			combobox_tipo_busqueda.Clear();
-			CellRendererText cell1 = new CellRendererText();
-			combobox_tipo_busqueda.PackStart(cell1, true);
-			combobox_tipo_busqueda.AddAttribute(cell1,"text",0);
-	        
-			ListStore store1 = new ListStore( typeof (string),typeof (int));
-			combobox_tipo_busqueda.Model = store1;
-	        
-			//store1.AppendValues ("",0);
-			store1.AppendValues ("PRIMER NOMBRE",1);
-			store1.AppendValues ("SEGUNDO NOMBRE",2);
-			store1.AppendValues ("APELLIDO PATERNO",3);
-			store1.AppendValues ("APELLIDO MATERNO",4);
-			store1.AppendValues ("CEDULA MEDICA",5);
-			store1.AppendValues ("ESPECIALIDAD",6);
-				              
-			TreeIter iter1;
-			if (store1.GetIterFirst(out iter1)){
-				combobox_tipo_busqueda.SetActiveIter (iter1);
-			}
-			combobox_tipo_busqueda.Changed += new EventHandler (onComboBoxChanged_tipo_busqueda);
-		}
-		
-		void onComboBoxChanged_tipo_busqueda (object sender, EventArgs args)
-		{
-	    	ComboBox combobox_tipo_busqueda = sender as ComboBox;
-			if (sender == null)	{	return;	}
-			TreeIter iter;			int numbusqueda = 0;
-			if (combobox_tipo_busqueda.GetActiveIter (out iter))
-			{
-				numbusqueda = (int) combobox_tipo_busqueda.Model.GetValue(iter,1);
-				tipo_de_busqueda_de_medico(numbusqueda);
-				llenando_lista_de_medicos();
-			}
-		}
-		
-		void tipo_de_busqueda_de_medico(int numbusqueda)
-		{
-			if(numbusqueda == 1)  { tipobusqueda = "AND osiris_his_medicos.nombre1_medico LIKE '";	}//Console.WriteLine(tipobusqueda); }
-			if(numbusqueda == 2)  { tipobusqueda = "AND osiris_his_medicos.nombre2_medico LIKE '";	}//Console.WriteLine(tipobusqueda); }
-			if(numbusqueda == 3)  { tipobusqueda = "AND osiris_his_medicos.apellido_paterno_medico LIKE '";	}//Console.WriteLine(tipobusqueda); }
-			if(numbusqueda == 4)  { tipobusqueda = "AND osiris_his_medicos.apellido_materno_medico LIKE '";	}//Console.WriteLine(tipobusqueda); }
-			if(numbusqueda == 5)  { tipobusqueda = "AND osiris_his_medicos.cedula_medico LIKE '";	}//Console.WriteLine(tipobusqueda); }
-			if(numbusqueda == 6)  { tipobusqueda = "AND osiris_his_tipo_especialidad.descripcion_especialidad LIKE '";	}//Console.WriteLine(tipobusqueda); }
-		}
-        
         void on_selecciona_medico_clicked (object sender, EventArgs args)
 		{
 			TreeModel model;
@@ -702,6 +828,10 @@ namespace osiris
 				}
 				if (radiobutton_med_trat.Active == true){
 					entry_med_trat.Text = nombmedico;
+				}
+				if(checkbutton_anestesiologo.Active == true){
+					entry_id_anestesiologo.Text = idmedico.ToString().Trim();
+					entry_anestesiologo.Text = nombmedico;
 				}
 				Widget win = (Widget) sender;
 				win.Toplevel.Destroy();
@@ -1000,8 +1130,8 @@ namespace osiris
 				MessageDialog msgBox = new MessageDialog (MyWin,DialogFlags.Modal,MessageType.Info,
 			         	                 ButtonsType.Ok,"El registro se guardo satisfactoriamente...");										
 				msgBox.Run ();	msgBox.Destroy();
-				this.checkbutton_camb_dats.Active = false;
-				this.button_guardar.Sensitive = false;
+				checkbutton_camb_dats.Active = false;
+				button_guardar.Sensitive = false;
 				button_busc_medic_diag.Sensitive = false;
 				button_busc_medic_trat.Sensitive = false;
 				button_busc_diag.Sensitive = false;
@@ -1018,7 +1148,12 @@ namespace osiris
 			conexion.Close();
 		}
 		
-		void on_button_llena_cirugias_clicked (object sender, EventArgs a)
+		void on_button_guardar_tabqx_clicked(object sender, EventArgs a)
+		{
+			
+		}
+		
+		void on_button_llena_cirugias_clicked(object sender, EventArgs a)
 		{
 			llena_lista_cirugias();			
 		}
@@ -1165,7 +1300,8 @@ namespace osiris
             				"osiris_erp_cobros_enca.id_aseguradora,descripcion_aseguradora, "+
             				"descripcion_diagnostico_movcargos,nombre_medico_encabezado, "+
             				"osiris_erp_cobros_enca.id_medico,nombre_medico,cancelado,tipo_cirugia,diagnostico_primeravez,"+
-            				"osiris_erp_movcargos.descripcion_diagnostico_cie10,osiris_erp_movcargos.descripcion_diagnostico_final "+            				
+            				"osiris_erp_movcargos.descripcion_diagnostico_cie10,osiris_erp_movcargos.descripcion_diagnostico_final," +
+            				"observaciones1,observaciones2 "+            				
             				//"osiris_his_tipo_diagnosticos.descripcion_diagnostico "+
             				"FROM osiris_erp_cobros_enca,osiris_his_paciente,osiris_erp_movcargos,osiris_his_tipo_admisiones,osiris_his_tipo_pacientes, "+
             				"osiris_aseguradoras,osiris_his_medicos,osiris_empresas "+ 
@@ -1181,10 +1317,8 @@ namespace osiris
             				"AND osiris_erp_cobros_enca.folio_de_servicio = '"+(string) foliodeservicio_+"';";
 				NpgsqlDataReader lector = comando.ExecuteReader ();
             	
-				while (lector.Read())
-				{
-					if((bool) lector["cancelado"])
-					{
+				while (lector.Read()){
+					if((bool) lector["cancelado"]){
 						MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
 													MessageType.Error, ButtonsType.Close, "ESTE FOLIO HA SIDO CANCELADO\n");
 						msgBoxError.Run ();
@@ -1225,16 +1359,62 @@ namespace osiris
 						idaseguradora_paciente = (int) lector["id_aseguradora"];
 						idempresa_paciente = (int) lector["idempresa"];
 						
-						this.entry_medic_diag.Text = (string) lector["nombre_medico"];
-						this.entry_docimp_cirugia.Text = (string) lector["nombre_de_cirugia"];
-						this.entry_med_trat.Text = (string) lector["nombre_medico_tratante"];
-						this.entry_diag.Text = (string) lector["descripcion_diagnostico_movcargos"];
-						this.entry_diag_cie10.Text = (string) lector["descripcion_diagnostico_cie10"];
-						this.entry_diag_final.Text = (string) lector["descripcion_diagnostico_final"];
-						llenado_combobox_tipocirugia((string) lector["tipo_cirugia"]);
-						llenado_combobox_diagprimeravez((string) lector["diagnostico_primeravez"]);
+						entry_medic_diag.Text = (string) lector["nombre_medico"];
+						entry_docimp_cirugia.Text = (string) lector["nombre_de_cirugia"];
+						entry_med_trat.Text = (string) lector["nombre_medico_tratante"];
+						entry_diag.Text = (string) lector["descripcion_diagnostico_movcargos"];
+						entry_diag_cie10.Text = (string) lector["descripcion_diagnostico_cie10"];
+						entry_diag_final.Text = (string) lector["descripcion_diagnostico_final"];
+						
+						llenado_combobox(1,lector["tipo_cirugia"].ToString().Trim(),combobox_tipo_cirugia,"array","","","",args_tipos_cirugias,args_id_array,"");
+						llenado_combobox(1,lector["diagnostico_primeravez"].ToString().Trim(),combobox_diagprimeravez,"array","","","",args_diag_primeravez,args_id_array,"");
+						
+						
+						char[] delimiterChars = {';'}; // delimitador de Cadenas
+						//char[] delimiterChars = {' '}; // delimitador de Cadenas
+						string texto = (string) lector["observaciones1"]; // puede ser una campo de la base de datos tipo Text
+						//string texto = "1;daniel; ;olivares;cuevas";
+						//"2;genaro;cuevas;bazaldua\n"+
+						//"3;gladys;perez;orellana\n";
+						string[] words = texto.Split(delimiterChars); // Separa las Cadenas
+						string lineas_texto = "";
+						
+						// Recorre la variable
+						int contador = 1;
+						foreach (string s in words){
+							if (s.Length > 0){
+								//Console.WriteLine(s.ToString()+"    "+contador.ToString());
+								switch (contador){
+									case 1:
+										idproducto = s;
+										entry_id_producto.Text = s;
+									break;
+									case 2:
+										descripcionproducto = s;
+										entry_descripcion_producto.Text = s;
+									break;
+									case 3:
+										nroserielente = s;
+										entry_nroserie.Text = s;
+									break;
+									case 4:
+										tipoantestesia = s;
+										llenado_combobox(1,s,combobox_tipo_anestecia,"array","","","",args_tipoanestecia,args_id_array,"");
+									break;
+									case 5:
+										idanestesiologo = s;
+										entry_id_anestesiologo.Text = s;
+									break;
+									case 6:
+										nombreantestesiologo = s;
+										entry_anestesiologo.Text = s;
+									break;
+								}								
+								contador += 1;
+							}
+						}	
 					}
-					this.checkbutton_camb_dats.Sensitive = true;
+					checkbutton_camb_dats.Sensitive = true;
 					//this.button_guardar.Sensitive = true;
 				}
 			}catch (NpgsqlException ex){

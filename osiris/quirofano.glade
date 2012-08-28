@@ -4413,7 +4413,7 @@ Solicitud</property>
 		    <widget class="GtkVPaned" id="vpaned1">
 		      <property name="visible">True</property>
 		      <property name="can_focus">True</property>
-		      <property name="position">0</property>
+		      <property name="position">285</property>
 
 		      <child>
 			<widget class="GtkHBox" id="hbox1">
@@ -12460,10 +12460,67 @@ Reagendando Cita
 	  </child>
 
 	  <child>
-	    <widget class="GtkCalendar" id="calendar4">
+	    <widget class="GtkHBox" id="hbox134">
+	      <property name="visible">True</property>
+	      <property name="homogeneous">False</property>
+	      <property name="spacing">0</property>
+
+	      <child>
+		<widget class="GtkLabel" id="label204">
+		  <property name="visible">True</property>
+		  <property name="label" translatable="yes">&lt;small&gt;&lt;b&gt;N° Cita a Re-Agendar&lt;/b&gt;&lt;/small&gt; </property>
+		  <property name="use_underline">False</property>
+		  <property name="use_markup">True</property>
+		  <property name="justify">GTK_JUSTIFY_LEFT</property>
+		  <property name="wrap">False</property>
+		  <property name="selectable">False</property>
+		  <property name="xalign">0.5</property>
+		  <property name="yalign">0.5</property>
+		  <property name="xpad">0</property>
+		  <property name="ypad">0</property>
+		  <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
+		  <property name="width_chars">-1</property>
+		  <property name="single_line_mode">False</property>
+		  <property name="angle">0</property>
+		</widget>
+		<packing>
+		  <property name="padding">0</property>
+		  <property name="expand">False</property>
+		  <property name="fill">False</property>
+		</packing>
+	      </child>
+
+	      <child>
+		<widget class="GtkEntry" id="entry45">
+		  <property name="visible">True</property>
+		  <property name="can_focus">True</property>
+		  <property name="editable">True</property>
+		  <property name="visibility">True</property>
+		  <property name="max_length">0</property>
+		  <property name="text" translatable="yes"></property>
+		  <property name="has_frame">True</property>
+		  <property name="invisible_char">•</property>
+		  <property name="activates_default">False</property>
+		</widget>
+		<packing>
+		  <property name="padding">0</property>
+		  <property name="expand">True</property>
+		  <property name="fill">True</property>
+		</packing>
+	      </child>
+	    </widget>
+	    <packing>
+	      <property name="padding">0</property>
+	      <property name="expand">True</property>
+	      <property name="fill">True</property>
+	    </packing>
+	  </child>
+
+	  <child>
+	    <widget class="GtkCalendar" id="calendar_reagendar">
 	      <property name="visible">True</property>
 	      <property name="can_focus">True</property>
-	      <property name="display_options">GTK_CALENDAR_SHOW_HEADING|GTK_CALENDAR_SHOW_DAY_NAMES|GTK_CALENDAR_SHOW_DETAILS</property>
+	      <property name="display_options">GTK_CALENDAR_SHOW_HEADING|GTK_CALENDAR_SHOW_DAY_NAMES|GTK_CALENDAR_SHOW_WEEK_NUMBERS|GTK_CALENDAR_SHOW_DETAILS</property>
 	    </widget>
 	    <packing>
 	      <property name="padding">0</property>
@@ -12504,7 +12561,7 @@ Reagendando Cita
 	      </child>
 
 	      <child>
-		<widget class="GtkEntry" id="entry43">
+		<widget class="GtkEntry" id="entry_fecha_reagendar">
 		  <property name="width_request">100</property>
 		  <property name="visible">True</property>
 		  <property name="can_focus">True</property>
@@ -12549,15 +12606,29 @@ Reagendando Cita
 	      </child>
 
 	      <child>
-		<widget class="GtkComboBox" id="combobox12">
-		  <property name="width_request">100</property>
+		<widget class="GtkComboBox" id="combobox_hora_reagendar">
+		  <property name="width_request">80</property>
 		  <property name="visible">True</property>
 		  <property name="add_tearoffs">False</property>
 		  <property name="focus_on_click">True</property>
 		</widget>
 		<packing>
 		  <property name="padding">0</property>
-		  <property name="expand">True</property>
+		  <property name="expand">False</property>
+		  <property name="fill">True</property>
+		</packing>
+	      </child>
+
+	      <child>
+		<widget class="GtkComboBox" id="combobox_minutos_reagendar">
+		  <property name="width_request">80</property>
+		  <property name="visible">True</property>
+		  <property name="add_tearoffs">False</property>
+		  <property name="focus_on_click">True</property>
+		</widget>
+		<packing>
+		  <property name="padding">0</property>
+		  <property name="expand">False</property>
 		  <property name="fill">True</property>
 		</packing>
 	      </child>
@@ -12645,7 +12716,7 @@ Reagendando Cita
 	      </child>
 
 	      <child>
-		<widget class="GtkButton" id="button20">
+		<widget class="GtkButton" id="button_aplica_reagendar">
 		  <property name="width_request">110</property>
 		  <property name="visible">True</property>
 		  <property name="relief">GTK_RELIEF_NORMAL</property>

@@ -191,7 +191,7 @@ namespace osiris
 		protected Gtk.Window MyWin;
 		
 		string[] args_args = {""};
-		string[] args_tipounidad = {"","PIEZA","KILO","LITRO","GRAMO","METRO","CENTIMETRO","CAJA","PULGADA","FRASCO","GALON"};
+		string[] args_tipounidad = {"","PIEZA","KILO","LITRO","GRAMO","METRO","CENTIMETRO","CAJA","PULGADA","FRASCO","GALON","BOLSA"};
 		int[] args_id_array = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15};
 		
 		class_conexion conexion_a_DB = new class_conexion();

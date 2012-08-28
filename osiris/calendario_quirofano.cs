@@ -153,6 +153,11 @@ namespace osiris
 		
 		// ventana para reagendar cita		
 		[Widget] Gtk.Window reangendar_cita = null;
+		[Widget] Gtk.Entry entry_fecha_reagendar = null;
+		[Widget] Gtk.ComboBox combobox_hora_reagendar = null;
+		[Widget] Gtk.ComboBox combobox_minutos_reagendar = null;
+		[Widget] Gtk.Calendar calendar_reagendar = null;
+		[Widget] Gtk.Button button_aplica_reagendar = null;
 		
 		string LoginEmpleado;
 		string NomEmpleado;
@@ -597,6 +602,9 @@ namespace osiris
 			if(activatedCalendar.Name.ToString() == "calendar3"){
 				entry_fecha_cita_qx.Text = activatedCalendar.GetDate().ToString ("yyyy-MM-dd");	
 			}
+			if(activatedCalendar.Name.ToString() == "calendar_reagendar"){
+				entry_fecha_reagendar.Text = activatedCalendar.GetDate().ToString ("yyyy-MM-dd");
+			}
 			//Console.WriteLine (activatedCalendar.Name.ToString());
 			//Console.WriteLine (activatedCalendar.GetDate ().ToString ("yyyy/MM/dd"));			
 		}		
@@ -779,6 +787,35 @@ namespace osiris
 				store3.AppendValues ((string)i.ToString("00").Trim());
 			}
 			combobox_minutos_cita.Changed += new EventHandler (onComboBoxChanged_hora_minutos_cita);
+			
+			
+			/*
+			combobox_hora_reagendar.Clear();
+			CellRendererText cell4 = new CellRendererText();
+			combobox_hora_reagendar.PackStart(cell4, true);
+			combobox_hora_reagendar.AddAttribute(cell4,"text",0);
+	        
+			ListStore store4 = new ListStore( typeof (string), typeof (int));
+			combobox_hora_reagendar.Model = store4;
+			for(int i = (int) classpublic.horario_cita_inicio; i < (int)classpublic.horario_cita_termino+1 ; i++){				
+				store4.AppendValues ((string)i.ToString("00").Trim());
+			}
+			combobox_hora_reagendar.Changed += new EventHandler (onComboBoxChanged_hora_minutos_cita);
+			
+			
+			combobox_minutos_reagendar.Clear();
+			CellRendererText cell5 = new CellRendererText();
+			combobox_minutos_reagendar.PackStart(cell5, true);
+			combobox_minutos_reagendar.AddAttribute(cell5,"text",0);
+	        
+			ListStore store5 = new ListStore( typeof (string), typeof (int));
+			combobox_minutos_reagendar.Model = store5;
+			
+			for(int i = (int) 0; i < 60 ; i=i+(int) classpublic.intervalo_minutos){				
+				store5.AppendValues ((string)i.ToString("00").Trim());
+			}
+			combobox_minutos_reagendar.Changed += new EventHandler (onComboBoxChanged_hora_minutos_cita);
+			*/
 		}
 		
 		void onComboBoxChanged_hora_minutos_cita(object sender, EventArgs args)
@@ -798,6 +835,7 @@ namespace osiris
 					//Console.WriteLine((string) hora_minutos_cita.Model.GetValue(iter,0));
 					minutos_cita_qx = (string) hora_minutos_cita.Model.GetValue(iter,0);
 				}
+				
 			}
 		}
 		
@@ -1478,7 +1516,8 @@ namespace osiris
 										"fechahora_cancelacion = '"+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"', "+
 										"id_quien_cancelo = '"+LoginEmpleado+"', "+		
 										"motivo_cancelacion_citaqx = '"+entry_motivo.Text.ToString().Trim().ToUpper()+"' "+
-				 						"WHERE id_secuencia =  '"+(string) treeview_lista_agenda.Model.GetValue (iter,19)+"';";
+				 						"WHERE id_secuencia =  '"+(string) treeview_lista_agenda.Model.GetValue (iter,19)+"' " +
+				 						"AND cancelado = 'false';";
 						comando.ExecuteNonQuery();					comando.Dispose();
 						contador_numerocitas += -1;
 						entry_numero_citas.Text = contador_numerocitas.ToString().Trim();
@@ -1655,6 +1694,20 @@ namespace osiris
 			reangendar_cita.Show();
 			
 			button_salir.Clicked += new EventHandler(on_cierraventanas_clicked);
+			calendar_reagendar.DaySelected += new EventHandler (on_dayselected_clicked);
+			button_aplica_reagendar.Clicked += new EventHandler(on_button_aplica_reagendar_clicked);
+			llena_horas_citas();
+		}
+		
+		void on_button_aplica_reagendar_clicked(object sender, EventArgs args)
+		{
+			MessageDialog msgBox = new MessageDialog (MyWin,DialogFlags.Modal,
+						MessageType.Question,ButtonsType.YesNo,"¿ Esta seguro de Rea-gendar la CITA ?");
+					ResponseType miResultado = (ResponseType)
+			msgBox.Run ();				msgBox.Destroy();
+	 		if (miResultado == ResponseType.Yes){
+				
+			}
 		}
 		
 		void on_cierraventanas_clicked(object sender, EventArgs args)

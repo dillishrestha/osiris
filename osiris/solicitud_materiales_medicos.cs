@@ -74,6 +74,8 @@ namespace osiris
 		[Widget] Gtk.Entry entry_diagnostico = null;
 		[Widget] Gtk.TreeView lista_produc_solicitados = null;
 		[Widget] Gtk.Button button_selecciona_pq = null;
+		[Widget] Gtk.Entry entry_observacion = null;
+		[Widget] Gtk.CheckButton checkbutton_solicitud_paquete = null;
 		
 		[Widget] Gtk.Entry entry_rojo;
 		[Widget] Gtk.Entry entry_azul;
@@ -469,7 +471,8 @@ namespace osiris
 																		"pre_solicitud,"+
 																		"nombre_paciente,"+
 																		"procedimiento_qx,"+
-																		"diagnostico_qx)"+
+																		"diagnostico_qx," +
+																		"observaciones_solicitud)"+
 																		"VALUES ('"+
 																		this.entry_numero_solicitud.Text+"','"+
 																		(string) this.lista_produc_solicitados.Model.GetValue(iter,1)+"','"+
@@ -485,7 +488,9 @@ namespace osiris
 																		(bool) checkbutton_presolicitud.Active+"','"+
 																		(string) entry_nombre_paciente.Text.ToString().Trim().ToUpper()+"','"+
 																		(string) entry_cirugia.Text.ToString().Trim().ToUpper()+"','"+
-																		(string) entry_diagnostico.Text.ToString().Trim().ToUpper()+"');";
+																		(string) entry_diagnostico.Text.ToString().Trim().ToUpper()+"','"+
+																		(string) entry_observacion.Text.ToString().Trim().ToUpper()+
+																		"');";
 																	
 							//Console.WriteLine(comando.CommandText);
 							comando.ExecuteNonQuery();
@@ -517,7 +522,8 @@ namespace osiris
 																		"pre_solicitud,"+
 																		"nombre_paciente,"+
 																		"procedimiento_qx,"+
-																		"diagnostico_qx)"+
+																		"diagnostico_qx," +
+																		"observaciones_solicitud) "+
 																		"VALUES ('"+
 																		this.entry_numero_solicitud.Text+"','"+
 																		(string) this.lista_produc_solicitados.Model.GetValue(iter,1)+"','"+
@@ -533,7 +539,9 @@ namespace osiris
 																		(bool) checkbutton_presolicitud.Active+"','"+
 																		(string) entry_nombre_paciente.Text.ToString().Trim().ToUpper()+"','"+
 																		(string) entry_cirugia.Text.ToString().Trim().ToUpper()+"','"+
-																		(string) entry_diagnostico.Text.ToString().Trim().ToUpper()+"');";
+																		(string) entry_diagnostico.Text.ToString().Trim().ToUpper()+"','"+
+																		(string) entry_observacion.Text.ToString().Trim().ToUpper()+
+																		"');";
 																	
 							//Console.WriteLine(comando.CommandText);
 								comando.ExecuteNonQuery();
@@ -620,7 +628,7 @@ namespace osiris
                						"to_char(osiris_his_solicitudes_deta.id_secuencia,'9999999999') AS idsecuencia,"+
 									"descripcion_grupo_producto,descripcion_grupo1_producto,descripcion_grupo2_producto,"+
 									"osiris_his_solicitudes_deta.folio_de_servicio AS foliodeatencion,"+
-									"osiris_his_solicitudes_deta.pid_paciente AS pidpaciente,"+
+									"osiris_his_solicitudes_deta.pid_paciente AS pidpaciente,observaciones_solicitud,"+
 									"nombre1_paciente,nombre2_paciente,apellido_paterno_paciente,apellido_materno_paciente "+
                						"FROM osiris_his_solicitudes_deta,osiris_his_paciente,osiris_productos,osiris_grupo_producto,osiris_grupo1_producto,osiris_grupo2_producto "+
                						"WHERE osiris_his_solicitudes_deta.folio_de_solicitud = '"+(string) numerodesolicutud+"' "+
@@ -643,6 +651,8 @@ namespace osiris
 												(string) lector["apellido_materno_paciente"].ToString().Trim();
 					entry_diagnostico.Text = (string) lector["diagnostico_qx"].ToString().Trim();
 					entry_cirugia.Text = (string) lector["procedimiento_qx"].ToString().Trim();
+					entry_observacion.Text = (string) lector["observaciones_solicitud"];
+					entry_fecha_solicitud.Text = (string) lector["fechahorasolicitud"];
 					if((bool) lector["status"] == false){
 						editar = false;
 					}

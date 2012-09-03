@@ -1,18 +1,18 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="osiris/osiris.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="osiris/captura_fac_ordenes_compra.cs">
     <Files>
-      <File FileName="osiris/class_conexion.cs" Line="12" Column="24" />
-      <File FileName="osiris/requisicion_compras.cs" Line="2003" Column="7" />
-      <File FileName="osiris/captura_fac_ordenes_compra.cs" Line="1446" Column="44" />
-      <File FileName="osiris/osiris.cs" Line="390" Column="4" />
+      <File FileName="osiris/requisicion_compras.cs" Line="875" Column="79" />
+      <File FileName="osiris/class_conexion.cs" Line="16" Column="2" />
+      <File FileName="osiris/captura_fac_ordenes_compra.cs" Line="490" Column="58" />
+      <File FileName="osiris/rpd_doc_pacientes.cs" Line="348" Column="6" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
         <State expanded="True">
           <Node name="osiris" expanded="True">
             <Node name="References" expanded="True" />
-            <Node name="osiris.cs" selected="True" />
+            <Node name="captura_fac_ordenes_compra.cs" selected="True" />
           </Node>
         </State>
       </Pad>

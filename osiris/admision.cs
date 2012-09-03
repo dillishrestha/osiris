@@ -87,17 +87,22 @@ namespace osiris
 		string ApmEmpleado;
 		string nombrebd;		
 		string connectionString;
+		bool accesocxpq;
+		bool accesocancelafolio;
 		
 		class_conexion conexion_a_DB = new class_conexion();
 		
 		protected Gtk.Window MyWin;
 		
-		public admision (string LoginEmp_, string NomEmpleado_, string AppEmpleado_, string ApmEmpleado_, string nombrebd_) 
+		public admision (string LoginEmp_, string NomEmpleado_, string AppEmpleado_, string ApmEmpleado_, string nombrebd_,bool accesocxpq_,bool accesocancelafolio_) 
 		{
 			LoginEmpleado = LoginEmp_;
 			NomEmpleado = NomEmpleado_;
 			AppEmpleado = AppEmpleado_;
-			ApmEmpleado = ApmEmpleado_;					
+			ApmEmpleado = ApmEmpleado_;
+			accesocxpq = accesocxpq_;
+			accesocancelafolio = accesocancelafolio_;
+			
 			connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
 			nombrebd = conexion_a_DB._nombrebd;
 			
@@ -204,7 +209,7 @@ namespace osiris
 		
 		public void on_button_paquetes_clicked(object sender, EventArgs a)
 		{
-			if (LoginEmpleado =="DOLIVARES" || LoginEmpleado =="ADMIN" ){
+			if (accesocxpq == true ){
  				new osiris.paquetes_cirugias (LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
 			}else{
 				MessageDialog msgBox = new MessageDialog (MyWin,DialogFlags.Modal,
@@ -251,7 +256,7 @@ namespace osiris
 		
 		void on_button_cancela_folios_clicked(object sender, EventArgs args)
 		{
-			if (LoginEmpleado =="DOLIVARES" || LoginEmpleado =="ADMIN" || LoginEmpleado =="RIOSGARCIA" || LoginEmpleado == "CMARQUEZ"){
+			if ((bool) accesocancelafolio == true){
 				menu_admision.Destroy();
 				Glade.XML gxml = new Glade.XML (null, "registro_admision.glade", "cancelador_folios", null);
 				gxml.Autoconnect (this);

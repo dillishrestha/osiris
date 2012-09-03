@@ -2211,7 +2211,7 @@ Busqueda de Productos</property>
 
 		  <child>
 		    <widget class="GtkButton" id="button_selecciona">
-		      <property name="width_request">90</property>
+		      <property name="width_request">100</property>
 		      <property name="visible">True</property>
 		      <property name="can_focus">True</property>
 		      <property name="relief">GTK_RELIEF_NORMAL</property>
@@ -2255,9 +2255,9 @@ Busqueda de Productos</property>
 			      <child>
 				<widget class="GtkLabel" id="label1">
 				  <property name="visible">True</property>
-				  <property name="label">_Seleccionar</property>
+				  <property name="label">&lt;b&gt;_Selecciona&lt;/b&gt;</property>
 				  <property name="use_underline">True</property>
-				  <property name="use_markup">False</property>
+				  <property name="use_markup">True</property>
 				  <property name="justify">GTK_JUSTIFY_LEFT</property>
 				  <property name="wrap">False</property>
 				  <property name="selectable">False</property>
@@ -3336,7 +3336,7 @@ Busqueda de Almacenes
 			      </child>
 
 			      <child>
-				<widget class="GtkEntry" id="entry15">
+				<widget class="GtkEntry" id="entry_motivo">
 				  <property name="visible">True</property>
 				  <property name="can_focus">True</property>
 				  <property name="editable">True</property>
@@ -3380,7 +3380,7 @@ Busqueda de Almacenes
 			      </child>
 
 			      <child>
-				<widget class="GtkEntry" id="entry19">
+				<widget class="GtkEntry" id="entry_observaciones">
 				  <property name="visible">True</property>
 				  <property name="can_focus">True</property>
 				  <property name="editable">True</property>
@@ -3437,7 +3437,7 @@ Busqueda de Almacenes
 			      </child>
 
 			      <child>
-				<widget class="GtkEntry" id="entry16">
+				<widget class="GtkEntry" id="entry_nombre_paciente">
 				  <property name="visible">True</property>
 				  <property name="can_focus">True</property>
 				  <property name="editable">True</property>
@@ -3481,7 +3481,7 @@ Busqueda de Almacenes
 			      </child>
 
 			      <child>
-				<widget class="GtkEntry" id="entry17">
+				<widget class="GtkEntry" id="entry_folio_servicio">
 				  <property name="width_request">80</property>
 				  <property name="visible">True</property>
 				  <property name="can_focus">True</property>
@@ -3526,7 +3526,7 @@ Busqueda de Almacenes
 			      </child>
 
 			      <child>
-				<widget class="GtkEntry" id="entry18">
+				<widget class="GtkEntry" id="entry_pid_paciente">
 				  <property name="width_request">80</property>
 				  <property name="visible">True</property>
 				  <property name="can_focus">True</property>

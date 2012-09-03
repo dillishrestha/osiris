@@ -3,8 +3,8 @@
 // Sistema Hospitalario OSIRIS
 // Monterrey - Mexico
 //
-// Autor    	: ing. Juan Antonio Peña Gonzalez (Programacion)
-// 				  
+// Autor    	: Ing. Juan Antonio Peña Gonzalez (Programacion)
+// 				  Ing. Daniel Olivares C. (trapaso a GTKPrint)
 // Licencia		: GLP
 //////////////////////////////////////////////////////////
 //
@@ -46,6 +46,8 @@ namespace osiris
 		int separacion_linea = 10;
 		int numpage = 1;
 		
+		PrintContext context;
+		
 		string connectionString;
         string nombrebd;
 		string cirugia = "";
@@ -59,7 +61,7 @@ namespace osiris
 		string fax = "";
 		string notas = "";
 		string numpresupuesto = "";
-		string titulo = "";
+		string titulo_rpt = "";
 		string schars = "";
 		bool rptconprecio = true;
 		
@@ -110,18 +112,17 @@ namespace osiris
 			valoriva = decimal.Parse(classpublic.ivaparaaplicar);
 			
 			if(tiporeporte == "presupuestos") { 
-				titulo = "PRESUPUESTO DE CIRUGIA";
-			}else{
-				titulo = "PAQUETES DE CIRUGIA";
+				titulo_rpt = "PRESUPUESTO_DE_CIRUGIA";
 			}
-			
+			if(tiporeporte == "paquetes"){
+				titulo_rpt = "PAQUETE_QUIRURGICO";
+			}			
 			print = new PrintOperation ();
-			print.JobName = titulo;
+			print.JobName = titulo_rpt;
 			print.BeginPrint += new BeginPrintHandler (OnBeginPrint);
 			print.DrawPage += new DrawPageHandler (OnDrawPage);
 			print.EndPrint += new EndPrintHandler (OnEndPrint);
-			print.Run (PrintOperationAction.PrintDialog, null);
-			
+			print.Run (PrintOperationAction.PrintDialog, null);			
 		}
       	
 		private void OnBeginPrint (object obj, Gtk.BeginPrintArgs args)
@@ -134,32 +135,22 @@ namespace osiris
 		
 		private void OnDrawPage (object obj, Gtk.DrawPageArgs args)
 		{			
-			PrintContext context = args.Context;
+			context = args.Context;
 			ejecutar_consulta_reporte(context);
 		}
 		
 		void ejecutar_consulta_reporte(PrintContext context)
 		{
+			decimal precioventaconvenido = 0;
+			string query_consulta = "";
 			Cairo.Context cr = context.CairoContext;
 			Pango.Layout layout = context.CreatePangoLayout ();
 			Pango.FontDescription desc = Pango.FontDescription.FromString ("Sans");									
 			// cr.Rotate(90)  Imprimir Orizontalmente rota la hoja cambian las posiciones de las lineas y columna					
 			fontSize = 8.0;			layout = null;			layout = context.CreatePangoLayout ();
 			desc.Size = (int)(fontSize * pangoScale);		layout.FontDescription = desc;
-			/*
-			
-			decimal precioventaconvenido;
-			NpgsqlConnection conexion; 
-	        conexion = new NpgsqlConnection (connectionString+nombrebd);
-	        // Verifica que la base de datos este conectada
-	          
-        	try{
- 			conexion.Open ();
-        	NpgsqlCommand comando; 
-        	comando = conexion.CreateCommand (); 
-        	
-	        	if(tiporeporte == "paquetes"){
-	           		comando.CommandText = "SELECT descripcion_producto,osiris_his_tipo_admisiones.descripcion_admisiones, "+
+			if(tiporeporte == "paquetes"){
+	           	query_consulta = "SELECT descripcion_producto,osiris_his_tipo_admisiones.descripcion_admisiones, "+
 								"id_empleado,osiris_his_cirugias_deta.eliminado,osiris_productos.aplicar_iva,osiris_his_cirugias_deta.id_tipo_admisiones,  "+
 								"osiris_productos.descripcion_producto,descripcion_grupo_producto,osiris_productos.id_grupo_producto, "+
 								"to_char(osiris_his_tipo_cirugias.precio_de_venta,'999999999999') AS precioventa, "+
@@ -181,9 +172,9 @@ namespace osiris
 								"AND osiris_his_cirugias_deta.id_tipo_admisiones = osiris_his_tipo_admisiones.id_tipo_admisiones "+
 								"AND osiris_his_cirugias_deta.id_tipo_cirugia = '"+id.ToString() +"' "+
 								"ORDER BY osiris_his_cirugias_deta.id_tipo_admisiones,osiris_productos.id_grupo_producto,osiris_productos.descripcion_producto;";
-	        	}else{
-	        		if(tiporeporte == "presupuestos"){
-	        			comando.CommandText = "SELECT descripcion_producto,descripcion_admisiones, "+
+	        }
+	        if(tiporeporte == "presupuestos"){
+	        	query_consulta = "SELECT descripcion_producto,descripcion_admisiones, "+
 							"id_empleado,osiris_his_presupuestos_deta.eliminado,osiris_productos.aplicar_iva,osiris_his_presupuestos_deta.id_tipo_admisiones,  "+
 							"osiris_productos.descripcion_producto,descripcion_grupo_producto,osiris_productos.id_grupo_producto, "+
 							"to_char(osiris_his_presupuestos_enca.precio_convenido,'999999999999') AS precioventa, "+
@@ -205,8 +196,58 @@ namespace osiris
 							"AND osiris_his_presupuestos_deta.id_tipo_admisiones = osiris_his_tipo_admisiones.id_tipo_admisiones "+
 							"AND osiris_his_presupuestos_deta.id_presupuesto IN ('"+id.ToString()+"') "+							
 							"ORDER BY osiris_his_presupuestos_deta.id_tipo_admisiones,osiris_productos.id_grupo_producto,osiris_productos.descripcion_producto;";
-	        		}
-        		}	
+        	}
+			NpgsqlConnection conexion; 
+	        conexion = new NpgsqlConnection (connectionString+nombrebd);
+			try{
+ 				conexion.Open ();
+        		NpgsqlCommand comando; 
+        		comando = conexion.CreateCommand (); 
+				comando.CommandText = query_consulta;
+        		Console.WriteLine(comando.CommandText);
+				NpgsqlDataReader lector = comando.ExecuteReader ();
+        		if (lector.Read()){
+					imprime_encabezado(cr,layout);
+					imprime_titulo(cr,layout,(string) lector["descripcion_admisiones"],"");
+					precioventaconvenido = decimal.Parse((string) lector["precioventa"]);
+        		
+        			datos = (string) lector["descripcion_producto"];
+	        		cantaplicada = decimal.Parse((string) lector["cantidadaplicada"]);
+					subtotal = decimal.Parse((string) lector["preciopublico"])*cantaplicada;
+					
+					if((bool) lector["aplicar_iva"]== true){
+						ivaprod = (subtotal*valoriva)/100;
+						subt15 += subtotal;
+					}else{
+						subt0 += subtotal;
+						ivaprod = 0;
+					}
+					sumaiva += ivaprod;
+					total = subtotal + ivaprod;				
+	        		totaladm += total;
+					subtotaldelmov += total;
+					while (lector.Read()){
+					
+					}
+				}
+			}catch (NpgsqlException ex){
+				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+				MessageType.Warning, ButtonsType.Ok, "PostgresSQL error: {0}",ex.Message);
+				msgBoxError.Run ();		msgBoxError.Destroy();
+				Console.WriteLine ("PostgresSQL error: {0}",ex.Message); 
+			}
+			/*
+			
+			decimal precioventaconvenido;
+			
+	        // Verifica que la base de datos este conectada
+	          
+        	try{
+ 			conexion.Open ();
+        	NpgsqlCommand comando; 
+        	comando = conexion.CreateCommand (); 
+        	
+	        		
         	
         		NpgsqlDataReader lector = comando.ExecuteReader ();
         		//Console.WriteLine("query proc cobr: "+comando.CommandText.ToString());
@@ -291,7 +332,7 @@ namespace osiris
 						sumaiva += ivaprod;
 						total = subtotal + ivaprod;
 						totaladm +=total;
-						subtotaldelmov +=total;
+						subtotaldelmov +=total; c
         			
 					if(idadmision_ == (int) lector["id_tipo_admisiones"]){
 						genera_lineac(ContextoImp, trabajoImpresion);
@@ -432,14 +473,59 @@ namespace osiris
 				ButtonsType.Close, "NO contiene productos aplicados \n"+"existentes para que se muestre \n");
 				msgBoxError.Run ();		msgBoxError.Destroy();
 			}	
-		}catch (NpgsqlException ex){
-			MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
-				MessageType.Warning, ButtonsType.Ok, "PostgresSQL error: {0}",ex.Message);
-				msgBoxError.Run ();		msgBoxError.Destroy();
-			Console.WriteLine ("PostgresSQL error: {0}",ex.Message);
-			return; 
-		}
+		
 		*/
+		}
+		
+		void imprime_encabezado(Cairo.Context cr,Pango.Layout layout)
+		{
+			Pango.FontDescription desc = Pango.FontDescription.FromString ("Sans");								
+			//cr.Rotate(90);  //Imprimir Orizontalmente rota la hoja cambian las posiciones de las lineas y columna					
+			fontSize = 8.0;
+			desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;
+			layout.FontDescription.Weight = Weight.Bold;		// Letra negrita
+			cr.MoveTo(05*escala_en_linux_windows,05*escala_en_linux_windows);			layout.SetText(classpublic.nombre_empresa);			Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(05*escala_en_linux_windows,15*escala_en_linux_windows);			layout.SetText(classpublic.direccion_empresa);		Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(05*escala_en_linux_windows,25*escala_en_linux_windows);			layout.SetText(classpublic.telefonofax_empresa);	Pango.CairoHelper.ShowLayout (cr, layout);
+			fontSize = 6.0;
+			desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;
+			cr.MoveTo(650*escala_en_linux_windows,05*escala_en_linux_windows);			layout.SetText("Fech.Rpt:"+(string) DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));		Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(650*escala_en_linux_windows,15*escala_en_linux_windows);			layout.SetText("N° Page :"+numpage.ToString().Trim());		Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(05*escala_en_linux_windows,35*escala_en_linux_windows);			layout.SetText("Sistema Hospitalario OSIRIS");		Pango.CairoHelper.ShowLayout (cr, layout);
+			// Cambiando el tamaño de la fuente			
+			fontSize = 10.0;
+			desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;
+			// Cambiando el tamaño de la fuente			
+			fontSize = 11.0;
+			desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;
+			layout.FontDescription.Weight = Weight.Bold;		// Letra negrita
+			layout.Alignment = Pango.Alignment.Center;
+			
+			double width = context.Width;
+			layout.Width = (int) width;
+			layout.Alignment = Pango.Alignment.Center;
+			//layout.Wrap = Pango.WrapMode.Word;
+			//layout.SingleParagraphMode = true;
+			layout.Justify =  false;
+			cr.MoveTo(width/2,45*escala_en_linux_windows);	layout.SetText(titulo_rpt);	Pango.CairoHelper.ShowLayout (cr, layout);
+			//cr.MoveTo(225*escala_en_linux_windows, 35*escala_en_linux_windows);			layout.SetText(titulo_rpt);				Pango.CairoHelper.ShowLayout (cr, layout);
+			
+			fontSize = 7.0;			layout = null;			layout = context.CreatePangoLayout ();
+			desc.Size = (int)(fontSize * pangoScale);		layout.FontDescription = desc;
+			layout.FontDescription.Weight = Weight.Normal;		// Letra negrita
+		}
+		
+		void imprime_titulo(Cairo.Context cr,Pango.Layout layout, string descrp_admin,string fech)
+		{
+			Pango.FontDescription desc = Pango.FontDescription.FromString ("Sans");
+			//LUGAR DE CARGO
+			fontSize = 7.0;
+			desc.Size = (int)(fontSize * pangoScale);
+			layout.FontDescription = desc;
+			comienzo_linea += separacion_linea;
+			layout.FontDescription.Weight = Weight.Bold;   // Letra Negrita
+			cr.MoveTo(200*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(descrp_admin.ToString()+"  "+fech.ToString());	Pango.CairoHelper.ShowLayout (cr, layout);
+			layout.FontDescription.Weight = Weight.Normal;   // Letra Normal
 		}
 		
 		private void OnEndPrint (object obj, Gtk.EndPrintArgs args)

@@ -77,19 +77,17 @@ namespace osiris
 		[Widget] Gtk.Button button_herramientas = null;
 		[Widget] Gtk.Button button_afiliados = null;
 		[Widget] Gtk.Button button_proveedores = null;
+		[Widget] Gtk.Button button_mantenimiento = null;
 		
 		// opciones generales
 		[Widget] Gtk.Button button_medicos = null;
 		[Widget] Gtk.Button button_ocupacion_hscmty = null;
 		[Widget] Gtk.Button button_cambio_contraseña = null;
 		[Widget] Gtk.Button button_agredecimientos = null;
-		
-		
+				
 		[Widget] Gtk.MenuBar menubar_osiris = null;
 		[Widget] Gtk.MenuItem menuitem_hospital = null;
-		
-		
-		
+				
 		// Salir
 		[Widget] Gtk.Button button_salir  = null;
 		[Widget] Gtk.Image hscmtylogo = null;
@@ -134,6 +132,8 @@ namespace osiris
 		bool autorizaGENERAL = false;
 		bool accesoabrirfolio = false;
 		bool accesocatalogoprod = false;
+		bool accesocxpq = false;
+		bool accesocancelafolio = false;
 		
 		string tipobusqueda = "AND osiris_his_medicos.nombre1_medico LIKE '";
 		
@@ -289,7 +289,8 @@ namespace osiris
 						
 						accesoabrirfolio = (bool) lector["acceso_abrir_folio"];
 						accesocatalogoprod = (bool) lector["acceso_catalogo_producto"];
-												
+						accesocxpq = (bool) lector["acceso_cx_pq"];						
+						accesocancelafolio = (bool) lector["acceso_cancelar_folio"];						
 						//nombre_empresa = conexion_a_DB.nombre_empresa;
 						//direccion_empresa = conexion_a_DB.direccion_empresa;
 						//telefonofax_empresa = conexion_a_DB.telefonofax_empresa;
@@ -400,7 +401,7 @@ namespace osiris
 		// Registro y Admision de Pacientes, realiza la pregunta
 		void on_button_registro_admision_clicked (object sender, EventArgs a)
 		{	
-			new osiris.admision (LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd); 
+			new osiris.admision (LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,accesocxpq,accesocancelafolio); 
 		}
 		
 		// Ocupacion Hospitalaria

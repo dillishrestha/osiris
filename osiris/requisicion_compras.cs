@@ -552,7 +552,7 @@ namespace osiris
 				combobox_tipo_unidad2.Hide();
 				label5.Show();
 				entry_precio.Show();
-				button_selecciona.Label = "Requisar";
+				//button_selecciona.Label = "Requisar";
 				button_selecciona.Clicked += new EventHandler(on_selecciona_producto_clicked);			
 				entry_cantidad_aplicada.KeyPressEvent += onKeyPressEvent;
 				entry_precio.KeyPressEvent += onKeyPressEvent;

@@ -66,7 +66,12 @@ namespace osiris
 		[Widget] Gtk.Entry entry_formapago = null;
 		[Widget] Gtk.TreeView lista_productos_a_recibir = null;
 		[Widget] Gtk.Button button_carga_xml = null;
-				
+		[Widget] Gtk.Entry entry_motivo = null;
+		[Widget] Gtk.Entry entry_observaciones = null;
+		[Widget] Gtk.Entry entry_nombre_paciente = null;
+		[Widget] Gtk.Entry entry_folio_servicio = null;
+		[Widget] Gtk.Entry entry_pid_paciente = null;
+						
 		[Widget] Gtk.Entry entry_producto = null;
 		[Widget] Gtk.Button button_busca_producto = null;
 		[Widget] Gtk.Button button_quitar_producto = null;
@@ -155,15 +160,13 @@ namespace osiris
 		TreeViewColumn col_embalajeprod;		CellRendererText cellrt15;
 		//CellRendererCombo cellrt15;
 		TreeViewColumn col_aplica_iva;			CellRendererText cellrt19;
-		TreeViewColumn col_cobro_activo;		CellRendererText cellrt20;
-		
+		TreeViewColumn col_cobro_activo;		CellRendererText cellrt20;		
 		Gtk.ListStore cell_combox_store;
 		
 		public factura_orden_compra(string LoginEmp_,string nombreempleado_,string nombrebd_)
 		{
 			LoginEmpleado = LoginEmp_;
-			nombreempleado = nombreempleado_;
-			
+			nombreempleado = nombreempleado_;			
 			connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
 			nombrebd = conexion_a_DB._nombrebd;
 			
@@ -176,8 +179,7 @@ namespace osiris
 			fontdesc.Weight = Pango.Weight.Bold; // Letra Negrita			
 			
 			entry_orden_de_compra.KeyPressEvent += onKeyPressEvent_enter_ordencompra;
-			button_selecciona_ordencompra.Clicked += new EventHandler(on_button_selecciona_clicked);
-			
+			button_selecciona_ordencompra.Clicked += new EventHandler(on_button_selecciona_clicked);			
 			button_salir.Clicked += new EventHandler(on_cierraventanas_clicked);
 			button_busca_proveedor.Clicked += new EventHandler(on_busca_proveedores_clicked);
 			button_carga_xml.Clicked += new EventHandler(on_button_carga_xml_clicked);
@@ -189,13 +191,13 @@ namespace osiris
 			button_reporte.Clicked += new EventHandler(on_button_reporte_clicked);
 			button_quitar_producto.Clicked += new EventHandler(on_button_quitar_producto_clicked);
 			button_busca_orden_compra.Clicked += new EventHandler(on_button_busca_orden_compra_clicked);
-			button_asigna_factura.Clicked += new EventHandler(on_button_asigna_factura_clicked);
-				
+			button_asigna_factura.Clicked += new EventHandler(on_button_asigna_factura_clicked);				
 			entry_num_factura_proveedor.ModifyBase(StateType.Normal, new Gdk.Color(255,243,169)); // Color Amarillo
 			entry_orden_de_compra.ModifyBase(StateType.Normal, new Gdk.Color(255,243,169)); // Color Amarillo
+			entry_estatus_oc.ModifyBase(StateType.Normal, new Gdk.Color(161,210,219)); // Color Amarillo
 			entry_num_factura_proveedor.ModifyFont(fontdesc);  // Arial y Negrita
 			entry_orden_de_compra.ModifyFont(fontdesc);  // Arial y Negrita
-			
+			entry_estatus_oc.ModifyFont(fontdesc);			// Arial y Negrita			
 			entry_producto.Sensitive = false;
 			button_busca_producto.Sensitive = false;
 			button_quitar_producto.Sensitive = false;
@@ -203,17 +205,14 @@ namespace osiris
 			button_guardar.Sensitive = false;
 			entry_estatus_oc.IsEditable = false;
 			entry_id_quien_hizo.IsEditable = false;
-			button_carga_xml.Sensitive = false;
-						
+			button_carga_xml.Sensitive = false;						
 			entry_dia_fechafactura.Text = DateTime.Now.ToString("dd");
 			entry_mes_fechafactura.Text = DateTime.Now.ToString("MM");
 			entry_ano_fechafactura.Text = DateTime.Now.ToString("yyyy");
-			crea_treeview_capturafactura();
-						
+			crea_treeview_capturafactura();						
 			statusbar_captura_factura_orden_compra.Pop(0);
 			statusbar_captura_factura_orden_compra.Push(1, "login: "+LoginEmpleado+"  |Usuario: "+nombreempleado);
-			statusbar_captura_factura_orden_compra.HasResizeGrip = false;
-			
+			statusbar_captura_factura_orden_compra.HasResizeGrip = false;			
 			cell_combox_store = new ListStore(typeof (string));
 			cell_combox_store.AppendValues (" ");
 			cell_combox_store.AppendValues ("PIEZA");
@@ -261,11 +260,9 @@ namespace osiris
 			Gtk.FileFilter filter = new Gtk.FileFilter();
 			filter.AddPattern("*.XML");
 			filter.AddPattern("*.xml");
-			select_file_xml.AddFilter(filter);			
-			
+			select_file_xml.AddFilter(filter);		
 			int resp = select_file_xml.Run();
-			select_file_xml.Hide();
-			
+			select_file_xml.Hide();			
 			if( resp == (int) ResponseType.Accept ){				
 				//Console.WriteLine(select_file_xml.Filename);
 				LeerXML(select_file_xml.Filename);				
@@ -491,7 +488,6 @@ namespace osiris
 					if (treeViewEngineListaProdRequi.GetIterFirst (out iter)){
 						// verificando la 
 						if((bool) radiobutton_orden_compra.Active == true){
-													
 														
 						}
 						if((bool) radiobutton_requisicion.Active == true){
@@ -1401,7 +1397,9 @@ namespace osiris
 					entry_formapago.Text  = (string) lector["condiciones_de_pago"];
 				}
 				comando = conexion.CreateCommand ();				
-				comando.CommandText = "SELECT cantidad_solicitada,osiris_erp_requisicion_deta.id_producto,descripcion_producto,osiris_erp_requisicion_deta.cantidad_de_embalaje," +
+				comando.CommandText = "SELECT cantidad_solicitada,osiris_erp_requisicion_deta.id_producto,descripcion_producto," +
+									"to_char(osiris_productos.costo_producto,'999999999.99') AS costoproducto," +
+									"osiris_erp_requisicion_deta.cantidad_de_embalaje," +
 								 	"osiris_erp_requisicion_deta.costo_producto,osiris_erp_requisicion_deta.costo_por_unidad "+
 									"FROM osiris_erp_requisicion_deta,osiris_productos WHERE numero_orden_compra = '"+entry_orden_de_compra.Text.Trim()+"' "+
 									"AND osiris_erp_requisicion_deta.id_producto = osiris_productos.id_producto;";
@@ -1412,10 +1410,10 @@ namespace osiris
 					                                           entry_num_factura_proveedor.Text.Trim(),
 					                                           float.Parse(Convert.ToString((decimal) lector1["cantidad_solicitada"]).ToString()).ToString("F"),
 					                                           "0.00",
-					                                           float.Parse(Convert.ToString((decimal) lector["cantidad_de_embalaje"]).ToString()).ToString("F"),
-					                                           0.00,
-					                                           float.Parse(Convert.ToString((decimal) lector["costo_producto"]).ToString()).ToString("F"),
-					                                           float.Parse(Convert.ToString((decimal) lector["costo_por_unidad"]).ToString()).ToString("F"));
+					                                           float.Parse(Convert.ToString((decimal) lector1["cantidad_de_embalaje"]).ToString()).ToString("F"),
+					                                           "0.00",
+					                                           float.Parse(Convert.ToString((decimal) lector1["costo_producto"]).ToString()).ToString("F"),
+					                                           "0.00");  //float.Parse(Convert.ToString((decimal) lector["costo_por_unidad"]).ToString()).ToString("F"));
 				}								
 			}catch (NpgsqlException ex){
 	   			MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
@@ -1439,17 +1437,32 @@ namespace osiris
 				conexion.Open ();
 				NpgsqlCommand comando; 
 				comando = conexion.CreateCommand ();
-				comando.CommandText = "SELECT cantidad_solicitada,to_char(osiris_erp_requisicion_deta.id_producto,'999999999999') AS codProducto,descripcion_producto,to_char(osiris_productos.costo_producto,'999999999.99') AS costoproducto," +
+				comando.CommandText = "SELECT cantidad_solicitada,to_char(osiris_erp_requisicion_deta.id_producto,'999999999999') AS codProducto,descripcion_producto," +
+								"to_char(osiris_productos.costo_producto,'999999999.99') AS costoproducto," +
 								"osiris_erp_requisicion_deta.cantidad_de_embalaje," +
-							 	"osiris_erp_requisicion_deta.costo_producto,osiris_erp_requisicion_deta.costo_por_unidad "+
-								"FROM osiris_erp_requisicion_deta,osiris_productos,osiris_erp_requisicion_enca,osiris_erp_tipo_requisiciones_compra " +
+								"to_char(fechahora_creacion_requisicion,'yyyy-MM-dd') AS fechacrearequisicion,"+
+							 	"osiris_erp_requisicion_deta.costo_producto,osiris_erp_requisicion_deta.costo_por_unidad," +
+							 	"osiris_erp_requisicion_enca.motivo_requisicion,osiris_erp_requisicion_enca.observaciones,"+
+								"osiris_erp_requisicion_enca.folio_de_servicio AS foliodeatencion,"+
+								"to_char(osiris_erp_requisicion_enca.pid_paciente,'9999999999') AS pidpaciente,"+
+				            	"nombre1_paciente,nombre2_paciente,apellido_paterno_paciente,apellido_materno_paciente," +
+				            	"osiris_erp_requisicion_enca.id_tipo_requisicion_compra AS idtiporequicompra,osiris_erp_tipo_requisiciones_compra.descripcion_tipo_requisicion "+
+								"FROM osiris_erp_requisicion_deta,osiris_productos,osiris_erp_requisicion_enca,osiris_erp_tipo_requisiciones_compra,osiris_his_paciente " +
 								"WHERE osiris_erp_requisicion_deta.id_requisicion = '"+entry_orden_de_compra.Text.Trim()+"' " +
 								"AND osiris_erp_requisicion_deta.id_producto = osiris_productos.id_producto " +
 								"AND osiris_erp_requisicion_deta.id_requisicion = osiris_erp_requisicion_enca.id_requisicion " +
+								"AND osiris_erp_requisicion_enca.pid_paciente = osiris_his_paciente.pid_paciente "+
 								"AND osiris_erp_requisicion_enca.id_tipo_requisicion_compra = osiris_erp_tipo_requisiciones_compra.id_tipo_requisicion_compra;";
 				Console.WriteLine(comando.CommandText);
-				NpgsqlDataReader lector = comando.ExecuteReader ();							
-				while (lector.Read()){
+				NpgsqlDataReader lector = comando.ExecuteReader ();
+				if (lector.Read()){
+					entry_estatus_oc.Text = (string) lector["descripcion_tipo_requisicion"].ToString().Trim();
+					entry_fecha_orden_compra.Text = (string) lector["fechacrearequisicion"].ToString().Trim();
+					entry_motivo.Text = (string) lector["motivo_requisicion"].ToString().Trim();
+					entry_observaciones.Text = (string) lector["observaciones"].ToString().Trim();
+					entry_nombre_paciente.Text = (string) lector["nombre1_paciente"].ToString().Trim()+" "+(string) lector["nombre2_paciente"].ToString().Trim()+" "+(string) lector["apellido_paterno_paciente"]+" "+(string) lector["apellido_materno_paciente"].ToString().Trim();
+					entry_folio_servicio.Text = (string) lector["foliodeatencion"].ToString().Trim();
+					entry_pid_paciente.Text = (string) lector["pidpaciente"].ToString().Trim();
 					treeViewEngineListaProdRequi.AppendValues (false,
 					                                           entry_num_factura_proveedor.Text.Trim(),
 					                                           float.Parse(Convert.ToString((decimal) lector["cantidad_solicitada"]).ToString()).ToString("F"),
@@ -1470,6 +1483,29 @@ namespace osiris
 							                                   "",
 					                                           "",
 					                                           "");
+				
+					while (lector.Read()){
+						treeViewEngineListaProdRequi.AppendValues (false,
+					                                           entry_num_factura_proveedor.Text.Trim(),
+					                                           float.Parse(Convert.ToString((decimal) lector["cantidad_solicitada"]).ToString()).ToString("F"),
+					                                           "0.00",
+					                                           float.Parse(Convert.ToString((decimal) lector["cantidad_de_embalaje"]).ToString()).ToString("F"),
+					                                           "0.00",
+					                                           float.Parse(Convert.ToString((decimal) lector["costo_producto"]).ToString()).ToString("F"),
+					                                           float.Parse(Convert.ToString((decimal) lector["costo_por_unidad"]).ToString()).ToString("F"),
+					                                           (string) lector["costoproducto"],
+					                                           (string) lector["descripcion_producto"].ToString().Trim(),
+					                                           (string) lector["codProducto"].ToString().Trim(),
+							                                   "",
+							                                   "",
+							                                   "",
+							                                   "",
+							                                   "",
+							                                   "",
+							                                   "",
+					                                           "",
+					                                           "");
+					}
 				}	
 			}catch (NpgsqlException ex){
 	   			MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,

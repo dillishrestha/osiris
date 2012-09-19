@@ -513,7 +513,7 @@ namespace osiris
 		
 		void on_button_exportar_xls_clicked(object sender, EventArgs args)
 		{
-			if(LoginEmpleado == "DOLIVARES" || LoginEmpleado =="ADMIN" || LoginEmpleado =="MARGARITAZ" || LoginEmpleado =="IESPINOZAF" || LoginEmpleado =="ZBAEZH" || LoginEmpleado == "YTAMEZ"){
+			if(LoginEmpleado == "DOLIVARES" || LoginEmpleado =="ADMIN" || LoginEmpleado =="MARGARITAZ" || LoginEmpleado == "IESPINOZAF" || LoginEmpleado == "ELVIAVM"){
 				string query_sql = "SELECT osiris_erp_cobros_deta.folio_de_servicio AS foliodeservicio,descripcion_producto,to_char(osiris_erp_cobros_deta.id_producto,'999999999999') AS idproducto, "+
 					"to_char(osiris_erp_cobros_deta.cantidad_aplicada,'99999.99') AS cantidadaplicada,to_char(osiris_erp_cobros_deta.precio_producto,'99999999.99') AS preciounitario,"+
 						"to_char(osiris_erp_cobros_deta.cantidad_aplicada * osiris_erp_cobros_deta.precio_producto,'99999999.99') AS ppcantidad,"+
@@ -530,9 +530,10 @@ namespace osiris
 						 "osiris_productos.id_grupo_producto;";
 				string[] args_names_field = {"foliodeservicio","descripcion_producto","idproducto","cantidadaplicada","preciounitario","ppcantidad","fechcreacion","descripcion_admisiones","descripcion_grupo_producto"};
 				string[] args_type_field = {"float","string","string","float","float","float","string","string","string"};
-				
+				string[] args_field_text = {};
+				string[] args_more_title = {};
 				// class_crea_ods.cs
-				new osiris.class_traslate_spreadsheet(query_sql,args_names_field,args_type_field);
+				new osiris.class_traslate_spreadsheet(query_sql,args_names_field,args_type_field,false,args_field_text,"",false,args_more_title);
 			}else{
 				MessageDialog msgBox = new MessageDialog (MyWin,DialogFlags.Modal,
 									MessageType.Info,ButtonsType.Ok,"No tiene Permiso para esta Opcion");

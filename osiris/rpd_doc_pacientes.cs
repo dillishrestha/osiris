@@ -84,7 +84,7 @@ namespace osiris
 		[Widget] Gtk.CheckButton checkbutton_camb_dats;
 		[Widget] Gtk.ComboBox combobox_diagprimeravez = null;
 		
-		// declarando tab2
+		// declarando tab2 quirofano
 		[Widget] Gtk.CheckButton checkbutton_lente = null;
 		[Widget] Gtk.Entry entry_id_producto = null;
 		[Widget] Gtk.Entry entry_descripcion_producto = null;
@@ -97,7 +97,16 @@ namespace osiris
 		[Widget] Gtk.Entry entry_anestesiologo = null;
 		[Widget] Gtk.Button button_buscar_anestesiologo = null;
 		[Widget] Gtk.Button button_guardar_tabqx = null;
-				
+		
+		
+		// declarando tab 3 Vision
+		[Widget] Gtk.ComboBox combobox_tecnicovision = null;
+		[Widget] Gtk.ComboBox combobox_maquinavision = null;
+		[Widget] Gtk.Entry entry_nro_estudiomaquina = null;
+		[Widget] Gtk.Button button_guardar_tabvision = null;
+		[Widget] Gtk.CheckButton checkbutton_tecnicovision = null;
+		[Widget] Gtk.CheckButton checkbutton_maquinavision = null;
+		
 		//Declarando la barra de estado
 		[Widget] Gtk.Statusbar statusbar_caja;
 		
@@ -201,14 +210,15 @@ namespace osiris
 		string nombrebd;
 		string fechanacimientopx;
 		string sexopacientepx;
-		string tipoantestesia = "";						
+		string tipoantestesia = "";
+		string nombretecnicovision = "";
 		string[] args_args = {""};
 		int[] args_id_array = {0,1,2,3,4,5,6,7,8,9};
 		string[] args_tipos_cirugias = {"","CIRUGIA AMBULATORIA","CIRUGIA PROGRAMADA","SIN CIRUGIA"};
 		string[] args_diag_primeravez = {"","SI","NO"};
 		string[] args_tipobusqueda = {"","PRIMER NOMBRE","SEGUNDO NOMBRE","APELLIDO PATERNO","APELLIDO MATERNO","CEDULA MEDICA","ESPECIALIDAD"};
 		string[] args_tipoanestesia = {"","INTRACAM","INTRACAM + SEDACION","RETROBULVAR","RETROBULVAR + SEDACION","TOPITA","EPIDURAL O RAQUEA","LOCAL + SEDACION","GENERAL","ENDOVENOSA"};
-		
+		string[] args_tecnicosvision = {"","ALEJANDRA DEYANIRA MARTINEZ CARDENAS","LUIS MIGUEL ALVAREZ CASTAÑEDA","GUADALUPE ROCHA PAYAN","ERICK SEBASTIAN CONRONADO MATA"};
 		class_conexion conexion_a_DB = new class_conexion();
 		class_public classpublic = new class_public();
 		class_buscador classfind_data = new class_buscador();
@@ -306,7 +316,12 @@ namespace osiris
 			checkbutton_tipo_anestesia.Clicked += new EventHandler(on_checkbutton_clicked);
 			checkbutton_anestesiologo.Clicked += new EventHandler(on_checkbutton_clicked);
 			button_buscar_anestesiologo.Clicked += new EventHandler(on_button_busca_medicos_clicked);
-			button_guardar_tabqx.Clicked += new EventHandler(on_button_guardar_tabqx_clicked);
+			button_guardar_tabqx.Clicked += new EventHandler(on_button_guardar_tab_clicked);
+			
+			// tab vision
+			button_guardar_tabvision.Clicked += new EventHandler(on_button_guardar_tab_clicked);
+			checkbutton_tecnicovision.Clicked += new EventHandler(on_checkbutton_clicked);
+			checkbutton_maquinavision.Clicked += new EventHandler(on_checkbutton_clicked);
 			
 			entry_id_producto.Sensitive = false;
 			entry_descripcion_producto.Sensitive = false;
@@ -323,7 +338,7 @@ namespace osiris
 			llenado_combobox(0,"",combobox_tipo_cirugia,"array","","","",args_tipos_cirugias,args_id_array,"");
 			llenado_combobox(0,"",combobox_diagprimeravez,"array","","","",args_diag_primeravez,args_id_array,"");
 			llenado_combobox(0,"",combobox_tipo_anestecia,"array","","","",args_tipoanestesia,args_id_array,"");
-			
+			llenado_combobox(0,"",combobox_tecnicovision,"array","","","",args_tecnicosvision,args_id_array,"");
 			statusbar_caja.Pop(0);
 			statusbar_caja.Push(1, "login: "+LoginEmpleado+"  |Usuario: "+NomEmpleado+" "+AppEmpleado+" "+ApmEmpleado);
 			statusbar_caja.HasResizeGrip = false;
@@ -464,6 +479,9 @@ namespace osiris
 					case "combobox_tipo_anestecia":
 						tipoantestesia = (string) onComboBoxChanged.Model.GetValue(iter,0);
 					break;
+					case "combobox_tecnicovision":
+						nombretecnicovision = (string) onComboBoxChanged.Model.GetValue(iter,0);
+					break;
 				}
 			}
 		}
@@ -488,11 +506,24 @@ namespace osiris
 				entry_anestesiologo.Sensitive = onCheckBoxChanged.Active;
 				button_buscar_anestesiologo.Sensitive = onCheckBoxChanged.Active;
 				break;
+			case "checkbutton_tecnicovision":
+				combobox_tecnicovision.Sensitive = onCheckBoxChanged.Active;
+				break;
+			case "checkbutton_maquinavision":
+				combobox_maquinavision.Sensitive = onCheckBoxChanged.Active;
+				entry_nro_estudiomaquina.Sensitive = onCheckBoxChanged.Active;
+				break;
 			}
+			
 			if((bool)checkbutton_lente.Active == true || (bool) checkbutton_tipo_anestesia.Active == true || (bool) checkbutton_anestesiologo.Active == true){
 				button_guardar_tabqx.Sensitive = true;
 			}else{
 				button_guardar_tabqx.Sensitive = false;
+			}
+			if((bool) checkbutton_tecnicovision.Active == true || (bool) checkbutton_maquinavision.Active == true){
+				button_guardar_tabvision.Sensitive = true;
+			}else{
+				button_guardar_tabvision.Sensitive = false;
 			}
 		}
 		
@@ -781,8 +812,7 @@ namespace osiris
 		{
 			TreeModel model;
 			TreeIter iterSelected;
-			if (lista_de_medicos.Selection.GetSelected(out model, out iterSelected)) 
- 			{
+			if (lista_de_medicos.Selection.GetSelected(out model, out iterSelected)){
  				idmedico = (int) model.GetValue(iterSelected, 0);
  				idmedicotratante = (int) model.GetValue(iterSelected, 0);
  				nombmedico = (string) model.GetValue(iterSelected, 1)+" "+(string) model.GetValue(iterSelected, 2)+" "+
@@ -1118,56 +1148,88 @@ namespace osiris
 			}
 		}
 		
-		void on_button_guardar_tabqx_clicked(object sender, EventArgs a)
+		void on_button_guardar_tab_clicked(object sender, EventArgs a)
 		{
+			Gtk.Button button_guardar_sender = sender as Gtk.Button;
+			
 			string strsql = "";
 			string update_producto = "";
 			string update_tipoanestesia = "";
 			string update_anestesiologo = "";
-			if((bool) button_guardar_tabqx.Sensitive == true){
-				MessageDialog msgBox = new MessageDialog (MyWin,DialogFlags.Modal,
+			string update_tecnicovision = "";
+			MessageDialog msgBox = new MessageDialog (MyWin,DialogFlags.Modal,
 									MessageType.Question,ButtonsType.YesNo,"¿ Esta seguro de actualizar la informacion... ");
-				ResponseType miResultado = (ResponseType)msgBox.Run ();
-				msgBox.Destroy();
-		 		if (miResultado == ResponseType.Yes){
-					update_producto = entry_id_producto.Text.ToString().Trim()+" ;"+entry_descripcion_producto.Text.ToString()+" ;"+entry_nroserie.Text.ToString().Trim().ToUpper();
-					update_tipoanestesia = " ;"+tipoantestesia;
-					update_anestesiologo = " ;"+entry_id_anestesiologo.Text.Trim()+" ;"+entry_anestesiologo.Text.ToString().Trim().ToUpper();
-					strsql = "UPDATE osiris_erp_cobros_enca SET observaciones1 = observaciones1 || '"+update_producto+update_tipoanestesia+update_anestesiologo+";"+DateTime.Now.ToString()+";"+LoginEmpleado+"\n' "+
-								"WHERE folio_de_servicio =  '"+entry_folio_servicio.Text+"';";
-					//Console.WriteLine(strsql);
-					
-					NpgsqlConnection conexion; 
-	            	conexion = new NpgsqlConnection (connectionString+nombrebd);
-					// Verifica que la base de datos este conectada
-					try{
-						conexion.Open ();
-						NpgsqlCommand comando; 
-						comando = conexion.CreateCommand ();
-						comando.CommandText = strsql;
-						comando.ExecuteNonQuery();
-						comando.Dispose();
-						
-						strsql = "UPDATE osiris_erp_movcargos SET id_producto = '"+entry_id_producto.Text.Trim()+"',"+
-									"producto_observacion1 = '"+entry_nroserie.Text+"'," +
-									"tipo_anestesia = '"+tipoantestesia.ToString().Trim()+"'," +
-									"id_anestesiologo = '"+entry_id_anestesiologo.Text.Trim()+"' "+
-									"WHERE folio_de_servicio = '"+entry_folio_servicio.Text+"';";
+			ResponseType miResultado = (ResponseType)msgBox.Run ();
+			msgBox.Destroy();
+		 	if (miResultado == ResponseType.Yes){				
+				if(button_guardar_sender.Name == "button_guardar_tabqx"){
+					if((bool) button_guardar_tabqx.Sensitive == true){					
+						update_producto = entry_id_producto.Text.ToString().Trim()+" ;"+entry_descripcion_producto.Text.ToString()+" ;"+entry_nroserie.Text.ToString().Trim().ToUpper();
+						update_tipoanestesia = " ;"+tipoantestesia;
+						update_anestesiologo = " ;"+entry_id_anestesiologo.Text.Trim()+" ;"+entry_anestesiologo.Text.ToString().Trim().ToUpper();
+						strsql = "UPDATE osiris_erp_cobros_enca SET observaciones1 = observaciones1 || '"+update_producto+update_tipoanestesia+update_anestesiologo+";"+DateTime.Now.ToString("yyyy-MM-dd HH:mm tt")+";"+LoginEmpleado+"\n' "+
+									"WHERE folio_de_servicio =  '"+entry_folio_servicio.Text+"';";
 						//Console.WriteLine(strsql);
-						comando.CommandText = strsql;
-						comando.ExecuteNonQuery();
-						comando.Dispose();
-					
-						MessageDialog msgBox1 = new MessageDialog (MyWin,DialogFlags.Modal,MessageType.Info,
-				         	                 ButtonsType.Ok,"El registro se guardo satisfactoriamente...");										
-						msgBox1.Run ();	msgBox1.Destroy();
-					}catch(NpgsqlException ex){
-						MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
-													MessageType.Error, 
-												ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
-						msgBoxError.Run ();		msgBoxError.Destroy();
+						
+						NpgsqlConnection conexion; 
+		            	conexion = new NpgsqlConnection (connectionString+nombrebd);
+						// Verifica que la base de datos este conectada
+						try{
+							conexion.Open ();
+							NpgsqlCommand comando; 
+							comando = conexion.CreateCommand ();
+							comando.CommandText = strsql;
+							comando.ExecuteNonQuery();
+							comando.Dispose();
+							
+							strsql = "UPDATE osiris_erp_movcargos SET id_producto = '"+entry_id_producto.Text.Trim()+"',"+
+										"producto_observacion1 = '"+entry_nroserie.Text+"'," +
+										"tipo_anestesia = '"+tipoantestesia.ToString().Trim()+"'," +
+										"id_anestesiologo = '"+entry_id_anestesiologo.Text.Trim()+"' "+
+										"WHERE folio_de_servicio = '"+entry_folio_servicio.Text+"';";
+							//Console.WriteLine(strsql);
+							comando.CommandText = strsql;
+							comando.ExecuteNonQuery();
+							comando.Dispose();
+						
+							MessageDialog msgBox1 = new MessageDialog (MyWin,DialogFlags.Modal,MessageType.Info,
+					         	                 ButtonsType.Ok,"El registro se guardo satisfactoriamente...");										
+							msgBox1.Run ();	msgBox1.Destroy();
+						}catch(NpgsqlException ex){
+							MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+														MessageType.Error, 
+													ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
+							msgBoxError.Run ();		msgBoxError.Destroy();
+						}
+						conexion.Close();	
 					}
-					conexion.Close();	
+				}
+				
+				if(button_guardar_sender.Name == "button_guardar_tabvision"){
+					if((bool) button_guardar_tabvision.Sensitive == true){
+						update_tecnicovision = nombretecnicovision;
+						strsql = "UPDATE osiris_erp_cobros_enca SET observaciones2 = observaciones2 || '"+update_tecnicovision+";"+DateTime.Now.ToString("yyyy-MM-dd HH:mm tt")+";"+LoginEmpleado+"\n' "+
+									"WHERE folio_de_servicio =  '"+entry_folio_servicio.Text+"';";
+						//Console.WriteLine(strsql);
+						
+						NpgsqlConnection conexion; 
+		            	conexion = new NpgsqlConnection (connectionString+nombrebd);
+						// Verifica que la base de datos este conectada
+						try{
+							conexion.Open ();
+							NpgsqlCommand comando; 
+							comando = conexion.CreateCommand ();
+							comando.CommandText = strsql;
+							comando.ExecuteNonQuery();
+							comando.Dispose();
+						}catch(NpgsqlException ex){
+							MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+														MessageType.Error, 
+													ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
+							msgBoxError.Run ();		msgBoxError.Destroy();
+						}
+						conexion.Close();
+					}
 				}
 			}
 		}

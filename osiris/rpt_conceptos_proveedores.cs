@@ -262,9 +262,10 @@ namespace osiris
 					"ORDER BY to_char(osiris_erp_factura_compra_enca.fecha_factura,'yyyy-MM-dd'),numerofactura;";
 				string[] args_names_field = {"fechafactura","numerofactura","descripcion_proveedor","idproducto_osiris","descrip_prod_osiris","cantidad_comprada","costo_producto_compra","cantidad_de_embalaje","costoxunidad_compra","cantidad_recibida","costo_producto_osiris","cantidad_de_embalaje_osiris","costo_unitario_osiris","id_producto_proveedor","descripcion_producto_proveedor","tipo_unidad_producto","lote_producto","caducidad_producto"};
 				string[] args_type_field = {"string","string","string","string","string","float","float","float","float","float","float","float","float","string","string","string","string","string"};
-				
+				string[] args_field_text = {};
+				string[] args_more_title = {};
 				// class_crea_ods.cs
-				new osiris.class_traslate_spreadsheet(query_consulta,args_names_field,args_type_field);
+				new osiris.class_traslate_spreadsheet(query_consulta,args_names_field,args_type_field,false,args_field_text,"",false,args_more_title);
 			}
 		}
 		

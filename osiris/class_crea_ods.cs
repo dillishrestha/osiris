@@ -1,5 +1,5 @@
 using System;
-using SmartXLS;		// libreria para crear archivo xls es de paga
+//using SmartXLS;		// libreria para crear archivo xls es de paga
 using Npgsql;
 using Gtk;
 using Glade;
@@ -11,7 +11,7 @@ using AODL.Document.Content.Tables;
 using AODL.Document;
 using AODL.Package;
 using AODL.Document.Collections;
-using NUnit.Framework;
+//using NUnit.Framework;
 
 namespace osiris
 {
@@ -25,9 +25,10 @@ namespace osiris
 		protected Gtk.Window MyWinError;
 		protected Gtk.Window MyWin;
 		
-		public class_traslate_spreadsheet (string query_sql,string[] args_names_field,string[] args_type_field)
+		public class_traslate_spreadsheet (string query_sql,string[] args_names_field,string[] args_type_field,bool typetext,string[] args_field_text,string name_field_text,bool more_title,string[] args_more_title)
 		{
-			int files_field = 0;			
+			int files_field = 0;
+			string [] array_field_text = new string[args_field_text.Length];
 			connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
 			nombrebd = conexion_a_DB._nombrebd;			
 			//Create new spreadsheet open document (.ods) 
@@ -43,20 +44,52 @@ namespace osiris
 				NpgsqlCommand comando; 
 				comando = conexion.CreateCommand ();
 				comando.CommandText = query_sql;
-				Console.WriteLine(comando.CommandText);
+				//Console.WriteLine(comando.CommandText);
 				comando.ExecuteNonQuery();    comando.Dispose();
 				NpgsqlDataReader lector = comando.ExecuteReader ();
 				// Creando los nombres de ancabezado de los campos
 				for (int colum_field = 0; colum_field < args_names_field.Length; colum_field++){					
+					AODL.Document.Content.Tables.Cell cell = table.CreateCell ();
+					//cell.OfficeValueType ="float";
+					AODL.Document.Content.Text.Paragraph paragraph = new AODL.Document.Content.Text.Paragraph(spreadsheetDocument);				
+					string text = (string) args_names_field[ colum_field ].ToString().Trim();			
+					paragraph.TextContent.Add(new AODL.Document.Content.Text.SimpleText(spreadsheetDocument,text));
+					cell.Content.Add(paragraph);
+					cell.OfficeValueType = "string";							
+					cell.OfficeValue = text;
+					table.InsertCellAt (files_field, colum_field, cell);					
+				}
+				if(typetext == true){
+					// Creando los nombres de ancabezado de los campos cuando son de tipo text (almacenado en una tabla tipo text)
+					for(int colum_field2 = 0 ; colum_field2 < args_field_text.Length; colum_field2++){					
 						AODL.Document.Content.Tables.Cell cell = table.CreateCell ();
 						//cell.OfficeValueType ="float";
 						AODL.Document.Content.Text.Paragraph paragraph = new AODL.Document.Content.Text.Paragraph(spreadsheetDocument);				
-						string text = (string) args_names_field[ colum_field ].ToString().Trim();			
+						string text = (string) args_field_text[ colum_field2 ].ToString().Trim();			
 						paragraph.TextContent.Add(new AODL.Document.Content.Text.SimpleText(spreadsheetDocument,text));
 						cell.Content.Add(paragraph);
 						cell.OfficeValueType = "string";							
 						cell.OfficeValue = text;
-						table.InsertCellAt (files_field, colum_field, cell);						
+						table.InsertCellAt (files_field, colum_field2+args_names_field.Length, cell);					
+					}
+				}
+				if(more_title == true){
+					int title_field_text = 0;
+					if(typetext == true){
+						title_field_text = args_field_text.Length;
+					}
+					// Creando los nombres de ancabezado de los campos cuando son de tipo text (almacenado en una tabla tipo text)
+					for(int colum_field3 = 0 ; colum_field3 < args_more_title.Length; colum_field3++){					
+						AODL.Document.Content.Tables.Cell cell = table.CreateCell ();
+						//cell.OfficeValueType ="float";
+						AODL.Document.Content.Text.Paragraph paragraph = new AODL.Document.Content.Text.Paragraph(spreadsheetDocument);				
+						string text = (string)args_more_title[ colum_field3 ].ToString().Trim();			
+						paragraph.TextContent.Add(new AODL.Document.Content.Text.SimpleText(spreadsheetDocument,text));
+						cell.Content.Add(paragraph);
+						cell.OfficeValueType = "string";							
+						cell.OfficeValue = text;
+						table.InsertCellAt (files_field, colum_field3+args_names_field.Length+title_field_text, cell);					
+					}
 				}
 				files_field++;				
 				while (lector.Read()){					
@@ -71,6 +104,46 @@ namespace osiris
 						cell.OfficeValue = text;
 						table.InsertCellAt (files_field, colum_field, cell);						
 					}
+					if(typetext == true){
+						char[] delimiterChars = {'\n'}; // delimitador de Cadenas
+						char[] delimiterChars1 = {';'}; // delimitador de Cadenas
+						string texto = (string) lector[name_field_text]; // puede ser una campo de la base de datos tipo Text
+						//string texto = "1;daniel; ;olivares;cuevas";
+						//"2;genaro;cuevas;bazaldua\n"+
+						//"3;gladys;perez;orellana\n";
+						string[] words = texto.Split(delimiterChars); // Separa las Cadenas
+												
+						// Recorre la variable
+						foreach (string s in words){
+							if (s.Length > 0){
+								string texto1 = (string) s;
+								string[] words1 = texto1.Split(delimiterChars1);
+								//for (int i = 1; i <= 6; i++){
+								int i=0;
+								int i2 = 1;
+								foreach (string s1 in words1){
+									//Console.WriteLine(s1.ToString());
+									if(i2 <= args_field_text.Length){
+										array_field_text[i] = s1.ToString();
+									}
+									i++;
+									i2++;
+								}
+							}
+						}
+						for( int i = 0; i < array_field_text.Length; i++ ) {
+							//Console.WriteLine(array_field_text[i]);
+							AODL.Document.Content.Tables.Cell cell = table.CreateCell ();
+							//cell.OfficeValueType ="float";
+							AODL.Document.Content.Text.Paragraph paragraph = new AODL.Document.Content.Text.Paragraph(spreadsheetDocument);				
+							string text = (string) array_field_text[i];			
+							paragraph.TextContent.Add(new AODL.Document.Content.Text.SimpleText(spreadsheetDocument,text));
+							cell.Content.Add(paragraph);
+							cell.OfficeValueType = "string";							
+							cell.OfficeValue = text;
+							table.InsertCellAt (files_field, i+args_names_field.Length, cell);
+						}						
+					}					
 					files_field++;
 				}
 				conexion.Close();

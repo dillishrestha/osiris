@@ -1366,9 +1366,8 @@ namespace osiris
 	
 	
 		public void export_xls_sigma()
-		{
-			WorkBook book = new WorkBook();
-		
+		{			
+            WorkBook book = new WorkBook();		
             try{                
 				book.read("template_de_historia_clinica_institucional.xls");
 				book.Sheet = 0;

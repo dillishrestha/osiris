@@ -3099,7 +3099,7 @@ Busqueda de Paciente</property>
 				      <property name="spacing">0</property>
 
 				      <child>
-					<widget class="GtkCheckButton" id="checkbutton1">
+					<widget class="GtkCheckButton" id="checkbutton_tecnicovision">
 					  <property name="visible">True</property>
 					  <property name="can_focus">True</property>
 					  <property name="relief">GTK_RELIEF_NORMAL</property>
@@ -3153,7 +3153,7 @@ Busqueda de Paciente</property>
 				      </child>
 
 				      <child>
-					<widget class="GtkComboBox" id="combobox1">
+					<widget class="GtkComboBox" id="combobox_tecnicovision">
 					  <property name="visible">True</property>
 					  <property name="add_tearoffs">False</property>
 					  <property name="focus_on_click">True</property>
@@ -3190,7 +3190,7 @@ Busqueda de Paciente</property>
 				      <property name="spacing">0</property>
 
 				      <child>
-					<widget class="GtkCheckButton" id="checkbutton2">
+					<widget class="GtkCheckButton" id="checkbutton_maquinavision">
 					  <property name="visible">True</property>
 					  <property name="can_focus">True</property>
 					  <property name="relief">GTK_RELIEF_NORMAL</property>
@@ -3244,7 +3244,7 @@ Busqueda de Paciente</property>
 				      </child>
 
 				      <child>
-					<widget class="GtkComboBox" id="combobox2">
+					<widget class="GtkComboBox" id="combobox_maquinavision">
 					  <property name="visible">True</property>
 					  <property name="add_tearoffs">False</property>
 					  <property name="focus_on_click">True</property>
@@ -3282,7 +3282,7 @@ Busqueda de Paciente</property>
 				      </child>
 
 				      <child>
-					<widget class="GtkEntry" id="entry1">
+					<widget class="GtkEntry" id="entry_nro_estudiomaquina">
 					  <property name="visible">True</property>
 					  <property name="can_focus">True</property>
 					  <property name="editable">True</property>
@@ -3337,7 +3337,7 @@ Busqueda de Paciente</property>
 				      </child>
 
 				      <child>
-					<widget class="GtkButton" id="button_guardar_vision">
+					<widget class="GtkButton" id="button_guardar_tabvision">
 					  <property name="width_request">100</property>
 					  <property name="visible">True</property>
 					  <property name="can_focus">True</property>

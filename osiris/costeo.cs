@@ -131,9 +131,10 @@ namespace osiris
 				string[] args_names_field = {"foliodeservicio","descripcion_producto","idproducto","cantidadaplicada","preciounitario","ppcantidad","fechcreacion","descripcion_admisiones","descripcion_grupo_producto","costo_producto","costo_por_unidad","cantidad_de_embalaje","porcentage_ganancia"};
 				
 				string[] args_type_field = {"float","string","string","float","float","float","string","string","string","float","float","float","float"};
-				
+				string[] args_field_text = {};
+				string[] args_more_title = {};
 				// class_crea_ods.cs
-				new osiris.class_traslate_spreadsheet(query_sql,args_names_field,args_type_field);
+				new osiris.class_traslate_spreadsheet(query_sql,args_names_field,args_type_field,false,args_field_text,"",false,args_more_title);
 			//}else{
 			//	MessageDialog msgBox = new MessageDialog (MyWin,DialogFlags.Modal,
 			//						MessageType.Info,ButtonsType.Ok,"No tiene Permiso para esta Opcion");

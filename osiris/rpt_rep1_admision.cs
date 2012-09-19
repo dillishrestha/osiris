@@ -593,10 +593,12 @@ namespace osiris
 					string[] args_names_field = {"foliodeservicio","pidpaciente","descripcion_admisiones","descripcion_grupo_producto","fechcreacion","idproducto","descripcion_producto",
 											"cantidadaplicada","preciounitario","numerorecibo","nombre_paciente","nro_oficio","nro_nomina","departamento","medico_tratante"};
 					string[] args_type_field = {"float","float","string","string","string","float","string","float","float","float","string","string","string","string","string"};
+					string[] args_field_text = {};
+					string[] args_more_title = {};
 					
 					// class_crea_ods.cs
 					//Console.WriteLine(query_sql);
-					new osiris.class_traslate_spreadsheet(query_sql,args_names_field,args_type_field);
+					new osiris.class_traslate_spreadsheet(query_sql,args_names_field,args_type_field,false,args_field_text,"",false,args_more_title);
 				}
 				if(tiporeporte == "PASES_QUIROFANO_URGENCIAS"){
 					string query_sql = "SELECT DISTINCT ON (osiris_erp_pases_qxurg.folio_de_servicio) osiris_erp_pases_qxurg.folio_de_servicio, osiris_erp_pases_qxurg.id_secuencia,osiris_erp_pases_qxurg.folio_de_servicio AS foliodeservicio,to_char(osiris_erp_cobros_enca.pid_paciente,'9999999999') AS pidpaciente," +
@@ -604,7 +606,7 @@ namespace osiris
 						"to_char(osiris_his_paciente.fecha_nacimiento_paciente, 'dd-MM-yyyy') AS fechanacpaciente,to_char(to_number(to_char(age('2012-02-14 10:45:24',osiris_his_paciente.fecha_nacimiento_paciente),'yyyy') ,'9999'),'9999') AS edadpaciente," +
 						"osiris_his_paciente.sexo_paciente,osiris_erp_cobros_enca.nombre_medico_tratante,osiris_erp_pases_qxurg.id_quien_creo,nombre1_empleado || ' ' || nombre2_empleado || ' ' || apellido_paterno_empleado || ' ' || apellido_materno_empleado AS nombresolicitante," +
 						"to_char(osiris_erp_pases_qxurg.fechahora_creacion,'yyyy-MM-dd') AS fechapaseqx,osiris_erp_pases_qxurg.id_tipo_admisiones,descripcion_admisiones,osiris_erp_cobros_enca.id_empresa AS idempresa,osiris_empresas.descripcion_empresa," +
-						"osiris_erp_cobros_enca.id_aseguradora,osiris_aseguradoras.descripcion_aseguradora,id_quien_creo,descripcion_diagnostico_movcargos AS motivo_ingreso,descripcion_tipo_paciente "+
+						"osiris_erp_cobros_enca.id_aseguradora,osiris_aseguradoras.descripcion_aseguradora,id_quien_creo,descripcion_diagnostico_movcargos AS motivo_ingreso,descripcion_tipo_paciente,cerrado "+
 						"FROM osiris_erp_pases_qxurg,osiris_his_tipo_admisiones,osiris_erp_cobros_enca,osiris_his_paciente,osiris_empleado,osiris_empresas,osiris_aseguradoras,osiris_erp_movcargos,osiris_his_tipo_pacientes "+
 						"WHERE osiris_erp_pases_qxurg.id_tipo_admisiones = osiris_his_tipo_admisiones.id_tipo_admisiones " +
 						"AND osiris_erp_pases_qxurg.pid_paciente = osiris_his_paciente.pid_paciente " +
@@ -613,15 +615,18 @@ namespace osiris
 						"AND osiris_erp_cobros_enca.id_empresa = osiris_empresas.id_empresa " +
 						"AND osiris_erp_cobros_enca.id_aseguradora = osiris_aseguradoras.id_aseguradora "+
 						"AND osiris_erp_movcargos.id_tipo_paciente = osiris_his_tipo_pacientes.id_tipo_paciente "+
-						"AND osiris_erp_movcargos.folio_de_servicio = osiris_erp_pases_qxurg.folio_de_servicio "+
+						"AND osiris_erp_movcargos.folio_de_servicio = osiris_erp_pases_qxurg.folio_de_servicio " +
+						"AND eliminado = 'false' "+
 						query_tipo_paciente+
 						query_rango_fechas+
 						"ORDER BY osiris_erp_pases_qxurg.folio_de_servicio;";
-					string[] args_names_field = {"fechapaseqx","foliodeservicio","pidpaciente","nombre_completo","motivo_ingreso","descripcion_tipo_paciente"};
-					string[] args_type_field = {"string","float","float","string","string","string"};
+					string[] args_names_field = {"fechapaseqx","foliodeservicio","pidpaciente","nombre_completo","motivo_ingreso","descripcion_tipo_paciente","cerrado"};
+					string[] args_type_field = {"string","float","float","string","string","string","string"};
+					string[] args_field_text = {};
+					string[] args_more_title = {};
 					// class_crea_ods.cs
 					//Console.WriteLine(query_sql);
-					new osiris.class_traslate_spreadsheet(query_sql,args_names_field,args_type_field);
+					new osiris.class_traslate_spreadsheet(query_sql,args_names_field,args_type_field,false,args_field_text,"",false,args_more_title);
 				}
 			}
 		}

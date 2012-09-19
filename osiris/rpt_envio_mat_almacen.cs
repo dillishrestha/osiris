@@ -113,14 +113,19 @@ namespace osiris
 														typeof(string),
 														typeof(string),
 														typeof(string),
-			                                        	typeof(string),typeof(string),typeof(string));
+			                                        	typeof(string),
+			                                        typeof(string),
+			                                        typeof(string),
+			                                        typeof(string),
+			                                        typeof(string),
+			                                        typeof(string));
 				
 			lista_almacenes.Model = treeViewEnginesolicitud;
 			lista_almacenes.RulesHint = true;
 				
 			TreeViewColumn col_seleccion = new TreeViewColumn();
 			CellRendererToggle cellr0 = new CellRendererToggle();
-			col_seleccion.Title = "Seleccion"; // titulo de la cabecera de la columna, si está visible
+			col_seleccion.Title = "Seleccion";
 			col_seleccion.PackStart(cellr0, true);
 			col_seleccion.AddAttribute (cellr0, "active", 0);
 			cellr0.Activatable = true;
@@ -129,7 +134,7 @@ namespace osiris
 		
 			TreeViewColumn col_solicito = new TreeViewColumn();
 			CellRendererText cellr1 = new CellRendererText();
-			col_solicito.Title = "Solicitud"; // titulo de la cabecera de la columna, si está visible
+			col_solicito.Title = "Solicitud";
 			col_solicito.PackStart(cellr1, true);
 			col_solicito.AddAttribute (cellr1, "text", 1);
 			cellr1.Foreground = "darkblue";
@@ -137,7 +142,7 @@ namespace osiris
 			
 			TreeViewColumn col_sub = new TreeViewColumn();
 			CellRendererText cellr2 = new CellRendererText();
-			col_sub.Title = "Sub Almacen"; // titulo de la cabecera de la columna, si está visible
+			col_sub.Title = "Sub Almacen";
 			col_sub.PackStart(cellr2, true);
 			col_sub.AddAttribute (cellr2, "text", 2);
 			cellr2.Foreground = "darkblue";
@@ -145,7 +150,7 @@ namespace osiris
 						
 			TreeViewColumn col_fecha_envio = new TreeViewColumn();
 			CellRendererText cellr3 = new CellRendererText();
-			col_fecha_envio.Title = "Fecha Envio"; // titulo de la cabecera de la columna, si está visible
+			col_fecha_envio.Title = "Fecha Envio";
 			col_fecha_envio.PackStart(cellr3, true);
 			col_fecha_envio.AddAttribute (cellr3, "text", 3);
 			cellr3.Foreground = "darkblue";
@@ -153,7 +158,7 @@ namespace osiris
 			
 			TreeViewColumn col_id_sol = new TreeViewColumn();
 			CellRendererText cellr4 = new CellRendererText();
-			col_id_sol.Title = "id Solicito"; // titulo de la cabecera de la columna, si está visible
+			col_id_sol.Title = "id Solicito";
 			col_id_sol.PackStart(cellr4, true);
 			col_id_sol.AddAttribute (cellr4, "text", 4);
 			cellr4.Foreground = "darkblue";
@@ -161,7 +166,7 @@ namespace osiris
 			
 			TreeViewColumn col_numeroatencion = new TreeViewColumn();
 			CellRendererText cellr6 = new CellRendererText();
-			col_numeroatencion.Title = "N° Atencion"; // titulo de la cabecera de la columna, si está visible
+			col_numeroatencion.Title = "N° Atencion";
 			col_numeroatencion.PackStart(cellr6, true);
 			col_numeroatencion.AddAttribute (cellr6, "text", 6);
 			cellr6.Foreground = "darkblue";
@@ -169,7 +174,7 @@ namespace osiris
 			
 			TreeViewColumn col_pidpaciente = new TreeViewColumn();
 			CellRendererText cellr7 = new CellRendererText();
-			col_pidpaciente.Title = "PID"; // titulo de la cabecera de la columna, si está visible
+			col_pidpaciente.Title = "PID";
 			col_pidpaciente.PackStart(cellr7, true);
 			col_pidpaciente.AddAttribute (cellr7, "text", 7);
 			cellr7.Foreground = "darkblue";
@@ -177,11 +182,35 @@ namespace osiris
 			
 			TreeViewColumn col_nombrepaciente = new TreeViewColumn();
 			CellRendererText cellr8 = new CellRendererText();
-			col_nombrepaciente.Title = "Nombre Paciente"; // titulo de la cabecera de la columna, si está visible
+			col_nombrepaciente.Title = "Nombre Paciente";
 			col_nombrepaciente.PackStart(cellr8, true);
 			col_nombrepaciente.AddAttribute (cellr8, "text", 8);
 			cellr8.Foreground = "darkblue";
 			col_nombrepaciente.SortColumnId = (int) column_reporte.col_nombrepaciente;
+			
+			TreeViewColumn col_procedimiento = new TreeViewColumn();
+			CellRendererText cellr9 = new CellRendererText();
+			col_procedimiento.Title = "Procedimiento Qx.";
+			col_procedimiento.PackStart(cellr9, true);
+			col_procedimiento.AddAttribute (cellr9, "text", 9);
+			cellr9.Foreground = "darkblue";
+			col_procedimiento.SortColumnId = (int) column_reporte.col_procedimiento;
+			
+			TreeViewColumn col_diagnostico = new TreeViewColumn();
+			CellRendererText cellr10 = new CellRendererText();
+			col_diagnostico.Title = "Motivo de Ingreso";
+			col_diagnostico.PackStart(cellr10, true);
+			col_diagnostico.AddAttribute (cellr10, "text", 10);
+			cellr10.Foreground = "darkblue";
+			col_diagnostico.SortColumnId = (int) column_reporte.col_diagnostico;			
+			
+			TreeViewColumn col_observacion = new TreeViewColumn();
+			CellRendererText cellr11 = new CellRendererText();
+			col_observacion.Title = "Observacion";
+			col_observacion.PackStart(cellr11, true);
+			col_observacion.AddAttribute (cellr11, "text", 11);
+			cellr11.Foreground = "darkblue";
+			col_observacion.SortColumnId = (int) column_reporte.col_observacion;
 			
 			lista_almacenes.AppendColumn(col_seleccion);
 			lista_almacenes.AppendColumn(col_solicito);
@@ -191,6 +220,9 @@ namespace osiris
 			lista_almacenes.AppendColumn(col_numeroatencion);
 			lista_almacenes.AppendColumn(col_pidpaciente);
 			lista_almacenes.AppendColumn(col_nombrepaciente);
+			lista_almacenes.AppendColumn(col_procedimiento);
+			lista_almacenes.AppendColumn(col_diagnostico);
+			lista_almacenes.AppendColumn(col_observacion);
 		}
 		
 		enum column_reporte
@@ -203,6 +235,9 @@ namespace osiris
 			col_numeroatencion,
 			col_pidpaciente,
 			col_nombrepaciente,
+			col_procedimiento,
+			col_diagnostico,
+			col_observacion
 		}
 		
 		void llenando_lista_de_solicitudes()
@@ -222,7 +257,7 @@ namespace osiris
 								"to_char(osiris_his_solicitudes_deta.fecha_envio_almacen,'yyyy-MM-dd HH24:mi') AS fecha_envio,osiris_his_solicitudes_deta.id_empleado,"+
 								"osiris_his_solicitudes_deta.folio_de_servicio AS foliodeatencion,"+
 								"osiris_his_solicitudes_deta.pid_paciente AS pidpaciente,"+
-								"nombre1_paciente,nombre2_paciente,apellido_paterno_paciente,apellido_materno_paciente "+
+								"osiris_his_solicitudes_deta.nombre_paciente,procedimiento_qx,diagnostico_qx,observaciones_solicitud "+
 								"FROM osiris_his_solicitudes_deta,osiris_almacenes,osiris_his_paciente "+								
 								"WHERE osiris_his_solicitudes_deta.id_almacen = osiris_almacenes.id_almacen "+
 								"AND osiris_his_solicitudes_deta.folio_de_solicitud > 0 "+
@@ -232,9 +267,9 @@ namespace osiris
 								"GROUP BY osiris_his_solicitudes_deta.folio_de_solicitud,osiris_his_solicitudes_deta.id_almacen,"+
 								"osiris_almacenes.descripcion_almacen,to_char(osiris_his_solicitudes_deta.fecha_envio_almacen,'yyyy-MM-dd HH24:mi'),osiris_his_solicitudes_deta.id_empleado,"+
 								"osiris_his_solicitudes_deta.folio_de_servicio,"+
-								"osiris_his_solicitudes_deta.pid_paciente,nombre1_paciente,nombre2_paciente,apellido_paterno_paciente,apellido_materno_paciente "+
+								"osiris_his_solicitudes_deta.pid_paciente,osiris_his_solicitudes_deta.nombre_paciente,procedimiento_qx,diagnostico_qx,observaciones_solicitud "+
 								"ORDER BY to_char(osiris_his_solicitudes_deta.fecha_envio_almacen,'yyyy-MM-dd HH24:mi'),osiris_his_solicitudes_deta.id_almacen,osiris_his_solicitudes_deta.folio_de_solicitud;";
-				Console.WriteLine(comando.CommandText);
+				//Console.WriteLine(comando.CommandText);
 				NpgsqlDataReader lector = comando.ExecuteReader ();
 
 				while (lector.Read()){							
@@ -246,10 +281,10 @@ namespace osiris
 													(string) lector["idalmacen"],
 					                                (string) lector["foliodeatencion"].ToString().Trim(),
 					                                (string) lector["pidpaciente"].ToString().Trim(),
-					                                (string) lector["nombre1_paciente"].ToString().Trim()+" "+
-													(string) lector["nombre2_paciente"].ToString().Trim()+" "+
-													(string) lector["apellido_paterno_paciente"].ToString().Trim()+" "+
-													(string) lector["apellido_materno_paciente"].ToString().Trim());
+					                                (string) lector["nombre_paciente"].ToString().Trim(),
+					                                 (string) lector["procedimiento_qx"].ToString().Trim(),
+					                                 (string) lector["diagnostico_qx"].ToString().Trim(),
+					                                (string) lector["observaciones_solicitud"].ToString().Trim());
 				}
 			}catch (NpgsqlException ex){
 	   			MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,

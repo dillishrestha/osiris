@@ -193,6 +193,7 @@ namespace osiris
     	TreeStore treeViewEngineBusca2;				// Para la busqueda de Productos
     	TreeStore treeViewEngineRequisicion; 		// Lista de proctos en una requisicion
     	TreeStore treeViewEngineproveedores;		// Lista de proveedores en el treeview
+		private TreeStore treeViewEnginelistarequi;
     	
     	//Declaracion de ventana de error
 		protected Gtk.Window MyWinError;
@@ -345,8 +346,10 @@ namespace osiris
 										"AND osiris_erp_requisicion_deta.id_requisicion = '"+this.entry_requisicion.Text.Trim()+"' ";
 				string[] args_names_field = {"id_requisicion","cantidadsolicitada","idproducto","descripcion_producto","tipo_unidad_producto","cantidadembalaje","fecharequisado","quienrequiso","tipo_de_requi"};
 				string[] args_type_field = {"float","float","float","string","string","float","string","string","string"};
+				string[] args_field_text = {};
+				string[] args_more_title = {};
 				// class_crea_ods.cs
-				new osiris.class_traslate_spreadsheet(query_sql,args_names_field,args_type_field);
+				new osiris.class_traslate_spreadsheet(query_sql,args_names_field,args_type_field,false,args_field_text,"",false,args_more_title);
 			}else{
 				MessageDialog msgBox = new MessageDialog (MyWin,DialogFlags.Modal,
 									MessageType.Info,ButtonsType.Ok,"No tiene Permiso para esta Opcion");
@@ -360,12 +363,12 @@ namespace osiris
 				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,MessageType.Info,
 				                                               ButtonsType.Close,"Favor de llenar toda la informaciòn correspondiente");
 				msgBoxError.Run ();					msgBoxError.Destroy();			
-			}else{ 
+			}else{
 		  		new osiris.rpt_requisicion_compras(this.nombrebd,entry_requisicion.Text,entry_status_requisicion.Text,entry_fecha_solicitud.Text,
 				                                   entry_ano_requerida.Text+"-"+entry_mes_requerida.Text+"-"+entry_dia_requerida.Text,entry_observaciones.Text,
 				                                   entry_totalitems_productos.Text,lista_requisicion_productos,treeViewEngineRequisicion,
 				                                   entry_solicitado_por.Text,entry_motivo.Text,nombre_proveedor1,nombre_proveedor2,nombre_proveedor3,
-				                                   descripcion_tipo_requi,descripinternamiento,descripinternamiento2);
+				                                   descripcion_tipo_requi,descripinternamiento,descripinternamiento2,entry_nombre_paciente.Text,entry_folio_servicio.Text,entry_pid_paciente.Text);
 			}
 		}
 		
@@ -447,10 +450,162 @@ namespace osiris
 			hbox1.Hide();
 			hbox2.Hide();			
 			button_salir.Clicked += new EventHandler(on_cierraventanas_clicked);
-			//button_buscar.Clicked += new EventHandler(on_buscar_clicked);
+			button_buscar.Clicked += new EventHandler(on_buscar_requisicion_clicked);
            	//button_rep.Clicked += new EventHandler(on_button_rep_clicked);
           	//checkbutton_todos_envios.Clicked += new EventHandler(on_checkbutton_todos_envios);
 			checkbutton_seleccion_presupuestos.Hide();
+			crea_treeview_requisiciones();			
+		}
+		
+		void crea_treeview_requisiciones()
+		{
+			treeViewEnginelistarequi = new TreeStore(typeof(bool),
+												 typeof(string),
+												 typeof(string),
+												 typeof(string),
+												 typeof(string),
+												 typeof(string),
+												 typeof(string),
+												 typeof(string),
+												 typeof(string),
+												 typeof(string),
+												 typeof(string),
+												 typeof(string),
+												 typeof(string),
+												 typeof(string));
+						
+				lista_almacenes.Model = treeViewEnginelistarequi;
+				lista_almacenes.RulesHint = true;
+				//lista_almacenes.RowActivated += on_selecciona_producto_clicked;  // Doble click selecciono paciente*/
+					
+				TreeViewColumn col_seleccion = new TreeViewColumn();
+				CellRendererToggle cellr0 = new CellRendererToggle();
+				col_seleccion.Title = "Seleccion"; // titulo de la cabecera de la columna, si está visible
+				col_seleccion.PackStart(cellr0, true);
+				col_seleccion.AddAttribute (cellr0, "active", 0);
+				cellr0.Activatable = true;
+				cellr0.Toggled += selecciona_fila_grupo;
+				col_seleccion.SortColumnId = (int) column_reporte.col_seleccion;
+			
+				TreeViewColumn col_01 = new TreeViewColumn();
+				CellRendererText cellr1 = new CellRendererText();
+				col_01.Title = "N° Requisicion";
+				col_01.PackStart(cellr1, true);
+				col_01.AddAttribute (cellr1, "text", 1);
+				col_01.SortColumnId = (int) column_reporte.col_01;
+							
+				TreeViewColumn col_02 = new TreeViewColumn();
+				CellRendererText cellr2 = new CellRendererText();
+				col_02.Title = "Fecha Creacion";
+				col_02.PackStart(cellr2, true);
+				col_02.AddAttribute (cellr2, "text", 2);
+				col_02.SortColumnId = (int) column_reporte.col_02;
+			
+				TreeViewColumn col_03 = new TreeViewColumn();
+				CellRendererText cellr3 = new CellRendererText();
+				col_03.Title = "Fech.Env.Compra";
+				col_03.PackStart(cellr3, true);
+				col_03.AddAttribute (cellr3, "text", 3);
+				col_03.SortColumnId = (int) column_reporte.col_03;
+				
+				TreeViewColumn col_04 = new TreeViewColumn();
+				CellRendererText cellr4 = new CellRendererText();
+				col_04.Title = "Tipo de Requisicion";
+				col_04.PackStart(cellr4, true);
+				col_04.AddAttribute (cellr4, "text", 4);
+				col_04.SortColumnId = (int) column_reporte.col_04;
+			
+				TreeViewColumn col_05 = new TreeViewColumn();
+				CellRendererText cellr5 = new CellRendererText();
+				col_05.Title = "Solicitado Por";
+				col_05.PackStart(cellr5, true);
+				col_05.AddAttribute (cellr5, "text", 5);
+				col_05.SortColumnId = (int) column_reporte.col_05;
+			
+				lista_almacenes.AppendColumn(col_seleccion);  // 0
+				lista_almacenes.AppendColumn(col_01);  // 1
+				lista_almacenes.AppendColumn(col_02);  // 2
+				lista_almacenes.AppendColumn(col_03);  // 3
+				lista_almacenes.AppendColumn(col_04);
+				lista_almacenes.AppendColumn(col_05);
+		}
+		
+		enum column_reporte
+		{
+			col_seleccion,
+			col_01,
+			col_02,
+			col_03,
+			col_04,
+			col_05
+		}
+		
+		void selecciona_fila_grupo(object sender, ToggledArgs args)
+		{
+			TreeIter iter;
+			TreePath path = new TreePath (args.Path);
+			if (lista_almacenes.Model.GetIter (out iter, path)) {
+				bool old = (bool) lista_almacenes.Model.GetValue (iter,0);
+				lista_almacenes.Model.SetValue(iter,0,!old);
+			}
+		}
+		
+		void on_buscar_requisicion_clicked(object sender, EventArgs args)
+		{
+			llenando_lista_de_requisiciones();	
+		}
+		
+		void llenando_lista_de_requisiciones()
+		{
+			treeViewEnginelistarequi.Clear();
+			string query_rango_fechas = "AND to_char(osiris_erp_requisicion_enca.fechahora_creacion_requisicion,'yyyy-MM-dd') >= '"+(string) entry_ano_inicio.Text.ToString()+"-"+(string) entry_mes_inicio.Text.ToString()+"-"+(string) entry_dia_inicio.Text.ToString()+"'  "+
+									"AND to_char(osiris_erp_requisicion_enca.fechahora_creacion_requisicion,'yyyy-MM-dd') <= '"+(string) entry_ano_termino.Text.ToString()+"-"+(string) entry_mes_termino.Text.ToString()+"-"+(string) entry_dia_termino.Text.ToString()+"' ";
+			NpgsqlConnection conexion; 
+			conexion = new NpgsqlConnection (connectionString+nombrebd);
+			try{
+				conexion.Open ();
+				NpgsqlCommand comando; 
+				comando = conexion.CreateCommand ();
+				comando.CommandText =  "SELECT id_requisicion,fechahora_creacion_requisicion,"+
+									"osiris_erp_requisicion_enca.id_tipo_admisiones,osiris_his_tipo_admisiones.descripcion_admisiones,"+
+									"descripcion_admisiones_cargada,"+
+									"to_char(fechahora_envio_compras,'yyyy-MM-dd') AS fechahoraenviocompras,"+
+									"to_char(fechahora_creacion_requisicion,'yyyy-MM-dd') AS fechacrearequisicion,"+
+									"to_char(fecha_requerida,'yyyy') AS ano_fecha_requerida,"+
+									"to_char(fecha_requerida,'MM') AS mes_fecha_requerida,"+
+									"to_char(fecha_requerida,'dd') AS dia_fecha_requerida,"+
+									"requisicion_ordinaria,requisicion_urgente,"+
+									"enviada_a_compras,fechahora_envio_compras,osiris_erp_requisicion_enca.observaciones,motivo_requisicion,"+
+									"cancelado,nombre1_empleado,nombre2_empleado,apellido_paterno_empleado,apellido_materno_empleado,"+
+									"fechahora_autorizacion_comprar,autorizacion_para_comprar,items_autorizados_paracomprar,total_items_comprados," +
+									"osiris_erp_requisicion_enca.folio_de_servicio AS foliodeatencion,"+
+									"to_char(osiris_erp_requisicion_enca.pid_paciente,'9999999999') AS pidpaciente,"+
+				            		"nombre1_paciente,nombre2_paciente,apellido_paterno_paciente,apellido_materno_paciente,"+
+									"osiris_erp_requisicion_enca.id_tipo_requisicion_compra AS idtiporequicompra,osiris_erp_tipo_requisiciones_compra.descripcion_tipo_requisicion "+
+				  					"FROM osiris_erp_requisicion_enca,osiris_his_tipo_admisiones,osiris_empleado,osiris_erp_tipo_requisiciones_compra,osiris_his_paciente "+
+									"WHERE osiris_erp_requisicion_enca.id_tipo_admisiones = osiris_his_tipo_admisiones.id_tipo_admisiones "+
+									"AND osiris_erp_requisicion_enca.id_quien_requiso = osiris_empleado.login_empleado " +
+									"AND osiris_erp_requisicion_enca.pid_paciente = osiris_his_paciente.pid_paciente "+
+									"AND cancelado = 'false' " +
+									"AND osiris_erp_requisicion_enca.id_tipo_requisicion_compra = osiris_erp_tipo_requisiciones_compra.id_tipo_requisicion_compra "+
+									query_rango_fechas+
+									" ORDER BY id_requisicion DESC;";
+				//Console.WriteLine(comando.CommandText);
+				NpgsqlDataReader lector = comando.ExecuteReader ();
+				while((bool) lector.Read()){
+					treeViewEnginelistarequi.AppendValues(false,
+					                                      (string) lector["id_requisicion"].ToString().Trim(),
+					                                      (string) lector["fechacrearequisicion"].ToString().Trim(),
+					                                      (string) lector["fechahoraenviocompras"].ToString().Trim(),
+					                                      (string) lector["descripcion_tipo_requisicion"].ToString().Trim(),
+					                                      (string) lector["descripcion_admisiones_cargada"].ToString().Trim());
+				}
+			}catch(NpgsqlException ex){
+				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+											MessageType.Error,ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
+				msgBoxError.Run ();			msgBoxError.Destroy();
+			}
+			conexion.Close();
 		}
 				
 		void on_checkbutton_nueva_requisicion_clicked(object sender, EventArgs args)
@@ -580,7 +735,17 @@ namespace osiris
 					TreeModel model;
 					TreeIter iterSelected;				
 					// Llenando el TreeView para la requisicion
-	 				if (lista_de_producto.Selection.GetSelected(out model, out iterSelected)){ 				
+	 				if (lista_de_producto.Selection.GetSelected(out model, out iterSelected)){
+						/*
+						if((string) classpublic.lee_registro_de_tabla("osiris_erp_requisicion_deta","id_producto","WHERE id_producto = '"+(string) model.GetValue(iterSelected, 0)+"' AND id_tipo_admisiones ='"+idtipointernamiento.ToString().Trim()+"' ","comprado","bool") == "False"){
+							MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+								MessageType.Error, 
+								ButtonsType.Close, "El producto seleccionado tiene \n"+
+												   "una requisiscion pendiente, verifique...");
+							msgBoxError.Run ();
+							msgBoxError.Destroy();
+						}*/
+						
 	 					contador_items_requisados  += 1;
 						entry_totalitems_productos.Text = contador_items_requisados.ToString().Trim();
 						entry_nombre_prodrequisado.Text = (string) model.GetValue(iterSelected, 1);
@@ -877,7 +1042,7 @@ namespace osiris
 									"AND osiris_erp_requisicion_enca.id_tipo_requisicion_compra = osiris_erp_tipo_requisiciones_compra.id_tipo_requisicion_compra "+
 									"AND id_requisicion = '"+this.entry_requisicion.Text.Trim()+"';";
 				
-				Console.WriteLine(comando.CommandText);
+				//Console.WriteLine(comando.CommandText);
 				NpgsqlDataReader lector = comando.ExecuteReader ();
 				if ((bool) lector.Read()){
 					contador_items_autorizadoscompra = (int) lector["items_autorizados_paracomprar"];

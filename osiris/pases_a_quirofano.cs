@@ -69,6 +69,7 @@ namespace osiris
 		string descripciontipopaciente = "";
 		string tipo_pase = "";
 		string query_slq = "";
+		string nro_de_pase_ingreso = "";
 		
 		// Boton general para salir de las ventanas
 		// Todas la ventanas en glade este boton debe estra declarado identico
@@ -249,7 +250,8 @@ namespace osiris
 							"AND osiris_erp_pases_qxurg.folio_de_servicio = osiris_erp_cobros_enca.folio_de_servicio "+
 							"AND osiris_erp_pases_qxurg.id_quien_creo = osiris_empleado.login_empleado "+
 							"AND osiris_erp_cobros_enca.id_empresa = osiris_empresas.id_empresa "+
-							"AND osiris_erp_cobros_enca.id_aseguradora = osiris_aseguradoras.id_aseguradora "+
+							"AND osiris_erp_cobros_enca.id_aseguradora = osiris_aseguradoras.id_aseguradora " +
+							"AND osiris_erp_pases_qxurg.eliminado = 'false' "+
 							"AND osiris_erp_pases_qxurg.folio_de_servicio = '"+ folioservicio.ToString().Trim() +"';";		
 				Console.WriteLine(comando.CommandText);
 				NpgsqlDataReader lector = comando.ExecuteReader ();
@@ -322,7 +324,12 @@ namespace osiris
 		
 		void on_printing_pase_qx_clcked(object sender, EventArgs args)
 		{
-			printing_pase();
+			TreeModel model;
+			TreeIter iterSelected;
+ 			if (lista_almacenes.Selection.GetSelected(out model, out iterSelected)){
+				nro_de_pase_ingreso = (string) lista_almacenes.Model.GetValue (iterSelected,0);
+				printing_pase();
+			}
 		}
 		
 		void printing_pase()
@@ -384,6 +391,8 @@ namespace osiris
 							"AND osiris_erp_pases_qxurg.folio_de_servicio = osiris_erp_cobros_enca.folio_de_servicio "+
 							"AND osiris_erp_pases_qxurg.id_quien_creo = osiris_empleado.login_empleado "+
 							"AND osiris_erp_cobros_enca.id_empresa = osiris_empresas.id_empresa "+
+							"AND osiris_erp_pases_qxurg.eliminado = 'false' "+
+							"AND osiris_erp_pases_qxurg.id_secuencia = '"+nro_de_pase_ingreso+"' "+
 							"AND osiris_erp_cobros_enca.id_aseguradora = osiris_aseguradoras.id_aseguradora "+
 							"AND osiris_erp_pases_qxurg.folio_de_servicio = '"+ folioservicio.ToString().Trim() +"';";	 ; //    query_sql + "AND osiris_erp_pases_qxurg.folio_de_servicio = '"+ folioservicio.ToString().Trim() +"';";
 				titulo_de_pase = "PASE_A_SERVICIO_MEDICO_QUIRURGICO";

@@ -44,10 +44,10 @@ namespace osiris
 		public string idUsuario = "";
 		
 		// Informacion de la Empresa
-		public string nombre_empresa = "CONTROL DE CLINICA S.C."; //"P R A C T I M E D"; "CONTROL DE CLINICA S.C."
-		public string nombre_empresa2 = "CONTROL DE CLINICA S.C.";  //"CONTROL DE CLINICA";
-		public string direccion_empresa = "Jose Angel Conchello 2880, Col. Victoria"; //"Loma Grande 2703, Col. Loma de San Francisco"; //"Jose Angel Conchello 2880, Col. Victoria"
-		public string telefonofax_empresa = "Telefono: (01)(81) 8351-3610"; //"Telefono: (01)(81) 8040-6060"; // "Telefono: (01)(81) 8351-3610"
+		public string nombre_empresa = "P R A C T I M E D"; //"P R A C T I M E D"; "CONTROL DE CLINICA S.C."
+		public string nombre_empresa2 = "PRACTIMED";  //"CONTROL DE CLINICA";
+		public string direccion_empresa = "Loma Grande 2703, Col. Loma de San Francisco"; //"Loma Grande 2703, Col. Loma de San Francisco"; //"Jose Angel Conchello 2880, Col. Victoria"
+		public string telefonofax_empresa = "Telefono: (01)(81) 8040-6060"; //"Telefono: (01)(81) 8040-6060"; // "Telefono: (01)(81) 8351-3610"
 		public string version_sistema = "Sistema Hospitalario OSIRIS ver. 1.0";
 		
 		public string ivaparaaplicar = "16.00";
@@ -187,7 +187,7 @@ namespace osiris
 				}
 				//Console.WriteLine(comando.CommandText);
 				NpgsqlDataReader lector = comando.ExecuteReader ();				
-				if (lector.Read()){	
+				if (lector.Read()){
 					tomavalor = (string) lector["name_fiel_output"].ToString().Trim();
 					conexion.Close();
 					return tomavalor;
@@ -858,5 +858,190 @@ namespace osiris
 		
 		}
 		*/
-	}	
+	}
+	
+	public class ProgressBarSample {
+		public struct ProgressData {
+			public Gtk.Window window;
+			public Gtk.ProgressBar pbar;
+			public uint timer;
+			public bool activity_mode;
+		}
+	 
+		static ProgressData pdata;
+	 	
+		/* Update the value of the progress bar so that we get
+		 * some movement */
+		bool progress_timeout()
+		{
+			double new_val;
+			
+						
+			if (pdata.activity_mode){
+				pdata.pbar.Pulse();
+				Console.Write("cosultando "+pdata.pbar.Fraction.ToString()+"\n");
+				
+			}else {
+				/* Calculate the value of the progress bar using the
+				 * value range set in the adjustment object */
+				new_val = pdata.pbar.Fraction + 0.01;
+				if (new_val > 1.0)
+					new_val = 0.0;
+	 
+				/* Set the new value */
+				pdata.pbar.Fraction = new_val;
+			}
+	 
+			/* As this is a timeout function, return TRUE so that it
+			 * continues to get called */
+	 
+			return true;
+		}
+		
+		/* Callback that toggles the text display within the progress bar trough */
+		void toggle_show_text (object obj, EventArgs args)
+		{
+			if (pdata.pbar.Text == "")
+				pdata.pbar.Text = "Query cada 1 minuto";
+			else
+				pdata.pbar.Text = "";
+		}
+	 
+		/* Callback that toggles the activity mode of the progress bar */
+		void toggle_activity_mode (object obj, EventArgs args)
+		{
+			pdata.activity_mode = !pdata.activity_mode;
+			if (pdata.activity_mode)
+				pdata.pbar.Pulse();
+			else
+				pdata.pbar.Fraction = 0.0;
+		}
+	 
+		/* Callback that toggles the orientation of the progress bar */
+		void toggle_orientation (object obj, EventArgs args)
+		{
+			switch (pdata.pbar.Orientation) {
+				case Gtk.ProgressBarOrientation.LeftToRight:
+					pdata.pbar.Orientation = Gtk.ProgressBarOrientation.RightToLeft;
+					break;
+				case Gtk.ProgressBarOrientation.RightToLeft:
+					pdata.pbar.Orientation = Gtk.ProgressBarOrientation.LeftToRight;
+					break;
+				}
+		}
+	 
+	 
+		void destroy_progress (object sender, DeleteEventArgs args)
+		{
+			Widget win = (Widget) sender;
+			win.Toplevel.Destroy();
+		}
+	 
+		void button_click (object sender, EventArgs args)
+		{
+			Widget win = (Widget) sender;
+			win.Toplevel.Destroy();
+		}
+	 
+		void app_quit() {
+			GLib.Source.Remove (pdata.timer);
+			pdata.timer = 0;
+			//Application.Quit ();
+		}
+	 
+		public ProgressBarSample()
+		{
+			Gtk.HSeparator separator;
+			Gtk.Table table;
+			Gtk.Button button;
+			Gtk.CheckButton check;
+			Gtk.VBox vbox;
+	 
+			//Application.Init ();
+	 
+			/* Allocate memory for the data that is passed to the callbacks*/
+			pdata = new ProgressData();
+			pdata.activity_mode = false;
+			pdata.window = new Gtk.Window(Gtk.WindowType.Toplevel);
+			pdata.window.Resizable = true;
+	 
+			pdata.window.DeleteEvent += destroy_progress;
+			pdata.window.Title = "GtkProgressBar";
+			pdata.window.BorderWidth = 0;
+	 
+			vbox = new Gtk.VBox(false, 5);
+			vbox.BorderWidth = 10;
+			pdata.window.Add(vbox);
+			vbox.Show();
+	 
+			/* Create a centering alignment object */
+			Gtk.Alignment align = new Gtk.Alignment( 1, 1, 0, 0);
+			vbox.PackStart(align, false, false, 5);
+			align.Show();
+	 
+			/* Create the GtkProgressBar */
+			pdata.pbar = new Gtk.ProgressBar();
+			pdata.pbar.Text = "";
+			align.Add(pdata.pbar);
+			pdata.pbar.Show();
+	 
+			/* Add a timer callback to update the value of the progress bar*/
+			pdata.timer = GLib.Timeout.Add(10000, new GLib.TimeoutHandler (progress_timeout) );
+	 
+	 
+			separator = new Gtk.HSeparator();
+			vbox.PackStart(separator, false, false, 0);
+			separator.Show();
+	 
+			/* rows, columns, homogeneous */
+			table = new Gtk.Table(2, 3, false);
+			vbox.PackStart(table, false, true, 0);
+			table.Show();
+	 
+			/* Add a check button to select displaying of the trough text*/
+			check = new Gtk.CheckButton("Query cada 1 minuto");
+			table.Attach(check, 0, 1, 0, 1, 
+					Gtk.AttachOptions.Expand | Gtk.AttachOptions.Fill, 
+					Gtk.AttachOptions.Expand | Gtk.AttachOptions.Fill, 
+					5, 5);
+			check.Clicked += toggle_show_text;
+			check.Show();
+	 
+			/* Add a check button to toggle activity mode */
+			check = new Gtk.CheckButton("Activity mode");
+			table.Attach(check, 0, 1, 1, 2, 
+					Gtk.AttachOptions.Expand | Gtk.AttachOptions.Fill, 
+					Gtk.AttachOptions.Expand | Gtk.AttachOptions.Fill, 
+					5, 5);
+			check.Clicked += toggle_activity_mode;
+			check.Active = true;
+			check.Show();
+	 
+			/* Add a check button to toggle orientation */
+			check = new Gtk.CheckButton("Right to Left");
+			table.Attach(check, 0, 1, 2, 3, 
+					Gtk.AttachOptions.Expand | Gtk.AttachOptions.Fill, 
+					Gtk.AttachOptions.Expand | Gtk.AttachOptions.Fill, 
+					5, 5);
+			check.Clicked += toggle_orientation;
+			check.Show();
+	 
+			/* Add a button to exit the program */
+			button = new Gtk.Button("close");
+			button.Clicked += button_click;
+			vbox.PackStart(button, false, false, 0);
+	 
+			/* This makes it so the button is the default. */
+			button.CanDefault = true;
+	 
+			/* This grabs this button to be the default button. Simply hitting
+			* the "Enter" key will cause this button to activate. */
+			button.GrabDefault();
+			button.Show();
+	 
+			pdata.window.ShowAll();
+	 
+			//Application.Run ();
+		}
+	}
 }

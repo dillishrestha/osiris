@@ -75,6 +75,9 @@ namespace osiris
 		string descripcion_tipo_requi;
     	string descripinternamiento;
 		string descripinternamiento2;
+		string nombrepaciente;
+		string folioservicio;
+		string pidpaciente;
     				
 		//Declaracion de ventana de error:
 		protected Gtk.Window MyWinError;
@@ -87,7 +90,7 @@ namespace osiris
 									object lista_requisicion_productos_,object treeViewEngineRequisicion_,string solicitado_por_,string motivo_de_requi_,
 		                            string nombre_proveedor1_,string nombre_proveedor2_,string nombre_proveedor3_,
 		                            string descripcion_tipo_requi_,
-		                            string descripinternamiento_,string descripinternamiento2_)
+		                            string descripinternamiento_,string descripinternamiento2_,string nombrepaciente_,string folioservicio_,string pidpaciente_)
     	{
     	 	connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
 			nombrebd = conexion_a_DB._nombrebd;
@@ -107,7 +110,10 @@ namespace osiris
 			descripcion_tipo_requi = descripcion_tipo_requi_;
 			descripinternamiento = descripinternamiento_;
 			descripinternamiento2 = descripinternamiento2_;
-			    		
+			nombrepaciente = nombrepaciente_;
+			folioservicio = folioservicio_;
+			pidpaciente = pidpaciente_;
+			
 			print = new PrintOperation ();
 			print.JobName = titulo;
 			print.BeginPrint += new BeginPrintHandler (OnBeginPrint);
@@ -132,9 +138,9 @@ namespace osiris
 		
 		void ejecutar_consulta_reporte(PrintContext context)
 		{
-			string nombre = "";
+			//string nombre = "";
 			int contador = 1;
-			TreeModel model;
+			//TreeModel model;
 			TreeIter iter;
 			Cairo.Context cr = context.CairoContext;
 			Pango.Layout layout = context.CreatePangoLayout ();
@@ -293,12 +299,14 @@ namespace osiris
 			
 			cr.MoveTo(555*escala_en_linux_windows, 62*escala_en_linux_windows);			layout.SetText("Fecha Requisicion");					Pango.CairoHelper.ShowLayout (cr, layout);
 						
-			cr.MoveTo(07*escala_en_linux_windows, 105*escala_en_linux_windows);			layout.SetText("Motivo Requisicion:");					Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(07*escala_en_linux_windows, 85*escala_en_linux_windows);			layout.SetText("Motivo Requisicion:");					Pango.CairoHelper.ShowLayout (cr, layout);
 			cr.MoveTo(555*escala_en_linux_windows, 105*escala_en_linux_windows);		layout.SetText("Fecha Requerida");					Pango.CairoHelper.ShowLayout (cr, layout);
 			cr.MoveTo(655*escala_en_linux_windows, 105*escala_en_linux_windows);			layout.SetText("Tipo de Requisicion");					Pango.CairoHelper.ShowLayout (cr, layout);
-			
-			cr.MoveTo(07*escala_en_linux_windows, 115*escala_en_linux_windows);			layout.SetText("Observacion: "+status_requisicion);					Pango.CairoHelper.ShowLayout (cr, layout);
-			
+			cr.MoveTo(07*escala_en_linux_windows, 105*escala_en_linux_windows);			layout.SetText("Observacion: "+status_requisicion);					Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(07*escala_en_linux_windows, 125*escala_en_linux_windows);			layout.SetText("Paciente: ");					Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(370*escala_en_linux_windows, 125*escala_en_linux_windows);			layout.SetText("N° Atencion: ");					Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(460*escala_en_linux_windows, 125*escala_en_linux_windows);			layout.SetText("N° Exp.: ");					Pango.CairoHelper.ShowLayout (cr, layout);
+
 			fontSize = 9.0;
 			desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;
 			layout.FontDescription.Weight = Weight.Bold;		// Letra negrita
@@ -307,17 +315,21 @@ namespace osiris
 
 			fontSize = 7.0;
 			desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;
-			layout.FontDescription.Weight = Weight.Normal;		// Letra normal			
+			layout.FontDescription.Weight = Weight.Normal;		// Letra normal		
 			
 			cr.MoveTo(07*escala_en_linux_windows,72*escala_en_linux_windows);			layout.SetText(solicitado_por);					Pango.CairoHelper.ShowLayout (cr, layout);
 			cr.MoveTo(250*escala_en_linux_windows,72*escala_en_linux_windows);			layout.SetText(descripinternamiento);			Pango.CairoHelper.ShowLayout (cr, layout);
 			cr.MoveTo(400*escala_en_linux_windows,72*escala_en_linux_windows);			layout.SetText(descripinternamiento2);			Pango.CairoHelper.ShowLayout (cr, layout);
 			cr.MoveTo(555*escala_en_linux_windows, 72*escala_en_linux_windows);			layout.SetText(fecha_solicitud);				Pango.CairoHelper.ShowLayout (cr, layout);
-			cr.MoveTo(102*escala_en_linux_windows,105*escala_en_linux_windows);			layout.SetText(motivo_de_requi.ToUpper());				Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(90*escala_en_linux_windows,85*escala_en_linux_windows);			layout.SetText(motivo_de_requi.ToUpper());				Pango.CairoHelper.ShowLayout (cr, layout);
 			cr.MoveTo(555*escala_en_linux_windows, 115*escala_en_linux_windows);		layout.SetText(fecha_requerida);				Pango.CairoHelper.ShowLayout (cr, layout);
 			cr.MoveTo(655*escala_en_linux_windows, 115*escala_en_linux_windows);			layout.SetText(descripcion_tipo_requi);		Pango.CairoHelper.ShowLayout (cr, layout);
-			cr.MoveTo(07*escala_en_linux_windows, 125*escala_en_linux_windows);			layout.SetText(observaciones.ToUpper());					Pango.CairoHelper.ShowLayout (cr, layout);
-						
+			cr.MoveTo(07*escala_en_linux_windows, 115*escala_en_linux_windows);			layout.SetText(observaciones.ToUpper());					Pango.CairoHelper.ShowLayout (cr, layout);
+			
+			cr.MoveTo(50*escala_en_linux_windows, 125*escala_en_linux_windows);			layout.SetText(nombrepaciente);					Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(425*escala_en_linux_windows, 125*escala_en_linux_windows);			layout.SetText(folioservicio);					Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(495*escala_en_linux_windows, 125*escala_en_linux_windows);			layout.SetText(pidpaciente);					Pango.CairoHelper.ShowLayout (cr, layout);
+
 			cr.MoveTo(07*escala_en_linux_windows, 142*escala_en_linux_windows);			layout.SetText("N°");							Pango.CairoHelper.ShowLayout (cr, layout);
 			cr.MoveTo(07*escala_en_linux_windows, 152*escala_en_linux_windows);			layout.SetText("Part.");						Pango.CairoHelper.ShowLayout (cr, layout);
 			//cr.MoveTo(07*escala_en_linux_windows, 162*escala_en_linux_windows);			layout.SetText("100");					Pango.CairoHelper.ShowLayout (cr, layout);

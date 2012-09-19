@@ -114,6 +114,7 @@ namespace osiris
 		TreeViewColumn col_envios13;		CellRendererToggle cellrt13;
 		TreeViewColumn col_envios14;		CellRendererToggle cellrt14;
 		TreeViewColumn col_envios15;		CellRendererText cellrt15;
+		TreeViewColumn col_envios18;		CellRendererText cellrt18;
 		
 		//Declaracion de ventana de error
 		protected Gtk.Window MyWinError;
@@ -923,9 +924,9 @@ namespace osiris
 		{
 			TreeModel model;
 			TreeIter iterSelected;
- 			if (this.lista_de_materiales_solicitados.Selection.GetSelected(out model, out iterSelected)){
+ 			if(treeViewEngineSolicitado.GetIterFirst (out iterSelected)){
  				MessageDialog msgBox = new MessageDialog (MyWin,DialogFlags.Modal,
-									MessageType.Question,ButtonsType.YesNo,"¿ Esta seguro de marcar "+(string) lista_de_materiales_solicitados.Model.GetValue (iterSelected,4)+" como sin Stock ?");
+									MessageType.Question,ButtonsType.YesNo,"¿ Esta seguro de marcar como sin Stock ?");
 				ResponseType miResultado = (ResponseType)msgBox.Run ();
 				msgBox.Destroy();
 		 		if (miResultado == ResponseType.Yes){
@@ -936,18 +937,25 @@ namespace osiris
 						conexion.Open ();
 						NpgsqlCommand comando; 
 						comando = conexion.CreateCommand ();
-						comando.CommandText = "UPDATE osiris_his_solicitudes_deta SET id_quien_autorizo ='"+LoginEmpleado+"',"+ 
+ 						if ((bool)lista_de_materiales_solicitados.Model.GetValue (iterSelected,0) == true){
+								comando.CommandText = "UPDATE osiris_his_solicitudes_deta SET id_quien_autorizo ='"+LoginEmpleado+"',"+ 
 											"fechahora_autorizado = '"+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"',"+
 											"sin_stock = 'true' "+
 											"WHERE id_secuencia =  '"+(string) lista_de_materiales_solicitados.Model.GetValue (iterSelected,7)+"';";
-						comando.ExecuteNonQuery();
-						comando.Dispose();
-						this.treeViewEngineSolicitado.Remove (ref iterSelected);
-			        	msgBox = new MessageDialog (MyWin,DialogFlags.Modal,
-										MessageType.Info,ButtonsType.Ok,"El Producto ");
-						msgBox.Run ();
-						msgBox.Destroy();		
-						conexion.Close ();
+								comando.ExecuteNonQuery();
+								comando.Dispose();
+						}
+						while (treeViewEngineSolicitado.IterNext(ref iterSelected)){
+							if ((bool)lista_de_materiales_solicitados.Model.GetValue (iterSelected,0) == true){
+								comando.CommandText = "UPDATE osiris_his_solicitudes_deta SET id_quien_autorizo ='"+LoginEmpleado+"',"+ 
+											"fechahora_autorizado = '"+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"',"+
+											"sin_stock = 'true' "+
+											"WHERE id_secuencia =  '"+(string) lista_de_materiales_solicitados.Model.GetValue (iterSelected,7)+"';";
+								comando.ExecuteNonQuery();
+								comando.Dispose();
+							}
+						}
+						llenado_de_material_solicitado();
 			        }catch (NpgsqlException ex){
 				   		MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
 										MessageType.Error, 
@@ -955,6 +963,7 @@ namespace osiris
 						msgBoxError.Run ();
 						msgBoxError.Destroy();
 					}
+					conexion.Close ();
 		 		}
 		 	}		
 		}
@@ -983,9 +992,9 @@ namespace osiris
 		{
 			TreeModel model;
 			TreeIter iterSelected;
- 			if (this.lista_de_materiales_solicitados.Selection.GetSelected(out model, out iterSelected)){
+ 			if(treeViewEngineSolicitado.GetIterFirst (out iterSelected)){
  				MessageDialog msgBox = new MessageDialog (MyWin,DialogFlags.Modal,
-									MessageType.Question,ButtonsType.YesNo,"¿ Esta seguro de marcar "+(string) lista_de_materiales_solicitados.Model.GetValue (iterSelected,4)+" como PEDIDO ERRONEO ?");
+									MessageType.Question,ButtonsType.YesNo,"¿ Esta seguro de marcar como PEDIDO ERRONEO ?");
 				ResponseType miResultado = (ResponseType)msgBox.Run ();
 				msgBox.Destroy();
 		 		if (miResultado == ResponseType.Yes){
@@ -996,24 +1005,32 @@ namespace osiris
 						conexion.Open ();
 						NpgsqlCommand comando; 
 						comando = conexion.CreateCommand ();
-						comando.CommandText = "UPDATE osiris_his_solicitudes_deta SET id_quien_autorizo ='"+LoginEmpleado+"',"+ 
+						if ((bool)lista_de_materiales_solicitados.Model.GetValue (iterSelected,0) == true){
+							comando.CommandText = "UPDATE osiris_his_solicitudes_deta SET id_quien_autorizo ='"+LoginEmpleado+"',"+ 
 											"fechahora_autorizado = '"+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"', "+
 											"solicitado_erroneo = 'true' "+
 											"WHERE id_secuencia =  '"+(string) lista_de_materiales_solicitados.Model.GetValue (iterSelected,7)+"';";
-						
-						comando.ExecuteNonQuery();
-						comando.Dispose();
-						this.treeViewEngineSolicitado.Remove (ref iterSelected);
-			        	msgBox = new MessageDialog (MyWin,DialogFlags.Modal,
-										MessageType.Info,ButtonsType.Ok,"El Producto se marco como erroneo satisfactoreamente...");										
-						msgBox.Run ();	msgBox.Destroy();		
-						conexion.Close ();
-			        }catch (NpgsqlException ex){
+							comando.ExecuteNonQuery();
+							comando.Dispose();
+						}
+						while (treeViewEngineSolicitado.IterNext(ref iterSelected)){
+							if ((bool)lista_de_materiales_solicitados.Model.GetValue (iterSelected,0) == true){
+								comando.CommandText = "UPDATE osiris_his_solicitudes_deta SET id_quien_autorizo ='"+LoginEmpleado+"',"+ 
+											"fechahora_autorizado = '"+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"', "+
+											"solicitado_erroneo = 'true' "+
+											"WHERE id_secuencia =  '"+(string) lista_de_materiales_solicitados.Model.GetValue (iterSelected,7)+"';";
+								comando.ExecuteNonQuery();
+								comando.Dispose();	
+							}
+						}
+						llenado_de_material_solicitado();
+					}catch (NpgsqlException ex){
 				   		MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
 										MessageType.Error, 
 										ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
 						msgBoxError.Run ();			msgBoxError.Destroy();
 					}
+					conexion.Close ();
 		 		}
 		 	}
 		}
@@ -1143,13 +1160,14 @@ namespace osiris
 			
 		void llenado_de_material_solicitado()
 		{
+			TreeIter iter2;
 			this.treeViewEngineSolicitado.Clear(); // Limpia el treeview cuando realiza una nueva busqueda
 			string sql_envio_subalmacenes = "SELECT osiris_his_solicitudes_deta.folio_de_solicitud,to_char(osiris_his_solicitudes_deta.id_producto,'999999999999') AS idproductos,"+
                						"to_char(cantidad_solicitada,'99999999.999') AS cantidadsolicitada,"+
                						"to_char(osiris_his_solicitudes_deta.precio_producto_publico,'999999999.99') AS precioproductopublico,"+
                						"to_char(osiris_his_solicitudes_deta.costo_por_unidad,'999999999.99') AS costoporunidad,"+
                						"to_char(cantidad_autorizada,'999999.999') AS cantidadautorizada,id_quien_autorizo, "+
-               						"to_char(fechahora_solicitud,'dd-MM-yyyy') AS fechahorasolicitud,"+
+               						"to_char(fechahora_solicitud,'yyyy-MM-dd HH24:MI') AS fechahorasolicitud,"+
                						"to_char(fechahora_autorizado,'dd-MM-yyyy') AS fechahoraautorizado,"+
                						"status,surtido,osiris_productos.descripcion_producto,"+
                						"to_char(osiris_his_solicitudes_deta.id_secuencia,'9999999999') AS idsecuencia,"+
@@ -1161,7 +1179,7 @@ namespace osiris
 									"osiris_his_solicitudes_deta.pid_paciente AS pidpaciente,"+
 									"solicitud_stock,pre_solicitud,nombre_paciente,procedimiento_qx,diagnostico_qx,"+
 									"nombre1_paciente,nombre2_paciente,apellido_paterno_paciente,apellido_materno_paciente," +
-									"osiris_almacenes.id_tipo_admisiones "+
+									"osiris_almacenes.id_tipo_admisiones,observaciones_solicitud "+
 									//",descripcion_grupo2_producto "+
                						"FROM osiris_his_solicitudes_deta,osiris_almacenes,osiris_his_paciente,osiris_productos,osiris_grupo_producto,osiris_grupo1_producto "+
                						//",osiris_grupo2_producto "+
@@ -1200,7 +1218,7 @@ namespace osiris
 							             (string) lector["apellido_paterno_paciente"].ToString().Trim()+" "+
 							             (string) lector["apellido_materno_paciente"].ToString().Trim();	
 					}
-					this.treeViewEngineSolicitado.AppendValues(false,
+					treeViewEngineSolicitado.AppendValues(false,
 													(string) lector["cantidadsolicitada"],
 													"0",
 													(string) lector["foliodesolicitud"],
@@ -1217,7 +1235,8 @@ namespace osiris
 					                                (bool) lector["pre_solicitud"],
 													(string) lector["procedimiento_qx"].ToString().Trim(),
 													(string) lector["id_tipo_admisiones"].ToString().Trim(),
-													(string) lector["costoporunidad"].ToString().Trim());
+													(string) lector["costoporunidad"].ToString().Trim(),
+					                                (string) lector["observaciones_solicitud"].ToString().Trim());
 					col_envios00.SetCellDataFunc(cellrt00, new Gtk.TreeCellDataFunc(cambia_colores_fila));
 					col_envios01.SetCellDataFunc(cellrt01, new Gtk.TreeCellDataFunc(cambia_colores_fila));
 					col_envios02.SetCellDataFunc(cellrt02, new Gtk.TreeCellDataFunc(cambia_colores_fila));
@@ -1231,7 +1250,16 @@ namespace osiris
 					col_envios13.SetCellDataFunc(cellrt13, new Gtk.TreeCellDataFunc(cambia_colores_fila));
 					col_envios14.SetCellDataFunc(cellrt14, new Gtk.TreeCellDataFunc(cambia_colores_fila));
 					col_envios15.SetCellDataFunc(cellrt15, new Gtk.TreeCellDataFunc(cambia_colores_fila));
-				}				
+					col_envios18.SetCellDataFunc(cellrt18, new Gtk.TreeCellDataFunc(cambia_colores_fila));
+				}
+				/*
+				if (treeViewEngineSolicitado.GetIterFirst (out iter2)){
+					lista_de_materiales_solicitados.Model.SetValue(iter2,0,true);
+					while (treeViewEngineSolicitado.IterNext(ref iter2)){
+						lista_de_materiales_solicitados.Model.SetValue(iter2,0,true);
+					}
+				}
+				*/
 			}catch (NpgsqlException ex){
 		   		Console.WriteLine ("PostgresSQL error: {0}",ex.Message);
 		   		MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
@@ -1288,7 +1316,7 @@ namespace osiris
 													typeof(string),		// 15 Procedimiento
 			                                        typeof(string),		// 16 Departamento donde se solicito el producto
 													typeof(string),		// 17 precio costo unitario del producto
-													typeof(string),
+													typeof(string),		// 18 Observacion de Solicitud
 													typeof(string),
 													typeof(string),
 													typeof(string),
@@ -1301,7 +1329,7 @@ namespace osiris
 			
 			col_envios00 = new TreeViewColumn();
 			cellrt00 = new CellRendererToggle();
-			col_envios00.Title = "Surtir"; // titulo de la cabecera de la columna, si está visible
+			col_envios00.Title = "Selec."; // titulo de la cabecera de la columna, si está visible
 			col_envios00.PackStart(cellrt00, true);
 			col_envios00.AddAttribute (cellrt00, "active", 0);
 			cellrt00.Activatable = true;
@@ -1349,7 +1377,7 @@ namespace osiris
 			
 			col_envios06 = new TreeViewColumn();
 			cellrt06 = new CellRendererText();
-			col_envios06.Title = "Fecha Solicitado"; // titulo de la cabecera de la columna, si está visible
+			col_envios06.Title = "Fecha/hora Sol."; // titulo de la cabecera de la columna, si está visible
 			col_envios06.PackStart(cellrt06, true);
 			col_envios06.AddAttribute (cellrt06, "text", 6);
 			col_envios06.SortColumnId = (int) Column_solicitudes.col_envios06;
@@ -1396,6 +1424,13 @@ namespace osiris
 			col_envios15.AddAttribute (cellrt15, "text", 15);
 			col_envios15.SortColumnId = (int) Column_solicitudes.col_envios15;
 			
+			col_envios18 = new TreeViewColumn();
+			cellrt18 = new CellRendererText();
+			col_envios18.Title = "Observacion Solicitud";
+			col_envios18.PackStart(cellrt18, true);
+			col_envios18.AddAttribute (cellrt18, "text", 18);
+			col_envios18.SortColumnId = (int) Column_solicitudes.col_envios18;
+			
 			lista_de_materiales_solicitados.AppendColumn(col_envios00);
 			lista_de_materiales_solicitados.AppendColumn(col_envios01);
 			lista_de_materiales_solicitados.AppendColumn(col_envios02);
@@ -1409,6 +1444,7 @@ namespace osiris
 			lista_de_materiales_solicitados.AppendColumn(col_envios13);
 			lista_de_materiales_solicitados.AppendColumn(col_envios14);
 			lista_de_materiales_solicitados.AppendColumn(col_envios15);
+			lista_de_materiales_solicitados.AppendColumn(col_envios18);
 		}
 		
 		enum Column_solicitudes
@@ -1419,7 +1455,7 @@ namespace osiris
 			col_envios03,
 			col_envios04,
 			col_envios05,
-			col_envios06,col_envios10,col_envios11,col_envios12,col_envios13,col_envios14,col_envios15
+			col_envios06,col_envios10,col_envios11,col_envios12,col_envios13,col_envios14,col_envios15,col_envios18
 		}
 		
 		// Cuando seleccion el treeview de cargos extras para cargar los productos  

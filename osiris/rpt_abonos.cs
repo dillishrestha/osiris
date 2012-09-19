@@ -150,7 +150,7 @@ namespace osiris
 				rango_de_fecha.Destroy();
 			}
 			if(tiporpt == "corte_caja"){
-				if(LoginEmpleado == "DOLIVARES" || LoginEmpleado =="ADMIN" || LoginEmpleado =="MARGARITAZ" || LoginEmpleado =="IESPINOZAF" || LoginEmpleado =="ZBAEZH" || LoginEmpleado == "YTAMEZ"){
+				if(LoginEmpleado == "DOLIVARES" || LoginEmpleado =="ADMIN" || LoginEmpleado =="MARGARITAZ" || LoginEmpleado =="IESPINOZAF" || LoginEmpleado == "ELVIAVM"){
 					string query_sql = "SELECT DISTINCT (osiris_erp_movcargos.folio_de_servicio),to_char(osiris_erp_abonos.fecha_abono,'yyyy-MM-dd') AS fechaabonopago,"+
 										"osiris_erp_abonos.id_abono,"+
 										"to_char(osiris_erp_abonos.folio_de_servicio,'9999999999') AS foliodeservicio,"+
@@ -171,11 +171,12 @@ namespace osiris
 									
 					string[] args_names_field = {"foliodeservicio","pidpaciente","nombrepaciente","numerorecibo","descripcion_tipo_comprobante","monto_comprobante","forma_de_pago","concepto_del_abono","monto_convenio","descripcion_tipo_paciente"};
 					string[] args_type_field = {"float","float","string","float","string","float","string","string","float","string"};
-					
+					string[] args_field_text = {};
+					string[] args_more_title = {};
 					// class_crea_ods.cs
 					//Console.WriteLine(query_sql);
 					if(checkbutton_export_to.Active == true){
-						new osiris.class_traslate_spreadsheet(query_sql,args_names_field,args_type_field);
+						new osiris.class_traslate_spreadsheet(query_sql,args_names_field,args_type_field,false,args_field_text,"",false,args_more_title);
 					}else{
 						
 					}

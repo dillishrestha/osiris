@@ -60,7 +60,7 @@ namespace osiris
 		[Widget] Gtk.Entry entry_mes_oc = null;
 		[Widget] Gtk.Entry entry_ano_oc = null;
 		[Widget] Gtk.Statusbar statusbar = null;
-		
+				
 		string connectionString;
 		string nombrebd;
 		string LoginEmpleado;

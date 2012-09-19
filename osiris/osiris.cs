@@ -358,7 +358,7 @@ namespace osiris
 			button_consulta_medica.Clicked += new EventHandler(on_button_consulta_medica_clicked);
 			button_laboratorio.Clicked += new EventHandler( on_button_laboratorio_clicked );
 			button_imagenologia.Clicked += new EventHandler( on_button_imagenologia_clicked );
-			button_oftalmologia.Clicked += new EventHandler(on_button_oftalmologia_clicked);
+			button_hemodialisis.Clicked += new EventHandler(on_button_hemodialisis_clicked);
 			button_vision.Clicked += new EventHandler(on_button_vision_clicked);
 			
 			button_medicos.Clicked += new EventHandler(on_button_medicos_clicked);					 			
@@ -381,13 +381,13 @@ namespace osiris
 			button_afiliados.Hide();
 			//button_proveedores.Hide();
 			//button_oftalmologia.Hide();
-			button_hemodialisis.Hide();
+			//button_hemodialisis.Hide();
 			button_terapia_adulto.Hide();
 			button_terapia_nino.Hide();
 			button_terapia_neonatal.Hide();
 			//button_ginecologia.Hide();
 			//button_endoscopia.Hide();
-			
+			button_oftalmologia.Hide();
 			
 			//menuitem_hospital.Sensitive = false;
 			//new osiris.class_crea_ods();
@@ -439,7 +439,7 @@ namespace osiris
 		
 		void on_button_hemodialisis_clicked (object sender, EventArgs args)
 		{
-			//new osiris.hemodialisis (LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
+			new osiris.hemodialisis (LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
 		}
 		
 		///////////////////
@@ -576,7 +576,7 @@ namespace osiris
 			button_consulta_medica.Sensitive = false;
 			button_laboratorio.Sensitive = false;
 			button_imagenologia.Sensitive = false;
-			button_oftalmologia.Sensitive = false;
+			//button_oftalmologia.Sensitive = false;
 			
 			// ERP
 			button_registro_admision.Sensitive = false;
@@ -619,7 +619,7 @@ namespace osiris
 					button_imagenologia.Sensitive = true;
 				}				
 				if ((string) accesoHIS.Substring(10,1) == "1"){
-					button_oftalmologia.Sensitive = false;
+					//button_oftalmologia.Sensitive = false;
 				}
 				if ((string) accesoHIS.Substring(11,1) == "1"){
 					button_vision.Sensitive = true;

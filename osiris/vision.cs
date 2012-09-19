@@ -78,6 +78,7 @@ namespace osiris
 		string AppEmpleado;
 		string ApmEmpleado;
 		string nombrebd;
+		string query_rango_fechas;
 		class_conexion conexion_a_DB = new class_conexion();
 		
 		public vision (string LoginEmp_, string NomEmpleado_, string AppEmpleado_, string ApmEmpleado_, string nombrebd_)
@@ -157,7 +158,7 @@ namespace osiris
 			entry_mes2.Text =DateTime.Now.ToString("MM");
 			entry_ano2.Text =DateTime.Now.ToString("yyyy");
         	button_salir.Clicked += new EventHandler(on_cierraventanas_clicked);
-        	//button_imprime_rangofecha.Clicked += new EventHandler(imprime_reporte_abonos);
+        	button_imprime_rangofecha.Clicked += new EventHandler(imprime_reporte_vision);
         	label_orden.Hide();
 			label_nom_cliente.Hide();
 			label142.Hide();
@@ -169,6 +170,43 @@ namespace osiris
 			button_busca_cliente.Hide();
 		}
 		
+		void imprime_reporte_vision(object sender, EventArgs args)
+		{
+						
+			
+			query_rango_fechas = "AND to_char(osiris_erp_cobros_deta.fechahora_creacion,'yyyy-MM-dd') >= '"+(string) entry_ano1.Text.ToString()+"-"+(string) entry_mes1.Text.ToString()+"-"+(string) entry_dia1.Text.ToString()+"'  "+
+									"AND to_char(osiris_erp_cobros_deta.fechahora_creacion,'yyyy-MM-dd') <= '"+(string) entry_ano2.Text.ToString()+"-"+(string) entry_mes2.Text.ToString()+"-"+(string) entry_dia2.Text.ToString()+"' ";
+			
+			if(checkbutton_export_to.Active == true){
+				string query_sql = "SELECT osiris_erp_cobros_deta.folio_de_servicio AS foliodeservicio,to_char(osiris_erp_cobros_deta.pid_paciente,'9999999999') AS pidpaciente," +
+									"to_char(osiris_erp_cobros_deta.id_producto,'999999999999') AS idproducto,descripcion_producto,observaciones2 AS tecnico," +
+									"to_char(osiris_erp_cobros_deta.fechahora_creacion,'yyyy-MM-dd') AS fecha, " +
+									"nombre1_paciente || ' ' || nombre2_paciente || ' ' || apellido_paterno_paciente || ' ' || apellido_materno_paciente AS nombrepaciente,"+
+									"to_char(to_number(to_char(age('"+DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss")+"',osiris_his_paciente.fecha_nacimiento_paciente),'yyyy') ,'9999'),'9999') AS edad," +
+									"osiris_erp_movcargos.id_tipo_paciente,descripcion_tipo_paciente AS tipo_de_paciente," +
+									"osiris_erp_cobros_enca.id_medico_tratante,osiris_his_medicos.nombre_medico AS medicotratante,nombre_medico_encabezado AS dr_solicita "+
+									"FROM osiris_erp_cobros_deta,osiris_productos,osiris_grupo_producto,osiris_his_paciente,osiris_his_tipo_pacientes,osiris_erp_cobros_enca,osiris_erp_movcargos,osiris_his_medicos "+
+									"WHERE osiris_erp_cobros_deta.id_producto = osiris_productos.id_producto "+
+									"AND osiris_erp_movcargos.id_tipo_paciente = osiris_his_tipo_pacientes.id_tipo_paciente "+
+									"AND osiris_productos.id_grupo_producto = osiris_grupo_producto.id_grupo_producto " +
+									"AND osiris_productos.id_grupo_producto = '20' "+
+									"AND osiris_erp_cobros_deta.pid_paciente = osiris_his_paciente.pid_paciente " +
+									"AND osiris_erp_cobros_enca.folio_de_servicio = osiris_erp_cobros_deta.folio_de_servicio " +
+									"AND osiris_erp_movcargos.folio_de_servicio = osiris_erp_cobros_deta.folio_de_servicio "+
+									"AND osiris_erp_cobros_enca.id_medico_tratante = osiris_his_medicos.id_medico " +
+									"AND osiris_erp_cobros_enca.cancelado = 'false' " +
+									query_rango_fechas;
+				string[] args_names_field = {"fecha","nombrepaciente","edad","foliodeservicio","pidpaciente","idproducto","descripcion_producto","tipo_de_paciente","dr_solicita","medicotratante","tecnico"};
+				string[] args_type_field = {"string","string","string","float","float","string","string","string","string","string","string"};
+				string[] args_field_text = {};
+				string[] args_more_title = {};
+				// class_crea_ods.cs
+				//Console.WriteLine(query_sql);
+				new osiris.class_traslate_spreadsheet(query_sql,args_names_field,args_type_field,false,args_field_text,"",false,args_more_title);
+			}else{
+			}
+		}
+				
 		void onKeyPressEvent(object o, Gtk.KeyPressEventArgs args)
 		{
 			//Console.WriteLine(args.Event.Key);

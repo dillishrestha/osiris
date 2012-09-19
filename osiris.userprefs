@@ -1,18 +1,19 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="osiris/captura_fac_ordenes_compra.cs">
+  <MonoDevelop.Ide.Workbench>
     <Files>
-      <File FileName="osiris/requisicion_compras.cs" Line="875" Column="79" />
-      <File FileName="osiris/class_conexion.cs" Line="16" Column="2" />
-      <File FileName="osiris/captura_fac_ordenes_compra.cs" Line="490" Column="58" />
-      <File FileName="osiris/rpd_doc_pacientes.cs" Line="348" Column="6" />
+      <File FileName="osiris/class_conexion.cs" Line="13" Column="56" />
+      <File FileName="osiris/class_public.cs" Line="48" Column="72" />
+      <File FileName="osiris/ordenes_de_compras.cs" Line="126" Column="32" />
+      <File FileName="osiris/osiris.cs" Line="146" Column="36" />
+      <File FileName="osiris/tesoreria.cs" Line="257" Column="16" />
+      <File FileName="osiris/captura_fac_ordenes_compra.cs" Line="888" Column="15" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
         <State expanded="True">
           <Node name="osiris" expanded="True">
-            <Node name="References" expanded="True" />
-            <Node name="captura_fac_ordenes_compra.cs" selected="True" />
+            <Node name="References" expanded="True" selected="True" />
           </Node>
         </State>
       </Pad>
@@ -30,7 +31,9 @@
     </Pads>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
-    <BreakpointStore />
+    <BreakpointStore>
+      <Breakpoint file="/home/dolivares/Projects/systemsosirisho/osiris/class_public.cs" line="64" />
+    </BreakpointStore>
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />
 </Properties>

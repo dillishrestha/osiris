@@ -374,9 +374,21 @@ namespace osiris
 				ResponseType miResultado = (ResponseType)msgBox.Run ();
 				msgBox.Destroy();
 		 		if (miResultado == ResponseType.Yes){
-					almacena_productos_solicitados();
-		 			editar = true;
-		 			entry_status_solicitud.Text = "NO ESTA ENVIADA";
+					if((bool) checkbutton_presolicitud.Active == true){
+						if(entry_nombre_paciente.Text != ""){
+							almacena_productos_solicitados();
+							editar = true;
+		 					entry_status_solicitud.Text = "NO ESTA ENVIADA";
+						}else{
+							msgBox = new MessageDialog (MyWin,DialogFlags.Modal,
+											MessageType.Error,ButtonsType.Close,"No tiene definido el nombre del paciente verifique...");										
+							msgBox.Run ();			msgBox.Destroy();
+						}
+					}else{
+		 				editar = true;
+		 				entry_status_solicitud.Text = "NO ESTA ENVIADA";
+						almacena_productos_solicitados();
+					}		 			
 		 		}
 		 	 }
 		 	 
@@ -386,52 +398,22 @@ namespace osiris
 				ResponseType miResultado = (ResponseType)msgBox.Run ();
 				msgBox.Destroy();
 		 		if (miResultado == ResponseType.Yes){
-		 			almacena_productos_solicitados();
+					if((bool) checkbutton_presolicitud.Active == true){
+						Console.WriteLine("presolicitud");
+						if(entry_nombre_paciente.Text != ""){
+							almacena_productos_solicitados();
+						}else{
+							msgBox = new MessageDialog (MyWin,DialogFlags.Modal,
+											MessageType.Error,ButtonsType.Close,"No tiene definido el nombre del paciente verifique...");										
+							msgBox.Run ();			msgBox.Destroy();
+						}
+					}else{
+		 				almacena_productos_solicitados();
+					}
 		 		}
 		 	 }
 		 }
-		 
-		 void on_button_quitar_productos_clicked(object sender, EventArgs args)
-		 {
-		 	TreeModel model;
-			TreeIter iterSelected;
- 			if (this.lista_produc_solicitados.Selection.GetSelected(out model, out iterSelected)){
- 				MessageDialog msgBox = new MessageDialog (MyWin,DialogFlags.Modal,
-									MessageType.Question,ButtonsType.YesNo,"¿ Esta quitar el producto "+(string) this.lista_produc_solicitados.Model.GetValue (iterSelected,0));
-				ResponseType miResultado = (ResponseType)msgBox.Run ();
-				msgBox.Destroy();
-		 		if (miResultado == ResponseType.Yes){
-		 			NpgsqlConnection conexion; 
-					conexion = new NpgsqlConnection (connectionString+nombrebd);
-			    	// Verifica que la base de datos este conectada
-					try{
-						conexion.Open ();
-						NpgsqlCommand comando; 
-						comando = conexion.CreateCommand ();
-						comando.CommandText = "UPDATE osiris_his_solicitudes_deta SET id_quien_elimino ='"+LoginEmpleado+"',"+ 
-											"fechahora_elimando = '"+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"', "+
-											"eliminado = 'true' "+
-											"WHERE id_secuencia =  '"+(string) this.lista_produc_solicitados.Model.GetValue (iterSelected,10)+"';";
-						
-						comando.ExecuteNonQuery();
-						comando.Dispose();
-						this.treeViewEngineSolicitud.Remove (ref iterSelected);
-			        	msgBox = new MessageDialog (MyWin,DialogFlags.Modal,
-										MessageType.Info,ButtonsType.Ok,"El Producto se quito satisfactoreamente...");										
-						msgBox.Run ();
-						msgBox.Destroy();		
-						conexion.Close ();
-			        }catch (NpgsqlException ex){
-				   		MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
-										MessageType.Error, 
-										ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
-						msgBoxError.Run ();
-						msgBoxError.Destroy();
-					}
-		 		}
- 			}
-		 }
-		 
+		
 		 void almacena_productos_solicitados()
 		 {
 			string ultimasolicitud;
@@ -555,6 +537,10 @@ namespace osiris
 					}
 					this.checkbutton_nueva_solicitud.Active = false;
 					llena_solicitud_material(entry_numero_solicitud.Text);				
+				}else{
+					MessageDialog msgBox = new MessageDialog (MyWin,DialogFlags.Modal,
+											MessageType.Error,ButtonsType.Close,"No ha pedido ningun producto, NO se ha podido grabar la solicitud...");										
+							msgBox.Run ();			msgBox.Destroy();
 				}
 			}else{
 				MessageDialog msgBox = new MessageDialog (MyWin,DialogFlags.Modal,
@@ -562,6 +548,53 @@ namespace osiris
 				msgBox.Run (); 	msgBox.Destroy();
 			}
 	    }
+		 
+		 void on_button_quitar_productos_clicked(object sender, EventArgs args)
+		 {
+		 	TreeModel model;
+			TreeIter iterSelected;
+ 			if (this.lista_produc_solicitados.Selection.GetSelected(out model, out iterSelected)){
+ 				MessageDialog msgBox = new MessageDialog (MyWin,DialogFlags.Modal,
+									MessageType.Question,ButtonsType.YesNo,"¿ Esta quitar el producto "+(string) this.lista_produc_solicitados.Model.GetValue (iterSelected,0));
+				ResponseType miResultado = (ResponseType)msgBox.Run ();
+				msgBox.Destroy();
+		 		if (miResultado == ResponseType.Yes){					
+					if ((bool) this.lista_produc_solicitados.Model.GetValue (iterSelected,8) == false){
+						treeViewEngineSolicitud.Remove (ref iterSelected);
+						msgBox = new MessageDialog (MyWin,DialogFlags.Modal,
+											MessageType.Info,ButtonsType.Ok,"El Producto se quito satisfactoreamente...");										
+						msgBox.Run ();			msgBox.Destroy();
+					}else{
+			 			NpgsqlConnection conexion; 
+						conexion = new NpgsqlConnection (connectionString+nombrebd);
+				    	// Verifica que la base de datos este conectada
+						try{
+							conexion.Open ();
+							NpgsqlCommand comando; 
+							comando = conexion.CreateCommand ();
+							comando.CommandText = "UPDATE osiris_his_solicitudes_deta SET id_quien_elimino ='"+LoginEmpleado+"',"+ 
+												"fechahora_elimando = '"+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"', "+
+												"eliminado = 'true' "+
+												"WHERE id_secuencia =  '"+(string) this.lista_produc_solicitados.Model.GetValue (iterSelected,10)+"';";
+							
+							comando.ExecuteNonQuery();
+							comando.Dispose();
+							treeViewEngineSolicitud.Remove (ref iterSelected);
+				        	msgBox = new MessageDialog (MyWin,DialogFlags.Modal,
+											MessageType.Info,ButtonsType.Ok,"El Producto se quito satisfactoreamente...");										
+							msgBox.Run ();						msgBox.Destroy();		
+							conexion.Close ();
+				        }catch (NpgsqlException ex){
+					   		MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+											MessageType.Error, 
+											ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
+							msgBoxError.Run ();
+							msgBoxError.Destroy();
+						}
+					}
+		 		}
+ 			}
+		 }
 	    
 	    void on_button_envio_solicitud_clicked(object sender, EventArgs args)
 	    {

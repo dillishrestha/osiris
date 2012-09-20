@@ -515,7 +515,8 @@ namespace osiris
 										"fechahora_creacion," +
 										"numero_serie_cfd," +
 										"ano_aprobacion_cfd," +
-										"numero_aprobacion_cfd) " +
+										"numero_aprobacion_cfd," +
+										"numero_requisicion) " +
 										"VALUES " +
 										"('"+LoginEmpleado+"','"+
 											entry_id_proveedor.Text.Trim()+"','"+
@@ -525,7 +526,8 @@ namespace osiris
 											DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"',"+
 										"''," +
 										"''," +
-										"'')";
+										"''," +
+									"'"+entry_orden_de_compra.Text.Trim()+"')";
 							Console.WriteLine(comando.CommandText);
 							comando.ExecuteNonQuery();
 						    comando.Dispose();
@@ -533,7 +535,7 @@ namespace osiris
 							comando.CommandText = "UPDATE osiris_erp_requisicion_deta SET "+
 			 									"cantidad_comprada = '"+lista_productos_a_recibir.Model.GetValue(iter,3).ToString().Trim()+"',"+
 			 									"id_quien_compro = '"+LoginEmpleado+"',"+
-			 									"fechahora_compra = '"+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"'," +
+			 									"fechahora_compra = '"+entry_ano_fechafactura.Text+"-"+entry_mes_fechafactura.Text+"-"+entry_dia_fechafactura.Text+" "+DateTime.Now.ToString("HH:mm:ss")+"'," +
 			 									"comprado = 'true',"+
 			 									"id_quien_recibio = '"+LoginEmpleado+"',"+
 			 									"fechahora_recibido = '" +DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"',"+
@@ -545,7 +547,7 @@ namespace osiris
 			 									"costo_por_unidad = '" + lista_productos_a_recibir.Model.GetValue(iter,7).ToString().Trim()+"',"+
 			 									"precio_producto_publico = '" + lista_productos_a_recibir.Model.GetValue(iter,17).ToString().Trim()+"',"+
 			 									"cantidad_de_embalaje = '" + lista_productos_a_recibir.Model.GetValue(iter,4).ToString().Trim()+"',"+
-			 									//"id_tipo_admisiones = '," +
+			 									"cantidad_recibida = '"+lista_productos_a_recibir.Model.GetValue(iter,5).ToString().Trim()+"',"+
 			 									"factura_sin_orden_compra = 'true'," +
 			 									"id_producto_proveedor = '" + lista_productos_a_recibir.Model.GetValue(iter,12)+"',"+
 			 									"descripcion_producto_proveedor = '" +lista_productos_a_recibir.Model.GetValue(iter,11)+"',"+
@@ -557,6 +559,11 @@ namespace osiris
 		 					Console.WriteLine(comando.CommandText);
 							comando.ExecuteNonQuery();
 					    	comando.Dispose();
+							
+							if(cargar_requi_a_paciente == true){
+							
+							}
+							
 						}
 						
 						if((bool) radiobutton_sin_orden.Active == true){
@@ -623,7 +630,7 @@ namespace osiris
 			 									"VALUES ('"+												
 												lista_productos_a_recibir.Model.GetValue(iter,10).ToString().Trim()+"','"+
 												lista_productos_a_recibir.Model.GetValue(iter,3).ToString().Trim()+"','"+
-												lista_productos_a_recibir.Model.GetValue(iter,3).ToString().Trim()+"','"+
+												lista_productos_a_recibir.Model.GetValue(iter,4).ToString().Trim()+"','"+
 												lista_productos_a_recibir.Model.GetValue(iter,5).ToString().Trim()+"','"+
 												"true','"+
 												"true','"+
@@ -830,7 +837,7 @@ namespace osiris
 				 									"VALUES ('"+												
 													lista_productos_a_recibir.Model.GetValue(iter,10).ToString().Trim()+"','"+
 													lista_productos_a_recibir.Model.GetValue(iter,3).ToString().Trim()+"','"+
-													lista_productos_a_recibir.Model.GetValue(iter,3).ToString().Trim()+"','"+
+													lista_productos_a_recibir.Model.GetValue(iter,4).ToString().Trim()+"','"+
 													lista_productos_a_recibir.Model.GetValue(iter,5).ToString().Trim()+"','"+
 													"true','"+
 													"true','"+
@@ -866,7 +873,7 @@ namespace osiris
 								comando.CommandText = "UPDATE osiris_erp_requisicion_deta SET "+
 			 									"cantidad_comprada = '"+lista_productos_a_recibir.Model.GetValue(iter,3).ToString().Trim()+"',"+
 			 									"id_quien_compro = '"+LoginEmpleado+"',"+
-			 									"fechahora_compra = '"+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"'," +
+			 									"fechahora_compra = '"+entry_ano_fechafactura.Text+"-"+entry_mes_fechafactura.Text+"-"+entry_dia_fechafactura.Text+" "+DateTime.Now.ToString("HH:mm:ss")+"'," +
 			 									"comprado = 'true',"+
 			 									"id_quien_recibio = '"+LoginEmpleado+"',"+
 			 									"fechahora_recibido = '" +DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"',"+
@@ -878,7 +885,7 @@ namespace osiris
 			 									"costo_por_unidad = '" + lista_productos_a_recibir.Model.GetValue(iter,7).ToString().Trim()+"',"+
 			 									"precio_producto_publico = '" + lista_productos_a_recibir.Model.GetValue(iter,17).ToString().Trim()+"',"+
 			 									"cantidad_de_embalaje = '" + lista_productos_a_recibir.Model.GetValue(iter,4).ToString().Trim()+"',"+
-			 									//"id_tipo_admisiones = '," +
+			 									"cantidad_recibida = '"+lista_productos_a_recibir.Model.GetValue(iter,5).ToString().Trim()+"',"+
 			 									"factura_sin_orden_compra = 'true'," +
 			 									"id_producto_proveedor = '" + lista_productos_a_recibir.Model.GetValue(iter,12)+"',"+
 			 									"descripcion_producto_proveedor = '" +lista_productos_a_recibir.Model.GetValue(iter,11)+"',"+
@@ -1496,7 +1503,7 @@ namespace osiris
 		void llenado_de_requisicion_compra()
 		{
 			treeViewEngineListaProdRequi.AppendValues(false,"99099","10","10");
-			
+			bool marca_casilla;
 			//osiris_erp_requisicion_deta
 			treeViewEngineListaProdRequi.Clear(); // Limpia el treeview cuando realiza una nueva busqueda
 			NpgsqlConnection conexion; 
@@ -1508,9 +1515,10 @@ namespace osiris
 				comando = conexion.CreateCommand ();
 				comando.CommandText = "SELECT osiris_erp_requisicion_deta.id_secuencia,cantidad_solicitada,to_char(osiris_erp_requisicion_deta.id_producto,'999999999999') AS codProducto,descripcion_producto," +
 								"to_char(osiris_productos.costo_producto,'999999999.99') AS costoproducto," +
-								"osiris_erp_requisicion_deta.cantidad_de_embalaje," +
+								"osiris_erp_requisicion_deta.cantidad_de_embalaje,numero_factura_proveedor," +
+								"cantidad_comprada,cantidad_recibida," +
 								"to_char(fechahora_creacion_requisicion,'yyyy-MM-dd') AS fechacrearequisicion,"+
-							 	"osiris_erp_requisicion_deta.costo_producto,osiris_erp_requisicion_deta.costo_por_unidad," +
+							 	"osiris_erp_requisicion_deta.costo_producto,osiris_erp_requisicion_deta.costo_por_unidad,osiris_productos.precio_producto_publico," +
 							 	"osiris_erp_requisicion_enca.motivo_requisicion,osiris_erp_requisicion_enca.observaciones,"+
 								"osiris_erp_requisicion_enca.folio_de_servicio AS foliodeatencion,"+
 								"to_char(osiris_erp_requisicion_enca.pid_paciente,'9999999999') AS pidpaciente,"+
@@ -1532,12 +1540,17 @@ namespace osiris
 					entry_nombre_paciente.Text = (string) lector["nombre1_paciente"].ToString().Trim()+" "+(string) lector["nombre2_paciente"].ToString().Trim()+" "+(string) lector["apellido_paterno_paciente"]+" "+(string) lector["apellido_materno_paciente"].ToString().Trim();
 					entry_folio_servicio.Text = (string) lector["foliodeatencion"].ToString().Trim();
 					entry_pid_paciente.Text = (string) lector["pidpaciente"].ToString().Trim();
-					treeViewEngineListaProdRequi.AppendValues (false,
-					                                           entry_num_factura_proveedor.Text.Trim(),
+					if(lector["numero_factura_proveedor"].ToString().Trim() != ""){
+						marca_casilla = true;
+					}else{
+						marca_casilla = false;
+					}
+					treeViewEngineListaProdRequi.AppendValues (marca_casilla,
+					                                          	lector["numero_factura_proveedor"].ToString().Trim(),
 					                                           float.Parse(Convert.ToString((decimal) lector["cantidad_solicitada"]).ToString()).ToString("F"),
-					                                           "0.00",
+					                                           float.Parse(Convert.ToString((decimal) lector["cantidad_comprada"]).ToString()).ToString("F"),
 					                                           float.Parse(Convert.ToString((decimal) lector["cantidad_de_embalaje"]).ToString()).ToString("F"),
-					                                           "0.00",
+					                                           float.Parse(Convert.ToString((decimal) lector["cantidad_recibida"]).ToString()).ToString("F"),
 					                                           float.Parse(Convert.ToString((decimal) lector["costo_producto"]).ToString()).ToString("F"),
 					                                           float.Parse(Convert.ToString((decimal) lector["costo_por_unidad"]).ToString()).ToString("F"),
 					                                           (string) lector["costoproducto"],
@@ -1549,18 +1562,23 @@ namespace osiris
 							                                   "",
 							                                   "",
 							                                   "",
-							                                   "",
+							                                   (string) lector["precio_producto_publico"].ToString().Trim(),
 					                                           "",
 					                                           "",
 					                                           (string) lector["id_secuencia"].ToString().Trim());
 				
 					while (lector.Read()){
-						treeViewEngineListaProdRequi.AppendValues (false,
-					                                           entry_num_factura_proveedor.Text.Trim(),
+						if(lector["numero_factura_proveedor"].ToString().Trim() != ""){
+							marca_casilla = true;
+						}else{
+							marca_casilla = false;
+						}
+						treeViewEngineListaProdRequi.AppendValues (marca_casilla,
+					                                           lector["numero_factura_proveedor"].ToString().Trim(),
 					                                           float.Parse(Convert.ToString((decimal) lector["cantidad_solicitada"]).ToString()).ToString("F"),
-					                                           "0.00",
+					                                           float.Parse(Convert.ToString((decimal) lector["cantidad_comprada"]).ToString()).ToString("F"),
 					                                           float.Parse(Convert.ToString((decimal) lector["cantidad_de_embalaje"]).ToString()).ToString("F"),
-					                                           "0.00",
+					                                           float.Parse(Convert.ToString((decimal) lector["cantidad_recibida"]).ToString()).ToString("F"),
 					                                           float.Parse(Convert.ToString((decimal) lector["costo_producto"]).ToString()).ToString("F"),
 					                                           float.Parse(Convert.ToString((decimal) lector["costo_por_unidad"]).ToString()).ToString("F"),
 					                                           (string) lector["costoproducto"],
@@ -1572,7 +1590,7 @@ namespace osiris
 							                                   "",
 							                                   "",
 							                                   "",
-							                                   "",
+							                                   (string) lector["precio_producto_publico"].ToString().Trim(),
 					                                           "",
 					                                           "",
 						                                       (string) lector["id_secuencia"].ToString().Trim());

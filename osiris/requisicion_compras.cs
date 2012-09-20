@@ -1463,6 +1463,9 @@ namespace osiris
 						entry_folio_servicio.Sensitive = false;
 						entry_pid_paciente.Sensitive = false;
 						entry_nombre_paciente.Sensitive = false;
+						entry_folio_servicio.Text = "0";
+						entry_pid_paciente.Text = "0";
+						entry_nombre_paciente.Text = "";
 						button_busca_paciente.Sensitive = false;
 					}
 					break;
@@ -1483,7 +1486,17 @@ namespace osiris
 			ResponseType miResultado = (ResponseType)msgBox.Run ();
 			msgBox.Destroy();
 		 	if (miResultado == ResponseType.Yes){
-		 		almacena_productos_requisados();
+				if((string) classpublic.lee_registro_de_tabla("osiris_erp_tipo_requisiciones_compra","id_tipo_requisicion_compra","WHERE id_tipo_requisicion_compra = '"+idtiporequi.ToString().Trim()+"' ","selecciona_paciente","bool") == "True"){
+		 			if(int.Parse(entry_folio_servicio.Text) > 0){ 
+						almacena_productos_requisados();
+					}else{
+						msgBox = new MessageDialog (MyWin,DialogFlags.Modal,
+										MessageType.Info,ButtonsType.Ok,"Elija al paciente a quien se le estan solicitando los productos...");
+						msgBox.Run ();		msgBox.Destroy();
+					}
+				}else{
+					almacena_productos_requisados();
+				}
 		 	}
  		}
  		
@@ -1733,7 +1746,7 @@ namespace osiris
 							this.campoacceso+
 							"AND osiris_productos.cobro_activo = 'true' "+
 							query_tipo_busqueda;
-				Console.WriteLine(comando.CommandText);
+				//Console.WriteLine(comando.CommandText);
 				NpgsqlDataReader lector = comando.ExecuteReader ();
 				float calculodeiva;
 				float preciomasiva;
@@ -2063,7 +2076,7 @@ namespace osiris
 			if (esnumerico == true){
 				treeViewEngineRequisicion.SetValue(iter,22,float.Parse((string) args.NewText).ToString("F"));
 				treeViewEngineRequisicion.SetValue(iter,21,float.Parse(Convert.ToString(float.Parse((string) args.NewText) / float.Parse((string) treeViewEngineRequisicion.GetValue(iter, 3)))).ToString("F"));
-				Console.WriteLine(treeViewEngineRequisicion.GetValue(iter, 21));
+				//Console.WriteLine(treeViewEngineRequisicion.GetValue(iter, 21));
 			}
  		}
 		

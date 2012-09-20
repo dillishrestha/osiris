@@ -124,7 +124,7 @@ namespace osiris
 		
 		void on_button_requi_materiales_clicked(object sender, EventArgs args)
 		{
-			int [] array_idtipoadmisiones = { 0, 3, 18, 205 };
+			int [] array_idtipoadmisiones = { 0, 3, 18, 205, 500 };
 			new osiris.requisicion_materiales_compras(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,"ALMACEN GENERAL",205,"AND agrupacion IN ('NUT','OTR','MD1','ALM') ",array_idtipoadmisiones,0);
 			//new osiris.requisicion_materiales_compras(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,"COMPRAS",17,"AND agrupacion IN ('NUT','OTR','MD1','ALM') ",array_idtipoadmisiones,0);
 		}

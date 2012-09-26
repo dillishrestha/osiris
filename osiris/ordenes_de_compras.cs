@@ -60,6 +60,7 @@ namespace osiris
 		[Widget] Gtk.Entry entry_mes_oc = null;
 		[Widget] Gtk.Entry entry_ano_oc = null;
 		[Widget] Gtk.Statusbar statusbar = null;
+		[Widget] Gtk.TreeView treeview_lista_departamentos = null;
 				
 		string connectionString;
 		string nombrebd;
@@ -77,6 +78,7 @@ namespace osiris
     	string descripinternamiento = "";	// Descripcion de Centro de Costos - Solicitado por
 		
 		TreeStore treeViewEngineProductosaComprar;	// Lista de proctos que se van a comprar
+		TreeStore treeViewEngineListaDepartamentos;
 				
 		//Declaracion de ventana de error
 		protected Gtk.Window MyWinError;
@@ -124,6 +126,7 @@ namespace osiris
 			
 			llenado_comobox();
 			crea_treeview_ordencompra();
+			cree_treeview_departamentos();
 			
 			statusbar.Pop(0);
 			statusbar.Push(1, "login: "+LoginEmpleado+"  |Usuario: "+NomEmpleado+" "+AppEmpleado+" "+ApmEmpleado);
@@ -590,6 +593,7 @@ namespace osiris
 				NpgsqlDataReader lector = comando.ExecuteReader ();
                	while (lector.Read()){
 					store1.AppendValues ((string) lector["descripcion_admisiones"], (int) lector["id_tipo_admisiones"]);
+					treeViewEngineListaDepartamentos.AppendValues(false,"",0);
 				}
 			}catch (NpgsqlException ex){
 				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
@@ -638,7 +642,7 @@ namespace osiris
 						
 			col_autorizar = new TreeViewColumn();
 			cel_autorizar = new CellRendererToggle();
-			col_autorizar.Title = "Seleccion"; // titulo de la cabecera de la columna, si está visible
+			col_autorizar.Title = "Seleccion";
 			col_autorizar.PackStart(cel_autorizar, true);
 			col_autorizar.AddAttribute (cel_autorizar, "active", 0);
 			cel_autorizar.Activatable = true;
@@ -647,28 +651,28 @@ namespace osiris
 			
 			col_solicitado_por = new TreeViewColumn();
 			cellr1 = new CellRendererText();
-			col_solicitado_por.Title = "Solicitado Por"; // titulo de la cabecera de la columna, si está visible
+			col_solicitado_por.Title = "Solicitado Por";
 			col_solicitado_por.PackStart(cellr1, true);
 			col_solicitado_por.AddAttribute (cellr1, "text", 1);
 			col_solicitado_por.SortColumnId = (int) col_ordencompra.col_solicitado_por;
 												
 			col_numero_req = new TreeViewColumn();
 			cellr2 = new CellRendererText();
-			col_numero_req.Title = "Nº Requi."; // titulo de la cabecera de la columna, si está visible
+			col_numero_req.Title = "Nº Requi.";
 			col_numero_req.PackStart(cellr2, true);
 			col_numero_req.AddAttribute (cellr2, "text", 2);
 			col_numero_req.SortColumnId = (int) col_ordencompra.col_numero_req;
 			
 			col_cantidadcomprar = new TreeViewColumn();
 			cellr3 = new CellRendererText();
-			col_cantidadcomprar.Title = "Cantidad"; // titulo de la cabecera de la columna, si está visible
+			col_cantidadcomprar.Title = "Cantidad";
 			col_cantidadcomprar.PackStart(cellr3, true);
 			col_cantidadcomprar.AddAttribute (cellr3, "text", 3);
 			col_cantidadcomprar.SortColumnId = (int) col_ordencompra.col_cantidadcomprar;
 			
 			col_descripcion = new TreeViewColumn();
 			cellr4 = new CellRendererText();
-			col_descripcion.Title = "Descripcion producto"; // titulo de la cabecera de la columna, si está visible
+			col_descripcion.Title = "Descripcion producto";
 			col_descripcion.PackStart(cellr4, true);
 			col_descripcion.AddAttribute (cellr4, "text", 4);
 			col_descripcion.SortColumnId = (int) col_ordencompra.col_descripcion;
@@ -677,28 +681,28 @@ namespace osiris
 			
 			col_unidades = new TreeViewColumn();
 			cellr5 = new CellRendererText();
-			col_unidades.Title = "Unidad Prod."; // titulo de la cabecera de la columna, si está visible
+			col_unidades.Title = "Unidad Prod.";
 			col_unidades.PackStart(cellr5, true);
 			col_unidades.AddAttribute (cellr5, "text", 5);
 			col_unidades.SortColumnId = (int) col_ordencompra.col_unidades;
 						
 			col_codigo_prod = new TreeViewColumn();
 			cellr6 = new CellRendererText();
-			col_codigo_prod.Title = "Codigo Producto"; // titulo de la cabecera de la columna, si está visible
+			col_codigo_prod.Title = "Codigo Producto";
 			col_codigo_prod.PackStart(cellr6, true);
 			col_codigo_prod.AddAttribute (cellr6, "text", 6);
 			col_codigo_prod.SortColumnId = (int) col_ordencompra.col_codigo_prod;
 						
 			TreeViewColumn col_precio_unit_hsc = new TreeViewColumn();
 			CellRendererText cellr7 = new CellRendererText();
-			col_precio_unit_hsc.Title = "Precio Unit."; // titulo de la cabecera de la columna, si está visible
+			col_precio_unit_hsc.Title = "Precio Unit.";
 			col_precio_unit_hsc.PackStart(cellr7, true);
 			col_precio_unit_hsc.AddAttribute (cellr7, "text", 7);
 			col_precio_unit_hsc.SortColumnId = (int) col_ordencompra.col_precio_unit_hsc;
 			
 			TreeViewColumn col_precio_prod_hsc = new TreeViewColumn();
 			CellRendererText cellr8 = new CellRendererText();
-			col_precio_prod_hsc.Title = "Precio Produ."; // titulo de la cabecera de la columna, si está visible
+			col_precio_prod_hsc.Title = "Precio Produ.";
 			col_precio_prod_hsc.PackStart(cellr8, true);
 			col_precio_prod_hsc.AddAttribute (cellr8, "text", 8);
 			col_precio_prod_hsc.SortColumnId = (int) col_ordencompra.col_precio_prod_hsc;
@@ -707,7 +711,7 @@ namespace osiris
 			
 			TreeViewColumn col_embalaje = new TreeViewColumn();
 			CellRendererText cellr9 = new CellRendererText();
-			col_embalaje.Title = "Embalaje"; // titulo de la cabecera de la columna, si está visible
+			col_embalaje.Title = "Embalaje";
 			col_embalaje.PackStart(cellr9, true);
 			col_embalaje.AddAttribute (cellr9, "text", 9);
 			col_embalaje.SortColumnId = (int) col_ordencompra.col_embalaje;
@@ -716,35 +720,35 @@ namespace osiris
 			
 			TreeViewColumn col_precioprove = new TreeViewColumn();
 			CellRendererText cell10 = new CellRendererText();
-			col_precioprove.Title = "Precio Prov."; // titulo de la cabecera de la columna, si está visible
+			col_precioprove.Title = "Precio Prov.";
 			col_precioprove.PackStart(cell10, true);
 			col_precioprove.AddAttribute (cell10, "text", 10);
 			col_precioprove.SortColumnId = (int) col_ordencompra.col_precioprove;
 			
 			TreeViewColumn col_preciouniprov = new TreeViewColumn();
 			CellRendererText cellr11 = new CellRendererText();
-			col_preciouniprov.Title = "Precio Unit.Prov."; // titulo de la cabecera de la columna, si está visible
+			col_preciouniprov.Title = "Precio Unit.Prov.";
 			col_preciouniprov.PackStart(cellr11, true);
 			col_preciouniprov.AddAttribute (cellr11, "text", 11);
 			col_preciouniprov.SortColumnId = (int) col_ordencompra.col_preciouniprov;
 									
 			TreeViewColumn col_descrprove = new TreeViewColumn();
 			CellRendererText cellr12 = new CellRendererText();
-			col_descrprove.Title = "Nombre Proveedor"; // titulo de la cabecera de la columna, si está visible
+			col_descrprove.Title = "Nombre Proveedor";
 			col_descrprove.PackStart(cellr12, true);
 			col_descrprove.AddAttribute (cellr12, "text", 12);
 			col_descrprove.SortColumnId = (int) col_ordencompra.col_descrprove;
 			
 			TreeViewColumn col_codprodprov = new TreeViewColumn();
 			CellRendererText cellr13 = new CellRendererText();
-			col_codprodprov.Title = "Cod.Prod.Prove."; // titulo de la cabecera de la columna, si está visible
+			col_codprodprov.Title = "Cod.Prod.Prove.";
 			col_codprodprov.PackStart(cellr13, true);
 			col_codprodprov.AddAttribute (cellr13, "text", 13);
 			col_codprodprov.SortColumnId = (int) col_ordencompra.col_codprodprov;
 			
 			TreeViewColumn col_codigbarras = new TreeViewColumn();
 			CellRendererText cellr14 = new CellRendererText();
-			col_codigbarras.Title = "Cod. Barras"; // titulo de la cabecera de la columna, si está visible
+			col_codigbarras.Title = "Cod. Barras";
 			col_codigbarras.PackStart(cellr14, true);
 			col_codigbarras.AddAttribute (cellr14, "text", 14);
 			col_codigbarras.SortColumnId = (int) col_ordencompra.col_codigbarras;
@@ -784,6 +788,33 @@ namespace osiris
 			col_descrprove,
 			col_codprodprov,
 			col_codigbarras
+		}
+		
+		void cree_treeview_departamentos()
+		{
+			treeViewEngineListaDepartamentos = new TreeStore(typeof(bool), 
+													typeof(string),
+													typeof(int));
+			
+			treeview_lista_departamentos.Model = treeViewEngineListaDepartamentos;			
+			treeview_lista_departamentos.RulesHint = true;
+						
+			Gtk.TreeViewColumn col00 = new TreeViewColumn();
+			Gtk.CellRendererToggle celrt00 = new CellRendererToggle();
+			col00.Title = "Seleccion";
+			col00.PackStart(celrt00, true);
+			col00.AddAttribute (celrt00, "active", 0);
+			celrt00.Activatable = true;
+			//celrt00.Toggled += selecciona_fila;
+						
+			Gtk.TreeViewColumn col01 = new TreeViewColumn();
+			Gtk.CellRendererText cellr1 = new CellRendererText();
+			col01.Title = "Departamento";
+			col01.PackStart(cellr1, true);
+			col01.AddAttribute (cellr1, "text", 1);
+			
+			treeview_lista_departamentos.AppendColumn(col00);
+			treeview_lista_departamentos.AppendColumn(col01);			
 		}
 		
 		void NumberCellEdited_Autorizado (object o, EditedArgs args)

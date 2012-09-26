@@ -1083,7 +1083,7 @@ namespace osiris
 							"WHERE "+
 							"osiris_his_cirugias_deta.id_producto = osiris_productos.id_producto "+
 							"AND osiris_his_cirugias_deta.id_tipo_cirugia = osiris_his_tipo_cirugias.id_tipo_cirugia "+
-							"AND id_grupo_producto IN('4','5') "+
+							"AND id_grupo_producto IN('4','5','6','7') "+
 							"AND osiris_his_cirugias_deta.eliminado = false "+ 
 							"AND osiris_his_cirugias_deta.id_tipo_admisiones = osiris_his_tipo_admisiones.id_tipo_admisiones "+
 							"AND osiris_his_cirugias_deta.id_tipo_cirugia = '"+idcode_find.ToString().Trim()+"' "+

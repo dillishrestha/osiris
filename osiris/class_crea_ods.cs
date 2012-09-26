@@ -91,8 +91,10 @@ namespace osiris
 						table.InsertCellAt (files_field, colum_field3+args_names_field.Length+title_field_text, cell);					
 					}
 				}
-				files_field++;				
-				while (lector.Read()){					
+				files_field++;
+				string texto = "";
+				while (lector.Read()){
+					texto = (string) lector[name_field_text]; // puede ser una campo de la base de datos tipo Text
 					for (int colum_field = 0; colum_field < args_names_field.Length; colum_field++){					
 						AODL.Document.Content.Tables.Cell cell = table.CreateCell ();
 						//cell.OfficeValueType ="float";
@@ -107,42 +109,44 @@ namespace osiris
 					if(typetext == true){
 						char[] delimiterChars = {'\n'}; // delimitador de Cadenas
 						char[] delimiterChars1 = {';'}; // delimitador de Cadenas
-						string texto = (string) lector[name_field_text]; // puede ser una campo de la base de datos tipo Text
 						//string texto = "1;daniel; ;olivares;cuevas";
 						//"2;genaro;cuevas;bazaldua\n"+
 						//"3;gladys;perez;orellana\n";
 						string[] words = texto.Split(delimiterChars); // Separa las Cadenas
-												
-						// Recorre la variable
-						foreach (string s in words){
-							if (s.Length > 0){
-								string texto1 = (string) s;
-								string[] words1 = texto1.Split(delimiterChars1);
-								//for (int i = 1; i <= 6; i++){
-								int i=0;
-								int i2 = 1;
-								foreach (string s1 in words1){
-									//Console.WriteLine(s1.ToString());
-									if(i2 <= args_field_text.Length){
-										array_field_text[i] = s1.ToString();
+						if(texto != ""){						
+							// Recorre la variable
+							foreach (string s in words){
+								if (s.Length > 0){
+									string texto1 = (string) s;
+									string[] words1 = texto1.Split(delimiterChars1);
+									//for (int i = 1; i <= 6; i++){
+									int i=0;
+									int i2 = 1;
+									foreach (string s1 in words1){
+										//Console.WriteLine(s1.ToString());
+										if(i2 <= args_field_text.Length){
+											array_field_text[i] = s1.ToString();
+										}
+										i++;
+										i2++;
 									}
-									i++;
-									i2++;
 								}
 							}
+							for( int i = 0; i < array_field_text.Length; i++ ){
+								//Console.WriteLine(array_field_text[i]);
+								AODL.Document.Content.Tables.Cell cell = table.CreateCell ();
+								//cell.OfficeValueType ="float";
+								AODL.Document.Content.Text.Paragraph paragraph = new AODL.Document.Content.Text.Paragraph(spreadsheetDocument);				
+								string text = (string) array_field_text[i];			
+								paragraph.TextContent.Add(new AODL.Document.Content.Text.SimpleText(spreadsheetDocument,text));
+								cell.Content.Add(paragraph);
+								cell.OfficeValueType = "string";							
+								cell.OfficeValue = text;
+								table.InsertCellAt (files_field, i+args_names_field.Length, cell);
+							}
+						}else{
+							
 						}
-						for( int i = 0; i < array_field_text.Length; i++ ) {
-							//Console.WriteLine(array_field_text[i]);
-							AODL.Document.Content.Tables.Cell cell = table.CreateCell ();
-							//cell.OfficeValueType ="float";
-							AODL.Document.Content.Text.Paragraph paragraph = new AODL.Document.Content.Text.Paragraph(spreadsheetDocument);				
-							string text = (string) array_field_text[i];			
-							paragraph.TextContent.Add(new AODL.Document.Content.Text.SimpleText(spreadsheetDocument,text));
-							cell.Content.Add(paragraph);
-							cell.OfficeValueType = "string";							
-							cell.OfficeValue = text;
-							table.InsertCellAt (files_field, i+args_names_field.Length, cell);
-						}						
 					}					
 					files_field++;
 				}

@@ -8345,7 +8345,7 @@ Busqueda de Almacenes
 					      <property name="window_placement">GTK_CORNER_TOP_LEFT</property>
 
 					      <child>
-						<widget class="GtkTreeView" id="treeview3">
+						<widget class="GtkTreeView" id="treeview_lista_departamentos">
 						  <property name="height_request">103</property>
 						  <property name="visible">True</property>
 						  <property name="can_focus">True</property>

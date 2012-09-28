@@ -42,7 +42,7 @@ namespace osiris
 		private PrintOperation print;
 		private double fontSize = 8.0;
 		int escala_en_linux_windows;		// Linux = 1  Windows = 8
-		int comienzo_linea = 162;
+		int comienzo_linea = 80;
 		int separacion_linea = 10;
 		int numpage = 1;
 		
@@ -83,6 +83,8 @@ namespace osiris
 		decimal deducible = 0;
 		decimal coaseguro = 0;
 		decimal valoriva;
+		
+		Pango.FontDescription desc;
 		
 		class_conexion conexion_a_DB = new class_conexion();
 		class_public classpublic = new class_public();
@@ -145,7 +147,7 @@ namespace osiris
 			string query_consulta = "";
 			Cairo.Context cr = context.CairoContext;
 			Pango.Layout layout = context.CreatePangoLayout ();
-			Pango.FontDescription desc = Pango.FontDescription.FromString ("Sans");									
+			desc = Pango.FontDescription.FromString ("Sans");									
 			// cr.Rotate(90)  Imprimir Orizontalmente rota la hoja cambian las posiciones de las lineas y columna					
 			fontSize = 8.0;			layout = null;			layout = context.CreatePangoLayout ();
 			desc.Size = (int)(fontSize * pangoScale);		layout.FontDescription = desc;
@@ -226,8 +228,27 @@ namespace osiris
 					total = subtotal + ivaprod;				
 	        		totaladm += total;
 					subtotaldelmov += total;
-					while (lector.Read()){
 					
+					imprime_linea_producto(cr,layout,(string) lector["idproducto"],(string) lector["cantidadaplicada"],datos,(string) lector["preciopublico"],subtotal,ivaprod,total);
+					while (lector.Read()){
+						precioventaconvenido = decimal.Parse((string) lector["precioventa"]);
+        		
+	        			datos = (string) lector["descripcion_producto"];
+		        		cantaplicada = decimal.Parse((string) lector["cantidadaplicada"]);
+						subtotal = decimal.Parse((string) lector["preciopublico"])*cantaplicada;
+						
+						if((bool) lector["aplicar_iva"]== true){
+							ivaprod = (subtotal*valoriva)/100;
+							subt15 += subtotal;
+						}else{
+							subt0 += subtotal;
+							ivaprod = 0;
+						}
+						sumaiva += ivaprod;
+						total = subtotal + ivaprod;				
+		        		totaladm += total;
+						subtotaldelmov += total;
+						imprime_linea_producto(cr,layout,(string) lector["idproducto"],(string) lector["cantidadaplicada"],datos,(string) lector["preciopublico"],subtotal,ivaprod,total);
 					}
 				}
 			}catch (NpgsqlException ex){
@@ -479,7 +500,7 @@ namespace osiris
 		
 		void imprime_encabezado(Cairo.Context cr,Pango.Layout layout)
 		{
-			Pango.FontDescription desc = Pango.FontDescription.FromString ("Sans");								
+			desc = Pango.FontDescription.FromString ("Sans");								
 			//cr.Rotate(90);  //Imprimir Orizontalmente rota la hoja cambian las posiciones de las lineas y columna					
 			fontSize = 8.0;
 			desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;
@@ -509,10 +530,11 @@ namespace osiris
 			layout.Justify =  false;
 			cr.MoveTo(width/2,45*escala_en_linux_windows);	layout.SetText(titulo_rpt);	Pango.CairoHelper.ShowLayout (cr, layout);
 			//cr.MoveTo(225*escala_en_linux_windows, 35*escala_en_linux_windows);			layout.SetText(titulo_rpt);				Pango.CairoHelper.ShowLayout (cr, layout);
-			
-			fontSize = 7.0;			layout = null;			layout = context.CreatePangoLayout ();
+			fontSize = 8.0;			layout = null;			layout = context.CreatePangoLayout ();
 			desc.Size = (int)(fontSize * pangoScale);		layout.FontDescription = desc;
-			layout.FontDescription.Weight = Weight.Normal;		// Letra negrita
+			layout.FontDescription.Weight = Weight.Bold;		// Letra negrita
+			cr.MoveTo(09*escala_en_linux_windows,60*escala_en_linux_windows);			layout.SetText("Nombre Paquete Qx:");			Pango.CairoHelper.ShowLayout (cr, layout);
+			
 		}
 		
 		void imprime_titulo(Cairo.Context cr,Pango.Layout layout, string descrp_admin,string fech)
@@ -525,7 +547,27 @@ namespace osiris
 			comienzo_linea += separacion_linea;
 			layout.FontDescription.Weight = Weight.Bold;   // Letra Negrita
 			cr.MoveTo(200*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(descrp_admin.ToString()+"  "+fech.ToString());	Pango.CairoHelper.ShowLayout (cr, layout);
-			layout.FontDescription.Weight = Weight.Normal;   // Letra Normal
+			layout.FontDescription.Weight = Weight.Normal;   // Letra Normal			
+			fontSize = 7.0;			layout = null;			layout = context.CreatePangoLayout ();
+			desc.Size = (int)(fontSize * pangoScale);		layout.FontDescription = desc;			
+		}
+		
+		void imprime_linea_producto(Cairo.Context cr,Pango.Layout layout,string idproducto_,string cantidadaplicada_,string datos_,string preciounitario_,decimal subtotal_,decimal ivaprod_,decimal total_)
+		{
+			fontSize = 7.0;			layout = null;			layout = context.CreatePangoLayout ();
+			desc.Size = (int)(fontSize * pangoScale);		layout.FontDescription = desc;
+			comienzo_linea += separacion_linea;
+			cr.MoveTo(005*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);			layout.SetText(idproducto_);				Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(080*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);			layout.SetText(cantidadaplicada_);		Pango.CairoHelper.ShowLayout (cr, layout);
+			if(datos_.Length > 61)	{				
+				cr.MoveTo(110*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);		layout.SetText((string) datos_.Substring(0,60));					Pango.CairoHelper.ShowLayout (cr, layout);
+			}else{
+				cr.MoveTo(110*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText((string) datos_);							Pango.CairoHelper.ShowLayout (cr, layout);
+			} 
+			cr.MoveTo(380*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(preciounitario_);Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(430*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(subtotal_.ToString("N").PadLeft(10));		Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(480*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(ivaprod_.ToString("N").PadLeft(10));		Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(530*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(total_.ToString("N").PadLeft(10));			Pango.CairoHelper.ShowLayout (cr, layout);
 		}
 		
 		private void OnEndPrint (object obj, Gtk.EndPrintArgs args)

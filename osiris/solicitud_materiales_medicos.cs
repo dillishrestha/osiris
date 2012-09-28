@@ -25,9 +25,9 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 // 
 //////////////////////////////////////////////////////////
-// Programa		: hscmty.cs
+// Programa		: 
 // Proposito	: Solicitud de materiales para los diferentes centros de costos medicos 
-// Objeto		: hospitalizacion_solicitud_mat.cs 
+// Objeto		: 
 //////////////////////////////////////////////////////////
 using System;
 using Npgsql;
@@ -215,7 +215,8 @@ namespace osiris
 								ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
 				msgBoxError.Run ();
 				msgBoxError.Destroy();
-			}				
+			}
+			conexion.Close();
 			return acceso_a_presolicitud;
 		}
 		
@@ -377,8 +378,8 @@ namespace osiris
 					if((bool) checkbutton_presolicitud.Active == true){
 						if(entry_nombre_paciente.Text != ""){
 							almacena_productos_solicitados();
-							editar = true;
-		 					entry_status_solicitud.Text = "NO ESTA ENVIADA";
+							//editar = true;
+		 					//entry_status_solicitud.Text = "NO ESTA ENVIADA";
 						}else{
 							msgBox = new MessageDialog (MyWin,DialogFlags.Modal,
 											MessageType.Error,ButtonsType.Close,"No tiene definido el nombre del paciente verifique...");										
@@ -431,15 +432,15 @@ namespace osiris
 					entry_numero_solicitud.Text = ultimasolicitud.ToString().Trim();
 				}
 				if (this.treeViewEngineSolicitud.GetIterFirst (out iter)){
-					button_envio_solicitud.Sensitive = true;				
-					if ((bool) this.lista_produc_solicitados.Model.GetValue (iter,8) == false){
-						// Verifica que la base de datos este conectada
-						NpgsqlConnection conexion; 
-						conexion = new NpgsqlConnection (connectionString+nombrebd);
-						try{
-							conexion.Open ();
-							NpgsqlCommand comando; 
-							comando = conexion.CreateCommand ();
+					button_envio_solicitud.Sensitive = true;
+					// Verifica que la base de datos este conectada
+					NpgsqlConnection conexion; 
+					conexion = new NpgsqlConnection (connectionString+nombrebd);
+					try{
+						conexion.Open ();
+						NpgsqlCommand comando; 
+						comando = conexion.CreateCommand ();
+						if ((bool) this.lista_produc_solicitados.Model.GetValue (iter,8) == false){
 							comando.CommandText = "INSERT INTO osiris_his_solicitudes_deta("+
 																		"folio_de_solicitud,"+
 																		"id_producto,"+
@@ -477,19 +478,8 @@ namespace osiris
 							//Console.WriteLine(comando.CommandText);
 							comando.ExecuteNonQuery();
 							comando.Dispose();
-						}catch (NpgsqlException ex){
-							MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
-														MessageType.Error,ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
-							msgBoxError.Run ();				msgBoxError.Destroy();
 						}
-					}
-					while (this.treeViewEngineSolicitud.IterNext(ref iter)){
-						NpgsqlConnection conexion; 
-						conexion = new NpgsqlConnection (connectionString+nombrebd);
-						try{
-							conexion.Open ();
-							NpgsqlCommand comando; 
-							comando = conexion.CreateCommand ();
+						while (this.treeViewEngineSolicitud.IterNext(ref iter)){						
 							if ((bool) this.lista_produc_solicitados.Model.GetValue (iter,8) == false){
 								comando.CommandText = "INSERT INTO osiris_his_solicitudes_deta("+
 																		"folio_de_solicitud,"+
@@ -529,14 +519,16 @@ namespace osiris
 								comando.ExecuteNonQuery();
 								comando.Dispose();
 							}
-						}catch (NpgsqlException ex){
-							MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
-														MessageType.Error,ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
-							msgBoxError.Run ();				msgBoxError.Destroy();
+						
 						}
+						checkbutton_nueva_solicitud.Active = false;
+						llena_solicitud_material(entry_numero_solicitud.Text);
+					}catch (NpgsqlException ex){
+						MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+														MessageType.Error,ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
+						msgBoxError.Run ();				msgBoxError.Destroy();
 					}
-					this.checkbutton_nueva_solicitud.Active = false;
-					llena_solicitud_material(entry_numero_solicitud.Text);				
+					conexion.Close();
 				}else{
 					MessageDialog msgBox = new MessageDialog (MyWin,DialogFlags.Modal,
 											MessageType.Error,ButtonsType.Close,"No ha pedido ningun producto, NO se ha podido grabar la solicitud...");										
@@ -582,8 +574,7 @@ namespace osiris
 							treeViewEngineSolicitud.Remove (ref iterSelected);
 				        	msgBox = new MessageDialog (MyWin,DialogFlags.Modal,
 											MessageType.Info,ButtonsType.Ok,"El Producto se quito satisfactoreamente...");										
-							msgBox.Run ();						msgBox.Destroy();		
-							conexion.Close ();
+							msgBox.Run ();						msgBox.Destroy();
 				        }catch (NpgsqlException ex){
 					   		MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
 											MessageType.Error, 
@@ -591,6 +582,7 @@ namespace osiris
 							msgBoxError.Run ();
 							msgBoxError.Destroy();
 						}
+						conexion.Close ();
 					}
 		 		}
  			}
@@ -632,7 +624,8 @@ namespace osiris
 		   				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
 							MessageType.Info,ButtonsType.Close, "PostgresSQL error: {0} ",ex.Message);
 							msgBoxError.Run ();					msgBoxError.Destroy();
-					}					
+					}
+					conexion.Close();
 				}					
 			}
 	    } 
@@ -641,11 +634,9 @@ namespace osiris
 	    {
         	this.treeViewEngineSolicitud.Clear(); // Limpia el treeview cuando realiza una nueva busqueda
 			editar = true;
-			
 			NpgsqlConnection conexion; 
 			conexion = new NpgsqlConnection (connectionString+nombrebd);
-            
-			// Verifica que la base de datos este conectada
+            // Verifica que la base de datos este conectada
 			try{
 				conexion.Open ();
 				NpgsqlCommand comando; 
@@ -661,7 +652,7 @@ namespace osiris
                						"to_char(osiris_his_solicitudes_deta.id_secuencia,'9999999999') AS idsecuencia,"+
 									"descripcion_grupo_producto,descripcion_grupo1_producto,descripcion_grupo2_producto,"+
 									"osiris_his_solicitudes_deta.folio_de_servicio AS foliodeatencion,"+
-									"osiris_his_solicitudes_deta.pid_paciente AS pidpaciente,observaciones_solicitud,"+
+									"osiris_his_solicitudes_deta.pid_paciente AS pidpaciente,nombre_paciente,observaciones_solicitud,pre_solicitud,solicitud_stock,"+
 									"nombre1_paciente,nombre2_paciente,apellido_paterno_paciente,apellido_materno_paciente "+
                						"FROM osiris_his_solicitudes_deta,osiris_his_paciente,osiris_productos,osiris_grupo_producto,osiris_grupo1_producto,osiris_grupo2_producto "+
                						"WHERE osiris_his_solicitudes_deta.folio_de_solicitud = '"+(string) numerodesolicutud+"' "+
@@ -686,6 +677,14 @@ namespace osiris
 					entry_cirugia.Text = (string) lector["procedimiento_qx"].ToString().Trim();
 					entry_observacion.Text = (string) lector["observaciones_solicitud"];
 					entry_fecha_solicitud.Text = (string) lector["fechahorasolicitud"];
+					if((bool) lector["solicitud_stock"] == true){
+						checkbutton_sol_parastock.Active = true;
+						entry_nombre_paciente.Text = (string) lector["nombre_paciente"].ToString().Trim();
+					}
+					if((bool) lector["pre_solicitud"] == true){
+						checkbutton_presolicitud.Active = true;
+						entry_nombre_paciente.Text = (string) lector["nombre_paciente"].ToString().Trim();
+					}
 					if((bool) lector["status"] == false){
 						editar = false;
 					}

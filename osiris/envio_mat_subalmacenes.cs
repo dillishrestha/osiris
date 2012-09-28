@@ -926,7 +926,7 @@ namespace osiris
 			TreeIter iterSelected;
  			if(treeViewEngineSolicitado.GetIterFirst (out iterSelected)){
  				MessageDialog msgBox = new MessageDialog (MyWin,DialogFlags.Modal,
-									MessageType.Question,ButtonsType.YesNo,"¿ Esta seguro de marcar como sin Stock ?");
+									MessageType.Question,ButtonsType.YesNo,"¿ Esta seguro de marcar como sin Stock, todos los productos seleccionados ?");
 				ResponseType miResultado = (ResponseType)msgBox.Run ();
 				msgBox.Destroy();
 		 		if (miResultado == ResponseType.Yes){
@@ -994,7 +994,7 @@ namespace osiris
 			TreeIter iterSelected;
  			if(treeViewEngineSolicitado.GetIterFirst (out iterSelected)){
  				MessageDialog msgBox = new MessageDialog (MyWin,DialogFlags.Modal,
-									MessageType.Question,ButtonsType.YesNo,"¿ Esta seguro de marcar como PEDIDO ERRONEO ?");
+									MessageType.Question,ButtonsType.YesNo,"¿ Esta seguro de marcar como PEDIDO ERRONEO, todos los productos seleccionados ?");
 				ResponseType miResultado = (ResponseType)msgBox.Run ();
 				msgBox.Destroy();
 		 		if (miResultado == ResponseType.Yes){

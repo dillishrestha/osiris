@@ -211,8 +211,7 @@ namespace osiris
 																		ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
 									msgBoxError.Run ();
 								}
-							}	
-							
+							}							
 							if(variable_paso_01 == false){
 								// Validando que seleccione un proveedor
 								if (this.entry_id_proveedor.Text.Trim() == ""){

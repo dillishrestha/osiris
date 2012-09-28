@@ -1,19 +1,22 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="osiris/class_crea_ods.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="osiris/solicitud_materiales_medicos.cs">
     <Files>
-      <File FileName="osiris/class_conexion.cs" Line="13" Column="56" />
-      <File FileName="osiris/class_public.cs" Line="50" Column="124" />
-      <File FileName="osiris/ordenes_de_compras.cs" Line="53" Column="13" />
-      <File FileName="osiris/captura_fac_ordenes_compra.cs" Line="38" Column="1" />
-      <File FileName="osiris/class_crea_ods.cs" Line="98" Column="36" />
+      <File FileName="osiris/class_conexion.cs" Line="16" Column="2" />
+      <File FileName="osiris/class_public.cs" Line="53" Column="42" />
+      <File FileName="osiris/rpt_paquetes.cs" Line="251" Column="169" />
+      <File FileName="osiris/solicitud_materiales_medicos.cs" Line="1109" Column="37" />
+      <File FileName="osiris/rpt_solicitud_subalmacenes.cs" Line="163" Column="51" />
+      <File FileName="osiris/rpt_prot_admision.cs" Line="429" Column="32" />
+      <File FileName="osiris/requisicion_compras.cs" Line="239" Column="28" />
+      <File FileName="osiris/envio_mat_subalmacenes.cs" Line="897" Column="4" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
         <State expanded="True">
           <Node name="osiris" expanded="True">
             <Node name="References" expanded="True" />
-            <Node name="class_crea_ods.cs" selected="True" />
+            <Node name="solicitud_materiales_medicos.cs" selected="True" />
           </Node>
         </State>
       </Pad>
@@ -31,9 +34,7 @@
     </Pads>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
-    <BreakpointStore>
-      <Breakpoint file="/home/dolivares/Projects/systemsosirisho/osiris/class_public.cs" line="64" />
-    </BreakpointStore>
+    <BreakpointStore />
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />
 </Properties>

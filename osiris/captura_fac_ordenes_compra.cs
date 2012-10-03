@@ -200,6 +200,7 @@ namespace osiris
 			entry_orden_de_compra.ModifyFont(fontdesc);  // Arial y Negrita
 			entry_estatus_oc.ModifyFont(fontdesc);			// Arial y Negrita			
 			entry_producto.Sensitive = false;
+			entry_nombre_proveedor.Sensitive = false;
 			button_busca_producto.Sensitive = false;
 			button_quitar_producto.Sensitive = false;
 			button_busca_proveedor.Sensitive = false;
@@ -449,14 +450,26 @@ namespace osiris
 		
 		void llenado_treeview_nro_factura()
 		{
-			TreeIter iter2;
-			if (treeViewEngineListaProdRequi.GetIterFirst (out iter2)){
-				lista_productos_a_recibir.Model.SetValue(iter2,1,entry_num_factura_proveedor.Text.ToUpper());
-				while (treeViewEngineListaProdRequi.IterNext(ref iter2)){
+			TreeIter iter2;			
+			if(entry_num_factura_proveedor.Text != ""){			
+				if (treeViewEngineListaProdRequi.GetIterFirst (out iter2)){
 					lista_productos_a_recibir.Model.SetValue(iter2,1,entry_num_factura_proveedor.Text.ToUpper());
+					while (treeViewEngineListaProdRequi.IterNext(ref iter2)){
+						lista_productos_a_recibir.Model.SetValue(iter2,1,entry_num_factura_proveedor.Text.ToUpper());
+					}
+					button_guardar.Sensitive = true;
+				}else{
+					MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+												MessageType.Error, 
+												ButtonsType.Close, "Existe un concepto que no esta seleccionado, seleccione todos... verifique...");
+					msgBoxError.Run ();								msgBoxError.Destroy();
 				}
+			}else{
+				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+												MessageType.Error, 
+												ButtonsType.Close, "Debe tener una Factura Asignada para realizar la entrada... verifique...");
+				msgBoxError.Run ();								msgBoxError.Destroy();
 			}
-			button_guardar.Sensitive = true;
 		}
 						
 		void on_button_reporte_clicked(object sender, EventArgs args)
@@ -481,522 +494,570 @@ namespace osiris
 		
 		void on_button_guardar_clicked(object sender, EventArgs args)
 		{
+			TreeIter iter;
+			bool error_verifica_cant = false;
+			bool error_verifica_seleccion = false;
 			MessageDialog msgBox = new MessageDialog (MyWin,DialogFlags.Modal,
 			MessageType.Question,ButtonsType.YesNo,"¿ Esta seguro ingresar la factura?");
 			ResponseType miResultado = (ResponseType)
 			msgBox.Run ();				msgBox.Destroy();
 	 		if (miResultado == ResponseType.Yes){
-				NpgsqlConnection conexion; 
-				conexion = new NpgsqlConnection (connectionString+nombrebd);
-			    // Verifica que la base de datos este conectada
-			    try{
-					conexion.Open ();
-					NpgsqlCommand comando; 
-					comando = conexion.CreateCommand ();
-					TreeIter iter;
-					if (treeViewEngineListaProdRequi.GetIterFirst (out iter)){
-						// verificando la 
-						if((bool) radiobutton_orden_compra.Active == true){
-														
+				if (treeViewEngineListaProdRequi.GetIterFirst (out iter)){
+					if((bool) lista_productos_a_recibir.Model.GetValue(iter,0) == false){
+						error_verifica_seleccion = true;
+					}					
+					if(float.Parse(lista_productos_a_recibir.Model.GetValue(iter,5).ToString().Trim()) <= 0 ){
+						error_verifica_cant = true;
+					}
+					while (treeViewEngineListaProdRequi.IterNext(ref iter)){
+						if((bool) lista_productos_a_recibir.Model.GetValue(iter,0) == false){
+							error_verifica_seleccion = true;
 						}
-						if((bool) radiobutton_requisicion.Active == true){							
-							comando.CommandText = "INSERT INTO osiris_erp_factura_compra_enca(" +
-										//"numero_orden_compra," +
-										//"fechahora_orden_compra," +
-										"id_quien_creo," +
-										//"cancelado," +
-										//"fechahora_cancelado," +
-										"id_proveedor," +
-										"factura_sin_orden_compra," +
-										//"id_secuencia," +
-										"numero_factura_proveedor," +
-										"fecha_factura," +
-										//"id_quien_cancelo," +
-										"fechahora_creacion," +
-										"numero_serie_cfd," +
-										"ano_aprobacion_cfd," +
-										"numero_aprobacion_cfd," +
-										"numero_requisicion) " +
-										"VALUES " +
-										"('"+LoginEmpleado+"','"+
-											entry_id_proveedor.Text.Trim()+"','"+
-											radiobutton_sin_orden.Active+"','"+
-											entry_num_factura_proveedor.Text.Trim().ToUpper()+"','"+
-											entry_ano_fechafactura.Text.Trim()+"-"+entry_mes_fechafactura.Text.Trim()+"-"+entry_dia_fechafactura.Text.Trim()+"','"+
-											DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"',"+
-										"''," +
-										"''," +
-										"''," +
-									"'"+entry_orden_de_compra.Text.Trim()+"')";
-							Console.WriteLine(comando.CommandText);
-							comando.ExecuteNonQuery();
-						    comando.Dispose();
-							
-							comando.CommandText = "UPDATE osiris_erp_requisicion_deta SET "+
-			 									"cantidad_comprada = '"+lista_productos_a_recibir.Model.GetValue(iter,3).ToString().Trim()+"',"+
-			 									"id_quien_compro = '"+LoginEmpleado+"',"+
-			 									"fechahora_compra = '"+entry_ano_fechafactura.Text+"-"+entry_mes_fechafactura.Text+"-"+entry_dia_fechafactura.Text+" "+DateTime.Now.ToString("HH:mm:ss")+"'," +
-			 									"comprado = 'true',"+
-			 									"id_quien_recibio = '"+LoginEmpleado+"',"+
-			 									"fechahora_recibido = '" +DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"',"+
-			 									"recibido = 'true'," +
-			 									"id_almacen = '" + idsubalmacen.ToString().Trim()+"',"+
-			 									"id_proveedor = '" +entry_id_proveedor.Text.Trim()+"',"+
-			 									"numero_factura_proveedor = '" + entry_num_factura_proveedor.Text.Trim().ToUpper()+"',"+
-			 									"costo_producto = '" +lista_productos_a_recibir.Model.GetValue(iter,6).ToString().Trim()+"',"+
-			 									"costo_por_unidad = '" + lista_productos_a_recibir.Model.GetValue(iter,7).ToString().Trim()+"',"+
-			 									"precio_producto_publico = '" + lista_productos_a_recibir.Model.GetValue(iter,17).ToString().Trim()+"',"+
-			 									"cantidad_de_embalaje = '" + lista_productos_a_recibir.Model.GetValue(iter,4).ToString().Trim()+"',"+
-			 									"cantidad_recibida = '"+lista_productos_a_recibir.Model.GetValue(iter,5).ToString().Trim()+"',"+
-			 									"factura_sin_orden_compra = 'true'," +
-			 									"id_producto_proveedor = '" + lista_productos_a_recibir.Model.GetValue(iter,12)+"',"+
-			 									"descripcion_producto_proveedor = '" +lista_productos_a_recibir.Model.GetValue(iter,11)+"',"+
-												"lote_producto = '" +lista_productos_a_recibir.Model.GetValue(iter,13)+"',"+
-			 									"caducidad_producto = '" +lista_productos_a_recibir.Model.GetValue(iter,14)+"',"+
-			 									"ingreso_por_requisicion = 'true' WHERE id_secuencia = '"+lista_productos_a_recibir.Model.GetValue(iter,20).ToString().Trim()+"'; ";
-			 									
- 												
-		 					Console.WriteLine(comando.CommandText);
-							comando.ExecuteNonQuery();
-					    	comando.Dispose();
-							
-							if(cargar_requi_a_paciente == true){
-							
-							}
-							
+						if(float.Parse(lista_productos_a_recibir.Model.GetValue(iter,5).ToString().Trim()) <= 0 ){
+							error_verifica_cant = true;
 						}
-						
-						if((bool) radiobutton_sin_orden.Active == true){
-							comando.CommandText = "INSERT INTO osiris_erp_factura_compra_enca(" +
-										//"numero_orden_compra," +
-										//"fechahora_orden_compra," +
-										"id_quien_creo," +
-										//"cancelado," +
-										//"fechahora_cancelado," +
-										"id_proveedor," +
-										"factura_sin_orden_compra," +
-										//"id_secuencia," +
-										"numero_factura_proveedor," +
-										"fecha_factura," +
-										//"id_quien_cancelo," +
-										"fechahora_creacion," +
-										"numero_serie_cfd," +
-										"ano_aprobacion_cfd," +
-										"numero_aprobacion_cfd) " +
-										"VALUES " +
-										"('"+LoginEmpleado+"','"+
-											entry_id_proveedor.Text.Trim()+"','"+
-											radiobutton_sin_orden.Active+"','"+
-											entry_num_factura_proveedor.Text.Trim().ToUpper()+"','"+
-											entry_ano_fechafactura.Text.Trim()+"-"+entry_mes_fechafactura.Text.Trim()+"-"+entry_dia_fechafactura.Text.Trim()+"','"+
-											DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"',"+
-										"''," +
-										"''," +
-										"'')";
-							//Console.WriteLine(comando.CommandText);
-							comando.ExecuteNonQuery();
-						    comando.Dispose();
-							
-							comando.CommandText = "INSERT INTO osiris_erp_requisicion_deta( "+
-			 									"id_producto,"+
-			 									"cantidad_solicitada,"+
-			 									"cantidad_comprada," +
-			 									"cantidad_recibida,"+
-			 									"comprado,"+
-			 									"recibido," +
-			 									"id_proveedor," +
-			 									"numero_factura_proveedor," +
-			 									"costo_producto," +
-			 									"costo_por_unidad, " +									
-			 									"precio_producto_publico," +
-												"porcentage_ganancia," +
-												"cantidad_de_embalaje," +
-												"id_quien_compro," +
-			 									"fechahora_compra," +
-			 									"id_quien_recibio," +
-			 									"fechahora_recibido," +
-			 									"autorizada," +
-			 									"id_quien_autorizo," +
-			 									"fechahora_autorizado," +
-												"descripcion_producto_proveedor,"+
-			 									"id_producto_proveedor," +
-												"tipo_unidad_producto,"+
-			 									"factura_sin_orden_compra," +
-			 									"precio_costo_prov_selec," +
-			 									"lote_producto," +
-			 									"caducidad_producto," +
-			 									"costo_producto_osiris," +
-			 									"cantidad_de_embalaje_osiris) "+
-			 									"VALUES ('"+												
-												lista_productos_a_recibir.Model.GetValue(iter,10).ToString().Trim()+"','"+
-												lista_productos_a_recibir.Model.GetValue(iter,3).ToString().Trim()+"','"+
-												lista_productos_a_recibir.Model.GetValue(iter,4).ToString().Trim()+"','"+
-												lista_productos_a_recibir.Model.GetValue(iter,5).ToString().Trim()+"','"+
-												"true','"+
-												"true','"+
-												entry_id_proveedor.Text.Trim()+"','"+
-												lista_productos_a_recibir.Model.GetValue(iter,1).ToString().Trim().ToUpper()+"','"+
-												lista_productos_a_recibir.Model.GetValue(iter,6).ToString().Trim()+"','"+
-												lista_productos_a_recibir.Model.GetValue(iter,7).ToString().Trim()+"','"+
-												lista_productos_a_recibir.Model.GetValue(iter,8).ToString().Trim()+"','"+
-												lista_productos_a_recibir.Model.GetValue(iter,16).ToString().Trim()+"','"+
-												lista_productos_a_recibir.Model.GetValue(iter,4).ToString().Trim()+"','"+
-												LoginEmpleado+"','"+
-												DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"','"+
-												LoginEmpleado+"','"+
-												DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"','"+
-												"true','"+
-												LoginEmpleado+"','"+
-												DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"','"+
-												lista_productos_a_recibir.Model.GetValue(iter,11)+"','"+
-												lista_productos_a_recibir.Model.GetValue(iter,12)+"','"+
-												lista_productos_a_recibir.Model.GetValue(iter,15).ToString().Trim()+"','"+
-												"true','"+
-												lista_productos_a_recibir.Model.GetValue(iter,6)+"','"+
-												lista_productos_a_recibir.Model.GetValue(iter,13)+"','"+
-												lista_productos_a_recibir.Model.GetValue(iter,14)+"','"+
-												lista_productos_a_recibir.Model.GetValue(iter,17)+"','"+
-												lista_productos_a_recibir.Model.GetValue(iter,18)+
-												"');";
-							//Console.WriteLine(comando.CommandText);
-		 					comando.ExecuteNonQuery();
-					    	comando.Dispose();
-						}
-						
-						// Actualizando la tabla de inventario almacen general
-						NpgsqlConnection conexion1;
-						conexion1 = new NpgsqlConnection (connectionString+nombrebd);
-		 				try{
-							conexion1.Open ();
-							NpgsqlCommand comando1; 
-							comando1 = conexion.CreateCommand();
-							comando1.CommandText = "SELECT id_producto,id_almacen,stock FROM osiris_catalogo_almacenes "+
-												"WHERE id_almacen = '"+idsubalmacen.ToString()+"' "+
-												"AND eliminado = 'false' "+														
-												"AND id_producto = '"+(string) lista_productos_a_recibir.Model.GetValue(iter,10).ToString().Trim()+"' ;";
-							//Console.WriteLine(comando.CommandText);
-							NpgsqlDataReader lector1 = comando1.ExecuteReader ();
-							if(lector1.Read()){
-								//Console.WriteLine("if ");
-								NpgsqlConnection conexion2; 
-								conexion2 = new NpgsqlConnection (connectionString+nombrebd);
-		 						try{
-									conexion2.Open ();
-									NpgsqlCommand comando2;
-									comando2 = conexion2.CreateCommand();
-									// verificando que asigne un paciente para que la pre-solicitud se pueda surtir
-									
-									comando2.CommandText = "UPDATE osiris_catalogo_almacenes SET stock  = stock + '"+(string) lista_productos_a_recibir.Model.GetValue(iter,5).ToString().Trim()+"',"+
-															//"historial_surtido_material = historial_surtido_material || '"+LoginEmpleado+" "+(string) lista_de_materiales_solicitados.Model.GetValue (iterSelected,2)+" "+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"\n',"+
-															"fechahora_ultimo_surtimiento = '"+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"' "+
-															"WHERE id_almacen = '"+idsubalmacen.ToString()+"' "+
-															"AND id_producto = '"+(string) lista_productos_a_recibir.Model.GetValue(iter,10).ToString().Trim()+"' ;";
-									//Console.WriteLine(comando1.CommandText);
-									comando2.ExecuteNonQuery();
-									
-									comando2.Dispose();
-									conexion2.Close();
-								}catch (NpgsqlException ex){
-						   			MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
-												MessageType.Error, 
-												ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
-									msgBoxError.Run ();
-								}
-								conexion2.Close();																				
-							}else{
-								//Console.WriteLine("else"+idalmacenorigen);
-								NpgsqlConnection conexion2;
-								conexion2 = new NpgsqlConnection (connectionString+nombrebd);
-		 						try{
-									conexion2.Open ();
-									NpgsqlCommand comando2; 
-									comando2 = conexion2.CreateCommand();
-									comando2.CommandText = "INSERT INTO osiris_catalogo_almacenes("+
-															"id_almacen,"+
-															"id_producto,"+
-															"stock,"+
-															"id_quien_creo,"+
-															"fechahora_alta,"+
-															"fechahora_ultimo_surtimiento)"+
-															"VALUES ('"+
-															idsubalmacen.ToString()+"','"+
-															(string) lista_productos_a_recibir.Model.GetValue(iter,10).ToString().Trim()+"','"+
-															(string) lista_productos_a_recibir.Model.GetValue(iter,5).ToString().Trim()+"','"+
-															LoginEmpleado+"','"+
-															DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"','"+
-															DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"');";
-									comando2.ExecuteNonQuery();
-									comando2.Dispose();																							
-								}catch (NpgsqlException ex){
-						   			MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
-												MessageType.Error, 
-												ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
-									msgBoxError.Run ();
-									msgBoxError.Destroy();
-								}
-								conexion2.Close();																																															
-							}									
-						}catch (NpgsqlException ex){
-						   	MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
-												MessageType.Error, 
-												ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
-							msgBoxError.Run ();
-							msgBoxError.Destroy();
-						}
-						conexion1.Close();
-						
-						// ###################
-						// Verificando en el catalogo general de proveedores
-						// la verificacion se realiza mediante codigo del producto
-						/*
-						NpgsqlConnection conexion3;
-						conexion3 = new NpgsqlConnection (connectionString+nombrebd);
-		 				try{
-							conexion3.Open ();
-							NpgsqlCommand comando3; 
-							comando3 = conexion.CreateCommand();
-							comando3.CommandText = "SELECT codigo_producto_proveedor FROM osiris_catalogo_productos_proveedores "+
-												"WHERE id_proveedor = '"+entry_id_proveedor.Text.ToString()+"' "+
-												"AND eliminado = 'false' "+														
-												"AND codigo_producto_proveedor = '"+(string) lista_productos_a_recibir.Model.GetValue(iter,12).ToString().Trim()+"' ;";
-							//Console.WriteLine(comando.CommandText);
-							NpgsqlDataReader lector3 = comando3.ExecuteReader ();
-							if(!lector3.Read()){
-								NpgsqlConnection conexion4;
-								conexion4 = new NpgsqlConnection (connectionString+nombrebd);
-		 						try{
-									conexion4.Open ();
-									NpgsqlCommand comando4; 
-									comando4 = conexion4.CreateCommand();
-									comando4.CommandText = "INSERT INTO osiris_catalogo_productos_proveedores("+
-															"id_almacen,"+
-															"id_producto,"+
-															"stock,"+
-															"id_quien_creo,"+
-															"fechahora_alta,"+
-															"fechahora_ultimo_surtimiento)"+
-															"VALUES ('"+
-															idsubalmacen.ToString()+"','"+
-															(string) lista_productos_a_recibir.Model.GetValue(iter,10).ToString().Trim()+"','"+
-															(string) lista_productos_a_recibir.Model.GetValue(iter,5).ToString().Trim()+"','"+
-															LoginEmpleado+"','"+
-															DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"','"+
-															DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"');";
-									comando4.ExecuteNonQuery();
-									comando4.Dispose();																							
-								}catch (NpgsqlException ex){
-						   			MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
-												MessageType.Error, 
-												ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
-									msgBoxError.Run ();
-									msgBoxError.Destroy();
-								}
-								conexion4.Close();																																															
-							}									
-						}catch (NpgsqlException ex){
-						   	MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
-												MessageType.Error, 
-												ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
-							msgBoxError.Run ();
-							msgBoxError.Destroy();
-						}
-						conexion3.Close();*/
-						
-						while (treeViewEngineListaProdRequi.IterNext(ref iter)){
-							if((bool) radiobutton_sin_orden.Active == true){
-								comando.CommandText = "INSERT INTO osiris_erp_requisicion_deta( "+
-				 									"id_producto,"+
-				 									"cantidad_solicitada,"+
-				 									"cantidad_comprada," +
-				 									"cantidad_recibida,"+
-				 									"comprado,"+
-				 									"recibido," +
-				 									"id_proveedor," +
-				 									"numero_factura_proveedor," +
-				 									"costo_producto," +
-				 									"costo_por_unidad, " +									
-				 									"precio_producto_publico," +
-													"porcentage_ganancia," +
-													"cantidad_de_embalaje," +
-													"id_quien_compro," +
-				 									"fechahora_compra," +
-				 									"id_quien_recibio," +
-				 									"fechahora_recibido," +
-				 									"autorizada," +
-				 									"id_quien_autorizo," +
-				 									"fechahora_autorizado," +
-													"descripcion_producto_proveedor,"+
-				 									"id_producto_proveedor," +
-													"tipo_unidad_producto,"+
-				 									"factura_sin_orden_compra," +
-				 									"precio_costo_prov_selec," +
-				 									"lote_producto," +
-				 									"caducidad_producto," +
-				 									"costo_producto_osiris," +
-				 									"cantidad_de_embalaje_osiris) "+
-				 									"VALUES ('"+												
-													lista_productos_a_recibir.Model.GetValue(iter,10).ToString().Trim()+"','"+
-													lista_productos_a_recibir.Model.GetValue(iter,3).ToString().Trim()+"','"+
-													lista_productos_a_recibir.Model.GetValue(iter,4).ToString().Trim()+"','"+
-													lista_productos_a_recibir.Model.GetValue(iter,5).ToString().Trim()+"','"+
-													"true','"+
-													"true','"+
-													entry_id_proveedor.Text.Trim()+"','"+
-													lista_productos_a_recibir.Model.GetValue(iter,1).ToString().Trim().ToUpper()+"','"+
-													lista_productos_a_recibir.Model.GetValue(iter,6).ToString().Trim()+"','"+
-													lista_productos_a_recibir.Model.GetValue(iter,7).ToString().Trim()+"','"+
-													lista_productos_a_recibir.Model.GetValue(iter,8).ToString().Trim()+"','"+
-													lista_productos_a_recibir.Model.GetValue(iter,16).ToString().Trim()+"','"+
-													lista_productos_a_recibir.Model.GetValue(iter,4).ToString().Trim()+"','"+
-													LoginEmpleado+"','"+
-													DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"','"+
-													LoginEmpleado+"','"+
-													DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"','"+
-													"true','"+
-													LoginEmpleado+"','"+
-													DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"','"+
-													lista_productos_a_recibir.Model.GetValue(iter,11)+"','"+
-													lista_productos_a_recibir.Model.GetValue(iter,12)+"','"+
-													lista_productos_a_recibir.Model.GetValue(iter,15).ToString().Trim()+"','"+
-													"true','"+
-													lista_productos_a_recibir.Model.GetValue(iter,6)+"','"+
-													lista_productos_a_recibir.Model.GetValue(iter,13)+"','"+
-													lista_productos_a_recibir.Model.GetValue(iter,14)+"','"+
-													lista_productos_a_recibir.Model.GetValue(iter,17)+"','"+
-													lista_productos_a_recibir.Model.GetValue(iter,18)+
-													"');";
-								//Console.WriteLine(comando.CommandText);
-			 					comando.ExecuteNonQuery();
-						    	comando.Dispose();							
-							}
-							if((bool) radiobutton_requisicion.Active == true){
-								comando.CommandText = "UPDATE osiris_erp_requisicion_deta SET "+
-			 									"cantidad_comprada = '"+lista_productos_a_recibir.Model.GetValue(iter,3).ToString().Trim()+"',"+
-			 									"id_quien_compro = '"+LoginEmpleado+"',"+
-			 									"fechahora_compra = '"+entry_ano_fechafactura.Text+"-"+entry_mes_fechafactura.Text+"-"+entry_dia_fechafactura.Text+" "+DateTime.Now.ToString("HH:mm:ss")+"'," +
-			 									"comprado = 'true',"+
-			 									"id_quien_recibio = '"+LoginEmpleado+"',"+
-			 									"fechahora_recibido = '" +DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"',"+
-			 									"recibido = 'true'," +
-			 									"id_almacen = '" + idsubalmacen.ToString().Trim()+"',"+
-			 									"id_proveedor = '" +entry_id_proveedor.Text.Trim()+"',"+
-			 									"numero_factura_proveedor = '" + entry_num_factura_proveedor.Text.Trim().ToUpper()+"',"+
-			 									"costo_producto = '" +lista_productos_a_recibir.Model.GetValue(iter,6).ToString().Trim()+"',"+
-			 									"costo_por_unidad = '" + lista_productos_a_recibir.Model.GetValue(iter,7).ToString().Trim()+"',"+
-			 									"precio_producto_publico = '" + lista_productos_a_recibir.Model.GetValue(iter,17).ToString().Trim()+"',"+
-			 									"cantidad_de_embalaje = '" + lista_productos_a_recibir.Model.GetValue(iter,4).ToString().Trim()+"',"+
-			 									"cantidad_recibida = '"+lista_productos_a_recibir.Model.GetValue(iter,5).ToString().Trim()+"',"+
-			 									"factura_sin_orden_compra = 'true'," +
-			 									"id_producto_proveedor = '" + lista_productos_a_recibir.Model.GetValue(iter,12)+"',"+
-			 									"descripcion_producto_proveedor = '" +lista_productos_a_recibir.Model.GetValue(iter,11)+"',"+
-												"lote_producto = '" +lista_productos_a_recibir.Model.GetValue(iter,13)+"',"+
-			 									"caducidad_producto = '" +lista_productos_a_recibir.Model.GetValue(iter,14)+"',"+
-			 									"ingreso_por_requisicion = 'true' " +
-			 									"WHERE id_secuencia = '"+lista_productos_a_recibir.Model.GetValue(iter,20).ToString().Trim()+"'; ";
-			 					Console.WriteLine(comando.CommandText);
-								comando.ExecuteNonQuery();
-						    	comando.Dispose();							
-							}
-							if((bool) radiobutton_orden_compra.Active == true){
-							
-							}
-							
-							// Actualizando la tabla de inventario general
-							//NpgsqlConnection conexion1;
-							conexion1 = new NpgsqlConnection (connectionString+nombrebd);
-			 				try{
-								conexion1.Open ();
-								NpgsqlCommand comando1; 
-								comando1 = conexion.CreateCommand();
-								comando1.CommandText = "SELECT id_producto,id_almacen,stock FROM osiris_catalogo_almacenes "+
-													"WHERE id_almacen = '"+idsubalmacen.ToString()+"' "+
-													"AND eliminado = 'false' "+														
-													"AND id_producto = '"+(string) lista_productos_a_recibir.Model.GetValue(iter,10).ToString().Trim()+"' ;";
-								//Console.WriteLine(comando.CommandText);
-								NpgsqlDataReader lector1 = comando1.ExecuteReader ();
-								if(lector1.Read()){
-									//Console.WriteLine("if ");
-									NpgsqlConnection conexion2; 
-									conexion2 = new NpgsqlConnection (connectionString+nombrebd);
-			 						try{
-										conexion2.Open ();
-										NpgsqlCommand comando2;
-										comando2 = conexion2.CreateCommand();
-										// verificando que asigne un paciente para que la pre-solicitud se pueda surtir
+					}					
+				}
+				
+				if(error_verifica_seleccion == false){
+					if(error_verifica_cant == false){
+						if(entry_num_factura_proveedor.Text != ""){
+							if(entry_nombre_proveedor.Text != ""){					
+								NpgsqlConnection conexion; 
+								conexion = new NpgsqlConnection (connectionString+nombrebd);
+							    // Verifica que la base de datos este conectada
+							    try{
+									conexion.Open ();
+									NpgsqlCommand comando; 
+									comando = conexion.CreateCommand ();
+									if (treeViewEngineListaProdRequi.GetIterFirst (out iter)){
+										// verificando la 
+										if((bool) radiobutton_orden_compra.Active == true){
+																		
+										}
+										if((bool) radiobutton_requisicion.Active == true){							
+											comando.CommandText = "INSERT INTO osiris_erp_factura_compra_enca(" +
+														//"numero_orden_compra," +
+														//"fechahora_orden_compra," +
+														"id_quien_creo," +
+														//"cancelado," +
+														//"fechahora_cancelado," +
+														"id_proveedor," +
+														"factura_sin_orden_compra," +
+														//"id_secuencia," +
+														"numero_factura_proveedor," +
+														"fecha_factura," +
+														//"id_quien_cancelo," +
+														"fechahora_creacion," +
+														"numero_serie_cfd," +
+														"ano_aprobacion_cfd," +
+														"numero_aprobacion_cfd," +
+														"numero_requisicion) " +
+														"VALUES " +
+														"('"+LoginEmpleado+"','"+
+															entry_id_proveedor.Text.Trim()+"','"+
+															radiobutton_sin_orden.Active+"','"+
+															entry_num_factura_proveedor.Text.Trim().ToUpper()+"','"+
+															entry_ano_fechafactura.Text.Trim()+"-"+entry_mes_fechafactura.Text.Trim()+"-"+entry_dia_fechafactura.Text.Trim()+"','"+
+															DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"',"+
+														"''," +
+														"''," +
+														"''," +
+													"'"+entry_orden_de_compra.Text.Trim()+"')";
+											Console.WriteLine(comando.CommandText);
+											comando.ExecuteNonQuery();
+										    comando.Dispose();
+											
+											comando.CommandText = "UPDATE osiris_erp_requisicion_deta SET "+
+							 									"cantidad_comprada = '"+lista_productos_a_recibir.Model.GetValue(iter,3).ToString().Trim()+"',"+
+							 									"id_quien_compro = '"+LoginEmpleado+"',"+
+							 									"fechahora_compra = '"+entry_ano_fechafactura.Text+"-"+entry_mes_fechafactura.Text+"-"+entry_dia_fechafactura.Text+" "+DateTime.Now.ToString("HH:mm:ss")+"'," +
+							 									"comprado = 'true',"+
+							 									"id_quien_recibio = '"+LoginEmpleado+"',"+
+							 									"fechahora_recibido = '" +DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"',"+
+							 									"recibido = 'true'," +
+							 									"id_almacen = '" + idsubalmacen.ToString().Trim()+"',"+
+							 									"id_proveedor = '" +entry_id_proveedor.Text.Trim()+"',"+
+							 									"numero_factura_proveedor = '" + entry_num_factura_proveedor.Text.Trim().ToUpper()+"',"+
+							 									"costo_producto = '" +lista_productos_a_recibir.Model.GetValue(iter,6).ToString().Trim()+"',"+
+							 									"costo_por_unidad = '" + lista_productos_a_recibir.Model.GetValue(iter,7).ToString().Trim()+"',"+
+							 									"precio_producto_publico = '" + lista_productos_a_recibir.Model.GetValue(iter,17).ToString().Trim()+"',"+
+							 									"cantidad_de_embalaje = '" + lista_productos_a_recibir.Model.GetValue(iter,4).ToString().Trim()+"',"+
+							 									"cantidad_recibida = '"+lista_productos_a_recibir.Model.GetValue(iter,5).ToString().Trim()+"',"+
+							 									"factura_sin_orden_compra = 'true'," +
+							 									"id_producto_proveedor = '" + lista_productos_a_recibir.Model.GetValue(iter,12)+"',"+
+							 									"descripcion_producto_proveedor = '" +lista_productos_a_recibir.Model.GetValue(iter,11)+"',"+
+																"lote_producto = '" +lista_productos_a_recibir.Model.GetValue(iter,13)+"',"+
+							 									"caducidad_producto = '" +lista_productos_a_recibir.Model.GetValue(iter,14)+"',"+
+							 									"ingreso_por_requisicion = 'true' " +
+							 									"WHERE id_secuencia = '"+lista_productos_a_recibir.Model.GetValue(iter,20).ToString().Trim()+"'; ";
+							 									
+				 												
+						 					Console.WriteLine(comando.CommandText);
+											comando.ExecuteNonQuery();
+									    	comando.Dispose();
+											
+											if(cargar_requi_a_paciente == true){
+											
+											}
+											
+										}
 										
-										comando2.CommandText = "UPDATE osiris_catalogo_almacenes SET stock  = stock + '"+(string) lista_productos_a_recibir.Model.GetValue(iter,5).ToString().Trim()+"',"+
-																//"historial_surtido_material = historial_surtido_material || '"+LoginEmpleado+" "+(string) lista_de_materiales_solicitados.Model.GetValue (iterSelected,2)+" "+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"\n',"+
-																"fechahora_ultimo_surtimiento = '"+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"' "+
-																"WHERE id_almacen = '"+idsubalmacen.ToString()+"' "+
-																"AND id_producto = '"+(string) lista_productos_a_recibir.Model.GetValue(iter,10).ToString().Trim()+"' ;";
-										//Console.WriteLine(comando1.CommandText);
-										comando2.ExecuteNonQuery();
-										
-										comando2.Dispose();
-										conexion2.Close();
-									}catch (NpgsqlException ex){
-							   			MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
-													MessageType.Error, 
-													ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
-										msgBoxError.Run ();
-									}
-									conexion2.Close();		
-								}else{
-									//Console.WriteLine("else"+idalmacenorigen);
-									NpgsqlConnection conexion2; 
-									conexion2 = new NpgsqlConnection (connectionString+nombrebd);
-			 						try{
-										conexion2.Open ();
-										NpgsqlCommand comando2; 
-										comando2 = conexion1.CreateCommand();
-										comando2.CommandText = "INSERT INTO osiris_catalogo_almacenes("+
-																"id_almacen,"+
-																"id_producto,"+
-																"stock,"+
-																"id_quien_creo,"+
-																"fechahora_alta,"+
-																"fechahora_ultimo_surtimiento)"+
-																"VALUES ('"+
-																idsubalmacen.ToString()+"','"+
-																(string) lista_productos_a_recibir.Model.GetValue(iter,10).ToString().Trim()+"','"+
-																(string) lista_productos_a_recibir.Model.GetValue(iter,5).ToString().Trim()+"','"+
+										if((bool) radiobutton_sin_orden.Active == true){
+											comando.CommandText = "INSERT INTO osiris_erp_factura_compra_enca(" +
+														//"numero_orden_compra," +
+														//"fechahora_orden_compra," +
+														"id_quien_creo," +
+														//"cancelado," +
+														//"fechahora_cancelado," +
+														"id_proveedor," +
+														"factura_sin_orden_compra," +
+														//"id_secuencia," +
+														"numero_factura_proveedor," +
+														"fecha_factura," +
+														//"id_quien_cancelo," +
+														"fechahora_creacion," +
+														"numero_serie_cfd," +
+														"ano_aprobacion_cfd," +
+														"numero_aprobacion_cfd) " +
+														"VALUES " +
+														"('"+LoginEmpleado+"','"+
+															entry_id_proveedor.Text.Trim()+"','"+
+															radiobutton_sin_orden.Active+"','"+
+															entry_num_factura_proveedor.Text.Trim().ToUpper()+"','"+
+															entry_ano_fechafactura.Text.Trim()+"-"+entry_mes_fechafactura.Text.Trim()+"-"+entry_dia_fechafactura.Text.Trim()+"','"+
+															DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"',"+
+														"''," +
+														"''," +
+														"'')";
+											//Console.WriteLine(comando.CommandText);
+											comando.ExecuteNonQuery();
+										    comando.Dispose();
+											
+											comando.CommandText = "INSERT INTO osiris_erp_requisicion_deta( "+
+							 									"id_producto,"+
+							 									"cantidad_solicitada,"+
+							 									"cantidad_comprada," +
+							 									"cantidad_recibida,"+
+							 									"comprado,"+
+							 									"recibido," +
+							 									"id_proveedor," +
+							 									"numero_factura_proveedor," +
+							 									"costo_producto," +
+							 									"costo_por_unidad, " +									
+							 									"precio_producto_publico," +
+																"porcentage_ganancia," +
+																"cantidad_de_embalaje," +
+																"id_quien_compro," +
+							 									"fechahora_compra," +
+							 									"id_quien_recibio," +
+							 									"fechahora_recibido," +
+							 									"autorizada," +
+							 									"id_quien_autorizo," +
+							 									"fechahora_autorizado," +
+																"descripcion_producto_proveedor,"+
+							 									"id_producto_proveedor," +
+																"tipo_unidad_producto,"+
+							 									"factura_sin_orden_compra," +
+							 									"precio_costo_prov_selec," +
+							 									"lote_producto," +
+							 									"caducidad_producto," +
+							 									"costo_producto_osiris," +
+							 									"cantidad_de_embalaje_osiris) "+
+							 									"VALUES ('"+												
+																lista_productos_a_recibir.Model.GetValue(iter,10).ToString().Trim()+"','"+
+																lista_productos_a_recibir.Model.GetValue(iter,3).ToString().Trim()+"','"+
+																lista_productos_a_recibir.Model.GetValue(iter,4).ToString().Trim()+"','"+
+																lista_productos_a_recibir.Model.GetValue(iter,5).ToString().Trim()+"','"+
+																"true','"+
+																"true','"+
+																entry_id_proveedor.Text.Trim()+"','"+
+																lista_productos_a_recibir.Model.GetValue(iter,1).ToString().Trim().ToUpper()+"','"+
+																lista_productos_a_recibir.Model.GetValue(iter,6).ToString().Trim()+"','"+
+																lista_productos_a_recibir.Model.GetValue(iter,7).ToString().Trim()+"','"+
+																lista_productos_a_recibir.Model.GetValue(iter,8).ToString().Trim()+"','"+
+																lista_productos_a_recibir.Model.GetValue(iter,16).ToString().Trim()+"','"+
+																lista_productos_a_recibir.Model.GetValue(iter,4).ToString().Trim()+"','"+
 																LoginEmpleado+"','"+
 																DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"','"+
-																DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"');";
-										comando2.ExecuteNonQuery();
-										comando2.Dispose();																							
-									}catch (NpgsqlException ex){
-							   			MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
-													MessageType.Error, 
-													ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
-										msgBoxError.Run ();
-										msgBoxError.Destroy();
+																LoginEmpleado+"','"+
+																DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"','"+
+																"true','"+
+																LoginEmpleado+"','"+
+																DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"','"+
+																lista_productos_a_recibir.Model.GetValue(iter,11)+"','"+
+																lista_productos_a_recibir.Model.GetValue(iter,12)+"','"+
+																lista_productos_a_recibir.Model.GetValue(iter,15).ToString().Trim()+"','"+
+																"true','"+
+																lista_productos_a_recibir.Model.GetValue(iter,6)+"','"+
+																lista_productos_a_recibir.Model.GetValue(iter,13)+"','"+
+																lista_productos_a_recibir.Model.GetValue(iter,14)+"','"+
+																lista_productos_a_recibir.Model.GetValue(iter,17)+"','"+
+																lista_productos_a_recibir.Model.GetValue(iter,18)+
+																"');";
+											//Console.WriteLine(comando.CommandText);
+						 					comando.ExecuteNonQuery();
+									    	comando.Dispose();
+										}
+										
+										// Actualizando la tabla de inventario almacen general
+										NpgsqlConnection conexion1;
+										conexion1 = new NpgsqlConnection (connectionString+nombrebd);
+						 				try{
+											conexion1.Open ();
+											NpgsqlCommand comando1; 
+											comando1 = conexion.CreateCommand();
+											comando1.CommandText = "SELECT id_producto,id_almacen,stock FROM osiris_catalogo_almacenes "+
+																"WHERE id_almacen = '"+idsubalmacen.ToString()+"' "+
+																"AND eliminado = 'false' "+														
+																"AND id_producto = '"+(string) lista_productos_a_recibir.Model.GetValue(iter,10).ToString().Trim()+"' ;";
+											//Console.WriteLine(comando.CommandText);
+											NpgsqlDataReader lector1 = comando1.ExecuteReader ();
+											if(lector1.Read()){
+												//Console.WriteLine("if ");
+												NpgsqlConnection conexion2; 
+												conexion2 = new NpgsqlConnection (connectionString+nombrebd);
+						 						try{
+													conexion2.Open ();
+													NpgsqlCommand comando2;
+													comando2 = conexion2.CreateCommand();
+													// verificando que asigne un paciente para que la pre-solicitud se pueda surtir
+													
+													comando2.CommandText = "UPDATE osiris_catalogo_almacenes SET stock  = stock + '"+(string) lista_productos_a_recibir.Model.GetValue(iter,5).ToString().Trim()+"',"+
+																			//"historial_surtido_material = historial_surtido_material || '"+LoginEmpleado+" "+(string) lista_de_materiales_solicitados.Model.GetValue (iterSelected,2)+" "+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"\n',"+
+																			"fechahora_ultimo_surtimiento = '"+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"' "+
+																			"WHERE id_almacen = '"+idsubalmacen.ToString()+"' "+
+																			"AND id_producto = '"+(string) lista_productos_a_recibir.Model.GetValue(iter,10).ToString().Trim()+"' ;";
+													//Console.WriteLine(comando1.CommandText);
+													comando2.ExecuteNonQuery();
+													
+													comando2.Dispose();
+													conexion2.Close();
+												}catch (NpgsqlException ex){
+										   			MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+																MessageType.Error, 
+																ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
+													msgBoxError.Run ();
+												}
+												conexion2.Close();																				
+											}else{
+												//Console.WriteLine("else"+idalmacenorigen);
+												NpgsqlConnection conexion2;
+												conexion2 = new NpgsqlConnection (connectionString+nombrebd);
+						 						try{
+													conexion2.Open ();
+													NpgsqlCommand comando2; 
+													comando2 = conexion2.CreateCommand();
+													comando2.CommandText = "INSERT INTO osiris_catalogo_almacenes("+
+																			"id_almacen,"+
+																			"id_producto,"+
+																			"stock,"+
+																			"id_quien_creo,"+
+																			"fechahora_alta,"+
+																			"fechahora_ultimo_surtimiento)"+
+																			"VALUES ('"+
+																			idsubalmacen.ToString()+"','"+
+																			(string) lista_productos_a_recibir.Model.GetValue(iter,10).ToString().Trim()+"','"+
+																			(string) lista_productos_a_recibir.Model.GetValue(iter,5).ToString().Trim()+"','"+
+																			LoginEmpleado+"','"+
+																			DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"','"+
+																			DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"');";
+													comando2.ExecuteNonQuery();
+													comando2.Dispose();																							
+												}catch (NpgsqlException ex){
+										   			MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+																MessageType.Error, 
+																ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
+													msgBoxError.Run ();
+													msgBoxError.Destroy();
+												}
+												conexion2.Close();																																															
+											}									
+										}catch (NpgsqlException ex){
+										   	MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+																MessageType.Error, 
+																ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
+											msgBoxError.Run ();
+											msgBoxError.Destroy();
+										}
+										conexion1.Close();
+										
+										// ###################
+										// Verificando en el catalogo general de proveedores
+										// la verificacion se realiza mediante codigo del producto
+										/*
+										NpgsqlConnection conexion3;
+										conexion3 = new NpgsqlConnection (connectionString+nombrebd);
+						 				try{
+											conexion3.Open ();
+											NpgsqlCommand comando3; 
+											comando3 = conexion.CreateCommand();
+											comando3.CommandText = "SELECT codigo_producto_proveedor FROM osiris_catalogo_productos_proveedores "+
+																"WHERE id_proveedor = '"+entry_id_proveedor.Text.ToString()+"' "+
+																"AND eliminado = 'false' "+														
+																"AND codigo_producto_proveedor = '"+(string) lista_productos_a_recibir.Model.GetValue(iter,12).ToString().Trim()+"' ;";
+											//Console.WriteLine(comando.CommandText);
+											NpgsqlDataReader lector3 = comando3.ExecuteReader ();
+											if(!lector3.Read()){
+												NpgsqlConnection conexion4;
+												conexion4 = new NpgsqlConnection (connectionString+nombrebd);
+						 						try{
+													conexion4.Open ();
+													NpgsqlCommand comando4; 
+													comando4 = conexion4.CreateCommand();
+													comando4.CommandText = "INSERT INTO osiris_catalogo_productos_proveedores("+
+																			"id_almacen,"+
+																			"id_producto,"+
+																			"stock,"+
+																			"id_quien_creo,"+
+																			"fechahora_alta,"+
+																			"fechahora_ultimo_surtimiento)"+
+																			"VALUES ('"+
+																			idsubalmacen.ToString()+"','"+
+																			(string) lista_productos_a_recibir.Model.GetValue(iter,10).ToString().Trim()+"','"+
+																			(string) lista_productos_a_recibir.Model.GetValue(iter,5).ToString().Trim()+"','"+
+																			LoginEmpleado+"','"+
+																			DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"','"+
+																			DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"');";
+													comando4.ExecuteNonQuery();
+													comando4.Dispose();																							
+												}catch (NpgsqlException ex){
+										   			MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+																MessageType.Error, 
+																ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
+													msgBoxError.Run ();
+													msgBoxError.Destroy();
+												}
+												conexion4.Close();																																															
+											}									
+										}catch (NpgsqlException ex){
+										   	MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+																MessageType.Error, 
+																ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
+											msgBoxError.Run ();
+											msgBoxError.Destroy();
+										}
+										conexion3.Close();*/
+										
+										while (treeViewEngineListaProdRequi.IterNext(ref iter)){
+											if((bool) radiobutton_sin_orden.Active == true){
+												comando.CommandText = "INSERT INTO osiris_erp_requisicion_deta( "+
+								 									"id_producto,"+
+								 									"cantidad_solicitada,"+
+								 									"cantidad_comprada," +
+								 									"cantidad_recibida,"+
+								 									"comprado,"+
+								 									"recibido," +
+								 									"id_proveedor," +
+								 									"numero_factura_proveedor," +
+								 									"costo_producto," +
+								 									"costo_por_unidad, " +									
+								 									"precio_producto_publico," +
+																	"porcentage_ganancia," +
+																	"cantidad_de_embalaje," +
+																	"id_quien_compro," +
+								 									"fechahora_compra," +
+								 									"id_quien_recibio," +
+								 									"fechahora_recibido," +
+								 									"autorizada," +
+								 									"id_quien_autorizo," +
+								 									"fechahora_autorizado," +
+																	"descripcion_producto_proveedor,"+
+								 									"id_producto_proveedor," +
+																	"tipo_unidad_producto,"+
+								 									"factura_sin_orden_compra," +
+								 									"precio_costo_prov_selec," +
+								 									"lote_producto," +
+								 									"caducidad_producto," +
+								 									"costo_producto_osiris," +
+								 									"cantidad_de_embalaje_osiris) "+
+								 									"VALUES ('"+												
+																	lista_productos_a_recibir.Model.GetValue(iter,10).ToString().Trim()+"','"+
+																	lista_productos_a_recibir.Model.GetValue(iter,3).ToString().Trim()+"','"+
+																	lista_productos_a_recibir.Model.GetValue(iter,4).ToString().Trim()+"','"+
+																	lista_productos_a_recibir.Model.GetValue(iter,5).ToString().Trim()+"','"+
+																	"true','"+
+																	"true','"+
+																	entry_id_proveedor.Text.Trim()+"','"+
+																	lista_productos_a_recibir.Model.GetValue(iter,1).ToString().Trim().ToUpper()+"','"+
+																	lista_productos_a_recibir.Model.GetValue(iter,6).ToString().Trim()+"','"+
+																	lista_productos_a_recibir.Model.GetValue(iter,7).ToString().Trim()+"','"+
+																	lista_productos_a_recibir.Model.GetValue(iter,8).ToString().Trim()+"','"+
+																	lista_productos_a_recibir.Model.GetValue(iter,16).ToString().Trim()+"','"+
+																	lista_productos_a_recibir.Model.GetValue(iter,4).ToString().Trim()+"','"+
+																	LoginEmpleado+"','"+
+																	DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"','"+
+																	LoginEmpleado+"','"+
+																	DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"','"+
+																	"true','"+
+																	LoginEmpleado+"','"+
+																	DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"','"+
+																	lista_productos_a_recibir.Model.GetValue(iter,11)+"','"+
+																	lista_productos_a_recibir.Model.GetValue(iter,12)+"','"+
+																	lista_productos_a_recibir.Model.GetValue(iter,15).ToString().Trim()+"','"+
+																	"true','"+
+																	lista_productos_a_recibir.Model.GetValue(iter,6)+"','"+
+																	lista_productos_a_recibir.Model.GetValue(iter,13)+"','"+
+																	lista_productos_a_recibir.Model.GetValue(iter,14)+"','"+
+																	lista_productos_a_recibir.Model.GetValue(iter,17)+"','"+
+																	lista_productos_a_recibir.Model.GetValue(iter,18)+
+																	"');";
+												//Console.WriteLine(comando.CommandText);
+							 					comando.ExecuteNonQuery();
+										    	comando.Dispose();							
+											}
+											if((bool) radiobutton_requisicion.Active == true){
+												comando.CommandText = "UPDATE osiris_erp_requisicion_deta SET "+
+							 									"cantidad_comprada = '"+lista_productos_a_recibir.Model.GetValue(iter,3).ToString().Trim()+"',"+
+							 									"id_quien_compro = '"+LoginEmpleado+"',"+
+							 									"fechahora_compra = '"+entry_ano_fechafactura.Text+"-"+entry_mes_fechafactura.Text+"-"+entry_dia_fechafactura.Text+" "+DateTime.Now.ToString("HH:mm:ss")+"'," +
+							 									"comprado = 'true',"+
+							 									"id_quien_recibio = '"+LoginEmpleado+"',"+
+							 									"fechahora_recibido = '" +DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"',"+
+							 									"recibido = 'true'," +
+							 									"id_almacen = '" + idsubalmacen.ToString().Trim()+"',"+
+							 									"id_proveedor = '" +entry_id_proveedor.Text.Trim()+"',"+
+							 									"numero_factura_proveedor = '" + entry_num_factura_proveedor.Text.Trim().ToUpper()+"',"+
+							 									"costo_producto = '" +lista_productos_a_recibir.Model.GetValue(iter,6).ToString().Trim()+"',"+
+							 									"costo_por_unidad = '" + lista_productos_a_recibir.Model.GetValue(iter,7).ToString().Trim()+"',"+
+							 									"precio_producto_publico = '" + lista_productos_a_recibir.Model.GetValue(iter,17).ToString().Trim()+"',"+
+							 									"cantidad_de_embalaje = '" + lista_productos_a_recibir.Model.GetValue(iter,4).ToString().Trim()+"',"+
+							 									"cantidad_recibida = '"+lista_productos_a_recibir.Model.GetValue(iter,5).ToString().Trim()+"',"+
+							 									"factura_sin_orden_compra = 'true'," +
+							 									"id_producto_proveedor = '" + lista_productos_a_recibir.Model.GetValue(iter,12)+"',"+
+							 									"descripcion_producto_proveedor = '" +lista_productos_a_recibir.Model.GetValue(iter,11)+"',"+
+																"lote_producto = '" +lista_productos_a_recibir.Model.GetValue(iter,13)+"',"+
+							 									"caducidad_producto = '" +lista_productos_a_recibir.Model.GetValue(iter,14)+"',"+
+							 									"ingreso_por_requisicion = 'true' " +
+							 									"WHERE id_secuencia = '"+lista_productos_a_recibir.Model.GetValue(iter,20).ToString().Trim()+"'; ";
+							 					Console.WriteLine(comando.CommandText);
+												comando.ExecuteNonQuery();
+										    	comando.Dispose();							
+											}
+											if((bool) radiobutton_orden_compra.Active == true){
+											
+											}
+											
+											// Actualizando la tabla de inventario general
+											//NpgsqlConnection conexion1;
+											conexion1 = new NpgsqlConnection (connectionString+nombrebd);
+							 				try{
+												conexion1.Open ();
+												NpgsqlCommand comando1; 
+												comando1 = conexion.CreateCommand();
+												comando1.CommandText = "SELECT id_producto,id_almacen,stock FROM osiris_catalogo_almacenes "+
+																	"WHERE id_almacen = '"+idsubalmacen.ToString()+"' "+
+																	"AND eliminado = 'false' "+														
+																	"AND id_producto = '"+(string) lista_productos_a_recibir.Model.GetValue(iter,10).ToString().Trim()+"' ;";
+												//Console.WriteLine(comando.CommandText);
+												NpgsqlDataReader lector1 = comando1.ExecuteReader ();
+												if(lector1.Read()){
+													//Console.WriteLine("if ");
+													NpgsqlConnection conexion2; 
+													conexion2 = new NpgsqlConnection (connectionString+nombrebd);
+							 						try{
+														conexion2.Open ();
+														NpgsqlCommand comando2;
+														comando2 = conexion2.CreateCommand();
+														// verificando que asigne un paciente para que la pre-solicitud se pueda surtir
+														
+														comando2.CommandText = "UPDATE osiris_catalogo_almacenes SET stock  = stock + '"+(string) lista_productos_a_recibir.Model.GetValue(iter,5).ToString().Trim()+"',"+
+																				//"historial_surtido_material = historial_surtido_material || '"+LoginEmpleado+" "+(string) lista_de_materiales_solicitados.Model.GetValue (iterSelected,2)+" "+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"\n',"+
+																				"fechahora_ultimo_surtimiento = '"+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"' "+
+																				"WHERE id_almacen = '"+idsubalmacen.ToString()+"' "+
+																				"AND id_producto = '"+(string) lista_productos_a_recibir.Model.GetValue(iter,10).ToString().Trim()+"' ;";
+														//Console.WriteLine(comando1.CommandText);
+														comando2.ExecuteNonQuery();
+														
+														comando2.Dispose();
+														conexion2.Close();
+													}catch (NpgsqlException ex){
+											   			MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+																	MessageType.Error, 
+																	ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
+														msgBoxError.Run ();
+													}
+													conexion2.Close();		
+												}else{
+													//Console.WriteLine("else"+idalmacenorigen);
+													NpgsqlConnection conexion2; 
+													conexion2 = new NpgsqlConnection (connectionString+nombrebd);
+							 						try{
+														conexion2.Open ();
+														NpgsqlCommand comando2; 
+														comando2 = conexion1.CreateCommand();
+														comando2.CommandText = "INSERT INTO osiris_catalogo_almacenes("+
+																				"id_almacen,"+
+																				"id_producto,"+
+																				"stock,"+
+																				"id_quien_creo,"+
+																				"fechahora_alta,"+
+																				"fechahora_ultimo_surtimiento)"+
+																				"VALUES ('"+
+																				idsubalmacen.ToString()+"','"+
+																				(string) lista_productos_a_recibir.Model.GetValue(iter,10).ToString().Trim()+"','"+
+																				(string) lista_productos_a_recibir.Model.GetValue(iter,5).ToString().Trim()+"','"+
+																				LoginEmpleado+"','"+
+																				DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"','"+
+																				DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"');";
+														comando2.ExecuteNonQuery();
+														comando2.Dispose();																							
+													}catch (NpgsqlException ex){
+											   			MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+																	MessageType.Error, 
+																	ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
+														msgBoxError.Run ();
+														msgBoxError.Destroy();
+													}
+													conexion2.Close();																																															
+												}									
+											}catch (NpgsqlException ex){
+											   	MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+																	MessageType.Error, 
+																	ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
+												msgBoxError.Run ();
+												msgBoxError.Destroy();
+											}
+											conexion1.Close();							
+										}
+									}else{
+										MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+													MessageType.Info, 
+													ButtonsType.Close, "NO tiene conceptos... Verifique");
+										msgBoxError.Run ();								msgBoxError.Destroy();
 									}
-									conexion2.Close();																																															
-								}									
-							}catch (NpgsqlException ex){
-							   	MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
-													MessageType.Error, 
-													ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
-								msgBoxError.Run ();
-								msgBoxError.Destroy();
+									button_guardar.Sensitive = false;
+								}catch (NpgsqlException ex){
+									MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+												MessageType.Error,ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
+									msgBoxError.Run ();			msgBoxError.Destroy();
+								}
+								conexion.Close();
+							}else{
+								MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+												MessageType.Error, 
+												ButtonsType.Close, "Debe elegir un Proveedor para poder grabar la entrada... verifique...");
+								msgBoxError.Run ();								msgBoxError.Destroy();
 							}
-							conexion1.Close();							
+						}else{
+							MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+												MessageType.Error, 
+												ButtonsType.Close, "Debe tener una Factura Asignada para realizar la entrada... verifique...");
+							msgBoxError.Run ();								msgBoxError.Destroy();
 						}
 					}else{
 						MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
-									MessageType.Info, 
-									ButtonsType.Close, "NO tiene un numero de FACTURA... Verifique");
-						msgBoxError.Run ();								msgBoxError.Destroy();
+											MessageType.Error, 
+											ButtonsType.Close, "La cantidad Recibida tiene que ser mayor que CERO... verifique...");
+						msgBoxError.Run ();								msgBoxError.Destroy();	
 					}
-					button_guardar.Sensitive = false;
-				}catch (NpgsqlException ex){
+				}else{
 					MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
-								MessageType.Error,ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
-					msgBoxError.Run ();			msgBoxError.Destroy();
+											MessageType.Error, 
+											ButtonsType.Close, "No Selecciono ningun producto para darle entrada en Almacen... verifique...");
+					msgBoxError.Run ();								msgBoxError.Destroy();
 				}
-				conexion.Close();
-			}			
+			}
 		}
 		
 		void on_radiobutton_clicked(object sender, EventArgs args)

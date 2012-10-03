@@ -718,6 +718,7 @@ namespace osiris
 													"numero_recibo_caja, "+//3
 													"id_quien_creo, "+//4
 													"concepto_del_abono, "+//5
+													"observaciones,"+
 													"fechahora_registro, "+//6
 													"fecha_abono, "+//7
 													"id_presupuesto, "+//8
@@ -733,7 +734,8 @@ namespace osiris
 			 										(string) this.entry_monto_abono.Text.Trim().ToUpper()+"','"+//2
 			 										(string) this.entry_recibo_caja.Text.Trim().ToUpper()+"','"+//3										  
 			 										LoginEmpleado+"','"+//4
-			 										(string) this.entry_concepto_abono.Text.Trim().ToUpper()+"','"+//5
+			 										"ABONO A PROCEDIMIENTO','"+//5
+													(string) this.entry_concepto_abono.Text.Trim().ToUpper()+"','"+
 			 										DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"','"+//6
 			 										(string) this.entry_ano.Text+" "+this.entry_mes.Text+" "+this.entry_dia.Text+"','"+//7
 			 										(string) this.entry_presupuesto.Text.Trim().ToUpper()+"','"+//8

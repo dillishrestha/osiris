@@ -354,6 +354,7 @@ namespace osiris
 			button_hoja_cargos.Sensitive = false;
 			button_notas_de_cargos.Sensitive = false;
 			button_devoluciones.Sensitive = false;
+			button_paquetes_qx.Sensitive = false;
 			
 			statusbar_caja.Pop(0);
 			statusbar_caja.Push(1, "login: "+LoginEmpleado+"  |Usuario: "+NomEmpleado+" "+AppEmpleado+" "+ApmEmpleado);
@@ -1642,6 +1643,9 @@ namespace osiris
 							if((bool) lector ["alta_paciente"] == false){
 								//Console.WriteLine("pagado "+lector ["pagado"]);
 								button_busca_producto.Sensitive = true;
+								button_removerItem.Sensitive = true;
+								button_aplica_cargos.Sensitive = true;
+								button_paquetes_qx.Sensitive = true;
 								if ((bool) lector ["pagado"] == false){
 									//Console.WriteLine("pagado "+lector ["pagado"]);
 									button_busca_producto.Sensitive = true;
@@ -1709,6 +1713,9 @@ namespace osiris
 							}else{
 								button_busca_producto.Sensitive = false;
 								button_alta_paciente.Sensitive = false;
+								button_removerItem.Sensitive = false;
+								button_aplica_cargos.Sensitive = false;
+								button_paquetes_qx.Sensitive = false;
 								MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
 								MessageType.Error, 
 								ButtonsType.Close, "El paciente ya fue dado de ALTA\n"+

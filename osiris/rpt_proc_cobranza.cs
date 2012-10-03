@@ -809,8 +809,8 @@ namespace osiris
 			layout.FontDescription.Weight = Weight.Bold;   // Letra Negrita
 			comienzo_linea += separacion_linea;
 			if (tipodereporte == "procedimiento"){
+				cr.MoveTo(025*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);				layout.SetText("CODIGO");			Pango.CairoHelper.ShowLayout (cr, layout);
 				cr.MoveTo(080*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);				layout.SetText("CANT.");				Pango.CairoHelper.ShowLayout (cr, layout);
-				cr.MoveTo(025*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);				layout.SetText("CLAVE.");			Pango.CairoHelper.ShowLayout (cr, layout);
 				cr.MoveTo(385*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);				layout.SetText("PRECIO");			Pango.CairoHelper.ShowLayout (cr, layout);
 			}
 			cr.MoveTo(108*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);				layout.SetText(tipoproducto);	Pango.CairoHelper.ShowLayout (cr, layout);

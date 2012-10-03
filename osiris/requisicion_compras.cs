@@ -1005,8 +1005,9 @@ namespace osiris
  			string tiporequisicion_ = "";
  			bool validar_centro_costos = false;
 			int proveedor_proveedor;
-			bool activar_botton_autoriza = true;
+			bool activar_botton_autoriza = false;
 			bool autorizaparacompra = false;
+			button_autorizar_compra.Sensitive = false;
 			idtipointernamiento = idcentrocosto;
  			contador_items_autorizadoscompra = 0;
  			treeViewEngineRequisicion.Clear();
@@ -1071,7 +1072,6 @@ namespace osiris
 						entry_folio_servicio.Text = (string) lector["foliodeatencion"].ToString().Trim();
 						entry_pid_paciente.Text = (string) lector["pidpaciente"].ToString().Trim();
 						autorizaparacompra = (bool) lector["autorizacion_para_comprar"];
-						button_autorizar_compra.Sensitive = false;
 						if ((bool) lector["enviada_a_compras"] == true && (bool) lector["cancelado"] == false){
 							button_guardar_requisicion.Sensitive = false;
 							button_envio_compras.Sensitive = false;
@@ -1081,7 +1081,6 @@ namespace osiris
 							button_busca_proveedores1.Sensitive = false;
 							button_busca_proveedores2.Sensitive = false;
 							button_busca_proveedores3.Sensitive = false;
-							button_autorizar_compra.Sensitive = false;
 							entry_status_requisicion.Text = "ENVIADA A COMPRAS "+(string) lector["fechahoraenviocompras"];
 							enviadacompras = true;														
 							if ((bool) lector["autorizacion_para_comprar"] == false){
@@ -1099,7 +1098,7 @@ namespace osiris
 								msgBox1.Run ();		msgBox1.Destroy();
 								entry_status_requisicion.Text = "AUTORIZADA PARA GENERAR ORDEN ED COMPRA";
 								if((string) LoginEmpleado == "DOLIVARES"  || (string) LoginEmpleado == "ADMIN"){
-									button_autorizar_compra.Sensitive = true;
+									button_autorizar_compra.Sensitive = false;
 									button_enviopara_autorizar.Sensitive = false;
 								}
 							}							
@@ -1202,12 +1201,12 @@ namespace osiris
 														(string) lector1["idproveedor3"],
 														(string) lector1["porcentageganancia"],
 														false);
-							if(activar_botton_autoriza == true){
-								if((bool) lector1["autorizada"] == true){
-									activar_botton_autoriza = false;
+							if((bool) lector1["autorizada"] == false){
+								if(activar_botton_autoriza == false){
+									activar_botton_autoriza = true;
 								}
 							}
-						}
+						}					
 						if(autorizaparacompra == true){
 							button_autorizar_compra.Sensitive = activar_botton_autoriza;
 						}
@@ -1236,9 +1235,7 @@ namespace osiris
 							entry_folio_servicio.Text = (string) lector["foliodeatencion"].ToString().Trim();
 							entry_pid_paciente.Text = (string) lector["pidpaciente"].ToString().Trim();
 							autorizaparacompra = (bool) lector["autorizacion_para_comprar"];
-							button_autorizar_compra.Sensitive = false;
 							if ((bool) lector["enviada_a_compras"] == true){
-								button_autorizar_compra.Sensitive = false;
 								button_guardar_requisicion.Sensitive = false;
 								button_envio_compras.Sensitive = false;
 								button_enviopara_autorizar.Sensitive = false;
@@ -1348,17 +1345,16 @@ namespace osiris
 															(string) lector1["idproveedor3"],
 															(string) lector1["porcentageganancia"],
 															false);
-								if(activar_botton_autoriza == true){
-									if((bool) lector1["autorizada"] == true){
+								if((bool) lector1["autorizada"] == false){
+									if(activar_botton_autoriza == false){
 										activar_botton_autoriza = true;
 									}
-								}
+								}								
 							}
 							if(autorizaparacompra == true){
-								
+								button_autorizar_compra.Sensitive = activar_botton_autoriza;
 							}
 							entry_totalitems_productos.Text = contador_items_requisados.ToString().Trim();
-							button_autorizar_compra.Sensitive = activar_botton_autoriza;
 						}else{
 							MessageDialog msgBox = new MessageDialog (MyWin,DialogFlags.Modal,
 									MessageType.Info,ButtonsType.Ok,"La requisicion NO es de este Centro de Costos...");

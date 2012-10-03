@@ -42,8 +42,9 @@ namespace osiris
 		private PrintOperation print;
 		private double fontSize = 8.0;
 		int escala_en_linux_windows;		// Linux = 1  Windows = 8
-		int comienzo_linea = 80;
-		int separacion_linea = 10;
+		int comienzo_linea = 90;
+		int comienzo_linea2 = 0;
+		int separacion_linea = 11;
 		int numpage = 1;
 		
 		PrintContext context;
@@ -52,7 +53,7 @@ namespace osiris
         string nombrebd;
 		string cirugia = "";
 		string medico = "";
-		int id;
+		int idcirugia;
 		string tiporeporte = "";
 		string deposito_minimo = "";
 		string dias_internamiento = "";
@@ -100,7 +101,7 @@ namespace osiris
 			nombrebd = conexion_a_DB._nombrebd;
 			escala_en_linux_windows = classpublic.escala_linux_windows;
 			cirugia = nombcirugia; 
-			id = _id_;
+			idcirugia = _id_;
 			medico = _medico_;
 			tiporeporte = tiporeporte_;
 			deposito_minimo = deposito_minimo_;
@@ -172,7 +173,7 @@ namespace osiris
 								"AND osiris_his_cirugias_deta.id_tipo_cirugia = osiris_his_tipo_cirugias.id_tipo_cirugia "+
 								"AND osiris_his_cirugias_deta.eliminado = false "+ 
 								"AND osiris_his_cirugias_deta.id_tipo_admisiones = osiris_his_tipo_admisiones.id_tipo_admisiones "+
-								"AND osiris_his_cirugias_deta.id_tipo_cirugia = '"+id.ToString() +"' "+
+								"AND osiris_his_cirugias_deta.id_tipo_cirugia = '"+idcirugia.ToString() +"' "+
 								"ORDER BY osiris_his_cirugias_deta.id_tipo_admisiones,osiris_productos.id_grupo_producto,osiris_productos.descripcion_producto;";
 	        }
 	        if(tiporeporte == "presupuestos"){
@@ -196,7 +197,7 @@ namespace osiris
 							"AND osiris_his_presupuestos_enca.id_presupuesto = osiris_his_presupuestos_deta.id_presupuesto "+
 							"AND osiris_his_presupuestos_deta.eliminado = 'false' "+ 
 							"AND osiris_his_presupuestos_deta.id_tipo_admisiones = osiris_his_tipo_admisiones.id_tipo_admisiones "+
-							"AND osiris_his_presupuestos_deta.id_presupuesto IN ('"+id.ToString()+"') "+							
+							"AND osiris_his_presupuestos_deta.id_presupuesto IN ('"+idcirugia.ToString()+"') "+							
 							"ORDER BY osiris_his_presupuestos_deta.id_tipo_admisiones,osiris_productos.id_grupo_producto,osiris_productos.descripcion_producto;";
         	}
 			NpgsqlConnection conexion; 
@@ -250,6 +251,26 @@ namespace osiris
 						subtotaldelmov += total;
 						imprime_linea_producto(cr,layout,(string) lector["idproducto"],(string) lector["cantidadaplicada"],datos,(string) lector["preciopublico"],subtotal,ivaprod,total);
 					}
+					comienzo_linea += separacion_linea;
+					cr.MoveTo(565*escala_en_linux_windows,(comienzo_linea-2)*escala_en_linux_windows);
+					cr.LineTo(05,(comienzo_linea-2)*escala_en_linux_windows);
+					
+					cr.MoveTo(05*escala_en_linux_windows, (comienzo_linea2-2)*escala_en_linux_windows);
+					cr.LineTo(05,(comienzo_linea-2)*escala_en_linux_windows);		// vertical 1
+					
+					cr.MoveTo(390*escala_en_linux_windows, (comienzo_linea2-2)*escala_en_linux_windows);
+					cr.LineTo(390,(comienzo_linea-2)*escala_en_linux_windows);		// vertical 1
+					
+					cr.MoveTo(475*escala_en_linux_windows, (comienzo_linea2-2)*escala_en_linux_windows);
+					cr.LineTo(475,(comienzo_linea-2)*escala_en_linux_windows);		// vertical 1
+					
+					cr.MoveTo(565*escala_en_linux_windows, (comienzo_linea2-2)*escala_en_linux_windows);
+					cr.LineTo(565,(comienzo_linea-2)*escala_en_linux_windows);		// vertical 1
+					
+					cr.FillExtents();  //. FillPreserve(); 
+					cr.SetSourceRGB (0, 0, 0);
+					cr.LineWidth = 0.1;
+					cr.Stroke();
 				}
 			}catch (NpgsqlException ex){
 				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
@@ -533,23 +554,32 @@ namespace osiris
 			fontSize = 8.0;			layout = null;			layout = context.CreatePangoLayout ();
 			desc.Size = (int)(fontSize * pangoScale);		layout.FontDescription = desc;
 			layout.FontDescription.Weight = Weight.Bold;		// Letra negrita
-			cr.MoveTo(09*escala_en_linux_windows,60*escala_en_linux_windows);			layout.SetText("Nombre Paquete Qx:");			Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(09*escala_en_linux_windows,70*escala_en_linux_windows);			layout.SetText("Nombre Paquete Qx: "+idcirugia.ToString()+"  "+cirugia);			Pango.CairoHelper.ShowLayout (cr, layout);
 			
 		}
 		
 		void imprime_titulo(Cairo.Context cr,Pango.Layout layout, string descrp_admin,string fech)
 		{
-			Pango.FontDescription desc = Pango.FontDescription.FromString ("Sans");
-			//LUGAR DE CARGO
-			fontSize = 7.0;
-			desc.Size = (int)(fontSize * pangoScale);
-			layout.FontDescription = desc;
+			fontSize = 7.0;			layout = null;			layout = context.CreatePangoLayout ();
+			desc.Size = (int)(fontSize * pangoScale);		layout.FontDescription = desc;
 			comienzo_linea += separacion_linea;
 			layout.FontDescription.Weight = Weight.Bold;   // Letra Negrita
 			cr.MoveTo(200*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(descrp_admin.ToString()+"  "+fech.ToString());	Pango.CairoHelper.ShowLayout (cr, layout);
-			layout.FontDescription.Weight = Weight.Normal;   // Letra Normal			
+			comienzo_linea += separacion_linea;
+			comienzo_linea += separacion_linea;
+			cr.MoveTo(025*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);				layout.SetText("CODIGO");			Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(080*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);				layout.SetText("CANT.");			Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(108*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);				layout.SetText("DESCRIPCION PRODUCTO");	Pango.CairoHelper.ShowLayout (cr, layout);
+			if((bool) rptconprecio == true){
+				cr.MoveTo(385*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);				layout.SetText("PRECIO");			Pango.CairoHelper.ShowLayout (cr, layout);
+			}else{
+				cr.MoveTo(420*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);				layout.SetText("USADO");			Pango.CairoHelper.ShowLayout (cr, layout);
+				cr.MoveTo(490*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);				layout.SetText("DEVUELTO");			Pango.CairoHelper.ShowLayout (cr, layout);
+			}
+			layout.FontDescription.Weight = Weight.Normal;
 			fontSize = 7.0;			layout = null;			layout = context.CreatePangoLayout ();
-			desc.Size = (int)(fontSize * pangoScale);		layout.FontDescription = desc;			
+			desc.Size = (int)(fontSize * pangoScale);		layout.FontDescription = desc;
+			comienzo_linea2 = comienzo_linea+separacion_linea;
 		}
 		
 		void imprime_linea_producto(Cairo.Context cr,Pango.Layout layout,string idproducto_,string cantidadaplicada_,string datos_,string preciounitario_,decimal subtotal_,decimal ivaprod_,decimal total_)
@@ -557,17 +587,26 @@ namespace osiris
 			fontSize = 7.0;			layout = null;			layout = context.CreatePangoLayout ();
 			desc.Size = (int)(fontSize * pangoScale);		layout.FontDescription = desc;
 			comienzo_linea += separacion_linea;
-			cr.MoveTo(005*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);			layout.SetText(idproducto_);				Pango.CairoHelper.ShowLayout (cr, layout);
-			cr.MoveTo(080*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);			layout.SetText(cantidadaplicada_);		Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(006*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);			layout.SetText(idproducto_);				Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(075*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);			layout.SetText(cantidadaplicada_);		Pango.CairoHelper.ShowLayout (cr, layout);
 			if(datos_.Length > 61)	{				
 				cr.MoveTo(110*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);		layout.SetText((string) datos_.Substring(0,60));					Pango.CairoHelper.ShowLayout (cr, layout);
 			}else{
 				cr.MoveTo(110*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText((string) datos_);							Pango.CairoHelper.ShowLayout (cr, layout);
-			} 
-			cr.MoveTo(380*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(preciounitario_);Pango.CairoHelper.ShowLayout (cr, layout);
-			cr.MoveTo(430*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(subtotal_.ToString("N").PadLeft(10));		Pango.CairoHelper.ShowLayout (cr, layout);
-			cr.MoveTo(480*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(ivaprod_.ToString("N").PadLeft(10));		Pango.CairoHelper.ShowLayout (cr, layout);
-			cr.MoveTo(530*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(total_.ToString("N").PadLeft(10));			Pango.CairoHelper.ShowLayout (cr, layout);
+			}
+			if((bool) rptconprecio == true){
+				cr.MoveTo(380*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(preciounitario_);Pango.CairoHelper.ShowLayout (cr, layout);
+				cr.MoveTo(430*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(subtotal_.ToString("N").PadLeft(10));		Pango.CairoHelper.ShowLayout (cr, layout);
+				cr.MoveTo(480*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(ivaprod_.ToString("N").PadLeft(10));		Pango.CairoHelper.ShowLayout (cr, layout);
+				cr.MoveTo(530*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(total_.ToString("N").PadLeft(10));			Pango.CairoHelper.ShowLayout (cr, layout);
+			}
+			cr.MoveTo(565*escala_en_linux_windows,(comienzo_linea-2)*escala_en_linux_windows);
+			cr.LineTo(05,(comienzo_linea-2)*escala_en_linux_windows);
+			cr.FillExtents();  //. FillPreserve(); 
+			cr.SetSourceRGB (0, 0, 0);
+			cr.LineWidth = 0.1;
+			cr.Stroke();
+		
 		}
 		
 		private void OnEndPrint (object obj, Gtk.EndPrintArgs args)

@@ -1907,7 +1907,7 @@ namespace osiris
 		
 		void guarda_comprobante(object sender, string tipo_de_comprobante)
 		{
-			string descrippago = "";
+			string descrippago = entry_observacion_egreso.Text;
 			bool pago_sino = true;
 			string sql_abonos_servicio = "";
 			
@@ -1922,13 +1922,14 @@ namespace osiris
 	 				if (miResultado == ResponseType.Yes){				
 						//if (guado_el_abono == false){
 						if (pagodehonorario == true){
-							descrippago = "PAGO DE HONORARIO MEDICO";
+							descrippago = "PRIMER ABONO VIA CAJA/DIRECTO";
 							pago_sino = true;
 							sql_abonos_servicio = "INSERT INTO osiris_erp_abonos("+
 				 								"monto_de_abono_procedimiento,"+
 				 								"folio_de_servicio,"+
 												"pid_paciente,"+
 				 								"concepto_del_abono,"+
+												"observaciones,"+
 				 								"fecha_abono,"+
 				 								"id_quien_creo,"+
 				 								"id_forma_de_pago,"+
@@ -1944,7 +1945,8 @@ namespace osiris
 				 								folioservicio+"','"+
 												this.PidPaciente.ToString().Trim()+"','"+
 				 								descrippago+"','"+
-				 								DateTime.Now.ToString("yyyy-MM-dd")+"','"+
+												entry_observacion_egreso.Text.Trim().ToUpper()+"','"+
+												DateTime.Now.ToString("yyyy-MM-dd")+"','"+
 	 											LoginEmpleado+"','"+
 	 											idformadepago.ToString()+"','"+
 	 											pagodehonorario+"','"+
@@ -1959,7 +1961,7 @@ namespace osiris
 							//numerodecomprobante = int.Parse((string) classpublic.lee_ultimonumero_registrado("osiris_erp_abonos","numero_recibo_caja","WHERE id_tipo_comprobante = '"+idtipocomprobante.ToString().Trim()+"'"));
 							entry_numero_comprobante.Text = (string) classpublic.lee_ultimonumero_registrado("osiris_erp_abonos","numero_recibo_caja","WHERE id_tipo_comprobante = '"+idtipocomprobante.ToString().Trim()+"'");
 							numerodecomprobante = int.Parse(entry_numero_comprobante.Text);
-							descrippago = "PAGO DE PROCEDIMIENTO";
+							descrippago = "PAGO DE PROCEDIMIENTO EN UN SOLO PAGO";
 							pago_sino = true;
 							sql_abonos_servicio = "INSERT INTO osiris_erp_abonos("+
 				 								"monto_de_abono_procedimiento,"+
@@ -2002,7 +2004,7 @@ namespace osiris
 														"');";
 						}						
 						if(tipo_de_comprobante == "SERVICIO"){							
-							descrippago = "COMPROBANTE DE SERVICIO";
+							//descrippago = "COMPROBANTE DE SERVICIO";
 							pago_sino = false;
 							numerodecomprobante = int.Parse((string) classpublic.lee_ultimonumero_registrado("osiris_erp_comprobante_servicio","numero_comprobante_servicio",""));
 							sql_abonos_servicio = "INSERT INTO osiris_erp_comprobante_servicio("+
@@ -2036,7 +2038,7 @@ namespace osiris
 						}						
 						if(tipo_de_comprobante == "PAGARE"){
 							//Console.WriteLine("entre a guardar el pagare");
-							descrippago = "COMPROBANTE DE PAGARE";
+							//descrippago = "COMPROBANTE DE PAGARE";
 							numerodecomprobante = int.Parse((string) classpublic.lee_ultimonumero_registrado("osiris_erp_comprobante_pagare","numero_comprobante_pagare",""));
 							pago_sino = false;
 							sql_abonos_servicio = "INSERT INTO osiris_erp_comprobante_pagare("+
@@ -2060,7 +2062,7 @@ namespace osiris
 														this.PidPaciente.ToString().Trim()+"','"+
 														DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"','"+
 														DateTime.Now.ToString("yyyy-MM-dd")+"','"+
-														"COMPROBANTE PAGARE"+"','"+
+														"COMPROBANTE DE PAGARE"+"','"+
 														LoginEmpleado+"','"+
 														idempresa_paciente.ToString().Trim()+"','"+
 														id_tipopaciente.ToString()+"','"+

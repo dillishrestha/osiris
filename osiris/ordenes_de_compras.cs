@@ -122,11 +122,11 @@ namespace osiris
 			// Sale de la ventana
 			button_salir.Clicked += new EventHandler(on_cierraventanas_clicked);
 			//imprime la informacion:
-			this.button_imprimir.Clicked += new EventHandler(on_imprime_orden_clicked);
+			button_imprimir.Clicked += new EventHandler(on_imprime_orden_clicked);
 			
-			llenado_comobox();
 			crea_treeview_ordencompra();
 			cree_treeview_departamentos();
+			llenado_comobox();
 			
 			statusbar.Pop(0);
 			statusbar.Push(1, "login: "+LoginEmpleado+"  |Usuario: "+NomEmpleado+" "+AppEmpleado+" "+ApmEmpleado);
@@ -148,8 +148,8 @@ namespace osiris
 					TreeModel model;
 					TreeIter iter;
 					//this.treeViewEngineProductosaComprar.GetSortColumnId(out iterSelected,			
-					if (this.treeViewEngineProductosaComprar.GetIterFirst(out iterSelected)){
-						if ((bool)this.lista_productos_a_comprar.Model.GetValue (iterSelected,0) == true){
+					if (treeViewEngineProductosaComprar.GetIterFirst(out iterSelected)){
+						if ((bool)lista_productos_a_comprar.Model.GetValue (iterSelected,0) == true){
 							if (variable_paso_01 == true){
 								NpgsqlConnection conexion1;
 								conexion1 = new NpgsqlConnection (connectionString+nombrebd );
@@ -184,11 +184,11 @@ namespace osiris
 			 												int.Parse((string) this.lista_productos_a_comprar.Model.GetValue(iterSelected,15))+"','"+//id_prod
 					 										DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"','"+//fechahora_creacion
 					 										DateTime.Now.ToString("yyyy-MM-dd")+"','"+//fechahora_solicitud
-					 										this.entry_ano_oc.Text+"-"+this.entry_mes_oc.Text+"-"+this.entry_dia_oc.Text+"','"+
+					 										entry_ano_oc.Text+"-"+entry_mes_oc.Text+"-"+entry_dia_oc.Text+"','"+
 					 										LoginEmpleado+"','"+//id_empleado
 					 										"HOSPITAL"+"','"+
 					 										"SU CONDUCTO"+"','"+
-					 										this.entry_formapago.Text+"','"+
+					 										entry_formapago.Text+"','"+
 			 												(string) lista_productos_a_comprar.Model.GetValue(iterSelected,12).ToString().Trim()+"','"+
 			 												(string) lista_productos_a_comprar.Model.GetValue(iterSelected,02).ToString().Trim()+"','"+
 			 												(string) lista_productos_a_comprar.Model.GetValue(iterSelected,16).ToString().Trim()+"','"+
@@ -230,11 +230,11 @@ namespace osiris
 													    "fechahora_compra = '"+DateTime.Now.ToString("yyyy-MM-dd")+"', "+
 													    "comprado = 'true', "+
 													    "id_proveedor = '"+variable_paso_02+"', "+
-													    "numero_orden_compra = '"+this.ultimaorden.ToString()+"',"+
-														"precio_costo_prov_selec ='"+(string) this.lista_productos_a_comprar.Model.GetValue (iterSelected,10).ToString().Trim()+"',"+
-														"precio_unitario_prov_selec ='"+(string) this.lista_productos_a_comprar.Model.GetValue (iterSelected,11).ToString().Trim()+"' "+
-									                    "WHERE id_requisicion ='"+(string) this.lista_productos_a_comprar.Model.GetValue (iterSelected,2).ToString().Trim()+"' "+
-									                    "AND id_producto ='"+(string) this.lista_productos_a_comprar.Model.GetValue (iterSelected,6).ToString().Trim()+"' ;"; 
+													    "numero_orden_compra = '"+ultimaorden.ToString()+"',"+
+														"precio_costo_prov_selec ='"+(string)lista_productos_a_comprar.Model.GetValue (iterSelected,10).ToString().Trim()+"',"+
+														"precio_unitario_prov_selec ='"+(string)lista_productos_a_comprar.Model.GetValue (iterSelected,11).ToString().Trim()+"' "+
+									                    "WHERE id_requisicion ='"+(string)lista_productos_a_comprar.Model.GetValue (iterSelected,2).ToString().Trim()+"' "+
+									                    "AND id_producto ='"+(string)lista_productos_a_comprar.Model.GetValue (iterSelected,6).ToString().Trim()+"' ;"; 
 									Console.WriteLine(comando3.CommandText);
 									comando3.ExecuteNonQuery();
 									comando3.Dispose();																	
@@ -299,7 +299,7 @@ namespace osiris
 			 												(string) lista_productos_a_comprar.Model.GetValue(iterSelected,20)+"','"+
 			 												(string) lista_productos_a_comprar.Model.GetValue(iterSelected,21)+"','"+
 			 													 												
-			 												this.ultimaorden.ToString()+
+			 												ultimaorden.ToString()+
 		
 			 												"');";
 									//Console.WriteLine(comando.CommandText);							
@@ -316,10 +316,10 @@ namespace osiris
 							
 							if(variable_paso_01 == false){
 								// Validando que seleccione un proveedor
-								if (this.entry_id_proveedor.Text.Trim() == ""){
-										variable_paso_02 = (string) this.lista_productos_a_comprar.Model.GetValue (iterSelected,15);
+								if (entry_id_proveedor.Text.Trim() == ""){
+									variable_paso_02 = (string)lista_productos_a_comprar.Model.GetValue (iterSelected,15);
 								}else{
-										variable_paso_02 = this.entry_id_proveedor.Text;
+									variable_paso_02 = this.entry_id_proveedor.Text;
 								}
 								
 								NpgsqlConnection conexion3; 
@@ -332,11 +332,11 @@ namespace osiris
 													    "fechahora_compra = '"+DateTime.Now.ToString("yyyy-MM-dd")+"', "+
 													    "comprado = 'true', "+
 													    "id_proveedor = '"+variable_paso_02+"', "+
-													    "numero_orden_compra = '"+this.ultimaorden.ToString()+"',"+
-														"precio_costo_prov_selec ='"+(string) this.lista_productos_a_comprar.Model.GetValue (iterSelected,10).ToString().Trim()+"',"+
-														"precio_unitario_prov_selec ='"+(string) this.lista_productos_a_comprar.Model.GetValue (iterSelected,11).ToString().Trim()+"' "+
-									                    "WHERE id_requisicion ='"+(string) this.lista_productos_a_comprar.Model.GetValue (iterSelected,2).ToString().Trim()+"' "+
-									                    "AND id_producto ='"+(string) this.lista_productos_a_comprar.Model.GetValue (iterSelected,6).ToString().Trim()+"' ;"; 
+													    "numero_orden_compra = '"+ultimaorden.ToString()+"',"+
+														"precio_costo_prov_selec ='"+(string) lista_productos_a_comprar.Model.GetValue (iterSelected,10).ToString().Trim()+"',"+
+														"precio_unitario_prov_selec ='"+(string)lista_productos_a_comprar.Model.GetValue (iterSelected,11).ToString().Trim()+"' "+
+									                    "WHERE id_requisicion ='"+(string)lista_productos_a_comprar.Model.GetValue (iterSelected,2).ToString().Trim()+"' "+
+									                    "AND id_producto ='"+(string)lista_productos_a_comprar.Model.GetValue (iterSelected,6).ToString().Trim()+"' ;"; 
 									Console.WriteLine(comando3.CommandText);    
 									comando3.ExecuteNonQuery();
 									comando3.Dispose();																	
@@ -353,8 +353,7 @@ namespace osiris
 				
 					MessageDialog msgBoxError1 = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
 								                                               MessageType.Info,ButtonsType.Close, " La ORDEN DE COMPRA se creo CORRECTAMENTE con el Numero :"+ultimaorden.ToString().Trim());
-					msgBoxError1.Run ();			msgBoxError1.Destroy();
-				
+					msgBoxError1.Run ();			msgBoxError1.Destroy();				
 					llena_requiciones_para_comprar();
 				}
 			}else{
@@ -384,7 +383,7 @@ namespace osiris
 		void on_button_asignar_proveedor_clicked (object sender, EventArgs args)
 		{
 			TreeIter iter;
-			if (this.treeViewEngineProductosaComprar.GetIterFirst (out iter)){
+			if (treeViewEngineProductosaComprar.GetIterFirst (out iter)){
 				// buscar el producto en el catalogo del proveedor
 				contador_prod_asignados = 0;
 				contador_prod_noasignad = 0;
@@ -413,28 +412,28 @@ namespace osiris
 						NpgsqlDataReader lector = comando.ExecuteReader ();
 						
                			if (lector.Read()){						
-							this.lista_productos_a_comprar.Model.SetValue(iter,0,true);							
-							this.lista_productos_a_comprar.Model.SetValue(iter,10,(string) lector["preciocosto"]);					// precio prov
-							this.lista_productos_a_comprar.Model.SetValue(iter,11,(string) lector["preciocostounitario"]);			// precio unitario
-							this.lista_productos_a_comprar.Model.SetValue(iter,13,(string) lector["codigo_producto_proveedor"]);	// Codigo
-							this.lista_productos_a_comprar.Model.SetValue(iter,14,(string) lector["codigo_de_barra"]);				// Barras						
-							this.lista_productos_a_comprar.Model.SetValue(iter,12,(string) this.entry_nombre_proveedor.Text);		// Nombre Proveedor
-							this.lista_productos_a_comprar.Model.SetValue(iter,15,(string) this.entry_id_proveedor.Text);			// Id Proveedor							
-							this.lista_productos_a_comprar.Model.SetValue(iter,16,(string) lector["direccion_proveedor"]);					
-							this.lista_productos_a_comprar.Model.SetValue(iter,17,(string) lector["telefono1_proveedor"]);		
-							this.lista_productos_a_comprar.Model.SetValue(iter,18,(string) lector["contacto1_proveedor"]);	
-							this.lista_productos_a_comprar.Model.SetValue(iter,19,(string) lector["mail_proveedor"]);	
-							this.lista_productos_a_comprar.Model.SetValue(iter,20,(string) lector["rfc_proveedor"]);	
-							this.lista_productos_a_comprar.Model.SetValue(iter,21,(string) lector["fax_proveedor"]);
+							lista_productos_a_comprar.Model.SetValue(iter,0,true);							
+							lista_productos_a_comprar.Model.SetValue(iter,10,(string) lector["preciocosto"]);					// precio prov
+							lista_productos_a_comprar.Model.SetValue(iter,11,(string) lector["preciocostounitario"]);			// precio unitario
+							lista_productos_a_comprar.Model.SetValue(iter,13,(string) lector["codigo_producto_proveedor"]);	// Codigo
+							lista_productos_a_comprar.Model.SetValue(iter,14,(string) lector["codigo_de_barra"]);				// Barras						
+							lista_productos_a_comprar.Model.SetValue(iter,12,(string) entry_nombre_proveedor.Text);		// Nombre Proveedor
+							lista_productos_a_comprar.Model.SetValue(iter,15,(string) entry_id_proveedor.Text);			// Id Proveedor							
+							lista_productos_a_comprar.Model.SetValue(iter,16,(string) lector["direccion_proveedor"]);					
+							lista_productos_a_comprar.Model.SetValue(iter,17,(string) lector["telefono1_proveedor"]);		
+							lista_productos_a_comprar.Model.SetValue(iter,18,(string) lector["contacto1_proveedor"]);	
+							lista_productos_a_comprar.Model.SetValue(iter,19,(string) lector["mail_proveedor"]);	
+							lista_productos_a_comprar.Model.SetValue(iter,20,(string) lector["rfc_proveedor"]);	
+							lista_productos_a_comprar.Model.SetValue(iter,21,(string) lector["fax_proveedor"]);
 							contador_prod_asignados += 1;
 						}else{
-							this.lista_productos_a_comprar.Model.SetValue(iter,0,false);
+							lista_productos_a_comprar.Model.SetValue(iter,0,false);
 							contador_prod_noasignad += 1;
 						}
 					}
 						
 					while (this.treeViewEngineProductosaComprar.IterNext(ref iter)){
-						if ((bool) this.lista_productos_a_comprar.Model.GetValue (iter,0) == true){
+						if ((bool)lista_productos_a_comprar.Model.GetValue (iter,0) == true){
 				
 							// buscar el producto en el catalogo del proveedor
 							comando.CommandText = "SELECT osiris_catalogo_productos_proveedores.id_proveedor,"+
@@ -453,35 +452,32 @@ namespace osiris
 							Console.WriteLine(comando.CommandText);
 							NpgsqlDataReader lector = comando.ExecuteReader ();						
                				if (lector.Read()){					
-								this.lista_productos_a_comprar.Model.SetValue(iter,0,true);
-								this.lista_productos_a_comprar.Model.SetValue(iter,10,(string) lector["preciocosto"]);					// precio prov
-								this.lista_productos_a_comprar.Model.SetValue(iter,11,(string) lector["preciocostounitario"]);			// precio unitario
-								this.lista_productos_a_comprar.Model.SetValue(iter,13,(string) lector["codigo_producto_proveedor"]);	// Codigo
-								this.lista_productos_a_comprar.Model.SetValue(iter,14,(string) lector["codigo_de_barra"]);				// Barras
-								this.lista_productos_a_comprar.Model.SetValue(iter,12,(string) this.entry_nombre_proveedor.Text);		// actualiza treeview con el nombre del proveedor
-								this.lista_productos_a_comprar.Model.SetValue(iter,15,(string) this.entry_id_proveedor.Text);  			// almacena el id del proveedor							
-								this.lista_productos_a_comprar.Model.SetValue(iter,16,(string) lector["direccion_proveedor"]);					
-								this.lista_productos_a_comprar.Model.SetValue(iter,17,(string) lector["telefono1_proveedor"]);		
-								this.lista_productos_a_comprar.Model.SetValue(iter,18,(string) lector["contacto1_proveedor"]);	
-								this.lista_productos_a_comprar.Model.SetValue(iter,19,(string) lector["mail_proveedor"]);	
-								this.lista_productos_a_comprar.Model.SetValue(iter,20,(string) lector["rfc_proveedor"]);	
-								this.lista_productos_a_comprar.Model.SetValue(iter,21,(string) lector["fax_proveedor"]);	
+								lista_productos_a_comprar.Model.SetValue(iter,0,true);
+								lista_productos_a_comprar.Model.SetValue(iter,10,(string) lector["preciocosto"]);					// precio prov
+								lista_productos_a_comprar.Model.SetValue(iter,11,(string) lector["preciocostounitario"]);			// precio unitario
+								lista_productos_a_comprar.Model.SetValue(iter,13,(string) lector["codigo_producto_proveedor"]);	// Codigo
+								lista_productos_a_comprar.Model.SetValue(iter,14,(string) lector["codigo_de_barra"]);				// Barras
+								lista_productos_a_comprar.Model.SetValue(iter,12,(string) entry_nombre_proveedor.Text);		// actualiza treeview con el nombre del proveedor
+								lista_productos_a_comprar.Model.SetValue(iter,15,(string) entry_id_proveedor.Text);  			// almacena el id del proveedor							
+								lista_productos_a_comprar.Model.SetValue(iter,16,(string) lector["direccion_proveedor"]);					
+								lista_productos_a_comprar.Model.SetValue(iter,17,(string) lector["telefono1_proveedor"]);		
+								lista_productos_a_comprar.Model.SetValue(iter,18,(string) lector["contacto1_proveedor"]);	
+								lista_productos_a_comprar.Model.SetValue(iter,19,(string) lector["mail_proveedor"]);	
+								lista_productos_a_comprar.Model.SetValue(iter,20,(string) lector["rfc_proveedor"]);	
+								lista_productos_a_comprar.Model.SetValue(iter,21,(string) lector["fax_proveedor"]);	
 								contador_prod_asignados += 1;
 							}else{
-								this.lista_productos_a_comprar.Model.SetValue(iter,0,false);
+								lista_productos_a_comprar.Model.SetValue(iter,0,false);
 								contador_prod_noasignad += 1;
 							}				
 						}
-					}
-					
+					}					
 					MessageDialog msgBox = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
 										MessageType.Info,ButtonsType.Close,"Productos Asignados a Proveedor = "+contador_prod_asignados.ToString().Trim()+"\n"+
 					                                          "No Asigandos = "+contador_prod_noasignad.ToString().Trim());
-					msgBox.Run ();				msgBox.Destroy();
-					
+					msgBox.Run ();				msgBox.Destroy();					
 					Console.WriteLine("contador_prod_asignados = "+contador_prod_asignados.ToString());
-					Console.WriteLine("contador_prod_noasignad = "+contador_prod_noasignad.ToString());
-					
+					Console.WriteLine("contador_prod_noasignad = "+contador_prod_noasignad.ToString());					
 				}catch (NpgsqlException ex){
 					MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
 										MessageType.Error,ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
@@ -502,7 +498,7 @@ namespace osiris
 		
 		void llena_requiciones_para_comprar()
 		{
-			this.treeViewEngineProductosaComprar.Clear();
+			treeViewEngineProductosaComprar.Clear();
 			// lleno de la tabla de his_tipo_de_admisiones
 			NpgsqlConnection conexion; 
 			conexion = new NpgsqlConnection (connectionString+nombrebd);
@@ -553,12 +549,12 @@ namespace osiris
 											(string) lector["idproveedor"],
 											(string) lector["idsecuencia"]);
 					//this.col_autorizar.SetCellDataFunc(cel_autorizar, new Gtk.TreeCellDataFunc(cambia_colores_fila));
-					this.col_solicitado_por.SetCellDataFunc(cellr1, new Gtk.TreeCellDataFunc(cambia_colores_fila));
-					this.col_numero_req.SetCellDataFunc(cellr2, new Gtk.TreeCellDataFunc(cambia_colores_fila));
-					this.col_cantidadcomprar.SetCellDataFunc(cellr3, new Gtk.TreeCellDataFunc(cambia_colores_fila));
-					this.col_descripcion.SetCellDataFunc(cellr4, new Gtk.TreeCellDataFunc(cambia_colores_fila));
-					this.col_unidades.SetCellDataFunc(cellr5, new Gtk.TreeCellDataFunc(cambia_colores_fila));
-					this.col_codigo_prod.SetCellDataFunc(cellr6, new Gtk.TreeCellDataFunc(cambia_colores_fila));
+					col_solicitado_por.SetCellDataFunc(cellr1, new Gtk.TreeCellDataFunc(cambia_colores_fila));
+					col_numero_req.SetCellDataFunc(cellr2, new Gtk.TreeCellDataFunc(cambia_colores_fila));
+					col_cantidadcomprar.SetCellDataFunc(cellr3, new Gtk.TreeCellDataFunc(cambia_colores_fila));
+					col_descripcion.SetCellDataFunc(cellr4, new Gtk.TreeCellDataFunc(cambia_colores_fila));
+					col_unidades.SetCellDataFunc(cellr5, new Gtk.TreeCellDataFunc(cambia_colores_fila));
+					col_codigo_prod.SetCellDataFunc(cellr6, new Gtk.TreeCellDataFunc(cambia_colores_fila));
 				}
 			}catch (NpgsqlException ex){
 				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
@@ -592,7 +588,7 @@ namespace osiris
 				NpgsqlDataReader lector = comando.ExecuteReader ();
                	while (lector.Read()){
 					store1.AppendValues ((string) lector["descripcion_admisiones"], (int) lector["id_tipo_admisiones"]);
-					treeViewEngineListaDepartamentos.AppendValues(false,"",0);
+					treeViewEngineListaDepartamentos.AppendValues(false,(string) lector["descripcion_admisiones"], (int) lector["id_tipo_admisiones"]);
 				}
 			}catch (NpgsqlException ex){
 				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
@@ -881,9 +877,9 @@ namespace osiris
 		{
 			TreeIter iter;
 			TreePath path = new TreePath (args.Path);
-			if (this.lista_productos_a_comprar.Model.GetIter (out iter, path)){					
+			if (lista_productos_a_comprar.Model.GetIter (out iter, path)){					
 				bool old = (bool) this.lista_productos_a_comprar.Model.GetValue(iter,0);
-				this.lista_productos_a_comprar.Model.SetValue(iter,0,!old);
+				lista_productos_a_comprar.Model.SetValue(iter,0,!old);
 			}				
 		}
 		

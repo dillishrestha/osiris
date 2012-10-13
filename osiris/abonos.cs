@@ -50,6 +50,8 @@ namespace osiris
 		[Widget] Gtk.Entry entry_ano = null;
 		[Widget] Gtk.Entry entry_concepto_abono = null;
 		[Widget] Gtk.Entry entry_total_abonos = null;
+		[Widget] Gtk.Entry entry_total_convenio = null;
+		[Widget] Gtk.Entry entry_saldo_deuda = null;
 		[Widget] Gtk.CheckButton checkbutton_nuevo_abono = null;
 		[Widget] Gtk.Button button_guardar = null;
 		[Widget] Gtk.Button button_imprimir = null;
@@ -63,6 +65,7 @@ namespace osiris
 		[Widget] Gtk.ComboBox combobox_formapago = null;
 		[Widget] Gtk.ComboBox combobox_tipocomprobante = null;
 		[Widget] Gtk.Button button_imprimir_comp_serv = null;
+		[Widget] Gtk.Button button_imprimir_pagare = null;
 		
 		int PidPaciente;
 		int folioservicio;
@@ -95,6 +98,7 @@ namespace osiris
 		string nombrebd;		
 		string connectionString;
 		string idtipocomprobante = "";
+		string montoconvenio;
 		
 		//Declaracion de ventana de error
 		protected Gtk.Window MyWinError;
@@ -117,7 +121,8 @@ namespace osiris
 						string entry_fechahora_alta_,string entry_numero_factura_,string entry_nombre_paciente_,
 						string entry_telefono_paciente_,string entry_doctor_,string entry_tipo_paciente_,
 						string entry_aseguradora_,string edadpac_,string fecha_nacimiento_,string dir_pac_,
-						string cirugia_,string empresapac_,int idtipopaciente_,string nombrecajero_,string LoginEmpleado_,bool agregarmasabonos)
+						string cirugia_,string empresapac_,int idtipopaciente_,string nombrecajero_,string LoginEmpleado_,
+		                bool agregarmasabonos,string montoconvenio_)
 		{
 			//nombrebd = _nombrebd_; 			
 			PidPaciente = PidPaciente_;
@@ -139,6 +144,7 @@ namespace osiris
 			LoginEmpleado = LoginEmpleado_;
 			connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
 			nombrebd = conexion_a_DB._nombrebd;
+			montoconvenio = montoconvenio_;
 			
 			Glade.XML gxml = new Glade.XML (null, "caja.glade", "abonar_procedimientos", null);
 			gxml.Autoconnect                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 (this);
@@ -156,6 +162,7 @@ namespace osiris
 			button_guardar.Clicked += new EventHandler(on_button_guardar_clicked);
 			button_imprimir.Clicked += new EventHandler(on_button_imprimir_clicked);
 			button_imprimir_comp_serv.Clicked += new EventHandler(on_button_imprimir_comp_serv_clicked);
+			button_imprimir_pagare.Clicked += new EventHandler(on_button_imprimir_pagare_clicked);
 			button_resumen.Clicked += new EventHandler(on_button_resumen_clicked);
 			button_salir.Clicked += new EventHandler(on_cierraventanas_clicked);
 			if (agregarmasabonos == true ){
@@ -179,10 +186,15 @@ namespace osiris
 			combobox_formapago.Sensitive = false;
 			combobox_tipocomprobante.Sensitive = false;
 			entry_recibo_caja.IsEditable = false;
+				
+			entry_monto_convenio.Text = montoconvenio;
+			entry_total_convenio.Text = montoconvenio;
+			entry_saldo_deuda.Text = (float.Parse(entry_total_convenio.Text)-float.Parse(entry_total_abonos.Text)).ToString("F");
 			
+			entry_saldo_deuda.ModifyBase(StateType.Normal, new Gdk.Color(254,253,152));
 			entry_presupuesto.Text = "0";
 			entry_paquete.Text = "0";
-			entry_monto_convenio.Text = "0";
+			
 			statusbar_abonos.Pop(0);
 			statusbar_abonos.Push(1, "login: "+LoginEmpleado+"  |Usuario: "+nombrecajero);
 			statusbar_abonos.HasResizeGrip = false;
@@ -246,7 +258,9 @@ namespace osiris
 			                                    typeof(string),//7
 												typeof(string),
 			                                    typeof(bool),
-			                                    typeof(bool));
+			                                    typeof(bool),
+			                                    typeof(string),
+			                                     typeof(string));
 			
 			lista_abonos.Model = treeViewEngineabonos;
 						
@@ -256,70 +270,86 @@ namespace osiris
 			
 			TreeViewColumn col_abono = new TreeViewColumn();
 			cellr0 = new CellRendererText();
-			col_abono.Title = "Abonos Ralizados"; // titulo de la cabecera de la columna, si está visible
+			col_abono.Title = "Abonos Ralizados";
 			col_abono.PackStart(cellr0, true);
-			col_abono.AddAttribute (cellr0, "text", 0);    // la siguiente columna será 1
+			col_abono.AddAttribute (cellr0, "text", 0);
 			col_abono.SortColumnId = (int) Col_proveedores.col_abono;
 			
 			TreeViewColumn col_fecha_abono = new TreeViewColumn();
 			CellRendererText cellrt1 = new CellRendererText();
 			col_fecha_abono.Title = "Fecha del Abono";
 			col_fecha_abono.PackStart(cellrt1, true);
-			col_fecha_abono.AddAttribute (cellrt1, "text", 1); // la siguiente columna será 2
+			col_fecha_abono.AddAttribute (cellrt1, "text", 1);
 			col_fecha_abono.SortColumnId = (int) Col_proveedores.col_fecha_abono;
 			
 			TreeViewColumn col_concepto = new TreeViewColumn();
 			CellRendererText cellrt2 = new CellRendererText();
 			col_concepto.Title = "Concepto";
 			col_concepto.PackStart(cellrt2, true);
-			col_concepto.AddAttribute (cellrt2, "text", 2); // la siguiente columna será 3
+			col_concepto.AddAttribute (cellrt2, "text", 2);
 			col_concepto.SortColumnId = (int) Col_proveedores.col_concepto;
 			
 			TreeViewColumn col_id_creo = new TreeViewColumn();
 			CellRendererText cellrt3 = new CellRendererText();
 			col_id_creo.Title = "Id Quien Creo";
 			col_id_creo.PackStart(cellrt3, true);
-			col_id_creo.AddAttribute (cellrt3, "text", 3); // la siguiente columna será 4
+			col_id_creo.AddAttribute (cellrt3, "text", 3);
 			col_id_creo.SortColumnId = (int) Col_proveedores.col_id_creo;
 			
 			TreeViewColumn col_recibo = new TreeViewColumn();
 			CellRendererText cellrt4 = new CellRendererText();
 			col_recibo.Title = "No. Recibo Caja";
 			col_recibo.PackStart(cellrt4, true);
-			col_recibo.AddAttribute (cellrt4, "text", 4); // la siguiente columna será 5
+			col_recibo.AddAttribute (cellrt4, "text", 4);
 			col_recibo.SortColumnId = (int) Col_proveedores.col_recibo;
 			
 			TreeViewColumn col_tipocomprobante = new TreeViewColumn();
 			CellRendererText cellrt5 = new CellRendererText();
 			col_tipocomprobante.Title = "Tipo Comprante";
 			col_tipocomprobante.PackStart(cellrt5, true);
-			col_tipocomprobante.AddAttribute (cellrt5, "text", 5); // la siguiente columna será 5
+			col_tipocomprobante.AddAttribute (cellrt5, "text", 5);
 			col_tipocomprobante.SortColumnId = (int) Col_proveedores.col_tipocomprobante;
 			
 			TreeViewColumn col_presu = new TreeViewColumn();
 			CellRendererText cellrt6 = new CellRendererText();
 			col_presu.Title = "Id Presupuesto";
 			col_presu.PackStart(cellrt6, true);
-			col_presu.AddAttribute (cellrt6, "text", 6); // la siguiente columna será 6
+			col_presu.AddAttribute (cellrt6, "text", 6);
 			col_presu.SortColumnId = (int) Col_proveedores.col_presu;
 			
 			TreeViewColumn col_paq = new TreeViewColumn();
 			CellRendererText cellrt7 = new CellRendererText();
 			col_paq.Title = "Id Paquete";
 			col_paq.PackStart(cellrt7, true);
-			col_paq.AddAttribute (cellrt7, "text", 7); // la siguiente columna será 7
+			col_paq.AddAttribute (cellrt7, "text", 7);
 			col_paq.SortColumnId = (int) Col_proveedores.col_paq;
 			
 			TreeViewColumn col_forma_pago = new TreeViewColumn();
 			CellRendererText cellrt8 = new CellRendererText();
 			col_forma_pago.Title = "Forma de Pago";
 			col_forma_pago.PackStart(cellrt8, true);
-			col_forma_pago.AddAttribute (cellrt8, "text", 8); // la siguiente columna será 8
+			col_forma_pago.AddAttribute (cellrt8, "text", 8);
 			col_forma_pago.SortColumnId = (int) Col_proveedores.col_forma_pago;
+			
+			TreeViewColumn col_valor_convenido = new TreeViewColumn();
+			CellRendererText cellrt11 = new CellRendererText();
+			col_valor_convenido.Title = "$ Convenio QX.";
+			col_valor_convenido.PackStart(cellrt11, true);
+			col_valor_convenido.AddAttribute (cellrt11, "text", 11);
+			//col_valor_convenido.SortColumnId = (int) Col_proveedores.col_valor_convenido;
+			
+			TreeViewColumn col_observaciones = new TreeViewColumn();
+			CellRendererText cellrt12 = new CellRendererText();
+			col_observaciones.Title = "Observaciones";
+			col_observaciones.PackStart(cellrt12, true);
+			col_observaciones.AddAttribute (cellrt12, "text", 12);
+			//col_observaciones.SortColumnId = (int) Col_proveedores.col_observaciones;
 			
 			lista_abonos.AppendColumn(col_abono);
 			lista_abonos.AppendColumn(col_fecha_abono);
+			lista_abonos.AppendColumn(col_valor_convenido);
 			lista_abonos.AppendColumn(col_concepto);
+			lista_abonos.AppendColumn(col_observaciones);
 			lista_abonos.AppendColumn(col_id_creo);
 			lista_abonos.AppendColumn(col_recibo);
 			lista_abonos.AppendColumn(col_tipocomprobante);
@@ -509,6 +539,7 @@ namespace osiris
 		void llenando_lista_de_abonos()
 		{
 			decimal total = 0;
+			entry_total_abonos.Text = total.ToString().Trim();
 			treeViewEngineabonos.Clear(); // Limpia el treeview cuando realiza una nueva busqueda
 			
 			NpgsqlConnection conexion; 
@@ -526,7 +557,7 @@ namespace osiris
 								"numero_recibo_caja,"+
 								"to_char(numero_recibo_caja,'9999999999') AS recibocaja,"+
 								"numero_factura,"+								
-								"id_quien_creo,"+
+								"id_quien_creo,observaciones,"+
 								"monto_de_abono_procedimiento, "+
 								"to_char(osiris_erp_abonos.monto_de_abono_procedimiento,'9999999999.99') AS monto_abono_proc,"+
 								"concepto_del_abono,"+
@@ -536,7 +567,7 @@ namespace osiris
 								"to_char(osiris_erp_abonos.fecha_abono,'dd-MM-yyyy') AS fechaabono,"+
 								"id_presupuesto,"+
 								"to_char(id_presupuesto,'9999999999') AS presupuesto, "+
-								"id_paquete,pago,abono,"+
+								"id_paquete,pago,abono,monto_convenio,"+
 								"osiris_erp_abonos.id_forma_de_pago,"+ 
 								"to_char(id_paquete,'9999999999') AS paquete,"+
 								"osiris_erp_forma_de_pago.id_forma_de_pago,descripcion_forma_de_pago AS descripago,descripcion_tipo_comprobante "+
@@ -559,7 +590,9 @@ namespace osiris
 													(string) lector["paquete"],//7
 													(string) lector["descripago"],
 					                                (bool) lector["pago"],
-					                                (bool) lector["abono"]);
+					                                (bool) lector["abono"],
+					                                float.Parse(lector["monto_convenio"].ToString()).ToString("F"),
+					                                   (string) lector["observaciones"].ToString().Trim());
 					total += decimal.Parse((string) lector["monto_abono_proc"]);
 					entry_total_abonos.Text = total.ToString("F");
 				}
@@ -758,9 +791,10 @@ namespace osiris
 									NpgsqlCommand comando2; 
 									comando2 = conexion2.CreateCommand ();
 						 			comando2.CommandText = "UPDATE osiris_erp_cobros_enca SET tiene_abono = 'true',"+
-						 										"total_abonos = total_abonos + '"+entry_monto_abono.Text+"' "+
+						 										"total_abonos = total_abonos + '"+entry_monto_abono.Text+"', "+
+																"monto_convenio = '"+entry_monto_convenio.Text+"' "+
 																"WHERE folio_de_servicio = '"+this.folioservicio.ToString()+"' ;";
-						 					
+						 			//Console.WriteLine(comando2.CommandText);		
 					 				comando2.ExecuteNonQuery();    	    	       	comando2.Dispose();
 								}catch(NpgsqlException ex){
 					   				MessageDialog msgBoxError5 = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
@@ -871,13 +905,19 @@ namespace osiris
 			imprime_comprobante_resumen("comprobante");
 		}
 		
+		void on_button_imprimir_pagare_clicked(object sender, EventArgs args)
+		{
+			imprime_comprobante_resumen("pagare");
+		}
+		
 		void on_button_resumen_clicked(object sender, EventArgs args)
 		{
 			imprime_comprobante_resumen("resumen");
 		}
 		
 		void imprime_comprobante_resumen(string tipo_reporte)
-		{		
+		{
+			Console.WriteLine(tipo_reporte);
 			TreeModel model;
 			TreeIter iterSelected;			
 			if (tipo_reporte == "caja"){
@@ -993,37 +1033,28 @@ namespace osiris
 						"AND osiris_erp_cobros_deta.eliminado = 'false' ", nombrecajero );
 				}
 			}
+			
 			if(tipo_reporte == "pagare"){
-				new caja_comprobante (int.Parse(recibo), "PAGARE", folioservicio,"SELECT osiris_erp_cobros_deta.folio_de_servicio AS foliodeservicio,osiris_erp_cobros_deta.pid_paciente AS pidpaciente, "+ 
-						"osiris_his_tipo_admisiones.descripcion_admisiones,aplicar_iva, "+
-						"osiris_his_tipo_admisiones.id_tipo_admisiones AS idadmisiones,"+
-						"osiris_grupo_producto.descripcion_grupo_producto, "+
-						"osiris_productos.id_grupo_producto,  "+
-						"to_char(osiris_erp_cobros_deta.porcentage_descuento,'999.99') AS porcdesc, "+
-						"to_char(osiris_erp_cobros_deta.fechahora_creacion,'dd-mm-yyyy') AS fechcreacion,  "+
-						"to_char(osiris_erp_cobros_deta.fechahora_creacion,'HH:mm') AS horacreacion,  "+
-						"to_char(osiris_erp_cobros_deta.id_producto,'999999999999') AS idproducto,descripcion_producto, "+
-						"to_char(osiris_erp_cobros_deta.cantidad_aplicada,'99999999.99') AS cantidadaplicada, "+
-						"to_char(osiris_erp_cobros_deta.precio_producto,'9999999.99') AS preciounitario, "+
-						"ltrim(to_char(osiris_erp_cobros_deta.precio_producto,'9999999.99')) AS preciounitarioprod, "+
-						"to_char(osiris_erp_cobros_deta.iva_producto,'999999.99') AS ivaproducto, "+
-						//"to_char(osiris_erp_cobros_deta.precio_por_cantidad,'999999.99') AS ppcantidad, "+
-						"to_char(osiris_erp_cobros_deta.cantidad_aplicada * osiris_erp_cobros_deta.precio_producto,'99999999.99') AS ppcantidad,"+
-						"to_char(osiris_productos.precio_producto_publico,'999999999.99999') AS preciopublico,osiris_erp_comprobante_pagare.numero_comprobante_pagare AS numerorecibo,"+
-						"osiris_his_paciente.nombre1_paciente || ' ' || osiris_his_paciente.nombre2_paciente || ' ' || osiris_his_paciente.apellido_paterno_paciente || ' ' || osiris_his_paciente.apellido_materno_paciente AS nombre_completo, "+
-						"to_char(osiris_his_paciente.fecha_nacimiento_paciente, 'dd-MM-yyyy') AS fechanacpaciente, to_char(to_number(to_char(age('"+DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss")+"',osiris_his_paciente.fecha_nacimiento_paciente),'yyyy') ,'9999'),'9999') AS edadpaciente, "+
-					    "telefono_particular1_paciente,osiris_erp_comprobante_pagare.observaciones || ' ' || osiris_erp_comprobante_pagare.observaciones2 || ' ' || osiris_erp_comprobante_pagare.observaciones3 AS observacionesvarias," +
-					    "osiris_erp_comprobante_pagare.concepto_del_comprobante AS concepto_comprobante,"+
-						"osiris_erp_cobros_enca.id_empresa,descripcion_empresa,osiris_erp_cobros_enca.nombre_medico_encabezado,"+
-					    "to_char(monto_pagare,'999999999.99') AS montodelabono "+
-				        "FROM osiris_erp_cobros_deta,osiris_his_tipo_admisiones,osiris_productos,osiris_grupo_producto,osiris_erp_comprobante_pagare,osiris_his_paciente,osiris_erp_cobros_enca,osiris_empresas "+
-						"WHERE osiris_erp_cobros_deta.id_tipo_admisiones = osiris_his_tipo_admisiones.id_tipo_admisiones "+
-						"AND osiris_erp_cobros_deta.id_producto = osiris_productos.id_producto  "+ 
-						"AND osiris_productos.id_grupo_producto = osiris_grupo_producto.id_grupo_producto "+
-						"AND osiris_erp_cobros_deta.pid_paciente = osiris_his_paciente.pid_paciente "+
-				        "AND osiris_erp_cobros_enca.id_empresa = osiris_empresas.id_empresa "+
-					    "AND osiris_erp_cobros_enca.folio_de_servicio = osiris_erp_cobros_deta.folio_de_servicio "+
-						"AND osiris_erp_cobros_deta.eliminado = 'false' ",nombrecajero);
+				if (treeview_lista_pagare.Selection.GetSelected(out model, out iterSelected)){
+					recibo = (string) model.GetValue(iterSelected, 4);
+					new caja_comprobante (int.Parse(recibo), "PAGARE", folioservicio,"SELECT osiris_erp_cobros_enca.folio_de_servicio AS foliodeservicio,osiris_erp_cobros_enca.pid_paciente AS pidpaciente," +
+							"osiris_erp_comprobante_pagare.numero_comprobante_pagare AS numerorecibo," +
+							"osiris_his_paciente.nombre1_paciente || ' ' || osiris_his_paciente.nombre2_paciente || ' ' || osiris_his_paciente.apellido_paterno_paciente || ' ' || osiris_his_paciente.apellido_materno_paciente AS nombre_completo," +
+							"to_char(osiris_his_paciente.fecha_nacimiento_paciente, 'dd-MM-yyyy') AS fechanacpaciente," +
+							"direccion_paciente,numero_casa_paciente,numero_departamento_paciente,codigo_postal_paciente,colonia_paciente,municipio_paciente,estado_paciente," +
+						    "to_char(osiris_erp_cobros_enca.fechahora_creacion,'dd-mm-yyyy') AS fechcreacion,  "+
+							"to_char(osiris_erp_cobros_enca.fechahora_creacion,'HH:mi') AS horacreacion,  "+
+							"to_char(to_number(to_char(age('"+DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss")+"',osiris_his_paciente.fecha_nacimiento_paciente),'yyyy') ,'9999'),'9999') AS edadpaciente," +
+							"telefono_particular1_paciente,osiris_erp_comprobante_pagare.observaciones AS observacionesvarias,osiris_erp_comprobante_pagare.concepto_del_comprobante AS concepto_comprobante," +
+							"osiris_erp_cobros_enca.id_empresa,descripcion_empresa,osiris_erp_cobros_enca.nombre_medico_encabezado,to_char(osiris_erp_comprobante_pagare.monto_pagare,'999999999.99') AS montodelabono," +
+							"descripcion_tipo_comprobante,to_char(fecha_vencimiento_pagare,'dd-mm-yyyy') AS vencimiento_pagare " +
+							"FROM osiris_erp_comprobante_pagare,osiris_his_paciente,osiris_erp_cobros_enca,osiris_empresas,osiris_erp_tipo_comprobante "+
+							"WHERE osiris_erp_cobros_enca.id_empresa = osiris_empresas.id_empresa "+
+							"AND osiris_erp_comprobante_pagare.folio_de_servicio = osiris_erp_cobros_enca.folio_de_servicio " +
+							"AND osiris_erp_comprobante_pagare.id_tipo_comprobante = osiris_erp_tipo_comprobante.id_tipo_comprobante "+
+							"AND osiris_his_paciente.pid_paciente = osiris_erp_cobros_enca.pid_paciente " +
+							"AND osiris_erp_comprobante_pagare.eliminado = 'false' ",nombrecajero);			
+				}
 			}
 			if (tipo_reporte == "resumen"){
 				

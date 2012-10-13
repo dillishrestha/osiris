@@ -1,20 +1,20 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="osiris/ordenes_de_compras.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="osiris/class_conexion.cs">
     <Files>
-      <File FileName="osiris/class_conexion.cs" Line="16" Column="2" />
-      <File FileName="osiris/caja.cs" Line="2056" Column="30" />
-      <File FileName="osiris/class_public.cs" Line="42" Column="35" />
-      <File FileName="osiris/captura_fac_ordenes_compra.cs" Line="596" Column="52" />
-      <File FileName="osiris/rpt_prot_admision.cs" Line="353" Column="8" />
-      <File FileName="osiris/ordenes_de_compras.cs" Line="591" Column="57" />
+      <File FileName="osiris/class_conexion.cs" Line="14" Column="56" />
+      <File FileName="osiris/rpt_rep1_admision.cs" Line="649" Column="131" />
+      <File FileName="osiris/rpt_caja_comprobante.cs" Line="260" Column="174" />
+      <File FileName="osiris/abonos.cs" Line="1050" Column="106" />
+      <File FileName="osiris/caja.cs" Line="2299" Column="106" />
+      <File FileName="osiris/tesoreria.cs" Line="273" Column="36" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
         <State expanded="True">
           <Node name="osiris" expanded="True">
             <Node name="References" expanded="True" />
-            <Node name="ordenes_de_compras.cs" selected="True" />
+            <Node name="class_conexion.cs" selected="True" />
           </Node>
         </State>
       </Pad>

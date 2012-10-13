@@ -531,6 +531,9 @@ namespace osiris
 					if(tiporeporte == "PASES_QUIROFANO_URGENCIAS"){
 						query_tipo_paciente = "AND osiris_erp_pases_qxurg.id_tipo_paciente = '"+id_tipopaciente.ToString()+"' ";
 					}
+					if(tiporeporte == "PAGARES"){
+						query_tipo_paciente = "AND osiris_erp_comprobante_pagare.id_tipo_paciente = '"+id_tipopaciente.ToString()+"' ";
+					}
 				}				
 				if (checkbutton_todas_fechas.Active == true){
 					query_rango_fechas= " ";
@@ -548,6 +551,10 @@ namespace osiris
 					if(tiporeporte == "PASES_QUIROFANO_URGENCIAS"){
 						query_rango_fechas = "AND to_char(osiris_erp_pases_qxurg.fechahora_creacion,'yyyy-MM-dd') >= '"+(string) entry_ano_inicial.Text.ToString()+"-"+(string) entry_mes_inicial.Text.ToString()+"-"+(string) entry_dia_inicial.Text.ToString()+"'  "+
 									"AND to_char(osiris_erp_pases_qxurg.fechahora_creacion,'yyyy-MM-dd') <= '"+(string) entry_ano_final.Text.ToString()+"-"+(string) entry_mes_final.Text.ToString()+"-"+(string) entry_dia_final.Text.ToString()+"' ";
+					}
+					if(tiporeporte == "PAGARES"){
+						query_rango_fechas = "AND to_char(osiris_erp_comprobante_pagare.fechahora_creacion,'yyyy-MM-dd') >= '"+(string) entry_ano_inicial.Text.ToString()+"-"+(string) entry_mes_inicial.Text.ToString()+"-"+(string) entry_dia_inicial.Text.ToString()+"'  "+
+									"AND to_char(osiris_erp_comprobante_pagare.fechahora_creacion,'yyyy-MM-dd') <= '"+(string) entry_ano_final.Text.ToString()+"-"+(string) entry_mes_final.Text.ToString()+"-"+(string) entry_dia_final.Text.ToString()+"' ";	
 					}
 				}
 				
@@ -600,14 +607,17 @@ namespace osiris
 					//Console.WriteLine(query_sql);
 					new osiris.class_traslate_spreadsheet(query_sql,args_names_field,args_type_field,false,args_field_text,"",false,args_more_title);
 				}
-				if(tiporeporte == "PASES_QUIROFANO_URGENCIAS"){
-					string query_sql = "SELECT DISTINCT ON (osiris_erp_pases_qxurg.folio_de_servicio) osiris_erp_pases_qxurg.folio_de_servicio, osiris_erp_pases_qxurg.id_secuencia,osiris_erp_pases_qxurg.folio_de_servicio AS foliodeservicio,to_char(osiris_erp_cobros_enca.pid_paciente,'9999999999') AS pidpaciente," +
+				if(tiporeporte == "PASES_QUIROFANO_URGENCIAS"){					
+					string query_sql = "SELECT DISTINCT ON (osiris_erp_pases_qxurg.folio_de_servicio) osiris_erp_pases_qxurg.folio_de_servicio, osiris_erp_pases_qxurg.id_secuencia AS nro_pase,osiris_erp_pases_qxurg.folio_de_servicio AS foliodeservicio,to_char(osiris_erp_cobros_enca.pid_paciente,'9999999999') AS pidpaciente," +
 						"nombre1_paciente || ' ' || nombre2_paciente || ' ' || apellido_paterno_paciente || ' ' || apellido_materno_paciente AS nombre_completo," +
 						"to_char(osiris_his_paciente.fecha_nacimiento_paciente, 'dd-MM-yyyy') AS fechanacpaciente,to_char(to_number(to_char(age('2012-02-14 10:45:24',osiris_his_paciente.fecha_nacimiento_paciente),'yyyy') ,'9999'),'9999') AS edadpaciente," +
 						"osiris_his_paciente.sexo_paciente,osiris_erp_cobros_enca.nombre_medico_tratante,osiris_erp_pases_qxurg.id_quien_creo,nombre1_empleado || ' ' || nombre2_empleado || ' ' || apellido_paterno_empleado || ' ' || apellido_materno_empleado AS nombresolicitante," +
 						"to_char(osiris_erp_pases_qxurg.fechahora_creacion,'yyyy-MM-dd') AS fechapaseqx,osiris_erp_pases_qxurg.id_tipo_admisiones,descripcion_admisiones,osiris_erp_cobros_enca.id_empresa AS idempresa,osiris_empresas.descripcion_empresa," +
-						"osiris_erp_cobros_enca.id_aseguradora,osiris_aseguradoras.descripcion_aseguradora,id_quien_creo,descripcion_diagnostico_movcargos AS motivo_ingreso,descripcion_tipo_paciente,cerrado "+
-						"FROM osiris_erp_pases_qxurg,osiris_his_tipo_admisiones,osiris_erp_cobros_enca,osiris_his_paciente,osiris_empleado,osiris_empresas,osiris_aseguradoras,osiris_erp_movcargos,osiris_his_tipo_pacientes "+
+						"osiris_erp_cobros_enca.id_aseguradora,osiris_aseguradoras.descripcion_aseguradora,descripcion_diagnostico_movcargos AS motivo_ingreso,descripcion_tipo_paciente," +
+						"osiris_erp_movcargos.id_tipo_cirugia,descripcion_cirugia," +
+						"osiris_erp_cobros_enca.id_medico_tratante,osiris_his_medicos.nombre_medico AS medicotratante,nombre_medico_encabezado AS dr_solicita,"+
+						"osiris_erp_cobros_enca.observaciones1,total_abonos+total_pago AS pagosabonos,cerrado "+
+						"FROM osiris_erp_pases_qxurg,osiris_his_tipo_admisiones,osiris_erp_cobros_enca,osiris_his_paciente,osiris_empleado,osiris_empresas,osiris_aseguradoras,osiris_erp_movcargos,osiris_his_tipo_pacientes,osiris_his_tipo_cirugias,osiris_his_medicos "+
 						"WHERE osiris_erp_pases_qxurg.id_tipo_admisiones = osiris_his_tipo_admisiones.id_tipo_admisiones " +
 						"AND osiris_erp_pases_qxurg.pid_paciente = osiris_his_paciente.pid_paciente " +
 						"AND osiris_erp_pases_qxurg.folio_de_servicio = osiris_erp_cobros_enca.folio_de_servicio " +
@@ -616,14 +626,51 @@ namespace osiris
 						"AND osiris_erp_cobros_enca.id_aseguradora = osiris_aseguradoras.id_aseguradora "+
 						"AND osiris_erp_movcargos.id_tipo_paciente = osiris_his_tipo_pacientes.id_tipo_paciente "+
 						"AND osiris_erp_movcargos.folio_de_servicio = osiris_erp_pases_qxurg.folio_de_servicio " +
-						"AND eliminado = 'false' "+
-						query_tipo_paciente+
+						"AND osiris_erp_movcargos.id_tipo_cirugia = osiris_his_tipo_cirugias.id_tipo_cirugia " +
+						"AND osiris_erp_cobros_enca.id_medico_tratante = osiris_his_medicos.id_medico " +
+						"AND osiris_erp_cobros_enca.cancelado = 'false' " +
+						//"AND osiris_erp_movcargos.id_anestesiologo = osiris_his_medicos.id_medico "+ 
 						query_rango_fechas+
+						query_tipo_paciente+
 						"ORDER BY osiris_erp_pases_qxurg.folio_de_servicio;";
-					string[] args_names_field = {"fechapaseqx","foliodeservicio","pidpaciente","nombre_completo","motivo_ingreso","descripcion_tipo_paciente","cerrado"};
-					string[] args_type_field = {"string","float","float","string","string","string","string"};
-					string[] args_field_text = {};
-					string[] args_more_title = {};
+					string[] args_names_field = {"fechapaseqx","nro_pase","foliodeservicio","pagosabonos","pidpaciente","nombre_completo","motivo_ingreso","descripcion_tipo_paciente","descripcion_cirugia","dr_solicita","medicotratante","cerrado"};
+					string[] args_type_field = {"string","float","float","float","float","string","string","string","string","string","string","string"};
+					string[] args_field_text = {"id_producto","nombre_producto","nro_serie","tipo_anestesia","id_anestesiologo","nombre_anestesiologo"};
+					string[] args_more_title = {""};
+					// class_crea_ods.cs
+					//Console.WriteLine(query_sql);
+					new osiris.class_traslate_spreadsheet(query_sql,args_names_field,args_type_field,true,args_field_text,"observaciones1",false,args_more_title);
+				}
+				if(tiporeporte == "PAGARES"){
+					string query_sql = "SELECT DISTINCT ON (osiris_erp_comprobante_pagare.folio_de_servicio) osiris_erp_comprobante_pagare.folio_de_servicio, osiris_erp_comprobante_pagare.id_comprobante_pagare AS nro_pagare,osiris_erp_comprobante_pagare.folio_de_servicio AS foliodeservicio,to_char(osiris_erp_cobros_enca.pid_paciente,'9999999999') AS pidpaciente," +
+						"nombre1_paciente || ' ' || nombre2_paciente || ' ' || apellido_paterno_paciente || ' ' || apellido_materno_paciente AS nombre_completo," +
+						"to_char(osiris_his_paciente.fecha_nacimiento_paciente, 'dd-MM-yyyy') AS fechanacpaciente,to_char(to_number(to_char(age('2012-02-14 10:45:24',osiris_his_paciente.fecha_nacimiento_paciente),'yyyy') ,'9999'),'9999') AS edadpaciente," +
+						"osiris_his_paciente.sexo_paciente,osiris_erp_cobros_enca.nombre_medico_tratante,osiris_erp_comprobante_pagare.id_quien_creo,nombre1_empleado || ' ' || nombre2_empleado || ' ' || apellido_paterno_empleado || ' ' || apellido_materno_empleado AS nombresolicitante," +
+						"to_char(osiris_erp_comprobante_pagare.fechahora_creacion,'yyyy-MM-dd') AS fechapaseqx,osiris_erp_comprobante_pagare.id_tipo_admisiones,descripcion_admisiones,osiris_erp_cobros_enca.id_empresa AS idempresa,osiris_empresas.descripcion_empresa," +
+						"osiris_erp_cobros_enca.id_aseguradora,osiris_aseguradoras.descripcion_aseguradora,descripcion_diagnostico_movcargos AS motivo_ingreso,descripcion_tipo_paciente," +
+						"osiris_erp_movcargos.id_tipo_cirugia,descripcion_cirugia," +
+						"osiris_erp_cobros_enca.id_medico_tratante,osiris_his_medicos.nombre_medico AS medicotratante,nombre_medico_encabezado AS dr_solicita,"+
+						"osiris_erp_cobros_enca.observaciones1,total_abonos+total_pago AS pagosabonos,cerrado "+
+						"FROM osiris_erp_comprobante_pagare,osiris_his_tipo_admisiones,osiris_erp_cobros_enca,osiris_his_paciente,osiris_empleado,osiris_empresas,osiris_aseguradoras,osiris_erp_movcargos,osiris_his_tipo_pacientes,osiris_his_tipo_cirugias,osiris_his_medicos "+
+						"WHERE osiris_erp_comprobante_pagare.id_tipo_admisiones = osiris_his_tipo_admisiones.id_tipo_admisiones " +
+						"AND osiris_erp_comprobante_pagare.pid_paciente = osiris_his_paciente.pid_paciente " +
+						"AND osiris_erp_comprobante_pagare.folio_de_servicio = osiris_erp_cobros_enca.folio_de_servicio " +
+						"AND osiris_erp_comprobante_pagare.id_quien_creo = osiris_empleado.login_empleado " +
+						"AND osiris_erp_cobros_enca.id_empresa = osiris_empresas.id_empresa " +
+						"AND osiris_erp_cobros_enca.id_aseguradora = osiris_aseguradoras.id_aseguradora "+
+						"AND osiris_erp_movcargos.id_tipo_paciente = osiris_his_tipo_pacientes.id_tipo_paciente "+
+						"AND osiris_erp_movcargos.folio_de_servicio = osiris_erp_comprobante_pagare.folio_de_servicio " +
+						"AND osiris_erp_movcargos.id_tipo_cirugia = osiris_his_tipo_cirugias.id_tipo_cirugia " +
+						"AND osiris_erp_cobros_enca.id_medico_tratante = osiris_his_medicos.id_medico " +
+						"AND osiris_erp_cobros_enca.cancelado = 'false' " +
+						//"AND osiris_erp_movcargos.id_anestesiologo = osiris_his_medicos.id_medico "+ 
+						query_rango_fechas+
+						query_tipo_paciente+
+						"ORDER BY osiris_erp_comprobante_pagare.folio_de_servicio;";
+					string[] args_names_field = {"fechapaseqx","nro_pagare","foliodeservicio","pagosabonos","pidpaciente","nombre_completo","motivo_ingreso","descripcion_tipo_paciente","descripcion_cirugia","dr_solicita","medicotratante","cerrado"};
+					string[] args_type_field = {"string","float","float","float","float","string","string","string","string","string","string","string"};
+					string[] args_field_text = {""};
+					string[] args_more_title = {""};
 					// class_crea_ods.cs
 					//Console.WriteLine(query_sql);
 					new osiris.class_traslate_spreadsheet(query_sql,args_names_field,args_type_field,false,args_field_text,"",false,args_more_title);

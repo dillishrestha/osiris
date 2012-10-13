@@ -118,6 +118,10 @@ namespace osiris
 		private void OnBeginPrint (object obj, Gtk.BeginPrintArgs args)
 		{
 			print.NPages = 3;  // crea cantidad de copias del reporte			
+			
+			if (tipocomprobante == "PAGARE"){
+				print.NPages = 1;  // crea cantidad de copias del reporte
+			}
 			// para imprimir horizontalmente el reporte
 			//print.PrintSettings.Orientation = PageOrientation.Landscape;
 			//Console.WriteLine(print.PrintSettings.Orientation.ToString());
@@ -224,7 +228,76 @@ namespace osiris
 						}
 					}
 					if(tipocomprobante == "ABONO"){
+						
 					
+					}
+					if(tipocomprobante == "PAGARE"){
+						comienzo_linea += separacion_linea;
+						comienzo_linea += separacion_linea;
+						fontSize = 8.0;			layout = null;			layout = context.CreatePangoLayout ();
+						desc.Size = (int)(fontSize * pangoScale);		layout.FontDescription = desc;
+						layout.FontDescription.Weight = Weight.Bold;
+						cr.MoveTo(05*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText("PAGARÉ");	Pango.CairoHelper.ShowLayout (cr, layout);
+						cr.MoveTo(200*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText("N° 1/1");	Pango.CairoHelper.ShowLayout (cr, layout);
+						cr.MoveTo(400*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);		layout.SetText("BUENO POR "+toma_valor_total.ToString("C"));	Pango.CairoHelper.ShowLayout (cr, layout);
+						layout.FontDescription.Weight = Weight.Normal;
+						comienzo_linea += separacion_linea;
+						comienzo_linea += separacion_linea;
+						cr.MoveTo(270*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);				layout.SetText("Monterrey, Nuevo León a los "+DateTime.Now.ToString("dd")+" días del mes de "+classpublic.nom_mes(DateTime.Now.ToString("MM"))+" del año "+DateTime.Now.ToString("yyyy"));	Pango.CairoHelper.ShowLayout (cr, layout);
+						comienzo_linea += separacion_linea;
+						fontSize = 6.0;			layout = null;			layout = context.CreatePangoLayout ();
+						desc.Size = (int)(fontSize * pangoScale);		layout.FontDescription = desc;
+						layout.FontDescription.Weight = Weight.Normal;
+						cr.MoveTo(370*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);				layout.SetText("Lugar y fecha de expedición");	Pango.CairoHelper.ShowLayout (cr, layout);
+						comienzo_linea += separacion_linea;
+						fontSize = 8.0;			layout = null;			layout = context.CreatePangoLayout ();
+						desc.Size = (int)(fontSize * pangoScale);		layout.FontDescription = desc;
+						layout.FontDescription.Weight = Weight.Normal;
+						cr.MoveTo(05*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);				layout.SetText("Debo(mos) y pagaré(mos) incoldicionalmente por este Pagaré a la orden de :");	Pango.CairoHelper.ShowLayout (cr, layout);
+						comienzo_linea += separacion_linea;
+						cr.MoveTo(05*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);				layout.SetText(classpublic.nombre_empresa);	Pango.CairoHelper.ShowLayout (cr, layout);
+						comienzo_linea += separacion_linea;
+						cr.MoveTo(05*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);				layout.SetText("en Monterrey, Nuevo León el "+lector["vencimiento_pagare"].ToString());	Pango.CairoHelper.ShowLayout (cr, layout);
+						comienzo_linea += separacion_linea;
+						cr.MoveTo(05*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);				layout.SetText("La cantidad de:");	Pango.CairoHelper.ShowLayout (cr, layout);
+						comienzo_linea += separacion_linea;
+						cr.MoveTo(05*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);		layout.SetText((string) class_public.ConvertirCadena(toma_valor_total.ToString(),"PESOS").ToUpper());	Pango.CairoHelper.ShowLayout (cr, layout);							
+						comienzo_linea += separacion_linea;
+						comienzo_linea += separacion_linea;
+						cr.MoveTo(05*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);				layout.SetText("Valor Recibido a mi (nuestra) entera satisfacción. Este pagaré forma parte de una serie numerada del 1 al 1 y todos están sujetos a  la");	Pango.CairoHelper.ShowLayout (cr, layout);
+						comienzo_linea += separacion_linea;
+						cr.MoveTo(05*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);				layout.SetText("condición de que, al no pagarse cualquiera de ellos a su vencimiento, serán exigible todos los que le sigan en número, ademas de  los");	Pango.CairoHelper.ShowLayout (cr, layout);
+						comienzo_linea += separacion_linea;
+						cr.MoveTo(05*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);				layout.SetText("ya vencido, desde la fecha de vencimiento a este documento hasta el día de su  liquidacion, causara intereses  moratorios  al tipo  del");	Pango.CairoHelper.ShowLayout (cr, layout);
+						comienzo_linea += separacion_linea;
+						cr.MoveTo(05*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);				layout.SetText("_____% mensual, pagadero en esta ciudad juntamente con el principal.");	Pango.CairoHelper.ShowLayout (cr, layout);
+						comienzo_linea += separacion_linea;
+						comienzo_linea += separacion_linea;
+						layout.FontDescription.Weight = Weight.Bold;
+						cr.MoveTo(05*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);				layout.SetText("Datos del Deudor");	Pango.CairoHelper.ShowLayout (cr, layout);
+						layout.FontDescription.Weight = Weight.Normal;
+						comienzo_linea += separacion_linea;
+						cr.MoveTo(05*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);				layout.SetText("Nombre: "+lector["nombre_completo"].ToString());	Pango.CairoHelper.ShowLayout (cr, layout);
+						cr.MoveTo(400*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);				layout.SetText("Acepto(amos)");	Pango.CairoHelper.ShowLayout (cr, layout);
+						comienzo_linea += separacion_linea;
+						cr.MoveTo(05*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);				layout.SetText("Dirección: "+lector["direccion_paciente"].ToString().Trim()+" "+lector["numero_casa_paciente"].ToString().Trim()+lector["numero_departamento_paciente"].ToString().Trim()+" "+lector["colonia_paciente"].ToString().Trim()+" CP. "+lector["codigo_postal_paciente"].ToString().Trim());	Pango.CairoHelper.ShowLayout (cr, layout);
+						comienzo_linea += separacion_linea;
+						cr.MoveTo(05*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);				layout.SetText("Población: "+lector["municipio_paciente"].ToString().Trim()+", "+lector["estado_paciente"].ToString().Trim());	Pango.CairoHelper.ShowLayout (cr, layout);
+						cr.MoveTo(400*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);				layout.SetText("Firma(s) ___________________________");	Pango.CairoHelper.ShowLayout (cr, layout);
+						comienzo_linea += separacion_linea;
+						comienzo_linea += separacion_linea;
+						layout.FontDescription.Weight = Weight.Bold;
+						cr.MoveTo(05*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);				layout.SetText("Datos y firma(s) del(os) Aval(es)");	Pango.CairoHelper.ShowLayout (cr, layout);
+						layout.FontDescription.Weight = Weight.Normal;
+						comienzo_linea += separacion_linea;
+						cr.MoveTo(05*escala_en_linux_windows, comienzo_linea+5*escala_en_linux_windows);				layout.SetText("Nombre:_____________________________________________________ ");	Pango.CairoHelper.ShowLayout (cr, layout);
+						comienzo_linea += separacion_linea;
+						cr.MoveTo(05*escala_en_linux_windows, comienzo_linea+5*escala_en_linux_windows);				layout.SetText("Dirección:___________________________________________________");	Pango.CairoHelper.ShowLayout (cr, layout);
+						comienzo_linea += separacion_linea;
+						cr.MoveTo(05*escala_en_linux_windows, comienzo_linea+5*escala_en_linux_windows);				layout.SetText("Población:_____________________________________________ Telefono :______________");	Pango.CairoHelper.ShowLayout (cr, layout);
+						cr.MoveTo(400*escala_en_linux_windows, comienzo_linea+5*escala_en_linux_windows);				layout.SetText("Firma(s) ___________________________");	Pango.CairoHelper.ShowLayout (cr, layout);
+
+						
 					}
 				}								
 			}catch (NpgsqlException ex){
@@ -269,8 +342,11 @@ namespace osiris
 			//layout.Wrap = Pango.WrapMode.Word;
 			//layout.SingleParagraphMode = true;
 			layout.Justify =  false;
-			cr.MoveTo(width/2,45*escala_en_linux_windows);	layout.SetText("COMPROBANTE_"+titulo_comprobante);	Pango.CairoHelper.ShowLayout (cr, layout);
-			
+			if (tipocomprobante == "PAGARE"){
+				cr.MoveTo(width/2,45*escala_en_linux_windows);	layout.SetText(titulo_comprobante);	Pango.CairoHelper.ShowLayout (cr, layout);
+			}else{
+				cr.MoveTo(width/2,45*escala_en_linux_windows);	layout.SetText("COMPROBANTE_"+titulo_comprobante);	Pango.CairoHelper.ShowLayout (cr, layout);
+			}
 			fontSize = 9.0;			layout = null;			layout = context.CreatePangoLayout ();
 			desc.Size = (int)(fontSize * pangoScale);		layout.FontDescription = desc;
 			layout.FontDescription.Weight = Weight.Bold;		// Letra negrita
@@ -298,7 +374,7 @@ namespace osiris
 				desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;
 				layout.FontDescription.Weight = Weight.Normal;
 				// numeros en letras
-				cr.MoveTo(05*escala_en_linux_windows,comienzo_linea+(separacion_linea*22)*escala_en_linux_windows);		layout.SetText((string) class_public.ConvertirCadena(tomavalortotal.ToString(),"PESO").ToUpper());	Pango.CairoHelper.ShowLayout (cr, layout);		
+				cr.MoveTo(05*escala_en_linux_windows,comienzo_linea+(separacion_linea*22)*escala_en_linux_windows);		layout.SetText((string) class_public.ConvertirCadena(tomavalortotal.ToString(),"PESOS").ToUpper());	Pango.CairoHelper.ShowLayout (cr, layout);		
 				fontSize = 8.0;		
 				desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;
 				layout.FontDescription.Weight = Weight.Bold;		// Letra negrita
@@ -311,36 +387,38 @@ namespace osiris
 				desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;
 				layout.FontDescription.Weight = Weight.Normal;
 				// numeros en letras
-				cr.MoveTo(05*escala_en_linux_windows,comienzo_linea+(separacion_linea*22)*escala_en_linux_windows);		layout.SetText((string) class_public.ConvertirCadena(tomavalortotal.ToString(),"PESO").ToUpper());	Pango.CairoHelper.ShowLayout (cr, layout);		
+				cr.MoveTo(05*escala_en_linux_windows,comienzo_linea+(separacion_linea*22)*escala_en_linux_windows);		layout.SetText((string) class_public.ConvertirCadena(tomavalortotal.ToString(),"PESOS").ToUpper());	Pango.CairoHelper.ShowLayout (cr, layout);		
 				fontSize = 8.0;		
 				desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;
 				layout.FontDescription.Weight = Weight.Bold;		// Letra negrita
 				cr.MoveTo(400*escala_en_linux_windows,comienzo_linea+(separacion_linea*22)*escala_en_linux_windows);		layout.SetText("T O T A L : "+tomavalortotal.ToString("C"));	Pango.CairoHelper.ShowLayout (cr, layout);		
 			}
-			
+			/*
 			if (tipocomprobante == "PAGARE"){				
 				fontSize = 7.0;		
 				desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;
 				layout.FontDescription.Weight = Weight.Normal;
 				// numeros en letras
-				cr.MoveTo(05*escala_en_linux_windows,comienzo_linea+(separacion_linea*22)*escala_en_linux_windows);		layout.SetText((string) class_public.ConvertirCadena(tomavalortotal.ToString(),"PESO").ToUpper());	Pango.CairoHelper.ShowLayout (cr, layout);		
+				cr.MoveTo(05*escala_en_linux_windows,comienzo_linea+(separacion_linea*22)*escala_en_linux_windows);		layout.SetText((string) class_public.ConvertirCadena(tomavalortotal.ToString(),"PESOS").ToUpper());	Pango.CairoHelper.ShowLayout (cr, layout);		
 				fontSize = 8.0;		
 				desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;
 				layout.FontDescription.Weight = Weight.Bold;		// Letra negrita
 				cr.MoveTo(300*escala_en_linux_windows,comienzo_linea+(separacion_linea*22)*escala_en_linux_windows);		layout.SetText("VALOR TOTAL DEL PAGARE: "+tomavalortotal.ToString("C"));	Pango.CairoHelper.ShowLayout (cr, layout);		
+			}*/
+			
+			if (tipocomprobante != "PAGARE"){
+				fontSize = 8.0;		
+				desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;
+				layout.FontDescription.Weight = Weight.Normal;		// Letra normal
+				
+				cr.MoveTo(05*escala_en_linux_windows,comienzo_linea+(separacion_linea*23)*escala_en_linux_windows);		layout.SetText("Concepto    : "+conceptocomprobante);	Pango.CairoHelper.ShowLayout (cr, layout);		
+				cr.MoveTo(05*escala_en_linux_windows,comienzo_linea+(separacion_linea*24)*escala_en_linux_windows);		layout.SetText("Observacion : "+observacionescomprobante);	Pango.CairoHelper.ShowLayout (cr, layout);		
+				cr.MoveTo(05*escala_en_linux_windows,comienzo_linea+(separacion_linea*25)*escala_en_linux_windows);		layout.SetText("Atendio por : "+nombreempleado);	Pango.CairoHelper.ShowLayout (cr, layout);		
+	
+				fontSize = 8.0;			layout = null;			layout = context.CreatePangoLayout ();
+				desc.Size = (int)(fontSize * pangoScale);		layout.FontDescription = desc;
+				layout.FontDescription.Weight = Weight.Normal;		// Letra normal
 			}
-			
-			fontSize = 8.0;		
-			desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;
-			layout.FontDescription.Weight = Weight.Normal;		// Letra normal
-			
-			cr.MoveTo(05*escala_en_linux_windows,comienzo_linea+(separacion_linea*23)*escala_en_linux_windows);		layout.SetText("Concepto    : "+conceptocomprobante);	Pango.CairoHelper.ShowLayout (cr, layout);		
-			cr.MoveTo(05*escala_en_linux_windows,comienzo_linea+(separacion_linea*24)*escala_en_linux_windows);		layout.SetText("Observacion : "+observacionescomprobante);	Pango.CairoHelper.ShowLayout (cr, layout);		
-			cr.MoveTo(05*escala_en_linux_windows,comienzo_linea+(separacion_linea*25)*escala_en_linux_windows);		layout.SetText("Atendio por : "+nombreempleado);	Pango.CairoHelper.ShowLayout (cr, layout);		
-
-			fontSize = 8.0;			layout = null;			layout = context.CreatePangoLayout ();
-			desc.Size = (int)(fontSize * pangoScale);		layout.FontDescription = desc;
-			layout.FontDescription.Weight = Weight.Normal;		// Letra normal
 		}
 				
 		private void OnEndPrint (object obj, Gtk.EndPrintArgs args)

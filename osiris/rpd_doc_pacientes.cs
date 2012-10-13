@@ -213,11 +213,11 @@ namespace osiris
 		string tipoantestesia = "";
 		string nombretecnicovision = "";
 		string[] args_args = {""};
-		int[] args_id_array = {0,1,2,3,4,5,6,7,8,9};
+		int[] args_id_array = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20};
 		string[] args_tipos_cirugias = {"","CIRUGIA AMBULATORIA","CIRUGIA PROGRAMADA","SIN CIRUGIA"};
 		string[] args_diag_primeravez = {"","SI","NO"};
 		string[] args_tipobusqueda = {"","PRIMER NOMBRE","SEGUNDO NOMBRE","APELLIDO PATERNO","APELLIDO MATERNO","CEDULA MEDICA","ESPECIALIDAD"};
-		string[] args_tipoanestesia = {"","INTRACAM","INTRACAM + SEDACION","RETROBULVAR","RETROBULVAR + SEDACION","TOPITA","EPIDURAL O RAQUEA","LOCAL + SEDACION","GENERAL","ENDOVENOSA"};
+		string[] args_tipoanestesia = {"","INTRACAM","INTRACAM + SEDACION","RETROBULVAR","RETROBULVAR + SEDACION","TOPICA","NO TOPICA","EPIDURAL O RAQUEA","LOCAL + SEDACION","GENERAL","ENDOVENOSA"};
 		string[] args_tecnicosvision = {"","ALEJANDRA DEYANIRA MARTINEZ CARDENAS","LUIS MIGUEL ALVAREZ CASTAÑEDA","GUADALUPE ROCHA PAYAN","ERICK SEBASTIAN CONRONADO MATA"};
 		class_conexion conexion_a_DB = new class_conexion();
 		class_public classpublic = new class_public();

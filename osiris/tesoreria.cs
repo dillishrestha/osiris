@@ -53,6 +53,7 @@ namespace osiris
 		[Widget] Gtk.Button button_cortecaja = null;
 		[Widget] Gtk.Button button_exportar_compserv = null;
 		[Widget] Gtk.Button button_exportar_paseqx = null;
+		[Widget] Gtk.Button button_exportar_pagares = null;
 		[Widget] Gtk.Button button_reportes = null;
 		[Widget] Gtk.Button button_separa_folio = null;
 		
@@ -165,6 +166,7 @@ namespace osiris
 			button_exportar_compserv.Clicked += new EventHandler(on_button_exportar_compserv_clicked);
 			button_cortecaja.Clicked += new EventHandler(on_button_cortecaja_clicked);
 			button_exportar_paseqx.Clicked += new EventHandler(on_button_exportar_paseqx_clicked);
+			button_exportar_pagares.Clicked += new EventHandler(on_button_exportar_pagares_clicked);
 			button_separa_folio.Clicked += new EventHandler(on_button_separa_folio_clicked);
 			button_solicitud_material.Clicked += new EventHandler(on_button_solicitud_material_clicked);
 			button_reportes.Clicked += new EventHandler(on_button_reportes_clicked);
@@ -251,7 +253,7 @@ namespace osiris
 		void on_button_exportar_compserv_clicked(object sender, EventArgs args)
 		{
 			if(LoginEmpleado == "DOLIVARES" || LoginEmpleado =="ADMIN" || LoginEmpleado =="MARGARITAZ" || LoginEmpleado =="IESPINOZAF" || 
-			   LoginEmpleado =="ZBAEZH" || LoginEmpleado == "YTAMEZ"  || LoginEmpleado == "ELVIAVM"){
+			   LoginEmpleado == "ELVIAVM"){
 				new osiris.rptAdmision(nombrebd,"archivo","COMPROBANTES_SERVICIO");  // rpt_rep1_admision.cs
 			}else{
 				MessageDialog msgBox = new MessageDialog (MyWinError,DialogFlags.Modal,
@@ -265,6 +267,18 @@ namespace osiris
 			if(LoginEmpleado == "DOLIVARES" || LoginEmpleado =="ADMIN" || LoginEmpleado =="MARGARITAZ" || LoginEmpleado =="IESPINOZAF" || 
 			   LoginEmpleado == "ELVIAVM"){
 				new osiris.rptAdmision(nombrebd,"archivo","PASES_QUIROFANO_URGENCIAS");  // rpt_rep1_admision.cs
+			}else{
+				MessageDialog msgBox = new MessageDialog (MyWinError,DialogFlags.Modal,
+									MessageType.Info,ButtonsType.Ok,"No tiene Permiso para esta Opcion");
+				msgBox.Run ();msgBox.Destroy();
+			}
+		}
+		
+		void on_button_exportar_pagares_clicked(object sender, EventArgs args)
+		{
+			if(LoginEmpleado == "DOLIVARES" || LoginEmpleado =="ADMIN" || LoginEmpleado =="MARGARITAZ" || LoginEmpleado =="IESPINOZAF" || 
+			   LoginEmpleado == "ELVIAVM"){
+				new osiris.rptAdmision(nombrebd,"archivo","PAGARES");  // rpt_rep1_admision.cs
 			}else{
 				MessageDialog msgBox = new MessageDialog (MyWinError,DialogFlags.Modal,
 									MessageType.Info,ButtonsType.Ok,"No tiene Permiso para esta Opcion");

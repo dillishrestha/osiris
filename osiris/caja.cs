@@ -305,6 +305,7 @@ namespace osiris
 		float deducible_caja = 0;
 		float coaseguro_caja = 0;
 		float honorariomedico = 0;
+		float montoconvenio = 0;
 		
 		// Variables publicas para le rango de fecha procedimiento
 		string fecha_rango_1;
@@ -969,7 +970,8 @@ namespace osiris
 						entry_ingreso.Text,entry_egreso.Text,entry_numero_factura.Text,
 						entry_nombre_paciente.Text,entry_telefono_paciente.Text,entry_doctor.Text,
 						entry_tipo_paciente.Text,entry_aseguradora.Text,edadpac+" Años y "+mesespac+" Meses",fecha_nacimiento,
-						dir_pac,cirugia,empresapac,id_tipopaciente,NomEmpleado+" "+AppEmpleado+" "+ApmEmpleado,this.LoginEmpleado,agregarmasabonos);
+						dir_pac,cirugia,empresapac,id_tipopaciente,NomEmpleado+" "+AppEmpleado+" "+ApmEmpleado,LoginEmpleado,
+				                  agregarmasabonos,montoconvenio.ToString());
 			}
 		}
 		
@@ -2054,7 +2056,8 @@ namespace osiris
 														"observaciones," +
 														"observaciones2," +
 														"observaciones3,"+
-														"monto_pagare,"+
+														"monto_pagare," +
+														"id_tipo_admisiones,"+
 														"fecha_vencimiento_pagare) "+
 													"VALUES ('"+
 														numerodecomprobante.ToString().Trim()+"','"+
@@ -2070,6 +2073,7 @@ namespace osiris
 														entry_observaciones2.Text.ToString().ToUpper().Trim()+"','"+
 														entry_observaciones3.Text.ToString().ToUpper().Trim()+"','"+
 														entry_total_comprobante.Text.ToString().Trim()+"','"+
+														id_tipopaciente.ToString().Trim()+"','"+
 														entry_ano2.Text.Trim()+"-"+entry_mes2.Text.Trim()+"-"+entry_dia2.Text.Trim()+
 														"');";
 						}
@@ -2161,10 +2165,32 @@ namespace osiris
 						       	}
 								if(tipo_de_comprobante == "PAGARE"){
 									if(error == false){
-										Widget win = (Widget) sender;
-										win.Toplevel.Destroy();
-						 				//cierre_de_procedimiento();				 			
-						 				comprobante_de_caja_pago("PAGARE",numerodecomprobante);
+										NpgsqlConnection conexion1; 
+										conexion1 = new NpgsqlConnection (connectionString+nombrebd);
+										// Verifica que la base de datos este conectada
+										try{
+											conexion1.Open ();
+											NpgsqlCommand comando1; 
+											comando1 = conexion1.CreateCommand ();
+							 				comando1.CommandText = "UPDATE osiris_erp_cobros_enca "+
+												"SET reservacion = 'true'," +
+												"pagare = 'true',"+
+												"monto_convenio = '"+(string) entry_total_comprobante.Text.Trim()+"' "+							
+												"WHERE  folio_de_servicio =  '"+folioservicio+"';";
+											//Console.WriteLine(comando1.CommandText);
+							 				comando1.ExecuteNonQuery();    	    	       	comando1.Dispose();
+											Widget win = (Widget) sender;
+											win.Toplevel.Destroy();
+							 				//cierre_de_procedimiento();
+											
+							 				comprobante_de_caja_pago("PAGARE",numerodecomprobante);
+							 							 			 	  
+					 					}catch(NpgsqlException ex){
+						   					MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+															MessageType.Error,ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
+											msgBoxError.Run ();					msgBoxError.Destroy();
+						       			}
+						       			conexion1.Close();
 									}else{
 										MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
 										MessageType.Error,ButtonsType.Close, "Verifique la fecha del vencimiento del PAGARE debe ser mayor a la de Hoy....");
@@ -2260,36 +2286,23 @@ namespace osiris
 						"AND osiris_erp_cobros_deta.eliminado = 'false' ", NomEmpleado );
 			}
 			if (tipo_comprobante == "PAGARE"){			
-				new caja_comprobante (numerodecomprobante, "PAGARE", folioservicio,"SELECT osiris_erp_cobros_deta.folio_de_servicio AS foliodeservicio,osiris_erp_cobros_deta.pid_paciente AS pidpaciente, "+ 
-						"osiris_his_tipo_admisiones.descripcion_admisiones,aplicar_iva, "+
-						"osiris_his_tipo_admisiones.id_tipo_admisiones AS idadmisiones,"+
-						"osiris_grupo_producto.descripcion_grupo_producto, "+
-						"osiris_productos.id_grupo_producto,  "+
-						"to_char(osiris_erp_cobros_deta.porcentage_descuento,'999.99') AS porcdesc, "+
-						"to_char(osiris_erp_cobros_enca.fechahora_creacion,'dd-mm-yyyy') AS fechcreacion,  "+
-						"to_char(osiris_erp_cobros_enca.fechahora_creacion,'HH:mi') AS horacreacion,  "+
-						"to_char(osiris_erp_cobros_deta.id_producto,'999999999999') AS idproducto,descripcion_producto, "+
-						"to_char(osiris_erp_cobros_deta.cantidad_aplicada,'99999999.99') AS cantidadaplicada, "+
-						"to_char(osiris_erp_cobros_deta.precio_producto,'9999999.99') AS preciounitario, "+
-						"ltrim(to_char(osiris_erp_cobros_deta.precio_producto,'9999999.99')) AS preciounitarioprod, "+
-						"to_char(osiris_erp_cobros_deta.iva_producto,'999999.99') AS ivaproducto, "+
-						//"to_char(osiris_erp_cobros_deta.precio_por_cantidad,'999999.99') AS ppcantidad, "+
-						"to_char(osiris_erp_cobros_deta.cantidad_aplicada * osiris_erp_cobros_deta.precio_producto,'99999999.99') AS ppcantidad,"+
-						"to_char(osiris_productos.precio_producto_publico,'999999999.99999') AS preciopublico,osiris_erp_comprobante_pagare.numero_comprobante_pagare AS numerorecibo,"+
-						"osiris_his_paciente.nombre1_paciente || ' ' || osiris_his_paciente.nombre2_paciente || ' ' || osiris_his_paciente.apellido_paterno_paciente || ' ' || osiris_his_paciente.apellido_materno_paciente AS nombre_completo, "+
-						"to_char(osiris_his_paciente.fecha_nacimiento_paciente, 'dd-MM-yyyy') AS fechanacpaciente, to_char(to_number(to_char(age('"+DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss")+"',osiris_his_paciente.fecha_nacimiento_paciente),'yyyy') ,'9999'),'9999') AS edadpaciente, "+
-					    "telefono_particular1_paciente,osiris_erp_comprobante_pagare.observaciones || ' ' || osiris_erp_comprobante_pagare.observaciones2 || ' ' || osiris_erp_comprobante_pagare.observaciones3 AS observacionesvarias," +
-					    "osiris_erp_comprobante_pagare.concepto_del_comprobante AS concepto_comprobante,"+
-						"osiris_erp_cobros_enca.id_empresa,descripcion_empresa,osiris_erp_cobros_enca.nombre_medico_encabezado,"+
-					    "to_char(monto_pagare,'999999999.99') AS montodelabono "+
-				        "FROM osiris_erp_cobros_deta,osiris_his_tipo_admisiones,osiris_productos,osiris_grupo_producto,osiris_erp_comprobante_pagare,osiris_his_paciente,osiris_erp_cobros_enca,osiris_empresas "+
-						"WHERE osiris_erp_cobros_deta.id_tipo_admisiones = osiris_his_tipo_admisiones.id_tipo_admisiones "+
-						"AND osiris_erp_cobros_deta.id_producto = osiris_productos.id_producto  "+ 
-						"AND osiris_productos.id_grupo_producto = osiris_grupo_producto.id_grupo_producto "+
-						"AND osiris_erp_cobros_deta.pid_paciente = osiris_his_paciente.pid_paciente "+
-				        "AND osiris_erp_cobros_enca.id_empresa = osiris_empresas.id_empresa "+
-					    "AND osiris_erp_cobros_enca.folio_de_servicio = osiris_erp_cobros_deta.folio_de_servicio "+
-						"AND osiris_erp_cobros_deta.eliminado = 'false' ", NomEmpleado );
+				new caja_comprobante (numerodecomprobante, "PAGARE", folioservicio,"SELECT osiris_erp_cobros_enca.folio_de_servicio AS foliodeservicio,osiris_erp_cobros_enca.pid_paciente AS pidpaciente," +
+							"osiris_erp_comprobante_pagare.numero_comprobante_pagare AS numerorecibo," +
+							"osiris_his_paciente.nombre1_paciente || ' ' || osiris_his_paciente.nombre2_paciente || ' ' || osiris_his_paciente.apellido_paterno_paciente || ' ' || osiris_his_paciente.apellido_materno_paciente AS nombre_completo," +
+							"to_char(osiris_his_paciente.fecha_nacimiento_paciente, 'dd-MM-yyyy') AS fechanacpaciente," +
+							"direccion_paciente,numero_casa_paciente,numero_departamento_paciente,codigo_postal_paciente,colonia_paciente,municipio_paciente,estado_paciente," +
+						    "to_char(osiris_erp_cobros_enca.fechahora_creacion,'dd-mm-yyyy') AS fechcreacion,  "+
+							"to_char(osiris_erp_cobros_enca.fechahora_creacion,'HH:mi') AS horacreacion,  "+
+							"to_char(to_number(to_char(age('"+DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss")+"',osiris_his_paciente.fecha_nacimiento_paciente),'yyyy') ,'9999'),'9999') AS edadpaciente," +
+							"telefono_particular1_paciente,osiris_erp_comprobante_pagare.observaciones AS observacionesvarias,osiris_erp_comprobante_pagare.concepto_del_comprobante AS concepto_comprobante," +
+							"osiris_erp_cobros_enca.id_empresa,descripcion_empresa,osiris_erp_cobros_enca.nombre_medico_encabezado,to_char(osiris_erp_comprobante_pagare.monto_pagare,'999999999.99') AS montodelabono," +
+							"descripcion_tipo_comprobante,to_char(fecha_vencimiento_pagare,'dd-mm-yyyy') AS vencimiento_pagare " +
+							"FROM osiris_erp_comprobante_pagare,osiris_his_paciente,osiris_erp_cobros_enca,osiris_empresas,osiris_erp_tipo_comprobante "+
+							"WHERE osiris_erp_cobros_enca.id_empresa = osiris_empresas.id_empresa "+
+							"AND osiris_erp_comprobante_pagare.folio_de_servicio = osiris_erp_cobros_enca.folio_de_servicio " +
+							"AND osiris_erp_comprobante_pagare.id_tipo_comprobante = osiris_erp_tipo_comprobante.id_tipo_comprobante "+
+							"AND osiris_his_paciente.pid_paciente = osiris_erp_cobros_enca.pid_paciente " +
+							"AND osiris_erp_comprobante_pagare.eliminado = 'false' ", NomEmpleado );
 			}
 		}
 		
@@ -3207,6 +3220,7 @@ namespace osiris
 			id_tipopaciente = 0;
 			idempresa_paciente = 0;
 			agregarmasabonos = true;
+			montoconvenio = 0;
 			
 			NpgsqlConnection conexion; 
 			conexion = new NpgsqlConnection (connectionString+nombrebd);
@@ -3249,7 +3263,7 @@ namespace osiris
 				            	"osiris_erp_cobros_enca.id_medico,nombre_medico, "+
 				            	"osiris_erp_movcargos.descripcion_diagnostico_movcargos,osiris_his_tipo_cirugias.id_tipo_cirugia,nombre_medico_encabezado,"+
 				            	"osiris_erp_cobros_enca.facturacion, "+
-				            	"osiris_erp_cobros_enca.pagado,"+
+				            	"osiris_erp_cobros_enca.pagado,monto_convenio,"+
 				            	
 				            	"osiris_erp_cobros_enca.id_habitacion,to_char(osiris_his_habitaciones.numero_cuarto,'999999999') AS numerocuarto,osiris_his_habitaciones.descripcion_cuarto,osiris_his_habitaciones.id_tipo_admisiones AS idtipoadmisiones_habitacion,"+
 				            	
@@ -3311,7 +3325,8 @@ namespace osiris
 					entry_honorario_med_caja.Text = (string) lector["honorariomedico"];
 					idempresa_paciente = (int) lector["idempresa"];
 					entry_total_abonos_caja.Text = (string) lector["totalabonos"];
-					entry_ultimo_pago.Text =  (string) lector["totalpago"];
+					entry_ultimo_pago.Text = (string) lector["totalpago"];
+					montoconvenio = float.Parse((string) lector["monto_convenio"].ToString());
 					
 					entry_habitacion.Text = (string) lector["numerocuarto"];
 					entry_habitacion.Text = entry_habitacion.Text.Trim()+"/"+(string) lector["descripcion_cuarto"];

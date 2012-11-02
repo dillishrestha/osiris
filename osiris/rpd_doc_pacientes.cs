@@ -218,7 +218,7 @@ namespace osiris
 		string[] args_diag_primeravez = {"","SI","NO"};
 		string[] args_tipobusqueda = {"","PRIMER NOMBRE","SEGUNDO NOMBRE","APELLIDO PATERNO","APELLIDO MATERNO","CEDULA MEDICA","ESPECIALIDAD"};
 		string[] args_tipoanestesia = {"","INTRACAM","INTRACAM + SEDACION","RETROBULVAR","RETROBULVAR + SEDACION","TOPICA","NO TOPICA","EPIDURAL O RAQUEA","LOCAL + SEDACION","GENERAL","ENDOVENOSA"};
-		string[] args_tecnicosvision = {"","ALEJANDRA DEYANIRA MARTINEZ CARDENAS","LUIS MIGUEL ALVAREZ CASTAÑEDA","GUADALUPE ROCHA PAYAN","ERICK SEBASTIAN CONRONADO MATA"};
+		string[] args_tecnicosvision = {"","ALEJANDRA DEYANIRA MARTINEZ CARDENAS","LUIS MIGUEL ALVAREZ CASTAÑEDA","GUADALUPE ROCHA PAYAN","ERICK SEBASTIAN CONRONADO MATA","AZALIA DIAZ ORTIZ"};
 		class_conexion conexion_a_DB = new class_conexion();
 		class_public classpublic = new class_public();
 		class_buscador classfind_data = new class_buscador();

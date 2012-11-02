@@ -360,15 +360,21 @@ namespace osiris
 		void on_imprime_requisicion_clicked(object sender, EventArgs args)
 		{
 		  if(this.entry_requisicion.Text == ""){
-				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,MessageType.Info,
+				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,MessageType.Error,
 				                                               ButtonsType.Close,"Favor de llenar toda la informaciòn correspondiente");
 				msgBoxError.Run ();					msgBoxError.Destroy();			
 			}else{
-		  		new osiris.rpt_requisicion_compras(this.nombrebd,entry_requisicion.Text,entry_status_requisicion.Text,entry_fecha_solicitud.Text,
+				if(enviadacompras == true){
+		  			new osiris.rpt_requisicion_compras(this.nombrebd,entry_requisicion.Text,entry_status_requisicion.Text,entry_fecha_solicitud.Text,
 				                                   entry_ano_requerida.Text+"-"+entry_mes_requerida.Text+"-"+entry_dia_requerida.Text,entry_observaciones.Text,
 				                                   entry_totalitems_productos.Text,lista_requisicion_productos,treeViewEngineRequisicion,
 				                                   entry_solicitado_por.Text,entry_motivo.Text,nombre_proveedor1,nombre_proveedor2,nombre_proveedor3,
 				                                   descripcion_tipo_requi,descripinternamiento,descripinternamiento2,entry_nombre_paciente.Text,entry_folio_servicio.Text,entry_pid_paciente.Text);
+				}else{
+					MessageDialog msgBox = new MessageDialog (MyWin,DialogFlags.Modal,
+									MessageType.Error,ButtonsType.Ok,"No se puede imprimir Requisicion, ya que no esta enviada a Compras, verifique...");
+					msgBox.Run ();msgBox.Destroy();
+				}
 			}
 		}
 		
@@ -730,59 +736,58 @@ namespace osiris
 		
 		void on_selecciona_producto_clicked (object sender, EventArgs args)
 		{
+			TreeModel model;
+			TreeIter iterSelected;
+			
 			if (float.Parse(entry_cantidad_aplicada.Text) > 0){
 				if(float.Parse(entry_precio.Text) > 0){
-					TreeModel model;
-					TreeIter iterSelected;				
 					// Llenando el TreeView para la requisicion
-	 				if (lista_de_producto.Selection.GetSelected(out model, out iterSelected)){
-						/*
-						if((string) classpublic.lee_registro_de_tabla("osiris_erp_requisicion_deta","id_producto","WHERE id_producto = '"+(string) model.GetValue(iterSelected, 0)+"' AND id_tipo_admisiones ='"+idtipointernamiento.ToString().Trim()+"' ","comprado","bool") == "False"){
+		 			if (lista_de_producto.Selection.GetSelected(out model, out iterSelected)){
+						//Console.WriteLine((string) model.GetValue(iterSelected, 0));
+						//Console.WriteLine(classpublic.lee_registro_de_tabla("osiris_erp_requisicion_deta","id_producto","WHERE id_producto = '"+(string) model.GetValue(iterSelected, 0)+"' AND comprado = 'true' ","comprado","bool"));
+						if((string) classpublic.lee_registro_de_tabla("osiris_erp_requisicion_deta","id_producto","WHERE id_producto = '"+(string) model.GetValue(iterSelected, 0)+"' AND comprado = 'false' ","comprado","bool") == ""){
+							contador_items_requisados += 1;
+							entry_totalitems_productos.Text = contador_items_requisados.ToString().Trim();
+							entry_nombre_prodrequisado.Text = (string) model.GetValue(iterSelected, 1);
+							float costounitario_prod = float.Parse(entry_precio.Text)/float.Parse((string) model.GetValue(iterSelected, 16));
+		 					
+							treeViewEngineRequisicion.AppendValues(entry_cantidad_aplicada.Text,
+																(string) model.GetValue(iterSelected, 1), 
+																(string) model.GetValue(iterSelected, 0),
+																(string) model.GetValue(iterSelected, 16),		// Embalaje del producto
+																(string) model.GetValue(iterSelected, 7),		// Tipo de Unidad
+							                                     "",
+							                                     "",
+							                                     "",
+							                                     "0",
+							                                     "",					// fecha de compra
+							                                     true,
+							                                     false,
+							                                     false,
+							                                     "",					// fecha de autorizacion
+							                                     "0",					// id de la secuencia
+							                                     "0",					
+							                                     "0",
+							                                     "0",
+																 "",			// descripcion proveedor 1 
+							                                     "",			// descripcion proveedor 2
+							                                     "",			// descripcion proveedor 3
+							                                     costounitario_prod.ToString("F"),					// Precio costo unitario
+							                                     float.Parse(entry_precio.Text.Trim()).ToString("F"),
+							                                     "1",			// id proveedor 1
+							                                     "1",
+							                                     "1",
+							                                     (string) model.GetValue(iterSelected, 14),	// Porcentage de Ganancia
+							                                     false);
+							entry_cantidad_aplicada.Text = "0";
+							//this.entry_cantidad_aplicada.StartEditing(0);
+							entry_cantidad_aplicada.CanFocus = true;
+							entry_precio.Text = "0";
+						}else{
 							MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
-								MessageType.Error, 
-								ButtonsType.Close, "El producto seleccionado tiene \n"+
-												   "una requisiscion pendiente, verifique...");
-							msgBoxError.Run ();
-							msgBoxError.Destroy();
-						}*/
-						
-	 					contador_items_requisados  += 1;
-						entry_totalitems_productos.Text = contador_items_requisados.ToString().Trim();
-						entry_nombre_prodrequisado.Text = (string) model.GetValue(iterSelected, 1);
-						float costounitario_prod = float.Parse(entry_precio.Text)/float.Parse((string) model.GetValue(iterSelected, 16));
-	 					
-						treeViewEngineRequisicion.AppendValues(entry_cantidad_aplicada.Text,
-															(string) model.GetValue(iterSelected, 1), 
-															(string) model.GetValue(iterSelected, 0),
-															(string) model.GetValue(iterSelected, 16),		// Embalaje del producto
-															(string) model.GetValue(iterSelected, 7),		// Tipo de Unidad
-						                                     "",
-						                                     "",
-						                                     "",
-						                                     "0",
-						                                     "",					// fecha de compra
-						                                     true,
-						                                     false,
-						                                     false,
-						                                     "",					// fecha de autorizacion
-						                                     "0",					// id de la secuencia
-						                                     "0",					
-						                                     "0",
-						                                     "0",
-															 "",			// descripcion proveedor 1 
-						                                     "",			// descripcion proveedor 2
-						                                     "",			// descripcion proveedor 3
-						                                     costounitario_prod.ToString("F"),					// Precio costo unitario
-						                                     float.Parse(entry_precio.Text.Trim()).ToString("F"),
-						                                     "1",			// id proveedor 1
-						                                     "1",
-						                                     "1",
-						                                     (string) model.GetValue(iterSelected, 14),	// Porcentage de Ganancia
-						                                     false);
-						entry_cantidad_aplicada.Text = "0";
-						//this.entry_cantidad_aplicada.StartEditing(0);
-						entry_cantidad_aplicada.CanFocus = true;
-						entry_precio.Text = "0";
+													MessageType.Error,ButtonsType.Close, "Este producto no se puede requisar ya que no se ha comprado aun, verique en el departamento de COMPRAS...");
+							msgBoxError.Run ();		msgBoxError.Destroy();						
+						}
 					}
 				}else{
 					MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
@@ -868,25 +873,29 @@ namespace osiris
 							// Verificando que la casilla de autorizado este marcada
 							//Console.WriteLine(Convert.ToString((bool) this.lista_requisicion_productos.Model.GetValue (iter,11)));
 							if((bool) lista_requisicion_productos.Model.GetValue (iter,11) == true){
-								comando.CommandText = "UPDATE osiris_erp_requisicion_deta SET autorizada = 'true',"+
-									"id_quien_autorizo = '"+LoginEmpleado+"',"+
-									"fechahora_autorizado = '"+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"' "+
-									"WHERE id_secuencia = '"+(string) lista_requisicion_productos.Model.GetValue (iter,14)+"';";																	
-								//Console.WriteLine(comando.CommandText);
-								comando.ExecuteNonQuery();		comando.Dispose();
-								contador_items_autorizadoscompra += 1;
+								if((bool) lista_requisicion_productos.Model.GetValue (iter,12) == false){
+									comando.CommandText = "UPDATE osiris_erp_requisicion_deta SET autorizada = 'true',"+
+											"id_quien_autorizo = '"+LoginEmpleado+"',"+
+											"fechahora_autorizado = '"+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"' "+
+											"WHERE id_secuencia = '"+(string) lista_requisicion_productos.Model.GetValue (iter,14)+"';";																	
+									//Console.WriteLine(comando.CommandText);
+									comando.ExecuteNonQuery();		comando.Dispose();
+									contador_items_autorizadoscompra += 1;
+								}
 							}
 						}					
 						while (treeViewEngineRequisicion.IterNext(ref iter)){
 							//Console.WriteLine(Convert.ToString((bool) this.lista_requisicion_productos.Model.GetValue (iter,11)));
 							if((bool) lista_requisicion_productos.Model.GetValue (iter,11) == true){
-								comando.CommandText = "UPDATE osiris_erp_requisicion_deta SET autorizada = 'true',"+
-									"id_quien_autorizo = '"+LoginEmpleado+"',"+
-									"fechahora_autorizado = '"+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"' "+
-									"WHERE id_secuencia = '"+(string) lista_requisicion_productos.Model.GetValue (iter,14)+"';";																
-								//Console.WriteLine(comando.CommandText);
-								comando.ExecuteNonQuery();		comando.Dispose();
-								contador_items_autorizadoscompra += 1;
+								if((bool) lista_requisicion_productos.Model.GetValue (iter,12) == false){
+									comando.CommandText = "UPDATE osiris_erp_requisicion_deta SET autorizada = 'true',"+
+										"id_quien_autorizo = '"+LoginEmpleado+"',"+
+										"fechahora_autorizado = '"+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"' "+
+										"WHERE id_secuencia = '"+(string) lista_requisicion_productos.Model.GetValue (iter,14)+"';";																
+									//Console.WriteLine(comando.CommandText);
+									comando.ExecuteNonQuery();		comando.Dispose();
+									contador_items_autorizadoscompra += 1;
+								}
 							}
 						}
 						
@@ -981,7 +990,8 @@ namespace osiris
 									MessageType.Info,ButtonsType.Ok,"La requisicion se envio a Comnpras con Exito...");
 					msgBox1.Run ();		msgBox1.Destroy();					
 					button_guardar_requisicion.Sensitive = false;
-					button_envio_compras.Sensitive = false;					
+					button_envio_compras.Sensitive = false;
+					enviadacompras = true;
 					if((string) LoginEmpleado == "DOLIVARES" || (string) LoginEmpleado == "ADMIN" || (string) LoginEmpleado == "SANDRASALASL"){
 						button_enviopara_autorizar.Sensitive = true;			
 					}					
@@ -1072,6 +1082,7 @@ namespace osiris
 						entry_folio_servicio.Text = (string) lector["foliodeatencion"].ToString().Trim();
 						entry_pid_paciente.Text = (string) lector["pidpaciente"].ToString().Trim();
 						autorizaparacompra = (bool) lector["autorizacion_para_comprar"];
+						enviadacompras = (bool) lector["enviada_a_compras"];
 						if ((bool) lector["enviada_a_compras"] == true && (bool) lector["cancelado"] == false){
 							button_guardar_requisicion.Sensitive = false;
 							button_envio_compras.Sensitive = false;
@@ -1091,7 +1102,11 @@ namespace osiris
 								if((string) LoginEmpleado == "DOLIVARES" || (string) LoginEmpleado == "ADMIN" || (string) LoginEmpleado == "SANDRASALASL"){									
 									button_autorizar_compra.Sensitive = false;
 									button_enviopara_autorizar.Sensitive = true;									
-								}							
+								}else{
+									msgBox1 = new MessageDialog (MyWin,DialogFlags.Modal,
+									MessageType.Info,ButtonsType.Ok,"No esta Autorizado para la autorizacion de materiales para su compra, verifique... ");
+									msgBox1.Run ();		msgBox1.Destroy();
+								}
 							}else{
 								MessageDialog msgBox1 = new MessageDialog (MyWin,DialogFlags.Modal,
 								MessageType.Info,ButtonsType.Ok,"Requisicion Autorizada para Generar la ORDEN DE COMPRA");
@@ -1100,6 +1115,10 @@ namespace osiris
 								if((string) LoginEmpleado == "DOLIVARES"  || (string) LoginEmpleado == "ADMIN"){
 									button_autorizar_compra.Sensitive = false;
 									button_enviopara_autorizar.Sensitive = false;
+								}else{
+									msgBox1 = new MessageDialog (MyWin,DialogFlags.Modal,
+									MessageType.Info,ButtonsType.Ok,"No esta Autorizado para la autorizacion de materiales para su compra, verifique... ");
+									msgBox1.Run ();		msgBox1.Destroy();
 								}
 							}							
 						}else{

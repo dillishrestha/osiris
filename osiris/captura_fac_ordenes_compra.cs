@@ -516,7 +516,7 @@ namespace osiris
 						if(float.Parse(lista_productos_a_recibir.Model.GetValue(iter,5).ToString().Trim()) <= 0 ){
 							error_verifica_cant = true;
 						}
-					}					
+					}
 				}
 				
 				if(error_verifica_seleccion == false){
@@ -1571,12 +1571,19 @@ namespace osiris
 						entry_formapago.Text  = (string) lector["condiciones_de_pago"];
 					}
 					comando = conexion.CreateCommand ();				
-					comando.CommandText = "SELECT cantidad_solicitada,osiris_erp_requisicion_deta.id_producto,descripcion_producto," +
-										"to_char(osiris_productos.costo_producto,'999999999.99') AS costoproducto," +
-										"osiris_erp_requisicion_deta.cantidad_de_embalaje," +
+					comando.CommandText = "SELECT osiris_erp_requisicion_deta.id_secuencia,cantidad_solicitada,to_char(osiris_erp_requisicion_deta.id_producto,'999999999999') AS codProducto,osiris_productos.descripcion_producto," +
+										"osiris_productos.costo_producto AS costoproducto," +
+										"osiris_catalogo_productos_proveedores.descripcion_producto AS descrip_prod_prov,codigo_producto_proveedor," +
+										"osiris_catalogo_productos_proveedores.tipo_unidad_producto," +
+										"osiris_productos.descripcion_producto AS descproducto_osiris," +
+										"to_char(osiris_productos.precio_producto_publico,'9999999999.99') AS precioproductopublico," +
+										"osiris_erp_requisicion_deta.cantidad_de_embalaje,osiris_erp_requisicion_deta.id_proveedor," +
 									 	"osiris_erp_requisicion_deta.costo_producto,osiris_erp_requisicion_deta.costo_por_unidad "+
-										"FROM osiris_erp_requisicion_deta,osiris_productos WHERE numero_orden_compra = '"+entry_orden_de_compra.Text.Trim()+"' "+
-										"AND osiris_erp_requisicion_deta.id_producto = osiris_productos.id_producto;";
+										"FROM osiris_erp_requisicion_deta,osiris_productos,osiris_catalogo_productos_proveedores " +
+										"WHERE osiris_erp_requisicion_deta.id_producto = osiris_productos.id_producto " +
+										"AND osiris_catalogo_productos_proveedores.id_producto = osiris_erp_requisicion_deta.id_producto " +
+										"AND osiris_erp_requisicion_deta.id_proveedor = osiris_catalogo_productos_proveedores.id_proveedor "+
+										"AND numero_orden_compra = '"+entry_orden_de_compra.Text.Trim()+"';";
 					Console.WriteLine(comando.CommandText);
 					NpgsqlDataReader lector1 = comando.ExecuteReader ();							
 					while (lector1.Read()){
@@ -1586,8 +1593,21 @@ namespace osiris
 						                                           "0.00",
 						                                           float.Parse(Convert.ToString((decimal) lector1["cantidad_de_embalaje"]).ToString()).ToString("F"),
 						                                           "0.00",
-						                                           float.Parse(Convert.ToString((decimal) lector1["costo_producto"]).ToString()).ToString("F"),
-						                                           "0.00");  //float.Parse(Convert.ToString((decimal) lector["costo_por_unidad"]).ToString()).ToString("F"));
+						                                           float.Parse(Convert.ToString((decimal) lector1["costoproducto"]).ToString()).ToString("F"),
+						                                           "0.00",
+						                                           "0.00",
+						                                           (string) lector1["descproducto_osiris"].ToString(),
+						                                           (string) lector1["codProducto"],
+						                                           (string) lector1["descrip_prod_prov"],
+						                                           "", //lector1["codigo_producto_proveedor"].ToString(),
+						                                           "",
+						                                           "",
+						                                           "",  //lector1["tipo_unidad_producto"],
+						                                           "",
+						                                           "", //(string) lector["precioproductopublico"].ToString().Trim(),
+						                                           "",
+						                                           "",
+						                                           ""); //(string) lector["id_secuencia"].ToString().Trim());  //float.Parse(Convert.ToString((decimal) lector["costo_por_unidad"]).ToString()).ToString("F"));
 					}								
 				}catch (NpgsqlException ex){
 		   			MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,

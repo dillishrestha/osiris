@@ -345,8 +345,6 @@ namespace osiris
 		{
 			string numeros_seleccionado = "";
 			string almacenes_seleccionados = ""; 
-			string variable_paso_03 = "";
-			string variable_paso_04 = "";
 			int variable_paso_02_1 = 0;
 			string query_in_num = "";
  			string query_in_almacen = ""; 
@@ -378,10 +376,8 @@ namespace osiris
  							almacenes_seleccionados = (string) lista_almacenes.Model.GetValue (iter,5);
  							variable_paso_02_1 += 1;
  						}else{
- 							variable_paso_03 = (string) lista_almacenes.Model.GetValue (iter,1);
- 							variable_paso_04 = (string) lista_almacenes.Model.GetValue (iter,5);
- 							numeros_seleccionado = numeros_seleccionado.Trim() + "','" + variable_paso_03.Trim();
- 							almacenes_seleccionados = almacenes_seleccionados.Trim() + "','" + variable_paso_04.Trim();
+ 							numeros_seleccionado = numeros_seleccionado.Trim() + "','" + (string) lista_almacenes.Model.GetValue (iter,1);
+ 							almacenes_seleccionados = almacenes_seleccionados.Trim() + "','" + (string) lista_almacenes.Model.GetValue (iter,5);
  						}
  					}
  				}

@@ -34,6 +34,7 @@ using System;
 using Glade;
 using Npgsql;
 using System.IO;
+using GLib;
 
 namespace osiris
 {
@@ -52,33 +53,33 @@ namespace osiris
 		[Widget] Gtk.Button button_cargos_urgencia = null;
 		[Widget] Gtk.Button button_cargos_quirofano = null;
 		[Widget] Gtk.Button button_endoscopia = null;
+		[Widget] Gtk.Button button_terapia_adulto = null;
+		[Widget] Gtk.Button button_terapia_nino = null;
+		[Widget] Gtk.Button button_terapia_neonatal = null;
 		[Widget] Gtk.Button button_consulta_medica = null;
+		[Widget] Gtk.Button button_hemodialisis = null;
 		[Widget] Gtk.Button button_laboratorio = null;
 		[Widget] Gtk.Button button_imagenologia = null;
 		[Widget] Gtk.Button button_oftalmologia = null;
 		[Widget] Gtk.Button button_vision = null;
-		
-		[Widget] Gtk.Button button_terapia_adulto = null;
-		[Widget] Gtk.Button button_terapia_nino = null;
-		[Widget] Gtk.Button button_terapia_neonatal = null;
-		[Widget] Gtk.Button button_nutricion = null;
-		[Widget] Gtk.Button button_hemodialisis = null;
+		[Widget] Gtk.Button button_optica = null;		
 		
 		[Widget] Gtk.Button button_imagenologia_b = null;
 		
 		// ERP
+		[Widget] Gtk.Button button_afiliados = null;
 		[Widget] Gtk.Button button_registro_admision = null;
 		[Widget] Gtk.Button button_caja = null;
 		[Widget] Gtk.Button button_compras = null;
 		[Widget] Gtk.Button button_almacen = null;
 		[Widget] Gtk.Button button_costos = null;
+		[Widget] Gtk.Button button_proveedores = null;
 		[Widget] Gtk.Button button_farmacia = null;
+		[Widget] Gtk.Button button_nutricion = null;
+		[Widget] Gtk.Button button_mantenimiento = null;
 		[Widget] Gtk.Button button_recursos_humanos = null;
 		[Widget] Gtk.Button button_herramientas = null;
-		[Widget] Gtk.Button button_afiliados = null;
-		[Widget] Gtk.Button button_proveedores = null;
-		[Widget] Gtk.Button button_mantenimiento = null;
-		
+			
 		// opciones generales
 		[Widget] Gtk.Button button_medicos = null;
 		[Widget] Gtk.Button button_ocupacion_hscmty = null;
@@ -87,7 +88,13 @@ namespace osiris
 				
 		[Widget] Gtk.MenuBar menubar_osiris = null;
 		[Widget] Gtk.MenuItem menuitem_hospital = null;
-				
+		
+		[Widget] Gtk.MenuItem menuitem_tic = null;
+		[Widget] Gtk.MenuItem menuitem_tic_requi = null;
+		[Widget] Gtk.MenuItem menuitem_tic_preferencias = null;
+		
+		[Widget] Gtk.MenuItem menuitem_mtt = null;
+		[Widget] Gtk.MenuItem menuitem_mtt_requi = null;
 		// Salir
 		[Widget] Gtk.Button button_salir  = null;
 		[Widget] Gtk.Image hscmtylogo = null;
@@ -341,6 +348,7 @@ namespace osiris
 					 					 											
 			verificapermisos(accesoHIS,accesoERP,accesoGENERAL,autorizaHIS,autorizaERP,autorizaGENERAL);
 			// llamando a los eventos
+			button_afiliados.Clicked += new EventHandler(on_button_afiliados_clicked);
 			button_registro_admision.Clicked += new EventHandler(on_button_registro_admision_clicked );
 			button_compras.Clicked += new EventHandler(on_button_compras_clicked);
 			button_almacen.Clicked += new EventHandler(on_button_almacen_clicked);
@@ -363,31 +371,30 @@ namespace osiris
 			
 			button_medicos.Clicked += new EventHandler(on_button_medicos_clicked);					 			
 			button_cambio_contraseña.Clicked += new EventHandler(on_button_cambio_contraseña_clicked);					 							 			
-			button_herramientas.Clicked += new EventHandler(on_button_herramientas_clicked);						
-			button_farmacia.Clicked += new EventHandler(on_button_farmacia_clicked);			
-			 			
+			button_herramientas.Clicked += new EventHandler(on_button_herramientas_clicked);
+			menuitem_tic_preferencias.Activated += new EventHandler(on_button_herramientas_clicked);
+			button_farmacia.Clicked += new EventHandler(on_button_farmacia_clicked);
+			
+			menuitem_tic_requi.Activated += new EventHandler(on_menuitem_tic_requi_activated);
+			menuitem_mtt_requi.Activated += new EventHandler(on_menuitem_mtt_requi_activated);
+			
+			button_mantenimiento.Clicked += new EventHandler(on_menuitem_mtt_requi_activated);
+			
 			//button_nutricion.Clicked += new EventHandler(on_button_nutricion_clicked);
-			//button_hemodialisis.Clicked += new EventHandler(on_button_hemodialisis_clicked);
 			//button_imagenologia_b.Clicked += new EventHandler( on_button_imagenologia_b_clicked );
 			//button_terapia_adulto.Clicked += new EventHandler( on_button_terapia_adulto_clicked );
 			//button_terapia_nino.Clicked += new EventHandler( on_button_terapia_pediatrica_clicked );
 			//button_terapia_neonatal.Clicked += new EventHandler(on_button_terapia_neonatal_clicked);					
 			button_salir.Clicked += new EventHandler(on_button_salir_clicked);
 			
-			//button_almacen.Hide();
-			//button_compras.Hide();
-			//button_farmacia.Hide();
-			button_nutricion.Hide();
-			button_afiliados.Hide();
-			//button_proveedores.Hide();
-			//button_oftalmologia.Hide();
-			//button_hemodialisis.Hide();
+			
 			button_terapia_adulto.Hide();
 			button_terapia_nino.Hide();
 			button_terapia_neonatal.Hide();
-			//button_ginecologia.Hide();
-			//button_endoscopia.Hide();
 			button_oftalmologia.Hide();
+			
+			button_farmacia.Hide();
+			button_nutricion.Hide();
 			
 			//menuitem_hospital.Sensitive = false;
 			//new osiris.class_crea_ods();
@@ -396,6 +403,23 @@ namespace osiris
 			statusbar_menu.Pop(0);
 			statusbar_menu.Push(1, "login:"+(string)LoginEmpleado+"|Usuario:"+(string)NomEmpleado+" "+(string)AppEmpleado+" "+(string)ApmEmpleado);
 			statusbar_menu.HasResizeGrip = false;
+		}
+		
+		void on_button_afiliados_clicked(object sender, EventArgs args)
+		{
+			new osiris.tarjeta_medica();
+		}
+		
+		void on_menuitem_tic_requi_activated(object o, EventArgs args)
+		{
+			int [] array_idtipoadmisiones = { 0, 14};
+			new osiris.requisicion_materiales_compras(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,"TECNOLOGIAS DE LA INFORMACION",14,"AND agrupacion IN ('ALM','OTR') ",array_idtipoadmisiones,0);
+		}
+		
+		void on_menuitem_mtt_requi_activated(object o, EventArgs args)
+		{
+			int [] array_idtipoadmisiones = { 0, 4};
+			new osiris.requisicion_materiales_compras(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,"MENTENIMIENTO",4,"AND agrupacion IN ('ALM') ",array_idtipoadmisiones,0);
 		}
 		
 		// Registro y Admision de Pacientes, realiza la pregunta
@@ -574,22 +598,34 @@ namespace osiris
 			button_terapia_nino.Sensitive = false;
 			button_terapia_neonatal.Sensitive = false;
 			button_consulta_medica.Sensitive = false;
+			button_hemodialisis.Sensitive = false;
 			button_laboratorio.Sensitive = false;
 			button_imagenologia.Sensitive = false;
-			//button_oftalmologia.Sensitive = false;
+			button_oftalmologia.Sensitive = false;
+			button_vision.Sensitive = false;
+			button_optica.Sensitive = false;
+			
+			menuitem_hospital.Sensitive = false;
+					
+			menuitem_mtt.Sensitive = false;
+			
+			menuitem_tic.Sensitive = false;
+			menuitem_tic_preferencias.Sensitive = false;
 			
 			// ERP
+			button_afiliados.Sensitive = false;
 			button_registro_admision.Sensitive = false;
 			button_caja.Sensitive = false;
 			button_compras.Sensitive = false;
 			button_almacen.Sensitive = false;
 			button_costos.Sensitive = false;
+			button_proveedores.Sensitive = false;
 			button_farmacia.Sensitive = false;
-			button_recursos_humanos.Sensitive = false;
 			button_nutricion.Sensitive = false;
+			button_mantenimiento.Sensitive = false;
+			button_recursos_humanos.Sensitive = false;
 			button_herramientas.Sensitive = false;
-			button_proveedores.Sensitive = true;
-			
+						
 			// opciones generales
 			button_medicos.Sensitive = false;
 			button_ocupacion_hscmty.Sensitive = false;
@@ -599,6 +635,7 @@ namespace osiris
 			if((bool) autorizaHIS == true){
 				if ((string) accesoHIS.Substring(0,1) == "1"){
        				button_cargos_hospital.Sensitive = true;
+					menuitem_hospital.Sensitive = true;
         		}        		
         		if ((string) accesoHIS.Substring(1,1) == "1"){
         			button_cargos_urgencia.Sensitive = true;
@@ -609,26 +646,6 @@ namespace osiris
 				if ((string) accesoHIS.Substring(3,1) == "1"){
 					button_endoscopia.Sensitive = true;
 				}
-				if ((string) accesoHIS.Substring(7,1) == "1"){
-					button_consulta_medica.Sensitive = true;
-				}
-				if ((string) accesoHIS.Substring(8,1) == "1"){
-					button_laboratorio.Sensitive = true;
-				}
-				if ((string) accesoHIS.Substring(9,1) == "1"){
-					button_imagenologia.Sensitive = true;
-				}				
-				if ((string) accesoHIS.Substring(10,1) == "1"){
-					//button_oftalmologia.Sensitive = false;
-				}
-				if ((string) accesoHIS.Substring(11,1) == "1"){
-					button_vision.Sensitive = true;
-				}
-				
-				/*
-				if ((string) accesoHIS.Substring(7,1) == "1"){
-					button_ginecologia.Sensitive = true;
-				}
 				if ((string) accesoHIS.Substring(4,1) == "1"){
 					button_terapia_adulto.Sensitive = true;
 				}
@@ -637,36 +654,71 @@ namespace osiris
 				}
 				if ((string) accesoHIS.Substring(6,1) == "1"){
 					button_terapia_neonatal.Sensitive = true;
-				}*/
+				}
+				if ((string) accesoHIS.Substring(7,1) == "1"){
+					button_consulta_medica.Sensitive = true;
+				}
+				if ((string) accesoHIS.Substring(8,1) == "1"){
+					button_hemodialisis.Sensitive = true;
+				}
+				if ((string) accesoHIS.Substring(9,1) == "1"){
+					button_laboratorio.Sensitive = true;
+				}
+				if ((string) accesoHIS.Substring(10,1) == "1"){
+					button_imagenologia.Sensitive = true;
+				}				
+				if ((string) accesoHIS.Substring(11,1) == "1"){
+					button_oftalmologia.Sensitive = false;
+				}
+				if ((string) accesoHIS.Substring(12,1) == "1"){
+					button_vision.Sensitive = true;
+				}
+				if ((string) accesoHIS.Substring(13,1) == "1"){
+					button_optica.Sensitive = true;
+				}
 			}
 			if((bool) autorizaERP == true){
 				if ((string) accesoERP.Substring(0,1) == "1"){
-					button_registro_admision.Sensitive = true;
+					button_afiliados.Sensitive = true;
 				}
 				if ((string) accesoERP.Substring(1,1) == "1"){
-					button_caja.Sensitive = true;
+					button_registro_admision.Sensitive = true;
 				}
 				if ((string) accesoERP.Substring(2,1) == "1"){
-					button_compras.Sensitive = true;
+					button_caja.Sensitive = true;
 				}
 				if ((string) accesoERP.Substring(3,1) == "1"){
-					button_almacen.Sensitive = true;
+					button_compras.Sensitive = true;
 				}
 				if ((string) accesoERP.Substring(4,1) == "1"){
-					button_costos.Sensitive = true;
+					button_almacen.Sensitive = true;
 				}
 				if ((string) accesoERP.Substring(5,1) == "1"){
-					button_farmacia.Sensitive = true;
+					button_costos.Sensitive = true;
 				}
 				if ((string) accesoERP.Substring(6,1) == "1"){
-					button_recursos_humanos.Sensitive = true;
+					button_proveedores.Sensitive = true;
 				}
 				if ((string) accesoERP.Substring(7,1) == "1"){
-					button_nutricion.Sensitive = true;
+					button_farmacia.Sensitive = true;
 				}
 				if ((string) accesoERP.Substring(8,1) == "1"){
+					button_nutricion.Sensitive = true;
+				}
+				if ((string) accesoERP.Substring(9,1) == "1"){
+					button_mantenimiento.Sensitive = true;
+					menuitem_mtt.Sensitive = true;					
+				}
+				if ((string) accesoERP.Substring(10,1) == "1"){
+					button_recursos_humanos.Sensitive = true;
+				}
+				if ((string) accesoERP.Substring(11,1) == "1"){
 					button_herramientas.Sensitive = true;
-				}				
+					menuitem_tic_preferencias.Sensitive = true;
+				}
+				if ((string) accesoERP.Substring(12,1) == "1"){
+					menuitem_tic.Sensitive = true;
+				}
 			}
 			if((bool) autorizaGENERAL == true){
 				if ((string) accesoGENERAL.Substring(0,1) == "1"){

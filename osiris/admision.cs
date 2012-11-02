@@ -58,8 +58,7 @@ namespace osiris
 		[Widget] Gtk.Button button_cancela_folios = null;
 		[Widget] Gtk.Button button_soli_material = null;
 		[Widget] Gtk.Button button_reportes_varios = null;
-		[Widget] Gtk.Button button_tarjeta_medica = null;
-		
+				
 		// Ventana de reportes para admsion
 		[Widget] Gtk.Window menu_rpt_varios_admision = null;
 		[Widget] Gtk.Button button_reg_admision = null;
@@ -121,7 +120,6 @@ namespace osiris
 			button_asignacion_habitacion.Clicked += new EventHandler(on_button_asignacion_habitacion_clicked);
 			button_soli_material.Clicked += new EventHandler(on_button_soli_material_clicked);
 			button_reportes_varios.Clicked += new EventHandler(on_button_reportes_varios_clicked);
-			button_tarjeta_medica.Clicked += new EventHandler(on_button_tarjeta_medica_clicked);
 			button_salir.Clicked += new EventHandler(on_cierraventanas_clicked);
 			button_separa_folio.Sensitive = false;
 		}
@@ -141,12 +139,7 @@ namespace osiris
 			button_rpt_no_entraron_caja.Clicked += new EventHandler(on_button_rpt_no_entraron_caja_clicked);
 			button_salir.Clicked += new EventHandler(on_cierraventanas_clicked);
 		}
-		
-		void on_button_tarjeta_medica_clicked(object sender, EventArgs args)
-		{
-			new osiris.tarjeta_medica();
-		}
-		
+				
 		void on_button_soli_material_clicked(object sender, EventArgs args)
 		{
 			new osiris.solicitud_material(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,17);

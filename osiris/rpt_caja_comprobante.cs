@@ -253,7 +253,7 @@ namespace osiris
 						fontSize = 8.0;			layout = null;			layout = context.CreatePangoLayout ();
 						desc.Size = (int)(fontSize * pangoScale);		layout.FontDescription = desc;
 						layout.FontDescription.Weight = Weight.Normal;
-						cr.MoveTo(05*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);				layout.SetText("Debo(mos) y pagaré(mos) incoldicionalmente por este Pagaré a la orden de :");	Pango.CairoHelper.ShowLayout (cr, layout);
+						cr.MoveTo(05*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);				layout.SetText("Debo(mos) y pagaré(mos) indicionalmente por este Pagaré a la orden de :");	Pango.CairoHelper.ShowLayout (cr, layout);
 						comienzo_linea += separacion_linea;
 						cr.MoveTo(05*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);				layout.SetText(classpublic.nombre_empresa);	Pango.CairoHelper.ShowLayout (cr, layout);
 						comienzo_linea += separacion_linea;

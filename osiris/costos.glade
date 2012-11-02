@@ -4447,6 +4447,115 @@ Busqueda de Empresas</property>
 	      <property name="fill">True</property>
 	    </packing>
 	  </child>
+
+	  <child>
+	    <widget class="GtkHBox" id="hbox154">
+	      <property name="visible">True</property>
+	      <property name="homogeneous">False</property>
+	      <property name="spacing">0</property>
+
+	      <child>
+		<widget class="GtkCheckButton" id="checkbutton_grupo">
+		  <property name="visible">True</property>
+		  <property name="can_focus">True</property>
+		  <property name="label" translatable="yes">Grupo Prod.</property>
+		  <property name="use_underline">True</property>
+		  <property name="relief">GTK_RELIEF_NORMAL</property>
+		  <property name="focus_on_click">True</property>
+		  <property name="active">False</property>
+		  <property name="inconsistent">False</property>
+		  <property name="draw_indicator">True</property>
+		</widget>
+		<packing>
+		  <property name="padding">0</property>
+		  <property name="expand">False</property>
+		  <property name="fill">False</property>
+		</packing>
+	      </child>
+
+	      <child>
+		<widget class="GtkComboBox" id="combobox_grupo">
+		  <property name="visible">True</property>
+		  <property name="add_tearoffs">False</property>
+		  <property name="focus_on_click">True</property>
+		</widget>
+		<packing>
+		  <property name="padding">0</property>
+		  <property name="expand">True</property>
+		  <property name="fill">True</property>
+		</packing>
+	      </child>
+
+	      <child>
+		<widget class="GtkCheckButton" id="checkbutton_grupo1">
+		  <property name="visible">True</property>
+		  <property name="can_focus">True</property>
+		  <property name="label" translatable="yes">Grupo Prod. 1</property>
+		  <property name="use_underline">True</property>
+		  <property name="relief">GTK_RELIEF_NORMAL</property>
+		  <property name="focus_on_click">True</property>
+		  <property name="active">False</property>
+		  <property name="inconsistent">False</property>
+		  <property name="draw_indicator">True</property>
+		</widget>
+		<packing>
+		  <property name="padding">0</property>
+		  <property name="expand">False</property>
+		  <property name="fill">False</property>
+		</packing>
+	      </child>
+
+	      <child>
+		<widget class="GtkComboBox" id="combobox_grupo1">
+		  <property name="visible">True</property>
+		  <property name="add_tearoffs">False</property>
+		  <property name="focus_on_click">True</property>
+		</widget>
+		<packing>
+		  <property name="padding">0</property>
+		  <property name="expand">True</property>
+		  <property name="fill">True</property>
+		</packing>
+	      </child>
+
+	      <child>
+		<widget class="GtkCheckButton" id="checkbutton_grupo2">
+		  <property name="visible">True</property>
+		  <property name="can_focus">True</property>
+		  <property name="label" translatable="yes">Grupo Prod. 2</property>
+		  <property name="use_underline">True</property>
+		  <property name="relief">GTK_RELIEF_NORMAL</property>
+		  <property name="focus_on_click">True</property>
+		  <property name="active">False</property>
+		  <property name="inconsistent">False</property>
+		  <property name="draw_indicator">True</property>
+		</widget>
+		<packing>
+		  <property name="padding">0</property>
+		  <property name="expand">False</property>
+		  <property name="fill">False</property>
+		</packing>
+	      </child>
+
+	      <child>
+		<widget class="GtkComboBox" id="combobox_grupo2">
+		  <property name="visible">True</property>
+		  <property name="add_tearoffs">False</property>
+		  <property name="focus_on_click">True</property>
+		</widget>
+		<packing>
+		  <property name="padding">0</property>
+		  <property name="expand">True</property>
+		  <property name="fill">True</property>
+		</packing>
+	      </child>
+	    </widget>
+	    <packing>
+	      <property name="padding">0</property>
+	      <property name="expand">True</property>
+	      <property name="fill">True</property>
+	    </packing>
+	  </child>
 	</widget>
 	<packing>
 	  <property name="padding">0</property>
@@ -4488,7 +4597,7 @@ Busqueda de Empresas</property>
 		      <child>
 			<widget class="GtkScrolledWindow" id="scrolledwindow12">
 			  <property name="width_request">730</property>
-			  <property name="height_request">220</property>
+			  <property name="height_request">200</property>
 			  <property name="visible">True</property>
 			  <property name="hscrollbar_policy">GTK_POLICY_ALWAYS</property>
 			  <property name="vscrollbar_policy">GTK_POLICY_ALWAYS</property>
@@ -4523,7 +4632,7 @@ Busqueda de Empresas</property>
 
 			  <child>
 			    <widget class="GtkFixed" id="fixed144">
-			      <property name="height_request">70</property>
+			      <property name="height_request">50</property>
 			      <property name="visible">True</property>
 			    </widget>
 			    <packing>
@@ -4771,7 +4880,7 @@ Busqueda de Empresas</property>
 
 			  <child>
 			    <widget class="GtkFixed" id="fixed145">
-			      <property name="height_request">70</property>
+			      <property name="height_request">50</property>
 			      <property name="visible">True</property>
 			    </widget>
 			    <packing>
@@ -4850,7 +4959,7 @@ Busqueda de Empresas</property>
 
 		      <child>
 			<widget class="GtkScrolledWindow" id="scrolledwindow13">
-			  <property name="height_request">250</property>
+			  <property name="height_request">200</property>
 			  <property name="visible">True</property>
 			  <property name="hscrollbar_policy">GTK_POLICY_ALWAYS</property>
 			  <property name="vscrollbar_policy">GTK_POLICY_ALWAYS</property>

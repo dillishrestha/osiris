@@ -806,6 +806,7 @@ namespace osiris
 			 		comando.CommandText = "UPDATE osiris_erp_cobros_enca "+
 											"SET cerrado = 'true', "+
 											"total_procedimiento = '"+totalproc.ToString("F")+"',"+
+											"reservacion = 'false',"+
 											"subtotal15 = '"+this.entry_subtotal_al_15.Text.Trim()+"',"+
 											"subtotal0 = '"+this.entry_subtotal_al_0.Text.Trim()+"',"+
 											"fechahora_cerrado = '"+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"',"+

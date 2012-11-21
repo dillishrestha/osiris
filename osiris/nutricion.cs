@@ -44,8 +44,9 @@ namespace osiris
 		[Widget] Gtk.Button button_salir;
 		
 		// Declarando ventana principal de Hospitalizacion
-		[Widget] Gtk.Window menu_nutricion;
-		[Widget] Gtk.Button button_requisicion_materiales;
+		[Widget] Gtk.Window menu_nutricion = null;
+		[Widget] Gtk.Button button_requisicion_materiales = null;
+		[Widget] Gtk.Button button_solicitud_dietas = null;
 				
 		string LoginEmpleado;
 		string NomEmpleado;
@@ -70,14 +71,19 @@ namespace osiris
 			
 			////// Sale de la ventana
 			button_salir.Clicked += new EventHandler(on_cierraventanas_clicked);
-			
-			button_requisicion_materiales.Clicked += new EventHandler(on_button_requisicion_materiales_clicked);			
+			button_requisicion_materiales.Clicked += new EventHandler(on_button_requisicion_materiales_clicked);
+			button_solicitud_dietas.Clicked += new EventHandler(on_button_solicitud_dietas_clicked);
 		}
 		
 		void on_button_requisicion_materiales_clicked(object sender, EventArgs args)
 		{
 			int [] array_idtipoadmisiones = { 0, 3, 18 };
 			new osiris.requisicion_materiales_compras(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,"NUTRICION",18,"AND agrupacion = 'NUT' ",array_idtipoadmisiones,18);
+		}
+		
+		void on_button_solicitud_dietas_clicked(object sender, EventArgs args)
+		{
+			new osiris.solicitudes_rx_lab(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,"NUTRICION",18);
 		}
 		
 		void on_cierraventanas_clicked (object sender, EventArgs args)

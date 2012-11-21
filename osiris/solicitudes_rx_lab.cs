@@ -565,8 +565,8 @@ namespace osiris
 		void crea_treeview_estudios_solicitados()
 		{
 			Gtk.CellRendererText text;
-			foreach (TreeViewColumn tvc in this.treeview_estudios_solicitados.Columns)
-			this.treeview_estudios_solicitados.RemoveColumn(tvc);
+			foreach (TreeViewColumn tvc in treeview_estudios_solicitados.Columns)
+							treeview_estudios_solicitados.RemoveColumn(tvc);
 			treeViewEngineEstudiosSoli = new TreeStore(typeof(string),
 													typeof(string),
 													typeof(string),
@@ -588,8 +588,7 @@ namespace osiris
 			text = new CellRendererText ();
 			text.Xalign = 0.0f;
 			columns.Add (text);
-			TreeViewColumn column0 = new TreeViewColumn("N° Soli./Estudio", text,
-								    "text", Column.solicitud_estudio);
+			TreeViewColumn column0 = new TreeViewColumn("N° Soli./Estudio",text,"text",Column.solicitud_estudio);
 			column0.Resizable = true;
 			column0.SortColumnId = (int) Column.solicitud_estudio;
 			treeview_estudios_solicitados.InsertColumn (column0, (int) Column.solicitud_estudio);
@@ -597,8 +596,7 @@ namespace osiris
 			text = new CellRendererText ();
 			text.Xalign = 0.0f;
 			columns.Add (text);
-			TreeViewColumn column1 = new TreeViewColumn("Cant.Soli", text,
-								    "text", Column.cant_solicitado);
+			TreeViewColumn column1 = new TreeViewColumn("Cant.Soli",text,"text",Column.cant_solicitado);
 			column1.Resizable = true;
 			column1.SortColumnId = (int) Column.cant_solicitado;
 			treeview_estudios_solicitados.InsertColumn (column1, (int) Column.cant_solicitado);
@@ -606,8 +604,7 @@ namespace osiris
 			text = new CellRendererText ();
 			text.Xalign = 0.0f;
 			columns.Add (text);
-			TreeViewColumn column2 = new TreeViewColumn("Fecha Solicitud", text,
-								    "text", Column.col_fechasol);
+			TreeViewColumn column2 = new TreeViewColumn("Fecha Solicitud",text,"text",Column.col_fechasol);
 			column2.Resizable = true;
 			column2.SortColumnId = (int) Column.col_fechasol;
 			treeview_estudios_solicitados.InsertColumn (column2, (int) Column.col_fechasol);
@@ -615,8 +612,7 @@ namespace osiris
 			text = new CellRendererText ();
 			text.Xalign = 0.0f;
 			columns.Add (text);
-			TreeViewColumn column3 = new TreeViewColumn("Gabinete", text,
-								    "text", Column.col_gabinete);
+			TreeViewColumn column3 = new TreeViewColumn("Gabinete",text,"text",Column.col_gabinete);
 			column3.Resizable = true;
 			column3.SortColumnId = (int) Column.col_gabinete;
 			treeview_estudios_solicitados.InsertColumn (column3, (int) Column.col_gabinete);
@@ -624,8 +620,7 @@ namespace osiris
 			text = new CellRendererText ();
 			text.Xalign = 0.0f;
 			columns.Add (text);
-			TreeViewColumn column4 = new TreeViewColumn("Quien Solicito", text,
-								    "text", Column.col_quiensolicito);
+			TreeViewColumn column4 = new TreeViewColumn("Quien Solicito",text,"text",Column.col_quiensolicito);
 			column4.Resizable = true;
 			column4.SortColumnId = (int) Column.col_quiensolicito;
 			treeview_estudios_solicitados.InsertColumn (column4, (int) Column.col_quiensolicito);
@@ -859,7 +854,9 @@ namespace osiris
 			if(agrupacion_lab_rx == "VIS"){
 				query_lab_rx = "AND osiris_grupo_producto.agrupacion5 = 'VIS' ";
 			}
-			
+			if(agrupacion_lab_rx == "NUT"){
+				query_lab_rx = "AND osiris_grupo_producto.agrupacion7 = 'NUT' ";
+			}
 			//// para las diferentes listas de precios \\\\\\\\\\\\\			
 			if (id_tipopaciente == 500 || id_tipopaciente == 102) {  // Municipio y Empresas			
 				// verifica si ese cliente tiene una lista de precio asignada

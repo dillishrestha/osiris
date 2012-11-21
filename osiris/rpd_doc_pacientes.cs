@@ -83,7 +83,7 @@ namespace osiris
 		[Widget] Gtk.ComboBox combobox_tipo_cirugia = null;
 		[Widget] Gtk.CheckButton checkbutton_camb_dats;
 		[Widget] Gtk.ComboBox combobox_diagprimeravez = null;
-		
+				
 		// declarando tab2 quirofano
 		[Widget] Gtk.CheckButton checkbutton_lente = null;
 		[Widget] Gtk.Entry entry_id_producto = null;
@@ -96,9 +96,14 @@ namespace osiris
 		[Widget] Gtk.Entry entry_id_anestesiologo = null;
 		[Widget] Gtk.Entry entry_anestesiologo = null;
 		[Widget] Gtk.Button button_buscar_anestesiologo = null;
-		[Widget] Gtk.Button button_guardar_tabqx = null;
-		
-		
+		[Widget] Gtk.Button button_guardar_tabqx = null;		
+		[Widget] Gtk.CheckButton checkbutton_observacion_qx = null;
+		[Widget] Gtk.Entry entry_observacion_qx = null;		
+		[Widget] Gtk.CheckButton checkbutton_cirujano2 = null;
+		[Widget] Gtk.Entry entry_id_cirujano2 = null;
+		[Widget] Gtk.Entry entry_nombre_cirujano2 = null;
+		[Widget] Gtk.Button button_buscar_cirujano2 = null;
+			
 		// declarando tab 3 Vision
 		[Widget] Gtk.ComboBox combobox_tecnicovision = null;
 		[Widget] Gtk.ComboBox combobox_maquinavision = null;
@@ -315,8 +320,12 @@ namespace osiris
 			checkbutton_lente.Clicked += new EventHandler(on_checkbutton_clicked);
 			checkbutton_tipo_anestesia.Clicked += new EventHandler(on_checkbutton_clicked);
 			checkbutton_anestesiologo.Clicked += new EventHandler(on_checkbutton_clicked);
+			checkbutton_observacion_qx.Clicked += new EventHandler(on_checkbutton_clicked);
+			checkbutton_cirujano2.Clicked += new EventHandler(on_checkbutton_clicked);
+			
 			button_buscar_anestesiologo.Clicked += new EventHandler(on_button_busca_medicos_clicked);
 			button_guardar_tabqx.Clicked += new EventHandler(on_button_guardar_tab_clicked);
+			button_buscar_cirujano2.Clicked += new EventHandler(on_button_busca_medicos_clicked);
 			
 			// tab vision
 			button_guardar_tabvision.Clicked += new EventHandler(on_button_guardar_tab_clicked);
@@ -326,13 +335,15 @@ namespace osiris
 			entry_id_producto.Sensitive = false;
 			entry_descripcion_producto.Sensitive = false;
 			button_busca_producto.Sensitive = false;
-			entry_nroserie.Sensitive = false;
-			
-			combobox_tipo_anestecia.Sensitive = false;
-			
+			entry_nroserie.Sensitive = false;			
+			combobox_tipo_anestecia.Sensitive = false;			
 			entry_id_anestesiologo.Sensitive = false;
 			entry_anestesiologo.Sensitive = false;
 			button_buscar_anestesiologo.Sensitive = false;
+			entry_observacion_qx.Sensitive = false;
+			entry_id_cirujano2.Sensitive = false;
+			entry_nombre_cirujano2.Sensitive = false;
+			button_buscar_cirujano2.Sensitive = false;
 			
 			// tab quirofano
 			llenado_combobox(0,"",combobox_tipo_cirugia,"array","","","",args_tipos_cirugias,args_id_array,"");
@@ -513,9 +524,21 @@ namespace osiris
 				combobox_maquinavision.Sensitive = onCheckBoxChanged.Active;
 				entry_nro_estudiomaquina.Sensitive = onCheckBoxChanged.Active;
 				break;
+			case "checkbutton_observacion_qx":
+				entry_observacion_qx.Sensitive = onCheckBoxChanged.Active;
+				break;
+			case "checkbutton_cirujano2":
+				entry_id_cirujano2 .Sensitive = onCheckBoxChanged.Active;
+				entry_nombre_cirujano2.Sensitive = onCheckBoxChanged.Active;
+				button_buscar_cirujano2.Sensitive = onCheckBoxChanged.Active;
+				break;
 			}
 			
-			if((bool)checkbutton_lente.Active == true || (bool) checkbutton_tipo_anestesia.Active == true || (bool) checkbutton_anestesiologo.Active == true){
+			if((bool)checkbutton_lente.Active == true 
+			   || (bool) checkbutton_tipo_anestesia.Active == true 
+			   || (bool) checkbutton_anestesiologo.Active == true 
+			   || (bool) checkbutton_observacion_qx.Active == true
+			   || (bool) checkbutton_cirujano2.Active == true){
 				button_guardar_tabqx.Sensitive = true;
 			}else{
 				button_guardar_tabqx.Sensitive = false;
@@ -696,8 +719,7 @@ namespace osiris
         void llenando_lista_de_medicos() 
 		{
 			TreeIter iter;
-			if (combobox_tipo_busqueda.GetActiveIter(out iter))
-			{
+			if (combobox_tipo_busqueda.GetActiveIter(out iter)){
 				if((int) combobox_tipo_busqueda.Model.GetValue(iter,1) > 0) {
 					treeViewEngineMedicos.Clear(); // Limpia el treeview cuando realiza una nueva busqueda
 					NpgsqlConnection conexion; 
@@ -826,6 +848,10 @@ namespace osiris
 				if(checkbutton_anestesiologo.Active == true){
 					entry_id_anestesiologo.Text = idmedico.ToString().Trim();
 					entry_anestesiologo.Text = nombmedico;
+				}
+				if(checkbutton_cirujano2.Active == true){
+					entry_id_cirujano2.Text = idmedico.ToString().Trim();
+					entry_nombre_cirujano2.Text = nombmedico;
 				}
 				Widget win = (Widget) sender;
 				win.Toplevel.Destroy();
@@ -1157,6 +1183,9 @@ namespace osiris
 			string update_tipoanestesia = "";
 			string update_anestesiologo = "";
 			string update_tecnicovision = "";
+			string update_observacion_qx = "";
+			string update_cirujano2 = "";
+			
 			MessageDialog msgBox = new MessageDialog (MyWin,DialogFlags.Modal,
 									MessageType.Question,ButtonsType.YesNo,"¿ Esta seguro de actualizar la informacion... ");
 			ResponseType miResultado = (ResponseType)msgBox.Run ();
@@ -1167,9 +1196,11 @@ namespace osiris
 						update_producto = entry_id_producto.Text.ToString().Trim()+" ;"+entry_descripcion_producto.Text.ToString()+" ;"+entry_nroserie.Text.ToString().Trim().ToUpper();
 						update_tipoanestesia = " ;"+tipoantestesia;
 						update_anestesiologo = " ;"+entry_id_anestesiologo.Text.Trim()+" ;"+entry_anestesiologo.Text.ToString().Trim().ToUpper();
-						strsql = "UPDATE osiris_erp_cobros_enca SET observaciones1 = observaciones1 || '"+update_producto+update_tipoanestesia+update_anestesiologo+";"+DateTime.Now.ToString("yyyy-MM-dd HH:mm tt")+";"+LoginEmpleado+"\n' "+
+						update_observacion_qx = " ;"+entry_observacion_qx.Text.ToUpper();
+						update_cirujano2 = " ;"+entry_id_cirujano2.Text+" ;"+entry_nombre_cirujano2.Text.ToUpper();
+						strsql = "UPDATE osiris_erp_cobros_enca SET observaciones1 = observaciones1 || '"+update_producto+update_tipoanestesia+update_anestesiologo+update_observacion_qx+update_cirujano2+";"+DateTime.Now.ToString("yyyy-MM-dd HH:mm tt")+";"+LoginEmpleado+"\n' "+
 									"WHERE folio_de_servicio =  '"+entry_folio_servicio.Text+"';";
-						//Console.WriteLine(strsql);
+						Console.WriteLine(strsql);
 						
 						NpgsqlConnection conexion; 
 		            	conexion = new NpgsqlConnection (connectionString+nombrebd);
@@ -1346,7 +1377,20 @@ namespace osiris
 		
 		void llenado_de_datos_paciente(string foliodeservicio_)
 		{
-			
+			// limpiando entry tab_qx
+			entry_id_producto.Text = "";
+			entry_descripcion_producto.Text = "";
+			entry_nroserie.Text = "";			
+			entry_id_anestesiologo.Text = "0";
+			entry_anestesiologo.Text = "";
+			entry_observacion_qx.Text = "";
+			entry_id_cirujano2.Text = "0";
+			entry_nombre_cirujano2.Text = "";
+			llenado_combobox(0,"",combobox_tipo_cirugia,"array","","","",args_tipos_cirugias,args_id_array,"");
+			llenado_combobox(0,"",combobox_diagprimeravez,"array","","","",args_diag_primeravez,args_id_array,"");
+			llenado_combobox(0,"",combobox_tipo_anestecia,"array","","","",args_tipoanestesia,args_id_array,"");
+			llenado_combobox(0,"",combobox_tecnicovision,"array","","","",args_tecnicosvision,args_id_array,"");
+						
 			NpgsqlConnection conexion; 
 			conexion = new NpgsqlConnection (connectionString+nombrebd);
             
@@ -1490,6 +1534,19 @@ namespace osiris
 										break;
 										case 6:
 											entry_anestesiologo.Text = s1;
+										break;
+										case 7:
+											entry_observacion_qx.Text = s1;
+										break;
+										case 8:
+											if(s.Trim() == ""){
+												entry_id_cirujano2.Text = "0";
+											}else{
+												entry_id_cirujano2.Text = s1;
+											}
+										break;
+										case 9:
+											entry_nombre_cirujano2.Text = s1;
 										break;
 									}
 									i++;

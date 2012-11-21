@@ -1194,8 +1194,10 @@ namespace osiris
 									"AND status = 'true' "+
 									"AND sin_stock = 'false' "+
 									"AND solicitado_erroneo = 'false' "+
-									"AND envio_directo = 'false' "+
-									"AND osiris_his_solicitudes_deta.eliminado = 'false' ";
+									"AND envio_directo = 'false' " +
+									"AND osiris_his_solicitudes_deta.eliminado = 'false' " +
+									"AND osiris_his_solicitudes_deta.autorizada = osiris_almacenes.requiere_autorizacion";
+			
 			string nombrepaciente;
 			NpgsqlConnection conexion; 
 			conexion = new NpgsqlConnection (connectionString+nombrebd);

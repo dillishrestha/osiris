@@ -48,11 +48,13 @@ namespace osiris
 		
 		// Declarando ventana del menu de costos
 		[Widget] Gtk.Window crea_ordenes_compras = null;
+		[Widget] Gtk.CheckButton checkbutton_all_deptos = null;
 		[Widget] Gtk.ComboBox combobox_tipo_admision = null;
 		[Widget] Gtk.TreeView lista_productos_a_comprar = null;
 		[Widget] Gtk.Button button_busca_proveedores = null;
 		[Widget] Gtk.Button button_asignar_proveedor = null;
 		[Widget] Gtk.Button button_orden_compra = null;
+		[Widget] Gtk.Button button_buscar_precio = null;
 		[Widget] Gtk.Entry entry_id_proveedor = null;
 		[Widget] Gtk.Entry entry_nombre_proveedor = null;
 		[Widget] Gtk.Entry entry_formapago = null;
@@ -127,7 +129,9 @@ namespace osiris
 			//imprime la informacion:
 			button_imprimir.Clicked += new EventHandler(on_imprime_orden_clicked);
 			//
+			//button_orden_compra
 			button_prod_comprado.Clicked += new EventHandler(on_button_prod_comprado_clicked);
+			checkbutton_all_deptos.Clicked += new EventHandler(on_checkbutton_all_deptos_clicked);
 			crea_treeview_ordencompra();
 			cree_treeview_departamentos();
 			llenado_treeview_departamentos();
@@ -362,6 +366,35 @@ namespace osiris
 			}
 		}
 		
+		void on_checkbutton_all_deptos_clicked(object sender, EventArgs args)
+		{			
+			verifica_grupo_prodctos();
+		}
+		
+		void verifica_grupo_prodctos()
+		{
+			TreeIter iter2;
+			string departamentos_seleccionados = "";
+			if ((bool) checkbutton_all_deptos.Active == true){
+				if (treeViewEngineListaDepartamentos.GetIterFirst (out iter2)){
+					treeview_lista_departamentos.Model.SetValue(iter2,0,true);
+					departamentos_seleccionados = Convert.ToString((int) treeview_lista_departamentos.Model.GetValue (iter2,2));
+					while (treeViewEngineListaDepartamentos.IterNext(ref iter2)){
+						treeview_lista_departamentos.Model.SetValue(iter2,0,true);
+					}
+				}
+				//query_in_grupo = "";
+			}else{
+				if (treeViewEngineListaDepartamentos.GetIterFirst (out iter2)){
+					treeview_lista_departamentos.Model.SetValue(iter2,0,false);
+					while (treeViewEngineListaDepartamentos.IterNext(ref iter2)){
+						treeview_lista_departamentos.Model.SetValue(iter2,0,false);
+					}
+				}
+			}
+			llena_requiciones_para_comprar(departamentos_seleccionados);
+		}
+		
 		void on_button_prod_comprado_clicked(object sender, EventArgs args)
 		{
 			MessageDialog msgBox = new MessageDialog (MyWin,DialogFlags.Modal,
@@ -567,7 +600,7 @@ namespace osiris
 							"WHERE osiris_erp_requisicion_deta.id_producto = osiris_productos.id_producto "+
 							"AND osiris_his_tipo_admisiones.id_tipo_admisiones = osiris_erp_requisicion_deta.id_tipo_admisiones "+
 							"AND osiris_erp_requisicion_deta.id_proveedor = osiris_erp_proveedores.id_proveedor "+
-							"AND osiris_erp_requisicion_deta.id_tipo_admisiones IN('"+departamentos_seleccionados+"') "+
+							departamentos_seleccionados+"') "+
 							"AND autorizada = 'true' "+
 							"AND eliminado = 'false' "+
 						    "AND comprado = 'false' "+
@@ -625,7 +658,9 @@ namespace osiris
                						"ORDER BY descripcion_admisiones;";
 				NpgsqlDataReader lector = comando.ExecuteReader ();
                	while (lector.Read()){
-					treeViewEngineListaDepartamentos.AppendValues(false,(string) lector["descripcion_admisiones"], (int) lector["id_tipo_admisiones"]);
+					if((string) lector["descripcion_admisiones"].ToString().Trim() != ""){
+						treeViewEngineListaDepartamentos.AppendValues(false,(string) lector["descripcion_admisiones"], (int) lector["id_tipo_admisiones"]);
+					}
 				}
 			}catch (NpgsqlException ex){
 				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
@@ -694,6 +729,8 @@ namespace osiris
 			col_cantidadcomprar.PackStart(cellr3, true);
 			col_cantidadcomprar.AddAttribute (cellr3, "text", 3);
 			col_cantidadcomprar.SortColumnId = (int) col_ordencompra.col_cantidadcomprar;
+			cellr3.Editable = true;
+			cellr3.Edited += NumberCellEdited_Autorizado_1;
 			
 			col_descripcion = new TreeViewColumn();
 			cellr4 = new CellRendererText();
@@ -732,7 +769,6 @@ namespace osiris
 			col_precio_prod_hsc.AddAttribute (cellr8, "text", 8);
 			col_precio_prod_hsc.SortColumnId = (int) col_ordencompra.col_precio_prod_hsc;
 			cellr8.Editable = true;
-			cellr8.Edited += NumberCellEdited_Autorizado;
 			
 			TreeViewColumn col_embalaje = new TreeViewColumn();
 			CellRendererText cellr9 = new CellRendererText();
@@ -741,7 +777,7 @@ namespace osiris
 			col_embalaje.AddAttribute (cellr9, "text", 9);
 			col_embalaje.SortColumnId = (int) col_ordencompra.col_embalaje;
 			cellr9.Editable = true;
-			cellr9.Edited += NumberCellEdited_Autorizado;
+			cellr9.Edited += NumberCellEdited_Autorizado_2;
 			
 			TreeViewColumn col_precioprove = new TreeViewColumn();
 			CellRendererText cell10 = new CellRendererText();
@@ -857,15 +893,16 @@ namespace osiris
 			treeview_lista_departamentos.AppendColumn(col01);			
 		}
 		
-		void NumberCellEdited_Autorizado (object o, EditedArgs args)
+		void NumberCellEdited_Autorizado_1(object o, EditedArgs args)
 		{
-			Console.WriteLine(o.ToString());
+			Gtk.CellRendererText onRendererChanged = o as Gtk.CellRendererText;
+			Console.WriteLine(onRendererChanged.ToString());
 			Gtk.TreeIter iter;
 			bool esnumerico = false;
 			int var_paso = 0;
 			int largo_variable = args.NewText.ToString().Length;
 			string toma_variable = args.NewText.ToString();
-			
+						
 			treeViewEngineProductosaComprar.GetIter (out iter, new Gtk.TreePath (args.Path));
 			
 			while (var_paso < largo_variable){				
@@ -887,8 +924,44 @@ namespace osiris
 				}
 				var_paso += 1;
 			}
-			if (esnumerico == true){		
-				//treeViewEngineProductosaComprar.SetValue(iter,(int) Column_solicitudes.col_envios02,args.NewText);
+			if (esnumerico == true){
+				treeViewEngineProductosaComprar.SetValue(iter,(int) col_ordencompra.col_cantidadcomprar,args.NewText);
+			}
+ 		}
+		
+		void NumberCellEdited_Autorizado_2(object o, EditedArgs args)
+		{
+			Gtk.CellRendererText onRendererChanged = o as Gtk.CellRendererText;
+			Console.WriteLine(onRendererChanged.ToString());
+			Gtk.TreeIter iter;
+			bool esnumerico = false;
+			int var_paso = 0;
+			int largo_variable = args.NewText.ToString().Length;
+			string toma_variable = args.NewText.ToString();
+						
+			treeViewEngineProductosaComprar.GetIter (out iter, new Gtk.TreePath (args.Path));
+			
+			while (var_paso < largo_variable){				
+				if ((string) toma_variable.Substring(var_paso,1).ToString() == "." || 
+					(string) toma_variable.Substring(var_paso,1).ToString() == "0" ||
+					(string) toma_variable.Substring(var_paso,1).ToString() == "1" || 
+					(string) toma_variable.Substring(var_paso,1).ToString() == "2" ||
+					(string) toma_variable.Substring(var_paso,1).ToString() == "3" ||
+					(string) toma_variable.Substring(var_paso,1).ToString() == "4" ||
+					(string) toma_variable.Substring(var_paso,1).ToString() == "5" || 
+					(string) toma_variable.Substring(var_paso,1).ToString() == "6" || 
+					(string) toma_variable.Substring(var_paso,1).ToString() == "7" || 
+					(string) toma_variable.Substring(var_paso,1).ToString() == "8" ||
+					(string) toma_variable.Substring(var_paso,1).ToString() == "9") {
+					esnumerico = true;
+				}else{
+				 	esnumerico = false;
+				 	var_paso = largo_variable;
+				}
+				var_paso += 1;
+			}
+			if (esnumerico == true){
+				treeViewEngineProductosaComprar.SetValue(iter,(int) col_ordencompra.col_embalaje,args.NewText);
 			}
  		}
 		
@@ -931,7 +1004,7 @@ namespace osiris
 		void selecciona_departamento(object sender, ToggledArgs args)
 		{
 			int variable_paso_02_1 = 0;
-			departamentos_seleccionados = "";
+			departamentos_seleccionados = "AND osiris_erp_requisicion_deta.id_tipo_admisiones IN('";
 			TreeIter iter;
 			TreePath path = new TreePath (args.Path);	
 			if (treeview_lista_departamentos.Model.GetIter (out iter, path)){					
@@ -941,13 +1014,13 @@ namespace osiris
 		    	descripinternamiento = (string) treeview_lista_departamentos.Model.GetValue(iter,1);				
 				if (treeViewEngineListaDepartamentos.GetIterFirst (out iter)){			
 	 				if ((bool) treeview_lista_departamentos.Model.GetValue(iter,0) == true){
-						departamentos_seleccionados = Convert.ToString((int) treeview_lista_departamentos.Model.GetValue (iter,2));
+						departamentos_seleccionados = departamentos_seleccionados + Convert.ToString((int) treeview_lista_departamentos.Model.GetValue (iter,2));
 	 					variable_paso_02_1 += 1;		
 	 				}
 	 				while (treeViewEngineListaDepartamentos.IterNext(ref iter)){
 	 					if ((bool) treeview_lista_departamentos.Model.GetValue(iter,0) == true){
 							if (variable_paso_02_1 == 0){ 
-	 							departamentos_seleccionados = Convert.ToString((int) treeview_lista_departamentos.Model.GetValue (iter,2));
+	 							departamentos_seleccionados = departamentos_seleccionados + Convert.ToString((int) treeview_lista_departamentos.Model.GetValue (iter,2));
 	 							variable_paso_02_1 += 1;
 	 						}else{
 	 							departamentos_seleccionados = departamentos_seleccionados + "','" + Convert.ToString((int) treeview_lista_departamentos.Model.GetValue (iter,2));

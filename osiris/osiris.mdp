@@ -8,7 +8,7 @@
     <AsmRefVar />
     <ProjectRefVar />
   </MonoDevelop.Autotools.MakefileInfo>
-  <Configurations>
+  <Configurations active="Debug">
     <Configuration name="Debug" Optimize="true" WarningLevel="4" CheckForOverflowUnderflow="true" ctype="DotNetProjectConfiguration">
       <Output directory="../bin/Debug" assembly="osiris" />
       <Build debugmode="True" target="Exe" />
@@ -160,6 +160,7 @@
     <File subtype="Code" buildaction="Compile" name="rpt_conceptos_proveedores.cs" />
     <File subtype="Code" buildaction="Compile" name="tarjeta_medica.cs" />
     <File subtype="Code" buildaction="Compile" name="rpt_no_ingreso_caja.cs" />
+    <File subtype="Code" buildaction="Compile" name="hemodialisis.cs" />
   </Contents>
   <References>
     <ProjectReference specificVersion="False" type="Gac" localcopy="True" refto="Npgsql, Version=2.0.0.0, Culture=neutral, PublicKeyToken=5d8b90d52f46fda7" />

@@ -44,8 +44,8 @@ namespace osiris
 		public string idUsuario = "";
 		
 		// Informacion de la Empresa
-		public string nombre_empresa = "CONTROL DE CLINICAS S.C."; //"P R A C T I M E D"; "CONTROL DE CLINICA S.C."
-		public string nombre_empresa2 = "CONTROL DE CLINICAS";  //"CONTROL DE CLINICA";
+		public string nombre_empresa = "CONTROL DE CLINICA S.C."; //"P R A C T I M E D"; "CONTROL DE CLINICA S.C."
+		public string nombre_empresa2 = "CONTROL DE CLINICA";  //"CONTROL DE CLINICA";
 		public string direccion_empresa = "Jose Angel Conchello 2880, Col. Victoria"; //"Loma Grande 2703, Col. Loma de San Francisco"; //"Jose Angel Conchello 2880, Col. Victoria"
 		public string telefonofax_empresa = "Telefono: (01)(81) 8351-3610"; //"Telefono: (01)(81) 8040-6060"; // "Telefono: (01)(81) 8351-3610"
 		public string version_sistema = "Sistema Hospitalario OSIRIS ver. 1.0";
@@ -185,7 +185,7 @@ namespace osiris
 				if(type_field == "bool"){
 					comando.CommandText = "SELECT "+name_field+" AS field_id_name,"+name_field_out+" AS name_fiel_output"+" FROM "+name_table+" "+condition_table+" ORDER BY "+name_field+" DESC LIMIT 1;";
 				}
-				Console.WriteLine(comando.CommandText);
+				//Console.WriteLine(comando.CommandText);
 				NpgsqlDataReader lector = comando.ExecuteReader ();				
 				if (lector.Read()){
 					tomavalor = (string) lector["name_fiel_output"].ToString().Trim();

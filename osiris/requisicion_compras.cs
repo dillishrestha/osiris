@@ -183,6 +183,7 @@ namespace osiris
 		string filtro_query_alta = "AND osiris_erp_cobros_enca.alta_paciente = 'false' ";
     	
     	bool editar = true;
+		bool activovalidprodrequi;
     	
     	int contador_items_requisados = 0;	// cuenta los items que son requisados
     	int contador_items_autorizadoscompra = 0;	// cuenta los items autorizados para comprar
@@ -234,7 +235,15 @@ namespace osiris
     		accesomodulo = accesomodulo_;
 			connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
 			nombrebd = conexion_a_DB._nombrebd;
-    		
+    		  
+			
+			if((string) classpublic.lee_registro_de_tabla("osiris_his_tipo_admisiones","id_tipo_admisiones","WHERE id_tipo_admisiones = '"+idcentrocosto.ToString().Trim()+"' ","activo_valid_prodrequi","bool") == "False"){
+				activovalidprodrequi = false;
+			}else{
+				activovalidprodrequi = true;
+			}
+			Console.WriteLine((string) classpublic.lee_registro_de_tabla("osiris_his_tipo_admisiones","id_tipo_admisiones","WHERE id_tipo_admisiones = '"+idcentrocosto.ToString().Trim()+"' ","activo_valid_prodrequi","bool"));
+			
 			Glade.XML gxml = new Glade.XML (null, "almacen_costos_compras.glade", "requisicion_materiales", null);
 			gxml.Autoconnect (this);
 			
@@ -743,9 +752,51 @@ namespace osiris
 				if(float.Parse(entry_precio.Text) > 0){
 					// Llenando el TreeView para la requisicion
 		 			if (lista_de_producto.Selection.GetSelected(out model, out iterSelected)){
-						//Console.WriteLine((string) model.GetValue(iterSelected, 0));
-						//Console.WriteLine(classpublic.lee_registro_de_tabla("osiris_erp_requisicion_deta","id_producto","WHERE id_producto = '"+(string) model.GetValue(iterSelected, 0)+"' AND comprado = 'true' ","comprado","bool"));
-						if((string) classpublic.lee_registro_de_tabla("osiris_erp_requisicion_deta","id_producto","WHERE id_producto = '"+(string) model.GetValue(iterSelected, 0)+"' AND comprado = 'false' ","comprado","bool") == ""){
+						if(activovalidprodrequi == true){
+							if((string) classpublic.lee_registro_de_tabla("osiris_erp_requisicion_deta","id_producto","WHERE id_producto = '"+(string) model.GetValue(iterSelected, 0)+"' AND comprado = 'false' ","comprado","bool") == ""){
+								contador_items_requisados += 1;
+								entry_totalitems_productos.Text = contador_items_requisados.ToString().Trim();
+								entry_nombre_prodrequisado.Text = (string) model.GetValue(iterSelected, 1);
+								float costounitario_prod = float.Parse(entry_precio.Text)/float.Parse((string) model.GetValue(iterSelected, 16));
+			 					
+								treeViewEngineRequisicion.AppendValues(entry_cantidad_aplicada.Text,
+																	(string) model.GetValue(iterSelected, 1), 
+																	(string) model.GetValue(iterSelected, 0),
+																	(string) model.GetValue(iterSelected, 16),		// Embalaje del producto
+																	(string) model.GetValue(iterSelected, 7),		// Tipo de Unidad
+								                                     "",
+								                                     "",
+								                                     "",
+								                                     "0",
+								                                     "",					// fecha de compra
+								                                     true,
+								                                     false,
+								                                     false,
+								                                     "",					// fecha de autorizacion
+								                                     "0",					// id de la secuencia
+								                                     "0",					
+								                                     "0",
+								                                     "0",
+																	 "",			// descripcion proveedor 1 
+								                                     "",			// descripcion proveedor 2
+								                                     "",			// descripcion proveedor 3
+								                                     costounitario_prod.ToString("F"),					// Precio costo unitario
+								                                     float.Parse(entry_precio.Text.Trim()).ToString("F"),
+								                                     "1",			// id proveedor 1
+								                                     "1",
+								                                     "1",
+								                                     (string) model.GetValue(iterSelected, 14),	// Porcentage de Ganancia
+								                                     false);
+								entry_cantidad_aplicada.Text = "0";
+								//this.entry_cantidad_aplicada.StartEditing(0);
+								entry_cantidad_aplicada.CanFocus = true;
+								entry_precio.Text = "0";
+							}else{
+								MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+													MessageType.Error,ButtonsType.Close, "Este producto no se puede requisar ya que no se ha comprado aun, verique en el departamento de COMPRAS...");
+								msgBoxError.Run ();		msgBoxError.Destroy();
+							}
+						}else{
 							contador_items_requisados += 1;
 							entry_totalitems_productos.Text = contador_items_requisados.ToString().Trim();
 							entry_nombre_prodrequisado.Text = (string) model.GetValue(iterSelected, 1);
@@ -783,10 +834,6 @@ namespace osiris
 							//this.entry_cantidad_aplicada.StartEditing(0);
 							entry_cantidad_aplicada.CanFocus = true;
 							entry_precio.Text = "0";
-						}else{
-							MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
-													MessageType.Error,ButtonsType.Close, "Este producto no se puede requisar ya que no se ha comprado aun, verique en el departamento de COMPRAS...");
-							msgBoxError.Run ();		msgBoxError.Destroy();						
 						}
 					}
 				}else{
@@ -1154,7 +1201,7 @@ namespace osiris
 						}						
 						// llenado del detalle de la requisicion u orden de compra
 						comando.CommandText  = "SELECT id_requisicion,to_char(osiris_erp_requisicion_deta.id_producto,'999999999999') AS idproducto,"+
-										"to_char(cantidad_solicitada,'999999.99') AS cantidadsolicitada,comprado,"+
+										"to_char(cantidad_solicitada,'999999.99') AS cantidadsolicitada,comprado,cantidad_recibida,"+
 										"osiris_productos.descripcion_producto,to_char(osiris_productos.cantidad_de_embalaje,'9999.99') AS cantidadembalaje,"+
 										"osiris_productos.tipo_unidad_producto,to_char(numero_orden_compra,'9999999999') AS numeroordencompra,"+
 										"autorizada,to_char(fechahora_autorizado,'yyyy-MM-dd') AS fechahoraautorizado,"+
@@ -1197,7 +1244,7 @@ namespace osiris
 														(string) lector1["idproducto"],
 														(string) lector1["cantidadembalaje"],
 														(string) lector1["tipo_unidad_producto"],
-														"",
+														float.Parse(Convert.ToString((decimal) lector1["cantidad_recibida"]).ToString()).ToString("F"),
 														"",
 														"",
 														(string) lector1["numeroordencompra"],
@@ -1300,7 +1347,7 @@ namespace osiris
 								editar = true;
 							}							
 							comando.CommandText = "SELECT id_requisicion,to_char(osiris_erp_requisicion_deta.id_producto,'999999999999') AS idproducto,"+
-										"to_char(cantidad_solicitada,'999999.99') AS cantidadsolicitada,comprado,"+
+										"to_char(cantidad_solicitada,'999999.99') AS cantidadsolicitada,comprado,cantidad_recibida,"+
 										"osiris_productos.descripcion_producto,to_char(osiris_productos.cantidad_de_embalaje,'9999.99') AS cantidadembalaje,"+
 										"osiris_productos.tipo_unidad_producto,to_char(numero_orden_compra,'9999999999') AS numeroordencompra,"+
 										"autorizada,to_char(fechahora_autorizado,'yyyy-MM-dd') AS fechahoraautorizado,"+
@@ -1341,7 +1388,7 @@ namespace osiris
 															(string) lector1["idproducto"],
 															(string) lector1["cantidadembalaje"],
 															(string) lector1["tipo_unidad_producto"],
-															"",
+															float.Parse(Convert.ToString((decimal) lector1["cantidad_recibida"]).ToString()).ToString("F"),
 															"",
 															"",
 															(string) lector1["numeroordencompra"],
@@ -1426,7 +1473,12 @@ namespace osiris
 						if(combobox_llenado.Name == "combobox_tipo_requisicion"){
 							store.AppendValues ((string) lector[ name_field_desc ], (int) lector[ name_field_id],(bool) lector["selecciona_paciente"]);
 						}else{
-							store.AppendValues ((string) lector[ name_field_desc ], (int) lector[ name_field_id],false);
+							if(combobox_llenado.Name == "combobox_tipo_admision"){
+								store.AppendValues ((string) lector[ name_field_desc ], (int) lector[ name_field_id],(bool) lector["activo_valid_prodrequi"]);
+							}else{
+								store.AppendValues ((string) lector[ name_field_desc ], (int) lector[ name_field_id],false);
+						
+							}
 						}
 					}
 				}catch (NpgsqlException ex){
@@ -1453,6 +1505,7 @@ namespace osiris
 				case "combobox_tipo_admision":
 					idtipointernamiento = (int) onComboBoxChanged.Model.GetValue(iter,1);
 		    		descripinternamiento = (string) onComboBoxChanged.Model.GetValue(iter,0);
+					activovalidprodrequi = (bool) onComboBoxChanged.Model.GetValue(iter,2);
 					break;
 				case "combobox_tipo_admision2":
 					idtipointernamiento2 = (int) onComboBoxChanged.Model.GetValue(iter,1);
@@ -1878,14 +1931,14 @@ namespace osiris
 			
 			TreeViewColumn col_cantidad = new TreeViewColumn();
 			CellRendererText cellr0 = new CellRendererText();
-			col_cantidad.Title = "Solicitado"; // titulo de la cabecera de la columna, si está visible
+			col_cantidad.Title = "Solicitado";
 			col_cantidad.PackStart(cellr0, true);
 			col_cantidad.AddAttribute (cellr0, "text", 0);
 			col_cantidad.SortColumnId = (int) col_requisicion.col_cantidad;
 			
 			TreeViewColumn col_descripcion = new TreeViewColumn();
 			CellRendererText cellr1 = new CellRendererText();
-			col_descripcion.Title = "Descripcion"; // titulo de la cabecera de la columna, si está visible
+			col_descripcion.Title = "Descripcion";
 			col_descripcion.PackStart(cellr1, true);
 			col_descripcion.AddAttribute (cellr1, "text", 1);
 			col_descripcion.SortColumnId = (int) col_requisicion.col_descripcion;
@@ -1894,14 +1947,14 @@ namespace osiris
 									
 			TreeViewColumn col_codigo_prod = new TreeViewColumn();
 			CellRendererText cellr2 = new CellRendererText();
-			col_codigo_prod.Title = "Codigo Prod."; // titulo de la cabecera de la columna, si está visible
+			col_codigo_prod.Title = "Codigo Prod.";
 			col_codigo_prod.PackStart(cellr2, true);
 			col_codigo_prod.AddAttribute (cellr2, "text", 2);
 			col_codigo_prod.SortColumnId = (int) col_requisicion.col_codigo_prod;
 			
 			TreeViewColumn col_precio_compra = new TreeViewColumn();
 			CellRendererText cellr22 = new CellRendererText();
-			col_precio_compra.Title = "Precio Prod."; // titulo de la cabecera de la columna, si está visible
+			col_precio_compra.Title = "Precio Prod.";
 			col_precio_compra.PackStart(cellr22, true);
 			col_precio_compra.AddAttribute (cellr22, "text", 22);
 			//col_embalaje.SortColumnId = (int) col_requisicion.col_embalaje;
@@ -1910,21 +1963,21 @@ namespace osiris
 			
 			TreeViewColumn col_embalaje = new TreeViewColumn();
 			CellRendererText cellr3 = new CellRendererText();
-			col_embalaje.Title = "Embalaje"; // titulo de la cabecera de la columna, si está visible
+			col_embalaje.Title = "Embalaje";
 			col_embalaje.PackStart(cellr3, true);
 			col_embalaje.AddAttribute (cellr3, "text", 3);
 			col_embalaje.SortColumnId = (int) col_requisicion.col_embalaje;
 			
 			TreeViewColumn col_unidades = new TreeViewColumn();
 			CellRendererText cellr4 = new CellRendererText();
-			col_unidades.Title = "Unidades"; // titulo de la cabecera de la columna, si está visible
+			col_unidades.Title = "Unidades";
 			col_unidades.PackStart(cellr4, true);
 			col_unidades.AddAttribute (cellr4, "text", 4);
 			col_unidades.SortColumnId = (int) col_requisicion.col_unidades;
 			
 			TreeViewColumn col_comprado = new TreeViewColumn();
 			CellRendererText cellr5 = new CellRendererText();
-			col_comprado.Title = "Uni.Compradas"; // titulo de la cabecera de la columna, si está visible
+			col_comprado.Title = "Uni.Recibida";
 			col_comprado.PackStart(cellr5, true);
 			col_comprado.AddAttribute (cellr5, "text", 5);
 			col_comprado.SortColumnId = (int) col_requisicion.col_comprado;
@@ -1946,21 +1999,21 @@ namespace osiris
 						
 			TreeViewColumn col_orden_compra = new TreeViewColumn();
 			CellRendererText cellr8 = new CellRendererText();
-			col_orden_compra.Title = "Nº O.C."; // titulo de la cabecera de la columna, si está visible
+			col_orden_compra.Title = "Nº O.C.";
 			col_orden_compra.PackStart(cellr8, true);
 			col_orden_compra.AddAttribute (cellr8, "text", 8);
 			col_orden_compra.SortColumnId = (int) col_requisicion.col_orden_compra;
 			
 			TreeViewColumn col_fecha_compra = new TreeViewColumn();
 			CellRendererText cellr9 = new CellRendererText();
-			col_fecha_compra.Title = "Fecha O.C."; // titulo de la cabecera de la columna, si está visible
+			col_fecha_compra.Title = "Fecha O.C.";
 			col_fecha_compra.PackStart(cellr9, true);
 			col_fecha_compra.AddAttribute (cellr9, "text", 9);
 			col_fecha_compra.SortColumnId = (int) col_requisicion.col_fecha_compra;
 			
 			TreeViewColumn col_autorizar = new TreeViewColumn();
 			CellRendererToggle cel_autorizar = new CellRendererToggle();
-			col_autorizar.Title = "Autorizar"; // titulo de la cabecera de la columna, si está visible
+			col_autorizar.Title = "Autorizar";
 			col_autorizar.PackStart(cel_autorizar, true);
 			col_autorizar.AddAttribute (cel_autorizar, "active", 11);
 			cel_autorizar.Activatable = true;
@@ -1969,7 +2022,7 @@ namespace osiris
 			
 			TreeViewColumn col_autorizado = new TreeViewColumn();
 			CellRendererToggle cel_autorizado = new CellRendererToggle();
-			col_autorizado.Title = "Autorizado"; // titulo de la cabecera de la columna, si está visible
+			col_autorizado.Title = "Autorizado";
 			col_autorizado.PackStart(cel_autorizado, true);
 			col_autorizado.AddAttribute (cel_autorizado, "active", 12);
 			cel_autorizado.Activatable = true;
@@ -1977,7 +2030,7 @@ namespace osiris
 			
 			TreeViewColumn col_fecha_autorizacion = new TreeViewColumn();
 			CellRendererText cellr13 = new CellRendererText();
-			col_fecha_autorizacion.Title = "Fec.Autorizacion"; // titulo de la cabecera de la columna, si está visible
+			col_fecha_autorizacion.Title = "Fec.Autorizacion";
 			col_fecha_autorizacion.PackStart(cellr13, true);
 			col_fecha_autorizacion.AddAttribute (cellr13, "text", 13);
 			col_fecha_autorizacion.SortColumnId = (int) col_requisicion.col_fecha_autorizacion;
@@ -1986,42 +2039,42 @@ namespace osiris
 			
 			TreeViewColumn col_stock_subalmacenes = new TreeViewColumn();
 			CellRendererText cellr15 = new CellRendererText();
-			col_stock_subalmacenes.Title = "Stock Sub-Almacenes"; // titulo de la cabecera de la columna, si está visible
+			col_stock_subalmacenes.Title = "Stock Sub-Almacenes";
 			col_stock_subalmacenes.PackStart(cellr15, true);
 			col_stock_subalmacenes.AddAttribute (cellr15, "text", 15);
 			col_stock_subalmacenes.SortColumnId = (int) col_requisicion.col_stock_subalmacenes;
 			
 			TreeViewColumn col_stock_almageneral = new TreeViewColumn();
 			CellRendererText cellr16 = new CellRendererText();
-			col_stock_almageneral.Title = "Stock Alma.Genaral"; // titulo de la cabecera de la columna, si está visible
+			col_stock_almageneral.Title = "Stock Alma.Genaral";
 			col_stock_almageneral.PackStart(cellr16, true);
 			col_stock_almageneral.AddAttribute (cellr16, "text", 16);
 			col_stock_almageneral.SortColumnId = (int) col_requisicion.col_stock_almageneral;
 			
 			TreeViewColumn col_total_stock = new TreeViewColumn();
 			CellRendererText cellr17 = new CellRendererText();
-			col_total_stock.Title = "Total Stock"; // titulo de la cabecera de la columna, si está visible
+			col_total_stock.Title = "Total Stock";
 			col_total_stock.PackStart(cellr17, true);
 			col_total_stock.AddAttribute (cellr17, "text", 17);
 			col_total_stock.SortColumnId = (int) col_requisicion.col_total_stock;
 			
 			TreeViewColumn col_proveedor1 = new TreeViewColumn();
 			CellRendererText cellr18 = new CellRendererText();
-			col_proveedor1.Title = "Proveedor 1"; // titulo de la cabecera de la columna, si está visible
+			col_proveedor1.Title = "Proveedor 1";
 			col_proveedor1.PackStart(cellr18, true);
 			col_proveedor1.AddAttribute (cellr18, "text", 18);
 			col_proveedor1.SortColumnId = (int) col_requisicion.col_proveedor1;
 			
 			TreeViewColumn col_proveedor2 = new TreeViewColumn();
 			CellRendererText cellr19 = new CellRendererText();
-			col_proveedor2.Title = "Proveedor 2"; // titulo de la cabecera de la columna, si está visible
+			col_proveedor2.Title = "Proveedor 2";
 			col_proveedor2.PackStart(cellr19, true);
 			col_proveedor2.AddAttribute (cellr19, "text", 19);
 			col_proveedor2.SortColumnId = (int) col_requisicion.col_proveedor2;
 			
 			TreeViewColumn col_proveedor3 = new TreeViewColumn();
 			CellRendererText cellr20 = new CellRendererText();
-			col_proveedor3.Title = "Proveedor 3"; // titulo de la cabecera de la columna, si está visible
+			col_proveedor3.Title = "Proveedor 3";
 			col_proveedor3.PackStart(cellr20, true);
 			col_proveedor3.AddAttribute (cellr20, "text", 20);
 			col_proveedor3.SortColumnId = (int) col_requisicion.col_proveedor3;

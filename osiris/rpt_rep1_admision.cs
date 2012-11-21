@@ -629,13 +629,14 @@ namespace osiris
 						"AND osiris_erp_movcargos.id_tipo_cirugia = osiris_his_tipo_cirugias.id_tipo_cirugia " +
 						"AND osiris_erp_cobros_enca.id_medico_tratante = osiris_his_medicos.id_medico " +
 						"AND osiris_erp_cobros_enca.cancelado = 'false' " +
+						"AND osiris_erp_pases_qxurg.eliminado = 'false' "+
 						//"AND osiris_erp_movcargos.id_anestesiologo = osiris_his_medicos.id_medico "+ 
 						query_rango_fechas+
 						query_tipo_paciente+
 						"ORDER BY osiris_erp_pases_qxurg.folio_de_servicio;";
 					string[] args_names_field = {"fechapaseqx","nro_pase","foliodeservicio","pagosabonos","pidpaciente","nombre_completo","motivo_ingreso","descripcion_tipo_paciente","descripcion_cirugia","dr_solicita","medicotratante","cerrado"};
-					string[] args_type_field = {"string","float","float","float","float","string","string","string","string","string","string","string"};
-					string[] args_field_text = {"id_producto","nombre_producto","nro_serie","tipo_anestesia","id_anestesiologo","nombre_anestesiologo"};
+					string[] args_type_field = {"string","float","float","float","float","string","string","string","string","string","string","string","string","string","string"};
+					string[] args_field_text = {"id_producto","nombre_producto","nro_serie","tipo_anestesia","id_anestesiologo","nombre_anestesiologo","observaciones","id_cirujano2","nombre_cirujano2"};
 					string[] args_more_title = {""};
 					// class_crea_ods.cs
 					//Console.WriteLine(query_sql);

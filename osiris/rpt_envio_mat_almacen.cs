@@ -118,6 +118,7 @@ namespace osiris
 			                                        typeof(string),
 			                                        typeof(string),
 			                                        typeof(string),
+			                                        typeof(string),
 			                                        typeof(string));
 				
 			lista_almacenes.Model = treeViewEnginesolicitud;
@@ -212,6 +213,14 @@ namespace osiris
 			cellr11.Foreground = "darkblue";
 			col_observacion.SortColumnId = (int) column_reporte.col_observacion;
 			
+			TreeViewColumn col_tiposolicitud = new TreeViewColumn();
+			CellRendererText cellr12 = new CellRendererText();
+			col_tiposolicitud.Title = "Tipo Solicitud";
+			col_tiposolicitud.PackStart(cellr12, true);
+			col_tiposolicitud.AddAttribute (cellr12, "text", 12);
+			cellr12.Foreground = "darkblue";
+			col_tiposolicitud.SortColumnId = (int) column_reporte.tiposolicitud;
+			
 			lista_almacenes.AppendColumn(col_seleccion);
 			lista_almacenes.AppendColumn(col_solicito);
 			lista_almacenes.AppendColumn(col_sub);
@@ -223,6 +232,7 @@ namespace osiris
 			lista_almacenes.AppendColumn(col_procedimiento);
 			lista_almacenes.AppendColumn(col_diagnostico);
 			lista_almacenes.AppendColumn(col_observacion);
+			lista_almacenes.AppendColumn(col_tiposolicitud);
 		}
 		
 		enum column_reporte
@@ -237,7 +247,8 @@ namespace osiris
 			col_nombrepaciente,
 			col_procedimiento,
 			col_diagnostico,
-			col_observacion
+			col_observacion,
+			tiposolicitud
 		}
 		
 		void llenando_lista_de_solicitudes()
@@ -256,7 +267,7 @@ namespace osiris
 								"to_char(osiris_his_solicitudes_deta.id_almacen,'999999999') AS idalmacen,osiris_almacenes.descripcion_almacen AS descripcionalmacen,"+
 								"to_char(osiris_his_solicitudes_deta.fecha_envio_almacen,'yyyy-MM-dd HH24:mi') AS fecha_envio,osiris_his_solicitudes_deta.id_empleado,"+
 								"osiris_his_solicitudes_deta.folio_de_servicio AS foliodeatencion,"+
-								"osiris_his_solicitudes_deta.pid_paciente AS pidpaciente,"+
+								"osiris_his_solicitudes_deta.pid_paciente AS pidpaciente,tipo_solicitud,"+
 								"osiris_his_solicitudes_deta.nombre_paciente,procedimiento_qx,diagnostico_qx,observaciones_solicitud "+
 								"FROM osiris_his_solicitudes_deta,osiris_almacenes,osiris_his_paciente "+								
 								"WHERE osiris_his_solicitudes_deta.id_almacen = osiris_almacenes.id_almacen "+
@@ -267,7 +278,7 @@ namespace osiris
 								"GROUP BY osiris_his_solicitudes_deta.folio_de_solicitud,osiris_his_solicitudes_deta.id_almacen,"+
 								"osiris_almacenes.descripcion_almacen,to_char(osiris_his_solicitudes_deta.fecha_envio_almacen,'yyyy-MM-dd HH24:mi'),osiris_his_solicitudes_deta.id_empleado,"+
 								"osiris_his_solicitudes_deta.folio_de_servicio,"+
-								"osiris_his_solicitudes_deta.pid_paciente,osiris_his_solicitudes_deta.nombre_paciente,procedimiento_qx,diagnostico_qx,observaciones_solicitud "+
+								"osiris_his_solicitudes_deta.pid_paciente,osiris_his_solicitudes_deta.nombre_paciente,procedimiento_qx,diagnostico_qx,observaciones_solicitud,osiris_his_solicitudes_deta.tipo_solicitud "+
 								"ORDER BY to_char(osiris_his_solicitudes_deta.fecha_envio_almacen,'yyyy-MM-dd HH24:mi'),osiris_his_solicitudes_deta.id_almacen,osiris_his_solicitudes_deta.folio_de_solicitud;";
 				//Console.WriteLine(comando.CommandText);
 				NpgsqlDataReader lector = comando.ExecuteReader ();
@@ -284,7 +295,8 @@ namespace osiris
 					                                (string) lector["nombre_paciente"].ToString().Trim(),
 					                                 (string) lector["procedimiento_qx"].ToString().Trim(),
 					                                 (string) lector["diagnostico_qx"].ToString().Trim(),
-					                                (string) lector["observaciones_solicitud"].ToString().Trim());
+					                                (string) lector["observaciones_solicitud"].ToString().Trim(),
+					                                (string) lector["tipo_solicitud"].ToString().Trim());
 				}
 			}catch (NpgsqlException ex){
 	   			MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,

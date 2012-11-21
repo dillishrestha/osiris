@@ -48,6 +48,7 @@ namespace osiris
 		[Widget] Gtk.Window menu_quirofano;
 		[Widget] Gtk.Button button_cargos_pacientes;
 		[Widget] Gtk.Button button_soli_material;
+		[Widget] Gtk.Button button_paquetes = null;
 		[Widget] Gtk.Button button_autorizacion_medicamento;
 		[Widget] Gtk.Button button_inv_subalmacen;
 		[Widget] Gtk.Button button_asignacion_habitacion;
@@ -83,15 +84,20 @@ namespace osiris
 		string ApmEmpleado;
 		string nombrebd;
 		string query_rango_fechas;
+		bool accesocxpq;
+		
+		protected Gtk.Window MyWin;
+		
 		class_conexion conexion_a_DB = new class_conexion();
 		
-		public quirofano (string LoginEmp_, string NomEmpleado_, string AppEmpleado_, string ApmEmpleado_, string nombrebd_) 
+		public quirofano (string LoginEmp_, string NomEmpleado_, string AppEmpleado_, string ApmEmpleado_, string nombrebd_,bool accesocxpq_) 
 		{
 			LoginEmpleado = LoginEmp_;
 			NomEmpleado = NomEmpleado_;
 			AppEmpleado = AppEmpleado_;
 			ApmEmpleado = ApmEmpleado_;
 			nombrebd = conexion_a_DB._nombrebd;
+			accesocxpq = accesocxpq_;
 			
 			Glade.XML gxml = new Glade.XML (null, "quirofano.glade", "menu_quirofano", null);
 			gxml.Autoconnect (this);        
@@ -102,6 +108,7 @@ namespace osiris
 			button_salir.Clicked += new EventHandler(on_cierraventanas_clicked);
 			button_programacion_cirugias.Clicked += new EventHandler (on_button_programacion_cirugias_clicked);
 			button_requisicion_materiales.Clicked += new EventHandler(on_button_requisicion_materiales_clicked);
+			button_paquetes.Clicked += new EventHandler(on_button_paquetes_clicked);
 			button_cargos_pacientes.Clicked += new EventHandler(on_button_cargos_pacientes_clicked);
 			button_soli_material.Clicked += new EventHandler(on_button_soli_material_clicked);
 			button_autorizacion_medicamento.Clicked += new EventHandler(on_button_autorizacion_medicamento_clicked);
@@ -114,6 +121,17 @@ namespace osiris
 		void on_button_programacion_cirugias_clicked(object sender, EventArgs args)
 		{
 			new osiris.calendario_citas(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,2);
+		}
+		
+		public void on_button_paquetes_clicked(object sender, EventArgs a)
+		{
+			if (accesocxpq == true ){
+ 				new osiris.paquetes_cirugias (LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
+			}else{
+				MessageDialog msgBox = new MessageDialog (MyWin,DialogFlags.Modal,
+				MessageType.Error,ButtonsType.Ok,"No esta autorizado para esta opcion...");
+				msgBox.Run();			msgBox.Destroy();
+			}
 		}
 		
 		void on_button_requisicion_materiales_clicked(object sender, EventArgs args)
@@ -225,12 +243,13 @@ namespace osiris
 						"AND osiris_erp_movcargos.id_tipo_cirugia = osiris_his_tipo_cirugias.id_tipo_cirugia " +
 						"AND osiris_erp_cobros_enca.id_medico_tratante = osiris_his_medicos.id_medico " +
 						"AND osiris_erp_cobros_enca.cancelado = 'false' " +
+						"AND osiris_erp_pases_qxurg.eliminado = 'false' "+
 						//"AND osiris_erp_movcargos.id_anestesiologo = osiris_his_medicos.id_medico "+ 
 						query_rango_fechas+
 						"ORDER BY osiris_erp_pases_qxurg.folio_de_servicio;";
 				string[] args_names_field = {"fechapaseqx","nro_pase","foliodeservicio","pagosabonos","montoconvenido","pidpaciente","nombre_completo","motivo_ingreso","descripcion_tipo_paciente","descripcion_cirugia","dr_solicita","medicotratante","cerrado"};
 				string[] args_type_field = {"string","float","float","float","float","float","string","string","string","string","string","string","string"};
-				string[] args_field_text = {"id_producto","nombre_producto","nro_serie","tipo_anestesia","id_anestesiologo","nombre_anestesiologo"};
+				string[] args_field_text = {"id_producto","nombre_producto","nro_serie","tipo_anestesia","id_anestesiologo","nombre_anestesiologo","observaciones","cirujano2"};
 				string[] args_more_title = {""};
 				// class_crea_ods.cs
 				//Console.WriteLine(query_sql);

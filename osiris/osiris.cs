@@ -380,7 +380,7 @@ namespace osiris
 			
 			button_mantenimiento.Clicked += new EventHandler(on_menuitem_mtt_requi_activated);
 			
-			//button_nutricion.Clicked += new EventHandler(on_button_nutricion_clicked);
+			button_nutricion.Clicked += new EventHandler(on_button_nutricion_clicked);
 			//button_imagenologia_b.Clicked += new EventHandler( on_button_imagenologia_b_clicked );
 			//button_terapia_adulto.Clicked += new EventHandler( on_button_terapia_adulto_clicked );
 			//button_terapia_nino.Clicked += new EventHandler( on_button_terapia_pediatrica_clicked );
@@ -394,7 +394,6 @@ namespace osiris
 			button_oftalmologia.Hide();
 			
 			button_farmacia.Hide();
-			button_nutricion.Hide();
 			
 			//menuitem_hospital.Sensitive = false;
 			//new osiris.class_crea_ods();
@@ -443,7 +442,7 @@ namespace osiris
 		
 		void on_button_cargos_quirofano_clicked (object sender, EventArgs args)
 		{
-			new osiris.quirofano(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);   	
+			new osiris.quirofano(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,accesocxpq);   	
 		}
 	
 		void on_button_cargos_urgencia_clicked (object sender, EventArgs args)

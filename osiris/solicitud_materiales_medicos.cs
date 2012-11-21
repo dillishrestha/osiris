@@ -76,10 +76,11 @@ namespace osiris
 		[Widget] Gtk.Button button_selecciona_pq = null;
 		[Widget] Gtk.Entry entry_observacion = null;
 		[Widget] Gtk.CheckButton checkbutton_solicitud_paquete = null;
-		
-		[Widget] Gtk.Entry entry_rojo;
-		[Widget] Gtk.Entry entry_azul;
-		[Widget] Gtk.Entry entry_verde;
+		[Widget] Gtk.ComboBox combobox_tipo_solicitud = null;
+		[Widget] Gtk.Button button_autoriza_solicitud = null;
+		[Widget] Gtk.Entry entry_rojo = null;
+		[Widget] Gtk.Entry entry_azul = null;
+		[Widget] Gtk.Entry entry_verde = null;
 		
 		//Declarando la barra de estado
 		[Widget] Gtk.Statusbar statusbar_hospital;
@@ -100,7 +101,8 @@ namespace osiris
 		string AppEmpleado;
 		string ApmEmpleado;
 		string nombrebd;
-		string connectionString;		
+		string connectionString;
+
 		float valoriva;
 		int idalmacen;    // Esta variable almacena el codigo del almacen de esta clase, se recibe como parametro de la clase
 		string filtro_query_alta = "AND osiris_erp_cobros_enca.alta_paciente = 'false' "; // solo caja podra pedir por paciente 
@@ -112,8 +114,9 @@ namespace osiris
 		int filas=690;
 		int contador = 1;
 		int numpage = 1;
-		
+		string tipodesolicitud = "";
 		string[] args_args = {""};
+		string[] args_tiposolicitud ={"","ORDINARIA","URGENTE"};
 		int[] args_id_array = {0,1,2,3,4,5,6,7,8};
 		
 		//Declaracion de ventana de error y pregunta
@@ -177,6 +180,7 @@ namespace osiris
 			entry_quien_solicita.Text = NomEmpleado+" "+AppEmpleado+" "+ApmEmpleado;
 			////// Sale de la ventana
 			button_salir.Clicked += new EventHandler(on_cierraventanas_clicked);
+			
 			// Colores de los cuadros		
 			entry_rojo.ModifyBase(StateType.Normal, new Gdk.Color(255,0,0));
 			entry_azul.ModifyBase(StateType.Normal, new Gdk.Color(0,0,255));
@@ -218,6 +222,65 @@ namespace osiris
 			}
 			conexion.Close();
 			return acceso_a_presolicitud;
+		}
+		
+		void llenado_combobox(int tipodellenado,string descrip_defaul,object obj,string sql_or_array,string query_SQL,string name_field_desc,string name_field_id,string[] args_array,int[] args_id_array,string name_field_id2)
+		{			
+			Gtk.ComboBox combobox_llenado = (Gtk.ComboBox) obj;
+			//Gtk.ComboBox combobox_pos_neg = obj as Gtk.ComboBox;
+			combobox_llenado.Clear();
+			CellRendererText cell = new CellRendererText();
+			combobox_llenado.PackStart(cell, true);
+			combobox_llenado.AddAttribute(cell,"text",0);	        
+			ListStore store = new ListStore( typeof (string),typeof (int),typeof(bool));
+			combobox_llenado.Model = store;			
+			if ((int) tipodellenado == 1){
+				store.AppendValues ((string) descrip_defaul,0);
+			}			
+			if(sql_or_array == "array"){			
+				for (int colum_field = 0; colum_field < args_array.Length; colum_field++){
+					store.AppendValues (args_array[colum_field],args_id_array[colum_field]);
+				}
+			}
+			if(sql_or_array == "sql"){			
+				NpgsqlConnection conexion; 
+				conexion = new NpgsqlConnection (connectionString+nombrebd);
+	            // Verifica que la base de datos este conectada
+				try{
+					conexion.Open ();
+					NpgsqlCommand comando; 
+					comando = conexion.CreateCommand ();
+	               	comando.CommandText = query_SQL;					
+					NpgsqlDataReader lector = comando.ExecuteReader ();
+	               	while (lector.Read()){
+						store.AppendValues ((string) lector[ name_field_desc ], (int) lector[ name_field_id],false);
+					}
+				}catch (NpgsqlException ex){
+					MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+											MessageType.Error,ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
+					msgBoxError.Run ();				msgBoxError.Destroy();
+				}
+				conexion.Close ();
+			}			
+			TreeIter iter;
+			if (store.GetIterFirst(out iter)){
+				combobox_llenado.SetActiveIter (iter);
+			}
+			combobox_llenado.Changed += new EventHandler (onComboBoxChanged_llenado);			
+		}
+		
+		void onComboBoxChanged_llenado (object sender, EventArgs args)
+		{
+			ComboBox onComboBoxChanged = sender as ComboBox;
+			if (sender == null){	return; }
+			TreeIter iter;
+			if (onComboBoxChanged.GetActiveIter (out iter)){
+				switch (onComboBoxChanged.Name.ToString()){	
+				case "combobox_tipo_solicitud":
+					tipodesolicitud = (string) onComboBoxChanged.Model.GetValue(iter,0);
+					break;
+				}
+			}
 		}
 		
 		void on_button_selecciona_pq_clicked(object sender, EventArgs args)
@@ -287,6 +350,7 @@ namespace osiris
 					entry_folio_servicio.Text = "0";
 					entry_pid_paciente.Text = "0";
 					entry_nombre_paciente.Text = "";
+					llenado_combobox(0,"",combobox_tipo_solicitud,"array","","","",args_tiposolicitud,args_id_array,"");
 	     		}else{
 	     			checkbutton_nueva_solicitud.Active = false;
 	     		}
@@ -455,7 +519,8 @@ namespace osiris
 																		"nombre_paciente,"+
 																		"procedimiento_qx,"+
 																		"diagnostico_qx," +
-																		"observaciones_solicitud)"+
+																		"observaciones_solicitud," +
+																		"tipo_solicitud) "+
 																		"VALUES ('"+
 																		this.entry_numero_solicitud.Text+"','"+
 																		(string) this.lista_produc_solicitados.Model.GetValue(iter,1)+"','"+
@@ -472,8 +537,8 @@ namespace osiris
 																		(string) entry_nombre_paciente.Text.ToString().Trim().ToUpper()+"','"+
 																		(string) entry_cirugia.Text.ToString().Trim().ToUpper()+"','"+
 																		(string) entry_diagnostico.Text.ToString().Trim().ToUpper()+"','"+
-																		(string) entry_observacion.Text.ToString().Trim().ToUpper()+
-																		"');";
+																		(string) entry_observacion.Text.ToString().Trim().ToUpper()+"','"+
+																		tipodesolicitud+"');";
 																	
 							//Console.WriteLine(comando.CommandText);
 							comando.ExecuteNonQuery();
@@ -495,7 +560,8 @@ namespace osiris
 																		"nombre_paciente,"+
 																		"procedimiento_qx,"+
 																		"diagnostico_qx," +
-																		"observaciones_solicitud) "+
+																		"observaciones_solicitud," +
+																		"tipo_solicitud) "+
 																		"VALUES ('"+
 																		this.entry_numero_solicitud.Text+"','"+
 																		(string) this.lista_produc_solicitados.Model.GetValue(iter,1)+"','"+
@@ -512,8 +578,8 @@ namespace osiris
 																		(string) entry_nombre_paciente.Text.ToString().Trim().ToUpper()+"','"+
 																		(string) entry_cirugia.Text.ToString().Trim().ToUpper()+"','"+
 																		(string) entry_diagnostico.Text.ToString().Trim().ToUpper()+"','"+
-																		(string) entry_observacion.Text.ToString().Trim().ToUpper()+
-																		"');";
+																		(string) entry_observacion.Text.ToString().Trim().ToUpper()+"','"+
+																		tipodesolicitud+"');";
 																	
 							//Console.WriteLine(comando.CommandText);
 								comando.ExecuteNonQuery();
@@ -642,7 +708,7 @@ namespace osiris
 				NpgsqlCommand comando; 
 				comando = conexion.CreateCommand ();
                	comando.CommandText = "SELECT osiris_his_solicitudes_deta.folio_de_solicitud,to_char(osiris_his_solicitudes_deta.id_producto,'999999999999') AS idproductos,"+
-               						"to_char(cantidad_solicitada,'999999.999') AS cantidadsolicitada,"+
+               						"to_char(cantidad_solicitada,'999999.999') AS cantidadsolicitada,tipo_solicitud,"+
                						"to_char(osiris_his_solicitudes_deta.precio_producto_publico,'999999999.99') AS precioproductopublico,"+
                						"to_char(osiris_his_solicitudes_deta.costo_por_unidad,'999999999.99') AS costoporunidad,"+
                						"to_char(cantidad_autorizada,'999999.999') AS cantidadautorizada,id_quien_autorizo, "+
@@ -677,6 +743,7 @@ namespace osiris
 					entry_cirugia.Text = (string) lector["procedimiento_qx"].ToString().Trim();
 					entry_observacion.Text = (string) lector["observaciones_solicitud"];
 					entry_fecha_solicitud.Text = (string) lector["fechahorasolicitud"];
+					llenado_combobox(1,(string) lector["tipo_solicitud"],combobox_tipo_solicitud,"array","","","",args_tiposolicitud,args_id_array,"");
 					if((bool) lector["solicitud_stock"] == true){
 						checkbutton_sol_parastock.Active = true;
 						entry_nombre_paciente.Text = (string) lector["nombre_paciente"].ToString().Trim();

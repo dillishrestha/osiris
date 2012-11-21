@@ -1,23 +1,20 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="osiris/class_buscador.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="osiris/ordenes_de_compras.cs">
     <Files>
-      <File FileName="osiris/class_conexion.cs" Line="16" Column="2" />
-      <File FileName="osiris/ordenes_de_compras.cs" Line="542" Column="8" />
-      <File FileName="osiris/captura_fac_ordenes_compra.cs" Line="1602" Column="90" />
-      <File FileName="osiris/requisicion_compras.cs" Line="984" Column="38" />
-      <File FileName="osiris/class_public.cs" Line="182" Column="29" />
-      <File FileName="osiris/osiris.cs" Line="381" Column="86" />
-      <File FileName="osiris/compras.cs" Line="120" Column="138" />
-      <File FileName="osiris/admision.cs" Line="134" Column="43" />
-      <File FileName="osiris/class_buscador.cs" Line="1" Column="1" />
+      <File FileName="osiris/class_conexion.cs" Line="15" Column="3" />
+      <File FileName="osiris/ordenes_de_compras.cs" Line="132" Column="6" />
+      <File FileName="osiris/rpt_paquetes.cs" Line="74" Column="10" />
+      <File FileName="osiris/requisicion_compras.cs" Line="756" Column="7" />
+      <File FileName="osiris/class_public.cs" Line="243" Column="30" />
+      <File FileName="osiris/inv_sub_almacen.cs" Line="279" Column="52" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
         <State expanded="True">
           <Node name="osiris" expanded="True">
             <Node name="References" expanded="True" />
-            <Node name="class_buscador.cs" selected="True" />
+            <Node name="ordenes_de_compras.cs" selected="True" />
           </Node>
         </State>
       </Pad>

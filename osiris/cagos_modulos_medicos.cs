@@ -96,6 +96,7 @@ namespace osiris
 		[Widget] Gtk.Button button_solicitud_lab = null;
 		[Widget] Gtk.Button button_solicitud_rx = null;
 		[Widget] Gtk.Button button_solicitud_vision = null;
+		[Widget] Gtk.Button button_solicitud_nutricion = null;
 		[Widget] Gtk.Button button_paquetes_qx = null;
 		[Widget] Gtk.Button button_documentos_medicos = null;
 		
@@ -339,6 +340,7 @@ namespace osiris
 			button_solicitud_lab.Clicked += new EventHandler(on_solicitud_labrx_clicked);
 			button_solicitud_rx.Clicked += new EventHandler(on_solicitud_labrx_clicked);
 			button_solicitud_vision.Clicked += new EventHandler(on_solicitud_labrx_clicked);
+			button_solicitud_nutricion.Clicked += new EventHandler(on_solicitud_labrx_clicked);
 			button_devoluciones.Clicked += new EventHandler(on_button_devoluciones_clicked);
 			// Busca paquete quirurgioco para cargarlo al procedimiento
 			button_paquetes_qx.Clicked += new EventHandler(on_button_paquetes_qx_clicked);
@@ -416,10 +418,17 @@ namespace osiris
 					                                  entry_nombre_paciente.Text.Trim(),entry_id_doctor.Text.Trim(),entry_doctor.Text.Trim(),
 					                                  this.entry_cirugia.Text.Trim(),this.entry_id_habitacion.Text.Trim(),button_busca_producto.Sensitive);
 				}
+				if(button_solicitud_labrx.Name.ToString() == "button_solicitud_nutricion"){
+					new osiris.solicitudes_enfermeria(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,"Solicitud de DIETA/NUTRICION",18,"NUT",
+					                                  descripinternamiento,idtipointernamiento,idempresa_paciente,idaseguradora_paciente,PidPaciente,folioservicio,
+					                                  entry_nombre_paciente.Text.Trim(),entry_id_doctor.Text.Trim(),entry_doctor.Text.Trim(),
+					                                  this.entry_cirugia.Text.Trim(),this.entry_id_habitacion.Text.Trim(),button_busca_producto.Sensitive);
+				}
 			//}else{
 			//	MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,MessageType.Info,ButtonsType.Close, "NO puede crear una solicitud, verifique....");
 			//	msgBoxError.Run ();	msgBoxError.Destroy();
-			//}						
+			//}					
+			
 		}
 		
 		void on_button_asignacion_habitacion_clicked(object sender, EventArgs args)

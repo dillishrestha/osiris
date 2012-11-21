@@ -9,7 +9,7 @@ namespace osiris
 	{
 		public string _url_servidor = "Server=localhost;";
 		public string _port_DB = "Port=5432;";
-		public string _usuario_DB = "User ID=admin;";
+		public string _usuario_DB = "User ID=user_db;";
 		public string _passwrd_user_DB = "Password=pwd;";
 		public string _nombrebd = "Database=osiris_produccion;";
 	}

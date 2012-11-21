@@ -174,7 +174,7 @@ namespace osiris
 								"AND osiris_his_cirugias_deta.eliminado = false "+ 
 								"AND osiris_his_cirugias_deta.id_tipo_admisiones = osiris_his_tipo_admisiones.id_tipo_admisiones "+
 								"AND osiris_his_cirugias_deta.id_tipo_cirugia = '"+idcirugia.ToString() +"' "+
-								"ORDER BY osiris_his_cirugias_deta.id_tipo_admisiones,osiris_productos.id_grupo_producto,osiris_productos.descripcion_producto;";
+								"ORDER BY osiris_his_cirugias_deta.id_tipo_admisiones,osiris_productos.descripcion_producto,osiris_productos.id_grupo_producto;";
 	        }
 	        if(tiporeporte == "presupuestos"){
 	        	query_consulta = "SELECT descripcion_producto,descripcion_admisiones, "+

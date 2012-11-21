@@ -48,7 +48,7 @@
 		      <property name="use_underline">True</property>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image538">
+			<widget class="GtkImage" id="image663">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-open</property>
 			  <property name="icon_size">1</property>
@@ -69,7 +69,7 @@
 			      <property name="use_underline">True</property>
 
 			      <child internal-child="image">
-				<widget class="GtkImage" id="image539">
+				<widget class="GtkImage" id="image664">
 				  <property name="visible">True</property>
 				  <property name="stock">gtk-apply</property>
 				  <property name="icon_size">1</property>
@@ -89,7 +89,7 @@
 			      <property name="use_underline">True</property>
 
 			      <child internal-child="image">
-				<widget class="GtkImage" id="image540">
+				<widget class="GtkImage" id="image665">
 				  <property name="visible">True</property>
 				  <property name="stock">gtk-add</property>
 				  <property name="icon_size">1</property>
@@ -113,7 +113,7 @@
 		      <property name="use_underline">True</property>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image541">
+			<widget class="GtkImage" id="image666">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-open</property>
 			  <property name="icon_size">1</property>
@@ -133,7 +133,7 @@
 		      <property name="use_underline">True</property>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image542">
+			<widget class="GtkImage" id="image667">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-open</property>
 			  <property name="icon_size">1</property>
@@ -153,7 +153,7 @@
 		      <property name="use_underline">True</property>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image543">
+			<widget class="GtkImage" id="image668">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-open</property>
 			  <property name="icon_size">1</property>
@@ -173,7 +173,7 @@
 		      <property name="use_underline">True</property>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image544">
+			<widget class="GtkImage" id="image669">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-open</property>
 			  <property name="icon_size">1</property>
@@ -193,7 +193,7 @@
 		      <property name="use_underline">True</property>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image545">
+			<widget class="GtkImage" id="image670">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-open</property>
 			  <property name="icon_size">1</property>
@@ -213,7 +213,7 @@
 		      <property name="use_underline">True</property>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image546">
+			<widget class="GtkImage" id="image671">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-open</property>
 			  <property name="icon_size">1</property>
@@ -233,7 +233,7 @@
 		      <property name="use_underline">True</property>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image547">
+			<widget class="GtkImage" id="image672">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-open</property>
 			  <property name="icon_size">1</property>
@@ -253,7 +253,7 @@
 		      <property name="use_underline">True</property>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image548">
+			<widget class="GtkImage" id="image673">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-open</property>
 			  <property name="icon_size">1</property>
@@ -273,7 +273,7 @@
 		      <property name="use_underline">True</property>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image549">
+			<widget class="GtkImage" id="image674">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-open</property>
 			  <property name="icon_size">1</property>
@@ -293,7 +293,7 @@
 		      <property name="use_underline">True</property>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image550">
+			<widget class="GtkImage" id="image675">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-open</property>
 			  <property name="icon_size">1</property>
@@ -314,7 +314,7 @@
 			      <property name="use_underline">True</property>
 
 			      <child internal-child="image">
-				<widget class="GtkImage" id="image551">
+				<widget class="GtkImage" id="image676">
 				  <property name="visible">True</property>
 				  <property name="stock">gtk-open</property>
 				  <property name="icon_size">1</property>
@@ -334,7 +334,7 @@
 			      <property name="use_underline">True</property>
 
 			      <child internal-child="image">
-				<widget class="GtkImage" id="image552">
+				<widget class="GtkImage" id="image677">
 				  <property name="visible">True</property>
 				  <property name="stock">gtk-open</property>
 				  <property name="icon_size">1</property>
@@ -354,7 +354,7 @@
 			      <property name="use_underline">True</property>
 
 			      <child internal-child="image">
-				<widget class="GtkImage" id="image553">
+				<widget class="GtkImage" id="image678">
 				  <property name="visible">True</property>
 				  <property name="stock">gtk-open</property>
 				  <property name="icon_size">1</property>
@@ -406,7 +406,7 @@
 		      <property name="use_underline">True</property>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image554">
+			<widget class="GtkImage" id="image679">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-add</property>
 			  <property name="icon_size">1</property>
@@ -426,7 +426,7 @@
 		      <property name="use_underline">True</property>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image555">
+			<widget class="GtkImage" id="image680">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-refresh</property>
 			  <property name="icon_size">1</property>
@@ -446,7 +446,7 @@
 		      <property name="use_underline">True</property>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image556">
+			<widget class="GtkImage" id="image681">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-go-forward</property>
 			  <property name="icon_size">1</property>
@@ -466,7 +466,7 @@
 		      <property name="use_underline">True</property>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image557">
+			<widget class="GtkImage" id="image682">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-open</property>
 			  <property name="icon_size">1</property>
@@ -486,7 +486,7 @@
 		      <property name="use_underline">True</property>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image558">
+			<widget class="GtkImage" id="image683">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-open</property>
 			  <property name="icon_size">1</property>
@@ -506,7 +506,7 @@
 		      <property name="use_underline">True</property>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image559">
+			<widget class="GtkImage" id="image684">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-ok</property>
 			  <property name="icon_size">1</property>
@@ -527,7 +527,7 @@
 			      <property name="use_underline">True</property>
 
 			      <child internal-child="image">
-				<widget class="GtkImage" id="image560">
+				<widget class="GtkImage" id="image685">
 				  <property name="visible">True</property>
 				  <property name="stock">gtk-add</property>
 				  <property name="icon_size">1</property>
@@ -551,7 +551,7 @@
 		      <property name="use_underline">True</property>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image561">
+			<widget class="GtkImage" id="image686">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-open</property>
 			  <property name="icon_size">1</property>
@@ -572,7 +572,7 @@
 			      <property name="use_underline">True</property>
 
 			      <child internal-child="image">
-				<widget class="GtkImage" id="image562">
+				<widget class="GtkImage" id="image687">
 				  <property name="visible">True</property>
 				  <property name="stock">gtk-add</property>
 				  <property name="icon_size">1</property>
@@ -592,7 +592,7 @@
 			      <property name="use_underline">True</property>
 
 			      <child internal-child="image">
-				<widget class="GtkImage" id="image563">
+				<widget class="GtkImage" id="image688">
 				  <property name="visible">True</property>
 				  <property name="stock">gtk-preferences</property>
 				  <property name="icon_size">1</property>
@@ -616,8 +616,33 @@
 	  <child>
 	    <widget class="GtkMenuItem" id="menuitem3">
 	      <property name="visible">True</property>
-	      <property name="label" translatable="yes">_View</property>
+	      <property name="label" translatable="yes">_Herramientas</property>
 	      <property name="use_underline">True</property>
+
+	      <child>
+		<widget class="GtkMenu" id="menuitem3_menu">
+
+		  <child>
+		    <widget class="GtkImageMenuItem" id="menuitem_her_chat">
+		      <property name="visible">True</property>
+		      <property name="label" translatable="yes">_Chat</property>
+		      <property name="use_underline">True</property>
+
+		      <child internal-child="image">
+			<widget class="GtkImage" id="image689">
+			  <property name="visible">True</property>
+			  <property name="stock">gtk-edit</property>
+			  <property name="icon_size">1</property>
+			  <property name="xalign">0.5</property>
+			  <property name="yalign">0.5</property>
+			  <property name="xpad">0</property>
+			  <property name="ypad">0</property>
+			</widget>
+		      </child>
+		    </widget>
+		  </child>
+		</widget>
+	      </child>
 	    </widget>
 	  </child>
 
@@ -706,7 +731,7 @@
 			  <child>
 			    <widget class="GtkLabel" id="label35">
 			      <property name="visible">True</property>
-			      <property name="label" translatable="yes">_Directorio Medicos</property>
+			      <property name="label" translatable="yes">_Dir. Medicos</property>
 			      <property name="use_underline">True</property>
 			      <property name="use_markup">False</property>
 			      <property name="justify">GTK_JUSTIFY_LEFT</property>

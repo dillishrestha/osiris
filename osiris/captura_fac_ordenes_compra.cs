@@ -1651,7 +1651,7 @@ namespace osiris
 									"AND osiris_erp_requisicion_deta.id_requisicion = osiris_erp_requisicion_enca.id_requisicion " +
 									"AND osiris_erp_requisicion_enca.pid_paciente = osiris_his_paciente.pid_paciente "+
 									"AND osiris_erp_requisicion_enca.id_tipo_requisicion_compra = osiris_erp_tipo_requisiciones_compra.id_tipo_requisicion_compra;";
-					Console.WriteLine(comando.CommandText);
+					//Console.WriteLine(comando.CommandText);
 					NpgsqlDataReader lector = comando.ExecuteReader ();
 					if (lector.Read()){
 						entry_estatus_oc.Text = (string) lector["descripcion_tipo_requisicion"].ToString().Trim();

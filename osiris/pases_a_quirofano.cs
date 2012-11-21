@@ -144,6 +144,7 @@ namespace osiris
 	          	//checkbutton_seleccion_presupuestos.Hide();
 				crea_treeview_pases();
 				llenado_treeview_pases();
+				
 			}
 			if(tipo_pase == "pase_de_ingreso"){
 				printing_pase();
@@ -253,7 +254,7 @@ namespace osiris
 							"AND osiris_erp_cobros_enca.id_aseguradora = osiris_aseguradoras.id_aseguradora " +
 							"AND osiris_erp_pases_qxurg.eliminado = 'false' "+
 							"AND osiris_erp_pases_qxurg.folio_de_servicio = '"+ folioservicio.ToString().Trim() +"';";		
-				Console.WriteLine(comando.CommandText);
+				//Console.WriteLine(comando.CommandText);
 				NpgsqlDataReader lector = comando.ExecuteReader ();
 				while(lector.Read()){
 					treeViewEnginePases.AppendValues(lector["id_secuencia"].ToString().Trim(),
@@ -271,54 +272,61 @@ namespace osiris
 		
 		void on_create_pases_qxurg_clicked (object sender, EventArgs args)
 		{
-			if (checkbutton_todos_envios.Active == true){
-				MessageDialog msgBox = new MessageDialog (MyWin,DialogFlags.Modal,
-										MessageType.Question,ButtonsType.YesNo,"Esta seguro de crear un pase para QX/Urgencias");
-				ResponseType miResultado = (ResponseType)msgBox.Run ();
-				msgBox.Destroy();
-			 	if (miResultado == ResponseType.Yes){
-			 		checkbutton_todos_envios.Active = false;
-					NpgsqlConnection conexion;
-					conexion = new NpgsqlConnection (connectionString+nombrebd );
-					// Verifica que la base de datos este conectada
-					try{
-						conexion.Open ();
-						NpgsqlCommand comando; 
-						comando = conexion.CreateCommand ();
-						comando.CommandText = "INSERT INTO osiris_erp_pases_qxurg(" +
-							"pid_paciente," +
-							"folio_de_servicio," +
-							"fechahora_creacion," +
-							"id_tipo_admisiones," +
-							"id_quien_creo," +
-							"observaciones," +
-							"id_tipo_paciente," +
-							"id_empresa," +
-							"id_aseguradora" +
-							") VALUES ('"+
-							pidpaciente.ToString().Trim()+"','"+
-							folioservicio.ToString().Trim()+"','"+
-							DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"','"+
-							idcentro_costo.ToString().Trim()+"','"+
-							LoginEmpleado+"','"+
-							""+"','"+
-							idtipopaciente.ToString().Trim()+"','"+
-							idempresa_paciente.ToString().Trim()+"','"+
-							idaseguradora_paciente.ToString().Trim()+
-							"');";
-						comando.ExecuteNonQuery();					comando.Dispose();
-						llenado_treeview_pases();
-					}catch (NpgsqlException ex){
-						MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
-							MessageType.Error, ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
-						msgBoxError.Run ();		msgBoxError.Destroy();				
+			if((string) classpublic.lee_registro_de_tabla("osiris_empleado","acceso_pase_qxurg","WHERE acceso_pase_qxurg = 'true' AND login_empleado = '"+LoginEmpleado+"' ","acceso_pase_qxurg","bool") == "True"){
+				if (checkbutton_todos_envios.Active == true){
+					MessageDialog msgBox = new MessageDialog (MyWin,DialogFlags.Modal,
+											MessageType.Question,ButtonsType.YesNo,"Esta seguro de crear un pase para QX/Urgencias");
+					ResponseType miResultado = (ResponseType)msgBox.Run ();
+					msgBox.Destroy();
+				 	if (miResultado == ResponseType.Yes){
+				 		checkbutton_todos_envios.Active = false;
+						NpgsqlConnection conexion;
+						conexion = new NpgsqlConnection (connectionString+nombrebd );
+						// Verifica que la base de datos este conectada
+						try{
+							conexion.Open ();
+							NpgsqlCommand comando; 
+							comando = conexion.CreateCommand ();
+							comando.CommandText = "INSERT INTO osiris_erp_pases_qxurg(" +
+								"pid_paciente," +
+								"folio_de_servicio," +
+								"fechahora_creacion," +
+								"id_tipo_admisiones," +
+								"id_quien_creo," +
+								"observaciones," +
+								"id_tipo_paciente," +
+								"id_empresa," +
+								"id_aseguradora" +
+								") VALUES ('"+
+								pidpaciente.ToString().Trim()+"','"+
+								folioservicio.ToString().Trim()+"','"+
+								DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"','"+
+								idcentro_costo.ToString().Trim()+"','"+
+								LoginEmpleado+"','"+
+								""+"','"+
+								idtipopaciente.ToString().Trim()+"','"+
+								idempresa_paciente.ToString().Trim()+"','"+
+								idaseguradora_paciente.ToString().Trim()+
+								"');";
+							comando.ExecuteNonQuery();					comando.Dispose();
+							llenado_treeview_pases();
+						}catch (NpgsqlException ex){
+							MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+								MessageType.Error, ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
+							msgBoxError.Run ();		msgBoxError.Destroy();				
+						}
+						conexion.Close();
+				 	}else{
+						checkbutton_todos_envios.Active = false;
 					}
-					conexion.Close();
-			 	}else{
+				}else{
 					checkbutton_todos_envios.Active = false;
 				}
 			}else{
 				checkbutton_todos_envios.Active = false;
+				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+							MessageType.Error, ButtonsType.Close,"No esta autorizado para generar pases a Quirofano/Urgencias, Verifique...");
+				msgBoxError.Run ();						msgBoxError.Destroy();
 			}
 		}
 		

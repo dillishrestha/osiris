@@ -53,6 +53,7 @@ namespace osiris
 		[Widget] Gtk.TreeView lista_productos_a_comprar = null;
 		[Widget] Gtk.Button button_busca_proveedores = null;
 		[Widget] Gtk.Button button_asignar_proveedor = null;
+		[Widget] Gtk.Button button_mov_productos_oc = null;
 		[Widget] Gtk.Button button_orden_compra = null;
 		[Widget] Gtk.Button button_buscar_precio = null;
 		[Widget] Gtk.Entry entry_id_proveedor = null;
@@ -128,7 +129,7 @@ namespace osiris
 			button_salir.Clicked += new EventHandler(on_cierraventanas_clicked);
 			//imprime la informacion:
 			button_imprimir.Clicked += new EventHandler(on_imprime_orden_clicked);
-			//
+			button_mov_productos_oc.Clicked += new EventHandler(on_button_mov_productos_oc_clicked);
 			//button_orden_compra
 			button_prod_comprado.Clicked += new EventHandler(on_button_prod_comprado_clicked);
 			checkbutton_all_deptos.Clicked += new EventHandler(on_checkbutton_all_deptos_clicked);
@@ -139,6 +140,11 @@ namespace osiris
 			statusbar.Pop(0);
 			statusbar.Push(1, "login: "+LoginEmpleado+"  |Usuario: "+NomEmpleado+" "+AppEmpleado+" "+ApmEmpleado);
 			statusbar.HasResizeGrip = false;
+		}
+		
+		void on_button_mov_productos_oc_clicked(object sender, EventArgs args)
+		{
+			new osiris.movimientos_productos(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,"productos_comprados","");	
 		}
 		
 		void on_button_orden_compra_clicked(object sender, EventArgs args)

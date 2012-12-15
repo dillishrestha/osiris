@@ -162,6 +162,7 @@ namespace osiris
 			connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
 			nombrebd = conexion_a_DB._nombrebd;
 			pantalla_login();
+			//new osiris.srvchat();
 			
 			//crea_file_ods file_ods = new osiris.crea_file_ods();		
 			//unoidl.com.sun.star.lang.XComponent archivo_ods = file_ods.openCalcSheet();						
@@ -368,6 +369,7 @@ namespace osiris
 			button_imagenologia.Clicked += new EventHandler( on_button_imagenologia_clicked );
 			button_hemodialisis.Clicked += new EventHandler(on_button_hemodialisis_clicked);
 			button_vision.Clicked += new EventHandler(on_button_vision_clicked);
+			button_optica.Clicked += new EventHandler(on_button_optica_clicked);
 			
 			button_medicos.Clicked += new EventHandler(on_button_medicos_clicked);					 			
 			button_cambio_contraseña.Clicked += new EventHandler(on_button_cambio_contraseña_clicked);					 							 			
@@ -499,6 +501,11 @@ namespace osiris
 		void on_button_vision_clicked(object sender, EventArgs args)
 		{
 			new osiris.vision(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
+		}
+		
+		void on_button_optica_clicked(object sender, EventArgs args)
+		{
+			new osiris.optica(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd);
 		}
 		
 		void on_button_almacen_clicked(object sender, EventArgs args)

@@ -67,6 +67,8 @@ namespace osiris
 		[Widget] Gtk.Entry entry_diagnostico = null;
 		[Widget] Gtk.Entry entry_id_habitacion = null;
 		[Widget] Gtk.Statusbar statusbar_solicitud_labrx = null;
+		[Widget] Gtk.Entry entry_observacion = null;
+		[Widget] Gtk.ComboBox combobox_turnos = null;
 		
 		/////// Ventana Busqueda de productos\\\\\\\\
 		[Widget] Gtk.Window busca_producto = null;
@@ -106,6 +108,12 @@ namespace osiris
 		
 		float valoriva;
 		
+		string turnos_tipocomida = "";
+		
+		string[] args_args = {""};
+		string[] args_turnos = {"","MATUTINO/DIA","VESPERTINO/TARDE","NOCTURNO/NOCHE","PILOTO"};
+		string[] args_tiempos_comida = {"","DESAYUNO","COMIDA","CENA","RECUPERACION"};
+		int[] args_id_array = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20};
 		TreeStore treeViewEngineEstudios;
 		TreeStore treeViewEngineEstudiosSoli;
 		TreeStore treeViewEngineBusca2;
@@ -192,6 +200,11 @@ namespace osiris
 			statusbar_solicitud_labrx.Pop(0);
 			statusbar_solicitud_labrx.Push(1, "login: "+LoginEmpleado+"  |Usuario: "+NomEmpleado+" "+AppEmpleado+" "+ApmEmpleado);
 			statusbar_solicitud_labrx.HasResizeGrip = false;
+			if(agrupacion_lab_rx == "NUT"){
+				llenado_combobox(0,"",combobox_turnos,"array","","","",args_tiempos_comida,args_id_array,"");
+			}else{
+				llenado_combobox(0,"",combobox_turnos,"array","","","",args_turnos,args_id_array,"");
+			}
 		}
 		
 		void on_button_imprimir_solilabrx_clicked(object sender, EventArgs args)
@@ -246,6 +259,70 @@ namespace osiris
 			}			
 		}
 		
+		void llenado_combobox(int tipodellenado,string descrip_defaul,object obj,string sql_or_array,string query_SQL,string name_field_desc,string name_field_id,string[] args_array,int[] args_id_array,string name_field_id2)
+		{			
+			Gtk.ComboBox combobox_llenado = (Gtk.ComboBox) obj;
+			//Gtk.ComboBox combobox_pos_neg = obj as Gtk.ComboBox;
+			combobox_llenado.Clear();
+			CellRendererText cell = new CellRendererText();
+			combobox_llenado.PackStart(cell, true);
+			combobox_llenado.AddAttribute(cell,"text",0);	        
+			ListStore store = new ListStore( typeof (string),typeof (int),typeof (int));
+			combobox_llenado.Model = store;			
+			if ((int) tipodellenado == 1){
+				store.AppendValues ((string) descrip_defaul,0);
+			}			
+			if(sql_or_array == "array"){			
+				for (int colum_field = 0; colum_field < args_array.Length; colum_field++){
+					store.AppendValues (args_array[colum_field],args_id_array[colum_field],0);
+				}
+			}
+			if(sql_or_array == "sql"){			
+				NpgsqlConnection conexion; 
+				conexion = new NpgsqlConnection (connectionString+nombrebd);
+	            // Verifica que la base de datos este conectada
+				try{
+					conexion.Open ();
+					NpgsqlCommand comando; 
+					comando = conexion.CreateCommand ();
+	               	comando.CommandText = query_SQL;
+					NpgsqlDataReader lector = comando.ExecuteReader ();
+	               	while (lector.Read()){
+						if(name_field_id2 == ""){
+							store.AppendValues ((string) lector[ name_field_desc ], (int) lector[ name_field_id],0);
+						}else{
+							store.AppendValues ((string) lector[ name_field_desc ], (int) lector[ name_field_id],(int) lector[ name_field_id2]);
+						}
+					}
+				}catch (NpgsqlException ex){
+					MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+											MessageType.Error,ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
+					msgBoxError.Run ();				msgBoxError.Destroy();
+				}
+				conexion.Close ();
+			}			
+			TreeIter iter;
+			if (store.GetIterFirst(out iter)){
+				combobox_llenado.SetActiveIter (iter);
+			}
+			combobox_llenado.Changed += new EventHandler (onComboBoxChanged_llenado);			
+		}
+		
+		void onComboBoxChanged_llenado (object sender, EventArgs args)
+		{
+			ComboBox onComboBoxChanged = sender as ComboBox;
+			if (sender == null){	return; }
+			TreeIter iter;
+			if (onComboBoxChanged.GetActiveIter (out iter)){
+				switch (onComboBoxChanged.Name.ToString()){	
+				case "combobox_turnos":
+					turnos_tipocomida = (string) combobox_turnos.Model.GetValue(iter,0);
+					//idmunicipio = (int) combobox_municipios.Model.GetValue(iter,1);					
+					break;
+				}
+			}
+		}
+		
 		void on_button_buscar_proveedor_clicked(object sender, EventArgs args){
 			object[] parametros_objetos = {entry_id_proveedor,entry_nombre_proveedor};
 			string[] parametros_sql = {"SELECT descripcion_proveedor,direccion_proveedor,rfc_proveedor,curp_proveedor, "+
@@ -281,7 +358,9 @@ namespace osiris
 			entry_expresion.KeyPressEvent += onKeyPressEvent_entry_expresion;
 			
 			entry_fecha_solicitud.Text = DateTime.Now.ToString("yyyy-MM-dd");
-			entry_hora_solicitud.Text = DateTime.Now.ToString("HH24:mm:ss");
+			entry_hora_solicitud.Text = DateTime.Now.ToString("HH:mm:ss");
+			entry_folio_laboratorio.Text = entry_numero_solicitud.Text;
+			
 						
 			// Validando que sean solo numeros
 			entry_cantidad_aplicada.KeyPressEvent += onKeyPressEvent;
@@ -353,118 +432,132 @@ namespace osiris
 			ResponseType miResultado = (ResponseType)msgBox.Run ();
 			msgBox.Destroy(); 
 			if (miResultado == ResponseType.Yes){
-				if (this.treeViewEngineEstudios.GetIterFirst (out iter)){
-					//for (int i = 0; i < treeViewEngineEstudios.NColumns; i++)
-        			//Console.WriteLine((string) this.treeview_solicitud_labrx.Model.GetValue(iter,i));  
-										
-					ultimasolicitud = classpublic.lee_ultimonumero_registrado("osiris_his_solicitudes_labrx","folio_de_solicitud","WHERE id_tipo_admisiones2 = '"+id_tipoadmisiones.ToString().Trim()+"' ");
-					NpgsqlConnection conexion; 
-					conexion = new NpgsqlConnection (connectionString+nombrebd);
-					try{
-						conexion.Open ();
-						NpgsqlCommand comando; 
-						comando = conexion.CreateCommand ();
-						comando.CommandText =  "INSERT INTO osiris_his_solicitudes_labrx("+
-												"folio_de_solicitud,"+
-												"folio_de_servicio,"+
-												"pid_paciente,"+									
-												"id_producto,"+
-												"precio_producto_publico,"+
-												"costo_por_unidad,"+
-												"cantidad_solicitada,"+
-												//"cantidad_autorizada"+												
-												"fechahora_solicitud,"+
-												"id_quien_solicito,"+
-												//"fechahora_autorizado,"+
-												//"id_quien_autorizo,"+
-												//"status,"+
-												"id_proveedor,"+
-												"id_tipo_admisiones,"+
-												"folio_interno_labrx,"+
-												"area_quien_solicita,"+
-												"id_tipo_admisiones2)"+
-														" VALUES ('"+
-												ultimasolicitud+"','"+
-												folioservicio.ToString()+"','"+
-												PidPaciente.ToString()+"','"+										
-												(string) this.treeview_solicitud_labrx.Model.GetValue(iter,1)+"','"+
-												(string) this.treeview_solicitud_labrx.Model.GetValue(iter,8)+"','"+
-												(string) this.treeview_solicitud_labrx.Model.GetValue(iter,9)+"','"+
-												(string) this.treeview_solicitud_labrx.Model.GetValue(iter,0)+"','"+
-												//
-												DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"','"+
-												LoginEmpleado+"','"+
-												//
-												//
-												//
-												entry_id_proveedor.Text.Trim()+"','"+
-												id_tipopaciente.ToString().Trim()+"','"+
-												(string) this.treeview_solicitud_labrx.Model.GetValue(iter,10).ToString().Trim()+"','"+
-												(string) descripinternamiento+"','"+
-												id_tipoadmisiones.ToString().Trim()+"');";
-						//Console.WriteLine(comando.CommandText);
-						comando.ExecuteNonQuery();
-						comando.Dispose();					
-						while (this.treeViewEngineEstudios.IterNext(ref iter)){
-							comando.CommandText = "INSERT INTO osiris_his_solicitudes_labrx("+
-												"folio_de_solicitud,"+
-												"folio_de_servicio,"+
-												"pid_paciente,"+									
-												"id_producto,"+
-												"precio_producto_publico,"+
-												"costo_por_unidad,"+
-												"cantidad_solicitada,"+
-												//"cantidad_autorizada"+												
-												"fechahora_solicitud,"+
-												"id_quien_solicito,"+
-												//"fechahora_autorizado,"+
-												//"id_quien_autorizo,"+
-												//"status,"+
-												"id_proveedor,"+
-												"id_tipo_admisiones,"+
-												"folio_interno_labrx,"+
-												"area_quien_solicita,"+
-												"id_tipo_admisiones2)"+
-														" VALUES ('"+
-												ultimasolicitud+"','"+
-												folioservicio.ToString()+"','"+
-												PidPaciente.ToString()+"','"+										
-												(string) this.treeview_solicitud_labrx.Model.GetValue(iter,1)+"','"+
-												(string) this.treeview_solicitud_labrx.Model.GetValue(iter,8)+"','"+
-												(string) this.treeview_solicitud_labrx.Model.GetValue(iter,9)+"','"+
-												(string) this.treeview_solicitud_labrx.Model.GetValue(iter,0)+"','"+
-												//
-												DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"','"+
-												LoginEmpleado+"','"+
-												//
-												//
-												//
-												entry_id_proveedor.Text.Trim()+"','"+
-												id_tipopaciente.ToString().Trim()+"','"+
-												(string) this.treeview_solicitud_labrx.Model.GetValue(iter,10).ToString().Trim()+"','"+
-												(string) descripinternamiento+"','"+
-												id_tipoadmisiones.ToString().Trim()+"');";
+				if(turnos_tipocomida.Trim() != ""){
+					if (this.treeViewEngineEstudios.GetIterFirst (out iter)){
+						//for (int i = 0; i < treeViewEngineEstudios.NColumns; i++)
+	        			//Console.WriteLine((string) this.treeview_solicitud_labrx.Model.GetValue(iter,i));  
+											
+						ultimasolicitud = classpublic.lee_ultimonumero_registrado("osiris_his_solicitudes_labrx","folio_de_solicitud","WHERE id_tipo_admisiones2 = '"+id_tipoadmisiones.ToString().Trim()+"' ");
+						NpgsqlConnection conexion; 
+						conexion = new NpgsqlConnection (connectionString+nombrebd);
+						try{
+							conexion.Open ();
+							NpgsqlCommand comando; 
+							comando = conexion.CreateCommand ();
+							comando.CommandText =  "INSERT INTO osiris_his_solicitudes_labrx("+
+													"folio_de_solicitud,"+
+													"folio_de_servicio,"+
+													"pid_paciente,"+									
+													"id_producto,"+
+													"precio_producto_publico,"+
+													"costo_por_unidad,"+
+													"cantidad_solicitada,"+
+													//"cantidad_autorizada"+												
+													"fechahora_solicitud,"+
+													"id_quien_solicito,"+
+													//"fechahora_autorizado,"+
+													//"id_quien_autorizo,"+
+													//"status,"+
+													"id_proveedor,"+
+													"id_tipo_admisiones,"+
+													"folio_interno_labrx,"+
+													"area_quien_solicita,"+
+													"id_tipo_admisiones2," +
+													"observaciones_solicitud," +
+													"turno)"+
+															" VALUES ('"+
+													ultimasolicitud+"','"+
+													folioservicio.ToString()+"','"+
+													PidPaciente.ToString()+"','"+										
+													(string) this.treeview_solicitud_labrx.Model.GetValue(iter,1)+"','"+
+													(string) this.treeview_solicitud_labrx.Model.GetValue(iter,8)+"','"+
+													(string) this.treeview_solicitud_labrx.Model.GetValue(iter,9)+"','"+
+													(string) this.treeview_solicitud_labrx.Model.GetValue(iter,0)+"','"+
+													//
+													DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"','"+
+													LoginEmpleado+"','"+
+													//
+													//
+													//
+													entry_id_proveedor.Text.Trim()+"','"+
+													id_tipopaciente.ToString().Trim()+"','"+
+													(string) this.treeview_solicitud_labrx.Model.GetValue(iter,10).ToString().Trim()+"','"+
+													(string) descripinternamiento+"','"+
+													id_tipoadmisiones.ToString().Trim()+"','"+
+													entry_observacion.Text.Trim().ToUpper()+"','"+
+													turnos_tipocomida+"');";
 							//Console.WriteLine(comando.CommandText);
 							comando.ExecuteNonQuery();
-							comando.Dispose();			
+							comando.Dispose();					
+							while (this.treeViewEngineEstudios.IterNext(ref iter)){
+								comando.CommandText = "INSERT INTO osiris_his_solicitudes_labrx("+
+													"folio_de_solicitud,"+
+													"folio_de_servicio,"+
+													"pid_paciente,"+									
+													"id_producto,"+
+													"precio_producto_publico,"+
+													"costo_por_unidad,"+
+													"cantidad_solicitada,"+
+													//"cantidad_autorizada"+												
+													"fechahora_solicitud,"+
+													"id_quien_solicito,"+
+													//"fechahora_autorizado,"+
+													//"id_quien_autorizo,"+
+													//"status,"+
+													"id_proveedor,"+
+													"id_tipo_admisiones,"+
+													"folio_interno_labrx,"+
+													"area_quien_solicita,"+
+													"id_tipo_admisiones2," +
+													"observaciones_solicitud," +
+													"turno)"+
+															" VALUES ('"+
+													ultimasolicitud+"','"+
+													folioservicio.ToString()+"','"+
+													PidPaciente.ToString()+"','"+										
+													(string) this.treeview_solicitud_labrx.Model.GetValue(iter,1)+"','"+
+													(string) this.treeview_solicitud_labrx.Model.GetValue(iter,8)+"','"+
+													(string) this.treeview_solicitud_labrx.Model.GetValue(iter,9)+"','"+
+													(string) this.treeview_solicitud_labrx.Model.GetValue(iter,0)+"','"+
+													//
+													DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"','"+
+													LoginEmpleado+"','"+
+													//
+													//
+													//
+													entry_id_proveedor.Text.Trim()+"','"+
+													id_tipopaciente.ToString().Trim()+"','"+
+													(string) this.treeview_solicitud_labrx.Model.GetValue(iter,10).ToString().Trim()+"','"+
+													(string) descripinternamiento+"','"+
+													id_tipoadmisiones.ToString().Trim()+"','"+
+													entry_observacion.Text.Trim().ToUpper()+"','"+
+													turnos_tipocomida+"');";
+								//Console.WriteLine(comando.CommandText);
+								comando.ExecuteNonQuery();
+								comando.Dispose();			
+							}
+							checkbutton_nueva_solicitud.Active = false;
+							button_imprimir_solilabrx.Sensitive = true;
+							MessageDialog msgBoxError = new MessageDialog(MyWinError,DialogFlags.DestroyWithParent,MessageType.Info,
+						                                              ButtonsType.Close, "La solicitud se envio con Exito...");
+							msgBoxError.Run ();	msgBoxError.Destroy();
+							carga_estudios_solicitados();
+							// expand all rows after the treeview widget has been realized
+							treeview_estudios_solicitados.ExpandAll();
+						}catch (NpgsqlException ex){
+							MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+														MessageType.Error,ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
+								msgBoxError.Run ();				msgBoxError.Destroy();
 						}
-						checkbutton_nueva_solicitud.Active = false;
-						button_imprimir_solilabrx.Sensitive = true;
-						MessageDialog msgBoxError = new MessageDialog(MyWinError,DialogFlags.DestroyWithParent,MessageType.Info,
-					                                              ButtonsType.Close, "La solicitud se envio con Exito...");
+						conexion.Close();
+					}else{
+						MessageDialog msgBoxError = new MessageDialog(MyWinError,DialogFlags.DestroyWithParent,MessageType.Error,
+						                                              ButtonsType.Close, "NO puede crear una solicitud, no ha seleccionado ningun estudio, verifique...");
 						msgBoxError.Run ();	msgBoxError.Destroy();
-						carga_estudios_solicitados();
-						// expand all rows after the treeview widget has been realized
-						treeview_estudios_solicitados.ExpandAll();
-					}catch (NpgsqlException ex){
-						MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
-													MessageType.Error,ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
-							msgBoxError.Run ();				msgBoxError.Destroy();
 					}
-					conexion.Close();
 				}else{
 					MessageDialog msgBoxError = new MessageDialog(MyWinError,DialogFlags.DestroyWithParent,MessageType.Error,
-					                                              ButtonsType.Close, "NO puede crear una solicitud, no ha seleccionado ningun estudio, verifique...");
+						                                              ButtonsType.Close, "NO puede crear una solicitud, Turno o Tiempo de Comida esta vacio, verifique...");
 					msgBoxError.Run ();	msgBoxError.Destroy();
 				}
 			}

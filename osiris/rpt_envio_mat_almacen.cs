@@ -57,6 +57,19 @@ namespace osiris
 		[Widget] Gtk.Button button_rep;
 		[Widget] Gtk.Button button_salir;
 		
+		TreeViewColumn col_00;		CellRendererToggle cellr00;
+		TreeViewColumn col_01;		CellRendererText cellr01;
+		TreeViewColumn col_02;		CellRendererText cellr02;
+		TreeViewColumn col_03;		CellRendererText cellr03;
+		TreeViewColumn col_04;		CellRendererText cellr04;
+		TreeViewColumn col_06;		CellRendererText cellr06;
+		TreeViewColumn col_07;		CellRendererText cellr07;
+		TreeViewColumn col_08;		CellRendererText cellr08;
+		TreeViewColumn col_09;		CellRendererText cellr09;
+		TreeViewColumn col_10;		CellRendererText cellr10;
+		TreeViewColumn col_11;		CellRendererText cellr11;
+		TreeViewColumn col_12;		CellRendererText cellr12;
+		
 		string query_fechas = " ";
 		string rango1 = "";
 		string rango2 = "";
@@ -124,131 +137,131 @@ namespace osiris
 			lista_almacenes.Model = treeViewEnginesolicitud;
 			lista_almacenes.RulesHint = true;
 				
-			TreeViewColumn col_seleccion = new TreeViewColumn();
-			CellRendererToggle cellr0 = new CellRendererToggle();
-			col_seleccion.Title = "Seleccion";
-			col_seleccion.PackStart(cellr0, true);
-			col_seleccion.AddAttribute (cellr0, "active", 0);
-			cellr0.Activatable = true;
-			cellr0.Toggled += selecciona_fila_grupo;
-			col_seleccion.SortColumnId = (int) column_reporte.col_seleccion;
+			col_00 = new TreeViewColumn();
+			cellr00 = new CellRendererToggle();
+			col_00.Title = "Seleccion";
+			col_00.PackStart(cellr00, true);
+			col_00.AddAttribute (cellr00, "active", 0);
+			cellr00.Activatable = true;
+			cellr00.Toggled += selecciona_fila_grupo;
+			col_00.SortColumnId = (int) column_reporte.col_00;
 		
-			TreeViewColumn col_solicito = new TreeViewColumn();
-			CellRendererText cellr1 = new CellRendererText();
-			col_solicito.Title = "Solicitud";
-			col_solicito.PackStart(cellr1, true);
-			col_solicito.AddAttribute (cellr1, "text", 1);
-			cellr1.Foreground = "darkblue";
-			col_solicito.SortColumnId = (int) column_reporte.col_solicito;
+			col_01 = new TreeViewColumn();
+			cellr01 = new CellRendererText();
+			col_01.Title = "Solicitud";
+			col_01.PackStart(cellr01, true);
+			col_01.AddAttribute (cellr01, "text", 1);
+			cellr01.Foreground = "darkblue";
+			col_01.SortColumnId = (int) column_reporte.col_01;
 			
-			TreeViewColumn col_sub = new TreeViewColumn();
-			CellRendererText cellr2 = new CellRendererText();
-			col_sub.Title = "Sub Almacen";
-			col_sub.PackStart(cellr2, true);
-			col_sub.AddAttribute (cellr2, "text", 2);
-			cellr2.Foreground = "darkblue";
-			col_sub.SortColumnId = (int) column_reporte.col_sub;
+			col_02 = new TreeViewColumn();
+			cellr02 = new CellRendererText();
+			col_02.Title = "Sub Almacen";
+			col_02.PackStart(cellr02, true);
+			col_02.AddAttribute (cellr02, "text", 2);
+			cellr02.Foreground = "darkblue";
+			col_02.SortColumnId = (int) column_reporte.col_02;
 						
-			TreeViewColumn col_fecha_envio = new TreeViewColumn();
-			CellRendererText cellr3 = new CellRendererText();
-			col_fecha_envio.Title = "Fecha Envio";
-			col_fecha_envio.PackStart(cellr3, true);
-			col_fecha_envio.AddAttribute (cellr3, "text", 3);
-			cellr3.Foreground = "darkblue";
-			col_fecha_envio.SortColumnId = (int) column_reporte.col_fecha_envio;
+			col_03 = new TreeViewColumn();
+			cellr03 = new CellRendererText();
+			col_03.Title = "Fecha Envio";
+			col_03.PackStart(cellr03, true);
+			col_03.AddAttribute (cellr03, "text", 3);
+			cellr03.Foreground = "darkblue";
+			col_03.SortColumnId = (int) column_reporte.col_03;
 			
-			TreeViewColumn col_id_sol = new TreeViewColumn();
-			CellRendererText cellr4 = new CellRendererText();
-			col_id_sol.Title = "id Solicito";
-			col_id_sol.PackStart(cellr4, true);
-			col_id_sol.AddAttribute (cellr4, "text", 4);
-			cellr4.Foreground = "darkblue";
-			col_id_sol.SortColumnId = (int) column_reporte.col_id_sol;
+			col_04 = new TreeViewColumn();
+			cellr04 = new CellRendererText();
+			col_04.Title = "id Solicito";
+			col_04.PackStart(cellr04, true);
+			col_04.AddAttribute (cellr04, "text", 4);
+			cellr04.Foreground = "darkblue";
+			col_04.SortColumnId = (int) column_reporte.col_04;
 			
-			TreeViewColumn col_numeroatencion = new TreeViewColumn();
-			CellRendererText cellr6 = new CellRendererText();
-			col_numeroatencion.Title = "N° Atencion";
-			col_numeroatencion.PackStart(cellr6, true);
-			col_numeroatencion.AddAttribute (cellr6, "text", 6);
-			cellr6.Foreground = "darkblue";
-			col_numeroatencion.SortColumnId = (int) column_reporte.col_numeroatencion;
+			col_06 = new TreeViewColumn();
+			cellr06 = new CellRendererText();
+			col_06.Title = "N° Atencion";
+			col_06.PackStart(cellr06, true);
+			col_06.AddAttribute (cellr06, "text", 6);
+			cellr06.Foreground = "darkblue";
+			col_06.SortColumnId = (int) column_reporte.col_06;
 			
-			TreeViewColumn col_pidpaciente = new TreeViewColumn();
-			CellRendererText cellr7 = new CellRendererText();
-			col_pidpaciente.Title = "PID";
-			col_pidpaciente.PackStart(cellr7, true);
-			col_pidpaciente.AddAttribute (cellr7, "text", 7);
-			cellr7.Foreground = "darkblue";
-			col_pidpaciente.SortColumnId = (int) column_reporte.col_pidpaciente;
+			col_07 = new TreeViewColumn();
+			cellr07 = new CellRendererText();
+			col_07.Title = "PID";
+			col_07.PackStart(cellr07, true);
+			col_07.AddAttribute (cellr07, "text", 7);
+			cellr07.Foreground = "darkblue";
+			col_07.SortColumnId = (int) column_reporte.col_07;
 			
-			TreeViewColumn col_nombrepaciente = new TreeViewColumn();
-			CellRendererText cellr8 = new CellRendererText();
-			col_nombrepaciente.Title = "Nombre Paciente";
-			col_nombrepaciente.PackStart(cellr8, true);
-			col_nombrepaciente.AddAttribute (cellr8, "text", 8);
-			cellr8.Foreground = "darkblue";
-			col_nombrepaciente.SortColumnId = (int) column_reporte.col_nombrepaciente;
+			col_08 = new TreeViewColumn();
+			cellr08 = new CellRendererText();
+			col_08.Title = "Nombre Paciente";
+			col_08.PackStart(cellr08, true);
+			col_08.AddAttribute (cellr08, "text", 8);
+			cellr08.Foreground = "darkblue";
+			col_08.SortColumnId = (int) column_reporte.col_08;
 			
-			TreeViewColumn col_procedimiento = new TreeViewColumn();
-			CellRendererText cellr9 = new CellRendererText();
-			col_procedimiento.Title = "Procedimiento Qx.";
-			col_procedimiento.PackStart(cellr9, true);
-			col_procedimiento.AddAttribute (cellr9, "text", 9);
-			cellr9.Foreground = "darkblue";
-			col_procedimiento.SortColumnId = (int) column_reporte.col_procedimiento;
+			col_09 = new TreeViewColumn();
+			cellr09 = new CellRendererText();
+			col_09.Title = "Procedimiento Qx.";
+			col_09.PackStart(cellr09, true);
+			col_09.AddAttribute (cellr09, "text", 9);
+			cellr09.Foreground = "darkblue";
+			col_09.SortColumnId = (int) column_reporte.col_09;
 			
-			TreeViewColumn col_diagnostico = new TreeViewColumn();
-			CellRendererText cellr10 = new CellRendererText();
-			col_diagnostico.Title = "Motivo de Ingreso";
-			col_diagnostico.PackStart(cellr10, true);
-			col_diagnostico.AddAttribute (cellr10, "text", 10);
+			col_10 = new TreeViewColumn();
+			cellr10 = new CellRendererText();
+			col_10.Title = "Motivo de Ingreso";
+			col_10.PackStart(cellr10, true);
+			col_10.AddAttribute (cellr10, "text", 10);
 			cellr10.Foreground = "darkblue";
-			col_diagnostico.SortColumnId = (int) column_reporte.col_diagnostico;			
+			col_10.SortColumnId = (int) column_reporte.col_10;			
 			
-			TreeViewColumn col_observacion = new TreeViewColumn();
-			CellRendererText cellr11 = new CellRendererText();
-			col_observacion.Title = "Observacion";
-			col_observacion.PackStart(cellr11, true);
-			col_observacion.AddAttribute (cellr11, "text", 11);
+			col_11 = new TreeViewColumn();
+			cellr11 = new CellRendererText();
+			col_11.Title = "Observacion";
+			col_11.PackStart(cellr11, true);
+			col_11.AddAttribute (cellr11, "text", 11);
 			cellr11.Foreground = "darkblue";
-			col_observacion.SortColumnId = (int) column_reporte.col_observacion;
+			col_11.SortColumnId = (int) column_reporte.col_11;
 			
-			TreeViewColumn col_tiposolicitud = new TreeViewColumn();
-			CellRendererText cellr12 = new CellRendererText();
-			col_tiposolicitud.Title = "Tipo Solicitud";
-			col_tiposolicitud.PackStart(cellr12, true);
-			col_tiposolicitud.AddAttribute (cellr12, "text", 12);
+			col_12 = new TreeViewColumn();
+			cellr12 = new CellRendererText();
+			col_12.Title = "Tipo Solicitud";
+			col_12.PackStart(cellr12, true);
+			col_12.AddAttribute (cellr12, "text", 12);
 			cellr12.Foreground = "darkblue";
-			col_tiposolicitud.SortColumnId = (int) column_reporte.tiposolicitud;
+			col_12.SortColumnId = (int) column_reporte.col_12;
 			
-			lista_almacenes.AppendColumn(col_seleccion);
-			lista_almacenes.AppendColumn(col_solicito);
-			lista_almacenes.AppendColumn(col_sub);
-			lista_almacenes.AppendColumn(col_fecha_envio);
-			lista_almacenes.AppendColumn(col_id_sol);
-			lista_almacenes.AppendColumn(col_numeroatencion);
-			lista_almacenes.AppendColumn(col_pidpaciente);
-			lista_almacenes.AppendColumn(col_nombrepaciente);
-			lista_almacenes.AppendColumn(col_procedimiento);
-			lista_almacenes.AppendColumn(col_diagnostico);
-			lista_almacenes.AppendColumn(col_observacion);
-			lista_almacenes.AppendColumn(col_tiposolicitud);
+			lista_almacenes.AppendColumn(col_00);
+			lista_almacenes.AppendColumn(col_01);
+			lista_almacenes.AppendColumn(col_02);
+			lista_almacenes.AppendColumn(col_03);
+			lista_almacenes.AppendColumn(col_04);
+			lista_almacenes.AppendColumn(col_06);
+			lista_almacenes.AppendColumn(col_07);
+			lista_almacenes.AppendColumn(col_08);
+			lista_almacenes.AppendColumn(col_09);
+			lista_almacenes.AppendColumn(col_10);
+			lista_almacenes.AppendColumn(col_11);
+			lista_almacenes.AppendColumn(col_12);
 		}
 		
 		enum column_reporte
 		{
-			col_seleccion,
-			col_solicito,
-			col_sub,
-			col_fecha_envio,
-			col_id_sol,
-			col_numeroatencion,
-			col_pidpaciente,
-			col_nombrepaciente,
-			col_procedimiento,
-			col_diagnostico,
-			col_observacion,
-			tiposolicitud
+			col_00,
+			col_01,
+			col_02,
+			col_03,
+			col_04,
+			col_06,
+			col_07,
+			col_08,
+			col_09,
+			col_10,
+			col_11,
+			col_12
 		}
 		
 		void llenando_lista_de_solicitudes()
@@ -297,6 +310,19 @@ namespace osiris
 					                                 (string) lector["diagnostico_qx"].ToString().Trim(),
 					                                (string) lector["observaciones_solicitud"].ToString().Trim(),
 					                                (string) lector["tipo_solicitud"].ToString().Trim());
+					col_00.SetCellDataFunc(cellr00, new Gtk.TreeCellDataFunc(cambia_colores_fila));
+					col_01.SetCellDataFunc(cellr01, new Gtk.TreeCellDataFunc(cambia_colores_fila));
+					col_02.SetCellDataFunc(cellr02, new Gtk.TreeCellDataFunc(cambia_colores_fila));
+					col_03.SetCellDataFunc(cellr03, new Gtk.TreeCellDataFunc(cambia_colores_fila));
+					col_04.SetCellDataFunc(cellr04, new Gtk.TreeCellDataFunc(cambia_colores_fila));
+					//col_05.SetCellDataFunc(cellr05, new Gtk.TreeCellDataFunc(cambia_colores_fila));
+					col_06.SetCellDataFunc(cellr06, new Gtk.TreeCellDataFunc(cambia_colores_fila));
+					col_07.SetCellDataFunc(cellr07, new Gtk.TreeCellDataFunc(cambia_colores_fila));
+					col_08.SetCellDataFunc(cellr08, new Gtk.TreeCellDataFunc(cambia_colores_fila));
+					col_09.SetCellDataFunc(cellr09, new Gtk.TreeCellDataFunc(cambia_colores_fila));
+					col_10.SetCellDataFunc(cellr10, new Gtk.TreeCellDataFunc(cambia_colores_fila));
+					col_11.SetCellDataFunc(cellr11, new Gtk.TreeCellDataFunc(cambia_colores_fila));
+					col_12.SetCellDataFunc(cellr12, new Gtk.TreeCellDataFunc(cambia_colores_fila));	
 				}
 			}catch (NpgsqlException ex){
 	   			MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
@@ -304,6 +330,26 @@ namespace osiris
 				msgBoxError.Run ();			msgBoxError.Destroy();
 			}
 			conexion.Close ();
+		}
+		
+		//ACCION QUE CAMBIA EL COLOR DEL TEXTO PARA CUANDO SE GUARDA EN LA BASE DE DATOS 
+		void cambia_colores_fila(Gtk.TreeViewColumn column, Gtk.CellRenderer cell, Gtk.TreeModel model, Gtk.TreeIter iter)
+		{			
+			if ((string) lista_almacenes.Model.GetValue (iter,12) == "URGENTE"){
+				if(cell.GetType().ToString() == "Gtk.CellRendererToggle"){
+					(cell as Gtk.CellRendererToggle).CellBackground = "red";
+				}
+				if(cell.GetType().ToString() == "Gtk.CellRendererText"){
+					(cell as Gtk.CellRendererText).CellBackground = "red";
+				}
+			}else{
+				if(cell.GetType().ToString() == "Gtk.CellRendererToggle"){
+					(cell as Gtk.CellRendererToggle).CellBackground = "white";
+				}
+				if(cell.GetType().ToString() == "Gtk.CellRendererText"){
+					(cell as Gtk.CellRendererText).CellBackground = "white";
+				}
+			}
 		}
 		
 		void selecciona_fila_grupo(object sender, ToggledArgs args)

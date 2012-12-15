@@ -139,6 +139,7 @@ namespace osiris
 		[Widget] Gtk.CheckButton checkbutton_imagenologia = null;
 		[Widget] Gtk.CheckButton checkbutton_rehabilitacion = null;
 		[Widget] Gtk.CheckButton checkbutton_checkup = null;
+		[Widget] Gtk.CheckButton checkbutton_optica = null;
 		[Widget] Gtk.CheckButton checkbutton_otros_servicios = null;
 		[Widget] Gtk.Entry entry_observacion_otros_serv = null;
 				
@@ -689,6 +690,7 @@ namespace osiris
 									checkbutton_checkup.Active == true ||
 									checkbutton_consulta.Active == true ||
 									checkbutton_otros_servicios.Active == true ||
+						    		checkbutton_optica.Active == true ||
 									grabainternamiento ==  true){
 							// asignando folio de servicio
 							//this.folioservicio = ultimo_numero_atencion();
@@ -727,6 +729,12 @@ namespace osiris
 								checkbutton_otros_servicios.Active = false;
 								checkbutton_otros_servicios.Sensitive = false;
 								entry_folio_paciente.Text = folioservicio.ToString();}
+							if (checkbutton_optica.Active == true && checkbutton_consulta.Active == false){
+								almaceno_movcargos = graba_admision("OPTICA ",970,folioservicio,false);
+								checkbutton_optica.Active = false;
+								checkbutton_optica.Sensitive = false;
+								entry_folio_paciente.Text = folioservicio.ToString();}
+
 							// Almacena los datos que esta en intermanieto
 							if (grabainternamiento ==  true && checkbutton_consulta.Active == false){
 								if ((bool)button_admision.Sensitive == true){

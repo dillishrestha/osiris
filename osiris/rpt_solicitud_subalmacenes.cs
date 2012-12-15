@@ -82,7 +82,7 @@ namespace osiris
 								"osiris_his_solicitudes_deta.id_almacen AS idalmacen,osiris_almacenes.descripcion_almacen,osiris_almacenes.id_almacen,solicitud_stock,pre_solicitud,"+
 								"osiris_empleado.nombre1_empleado || ' ' || "+"osiris_empleado.nombre2_empleado || ' ' || "+"osiris_empleado.apellido_paterno_empleado || ' ' || "+ 
 								"osiris_empleado.apellido_materno_empleado AS nombreempl,"+
-								"osiris_his_solicitudes_deta.folio_de_servicio AS foliodeatencion,"+
+								"osiris_his_solicitudes_deta.folio_de_servicio AS foliodeatencion,tipo_solicitud,"+
 								"osiris_his_solicitudes_deta.pid_paciente AS pidpaciente,nombre_paciente,procedimiento_qx,diagnostico_qx,"+
 								"nombre1_paciente,nombre2_paciente,apellido_paterno_paciente,apellido_materno_paciente "+
 								"FROM osiris_his_solicitudes_deta,osiris_his_paciente,osiris_almacenes,osiris_productos,osiris_empleado "+
@@ -128,7 +128,7 @@ namespace osiris
 			string fechaautorizacion = "";
 			string comentario = "";
 			string nombrepaciente = "";
-			string tiposolictud = "SOLICITUD A PACIENTE";
+			string tiposolictud = "SOLICITUD A PACIENTE ";
 			
 			Cairo.Context cr = context.CairoContext;
 			Pango.Layout layout = context.CreatePangoLayout ();
@@ -181,7 +181,7 @@ namespace osiris
 					imprime_encabezado(cr,layout,(string) lector["descripcion_almacen"],(string) lector["foliosol"],(string) lector["fecha_envio"],
 							                   (string) lector["id_quien_solicito"],(string) lector["nombreempl"],
 							                   (string) lector["foliodeatencion"].ToString().Trim(),(string) lector["pidpaciente"].ToString().Trim(),nombrepaciente,
-					                   			tiposolictud,(string) lector["procedimiento_qx"].ToString().Trim(),(string) lector["diagnostico_qx"].ToString().Trim(),(string) lector["observaciones_solicitud"].ToString());
+					                   			tiposolictud+" "+(string) lector["tipo_solicitud"].ToString().Trim(),(string) lector["procedimiento_qx"].ToString().Trim(),(string) lector["diagnostico_qx"].ToString().Trim(),(string) lector["observaciones_solicitud"].ToString());
 								
 					cr.MoveTo(15*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);			layout.SetText((string) lector["cantsol"]);				Pango.CairoHelper.ShowLayout (cr, layout);
 					cr.MoveTo(60*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);			layout.SetText((string) lector["idproducto"]);			Pango.CairoHelper.ShowLayout (cr, layout);
@@ -216,7 +216,7 @@ namespace osiris
 							imprime_encabezado(cr,layout,(string) lector["descripcion_almacen"],(string) lector["foliosol"],(string) lector["fecha_envio"],
 							                   (string) lector["id_quien_solicito"],(string) lector["nombreempl"],
 							                   (string) lector["foliodeatencion"].ToString().Trim(),(string) lector["pidpaciente"].ToString().Trim(),
-							                   nombrepaciente,tiposolictud,(string) lector["procedimiento_qx"].ToString().Trim(),
+							                   nombrepaciente,tiposolictud+" "+(string) lector["tipo_solicitud"].ToString().Trim(),(string) lector["procedimiento_qx"].ToString().Trim(),
 							                   (string) lector["diagnostico_qx"].ToString().Trim(),(string) lector["observaciones_solicitud"].ToString());							
 						}
 						toma_descrip_prod = (string) lector["descripcion_producto"];

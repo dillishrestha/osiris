@@ -49,6 +49,7 @@ namespace osiris
 		public string direccion_empresa = "Jose Angel Conchello 2880, Col. Victoria"; //"Loma Grande 2703, Col. Loma de San Francisco"; //"Jose Angel Conchello 2880, Col. Victoria"
 		public string telefonofax_empresa = "Telefono: (01)(81) 8351-3610"; //"Telefono: (01)(81) 8040-6060"; // "Telefono: (01)(81) 8351-3610"
 		public string version_sistema = "Sistema Hospitalario OSIRIS ver. 1.0";
+		public string ipserver = "192.168.1.10";
 		
 		public string ivaparaaplicar = "16.00";
 		
@@ -876,10 +877,10 @@ namespace osiris
 		{
 			double new_val;
 			
-						
+			Console.Write("cosultando "+pdata.pbar.Fraction.ToString()+"\n");			
 			if (pdata.activity_mode){
 				pdata.pbar.Pulse();
-				Console.Write("cosultando "+pdata.pbar.Fraction.ToString()+"\n");
+				//Console.Write("cosultando "+pdata.pbar.Fraction.ToString()+"\n");
 				
 			}else {
 				/* Calculate the value of the progress bar using the

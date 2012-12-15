@@ -496,109 +496,115 @@ namespace osiris
 					entry_numero_solicitud.Text = ultimasolicitud.ToString().Trim();
 				}
 				if (this.treeViewEngineSolicitud.GetIterFirst (out iter)){
-					button_envio_solicitud.Sensitive = true;
-					// Verifica que la base de datos este conectada
-					NpgsqlConnection conexion; 
-					conexion = new NpgsqlConnection (connectionString+nombrebd);
-					try{
-						conexion.Open ();
-						NpgsqlCommand comando; 
-						comando = conexion.CreateCommand ();
-						if ((bool) this.lista_produc_solicitados.Model.GetValue (iter,8) == false){
-							comando.CommandText = "INSERT INTO osiris_his_solicitudes_deta("+
-																		"folio_de_solicitud,"+
-																		"id_producto,"+
-																		"precio_producto_publico,"+
-																		"costo_por_unidad,"+
-																		"cantidad_solicitada,"+
-																		"fechahora_solicitud,"+
-																		"id_quien_solicito,"+
-																		"id_almacen,folio_de_servicio,pid_paciente,"+
-																		"solicitud_stock,"+
-																		"pre_solicitud,"+
-																		"nombre_paciente,"+
-																		"procedimiento_qx,"+
-																		"diagnostico_qx," +
-																		"observaciones_solicitud," +
-																		"tipo_solicitud) "+
-																		"VALUES ('"+
-																		this.entry_numero_solicitud.Text+"','"+
-																		(string) this.lista_produc_solicitados.Model.GetValue(iter,1)+"','"+
-																		(string) this.lista_produc_solicitados.Model.GetValue(iter,7)+"','"+
-																		(string) this.lista_produc_solicitados.Model.GetValue(iter,6)+"','"+
-																		(string) this.lista_produc_solicitados.Model.GetValue(iter,2)+"','"+
-																		DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"','"+
-																		LoginEmpleado+"','"+
-																		this.idalmacen.ToString()+"','"+
-																		(string) entry_folio_servicio.Text.ToString().Trim()+"','"+
-																		(string) entry_pid_paciente.Text.ToString().Trim()+"','"+
-																		(bool) checkbutton_sol_parastock.Active+"','"+
-																		(bool) checkbutton_presolicitud.Active+"','"+
-																		(string) entry_nombre_paciente.Text.ToString().Trim().ToUpper()+"','"+
-																		(string) entry_cirugia.Text.ToString().Trim().ToUpper()+"','"+
-																		(string) entry_diagnostico.Text.ToString().Trim().ToUpper()+"','"+
-																		(string) entry_observacion.Text.ToString().Trim().ToUpper()+"','"+
-																		tipodesolicitud+"');";
-																	
-							//Console.WriteLine(comando.CommandText);
-							comando.ExecuteNonQuery();
-							comando.Dispose();
-						}
-						while (this.treeViewEngineSolicitud.IterNext(ref iter)){						
+					if(tipodesolicitud.Trim() != ""){
+						button_envio_solicitud.Sensitive = true;
+						// Verifica que la base de datos este conectada
+						NpgsqlConnection conexion; 
+						conexion = new NpgsqlConnection (connectionString+nombrebd);
+						try{
+							conexion.Open ();
+							NpgsqlCommand comando; 
+							comando = conexion.CreateCommand ();
 							if ((bool) this.lista_produc_solicitados.Model.GetValue (iter,8) == false){
 								comando.CommandText = "INSERT INTO osiris_his_solicitudes_deta("+
-																		"folio_de_solicitud,"+
-																		"id_producto,"+
-																		"precio_producto_publico,"+
-																		"costo_por_unidad,"+
-																		"cantidad_solicitada,"+
-																		"fechahora_solicitud,"+
-																		"id_quien_solicito,"+
-																		"id_almacen,folio_de_servicio,pid_paciente,"+
-																		"solicitud_stock,"+
-																		"pre_solicitud,"+
-																		"nombre_paciente,"+
-																		"procedimiento_qx,"+
-																		"diagnostico_qx," +
-																		"observaciones_solicitud," +
-																		"tipo_solicitud) "+
-																		"VALUES ('"+
-																		this.entry_numero_solicitud.Text+"','"+
-																		(string) this.lista_produc_solicitados.Model.GetValue(iter,1)+"','"+
-																		(string) this.lista_produc_solicitados.Model.GetValue(iter,7)+"','"+
-																		(string) this.lista_produc_solicitados.Model.GetValue(iter,6)+"','"+
-																		(string) this.lista_produc_solicitados.Model.GetValue(iter,2)+"','"+
-																		DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"','"+
-																		LoginEmpleado+"','"+
-																		this.idalmacen.ToString()+"','"+
-																		(string) entry_folio_servicio.Text.ToString().Trim()+"','"+
-																		(string) entry_pid_paciente.Text.ToString().Trim()+"','"+
-																		(bool) checkbutton_sol_parastock.Active+"','"+
-																		(bool) checkbutton_presolicitud.Active+"','"+
-																		(string) entry_nombre_paciente.Text.ToString().Trim().ToUpper()+"','"+
-																		(string) entry_cirugia.Text.ToString().Trim().ToUpper()+"','"+
-																		(string) entry_diagnostico.Text.ToString().Trim().ToUpper()+"','"+
-																		(string) entry_observacion.Text.ToString().Trim().ToUpper()+"','"+
-																		tipodesolicitud+"');";
-																	
-							//Console.WriteLine(comando.CommandText);
+																			"folio_de_solicitud,"+
+																			"id_producto,"+
+																			"precio_producto_publico,"+
+																			"costo_por_unidad,"+
+																			"cantidad_solicitada,"+
+																			"fechahora_solicitud,"+
+																			"id_quien_solicito,"+
+																			"id_almacen,folio_de_servicio,pid_paciente,"+
+																			"solicitud_stock,"+
+																			"pre_solicitud,"+
+																			"nombre_paciente,"+
+																			"procedimiento_qx,"+
+																			"diagnostico_qx," +
+																			"observaciones_solicitud," +
+																			"tipo_solicitud) "+
+																			"VALUES ('"+
+																			this.entry_numero_solicitud.Text+"','"+
+																			(string) this.lista_produc_solicitados.Model.GetValue(iter,1)+"','"+
+																			(string) this.lista_produc_solicitados.Model.GetValue(iter,7)+"','"+
+																			(string) this.lista_produc_solicitados.Model.GetValue(iter,6)+"','"+
+																			(string) this.lista_produc_solicitados.Model.GetValue(iter,2)+"','"+
+																			DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"','"+
+																			LoginEmpleado+"','"+
+																			this.idalmacen.ToString()+"','"+
+																			(string) entry_folio_servicio.Text.ToString().Trim()+"','"+
+																			(string) entry_pid_paciente.Text.ToString().Trim()+"','"+
+																			(bool) checkbutton_sol_parastock.Active+"','"+
+																			(bool) checkbutton_presolicitud.Active+"','"+
+																			(string) entry_nombre_paciente.Text.ToString().Trim().ToUpper()+"','"+
+																			(string) entry_cirugia.Text.ToString().Trim().ToUpper()+"','"+
+																			(string) entry_diagnostico.Text.ToString().Trim().ToUpper()+"','"+
+																			(string) entry_observacion.Text.ToString().Trim().ToUpper()+"','"+
+																			tipodesolicitud+"');";
+																		
+								//Console.WriteLine(comando.CommandText);
 								comando.ExecuteNonQuery();
 								comando.Dispose();
 							}
-						
+							while (this.treeViewEngineSolicitud.IterNext(ref iter)){						
+								if ((bool) this.lista_produc_solicitados.Model.GetValue (iter,8) == false){
+									comando.CommandText = "INSERT INTO osiris_his_solicitudes_deta("+
+																			"folio_de_solicitud,"+
+																			"id_producto,"+
+																			"precio_producto_publico,"+
+																			"costo_por_unidad,"+
+																			"cantidad_solicitada,"+
+																			"fechahora_solicitud,"+
+																			"id_quien_solicito,"+
+																			"id_almacen,folio_de_servicio,pid_paciente,"+
+																			"solicitud_stock,"+
+																			"pre_solicitud,"+
+																			"nombre_paciente,"+
+																			"procedimiento_qx,"+
+																			"diagnostico_qx," +
+																			"observaciones_solicitud," +
+																			"tipo_solicitud) "+
+																			"VALUES ('"+
+																			this.entry_numero_solicitud.Text+"','"+
+																			(string) this.lista_produc_solicitados.Model.GetValue(iter,1)+"','"+
+																			(string) this.lista_produc_solicitados.Model.GetValue(iter,7)+"','"+
+																			(string) this.lista_produc_solicitados.Model.GetValue(iter,6)+"','"+
+																			(string) this.lista_produc_solicitados.Model.GetValue(iter,2)+"','"+
+																			DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"','"+
+																			LoginEmpleado+"','"+
+																			this.idalmacen.ToString()+"','"+
+																			(string) entry_folio_servicio.Text.ToString().Trim()+"','"+
+																			(string) entry_pid_paciente.Text.ToString().Trim()+"','"+
+																			(bool) checkbutton_sol_parastock.Active+"','"+
+																			(bool) checkbutton_presolicitud.Active+"','"+
+																			(string) entry_nombre_paciente.Text.ToString().Trim().ToUpper()+"','"+
+																			(string) entry_cirugia.Text.ToString().Trim().ToUpper()+"','"+
+																			(string) entry_diagnostico.Text.ToString().Trim().ToUpper()+"','"+
+																			(string) entry_observacion.Text.ToString().Trim().ToUpper()+"','"+
+																			tipodesolicitud+"');";
+																		
+								//Console.WriteLine(comando.CommandText);
+									comando.ExecuteNonQuery();
+									comando.Dispose();
+								}
+							
+							}
+							checkbutton_nueva_solicitud.Active = false;
+							llena_solicitud_material(entry_numero_solicitud.Text);
+						}catch (NpgsqlException ex){
+							MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+															MessageType.Error,ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
+							msgBoxError.Run ();				msgBoxError.Destroy();
 						}
-						checkbutton_nueva_solicitud.Active = false;
-						llena_solicitud_material(entry_numero_solicitud.Text);
-					}catch (NpgsqlException ex){
-						MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
-														MessageType.Error,ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
-						msgBoxError.Run ();				msgBoxError.Destroy();
+						conexion.Close();
+					}else{
+						MessageDialog msgBox = new MessageDialog (MyWin,DialogFlags.Modal,
+												MessageType.Error,ButtonsType.Close,"NO ha seleccionado el TIPO DE SOLICITUD, NO se ha podido grabar la solicitud...");										
+								msgBox.Run ();			msgBox.Destroy();
 					}
-					conexion.Close();
 				}else{
 					MessageDialog msgBox = new MessageDialog (MyWin,DialogFlags.Modal,
-											MessageType.Error,ButtonsType.Close,"No ha pedido ningun producto, NO se ha podido grabar la solicitud...");										
-							msgBox.Run ();			msgBox.Destroy();
+												MessageType.Error,ButtonsType.Close,"No ha pedido ningun producto, NO se ha podido grabar la solicitud...");										
+					msgBox.Run ();			msgBox.Destroy();
 				}
 			}else{
 				MessageDialog msgBox = new MessageDialog (MyWin,DialogFlags.Modal,

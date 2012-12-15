@@ -575,6 +575,7 @@ namespace osiris
 						checkbutton_nuevo_producto.Sensitive = true;
 						button_editar.Sensitive = true;
 						button_calcular.Sensitive = false;
+						button_editar.Active = false;
 					}catch(NpgsqlException ex){
 	   					MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
 										MessageType.Error,ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
@@ -658,6 +659,7 @@ namespace osiris
 						checkbutton_cambia_utilidad.Active = false;
 						checkbutton_descuento.Sensitive = false;
 						checkbutton_cambia_utilidad.Sensitive = false;
+						button_editar.Active = false;
 					}catch(NpgsqlException ex){
 						MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
 										MessageType.Error,ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);

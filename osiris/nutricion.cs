@@ -43,10 +43,11 @@ namespace osiris
 		// Todas la ventanas en glade este boton debe estra declarado identico
 		[Widget] Gtk.Button button_salir;
 		
-		// Declarando ventana principal de Hospitalizacion
+		// Declarando ventana principal
 		[Widget] Gtk.Window menu_nutricion = null;
 		[Widget] Gtk.Button button_requisicion_materiales = null;
 		[Widget] Gtk.Button button_solicitud_dietas = null;
+		[Widget] Gtk.Button button_surtir_dietas = null;
 				
 		string LoginEmpleado;
 		string NomEmpleado;
@@ -73,6 +74,8 @@ namespace osiris
 			button_salir.Clicked += new EventHandler(on_cierraventanas_clicked);
 			button_requisicion_materiales.Clicked += new EventHandler(on_button_requisicion_materiales_clicked);
 			button_solicitud_dietas.Clicked += new EventHandler(on_button_solicitud_dietas_clicked);
+			button_surtir_dietas.Clicked += new EventHandler(on_button_surtir_dietas_clicked);
+			//button_paquetes_dietas.Clicked += new EventHandler();
 		}
 		
 		void on_button_requisicion_materiales_clicked(object sender, EventArgs args)
@@ -84,6 +87,11 @@ namespace osiris
 		void on_button_solicitud_dietas_clicked(object sender, EventArgs args)
 		{
 			new osiris.solicitudes_rx_lab(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,"NUTRICION",18);
+		}
+		
+		void on_button_surtir_dietas_clicked(object sender, EventArgs args)
+		{
+			new osiris.surtir_dietas();
 		}
 		
 		void on_cierraventanas_clicked (object sender, EventArgs args)

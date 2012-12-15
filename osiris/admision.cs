@@ -266,92 +266,98 @@ namespace osiris
 		
 		void on_button_cancelar_clicked(object sender, EventArgs args)
 		{
-			Npgsql.NpgsqlConnection conexion;
-			conexion = new NpgsqlConnection(connectionString+nombrebd);
-			try{
-				conexion.Open();
-				NpgsqlCommand comando;
-				comando = conexion.CreateCommand();
-				comando.CommandText = "SELECT id_producto "+
-									"FROM osiris_erp_cobros_deta "+
-									"WHERE folio_de_servicio = '"+entry_folio.Text.Trim()+"' ;";
-				NpgsqlDataReader lector = comando.ExecuteReader ();
-				
-				if(lector.Read() == true){
-					if(entry_motivo.Text.Trim() != "" || entry_folio.Text.Trim() != "" ){
-						MessageDialog msgBox = new MessageDialog (MyWin,DialogFlags.Modal,
-										MessageType.Question,ButtonsType.YesNo,"¿ El Nº de Atencion contiene productos cargados\n"+
-										" esta seguro que desea CANCELARLO?");
-						ResponseType miResultado = (ResponseType)msgBox.Run ();
-						msgBox.Destroy();
-				 		//Console.WriteLine(miResultado.ToString());
-				 		if (miResultado == ResponseType.Yes){
-							//Npgsql.NpgsqlConnection conexion;
-							conexion = new NpgsqlConnection(connectionString+nombrebd);
-							try{
-								conexion.Open();
-								//Npgsql.NpgsqlCommand comando;
-								comando = conexion.CreateCommand();
-								
-								comando.CommandText = "UPDATE osiris_erp_cobros_enca SET "+
-													"cancelado = 'true' , "+
-													"fechahora_cancelacion = '"+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"',"+
-													"motivo_cancelacion = '"+entry_motivo.Text.Trim()+"',"+
-													"id_quien_cancelo = '"+LoginEmpleado+"' "+
-													"WHERE folio_de_servicio = '"+entry_folio.Text.Trim()+"' ";
-								comando.ExecuteNonQuery();                  comando.Dispose();
-								//Console.WriteLine(comando.CommandText);
-								msgBox = new MessageDialog (MyWin,DialogFlags.Modal,MessageType.Info,
-													ButtonsType.Ok,"El Nº de Atencion se CANCELO con exito!!");
-								msgBox.Run();				msgBox.Destroy();
-								entry_folio.Text = "";				entry_motivo.Text = "";
-								//cancelador_folios.Destroy();
-								conexion.Close();
-							}catch(Npgsql.NpgsqlException ex){
-								Console.WriteLine ("PostgresSQL error: {0}",ex.Message);
-								msgBox = new MessageDialog (MyWin,DialogFlags.Modal,MessageType.Error,
-														ButtonsType.Ok,"PostgresSQL error: {0}",ex.Message);
-								msgBox.Run();				msgBox.Destroy();
+			MessageDialog msgBox = new MessageDialog (MyWin,DialogFlags.Modal,MessageType.Question,
+								ButtonsType.YesNo,"¿ Desea CANCELAR esta cuenta ?");
+			ResponseType miResultado = (ResponseType)msgBox.Run ();
+			msgBox.Destroy();
+	 		if(miResultado == ResponseType.Yes){			
+				Npgsql.NpgsqlConnection conexion;
+				conexion = new NpgsqlConnection(connectionString+nombrebd);
+				try{
+					conexion.Open();
+					NpgsqlCommand comando;
+					comando = conexion.CreateCommand();
+					comando.CommandText = "SELECT id_producto "+
+										"FROM osiris_erp_cobros_deta "+
+										"WHERE folio_de_servicio = '"+entry_folio.Text.Trim()+"' ;";
+					NpgsqlDataReader lector = comando.ExecuteReader ();
+					
+					if(lector.Read() == true){
+						if(entry_motivo.Text.Trim() != "" || entry_folio.Text.Trim() != "" ){
+							MessageDialog msgBox1 = new MessageDialog (MyWin,DialogFlags.Modal,
+											MessageType.Question,ButtonsType.YesNo,"¿ El Nº de Atencion contiene productos cargados\n"+
+											" esta seguro que desea CANCELARLO?");
+							miResultado = (ResponseType)msgBox1.Run ();
+							msgBox1.Destroy();
+					 		//Console.WriteLine(miResultado.ToString());
+					 		if (miResultado == ResponseType.Yes){
+								//Npgsql.NpgsqlConnection conexion;
+								conexion = new NpgsqlConnection(connectionString+nombrebd);
+								try{
+									conexion.Open();
+									//Npgsql.NpgsqlCommand comando;
+									comando = conexion.CreateCommand();
+									
+									comando.CommandText = "UPDATE osiris_erp_cobros_enca SET "+
+														"cancelado = 'true' , "+
+														"fechahora_cancelacion = '"+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"',"+
+														"motivo_cancelacion = '"+entry_motivo.Text.Trim()+"',"+
+														"id_quien_cancelo = '"+LoginEmpleado+"' "+
+														"WHERE folio_de_servicio = '"+entry_folio.Text.Trim()+"' ";
+									comando.ExecuteNonQuery();                  comando.Dispose();
+									//Console.WriteLine(comando.CommandText);
+									msgBox = new MessageDialog (MyWin,DialogFlags.Modal,MessageType.Info,
+														ButtonsType.Ok,"El Nº de Atencion se CANCELO con exito!!");
+									msgBox.Run();				msgBox.Destroy();
+									entry_folio.Text = "";				entry_motivo.Text = "";
+									//cancelador_folios.Destroy();
+									conexion.Close();
+								}catch(Npgsql.NpgsqlException ex){
+									Console.WriteLine ("PostgresSQL error: {0}",ex.Message);
+									msgBox = new MessageDialog (MyWin,DialogFlags.Modal,MessageType.Error,
+															ButtonsType.Ok,"PostgresSQL error: {0}",ex.Message);
+									msgBox.Run();				msgBox.Destroy();
+								}
 							}
+						}else{
+							MessageDialog msgBox1 = new MessageDialog (MyWin,DialogFlags.Modal,MessageType.Info,
+													ButtonsType.Ok,"Seleccione un Nº de Atencion y/o un motivo de cancelacion!!");
+							msgBox1.Run();				msgBox1.Destroy();
 						}
-					}else{
-						MessageDialog msgBox = new MessageDialog (MyWin,DialogFlags.Modal,MessageType.Info,
-												ButtonsType.Ok,"Seleccione un Nº de Atencion y/o un motivo de cancelacion!!");
-						msgBox.Run();				msgBox.Destroy();
+					}else{//REALIZA ESTO SI EL FOLIO NO CONTIENE PRODUCTOS APLICADOS
+						conexion = new NpgsqlConnection(connectionString+nombrebd);
+						try{
+							conexion.Open();
+							//Npgsql.NpgsqlCommand comando;
+							comando = conexion.CreateCommand();
+							
+							comando.CommandText = "UPDATE osiris_erp_cobros_enca SET "+
+												"cancelado = 'true' , "+
+												"fechahora_cancelacion = '"+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"',"+
+												"motivo_cancelacion = '"+entry_motivo.Text.Trim()+"',"+
+												"id_quien_cancelo = '"+LoginEmpleado+"' "+
+												"WHERE folio_de_servicio = '"+entry_folio.Text.Trim()+"' ";
+							comando.ExecuteNonQuery();                  comando.Dispose();
+							//Console.WriteLine(comando.CommandText);
+							MessageDialog msgBox1 = new MessageDialog (MyWin,DialogFlags.Modal,MessageType.Info,
+												ButtonsType.Ok,"El Nº de Atencion se CANCELO con exito!!");
+							msgBox1.Run();				msgBox1.Destroy();
+							entry_folio.Text = "";				entry_motivo.Text = "";
+							//cancelador_folios.Destroy();
+							conexion.Close();
+						}catch(Npgsql.NpgsqlException ex){
+							Console.WriteLine ("PostgresSQL error: {0}",ex.Message);
+							MessageDialog msgBox1 = new MessageDialog (MyWin,DialogFlags.Modal,MessageType.Error,
+													ButtonsType.Ok,"PostgresSQL error: {0}",ex.Message);
+							msgBox1.Run();				msgBox1.Destroy();
+						}
 					}
-				}else{//REALIZA ESTO SI EL FOLIO NO CONTIENE PRODUCTOS APLICADOS
-					conexion = new NpgsqlConnection(connectionString+nombrebd);
-					try{
-						conexion.Open();
-						//Npgsql.NpgsqlCommand comando;
-						comando = conexion.CreateCommand();
-						
-						comando.CommandText = "UPDATE osiris_erp_cobros_enca SET "+
-											"cancelado = 'true' , "+
-											"fechahora_cancelacion = '"+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"',"+
-											"motivo_cancelacion = '"+entry_motivo.Text.Trim()+"',"+
-											"id_quien_cancelo = '"+LoginEmpleado+"' "+
-											"WHERE folio_de_servicio = '"+entry_folio.Text.Trim()+"' ";
-						comando.ExecuteNonQuery();                  comando.Dispose();
-						//Console.WriteLine(comando.CommandText);
-						MessageDialog msgBox = new MessageDialog (MyWin,DialogFlags.Modal,MessageType.Info,
-											ButtonsType.Ok,"El Nº de Atencion se CANCELO con exito!!");
-						msgBox.Run();				msgBox.Destroy();
-						entry_folio.Text = "";				entry_motivo.Text = "";
-						//cancelador_folios.Destroy();
-						conexion.Close();
-					}catch(Npgsql.NpgsqlException ex){
-						Console.WriteLine ("PostgresSQL error: {0}",ex.Message);
-						MessageDialog msgBox = new MessageDialog (MyWin,DialogFlags.Modal,MessageType.Error,
-												ButtonsType.Ok,"PostgresSQL error: {0}",ex.Message);
-						msgBox.Run();				msgBox.Destroy();
-					}
+				}catch(Npgsql.NpgsqlException ex){
+					Console.WriteLine ("PostgresSQL error: {0}",ex.Message);
+					MessageDialog msgBox1 = new MessageDialog (MyWin,DialogFlags.Modal,MessageType.Error,
+											ButtonsType.Ok,"PostgresSQL error: {0}",ex.Message);
+					msgBox1.Run();				msgBox1.Destroy();
 				}
-			}catch(Npgsql.NpgsqlException ex){
-				Console.WriteLine ("PostgresSQL error: {0}",ex.Message);
-				MessageDialog msgBox = new MessageDialog (MyWin,DialogFlags.Modal,MessageType.Error,
-										ButtonsType.Ok,"PostgresSQL error: {0}",ex.Message);
-				msgBox.Run();				msgBox.Destroy();
 			}
 		}
 		

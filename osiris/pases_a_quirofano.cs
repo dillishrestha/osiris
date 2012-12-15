@@ -94,6 +94,12 @@ namespace osiris
 		
 		TreeStore treeViewEnginePases;
 		
+		//Ventana de cancelacion de PASES
+		[Widget] Gtk.Window cancelador_folios = null;
+		[Widget] Gtk.Button button_cancelar = null;
+		[Widget] Gtk.Entry entry_folio = null;
+		[Widget] Gtk.Entry entry_motivo = null;
+		[Widget] Gtk.Label label247 = null;
 		//Declaracion de ventana de error
 		protected Gtk.Window MyWinError;
 		protected Gtk.Window MyWin;
@@ -103,7 +109,7 @@ namespace osiris
 
 		public pases_a_quirofano (int pidpaciente_,int folioservicio_,int idcentro_costo_,string LoginEmpleado_,
 		                          int idtipopaciente_,int idempresa_paciente_,int idaseguradora_paciente_,
-									bool altamedicapaciente,string tipo_pase_)
+									bool altamedicapaciente,string tipo_pase_,bool elimina_pase,bool imprimir_pase)
 		{
 			escala_en_linux_windows = classpublic.escala_linux_windows;
 			connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
@@ -156,8 +162,61 @@ namespace osiris
 
 		void on_cancela_pase_clicked(object sender, EventArgs args)
 		{
+			TreeModel model;
+			TreeIter iterSelected;
+			if (lista_almacenes.Selection.GetSelected(out model, out iterSelected)){
+				nro_de_pase_ingreso = (string) lista_almacenes.Model.GetValue (iterSelected,0);				
+				if((string) classpublic.lee_registro_de_tabla("osiris_empleado","acceso_eliminarpase_qxurg","WHERE acceso_eliminarpase_qxurg = 'true' AND login_empleado = '"+LoginEmpleado+"' ","acceso_eliminarpase_qxurg","bool") == "True"){
+					Glade.XML gxml = new Glade.XML (null, "registro_admision.glade", "cancelador_folios", null);
+					gxml.Autoconnect (this);
+					cancelador_folios.Title = "ELIMINAR PASE";
+					label247.Text = "N° de Pase ";
+					cancelador_folios.Show();
+					entry_folio.Text = nro_de_pase_ingreso;
+					entry_folio.IsEditable = false;
+					button_cancelar.Clicked += new EventHandler(on_button_cancelar_clicked);
+					button_salir.Clicked += new EventHandler(on_cierraventanas_clicked);
+				}else{
+					checkbutton_todos_envios.Active = false;
+					MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+								MessageType.Error, ButtonsType.Close,"No esta autorizado para CANCELAR pases a Quirofano/Urgencias, Verifique...");
+					msgBoxError.Run ();						msgBoxError.Destroy();
+				}
+			}
 			
-		}		
+		}
+		
+		void on_button_cancelar_clicked(object sender, EventArgs args)
+		{
+			MessageDialog msgBox = new MessageDialog (MyWin,DialogFlags.Modal,MessageType.Question,
+								ButtonsType.YesNo,"¿ Esta seguro(a) de ELIMINAR este PASE ?");
+			ResponseType miResultado = (ResponseType)msgBox.Run ();
+			msgBox.Destroy();
+	 		if(miResultado == ResponseType.Yes){
+				Npgsql.NpgsqlConnection conexion;
+				conexion = new NpgsqlConnection(connectionString+nombrebd);
+				try{
+					conexion.Open();
+					NpgsqlCommand comando;
+					comando = conexion.CreateCommand();
+					comando.CommandText = "UPDATE osiris_erp_pases_qxurg SET "+
+												"eliminado = 'true' , "+
+												"fechahora_eliminado = '"+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"',"+
+												"motivo_eliminacion = '"+entry_motivo.Text.Trim().ToUpper()+"',"+
+												"id_quien_elimino = '"+LoginEmpleado+"' "+
+												"WHERE id_secuencia = '"+entry_folio.Text.Trim()+"' ";
+					comando.ExecuteNonQuery();                  comando.Dispose();
+					cancelador_folios.Destroy();
+					llenado_treeview_pases();
+				}catch(Npgsql.NpgsqlException ex){
+					Console.WriteLine ("PostgresSQL error: {0}",ex.Message);
+					MessageDialog msgBox1 = new MessageDialog (MyWin,DialogFlags.Modal,MessageType.Error,
+											ButtonsType.Ok,"PostgresSQL error: {0}",ex.Message);
+					msgBox1.Run();				msgBox1.Destroy();
+				}
+				conexion.Close();
+			}
+		}
 		
 		void crea_treeview_pases()
 		{
@@ -272,7 +331,7 @@ namespace osiris
 		
 		void on_create_pases_qxurg_clicked (object sender, EventArgs args)
 		{
-			if((string) classpublic.lee_registro_de_tabla("osiris_empleado","acceso_pase_qxurg","WHERE acceso_pase_qxurg = 'true' AND login_empleado = '"+LoginEmpleado+"' ","acceso_pase_qxurg","bool") == "True"){
+			if((string) classpublic.lee_registro_de_tabla("osiris_empleado","acceso_crearpase_qxurg","WHERE acceso_crearpase_qxurg = 'true' AND login_empleado = '"+LoginEmpleado+"' ","acceso_crearpase_qxurg","bool") == "True"){
 				if (checkbutton_todos_envios.Active == true){
 					MessageDialog msgBox = new MessageDialog (MyWin,DialogFlags.Modal,
 											MessageType.Question,ButtonsType.YesNo,"Esta seguro de crear un pase para QX/Urgencias");
@@ -325,7 +384,7 @@ namespace osiris
 			}else{
 				checkbutton_todos_envios.Active = false;
 				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
-							MessageType.Error, ButtonsType.Close,"No esta autorizado para generar pases a Quirofano/Urgencias, Verifique...");
+							MessageType.Error, ButtonsType.Close,"No esta autorizado para GENERAR pases a Quirofano/Urgencias, Verifique...");
 				msgBoxError.Run ();						msgBoxError.Destroy();
 			}
 		}
@@ -334,9 +393,16 @@ namespace osiris
 		{
 			TreeModel model;
 			TreeIter iterSelected;
- 			if (lista_almacenes.Selection.GetSelected(out model, out iterSelected)){
-				nro_de_pase_ingreso = (string) lista_almacenes.Model.GetValue (iterSelected,0);
-				printing_pase();
+			if((string) classpublic.lee_registro_de_tabla("osiris_empleado","acceso_imprimirpase_qxurg","WHERE acceso_imprimirpase_qxurg = 'true' AND login_empleado = '"+LoginEmpleado+"' ","acceso_imprimirpase_qxurg","bool") == "True"){
+	 			if (lista_almacenes.Selection.GetSelected(out model, out iterSelected)){
+					nro_de_pase_ingreso = (string) lista_almacenes.Model.GetValue (iterSelected,0);
+					printing_pase();
+				}
+			}else{
+				checkbutton_todos_envios.Active = false;
+				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+							MessageType.Error, ButtonsType.Close,"No esta autorizado para IMPRIMIR pases a Quirofano/Urgencias, Verifique...");
+				msgBoxError.Run ();						msgBoxError.Destroy();
 			}
 		}
 		
@@ -369,8 +435,7 @@ namespace osiris
 			string sexopaciente = "";
 			string empresa_o_aseguradora = "";
 			string titulo_de_pase = "";
-			string query_sql_ = "";
-			
+						
 			Cairo.Context cr = context.CairoContext;
 			Pango.Layout layout = context.CreatePangoLayout ();
 						

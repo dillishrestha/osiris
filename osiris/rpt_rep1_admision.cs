@@ -588,6 +588,7 @@ namespace osiris
 							 "AND osiris_erp_cobros_enca.folio_de_servicio = osiris_erp_cobros_deta.folio_de_servicio " +
 							 "AND osiris_erp_comprobante_servicio.folio_de_servicio = osiris_erp_cobros_deta.folio_de_servicio " +
 							 "AND osiris_erp_cobros_deta.eliminado = 'false' " +
+							 "AND osiris_erp_cobros_enca.cancelado = 'false' " +
 							
 							query_tipo_paciente + 
 							query_sexo + 
@@ -616,7 +617,8 @@ namespace osiris
 						"osiris_erp_cobros_enca.id_aseguradora,osiris_aseguradoras.descripcion_aseguradora,descripcion_diagnostico_movcargos AS motivo_ingreso,descripcion_tipo_paciente," +
 						"osiris_erp_movcargos.id_tipo_cirugia,descripcion_cirugia," +
 						"osiris_erp_cobros_enca.id_medico_tratante,osiris_his_medicos.nombre_medico AS medicotratante,nombre_medico_encabezado AS dr_solicita,"+
-						"osiris_erp_cobros_enca.observaciones1,total_abonos+total_pago AS pagosabonos,cerrado "+
+						"osiris_erp_cobros_enca.observaciones1,total_abonos+total_pago AS pagosabonos,cerrado, "+
+						"osiris_erp_pases_qxurg.eliminado,osiris_erp_pases_qxurg.motivo_eliminacion "+
 						"FROM osiris_erp_pases_qxurg,osiris_his_tipo_admisiones,osiris_erp_cobros_enca,osiris_his_paciente,osiris_empleado,osiris_empresas,osiris_aseguradoras,osiris_erp_movcargos,osiris_his_tipo_pacientes,osiris_his_tipo_cirugias,osiris_his_medicos "+
 						"WHERE osiris_erp_pases_qxurg.id_tipo_admisiones = osiris_his_tipo_admisiones.id_tipo_admisiones " +
 						"AND osiris_erp_pases_qxurg.pid_paciente = osiris_his_paciente.pid_paciente " +
@@ -629,13 +631,13 @@ namespace osiris
 						"AND osiris_erp_movcargos.id_tipo_cirugia = osiris_his_tipo_cirugias.id_tipo_cirugia " +
 						"AND osiris_erp_cobros_enca.id_medico_tratante = osiris_his_medicos.id_medico " +
 						"AND osiris_erp_cobros_enca.cancelado = 'false' " +
-						"AND osiris_erp_pases_qxurg.eliminado = 'false' "+
+						//"AND osiris_erp_pases_qxurg.eliminado = 'false' "+
 						//"AND osiris_erp_movcargos.id_anestesiologo = osiris_his_medicos.id_medico "+ 
 						query_rango_fechas+
 						query_tipo_paciente+
 						"ORDER BY osiris_erp_pases_qxurg.folio_de_servicio;";
-					string[] args_names_field = {"fechapaseqx","nro_pase","foliodeservicio","pagosabonos","pidpaciente","nombre_completo","motivo_ingreso","descripcion_tipo_paciente","descripcion_cirugia","dr_solicita","medicotratante","cerrado"};
-					string[] args_type_field = {"string","float","float","float","float","string","string","string","string","string","string","string","string","string","string"};
+					string[] args_names_field = {"fechapaseqx","nro_pase","foliodeservicio","pagosabonos","pidpaciente","nombre_completo","motivo_ingreso","descripcion_tipo_paciente","descripcion_cirugia","dr_solicita","medicotratante","cerrado","eliminado","motivo_eliminacion"};
+					string[] args_type_field = {"string","float","float","float","float","string","string","string","string","string","string","string","string","string","string","string","string"};
 					string[] args_field_text = {"id_producto","nombre_producto","nro_serie","tipo_anestesia","id_anestesiologo","nombre_anestesiologo","observaciones","id_cirujano2","nombre_cirujano2"};
 					string[] args_more_title = {""};
 					// class_crea_ods.cs

@@ -99,6 +99,7 @@ namespace osiris
 		[Widget] Gtk.Button button_solicitud_nutricion = null;
 		[Widget] Gtk.Button button_paquetes_qx = null;
 		[Widget] Gtk.Button button_documentos_medicos = null;
+		[Widget] Gtk.Button button_pase_quirofano = null;
 		
 		//Declarando la barra de estado
 		[Widget] Gtk.Statusbar statusbar_caja = null;
@@ -344,6 +345,8 @@ namespace osiris
 			button_devoluciones.Clicked += new EventHandler(on_button_devoluciones_clicked);
 			// Busca paquete quirurgioco para cargarlo al procedimiento
 			button_paquetes_qx.Clicked += new EventHandler(on_button_paquetes_qx_clicked);
+			// Pase a Quirofano
+			button_pase_quirofano.Clicked += new EventHandler(on_button_pase_quirofano_clicked);
 			button_documentos_medicos.Clicked += new EventHandler(on_button_documentos_medicos_clicked);
 			// Desactivando Botones de operacion se activa cuando selecciona una atencion
 			button_busca_producto.Sensitive = false;
@@ -366,6 +369,11 @@ namespace osiris
 		void on_button_documentos_medicos_clicked(object sender, EventArgs args)
 		{
 			new osiris.impr_doc_pacientes(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,entry_folio_servicio.Text,1);//,nombmedico);
+		}
+		
+		void on_button_pase_quirofano_clicked(object sender, EventArgs args)
+		{
+			new osiris.pases_a_quirofano(PidPaciente,folioservicio,idtipointernamiento,LoginEmpleado,id_tipopaciente,idempresa_paciente,idaseguradora_paciente,false,"pase_qx_urg",false,false);
 		}
 		
 		void on_button_paquetes_qx_clicked(object sender, EventArgs args)
@@ -1217,108 +1225,109 @@ namespace osiris
 			TreeIter iter;
  			if (treeViewEngineExtras.GetIterFirst (out iter)){
  				//bool old1 = (bool) lista_cargos_extras.Model.GetValue (iter,0);
- 				if ((float) lista_cargos_extras.Model.GetValue (iter,1) > 0){
- 					if ((bool)lista_cargos_extras.Model.GetValue (iter,0)){
- 						lista_cargos_extras.Model.SetValue(iter,0,false);
- 						toma_valor1 = (string) lista_cargos_extras.Model.GetValue (iter,8);  // toma precio publico
- 						toma_valor2 = (string) lista_cargos_extras.Model.GetValue (iter,9);  // toma el iva
- 						toma_valor3 = (string) lista_cargos_extras.Model.GetValue (iter,12);  // toma el descuento
- 						 					
- 						if ((float) float.Parse(toma_valor2) > 0){
- 							subtotal_al_IVA = subtotal_al_IVA + float.Parse(toma_valor1);
- 						}else{
- 					 		subtotal_al_0 = subtotal_al_0 + float.Parse(toma_valor1);
- 						}
- 						 						
- 						// Verificando si aplica descuento por tarjeta de Descuento
- 						if ((int) lista_cargos_extras.Model.GetValue (iter,14) == 100 && (int) id_tipopaciente == 101 && aplicar_siempre == false
-					  		||(int) lista_cargos_extras.Model.GetValue (iter,14) == 300 && (int) id_tipopaciente == 101 && aplicar_siempre == false
-					  		||(int) lista_cargos_extras.Model.GetValue (iter,14) == 400 && (int) id_tipopaciente == 101 && aplicar_siempre == false){
-							aplicar_descuento = true;
-						}else{
-							if (aplicar_siempre == false){
-								aplicar_descuento = false;
-								aplicar_siempre = true;
-							}
-						}	
- 						
- 						total_iva = total_iva + float.Parse(toma_valor2);
- 						totaldescuento = totaldescuento + float.Parse(toma_valor3)+((float.Parse(toma_valor3)*valoriva)/100);
- 						 					 					 					
- 						// Traspaso los valores de valores extras para que se carguen a la cuenta del
- 						// paciente
- 						treeViewEngineServicio.AppendValues ((string) lista_cargos_extras.Model.GetValue (iter,3),
- 														(float) lista_cargos_extras.Model.GetValue (iter,1),
- 														(string) lista_cargos_extras.Model.GetValue (iter,2),
- 														(string) lista_cargos_extras.Model.GetValue (iter,4),
- 														(string) lista_cargos_extras.Model.GetValue (iter,5),
- 														(string) lista_cargos_extras.Model.GetValue (iter,6),
- 														(string) lista_cargos_extras.Model.GetValue (iter,7),
- 														(string) lista_cargos_extras.Model.GetValue (iter,8),
- 														(string) lista_cargos_extras.Model.GetValue (iter,9),
- 														(string) lista_cargos_extras.Model.GetValue (iter,10),
- 														(string) lista_cargos_extras.Model.GetValue (iter,11),
- 														(string) lista_cargos_extras.Model.GetValue (iter,12),
- 														(string) lista_cargos_extras.Model.GetValue (iter,13),
- 														(int) lista_cargos_extras.Model.GetValue (iter,14),
- 														(bool) false,
- 														(string) lista_cargos_extras.Model.GetValue (iter,15),
- 														(string) lista_cargos_extras.Model.GetValue (iter,16),
- 														(string) lista_cargos_extras.Model.GetValue (iter,17),
- 														(string) "" );
- 														
- 					}
- 				}
- 				while (treeViewEngineExtras.IterNext(ref iter)){
- 					if ((float) lista_cargos_extras.Model.GetValue (iter,1) > 0){
- 						if ((bool)lista_cargos_extras.Model.GetValue (iter,0)){
- 					
- 							lista_cargos_extras.Model.SetValue(iter,0,false);
- 							toma_valor1 = (string) lista_cargos_extras.Model.GetValue (iter,8);  // toma precio publico
- 							toma_valor2 = (string) lista_cargos_extras.Model.GetValue (iter,9);  // toma el iva
- 							toma_valor3 = (string) lista_cargos_extras.Model.GetValue (iter,12);  // toma el precio con descuento
- 							
- 							if ((float) float.Parse(toma_valor2) > 0)
- 							{
- 								subtotal_al_IVA = subtotal_al_IVA + float.Parse(toma_valor1);
- 							}else{
- 					 			subtotal_al_0 = subtotal_al_0 + float.Parse(toma_valor1);
- 							}
- 							if ((int) lista_cargos_extras.Model.GetValue (iter,14) == 100 && (int) id_tipopaciente == 101 && aplicar_siempre == false
-					  			||(int) lista_cargos_extras.Model.GetValue (iter,14) == 300 && (int) id_tipopaciente == 101 && aplicar_siempre == false
-					  			||(int) lista_cargos_extras.Model.GetValue (iter,14) == 400 && (int) id_tipopaciente == 101 && aplicar_siempre == false){
+ 				if ((bool)lista_cargos_extras.Model.GetValue (iter,0)){
+					if ((float) lista_cargos_extras.Model.GetValue (iter,1) > 0){
+						if(float.Parse((string) lista_cargos_extras.Model.GetValue (iter,8)) > 0){
+							lista_cargos_extras.Model.SetValue(iter,0,false);
+	 						toma_valor1 = (string) lista_cargos_extras.Model.GetValue (iter,8);  // toma precio publico
+	 						toma_valor2 = (string) lista_cargos_extras.Model.GetValue (iter,9);  // toma el iva
+	 						toma_valor3 = (string) lista_cargos_extras.Model.GetValue (iter,12);  // toma el descuento
+	 						 					
+	 						if ((float) float.Parse(toma_valor2) > 0){
+	 							subtotal_al_IVA = subtotal_al_IVA + float.Parse(toma_valor1);
+	 						}else{
+	 					 		subtotal_al_0 = subtotal_al_0 + float.Parse(toma_valor1);
+	 						}
+	 						 						
+	 						// Verificando si aplica descuento por tarjeta de Descuento
+	 						if ((int) lista_cargos_extras.Model.GetValue (iter,14) == 100 && (int) id_tipopaciente == 101 && aplicar_siempre == false
+						  		||(int) lista_cargos_extras.Model.GetValue (iter,14) == 300 && (int) id_tipopaciente == 101 && aplicar_siempre == false
+						  		||(int) lista_cargos_extras.Model.GetValue (iter,14) == 400 && (int) id_tipopaciente == 101 && aplicar_siempre == false){
 								aplicar_descuento = true;
 							}else{
 								if (aplicar_siempre == false){
 									aplicar_descuento = false;
 									aplicar_siempre = true;
 								}
-							}
-							
- 							total_iva = total_iva + float.Parse(toma_valor2);
- 							totaldescuento = totaldescuento + float.Parse(toma_valor3)+((float.Parse(toma_valor3)*valoriva)/100);
- 							 						
- 							treeViewEngineServicio.AppendValues (
- 										(string) lista_cargos_extras.Model.GetValue (iter,3),
- 										(float) lista_cargos_extras.Model.GetValue (iter,1),
- 										(string) lista_cargos_extras.Model.GetValue (iter,2),
- 										(string) lista_cargos_extras.Model.GetValue (iter,4),
- 										(string) lista_cargos_extras.Model.GetValue (iter,5),
- 										(string) lista_cargos_extras.Model.GetValue (iter,6),
- 										(string) lista_cargos_extras.Model.GetValue (iter,7),
- 										(string) lista_cargos_extras.Model.GetValue (iter,8),
- 										(string) lista_cargos_extras.Model.GetValue (iter,9),
- 										(string) lista_cargos_extras.Model.GetValue (iter,10),
- 										(string) lista_cargos_extras.Model.GetValue (iter,11),
- 										(string) lista_cargos_extras.Model.GetValue (iter,12),
- 										(string) lista_cargos_extras.Model.GetValue (iter,13),
- 										(int) lista_cargos_extras.Model.GetValue (iter,14),
- 										(bool) false,
- 										(string) lista_cargos_extras.Model.GetValue (iter,15),
- 										(string) lista_cargos_extras.Model.GetValue (iter,16),
- 										(string) lista_cargos_extras.Model.GetValue (iter,17),
- 										(string) "");
- 						}
+							}	
+	 						
+	 						total_iva = total_iva + float.Parse(toma_valor2);
+	 						totaldescuento = totaldescuento + float.Parse(toma_valor3)+((float.Parse(toma_valor3)*valoriva)/100);
+	 						 					 					 					
+	 						// Traspaso los valores de valores extras para que se carguen a la cuenta del
+	 						// paciente
+	 						treeViewEngineServicio.AppendValues ((string) lista_cargos_extras.Model.GetValue (iter,3),
+	 														(float) lista_cargos_extras.Model.GetValue (iter,1),
+	 														(string) lista_cargos_extras.Model.GetValue (iter,2),
+	 														(string) lista_cargos_extras.Model.GetValue (iter,4),
+	 														(string) lista_cargos_extras.Model.GetValue (iter,5),
+	 														(string) lista_cargos_extras.Model.GetValue (iter,6),
+	 														(string) lista_cargos_extras.Model.GetValue (iter,7),
+	 														(string) lista_cargos_extras.Model.GetValue (iter,8),
+	 														(string) lista_cargos_extras.Model.GetValue (iter,9),
+	 														(string) lista_cargos_extras.Model.GetValue (iter,10),
+	 														(string) lista_cargos_extras.Model.GetValue (iter,11),
+	 														(string) lista_cargos_extras.Model.GetValue (iter,12),
+	 														(string) lista_cargos_extras.Model.GetValue (iter,13),
+	 														(int) lista_cargos_extras.Model.GetValue (iter,14),
+	 														(bool) false,
+	 														(string) lista_cargos_extras.Model.GetValue (iter,15),
+	 														(string) lista_cargos_extras.Model.GetValue (iter,16),
+	 														(string) lista_cargos_extras.Model.GetValue (iter,17),
+	 														(string) "" );
+	 														
+	 					}
+					}
+ 				}
+ 				while (treeViewEngineExtras.IterNext(ref iter)){
+ 					if ((bool)lista_cargos_extras.Model.GetValue (iter,0)){
+						if ((float) lista_cargos_extras.Model.GetValue (iter,1) > 0){
+							if(float.Parse((string) lista_cargos_extras.Model.GetValue (iter,8)) > 0){
+	 							lista_cargos_extras.Model.SetValue(iter,0,false);
+	 							toma_valor1 = (string) lista_cargos_extras.Model.GetValue (iter,8);  // toma precio publico
+	 							toma_valor2 = (string) lista_cargos_extras.Model.GetValue (iter,9);  // toma el iva
+	 							toma_valor3 = (string) lista_cargos_extras.Model.GetValue (iter,12);  // toma el precio con descuento
+	 							if ((float) float.Parse(toma_valor2) > 0){
+	 								subtotal_al_IVA = subtotal_al_IVA + float.Parse(toma_valor1);
+	 							}else{
+	 					 			subtotal_al_0 = subtotal_al_0 + float.Parse(toma_valor1);
+	 							}
+	 							if ((int) lista_cargos_extras.Model.GetValue (iter,14) == 100 && (int) id_tipopaciente == 101 && aplicar_siempre == false
+						  			||(int) lista_cargos_extras.Model.GetValue (iter,14) == 300 && (int) id_tipopaciente == 101 && aplicar_siempre == false
+						  			||(int) lista_cargos_extras.Model.GetValue (iter,14) == 400 && (int) id_tipopaciente == 101 && aplicar_siempre == false){
+									aplicar_descuento = true;
+								}else{
+									if (aplicar_siempre == false){
+										aplicar_descuento = false;
+										aplicar_siempre = true;
+									}
+								}
+								
+	 							total_iva = total_iva + float.Parse(toma_valor2);
+	 							totaldescuento = totaldescuento + float.Parse(toma_valor3)+((float.Parse(toma_valor3)*valoriva)/100);
+	 							 						
+	 							treeViewEngineServicio.AppendValues (
+	 										(string) lista_cargos_extras.Model.GetValue (iter,3),
+	 										(float) lista_cargos_extras.Model.GetValue (iter,1),
+	 										(string) lista_cargos_extras.Model.GetValue (iter,2),
+	 										(string) lista_cargos_extras.Model.GetValue (iter,4),
+	 										(string) lista_cargos_extras.Model.GetValue (iter,5),
+	 										(string) lista_cargos_extras.Model.GetValue (iter,6),
+	 										(string) lista_cargos_extras.Model.GetValue (iter,7),
+	 										(string) lista_cargos_extras.Model.GetValue (iter,8),
+	 										(string) lista_cargos_extras.Model.GetValue (iter,9),
+	 										(string) lista_cargos_extras.Model.GetValue (iter,10),
+	 										(string) lista_cargos_extras.Model.GetValue (iter,11),
+	 										(string) lista_cargos_extras.Model.GetValue (iter,12),
+	 										(string) lista_cargos_extras.Model.GetValue (iter,13),
+	 										(int) lista_cargos_extras.Model.GetValue (iter,14),
+	 										(bool) false,
+	 										(string) lista_cargos_extras.Model.GetValue (iter,15),
+	 										(string) lista_cargos_extras.Model.GetValue (iter,16),
+	 										(string) lista_cargos_extras.Model.GetValue (iter,17),
+	 										(string) "");
+	 						}
+						}
  					}
  				}
  				if (aplicar_descuento == false){

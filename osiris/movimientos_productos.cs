@@ -71,6 +71,14 @@ namespace osiris
 		[Widget] Gtk.Label label137 = null;
 		[Widget] Gtk.Entry entry2 = null;
 		[Widget] Gtk.Entry entry_total_aplicado = null;
+		[Widget] Gtk.ComboBox combobox_grupo;
+		[Widget] Gtk.ComboBox combobox_grupo1;
+		[Widget] Gtk.ComboBox combobox_grupo2;
+		[Widget] Gtk.CheckButton checkbutton_grupo = null;
+		[Widget] Gtk.CheckButton checkbutton_grupo1 = null;
+		[Widget] Gtk.CheckButton checkbutton_grupo2 = null;
+		[Widget] Gtk.Button button_filtros_grupos = null;
+		
 		string connectionString;						
 		string nombrebd;
 		string LoginEmpleado;
@@ -89,6 +97,7 @@ namespace osiris
 		string query_consulta = "" ;
 		string rango_de_fecha = "";
 		string titulopagina= "MOVIMIENTOS DE PRODUCOS";
+		string sql_filtro_grupos = "";
 		
 		TreeStore treeViewEngineBusca2;	// Para la busqueda de Productos
 		TreeStore treeViewEngineSelec;	// Lista de Productos seleccionados
@@ -127,15 +136,19 @@ namespace osiris
 			entry1.Hide();
 			label137.Hide();
 			entry2.Hide();
+			llenado_combobox(0,"",combobox_grupo,"sql","SELECT * FROM osiris_grupo_producto ORDER BY descripcion_grupo_producto;","descripcion_grupo_producto","id_grupo_producto",args_args,args_id_array);
+			llenado_combobox(0,"",combobox_grupo1,"sql","SELECT * FROM osiris_grupo1_producto ORDER BY descripcion_grupo1_producto;","descripcion_grupo1_producto","id_grupo1_producto",args_args,args_id_array);
+			llenado_combobox(0,"",combobox_grupo2,"sql","SELECT * FROM osiris_grupo2_producto ORDER BY descripcion_grupo2_producto;","descripcion_grupo2_producto","id_grupo2_producto",args_args,args_id_array);
+			
 			if(tipo_reporte_ == "envios_subalamcenes"){
-				crea_treeview_selec("");
+				crea_treeview_selec("envios_subalamcenes");
 				mov_productos.Title = "Movimientos de Productos Enviados a los Sub-Almacenes";
 				crea_treeview_envios();
 				llenado_combobox(1,"",combobox_departamentos,"sql","SELECT * FROM osiris_almacenes WHERE activo = 'true' ORDER BY descripcion_almacen;","descripcion_almacen","id_almacen",args_args,args_id_array);
 				button_consultar_costos.Clicked += new EventHandler(on_button_consultar_costos_clicked);
 			}
 			if(tipo_reporte == "cargos_pacientes"){
-				crea_treeview_selec("");
+				crea_treeview_selec("cargos_pacientes");
 				mov_productos.Title = "Cargos de Productos a Pacientes (Sub-Almacenes)";
 				crea_treeview_cargos_pacientes();
 				llenado_combobox(1,"",combobox_departamentos,"sql","SELECT * FROM osiris_his_tipo_admisiones "+
@@ -145,8 +158,9 @@ namespace osiris
 				button_consultar_costos.Clicked += new EventHandler(on_button_consultar_costos_clicked);
 			}
 			if(tipo_reporte == "productos_requisados"){
-				crea_treeview_selec("");
+				crea_treeview_selec("productos_requisados");
 				mov_productos.Title = "Mov. Prod. Requisados de Almacen a Compras";
+				crea_treeview_envios_subalmacen();
 				llenado_combobox(1,"",combobox_departamentos,"sql","SELECT * FROM osiris_his_tipo_admisiones "+
 						         						"ORDER BY descripcion_admisiones;","descripcion_admisiones","id_tipo_admisiones",args_args,args_id_array);
 			}
@@ -162,6 +176,14 @@ namespace osiris
 				button_consultar_costos.Clicked += new EventHandler(on_button_consultar_costos_clicked);
 				button_imprimir_movimiento.Clicked += new EventHandler(on_button_rpt_movcargosfecha_clicked);
 			}
+			if(tipo_reporte == "productos_comprados"){
+				crea_treeview_selec("productos_comprados");
+				mov_productos.Title = "Mov.Tot. Prod. Cargados por Fechas";
+				entry_descrip_producto.IsEditable = false;
+				button_busca_producto.Sensitive = false;
+				llenado_combobox(1,"",combobox_departamentos,"sql","SELECT * FROM osiris_his_tipo_admisiones "+
+						         						"ORDER BY descripcion_admisiones;","descripcion_admisiones","id_tipo_admisiones",args_args,args_id_array);
+			}
 			//  Sale de la ventana:
 			button_salir.Clicked += new EventHandler(on_cierraventanas_clicked);
 			button_busca_producto.Clicked += new EventHandler(on_button_busca_producto_clicked);
@@ -175,10 +197,38 @@ namespace osiris
 			entry_dia2.KeyPressEvent += onKeyPressEventactual;
 			entry_mes2.KeyPressEvent += onKeyPressEventactual;
 			entry_ano2.KeyPressEvent += onKeyPressEventactual;
+			combobox_grupo.Sensitive = false;
+			combobox_grupo1.Sensitive = false;
+			combobox_grupo2.Sensitive = false;
+			button_filtros_grupos.Sensitive = false;
+			checkbutton_grupo.Clicked += new EventHandler(on_checkbutton_grupos_clicked);
+			checkbutton_grupo1.Clicked += new EventHandler(on_checkbutton_grupos_clicked);
+			checkbutton_grupo2.Clicked += new EventHandler(on_checkbutton_grupos_clicked);
+			button_filtros_grupos.Clicked += new EventHandler(on_button_filtros_grupos_clicked);
 		}
 		
-		void on_checkbutton_todos_departamentos_clicked (object sender, EventArgs args)
-		{   
+		void on_checkbutton_grupos_clicked(object sender, EventArgs args)
+		{
+			Gtk.CheckButton checkbutton_recive = (object) sender as Gtk.CheckButton;
+			if(checkbutton_recive.Name == "checkbutton_grupo"){
+				button_filtros_grupos.Sensitive = (bool) checkbutton_grupo.Active;
+				combobox_grupo.Sensitive = (bool) checkbutton_grupo.Active;
+			}
+			if(checkbutton_recive.Name == "checkbutton_grupo1"){
+				combobox_grupo1.Sensitive = (bool) checkbutton_grupo1.Active;
+			}
+			if(checkbutton_recive.Name == "checkbutton_grupo2"){
+				combobox_grupo2.Sensitive = (bool) checkbutton_grupo2.Active;
+			}
+		}
+		
+		void on_button_filtros_grupos_clicked(object sender, EventArgs args)
+		{
+			llenando_productos();
+		}		
+		
+		void on_checkbutton_todos_departamentos_clicked(object sender, EventArgs args)
+		{
 			if (checkbutton_todos_departamentos.Active == true){
 				combobox_departamentos.Sensitive = false;
 				query_departamento = "  "; //
@@ -327,9 +377,10 @@ namespace osiris
 		/////LISTA_PRODUCTO_SELECCIONADOS/////
 		void crea_treeview_selec(string nombre_reporte)
 		{
-			if(nombre_reporte == ""){
+			Console.WriteLine(nombre_reporte);
+			if(nombre_reporte == "envios_subalamcenes" || nombre_reporte == "cargos_pacientes" || nombre_reporte == "productos_requisados" || nombre_reporte == "productos_comprados"){
 				treeViewEngineSelec = new TreeStore(typeof(string), 
-								typeof(string));												
+								typeof(string),typeof(string),typeof(string),typeof(string));												
 				lista_producto_seleccionados.Model = treeViewEngineSelec;			
 				lista_producto_seleccionados.RulesHint = true;
 				
@@ -345,9 +396,31 @@ namespace osiris
 				col_01.PackStart(cellr1, true);
 				col_01.AddAttribute (cellr1, "text", 1);
 				
+				TreeViewColumn col_02 = new TreeViewColumn();
+				CellRendererText cellr2 = new CellRendererText();
+				col_02.Title = "Grupo"; // titulo de la cabecera de la columna, si está visible
+				col_02.PackStart(cellr2, true);
+				col_02.AddAttribute (cellr2, "text", 2);
+				
+				TreeViewColumn col_03 = new TreeViewColumn();
+				CellRendererText cellr3 = new CellRendererText();
+				col_03.Title = "Grupo 1"; // titulo de la cabecera de la columna, si está visible
+				col_03.PackStart(cellr3, true);
+				col_03.AddAttribute (cellr3, "text", 3);
+				
+				TreeViewColumn col_04 = new TreeViewColumn();
+				CellRendererText cellr4 = new CellRendererText();
+				col_04.Title = "Grupo 2"; // titulo de la cabecera de la columna, si está visible
+				col_04.PackStart(cellr4, true);
+				col_04.AddAttribute (cellr4, "text", 4);				
+				
 				lista_producto_seleccionados.AppendColumn(col_00);
 				lista_producto_seleccionados.AppendColumn(col_01);
-			}else{
+				lista_producto_seleccionados.AppendColumn(col_02);
+				lista_producto_seleccionados.AppendColumn(col_03);
+				lista_producto_seleccionados.AppendColumn(col_04);
+			}
+			if(nombre_reporte == "movimiento_totales_x_fecha"){
 				treeViewEngineSelec = new TreeStore(typeof(string), 
 								typeof(string),
 								typeof(string),
@@ -418,12 +491,6 @@ namespace osiris
 				lista_producto_seleccionados.AppendColumn(col_06);
 				lista_producto_seleccionados.AppendColumn(col_07);
 			}
-		}
-		
-		enum Column
-		{
-			col_codigo_prod,
-			col_descripcion,
 		}
 		
 		void on_button_consultar_costos_clicked (object sender, EventArgs args)         
@@ -855,6 +922,23 @@ namespace osiris
 			col_id_departamento, //(tipo_admision),
 			col_departamento,   //descripcion-admicion
 			col_fecha_cargo
+		}
+		
+		void crea_treeview_envios_subalmacen()
+		{
+			treeViewEngineResumen = new TreeStore(typeof(string), 
+								typeof(string),
+								typeof(string),
+								typeof(string),
+								typeof(string),
+								typeof(string),
+								typeof(string),
+								typeof(string),
+								typeof(string));
+												
+			lista_resumen_productos.Model = treeViewEngineResumen;
+			
+			lista_resumen_productos.RulesHint = true;
 		}
 		
 		////////////////////////////////////////VENTANA BUSQUEDA DE PRODUCTOS/////////////////////////////////////////////////	

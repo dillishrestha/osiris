@@ -5171,7 +5171,7 @@ Solicitud</property>
 
 					  <child>
 					    <widget class="GtkRadioButton" id="radiobutton1">
-					      <property name="width_request">150</property>
+					      <property name="width_request">135</property>
 					      <property name="visible">True</property>
 					      <property name="can_focus">True</property>
 					      <property name="label" translatable="yes">Citas de Pacientes</property>
@@ -5191,7 +5191,7 @@ Solicitud</property>
 
 					  <child>
 					    <widget class="GtkRadioButton" id="radiobutton2">
-					      <property name="width_request">150</property>
+					      <property name="width_request">128</property>
 					      <property name="visible">True</property>
 					      <property name="can_focus">True</property>
 					      <property name="label" translatable="yes">Cirugias Programas</property>
@@ -5205,14 +5205,14 @@ Solicitud</property>
 					    </widget>
 					    <packing>
 					      <property name="padding">0</property>
-					      <property name="expand">False</property>
-					      <property name="fill">False</property>
+					      <property name="expand">True</property>
+					      <property name="fill">True</property>
 					    </packing>
 					  </child>
 
 					  <child>
 					    <widget class="GtkRadioButton" id="radiobutton6">
-					      <property name="width_request">60</property>
+					      <property name="width_request">68</property>
 					      <property name="visible">True</property>
 					      <property name="can_focus">True</property>
 					      <property name="label" translatable="yes">Ambas</property>
@@ -5226,16 +5226,17 @@ Solicitud</property>
 					    </widget>
 					    <packing>
 					      <property name="padding">0</property>
-					      <property name="expand">False</property>
-					      <property name="fill">False</property>
+					      <property name="expand">True</property>
+					      <property name="fill">True</property>
 					    </packing>
 					  </child>
 
 					  <child>
 					    <widget class="GtkCheckButton" id="checkbutton_canceladas">
+					      <property name="width_request">80</property>
 					      <property name="visible">True</property>
 					      <property name="can_focus">True</property>
-					      <property name="label" translatable="yes">Incluir citas Canceladas</property>
+					      <property name="label" translatable="yes">Canceladas</property>
 					      <property name="use_underline">True</property>
 					      <property name="relief">GTK_RELIEF_NORMAL</property>
 					      <property name="focus_on_click">True</property>
@@ -5251,7 +5252,90 @@ Solicitud</property>
 					  </child>
 
 					  <child>
+					    <widget class="GtkCheckButton" id="checkbutton_reagendadas">
+					      <property name="width_request">120</property>
+					      <property name="visible">True</property>
+					      <property name="can_focus">True</property>
+					      <property name="relief">GTK_RELIEF_NORMAL</property>
+					      <property name="focus_on_click">True</property>
+					      <property name="active">False</property>
+					      <property name="inconsistent">False</property>
+					      <property name="draw_indicator">True</property>
+
+					      <child>
+						<widget class="GtkAlignment" id="alignment58">
+						  <property name="visible">True</property>
+						  <property name="xalign">0.5</property>
+						  <property name="yalign">0.5</property>
+						  <property name="xscale">0</property>
+						  <property name="yscale">0</property>
+						  <property name="top_padding">0</property>
+						  <property name="bottom_padding">0</property>
+						  <property name="left_padding">0</property>
+						  <property name="right_padding">0</property>
+
+						  <child>
+						    <widget class="GtkHBox" id="hbox143">
+						      <property name="visible">True</property>
+						      <property name="homogeneous">False</property>
+						      <property name="spacing">2</property>
+
+						      <child>
+							<widget class="GtkImage" id="image48">
+							  <property name="visible">True</property>
+							  <property name="stock">gtk-print-report</property>
+							  <property name="icon_size">4</property>
+							  <property name="xalign">0.5</property>
+							  <property name="yalign">0.5</property>
+							  <property name="xpad">0</property>
+							  <property name="ypad">0</property>
+							</widget>
+							<packing>
+							  <property name="padding">0</property>
+							  <property name="expand">False</property>
+							  <property name="fill">False</property>
+							</packing>
+						      </child>
+
+						      <child>
+							<widget class="GtkLabel" id="label213">
+							  <property name="visible">True</property>
+							  <property name="label" translatable="yes">Reagendadas</property>
+							  <property name="use_underline">True</property>
+							  <property name="use_markup">False</property>
+							  <property name="justify">GTK_JUSTIFY_LEFT</property>
+							  <property name="wrap">False</property>
+							  <property name="selectable">False</property>
+							  <property name="xalign">0.5</property>
+							  <property name="yalign">0.5</property>
+							  <property name="xpad">0</property>
+							  <property name="ypad">0</property>
+							  <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
+							  <property name="width_chars">-1</property>
+							  <property name="single_line_mode">False</property>
+							  <property name="angle">0</property>
+							</widget>
+							<packing>
+							  <property name="padding">0</property>
+							  <property name="expand">False</property>
+							  <property name="fill">False</property>
+							</packing>
+						      </child>
+						    </widget>
+						  </child>
+						</widget>
+					      </child>
+					    </widget>
+					    <packing>
+					      <property name="padding">0</property>
+					      <property name="expand">True</property>
+					      <property name="fill">True</property>
+					    </packing>
+					  </child>
+
+					  <child>
 					    <widget class="GtkCheckButton" id="checkbutton_px_no_asistieron">
+					      <property name="width_request">145</property>
 					      <property name="visible">True</property>
 					      <property name="can_focus">True</property>
 					      <property name="relief">GTK_RELIEF_NORMAL</property>
@@ -5323,55 +5407,6 @@ Solicitud</property>
 						  </child>
 						</widget>
 					      </child>
-					    </widget>
-					    <packing>
-					      <property name="padding">0</property>
-					      <property name="expand">False</property>
-					      <property name="fill">False</property>
-					    </packing>
-					  </child>
-					</widget>
-					<packing>
-					  <property name="padding">0</property>
-					  <property name="expand">True</property>
-					  <property name="fill">True</property>
-					</packing>
-				      </child>
-
-				      <child>
-					<widget class="GtkHBox" id="hbox123">
-					  <property name="visible">True</property>
-					  <property name="homogeneous">False</property>
-					  <property name="spacing">0</property>
-
-					  <child>
-					    <widget class="GtkLabel" id="label192">
-					      <property name="visible">True</property>
-					      <property name="label" translatable="yes">&lt;b&gt;F I L T R O S &lt;/b&gt;</property>
-					      <property name="use_underline">False</property>
-					      <property name="use_markup">True</property>
-					      <property name="justify">GTK_JUSTIFY_LEFT</property>
-					      <property name="wrap">False</property>
-					      <property name="selectable">False</property>
-					      <property name="xalign">0.5</property>
-					      <property name="yalign">0.5</property>
-					      <property name="xpad">0</property>
-					      <property name="ypad">0</property>
-					      <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
-					      <property name="width_chars">-1</property>
-					      <property name="single_line_mode">False</property>
-					      <property name="angle">0</property>
-					    </widget>
-					    <packing>
-					      <property name="padding">0</property>
-					      <property name="expand">False</property>
-					      <property name="fill">False</property>
-					    </packing>
-					  </child>
-
-					  <child>
-					    <widget class="GtkFixed" id="fixed1">
-					      <property name="visible">True</property>
 					    </widget>
 					    <packing>
 					      <property name="padding">0</property>
@@ -6257,6 +6292,18 @@ Solicitud</property>
 					      <property name="fill">True</property>
 					    </packing>
 					  </child>
+					</widget>
+					<packing>
+					  <property name="padding">0</property>
+					  <property name="expand">True</property>
+					  <property name="fill">True</property>
+					</packing>
+				      </child>
+
+				      <child>
+					<widget class="GtkFixed" id="fixed52">
+					  <property name="height_request">79</property>
+					  <property name="visible">True</property>
 					</widget>
 					<packing>
 					  <property name="padding">0</property>
@@ -13011,10 +13058,88 @@ Reagendando Cita
 	      </child>
 
 	      <child>
-		<widget class="GtkEntry" id="entry45">
+		<widget class="GtkEntry" id="entry_nrocita_a_reag">
 		  <property name="visible">True</property>
 		  <property name="can_focus">True</property>
-		  <property name="editable">True</property>
+		  <property name="editable">False</property>
+		  <property name="visibility">True</property>
+		  <property name="max_length">0</property>
+		  <property name="text" translatable="yes"></property>
+		  <property name="has_frame">True</property>
+		  <property name="invisible_char">•</property>
+		  <property name="activates_default">False</property>
+		</widget>
+		<packing>
+		  <property name="padding">0</property>
+		  <property name="expand">True</property>
+		  <property name="fill">True</property>
+		</packing>
+	      </child>
+	    </widget>
+	    <packing>
+	      <property name="padding">0</property>
+	      <property name="expand">True</property>
+	      <property name="fill">True</property>
+	    </packing>
+	  </child>
+
+	  <child>
+	    <widget class="GtkHBox" id="hbox144">
+	      <property name="visible">True</property>
+	      <property name="homogeneous">False</property>
+	      <property name="spacing">0</property>
+
+	      <child>
+		<widget class="GtkLabel" id="label214">
+		  <property name="visible">True</property>
+		  <property name="label" translatable="yes">&lt;small&gt;&lt;b&gt;Doctor&lt;/b&gt;&lt;/small&gt;</property>
+		  <property name="use_underline">False</property>
+		  <property name="use_markup">True</property>
+		  <property name="justify">GTK_JUSTIFY_LEFT</property>
+		  <property name="wrap">False</property>
+		  <property name="selectable">False</property>
+		  <property name="xalign">0.5</property>
+		  <property name="yalign">0.5</property>
+		  <property name="xpad">0</property>
+		  <property name="ypad">0</property>
+		  <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
+		  <property name="width_chars">-1</property>
+		  <property name="single_line_mode">False</property>
+		  <property name="angle">0</property>
+		</widget>
+		<packing>
+		  <property name="padding">0</property>
+		  <property name="expand">False</property>
+		  <property name="fill">False</property>
+		</packing>
+	      </child>
+
+	      <child>
+		<widget class="GtkEntry" id="entry_id_doc_reagendar">
+		  <property name="width_request">40</property>
+		  <property name="visible">True</property>
+		  <property name="can_focus">True</property>
+		  <property name="editable">False</property>
+		  <property name="visibility">True</property>
+		  <property name="max_length">0</property>
+		  <property name="text" translatable="yes"></property>
+		  <property name="has_frame">True</property>
+		  <property name="invisible_char">•</property>
+		  <property name="activates_default">False</property>
+		</widget>
+		<packing>
+		  <property name="padding">0</property>
+		  <property name="expand">True</property>
+		  <property name="fill">True</property>
+		</packing>
+	      </child>
+
+	      <child>
+		<widget class="GtkEntry" id="entry_nombre_doc_reagendar">
+		  <property name="width_request">240</property>
+		  <property name="visible">True</property>
+		  <property name="can_focus">True</property>
+		  <property name="editable">False</property>
 		  <property name="visibility">True</property>
 		  <property name="max_length">0</property>
 		  <property name="text" translatable="yes"></property>
@@ -13192,7 +13317,7 @@ Reagendando Cita
 	      </child>
 
 	      <child>
-		<widget class="GtkEntry" id="entry44">
+		<widget class="GtkEntry" id="entry_observacion_reagendar">
 		  <property name="width_request">200</property>
 		  <property name="visible">True</property>
 		  <property name="can_focus">True</property>

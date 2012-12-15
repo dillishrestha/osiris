@@ -72,7 +72,8 @@ namespace osiris
 						
 			query_general = "SELECT osiris_his_solicitudes_labrx.area_quien_solicita,osiris_his_solicitudes_labrx.folio_de_solicitud,"+
 							"osiris_his_solicitudes_labrx.fechahora_solicitud,osiris_his_solicitudes_labrx.folio_de_servicio AS foliodeservicio,osiris_his_solicitudes_labrx.pid_paciente AS pidpaciente,"+
-							"osiris_his_solicitudes_labrx.id_quien_solicito,osiris_his_solicitudes_labrx.id_proveedor,osiris_his_solicitudes_labrx.id_producto,osiris_his_solicitudes_labrx.cantidad_solicitada,"+
+							"osiris_his_solicitudes_labrx.id_quien_solicito,osiris_his_solicitudes_labrx.id_proveedor,osiris_his_solicitudes_labrx.id_producto,osiris_his_solicitudes_labrx.cantidad_solicitada," +
+							"observaciones_solicitud,turno,"+
 							"nombre1_paciente || ' ' || nombre2_paciente || ' ' || apellido_paterno_paciente || ' ' || apellido_materno_paciente AS nombre_completo,"+
 							"to_char(osiris_his_paciente.fecha_nacimiento_paciente, 'dd-MM-yyyy') AS fechanacpaciente, to_char(to_number(to_char(age('"+DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss")+"',osiris_his_paciente.fecha_nacimiento_paciente),'yyyy') ,'9999'),'9999') AS edadpaciente,"+
 							"osiris_his_paciente.sexo_paciente,osiris_erp_cobros_enca.nombre_medico_tratante,"+
@@ -140,6 +141,7 @@ namespace osiris
 					}else{
 						sexopaciente = "FEMENINO";
 					}
+					departament = departament+"-"+lector["turno"].ToString().Trim();
 					comienzo_linea = 05;
 					buscar_en_movcargos(lector["foliodeservicio"].ToString().Trim());
 					imprime_encabezado(cr,layout);
@@ -149,7 +151,7 @@ namespace osiris
 					               lector["nombre_completo"].ToString().Trim(),lector["fechanacpaciente"].ToString().Trim(),lector["edadpaciente"].ToString().Trim(),
 					               sexopaciente,diagnostico_movcargo,nombrecirugia_movcargo,lector["nombre_medico_tratante"].ToString().Trim(),
 					               lector["descripcion_cuarto"].ToString().Trim()+" "+lector["numero_cuarto"].ToString().Trim(),lector["id_quien_solicito"].ToString().Trim(),
-					               lector["nombresolicitante"].ToString().Trim(),lector["descripcion_proveedor"].ToString().Trim());
+					               lector["nombresolicitante"].ToString().Trim(),lector["descripcion_proveedor"].ToString().Trim(),lector["observaciones_solicitud"].ToString().Trim(),lector["turno"].ToString().Trim());
 					               
 					linea_detalle1 = comienzo_linea;
 					linea_detalle1 += separacion_linea;
@@ -163,7 +165,7 @@ namespace osiris
 					               lector["nombre_completo"].ToString().Trim(),lector["fechanacpaciente"].ToString().Trim(),lector["edadpaciente"].ToString().Trim(),
 					               sexopaciente,diagnostico_movcargo,nombrecirugia_movcargo,lector["nombre_medico_tratante"].ToString().Trim(),
 					               lector["descripcion_cuarto"].ToString().Trim()+" "+lector["numero_cuarto"].ToString().Trim(),lector["id_quien_solicito"].ToString().Trim(),
-					               lector["nombresolicitante"].ToString().Trim(),lector["descripcion_proveedor"].ToString().Trim());
+					               lector["nombresolicitante"].ToString().Trim(),lector["descripcion_proveedor"].ToString().Trim(),lector["observaciones_solicitud"].ToString().Trim(),lector["turno"].ToString().Trim());
 					linea_detalle2 = comienzo_linea;
 					linea_detalle2 += separacion_linea;					
 					cr.MoveTo(07*escala_en_linux_windows,linea_detalle2*escala_en_linux_windows);		layout.SetText(lector["cantidad_solicitada"].ToString().Trim()+ " " +lector["id_producto"].ToString().Trim()+" "+lector["descripcion_producto"].ToString().Trim());					Pango.CairoHelper.ShowLayout (cr, layout);
@@ -187,7 +189,7 @@ namespace osiris
 		void imprime_cuerpo(Cairo.Context cr,Pango.Layout layout,string areaquiensolicita,string numerosolicitud,string fechasolicitud, 
 		                    string numerodeatencion, string numeroexpediente, string nombrepaciente, string fechanacimiento, string edadpaciente, 
 		                    string sexodelpaciente, string descripciondiagnostico, string nombredecirugia, string medicotratante, string numerohabitacion,
-		                    string quiensolicito, string nomsolicitante, string nombregabinete)
+		                    string quiensolicito, string nomsolicitante, string nombregabinete,string observacionsolicitud,string turnosolicitud)
 		{			
 			Pango.FontDescription desc = Pango.FontDescription.FromString ("Sans");									 
 			//cr.Rotate(90);  //Imprimir Orizontalmente rota la hoja cambian las posiciones de las lineas y columna					
@@ -226,6 +228,8 @@ namespace osiris
 			fontSize = 6.5;
 			desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;
 			layout.FontDescription.Weight = Weight.Bold;		// Letra negrita
+			cr.MoveTo(007*escala_en_linux_windows,(comienzo_linea+(separacion_linea*14))*escala_en_linux_windows);		layout.SetText("OBSERVACIONES:");							Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(007*escala_en_linux_windows,(comienzo_linea+(separacion_linea*15))*escala_en_linux_windows);		layout.SetText(observacionsolicitud);							Pango.CairoHelper.ShowLayout (cr, layout);
 			cr.MoveTo(405*escala_en_linux_windows,(comienzo_linea+(separacion_linea*19))*escala_en_linux_windows);		layout.SetText(nombrepaciente);							Pango.CairoHelper.ShowLayout (cr, layout);
 			cr.MoveTo(405*escala_en_linux_windows,(comienzo_linea+(separacion_linea*20))*escala_en_linux_windows);		layout.SetText("Edad: "+edadpaciente+" Años");				Pango.CairoHelper.ShowLayout (cr, layout);
 			if(medicotratante != ""){

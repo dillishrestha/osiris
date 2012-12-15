@@ -544,7 +544,7 @@ namespace osiris
 		
 		void on_button_pase_quirofano_clicked(object sender, EventArgs args)
 		{
-			new osiris.pases_a_quirofano(PidPaciente,folioservicio,idcentro_costo,LoginEmpleado,id_tipopaciente,idempresa_paciente,idaseguradora_paciente,false,"pase_qx_urg");
+			new osiris.pases_a_quirofano(PidPaciente,folioservicio,idcentro_costo,LoginEmpleado,id_tipopaciente,idempresa_paciente,idaseguradora_paciente,false,"pase_qx_urg",false,false);
 		}
 		
 		void on_button_venta_publico_clicked(object sender, EventArgs args)
@@ -3258,7 +3258,7 @@ namespace osiris
 				            	"osiris_his_paciente.direccion_paciente,osiris_his_paciente.numero_casa_paciente,osiris_his_paciente.numero_departamento_paciente, "+
 								"osiris_his_paciente.colonia_paciente,osiris_his_paciente.municipio_paciente,osiris_his_paciente.codigo_postal_paciente,osiris_his_paciente.estado_paciente,  "+
             					"descripcion_tipo_paciente,osiris_his_tipo_cirugias.descripcion_cirugia,"+
-            					"osiris_his_paciente.id_empresa AS idempresa,osiris_empresas.descripcion_empresa,osiris_empresas.lista_de_precio AS listadeprecio_empresa,"+   ///
+            					"osiris_erp_cobros_enca.id_empresa AS idempresa,osiris_empresas.descripcion_empresa,osiris_empresas.lista_de_precio AS listadeprecio_empresa,"+   ///
             					"descripcion_admisiones,osiris_his_tipo_especialidad.descripcion_especialidad,"+
 				            	"osiris_erp_cobros_enca.id_aseguradora,descripcion_aseguradora,osiris_aseguradoras.lista_de_precio AS listadeprecio_aseguradora,"+   ///
 				            	"osiris_erp_cobros_enca.id_medico,nombre_medico, "+
@@ -3355,7 +3355,7 @@ namespace osiris
 					entry_especialidad.Text = (string) lector["descripcion_especialidad"];
 					entry_tipo_paciente.Text = (string) lector["descripcion_tipo_paciente"];
 					
-					idempresa_paciente = (int) lector["idempresa"];
+					//idempresa_paciente = (int) lector["idempresa"];
 					
 					if((int) lector ["id_aseguradora"] > 1){
 						entry_aseguradora.Text = (string) lector["descripcion_aseguradora"];
@@ -4383,8 +4383,6 @@ namespace osiris
 			//Verificar que el paciente no este en alta
 			NpgsqlConnection conexion; 
 			conexion = new NpgsqlConnection (connectionString+nombrebd);
-			//conexion = new NpgsqlConnection (connectionString+"Database=hscmty");
-			
 			// Verifica que la base de datos este conectada
 			try{
 				conexion.Open ();

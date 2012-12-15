@@ -53,6 +53,7 @@ namespace osiris
 		[Widget] Gtk.TreeView treeview_lista_agenda = null;
 		[Widget] Gtk.CheckButton checkbutton_fecha_final = null;
 		[Widget] Gtk.CheckButton checkbutton_canceladas = null;
+		[Widget] Gtk.CheckButton checkbutton_reagendadas = null;
 		[Widget] Gtk.CheckButton checkbutton_px_no_asistieron = null;
 		
 		[Widget] Gtk.CheckButton checkbutton_filtro_paciente = null;
@@ -158,6 +159,10 @@ namespace osiris
 		[Widget] Gtk.ComboBox combobox_minutos_reagendar = null;
 		[Widget] Gtk.Calendar calendar_reagendar = null;
 		[Widget] Gtk.Button button_aplica_reagendar = null;
+		[Widget] Gtk.Entry entry_nrocita_a_reag = null;
+		[Widget] Gtk.Entry entry_observacion_reagendar = null;
+		[Widget] Gtk.Entry entry_id_doc_reagendar = null;
+		[Widget] Gtk.Entry entry_nombre_doc_reagendar = null;
 		
 		string LoginEmpleado;
 		string NomEmpleado;
@@ -172,6 +177,8 @@ namespace osiris
 		int id_tipointernamiento = 0;
 		string hora_cita_qx = "";
 		string minutos_cita_qx = "";
+		string hora_cita_reagendar = "";
+		string minutos_cita_reagendar = "";
 		string sexopaciente_cita = "H";
 		string estadocivil_cita = "";
 		string estadocivil_qx = "";
@@ -395,7 +402,8 @@ namespace osiris
 			                                         typeof(string),typeof(string),typeof(string),typeof(string),
 			                                         typeof(string),typeof(string),typeof(string),typeof(string),
 			                                         typeof(string),typeof(string),typeof(string),typeof(string),
-			                                         typeof(string),typeof(string),typeof(string),typeof(string),typeof(bool),typeof(bool));
+			                                         typeof(string),typeof(string),typeof(string),typeof(string),
+			                                         typeof(bool),typeof(bool),typeof(string));
 			treeview_lista_agenda.Model = treeViewEngineListaCitas;
 			treeview_lista_agenda.RulesHint = true;
 			treeview_lista_agenda.RowActivated += on_seleccion_paciente;
@@ -659,7 +667,7 @@ namespace osiris
 						llenado_combobox(0,"",combobox_estado_civil_cita,"array","","","",args_estado_civil,args_id_array);
 						llenado_combobox(0,"",combobox_tipo_paciente_cita,"sql","SELECT * FROM osiris_his_tipo_pacientes ORDER BY descripcion_tipo_paciente;","descripcion_tipo_paciente","id_tipo_paciente",args_args,args_id_array);
 						llenado_combobox(0,"",combobox_tipo_admision_cita,"sql","SELECT * FROM osiris_his_tipo_admisiones WHERE servicio_directo = 'false' AND grupo = 'MED' AND activo_admision = 'true' ORDER BY descripcion_admisiones;","descripcion_admisiones","id_tipo_admisiones",args_args,args_id_array);
-						llena_horas_citas();
+						llena_horas_citas("citas");
 					}else{
 						checkbutton_crea_cita.Active = false;
 					}			
@@ -685,7 +693,7 @@ namespace osiris
 			if(checkbutton_crea_citas_qx.Name.ToString() == "checkbutton_crea_citaqx"){
 				if(checkbutton_crea_citaqx.Active == true){ 
 					MessageDialog msgBox = new MessageDialog (MyWin,DialogFlags.Modal,
-							MessageType.Question,ButtonsType.YesNo,"¿ Esta seguro de querer crear una nueva PRGRAMACION DE CIRUGIA ?");
+							MessageType.Question,ButtonsType.YesNo,"¿ Esta seguro de querer crear una nueva PROGRAMACION DE CIRUGIA ?");
 					ResponseType miResultado = (ResponseType)
 					msgBox.Run ();				msgBox.Destroy();
 			 		if (miResultado == ResponseType.Yes){
@@ -761,61 +769,61 @@ namespace osiris
 			}
 		}
 		
-		void llena_horas_citas()
+		void llena_horas_citas(string tipollenado)
 		{
-			combobox_hora_cita.Clear();
-			CellRendererText cell2 = new CellRendererText();
-			combobox_hora_cita.PackStart(cell2, true);
-			combobox_hora_cita.AddAttribute(cell2,"text",0);
-	        
-			ListStore store2 = new ListStore( typeof (string), typeof (int));
-			combobox_hora_cita.Model = store2;
-			for(int i = (int) classpublic.horario_cita_inicio; i < (int)classpublic.horario_cita_termino+1 ; i++){				
-				store2.AppendValues ((string)i.ToString("00").Trim());
+			if(tipollenado == "citas"){
+				combobox_hora_cita.Clear();
+				CellRendererText cell2 = new CellRendererText();
+				combobox_hora_cita.PackStart(cell2, true);
+				combobox_hora_cita.AddAttribute(cell2,"text",0);
+		        
+				ListStore store2 = new ListStore( typeof (string), typeof (int));
+				combobox_hora_cita.Model = store2;
+				for(int i = (int) classpublic.horario_cita_inicio; i < (int)classpublic.horario_cita_termino+1 ; i++){				
+					store2.AppendValues ((string)i.ToString("00").Trim());
+				}
+				combobox_hora_cita.Changed += new EventHandler (onComboBoxChanged_hora_minutos_cita);
+				
+				combobox_minutos_cita.Clear();
+				CellRendererText cell3 = new CellRendererText();
+				combobox_minutos_cita.PackStart(cell3, true);
+				combobox_minutos_cita.AddAttribute(cell3,"text",0);
+		        
+				ListStore store3 = new ListStore( typeof (string), typeof (int));
+				combobox_minutos_cita.Model = store3;
+				
+				for(int i = (int) 0; i < 60 ; i=i+(int) classpublic.intervalo_minutos){				
+					store3.AppendValues ((string)i.ToString("00").Trim());
+				}
+				combobox_minutos_cita.Changed += new EventHandler (onComboBoxChanged_hora_minutos_cita);
 			}
-			combobox_hora_cita.Changed += new EventHandler (onComboBoxChanged_hora_minutos_cita);
-			
-			combobox_minutos_cita.Clear();
-			CellRendererText cell3 = new CellRendererText();
-			combobox_minutos_cita.PackStart(cell3, true);
-			combobox_minutos_cita.AddAttribute(cell3,"text",0);
-	        
-			ListStore store3 = new ListStore( typeof (string), typeof (int));
-			combobox_minutos_cita.Model = store3;
-			
-			for(int i = (int) 0; i < 60 ; i=i+(int) classpublic.intervalo_minutos){				
-				store3.AppendValues ((string)i.ToString("00").Trim());
+			if(tipollenado == "reagendar"){
+				combobox_hora_reagendar.Clear();
+				CellRendererText cell4 = new CellRendererText();
+				combobox_hora_reagendar.PackStart(cell4, true);
+				combobox_hora_reagendar.AddAttribute(cell4,"text",0);
+		        
+				ListStore store4 = new ListStore( typeof (string), typeof (int));
+				combobox_hora_reagendar.Model = store4;
+				for(int i = (int) classpublic.horario_cita_inicio; i < (int)classpublic.horario_cita_termino+1 ; i++){				
+					store4.AppendValues ((string)i.ToString("00").Trim());
+				}
+				combobox_hora_reagendar.Changed += new EventHandler (onComboBoxChanged_hora_minutos_cita);
+				
+				
+				combobox_minutos_reagendar.Clear();
+				CellRendererText cell5 = new CellRendererText();
+				combobox_minutos_reagendar.PackStart(cell5, true);
+				combobox_minutos_reagendar.AddAttribute(cell5,"text",0);
+		        
+				ListStore store5 = new ListStore( typeof (string), typeof (int));
+				combobox_minutos_reagendar.Model = store5;
+				
+				for(int i = (int) 0; i < 60 ; i=i+(int) classpublic.intervalo_minutos){				
+					store5.AppendValues ((string)i.ToString("00").Trim());
+				}
+				combobox_minutos_reagendar.Changed += new EventHandler (onComboBoxChanged_hora_minutos_cita);
 			}
-			combobox_minutos_cita.Changed += new EventHandler (onComboBoxChanged_hora_minutos_cita);
-			
-			
-			/*
-			combobox_hora_reagendar.Clear();
-			CellRendererText cell4 = new CellRendererText();
-			combobox_hora_reagendar.PackStart(cell4, true);
-			combobox_hora_reagendar.AddAttribute(cell4,"text",0);
-	        
-			ListStore store4 = new ListStore( typeof (string), typeof (int));
-			combobox_hora_reagendar.Model = store4;
-			for(int i = (int) classpublic.horario_cita_inicio; i < (int)classpublic.horario_cita_termino+1 ; i++){				
-				store4.AppendValues ((string)i.ToString("00").Trim());
-			}
-			combobox_hora_reagendar.Changed += new EventHandler (onComboBoxChanged_hora_minutos_cita);
-			
-			
-			combobox_minutos_reagendar.Clear();
-			CellRendererText cell5 = new CellRendererText();
-			combobox_minutos_reagendar.PackStart(cell5, true);
-			combobox_minutos_reagendar.AddAttribute(cell5,"text",0);
-	        
-			ListStore store5 = new ListStore( typeof (string), typeof (int));
-			combobox_minutos_reagendar.Model = store5;
-			
-			for(int i = (int) 0; i < 60 ; i=i+(int) classpublic.intervalo_minutos){				
-				store5.AppendValues ((string)i.ToString("00").Trim());
-			}
-			combobox_minutos_reagendar.Changed += new EventHandler (onComboBoxChanged_hora_minutos_cita);
-			*/
 		}
 		
 		void onComboBoxChanged_hora_minutos_cita(object sender, EventArgs args)
@@ -835,7 +843,14 @@ namespace osiris
 					//Console.WriteLine((string) hora_minutos_cita.Model.GetValue(iter,0));
 					minutos_cita_qx = (string) hora_minutos_cita.Model.GetValue(iter,0);
 				}
-				
+				if(hora_minutos_cita.Name.ToString() == "combobox_hora_reagendar"){				
+					//Console.WriteLine((string) hora_minutos_cita.Model.GetValue(iter,0));
+					hora_cita_reagendar = (string) hora_minutos_cita.Model.GetValue(iter,0);
+				}
+				if(hora_minutos_cita.Name.ToString() == "combobox_minutos_reagendar"){
+					//Console.WriteLine((string) hora_minutos_cita.Model.GetValue(iter,0));
+					minutos_cita_reagendar = (string) hora_minutos_cita.Model.GetValue(iter,0);
+				}
 			}
 		}
 		
@@ -1103,7 +1118,7 @@ namespace osiris
 				comando.CommandText = sql_calendario_citaqx+sql_fecha1+sql_fecha2+sql_doctor+sql_tipo_paciente+sql_tipo_admision+sql_especialidad+
 									sql_citas_canceladas+sql_paciente+" ORDER BY to_char(fecha_programacion,'yyyy-MM-dd'),hora_programacion ASC;";
 				
-				Console.WriteLine(comando.CommandText);
+				//Console.WriteLine(comando.CommandText);
 				NpgsqlDataReader lector = comando.ExecuteReader ();				
 				while (lector.Read()){					
 					// Verificando que los pacientes de la citas tengan su numero de atencion
@@ -1177,7 +1192,8 @@ namespace osiris
 								                                      (string) lector["fechahoracreacion"].ToString(),
 								                                      (string) lector["idsecuencia"].ToString().Trim(),
 								                                      (bool) lector["cancelacitaqx"],
-																	  asistio_a_consulta);
+																	  asistio_a_consulta,
+								                                      (string) lector["id_medico"].ToString().Trim());
 								col_agenda0.SetCellDataFunc(cellrt0, new Gtk.TreeCellDataFunc(cambia_colores_fila));
 								col_agenda1.SetCellDataFunc(cellrt1, new Gtk.TreeCellDataFunc(cambia_colores_fila));
 								col_agenda2.SetCellDataFunc(cellrt2, new Gtk.TreeCellDataFunc(cambia_colores_fila));
@@ -1244,7 +1260,8 @@ namespace osiris
 						                                      (string) lector["fechahoracreacion"].ToString(),
 						                                      (string) lector["idsecuencia"].ToString().Trim(),
 						                                      (bool) lector["cancelacitaqx"],
-															  asistio_a_consulta);
+															  asistio_a_consulta,
+						                                      (string) lector["id_medico"].ToString().Trim());
 						col_agenda0.SetCellDataFunc(cellrt0, new Gtk.TreeCellDataFunc(cambia_colores_fila));
 						col_agenda1.SetCellDataFunc(cellrt1, new Gtk.TreeCellDataFunc(cambia_colores_fila));
 						col_agenda2.SetCellDataFunc(cellrt2, new Gtk.TreeCellDataFunc(cambia_colores_fila));
@@ -1306,8 +1323,7 @@ namespace osiris
 						numerocita_qx = classpublic.lee_ultimonumero_registrado("osiris_his_calendario_citaqx","id_numero_citaqx","WHERE id_tipocita = '1' ");
 						entry_numero_citapaciente.Text = numerocita_qx.ToString().Trim();
 						NpgsqlConnection conexion; 
-						conexion = new NpgsqlConnection (connectionString+nombrebd );
-				
+						conexion = new NpgsqlConnection (connectionString+nombrebd );				
 						// Verifica que la base de datos este conectada
 						try{
 							conexion.Open ();
@@ -1368,7 +1384,6 @@ namespace osiris
 							//"cirugia,"+							
 							//"especialidad_cirugia,"+
 							//"tipo_anestecia,"+
-							//"id_cancelacion,"+
 							//"cancelado,"+							
 							//"id_tipocita,"+						
 							//"id_habitacion,"+
@@ -1401,7 +1416,7 @@ namespace osiris
 							entry_fecha_cita.Text+"','"+
 							hora_cita_qx+":"+minutos_cita_qx+						
 							"')";
-							Console.WriteLine(comando.CommandText);
+							//Console.WriteLine(comando.CommandText);
 							comando.ExecuteNonQuery();					comando.Dispose();
 							checkbutton_crea_cita.Active = false;
 							radiobutton_paciente_conexpe_cita.Active = true;
@@ -1427,7 +1442,7 @@ namespace osiris
 			bool response_validation = false;
 			if(id_tipointernamiento != 0 && id_tipopaciente != 0 && entry_id_especialidad_cita.Text.ToString().Trim() != "1"
 			   && entry_fecha_cita.Text != "" && hora_cita_qx != "" && minutos_cita_qx != ""){
-				if((bool) verifica_cita_doctor() == true){
+				if((bool) verifica_cita_doctor(hora_cita_qx,minutos_cita_qx,entry_fecha_cita.Text.Trim(),entry_id_doctor_cita.Text) == true){
 					response_validation = true;
 				}else{
 					MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
@@ -1446,7 +1461,7 @@ namespace osiris
 			return response_validation;
 		}
 		
-		bool verifica_cita_doctor()
+		bool verifica_cita_doctor(string horacita,string minutoscita,string fechacita,string iddoctor)
 		{
 			bool response_validation = true;
 			NpgsqlConnection conexion1; 
@@ -1456,11 +1471,11 @@ namespace osiris
 				conexion1.Open ();
 				NpgsqlCommand comando1; 
 				comando1 = conexion1.CreateCommand ();
-				comando1.CommandText = "SELECT * FROM osiris_his_calendario_citaqx WHERE fecha_programacion = '"+entry_fecha_cita.Text.ToString().Trim()+"' "+
-							"AND hora_programacion = '"+hora_cita_qx+":"+minutos_cita_qx+"' "+
-							"AND id_medico = '"+entry_id_doctor_cita.Text.ToString().Trim()+"' "+
+				comando1.CommandText = "SELECT * FROM osiris_his_calendario_citaqx WHERE fecha_programacion = '"+fechacita+"' "+
+							"AND hora_programacion = '"+horacita+":"+minutoscita+"' "+
+							"AND id_medico = '"+iddoctor+"' "+
 							"AND osiris_his_calendario_citaqx.cancelado = 'false';";				
-				Console.WriteLine(comando1.CommandText);
+				//Console.WriteLine(comando1.CommandText);
 				NpgsqlDataReader lector1 = comando1.ExecuteReader();				
 				if (lector1.Read()){
 					response_validation = false;
@@ -1588,9 +1603,8 @@ namespace osiris
 		{
 			TreeModel model;
 			TreeIter iterSelected;
-			if ( treeview_lista_agenda.Selection.GetSelected(out model, out iterSelected)){
-				
-				new osiris.pases_a_quirofano(0,int.Parse((string) model.GetValue(iterSelected, 2)),0,LoginEmpleado,0,0,0,false,"cita_a_paciente");
+			if ( treeview_lista_agenda.Selection.GetSelected(out model, out iterSelected)){				
+				new osiris.pases_a_quirofano(0,int.Parse((string) model.GetValue(iterSelected, 2)),0,LoginEmpleado,0,0,0,false,"cita_a_paciente",false,false);
 			}
 		}
 		
@@ -1696,17 +1710,207 @@ namespace osiris
 			button_salir.Clicked += new EventHandler(on_cierraventanas_clicked);
 			calendar_reagendar.DaySelected += new EventHandler (on_dayselected_clicked);
 			button_aplica_reagendar.Clicked += new EventHandler(on_button_aplica_reagendar_clicked);
-			llena_horas_citas();
+			llena_horas_citas("reagendar");
+			
+			TreeIter iter;
+ 			TreeModel model;
+ 			if (treeview_lista_agenda.Selection.GetSelected (out model, out iter)){
+				entry_nrocita_a_reag.Text = (string) treeview_lista_agenda.Model.GetValue(iter,2);
+				entry_nombre_doc_reagendar.Text = (string) treeview_lista_agenda.Model.GetValue(iter,11);
+				entry_id_doc_reagendar.Text = (string) treeview_lista_agenda.Model.GetValue(iter,22);
+			}
 		}
 		
 		void on_button_aplica_reagendar_clicked(object sender, EventArgs args)
 		{
 			MessageDialog msgBox = new MessageDialog (MyWin,DialogFlags.Modal,
-						MessageType.Question,ButtonsType.YesNo,"¿ Esta seguro de Rea-gendar la CITA ?");
+						MessageType.Question,ButtonsType.YesNo,"¿ Esta seguro de Reagendar la CITA ?");
 					ResponseType miResultado = (ResponseType)
 			msgBox.Run ();				msgBox.Destroy();
 	 		if (miResultado == ResponseType.Yes){
-				
+				if(entry_nrocita_a_reag.Text.ToString().Trim() != "" && entry_fecha_reagendar.Text != "" && hora_cita_reagendar != "" && minutos_cita_reagendar != ""){ 
+					if((bool) verifica_cita_doctor(hora_cita_reagendar,minutos_cita_reagendar,entry_fecha_reagendar.Text.Trim(),entry_id_doc_reagendar.Text.ToString().Trim()) == true){
+						string numerocita_qx = classpublic.lee_ultimonumero_registrado("osiris_his_calendario_citaqx","id_numero_citaqx","WHERE id_tipocita = '1' ");
+						NpgsqlConnection conexion; 
+						conexion = new NpgsqlConnection (connectionString+nombrebd );
+						// Verifica que la base de datos este conectada
+						try{
+							conexion.Open ();
+							NpgsqlCommand comando; 
+							comando = conexion.CreateCommand ();
+							
+							comando.CommandText = "UPDATE osiris_his_calendario_citaqx "+
+												"SET cancelado = 'true', " +
+												"reagendado = 'true', "+
+												"fechahora_cancelacion = '"+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"', "+
+												"id_quien_cancelo = '"+LoginEmpleado+"', "+		
+												"motivo_cancelacion_citaqx = 'REAGENDACION' "+
+						 						"WHERE id_secuencia =  '"+entry_nrocita_a_reag.Text.ToString().Trim()+"' " +
+						 						"AND cancelado = 'false';";
+							
+							comando.ExecuteNonQuery();       			comando.Dispose();
+							//Console.WriteLine(comando.CommandText);
+							
+							
+							comando.CommandText = "INSERT INTO osiris_his_calendario_citaqx(pid_paciente," +
+								"folio_de_servicio," +
+								"fechahora_creacion," +
+								"id_cirujano," +
+								"id_neonatologo," +
+								"id_ayudante," +
+								"id_anestesiologo," +
+								"id_circulante1," +
+								"id_circulante2," +
+								"id_internista," +
+								"id_tipo_cirugia," +
+								"id_diagnostico," +
+								"observaciones," +
+								"instrumentacion_especial," +
+								"inicio_cirugia," +
+								"termino_cirugia," +
+								"entrada_sala," +
+								"salida_sala," +
+								"cirujano," +
+								"neonatologo," +
+								"ayudante," +
+								"anestesiologo," +
+								"circulante1," +
+								"circulante2," +
+								"internista," +
+								"id_presupuesto," +
+								"id_medico," +
+								"fecha_programacion," +
+								"hora_programacion," +
+								"aseguradora," +
+								"diagnostico," +
+								"cirugia," +
+								"nombre_medico," +
+								"descripcion_especialidad," +
+								"especialidad_cirugia," +
+								"tipo_anestecia," +
+								"cancelado," +
+								"referido_por," +
+								"motivo_consulta," +
+								"id_tipocita," +
+								"nombre_paciente," +
+								"sexo_paciente," +
+								"estado_civil_paciente," +
+								"email_paciente," +
+								"celular1_paciente," +
+								"id_habitacion," +
+								"id_habitacion1," +
+								"descripcion_qx_utilizado," +
+								"id_numero_citaqx," +
+								"id_secuencia," +
+								"fecha_nacimiento_paciente," +
+								"id_tipo_paciente," +
+								"id_tipo_admisiones," +
+								"id_aseguradora," +
+								"id_empresa," +
+								"id_especialidad," +
+								"telefono_paciente," +
+								"id_quiencreo_cita," +
+								"motivo_cancelacion_citaqx," +
+								"fechahora_cancelacion," +
+								"id_quien_cancelo," +
+								"reagendado," +
+								"fechahora_reagendado," +
+								"id_quien_reagendado) " +
+											"SELECT " +
+								"pid_paciente," +
+								"folio_de_servicio," +
+								"'"+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"',"+
+								"id_cirujano," +
+								"id_neonatologo," +
+								"id_ayudante," +
+								"id_anestesiologo," +
+								"id_circulante1," +
+								"id_circulante2," +
+								"id_internista," +
+								"id_tipo_cirugia," +
+								"id_diagnostico," +
+								"'"+(string) entry_observacion_reagendar.Text.ToString().Trim().ToUpper()+"'," +
+								"instrumentacion_especial," +
+								"inicio_cirugia," +
+								"termino_cirugia," +
+								"entrada_sala," +
+								"salida_sala," +
+								"cirujano," +
+								"neonatologo," +
+								"ayudante," +
+								"anestesiologo," +
+								"circulante1," +
+								"circulante2," +
+								"internista," +
+								"id_presupuesto," +
+								"id_medico," +
+								"'"+(string) entry_fecha_reagendar.Text.ToString().Trim()+"'," +
+								"'"+hora_cita_reagendar+":"+ minutos_cita_reagendar+"'," +
+								"aseguradora," +
+								"diagnostico," +
+								"cirugia," +
+								"nombre_medico," +
+								"descripcion_especialidad," +
+								"especialidad_cirugia," +
+								"tipo_anestecia," +
+								"'false'," +
+								"referido_por," +
+								"motivo_consulta || ' REAGENDACION'," +
+								"id_tipocita," +
+								"nombre_paciente," +
+								"sexo_paciente," +
+								"estado_civil_paciente," +
+								"email_paciente," +
+								"celular1_paciente," +
+								"id_habitacion," +
+								"id_habitacion1," +
+								"descripcion_qx_utilizado," +
+								"'"+numerocita_qx+"'," +
+								"NEXTVAL('osiris_his_calendario_citaqx_id_secuencia_seq')," +
+								"fecha_nacimiento_paciente," +
+								"id_tipo_paciente," +
+								"id_tipo_admisiones," +
+								"id_aseguradora," +
+								"id_empresa," +
+								"id_especialidad," +
+								"telefono_paciente," +
+								"id_quiencreo_cita," +
+								"'REAGENDACION'," +
+								"fechahora_cancelacion," +
+								"id_quien_cancelo," +
+								"'false'," +
+								"'"+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"', "+
+								"'"+LoginEmpleado+"' " +
+								"FROM osiris_his_calendario_citaqx "+
+								"WHERE id_secuencia = '"+entry_nrocita_a_reag.Text+"'";
+								
+							//Console.WriteLine(comando.CommandText);
+							comando.ExecuteNonQuery();					comando.Dispose();
+							reangendar_cita.Destroy();
+							TreeIter iter;
+ 							TreeModel model;
+ 							if (treeview_lista_agenda.Selection.GetSelected (out model, out iter)){
+								treeViewEngineListaCitas.Remove (ref iter);
+							}
+
+						}catch (NpgsqlException ex){
+				   					MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+													MessageType.Error, ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
+									msgBoxError.Run ();				msgBoxError.Destroy();					
+						}
+						conexion.Close ();					
+					}else{
+						MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+										MessageType.Info,ButtonsType.Close, 
+										"El Doctor ya tiene un Paciente CITADO, Verifique...");
+						msgBoxError.Run ();				msgBoxError.Destroy();
+					}
+				}else{
+					MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+										MessageType.Info,ButtonsType.Close, 
+										"No esta completa la informacion (nro. cita, fecha u horas), Verifique...");
+					msgBoxError.Run ();				msgBoxError.Destroy();
+				}
 			}
 		}
 		

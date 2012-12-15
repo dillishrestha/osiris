@@ -559,7 +559,7 @@ namespace osiris
 		
 		void on_button_pase_de_ingreso_clicked(object sender, EventArgs args)
 		{
-			new osiris.pases_a_quirofano(PidPaciente,folioservicio,idtipointernamiento,LoginEmpleado,id_tipopaciente,idempresa_paciente,idaseguradora_paciente,false,"pase_de_ingreso");
+			new osiris.pases_a_quirofano(PidPaciente,folioservicio,idtipointernamiento,LoginEmpleado,id_tipopaciente,idempresa_paciente,idaseguradora_paciente,false,"pase_de_ingreso",false,false);
 		}
 		
 		void on_combobox_tipo_anestecia_clicked(object sender, EventArgs args)

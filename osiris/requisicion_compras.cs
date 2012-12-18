@@ -66,6 +66,7 @@ namespace osiris
 		[Widget] Gtk.Button button_envio_compras;
 		[Widget] Gtk.Button button_enviopara_autorizar;
 		[Widget] Gtk.Button button_autorizar_compra;
+		[Widget] Gtk.Button button_no_autoriza_prod = null;
 		[Widget] Gtk.Button button_busca_proveedores1;
 		[Widget] Gtk.Button button_busca_proveedores2;
 		[Widget] Gtk.Button button_busca_proveedores3;
@@ -281,6 +282,8 @@ namespace osiris
 			button_enviopara_autorizar.Clicked += new EventHandler(on_button_enviopara_autorizar_clicked);
 			// Autorizar productos para poder comprar
 			button_autorizar_compra.Clicked += new EventHandler(on_button_autorizar_compra_clicked);
+			// No autoriza productos
+			button_no_autoriza_prod.Clicked += new EventHandler(on_button_no_autoriza_prod_clicked);
 			// Busca proveedores
 			button_busca_proveedores1.Clicked += new EventHandler(on_button_busca_proveedores1_clicked);
 			button_busca_proveedores2.Clicked += new EventHandler(on_button_busca_proveedores2_clicked);
@@ -1051,6 +1054,34 @@ namespace osiris
 		 		conexion.Close();	
 		 	}
  		}
+		
+		void on_button_no_autoriza_prod_clicked(object sender, EventArgs args)
+ 		{
+			MessageDialog msgBox = new MessageDialog (MyWin,DialogFlags.Modal,
+									MessageType.Question,ButtonsType.YesNo,"¿  Esta seguro de NO auorizar este producto para su compra? ");
+			ResponseType miResultado = (ResponseType)msgBox.Run ();
+			msgBox.Destroy();
+		 	if (miResultado == ResponseType.Yes){
+		 		NpgsqlConnection conexion;
+				conexion = new NpgsqlConnection (connectionString+nombrebd);
+				try{
+					conexion.Open ();
+					NpgsqlCommand comando; 
+					comando = conexion.CreateCommand ();
+					comando.CommandText = "";																	
+					//Console.WriteLine(comando.CommandText);
+					//entry_status_requisicion.Text = "ENVIADA A COMPRAS "+DateTime.Now.ToString("dd-MM-yyyy");	
+					comando.ExecuteNonQuery();					comando.Dispose();
+										
+				}catch (NpgsqlException ex){
+					MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+									MessageType.Error, 
+									ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
+					msgBoxError.Run ();						msgBoxError.Destroy();
+				}
+		 		conexion.Close();	
+		 	}
+ 		}
  		
 		void on_button_selecciona_requisicion_clicked(object sender, EventArgs args)
 		{
@@ -1215,7 +1246,8 @@ namespace osiris
 										"FROM osiris_erp_requisicion_deta,osiris_productos,osiris_erp_proveedores "+
 										"WHERE osiris_erp_requisicion_deta.id_producto = osiris_productos.id_producto "+
 										"AND osiris_erp_requisicion_deta.id_proveedor1 = osiris_erp_proveedores.id_proveedor "+
-										"AND eliminado = 'false' "+
+										"AND eliminado = 'false' " +
+										"AND no_autorizada = 'false' "+
 										"AND id_requisicion = '"+this.entry_requisicion.Text.Trim()+"' ";
 							
 						//Console.WriteLine(comando.CommandText);
@@ -1923,7 +1955,10 @@ namespace osiris
 													typeof(string),		// id proveedor 2 requisicion					24
 													typeof(string),		// id proveedor 3 requisicion					25
 													typeof(string),		// Porcentage de ganancia						26
-													typeof(bool));		// indica si actualizo algun proveedor antes de enviar a compras 	27
+													typeof(bool),		// indica si actualizo algun proveedor antes de enviar a compras 	27
+			                                        typeof(bool),		// indica si el producto no fue autorizado para su compra 28
+			                                        typeof(string),		// 29
+			                                        typeof(string));	// 30
 												
 			lista_requisicion_productos.Model = treeViewEngineRequisicion;
 			
@@ -2079,6 +2114,15 @@ namespace osiris
 			col_proveedor3.AddAttribute (cellr20, "text", 20);
 			col_proveedor3.SortColumnId = (int) col_requisicion.col_proveedor3;
 			
+			TreeViewColumn col_no_autorizar = new TreeViewColumn();
+			CellRendererToggle cel_no_autorizar = new CellRendererToggle();
+			col_no_autorizar.Title = "No Autorizar";
+			col_no_autorizar.PackStart(cel_no_autorizar, true);
+			col_no_autorizar.AddAttribute (cel_no_autorizar, "active", 28);
+			//cel_no_autorizar.Activatable = true;
+			//cel_no_autorizar.Toggled += selecciona_fila;
+			//col_no_autorizar.SortColumnId = (int) col_requisicion.col_no_autorizar;
+			
 			//TreeViewColumn col_prueba = new TreeViewColumn();
 			//CellRendererCombo cellr14 = new CellRendererCombo();
 			//col_prueba.Title = "Fec.Autorizacion"; // titulo de la cabecera de la columna, si está visible
@@ -2102,6 +2146,7 @@ namespace osiris
 			lista_requisicion_productos.AppendColumn(col_autorizar);			// 11
 			lista_requisicion_productos.AppendColumn(col_autorizado);			// 12
 			lista_requisicion_productos.AppendColumn(col_fecha_autorizacion);	// 13
+			lista_requisicion_productos.AppendColumn(col_no_autorizar);			// 28
 			// almacena el numero de la secuencia								// 14
 			lista_requisicion_productos.AppendColumn(col_stock_subalmacenes);	// 15
 			lista_requisicion_productos.AppendColumn(col_stock_almageneral);	// 16
@@ -2180,6 +2225,7 @@ namespace osiris
 			col_autorizar,
 			col_autorizado,
 			col_fecha_autorizacion,
+			//col_no_autorizado,
 			col_stock_subalmacenes,
 			col_stock_almageneral,
 			col_total_stock,

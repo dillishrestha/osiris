@@ -227,7 +227,11 @@ namespace osiris
 			cr.MoveTo(660*escala_en_linux_windows, 152*escala_en_linux_windows);			layout.SetText("IVA");					Pango.CairoHelper.ShowLayout (cr, layout);
 			cr.MoveTo(710*escala_en_linux_windows, 152*escala_en_linux_windows);			layout.SetText("TOTAL");					Pango.CairoHelper.ShowLayout (cr, layout);
 			//cr.MoveTo(600*escala_en_linux_windows, 152*escala_en_linux_windows);			layout.SetText("1000.00");					Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(05*escala_en_linux_windows, 590*escala_en_linux_windows);			layout.SetText("CALIDAD: El comprador tendra el derecho de inspeccionar antes de aceptar la mercancia.");					Pango.CairoHelper.ShowLayout (cr, layout);	
+			cr.MoveTo(05*escala_en_linux_windows, 605*escala_en_linux_windows);			layout.SetText("PRECIO: El Proveedor facturará a precios y terminos de la Orden de Compra");					Pango.CairoHelper.ShowLayout (cr, layout);	
 			
+			
+
 			cr.MoveTo(55*escala_en_linux_windows, 545*escala_en_linux_windows);			layout.SetText("Firma Autorizado");					Pango.CairoHelper.ShowLayout (cr, layout);	
 			
 			cr.MoveTo(05*escala_en_linux_windows, 60*escala_en_linux_windows);

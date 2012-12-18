@@ -211,7 +211,7 @@ namespace osiris
 			 												(string) lista_productos_a_comprar.Model.GetValue(iterSelected,21).ToString().Trim()+"','"+
 			 													 												
 			 												//this.ultimaorden.ToString()+
-															int.Parse(classpublic.lee_ultimonumero_registrado("osiris_erp_ordenes_compras_enca","numero_orden_compra","")).ToString()+	
+															int.Parse(classpublic.lee_ultimonumero_registrado("osiris_erp_ordenes_compras_enca","numero_orden_compra","")).ToString().Trim()+	
 			 												"');";
 									//Console.WriteLine(comando.CommandText);							
 									comando.ExecuteNonQuery(); 	    comando.Dispose();
@@ -503,8 +503,8 @@ namespace osiris
 							lista_productos_a_comprar.Model.SetValue(iter,12,(string) entry_nombre_proveedor.Text);		// Nombre Proveedor
 							lista_productos_a_comprar.Model.SetValue(iter,15,(string) entry_id_proveedor.Text);			// Id Proveedor							
 							lista_productos_a_comprar.Model.SetValue(iter,16,(string) lector["direccion_proveedor"]);					
-							lista_productos_a_comprar.Model.SetValue(iter,17,(string) lector["telefono1_proveedor"]);		
-							lista_productos_a_comprar.Model.SetValue(iter,18,(string) lector["contacto1_proveedor"]);	
+							//lista_productos_a_comprar.Model.SetValue(iter,17,(string) lector["telefono1_proveedor"]);		
+							//lista_productos_a_comprar.Model.SetValue(iter,18,(string) lector["contacto1_proveedor"]);	
 							lista_productos_a_comprar.Model.SetValue(iter,19,(string) lector["mail_proveedor"]);	
 							lista_productos_a_comprar.Model.SetValue(iter,20,(string) lector["rfc_proveedor"]);	
 							lista_productos_a_comprar.Model.SetValue(iter,21,(string) lector["fax_proveedor"]);
@@ -542,8 +542,8 @@ namespace osiris
 								lista_productos_a_comprar.Model.SetValue(iter,12,(string) entry_nombre_proveedor.Text);		// actualiza treeview con el nombre del proveedor
 								lista_productos_a_comprar.Model.SetValue(iter,15,(string) entry_id_proveedor.Text);  			// almacena el id del proveedor							
 								lista_productos_a_comprar.Model.SetValue(iter,16,(string) lector["direccion_proveedor"]);					
-								lista_productos_a_comprar.Model.SetValue(iter,17,(string) lector["telefono1_proveedor"]);		
-								lista_productos_a_comprar.Model.SetValue(iter,18,(string) lector["contacto1_proveedor"]);	
+								//lista_productos_a_comprar.Model.SetValue(iter,17,(string) lector["telefono1_proveedor"]);		
+								//lista_productos_a_comprar.Model.SetValue(iter,18,(string) lector["contacto1_proveedor"]);	
 								lista_productos_a_comprar.Model.SetValue(iter,19,(string) lector["mail_proveedor"]);	
 								lista_productos_a_comprar.Model.SetValue(iter,20,(string) lector["rfc_proveedor"]);	
 								lista_productos_a_comprar.Model.SetValue(iter,21,(string) lector["fax_proveedor"]);	
@@ -581,72 +581,74 @@ namespace osiris
 		void llena_requiciones_para_comprar(string departamentos_seleccionados)
 		{
 			treeViewEngineProductosaComprar.Clear();
-			// lleno de la tabla de his_tipo_de_admisiones
-			NpgsqlConnection conexion; 
-			conexion = new NpgsqlConnection (connectionString+nombrebd);
-			// Verifica que la base de datos este conectada
-			try{
-				conexion.Open ();
-				NpgsqlCommand comando; 
-				comando = conexion.CreateCommand ();
-               	comando.CommandText = "SELECT to_char(osiris_erp_requisicion_deta.id_secuencia,'9999999999') AS idsecuencia,id_requisicion,to_char(osiris_erp_requisicion_deta.id_producto,'999999999999') AS idproducto,"+
-							"to_char(cantidad_solicitada,'999999.99') AS cantidadsolicitada,comprado,"+
-							"to_char(id_requisicion,'9999999999') AS idrequisicion,"+
-							"osiris_productos.descripcion_producto,to_char(osiris_productos.cantidad_de_embalaje,'9999.99') AS cantidadembalaje,"+
-							"osiris_productos.tipo_unidad_producto,to_char(numero_orden_compra,'9999999999') AS numeroordencompra," +
-							"to_char(fechahora_requisado,'yyyy-MM-dd') AS fechahorarequisados,"+
-							"autorizada,to_char(fechahora_autorizado,'yyyy-MM-dd') AS fechahoraautorizado,"+
-							"to_char(fechahora_compra,'yyyy-MM-dd') AS fechahoracompra,"+
-							"to_char(osiris_productos.costo_por_unidad,'99999999.99') AS costoporunidad,"+
-							"to_char(osiris_productos.costo_producto,'99999999.99') AS costoproducto,"+
-							"to_char(osiris_productos.cantidad_de_embalaje,'9999999.99') AS cantidaddeembalaje,"+
-							"to_char(osiris_erp_requisicion_deta.id_proveedor,'9999999999') AS idproveedor,descripcion_proveedor,"+
-							"osiris_erp_requisicion_deta.id_tipo_admisiones,descripcion_admisiones "+
-							"FROM osiris_erp_requisicion_deta,osiris_productos,osiris_his_tipo_admisiones,osiris_erp_proveedores "+
-							"WHERE osiris_erp_requisicion_deta.id_producto = osiris_productos.id_producto "+
-							"AND osiris_his_tipo_admisiones.id_tipo_admisiones = osiris_erp_requisicion_deta.id_tipo_admisiones "+
-							"AND osiris_erp_requisicion_deta.id_proveedor = osiris_erp_proveedores.id_proveedor "+
-							departamentos_seleccionados+"') "+
-							"AND autorizada = 'true' "+
-							"AND eliminado = 'false' "+
-						    "AND comprado = 'false' "+
-							"ORDER BY id_requisicion DESC;";
-				Console.WriteLine(comando.CommandText.ToString());
-				NpgsqlDataReader lector = comando.ExecuteReader ();
-               	while (lector.Read()){
-					this.treeViewEngineProductosaComprar.AppendValues(false,
-											(string) lector["descripcion_admisiones"],
-											(string) lector["idrequisicion"],
-											(string) lector["cantidadsolicitada"],
-											(string) lector["descripcion_producto"],
-											(string) lector["tipo_unidad_producto"],
-											(string) lector["idproducto"],
-											(string) lector["costoporunidad"],
-											(string) lector["costoproducto"],
-											(string) lector["cantidaddeembalaje"],
-											"",
-											"",
-											(string) lector["descripcion_proveedor"],
-											"",
-											"",
-											(string) lector["idproveedor"],
-											(string) lector["idsecuencia"],
-					                        (string) lector["fechahorarequisados"],
-					                        (string) lector["fechahoraautorizado"]);
-					//this.col_autorizar.SetCellDataFunc(cel_autorizar, new Gtk.TreeCellDataFunc(cambia_colores_fila));
-					col_solicitado_por.SetCellDataFunc(cellr1, new Gtk.TreeCellDataFunc(cambia_colores_fila));
-					col_numero_req.SetCellDataFunc(cellr2, new Gtk.TreeCellDataFunc(cambia_colores_fila));
-					col_cantidadcomprar.SetCellDataFunc(cellr3, new Gtk.TreeCellDataFunc(cambia_colores_fila));
-					col_descripcion.SetCellDataFunc(cellr4, new Gtk.TreeCellDataFunc(cambia_colores_fila));
-					col_unidades.SetCellDataFunc(cellr5, new Gtk.TreeCellDataFunc(cambia_colores_fila));
-					col_codigo_prod.SetCellDataFunc(cellr6, new Gtk.TreeCellDataFunc(cambia_colores_fila));
+			if(departamentos_seleccionados != ""){
+				// lleno de la tabla de his_tipo_de_admisiones
+				NpgsqlConnection conexion; 
+				conexion = new NpgsqlConnection (connectionString+nombrebd);
+				// Verifica que la base de datos este conectada
+				try{
+					conexion.Open ();
+					NpgsqlCommand comando; 
+					comando = conexion.CreateCommand ();
+	               	comando.CommandText = "SELECT to_char(osiris_erp_requisicion_deta.id_secuencia,'9999999999') AS idsecuencia,id_requisicion,to_char(osiris_erp_requisicion_deta.id_producto,'999999999999') AS idproducto,"+
+								"to_char(cantidad_solicitada,'999999.99') AS cantidadsolicitada,comprado,"+
+								"to_char(id_requisicion,'9999999999') AS idrequisicion,"+
+								"osiris_productos.descripcion_producto,to_char(osiris_productos.cantidad_de_embalaje,'9999.99') AS cantidadembalaje,"+
+								"osiris_productos.tipo_unidad_producto,to_char(numero_orden_compra,'9999999999') AS numeroordencompra," +
+								"to_char(fechahora_requisado,'yyyy-MM-dd') AS fechahorarequisados,"+
+								"autorizada,to_char(fechahora_autorizado,'yyyy-MM-dd') AS fechahoraautorizado,"+
+								"to_char(fechahora_compra,'yyyy-MM-dd') AS fechahoracompra,"+
+								"to_char(osiris_productos.costo_por_unidad,'99999999.99') AS costoporunidad,"+
+								"to_char(osiris_productos.costo_producto,'99999999.99') AS costoproducto,"+
+								"to_char(osiris_productos.cantidad_de_embalaje,'9999999.99') AS cantidaddeembalaje,"+
+								"to_char(osiris_erp_requisicion_deta.id_proveedor,'9999999999') AS idproveedor,descripcion_proveedor,"+
+								"osiris_erp_requisicion_deta.id_tipo_admisiones,descripcion_admisiones "+
+								"FROM osiris_erp_requisicion_deta,osiris_productos,osiris_his_tipo_admisiones,osiris_erp_proveedores "+
+								"WHERE osiris_erp_requisicion_deta.id_producto = osiris_productos.id_producto "+
+								"AND osiris_his_tipo_admisiones.id_tipo_admisiones = osiris_erp_requisicion_deta.id_tipo_admisiones "+
+								"AND osiris_erp_requisicion_deta.id_proveedor = osiris_erp_proveedores.id_proveedor "+
+								"AND osiris_erp_requisicion_deta.id_tipo_admisiones IN('"+departamentos_seleccionados+"') "+
+								"AND autorizada = 'true' "+
+								"AND eliminado = 'false' "+
+							    "AND comprado = 'false' "+
+								"ORDER BY id_requisicion DESC;";
+					Console.WriteLine(comando.CommandText.ToString());
+					NpgsqlDataReader lector = comando.ExecuteReader ();
+	               	while (lector.Read()){
+						treeViewEngineProductosaComprar.AppendValues(false,
+												(string) lector["descripcion_admisiones"],
+												(string) lector["idrequisicion"],
+												(string) lector["cantidadsolicitada"],
+												(string) lector["descripcion_producto"],
+												(string) lector["tipo_unidad_producto"],
+												(string) lector["idproducto"],
+												(string) lector["costoporunidad"],
+												(string) lector["costoproducto"],
+												(string) lector["cantidaddeembalaje"],
+												"",
+												"",
+												(string) lector["descripcion_proveedor"],
+												"",
+												"",
+												(string) lector["idproveedor"],
+												(string) lector["idsecuencia"],
+						                        (string) lector["fechahorarequisados"],
+						                        (string) lector["fechahoraautorizado"]);
+						//this.col_autorizar.SetCellDataFunc(cel_autorizar, new Gtk.TreeCellDataFunc(cambia_colores_fila));
+						col_solicitado_por.SetCellDataFunc(cellr1, new Gtk.TreeCellDataFunc(cambia_colores_fila));
+						col_numero_req.SetCellDataFunc(cellr2, new Gtk.TreeCellDataFunc(cambia_colores_fila));
+						col_cantidadcomprar.SetCellDataFunc(cellr3, new Gtk.TreeCellDataFunc(cambia_colores_fila));
+						col_descripcion.SetCellDataFunc(cellr4, new Gtk.TreeCellDataFunc(cambia_colores_fila));
+						col_unidades.SetCellDataFunc(cellr5, new Gtk.TreeCellDataFunc(cambia_colores_fila));
+						col_codigo_prod.SetCellDataFunc(cellr6, new Gtk.TreeCellDataFunc(cambia_colores_fila));
+					}
+				}catch (NpgsqlException ex){
+					MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+											MessageType.Error,ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
+					msgBoxError.Run ();				msgBoxError.Destroy();
 				}
-			}catch (NpgsqlException ex){
-				MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
-										MessageType.Error,ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
-				msgBoxError.Run ();				msgBoxError.Destroy();
+				conexion.Close ();
 			}
-			conexion.Close ();
 		}
 		
 		void llenado_treeview_departamentos()
@@ -697,8 +699,8 @@ namespace osiris
 													typeof(string),
 													typeof(string),	// 15 id proveedor
 													typeof(string),	// 16 secuencia	
-													typeof(string),	// fecha requisado
-													typeof(string),	// fecha autorizado
+													typeof(string),	// 17 fecha requisado
+													typeof(string),	// 18 fecha autorizado
 													typeof(string),
 													typeof(string),
 													typeof(string));							
@@ -837,15 +839,15 @@ namespace osiris
 			lista_productos_a_comprar.AppendColumn(col_autorizar);				// 0
 			lista_productos_a_comprar.AppendColumn(col_solicitado_por);			// 1
 			lista_productos_a_comprar.AppendColumn(col_numero_req);				// 2
-			lista_productos_a_comprar.AppendColumn(col_fecharequisado);
-			lista_productos_a_comprar.AppendColumn(col_fechaautorizado);
+			lista_productos_a_comprar.AppendColumn(col_fecharequisado);			// 17
+			lista_productos_a_comprar.AppendColumn(col_fechaautorizado);		// 18
 			lista_productos_a_comprar.AppendColumn(col_cantidadcomprar);		// 3
-			lista_productos_a_comprar.AppendColumn(col_embalaje);
+			lista_productos_a_comprar.AppendColumn(col_embalaje);				// 9
 			lista_productos_a_comprar.AppendColumn(col_descripcion);			// 4
 			lista_productos_a_comprar.AppendColumn(col_unidades);				// 5
 			lista_productos_a_comprar.AppendColumn(col_codigo_prod);			// 6
 			lista_productos_a_comprar.AppendColumn(col_precio_unit_hsc);		// 7
-			lista_productos_a_comprar.AppendColumn(col_precio_prod_hsc);		// 9			
+			lista_productos_a_comprar.AppendColumn(col_precio_prod_hsc);		// 8
 			lista_productos_a_comprar.AppendColumn(col_precioprove);			// 10
 			lista_productos_a_comprar.AppendColumn(col_preciouniprov);			// 11			
 			lista_productos_a_comprar.AppendColumn(col_descrprove);				// 12
@@ -1010,7 +1012,7 @@ namespace osiris
 		void selecciona_departamento(object sender, ToggledArgs args)
 		{
 			int variable_paso_02_1 = 0;
-			departamentos_seleccionados = "AND osiris_erp_requisicion_deta.id_tipo_admisiones IN('";
+			departamentos_seleccionados = "";
 			TreeIter iter;
 			TreePath path = new TreePath (args.Path);	
 			if (treeview_lista_departamentos.Model.GetIter (out iter, path)){					

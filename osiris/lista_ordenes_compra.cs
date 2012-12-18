@@ -111,11 +111,18 @@ namespace osiris
 				conexion.Open ();
 				NpgsqlCommand comando; 
 				comando = conexion.CreateCommand ();
-				comando.CommandText = "SELECT * FROM osiris_erp_ordenes_compras_enca;";
+				comando.CommandText = "SELECT numero_orden_compra,osiris_erp_ordenes_compras_enca.id_proveedor,osiris_erp_ordenes_compras_enca.descripcion_proveedor," +
+					"to_char(fechahora_creacion,'yyyy-MM-dd') AS fechahoracreacion "+
+					"FROM osiris_erp_ordenes_compras_enca,osiris_erp_proveedores " +
+					"WHERE osiris_erp_ordenes_compras_enca.id_proveedor = osiris_erp_proveedores.id_proveedor;";
 				//Console.WriteLine(comando.CommandText);
 				NpgsqlDataReader lector = comando.ExecuteReader ();
 				while (lector.Read()){
-					treeViewEngineordendecompra.AppendValues(false,lector["numero_orden_compra"].ToString().Trim());
+					treeViewEngineordendecompra.AppendValues(false,
+					                                         lector["numero_orden_compra"].ToString().Trim(),
+					                                         lector["fechahoracreacion"].ToString(),
+					                                          lector["id_proveedor"].ToString().Trim(),
+					                                         lector["descripcion_proveedor"].ToString().Trim());
 				}
 			}catch (NpgsqlException ex){
 	   			MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,

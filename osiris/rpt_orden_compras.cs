@@ -54,7 +54,7 @@ namespace osiris
     	string NomEmpleado;
     	string AppEmpleado;
     	string ApmEmpleado;
-		int num_ordencopmpra;
+		string query_general = "";
 		
 		string titulo = "ORDEN DE COMPRAS ";
 		
@@ -64,12 +64,30 @@ namespace osiris
 		class_conexion conexion_a_DB = new class_conexion();
 		class_public classpublic = new class_public();
 		
-		public rpt_orden_compras(int num_ordencopmpra_)
+		public rpt_orden_compras(string query_ordenescompra,string query_fechas)
 		{
 			connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
 			nombrebd = conexion_a_DB._nombrebd;
 			escala_en_linux_windows = classpublic.escala_linux_windows;
-			num_ordencopmpra = num_ordencopmpra_;
+					
+			query_general = "SELECT osiris_erp_ordenes_compras_enca.numero_orden_compra,osiris_erp_ordenes_compras_enca.id_proveedor,osiris_erp_ordenes_compras_enca.descripcion_proveedor," +
+							"osiris_erp_ordenes_compras_enca.direccion_proveedor, " +
+							"osiris_erp_ordenes_compras_enca.rfc_proveedor,osiris_erp_ordenes_compras_enca.telefonos_proveedor,osiris_erp_ordenes_compras_enca.fecha_de_entrega," +
+							"osiris_erp_ordenes_compras_enca.lugar_de_entrega,osiris_erp_ordenes_compras_enca.condiciones_de_pago,osiris_erp_ordenes_compras_enca.dep_solicitante," +
+							"osiris_erp_ordenes_compras_enca.observaciones,osiris_erp_ordenes_compras_enca.fecha_deorden_compra," +
+							"to_char(cantidad_comprada,'999999999.99') AS cantidadcomprada,to_char(cantidad_de_embalaje,'999999.99') AS cantidadembalaje," +
+							"osiris_productos.id_producto,osiris_productos.descripcion_producto,osiris_catalogo_productos_proveedores.descripcion_producto AS descripcionproducto," +
+							"rfc,emisor,calle,noexterior,nointerior,colonia,municipio,estado,codigopostal "+
+							"FROM osiris_erp_ordenes_compras_enca,osiris_erp_proveedores,osiris_erp_requisicion_deta,osiris_productos,osiris_catalogo_productos_proveedores,osiris_erp_emisor " +
+							"WHERE osiris_erp_ordenes_compras_enca.id_proveedor = osiris_erp_proveedores.id_proveedor " +
+							"AND osiris_erp_ordenes_compras_enca.numero_orden_compra = osiris_erp_requisicion_deta.numero_orden_compra " +
+							"AND osiris_erp_requisicion_deta.id_producto = osiris_productos.id_producto " +
+							"AND osiris_catalogo_productos_proveedores.id_producto = osiris_erp_requisicion_deta.id_producto " +
+							"AND osiris_erp_ordenes_compras_enca.id_proveedor = osiris_catalogo_productos_proveedores.id_proveedor " +
+							"AND osiris_erp_ordenes_compras_enca.id_emisor = osiris_erp_emisor.id_emisor " +
+							query_ordenescompra+" " +
+							query_fechas+" ORDER BY id_orden_compra;";
+					
 			print = new PrintOperation ();
 			print.JobName = titulo;
 			print.BeginPrint += new BeginPrintHandler (OnBeginPrint);
@@ -94,6 +112,9 @@ namespace osiris
 		
 		void ejecutar_consulta_reporte(PrintContext context)
 		{
+			int contador = 1;
+			int numero_ordencompra = 0;
+			string facturar_a = "";
 			Cairo.Context cr = context.CairoContext;
 			Pango.Layout layout = context.CreatePangoLayout ();
 			Pango.FontDescription desc = Pango.FontDescription.FromString ("Sans");									
@@ -109,28 +130,24 @@ namespace osiris
 				conexion.Open ();
 				NpgsqlCommand comando; 
 				comando = conexion.CreateCommand ();
-				comando.CommandText = "SELECT numero_orden_compra,osiris_erp_ordenes_compras_enca.id_proveedor,osiris_erp_ordenes_compras_enca.descripcion_proveedor," +
-					"osiris_erp_ordenes_compras_enca.direccion_proveedor, " +
-					"osiris_erp_ordenes_compras_enca.rfc_proveedor,osiris_erp_ordenes_compras_enca.telefonos_proveedor,osiris_erp_ordenes_compras_enca.fecha_de_entrega,osiris_erp_ordenes_compras_enca.lugar_de_entrega,osiris_erp_ordenes_compras_enca.condiciones_de_pago,osiris_erp_ordenes_compras_enca.dep_solicitante,osiris_erp_ordenes_compras_enca.observaciones,osiris_erp_ordenes_compras_enca.fecha_deorden_compra " +
-					"  " +
-					"FROM osiris_erp_ordenes_compras_enca, osiris_erp_proveedores  " +
-					"WHERE osiris_erp_ordenes_compras_enca.id_proveedor = osiris_erp_proveedores.id_proveedor " +
-					"AND id_orden_compra = '"+num_ordencopmpra.ToString().Trim()+"';";
+				comando.CommandText = query_general;
 				Console.WriteLine(comando.CommandText);
 				NpgsqlDataReader lector = comando.ExecuteReader ();
 				
 				if (lector.Read()){
-					Console.WriteLine((string) lector["descripcion_proveedor"].ToString().Trim());
-					Console.WriteLine((string) lector["direccion_proveedor"].ToString().Trim());
-					Console.WriteLine((string) lector["rfc_proveedor"].ToString().Trim());
-					Console.WriteLine((string) lector["telefonos_proveedor"].ToString().Trim());
-					Console.WriteLine((string) lector["lugar_de_entrega"].ToString().Trim());
-					Console.WriteLine((string) lector["dep_solicitante"].ToString().Trim());
-					Console.WriteLine((string) lector["observaciones"].ToString().Trim());
-					Console.WriteLine((string) lector["fecha_deorden_compra"].ToString().Trim());
-					Console.WriteLine((string) lector["numero_orden_compra"].ToString().Trim());
-					Console.WriteLine((string) lector["fecha_de_entrega"].ToString().Trim());
-					Console.WriteLine((string) lector["condiciones_de_pago"].ToString().Trim());
+					numero_ordencompra = (int) lector["numero_orden_compra"];
+					facturar_a = (string) lector["rfc"].ToString().Trim()+" "+(string) lector["emisor"].ToString().Trim();
+					//Console.WriteLine((string) lector["descripcion_proveedor"].ToString().Trim());
+					//Console.WriteLine((string) lector["direccion_proveedor"].ToString().Trim());
+					//Console.WriteLine((string) lector["rfc_proveedor"].ToString().Trim());
+					//Console.WriteLine((string) lector["telefonos_proveedor"].ToString().Trim());
+					//Console.WriteLine((string) lector["lugar_de_entrega"].ToString().Trim());
+					//Console.WriteLine((string) lector["dep_solicitante"].ToString().Trim());
+					//Console.WriteLine((string) lector["observaciones"].ToString().Trim());
+					//Console.WriteLine((string) lector["fecha_deorden_compra"].ToString().Trim());
+					//Console.WriteLine((string) lector["numero_orden_compra"].ToString().Trim());
+					//Console.WriteLine((string) lector["fecha_de_entrega"].ToString().Trim());
+					//Console.WriteLine((string) lector["condiciones_de_pago"].ToString().Trim());
 					imprime_encabezado(cr,layout,
 						(string) lector["descripcion_proveedor"].ToString().Trim(),
 						(string) lector["direccion_proveedor"].ToString().Trim(),
@@ -142,7 +159,50 @@ namespace osiris
 						(string) lector["observaciones"].ToString().Trim(),
 						(string) lector["fecha_deorden_compra"].ToString().Trim(),
 						(string) lector["numero_orden_compra"].ToString().Trim(),
-						(string) lector["fecha_de_entrega"].ToString().Trim());
+						(string) lector["fecha_de_entrega"].ToString().Trim(),facturar_a);
+					
+					cr.MoveTo(07*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(contador.ToString().Trim());					Pango.CairoHelper.ShowLayout (cr, layout);
+					cr.MoveTo(27*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText((string) lector["cantidadcomprada"].ToString().Trim());					Pango.CairoHelper.ShowLayout (cr, layout);
+					cr.MoveTo(60*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText("PIEZA");				Pango.CairoHelper.ShowLayout (cr, layout);
+					cr.MoveTo(102*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);			layout.SetText("cantidadembalaje");					Pango.CairoHelper.ShowLayout (cr, layout);
+					cr.MoveTo(140*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText((string) lector["descripcionproducto"].ToString().Trim());					Pango.CairoHelper.ShowLayout (cr, layout);
+					comienzo_linea += separacion_linea;
+					
+					while(lector.Read()){
+						if(numero_ordencompra != (int) lector["numero_orden_compra"]){
+							numero_ordencompra = (int) lector["numero_orden_compra"];
+							facturar_a = (string) lector["rfc"].ToString().Trim()+" "+(string) lector["emisor"].ToString().Trim();
+							comienzo_linea = 162;
+							contador = 1;
+							cr.ShowPage();
+							imprime_encabezado(cr,layout,
+									(string) lector["descripcion_proveedor"].ToString().Trim(),
+									(string) lector["direccion_proveedor"].ToString().Trim(),
+									(string) lector["rfc_proveedor"].ToString().Trim(),
+									(string) lector["telefonos_proveedor"].ToString().Trim(),
+									(string) lector["lugar_de_entrega"].ToString().Trim(),
+								    (string) lector["condiciones_de_pago"].ToString().Trim(),
+									(string) lector["dep_solicitante"].ToString().Trim(),
+									(string) lector["observaciones"].ToString().Trim(),
+									(string) lector["fecha_deorden_compra"].ToString().Trim(),
+									(string) lector["numero_orden_compra"].ToString().Trim(),
+									(string) lector["fecha_de_entrega"].ToString().Trim(),facturar_a);
+									cr.MoveTo(07*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(contador.ToString().Trim());					Pango.CairoHelper.ShowLayout (cr, layout);
+									cr.MoveTo(27*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText((string) lector["cantidadcomprada"]).ToString().Trim();					Pango.CairoHelper.ShowLayout (cr, layout);
+									cr.MoveTo(60*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText("PIEZA");				Pango.CairoHelper.ShowLayout (cr, layout);
+									cr.MoveTo(102*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);			layout.SetText("cantidadembalaje");					Pango.CairoHelper.ShowLayout (cr, layout);
+									cr.MoveTo(140*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText((string) lector["descripcionproducto"].ToString().Trim());					Pango.CairoHelper.ShowLayout (cr, layout);
+									comienzo_linea += separacion_linea;
+						}else{							
+							cr.MoveTo(07*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(contador.ToString().Trim());					Pango.CairoHelper.ShowLayout (cr, layout);
+							cr.MoveTo(27*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText("0.0");					Pango.CairoHelper.ShowLayout (cr, layout);
+							cr.MoveTo(60*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText("PIEZA");				Pango.CairoHelper.ShowLayout (cr, layout);
+							cr.MoveTo(102*escala_en_linux_windows, comienzo_linea*escala_en_linux_windows);			layout.SetText("PACK");					Pango.CairoHelper.ShowLayout (cr, layout);
+							cr.MoveTo(140*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText((string) lector["descripcionproducto"].ToString().Trim());					Pango.CairoHelper.ShowLayout (cr, layout);
+							contador += 1;
+							comienzo_linea += separacion_linea;
+						}
+					}
 				}
 			}catch(NpgsqlException ex){
 			
@@ -165,7 +225,7 @@ namespace osiris
 					        	string observaciones_,
 					        	string fecha_deorden_compra_,
 					        	string numero_orden_compra_,
-					        	string fecha_de_entrega_)
+					        	string fecha_de_entrega_,string facturar_a_)
 			
 		{
 			Pango.FontDescription desc = Pango.FontDescription.FromString ("Sans");								
@@ -182,26 +242,41 @@ namespace osiris
 			cr.MoveTo(650*escala_en_linux_windows,15*escala_en_linux_windows);			layout.SetText("N° Page :"+numpage.ToString().Trim());		Pango.CairoHelper.ShowLayout (cr, layout);
 			cr.MoveTo(05*escala_en_linux_windows,35*escala_en_linux_windows);			layout.SetText("Sistema Hospitalario OSIRIS");		Pango.CairoHelper.ShowLayout (cr, layout);
 			// Cambiando el tamaño de la fuente			
-			fontSize = 10.0;
+			fontSize = 9.0;
 			desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;
-			cr.MoveTo(290*escala_en_linux_windows, 25*escala_en_linux_windows);			layout.SetText("ORDEN_DE_COMPRAS");					Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(290*escala_en_linux_windows, 25*escala_en_linux_windows);			layout.SetText("ORDEN_DE_COMPRAS");				Pango.CairoHelper.ShowLayout (cr, layout);
 			
+			fontSize = 9.0;
+			desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;
+			layout.FontDescription.Weight = Weight.Bold;		// Letra negrita
+			cr.MoveTo(655*escala_en_linux_windows, 62*escala_en_linux_windows);		layout.SetText("N° O.COMPRA");					Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(660*escala_en_linux_windows, 72*escala_en_linux_windows);		layout.SetText(numero_orden_compra_);				Pango.CairoHelper.ShowLayout (cr, layout);
+						
+			fontSize = 7.0;
+			desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;
+			layout.FontDescription.Weight = Weight.Bold;		// Letra normal
+			
+			cr.MoveTo(07*escala_en_linux_windows,62*escala_en_linux_windows);			layout.SetText("PROVEEDOR :");	Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(07*escala_en_linux_windows,75*escala_en_linux_windows);			layout.SetText("DIRECCION :");	Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(07*escala_en_linux_windows,88*escala_en_linux_windows);			layout.SetText("R.F.C.        :");	Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(250*escala_en_linux_windows,88*escala_en_linux_windows);			layout.SetText("TELEFONOS:");	Pango.CairoHelper.ShowLayout (cr, layout);
+					
+			cr.MoveTo(555*escala_en_linux_windows,60*escala_en_linux_windows);			layout.SetText("Fecha Orden Compra");	Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(07*escala_en_linux_windows,100*escala_en_linux_windows);			layout.SetText("Lugar de Entrega");	Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(07*escala_en_linux_windows,130*escala_en_linux_windows);			layout.SetText("Facturar A:"+facturar_a_);	Pango.CairoHelper.ShowLayout (cr, layout);
+			
+			cr.MoveTo(595*escala_en_linux_windows,100*escala_en_linux_windows);			layout.SetText("Tipo Orden de Compra");	Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(07*escala_en_linux_windows,111*escala_en_linux_windows);			layout.SetText("Observaciones");	Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(610*escala_en_linux_windows,120*escala_en_linux_windows);			layout.SetText("Condicion de Pago");	Pango.CairoHelper.ShowLayout (cr, layout);
 			fontSize = 7.0;
 			desc.Size = (int)(fontSize * pangoScale);					layout.FontDescription = desc;
 			layout.FontDescription.Weight = Weight.Normal;		// Letra normal
-			cr.MoveTo(07*escala_en_linux_windows,62*escala_en_linux_windows);			layout.SetText("Descripcion_Proveedor :"+descripcion_proveedor_);	Pango.CairoHelper.ShowLayout (cr, layout);
-			cr.MoveTo(07*escala_en_linux_windows,75*escala_en_linux_windows);			layout.SetText("Direccion_Proveedor :"+direccion_proveedor_);	Pango.CairoHelper.ShowLayout (cr, layout);
-			cr.MoveTo(07*escala_en_linux_windows,90*escala_en_linux_windows);			layout.SetText("R.F.C_Proveedor:"+rfc_proveedor_);	Pango.CairoHelper.ShowLayout (cr, layout);
-			cr.MoveTo(250*escala_en_linux_windows,90*escala_en_linux_windows);			layout.SetText("Telefonos_proveedor:"+telefonos_proveedor_);	Pango.CairoHelper.ShowLayout (cr, layout);
 			
-			cr.MoveTo(555*escala_en_linux_windows,60*escala_en_linux_windows);			layout.SetText("Fech. Orden Compra :");	Pango.CairoHelper.ShowLayout (cr, layout);
-			cr.MoveTo(655*escala_en_linux_windows,60*escala_en_linux_windows);			layout.SetText("Num. Orden Compra :");	Pango.CairoHelper.ShowLayout (cr, layout);
-			cr.MoveTo(07*escala_en_linux_windows,100*escala_en_linux_windows);			layout.SetText("Lugar de Entrega :");	Pango.CairoHelper.ShowLayout (cr, layout);
-			cr.MoveTo(250*escala_en_linux_windows,100*escala_en_linux_windows);			layout.SetText("Dep. Solicitante :");	Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(70*escala_en_linux_windows,62*escala_en_linux_windows);			layout.SetText(descripcion_proveedor_);	Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(70*escala_en_linux_windows,75*escala_en_linux_windows);			layout.SetText(direccion_proveedor_);	Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(70*escala_en_linux_windows,88*escala_en_linux_windows);			layout.SetText(rfc_proveedor_);	Pango.CairoHelper.ShowLayout (cr, layout);
+			cr.MoveTo(300*escala_en_linux_windows,88*escala_en_linux_windows);			layout.SetText(telefonos_proveedor_);	Pango.CairoHelper.ShowLayout (cr, layout);
 			
-			cr.MoveTo(555*escala_en_linux_windows,100*escala_en_linux_windows);			layout.SetText("Fecha de Entrega :"+fecha_de_entrega_);	Pango.CairoHelper.ShowLayout (cr, layout);
-			cr.MoveTo(07*escala_en_linux_windows,120*escala_en_linux_windows);			layout.SetText("Observaciones :");	Pango.CairoHelper.ShowLayout (cr, layout);
-			cr.MoveTo(555*escala_en_linux_windows,120*escala_en_linux_windows);			layout.SetText("Cond. de Pago :");	Pango.CairoHelper.ShowLayout (cr, layout);
 			
 			cr.MoveTo(07*escala_en_linux_windows, 142*escala_en_linux_windows);			layout.SetText("N°");							Pango.CairoHelper.ShowLayout (cr, layout);
 			cr.MoveTo(07*escala_en_linux_windows, 152*escala_en_linux_windows);			layout.SetText("Part.");						Pango.CairoHelper.ShowLayout (cr, layout);
@@ -258,6 +333,9 @@ namespace osiris
 			cr.MoveTo(138*escala_en_linux_windows, 140*escala_en_linux_windows);
 			cr.LineTo(138,480);		// vertical 8
 			
+			cr.MoveTo(530*escala_en_linux_windows, 140*escala_en_linux_windows);
+			cr.LineTo(530,480);		// vertical 10			
+			
 			cr.MoveTo(585*escala_en_linux_windows, 140*escala_en_linux_windows);
 			cr.LineTo(585,500);		// vertical 11
 			
@@ -266,9 +344,6 @@ namespace osiris
 			
 			cr.MoveTo(695*escala_en_linux_windows, 140*escala_en_linux_windows);
 			cr.LineTo(695,500);		// vertical 13
-			
-			
-	
 			
 			cr.MoveTo(750*escala_en_linux_windows, 60*escala_en_linux_windows);
 			cr.LineTo(05,60);		// Linea Horizontal 1

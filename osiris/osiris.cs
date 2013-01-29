@@ -178,8 +178,8 @@ namespace osiris
 		{
 			Glade.XML gxml = new Glade.XML (null, "osiris.glade", "login_osiris", null);
 			gxml.Autoconnect (this);
-			
 			login_osiris.Show();
+			login_osiris.SetPosition(WindowPosition.Center);
 			
 			llenado_de_sucursales();
 			//string rfc_ = classpublic.CalcularRFC("DANIEL","OLIVARES","CUEVAS","25/06/74");
@@ -420,7 +420,7 @@ namespace osiris
 		void on_menuitem_mtt_requi_activated(object o, EventArgs args)
 		{
 			int [] array_idtipoadmisiones = { 0, 4};
-			new osiris.requisicion_materiales_compras(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,"MENTENIMIENTO",4,"AND agrupacion IN ('ALM') ",array_idtipoadmisiones,0);
+			new osiris.requisicion_materiales_compras(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,"MENTENIMIENTO",4,"AND agrupacion2 IN ('MTT') ",array_idtipoadmisiones,0);
 		}
 		
 		// Registro y Admision de Pacientes, realiza la pregunta

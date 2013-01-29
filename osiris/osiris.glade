@@ -7,7 +7,7 @@
   <property name="visible">True</property>
   <property name="title" translatable="yes">OSIRIS Menu Principal</property>
   <property name="type">GTK_WINDOW_TOPLEVEL</property>
-  <property name="window_position">GTK_WIN_POS_NONE</property>
+  <property name="window_position">GTK_WIN_POS_CENTER</property>
   <property name="modal">False</property>
   <property name="resizable">False</property>
   <property name="destroy_with_parent">False</property>
@@ -4585,7 +4585,7 @@ Licencia Pública General GNU para mayor información.
   <property name="visible">True</property>
   <property name="title" translatable="yes">Login Osiris</property>
   <property name="type">GTK_WINDOW_TOPLEVEL</property>
-  <property name="window_position">GTK_WIN_POS_NONE</property>
+  <property name="window_position">GTK_WIN_POS_CENTER</property>
   <property name="modal">False</property>
   <property name="resizable">False</property>
   <property name="destroy_with_parent">False</property>

@@ -27,7 +27,7 @@ namespace osiris
 		
 		public class_traslate_spreadsheet (string query_sql,string[] args_names_field,string[] args_type_field,bool typetext,string[] args_field_text,string name_field_text,bool more_title,string[] args_more_title)
 		{
-			Console.WriteLine(name_field_text+" nombre del campo");
+			//Console.WriteLine(name_field_text+" nombre del campo");
 			int files_field = 0;
 			string [] array_field_text = new string[args_field_text.Length];
 			connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
@@ -45,7 +45,7 @@ namespace osiris
 				NpgsqlCommand comando; 
 				comando = conexion.CreateCommand ();
 				comando.CommandText = query_sql;
-				//Console.WriteLine(comando.CommandText);
+				Console.WriteLine(comando.CommandText);
 				comando.ExecuteNonQuery();    comando.Dispose();
 				NpgsqlDataReader lector = comando.ExecuteReader ();
 				// Creando los nombres de ancabezado de los campos

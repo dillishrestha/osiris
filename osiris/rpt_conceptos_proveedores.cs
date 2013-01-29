@@ -75,8 +75,9 @@ namespace osiris
 		string query_consulta = "";
 		
 		string[] args_args = {""};
-		string[] args_herr_adicional = {"","ANALISIS COMPRAS PRODUCTOS"};
+		string[] args_herr_adicional = {"","ANALISIS COMPRAS PRODUCTOS","FACTURAS DE PROVEEDORES"};
 		int[] args_id_array = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20};
+		int tiporeporte_herramientas = 0;
 		
 		private static int pangoScale = 1024;
 		private PrintOperation print;
@@ -186,6 +187,7 @@ namespace osiris
 			if (onComboBoxChanged.GetActiveIter (out iter)){
 				switch (onComboBoxChanged.Name.ToString()){	
 				case "combobox_herr_adicionales":
+					tiporeporte_herramientas = (int) onComboBoxChanged.Model.GetValue(iter,1);
 					break;
 				}
 			}
@@ -215,33 +217,60 @@ namespace osiris
 			numpage = 1;
 			if ((bool)checkbutton_herr_adicionales.Active == true){
 				verifica_checkbutton_fechas();
-				query_consulta = "SELECT osiris_erp_requisicion_deta.id_producto AS idproducto_osiris,descripcion_producto," +
-					"osiris_productos.costo_producto AS costoproducto,osiris_productos.cantidad_de_embalaje AS empaqueproducto," +
-					"to_char(osiris_erp_factura_compra_enca.fecha_factura,'yyyy') AS ano," +
-					"to_char(osiris_erp_factura_compra_enca.fecha_factura,'MM') AS mes," +
-					"AVG(osiris_erp_requisicion_deta.costo_producto) AS avg," +
-					"MAX(osiris_erp_requisicion_deta.costo_producto) AS max," +
-					"MIN(osiris_erp_requisicion_deta.costo_producto) AS min," +
-					"COUNT(*) AS Total,SUM(osiris_erp_requisicion_deta.costo_producto) AS Total1 " +
-					"FROM osiris_erp_requisicion_deta,osiris_erp_factura_compra_enca,osiris_productos " +
-					"WHERE osiris_erp_requisicion_deta.numero_factura_proveedor = osiris_erp_factura_compra_enca.numero_factura_proveedor " +
-					"AND osiris_productos.id_producto = osiris_erp_requisicion_deta.id_producto " +
-					query_rango_fechas2+
-					"GROUP BY osiris_erp_requisicion_deta.id_producto,descripcion_producto," +
-					"osiris_productos.costo_producto,osiris_productos.cantidad_de_embalaje," +
-					"to_char(osiris_erp_factura_compra_enca.fecha_factura,'yyyy')," +
-					"to_char(osiris_erp_factura_compra_enca.fecha_factura,'MM') " +
-					"ORDER BY descripcion_producto,to_char(osiris_erp_factura_compra_enca.fecha_factura,'yyyy')," +
-					"to_char(osiris_erp_factura_compra_enca.fecha_factura,'MM');";
-				// cambiar el query si elije por provedores
-				// desabiliar los 
-				print = new PrintOperation ();			
-				print.JobName = "Analisis de Costos";	// Name of the report
-				print.BeginPrint += new BeginPrintHandler (OnBeginPrint);
-				print.DrawPage += new DrawPageHandler (OnDrawPage);
-				print.EndPrint += new EndPrintHandler (OnEndPrint);
-				print.Run(PrintOperationAction.PrintDialog, null);
-				
+				// analisis de precios
+				switch(tiporeporte_herramientas){
+					case 1:
+						query_consulta = "SELECT osiris_erp_requisicion_deta.id_producto AS idproducto_osiris,descripcion_producto," +
+							"osiris_productos.costo_producto AS costoproducto,osiris_productos.cantidad_de_embalaje AS empaqueproducto," +
+							"to_char(osiris_erp_factura_compra_enca.fecha_factura,'yyyy') AS ano," +
+							"to_char(osiris_erp_factura_compra_enca.fecha_factura,'MM') AS mes," +
+							"AVG(osiris_erp_requisicion_deta.costo_producto) AS avg," +
+							"MAX(osiris_erp_requisicion_deta.costo_producto) AS max," +
+							"MIN(osiris_erp_requisicion_deta.costo_producto) AS min," +
+							"COUNT(*) AS Total,SUM(osiris_erp_requisicion_deta.costo_producto) AS Total1 " +
+							"FROM osiris_erp_requisicion_deta,osiris_erp_factura_compra_enca,osiris_productos " +
+							"WHERE osiris_erp_requisicion_deta.numero_factura_proveedor = osiris_erp_factura_compra_enca.numero_factura_proveedor " +
+							"AND osiris_productos.id_producto = osiris_erp_requisicion_deta.id_producto " +
+							query_rango_fechas2+
+							"GROUP BY osiris_erp_requisicion_deta.id_producto,descripcion_producto," +
+							"osiris_productos.costo_producto,osiris_productos.cantidad_de_embalaje," +
+							"to_char(osiris_erp_factura_compra_enca.fecha_factura,'yyyy')," +
+							"to_char(osiris_erp_factura_compra_enca.fecha_factura,'MM') " +
+							"ORDER BY descripcion_producto,to_char(osiris_erp_factura_compra_enca.fecha_factura,'yyyy')," +
+							"to_char(osiris_erp_factura_compra_enca.fecha_factura,'MM');";
+							// cambiar el query si elije por provedores
+							// desabiliar los 
+						print = new PrintOperation ();			
+						print.JobName = "Analisis de Costos";	// Name of the report
+						print.BeginPrint += new BeginPrintHandler (OnBeginPrint);
+						print.DrawPage += new DrawPageHandler (OnDrawPage);
+						print.EndPrint += new EndPrintHandler (OnEndPrint);
+						print.Run(PrintOperationAction.PrintDialog, null);
+					break;
+					case 2:
+						verifica_checkbutton_prov();
+						verifica_checkbutton_fechas();
+						query_consulta = "SELECT to_char(fechahora_creacion,'yyyy-MM-dd') AS fechacaptura,to_char(osiris_erp_factura_compra_enca.fecha_factura,'yyyy-MM-dd') AS fechafactura," +
+							"to_char(osiris_erp_factura_compra_enca.fecha_entrada_almacen,'yyyy-MM-dd') AS fechaentrada," +
+							"osiris_erp_factura_compra_enca.numero_factura_proveedor AS numerofactura," +
+							"osiris_erp_factura_compra_enca.numero_orden_compra AS ordencompra," +
+							"subtotal_factura,iva_factura,total_factura,osiris_erp_factura_compra_enca.id_emisor AS idreceptor," +
+							"osiris_erp_factura_compra_enca.id_proveedor,descripcion_proveedor," +
+							"osiris_erp_emisor.emisor AS receptorfactura " +
+							"FROM osiris_erp_factura_compra_enca,osiris_erp_proveedores,osiris_erp_emisor " +
+							"WHERE osiris_erp_factura_compra_enca.id_proveedor = osiris_erp_proveedores.id_proveedor " +
+							"AND osiris_erp_factura_compra_enca.id_emisor = osiris_erp_emisor.id_emisor " +
+							query_proveedores+
+							query_rango_fechas+
+							"ORDER BY to_char(osiris_erp_factura_compra_enca.fecha_factura,'yyyy-MM-dd'),osiris_erp_factura_compra_enca.id_proveedor,numerofactura;";
+						string[] args_names_field = {"fechacaptura","fechaentrada","fechafactura","numerofactura","descripcion_proveedor","ordencompra","subtotal_factura","iva_factura","total_factura","idreceptor","receptorfactura"};
+						string[] args_type_field = {"string","string","string","string","string","string","float","float","float","float","float","string"};
+						string[] args_field_text = {};
+						string[] args_more_title = {};
+						// class_crea_ods.cs
+						new osiris.class_traslate_spreadsheet(query_consulta,args_names_field,args_type_field,false,args_field_text,"",false,args_more_title);
+					break;
+				}
 			}else{
 				verifica_checkbutton_prov();
 				verifica_checkbutton_fechas();
@@ -259,7 +288,7 @@ namespace osiris
 					query_proveedores+
 					query_rango_fechas+
 					query_in_grupo+
-					"ORDER BY to_char(osiris_erp_factura_compra_enca.fecha_factura,'yyyy-MM-dd'),numerofactura;";
+					"ORDER BY to_char(osiris_erp_factura_compra_enca.fecha_factura,'yyyy-MM-dd'),osiris_erp_factura_compra_enca.id_proveedor,numerofactura;";
 				string[] args_names_field = {"fechafactura","numerofactura","descripcion_proveedor","idproducto_osiris","descrip_prod_osiris","cantidad_comprada","costo_producto_compra","cantidad_de_embalaje","costoxunidad_compra","cantidad_recibida","costo_producto_osiris","cantidad_de_embalaje_osiris","costo_unitario_osiris","id_producto_proveedor","descripcion_producto_proveedor","tipo_unidad_producto","lote_producto","caducidad_producto"};
 				string[] args_type_field = {"string","string","string","string","string","float","float","float","float","float","float","float","float","string","string","string","string","string"};
 				string[] args_field_text = {};
@@ -629,7 +658,7 @@ namespace osiris
 			}else{
 				query_rango_fechas = "AND to_char(osiris_erp_factura_compra_enca.fecha_factura,'yyyy-MM-dd') >= '"+(string) entry_ano_inicial.Text.ToString()+"-"+(string) entry_mes_inicial.Text.ToString()+"-"+(string) entry_dia_inicial.Text.ToString()+"' "+
 									"AND to_char(osiris_erp_factura_compra_enca.fecha_factura,'yyyy-MM-dd') <= '"+(string) entry_ano_final.Text.ToString()+"-"+(string) entry_mes_final.Text.ToString()+"-"+(string) entry_dia_final.Text.ToString()+"' ";
-				query_rango_fechas2 = "AND to_char(osiris_erp_factura_compra_enca.fechahora_creacion,'yyyy') >= '"+(string) entry_ano_inicial.Text.ToString()+"' "+
+				query_rango_fechas2 ="AND to_char(osiris_erp_factura_compra_enca.fechahora_creacion,'yyyy') >= '"+(string) entry_ano_inicial.Text.ToString()+"' "+
 									 "AND to_char(osiris_erp_factura_compra_enca.fechahora_creacion,'yyyy') <= '"+(string) entry_ano_final.Text.ToString()+"' " +
 									 "AND to_char(osiris_erp_factura_compra_enca.fechahora_creacion,'MM') >= '"+(string) entry_mes_inicial.Text.ToString()+"' "+
 									 "AND to_char(osiris_erp_factura_compra_enca.fechahora_creacion,'MM') <= '"+(string) entry_mes_final.Text.ToString()+"' ";

@@ -71,6 +71,7 @@ namespace osiris
 		[Widget] Gtk.Label label137 = null;
 		[Widget] Gtk.Entry entry2 = null;
 		[Widget] Gtk.Entry entry_total_aplicado = null;
+		[Widget] Gtk.Entry entry_totalenvios = null;
 		[Widget] Gtk.ComboBox combobox_grupo;
 		[Widget] Gtk.ComboBox combobox_grupo1;
 		[Widget] Gtk.ComboBox combobox_grupo2;
@@ -563,6 +564,7 @@ namespace osiris
 			treeViewEngineSelec.Clear();
 			query_consulta = "";
 			float total_aplicado = 0;
+			float total_enviados = 0;
 			if(tipo_reporte == "envios_subalamcenes"){
 				query_consulta =  "SELECT to_char(osiris_his_solicitudes_deta.id_producto,'999999999999') AS idproducto,descripcion_almacen," +
 						"descripcion_producto,folio_de_solicitud," +
@@ -646,7 +648,8 @@ namespace osiris
 				NpgsqlDataReader lector = comando.ExecuteReader ();
 				while (lector.Read()){					
 					if(tipo_reporte == "envios_subalamcenes"){
-						total_aplicado += float.Parse(((string) lector["cantidad_autorizada"].ToString().Trim()));
+						total_aplicado += float.Parse(((string) lector["cantidad_solicitada"].ToString().Trim()));
+						total_enviados += float.Parse(((string) lector["cantidad_autorizada"].ToString().Trim()));
 						treeViewEngineResumen.AppendValues ((string) lector["descripcion_producto"],
 										(string) lector["idproducto"],
 										(string) lector["folio_de_solicitud"].ToString(),
@@ -687,7 +690,8 @@ namespace osiris
 										(string) lector["descripcion_grupo_producto"].ToString());
 					}
 				}
-				this.entry_total_aplicado.Text = total_aplicado.ToString(); 
+				entry_total_aplicado.Text = total_aplicado.ToString();
+				entry_totalenvios.Text = total_enviados.ToString();
 			}catch (NpgsqlException ex){
 	 			MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
 												MessageType.Error, 

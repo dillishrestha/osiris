@@ -1604,7 +1604,7 @@ namespace osiris
 			TreeModel model;
 			TreeIter iterSelected;
 			if ( treeview_lista_agenda.Selection.GetSelected(out model, out iterSelected)){				
-				new osiris.pases_a_quirofano(0,int.Parse((string) model.GetValue(iterSelected, 2)),0,LoginEmpleado,0,0,0,false,"cita_a_paciente",false,false);
+				new osiris.pases_a_quirofano(0,int.Parse((string) model.GetValue(iterSelected, 2)),0,LoginEmpleado,0,0,0,false,"cita_a_paciente",false,false,false);
 			}
 		}
 		
@@ -1745,7 +1745,7 @@ namespace osiris
 												"fechahora_cancelacion = '"+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"', "+
 												"id_quien_cancelo = '"+LoginEmpleado+"', "+		
 												"motivo_cancelacion_citaqx = 'REAGENDACION' "+
-						 						"WHERE id_secuencia =  '"+entry_nrocita_a_reag.Text.ToString().Trim()+"' " +
+						 						"WHERE id_numero_citaqx = '"+entry_nrocita_a_reag.Text.ToString().Trim()+"' " +
 						 						"AND cancelado = 'false';";
 							
 							comando.ExecuteNonQuery();       			comando.Dispose();
@@ -1882,7 +1882,7 @@ namespace osiris
 								"'"+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"', "+
 								"'"+LoginEmpleado+"' " +
 								"FROM osiris_his_calendario_citaqx "+
-								"WHERE id_secuencia = '"+entry_nrocita_a_reag.Text+"'";
+								"WHERE id_numero_citaqx = '"+entry_nrocita_a_reag.Text+"'";
 								
 							//Console.WriteLine(comando.CommandText);
 							comando.ExecuteNonQuery();					comando.Dispose();

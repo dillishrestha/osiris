@@ -52,6 +52,7 @@ namespace osiris
 		[Widget] Gtk.Entry entry_total_abonos = null;
 		[Widget] Gtk.Entry entry_total_convenio = null;
 		[Widget] Gtk.Entry entry_saldo_deuda = null;
+		[Widget] Gtk.Button button_cancela_abonopago = null;
 		[Widget] Gtk.CheckButton checkbutton_nuevo_abono = null;
 		[Widget] Gtk.Button button_guardar = null;
 		[Widget] Gtk.Button button_imprimir = null;
@@ -792,7 +793,8 @@ namespace osiris
 									comando2 = conexion2.CreateCommand ();
 						 			comando2.CommandText = "UPDATE osiris_erp_cobros_enca SET tiene_abono = 'true',"+
 						 										"total_abonos = total_abonos + '"+entry_monto_abono.Text+"', "+
-																"monto_convenio = '"+entry_monto_convenio.Text+"' "+
+																"monto_convenio = '"+entry_monto_convenio.Text+"', "+
+																"reservacion = 'true' "+
 																"WHERE folio_de_servicio = '"+this.folioservicio.ToString()+"' ;";
 						 			//Console.WriteLine(comando2.CommandText);		
 					 				comando2.ExecuteNonQuery();    	    	       	comando2.Dispose();

@@ -122,34 +122,34 @@ namespace osiris
 			
             button_salir.Clicked += new EventHandler(on_cierraventanas_clicked);		
             checkbutton_todas.Clicked  += new EventHandler(on_check_todas_clicked);			
-            this.check_cambio_habitacion.Clicked += new EventHandler(on_check_cambio__habitacion_clicked);			
-             this.check_lista_espera.Clicked += new EventHandler(on_check_lista__espera_clicked);						
+            check_cambio_habitacion.Clicked += new EventHandler(on_check_cambio__habitacion_clicked);			
+            check_lista_espera.Clicked += new EventHandler(on_check_lista__espera_clicked);						
 			 			
-			this.button_cancelar.Clicked += new EventHandler(on_cancelar_clicked);			
-			this.button_aceptar.Clicked += new EventHandler(on_aceptar_clicked);		
-            this.button_reporte.Clicked += new EventHandler(on_reporte_clicked);	
-            this.button_lista_espera.Clicked += new EventHandler(on_lista_clicked);			
+			button_cancelar.Clicked += new EventHandler(on_cancelar_clicked);			
+			button_aceptar.Clicked += new EventHandler(on_aceptar_clicked);		
+            button_reporte.Clicked += new EventHandler(on_reporte_clicked);	
+            button_lista_espera.Clicked += new EventHandler(on_lista_clicked);			
 			
-			this.button_buscar_busqueda.Clicked += new EventHandler(on_buscar_busqueda_clicked);
+			button_buscar_busqueda.Clicked += new EventHandler(on_buscar_busqueda_clicked);
 			
-			this.entry_area.IsEditable = false;
-			this.entry_descripcion.IsEditable = false;
-			this.entry_id_habitacion.IsEditable = false;
-			this.entry_paciente.IsEditable = false;
-            this.entry_dia_ocupacion.IsEditable = false;
-			this.entry_mes_ocupacion.IsEditable = false;
-			this.entry_anno_ocupacion.IsEditable = false;
-			this.button_lista_espera.Sensitive = false;
+			entry_area.IsEditable = false;
+			entry_descripcion.IsEditable = false;
+			entry_id_habitacion.IsEditable = false;
+			entry_paciente.IsEditable = false;
+            entry_dia_ocupacion.IsEditable = false;
+			entry_mes_ocupacion.IsEditable = false;
+			entry_anno_ocupacion.IsEditable = false;
+			button_lista_espera.Sensitive = false;
 			
-			this.entry_folio.ModifyBase(StateType.Normal, new Gdk.Color(170,220,170));
-			this.entry_numero_habitacion.ModifyBase(StateType.Normal, new Gdk.Color(170,220,170));
-			this.entry_area.ModifyBase(StateType.Normal, new Gdk.Color(170,220,170));
-			this.entry_descripcion.ModifyBase(StateType.Normal, new Gdk.Color(170,220,170));
-			this.entry_id_habitacion.ModifyBase(StateType.Normal, new Gdk.Color(170,220,170));
-			this.entry_paciente.ModifyBase(StateType.Normal, new Gdk.Color(170,220,170));
-            this.entry_dia_ocupacion.ModifyBase(StateType.Normal, new Gdk.Color(170,220,170));
-			this.entry_mes_ocupacion.ModifyBase(StateType.Normal, new Gdk.Color(170,220,170));
-			this.entry_anno_ocupacion.ModifyBase(StateType.Normal, new Gdk.Color(170,220,170));
+			entry_folio.ModifyBase(StateType.Normal, new Gdk.Color(170,220,170));
+			entry_numero_habitacion.ModifyBase(StateType.Normal, new Gdk.Color(170,220,170));
+			entry_area.ModifyBase(StateType.Normal, new Gdk.Color(170,220,170));
+			entry_descripcion.ModifyBase(StateType.Normal, new Gdk.Color(170,220,170));
+			entry_id_habitacion.ModifyBase(StateType.Normal, new Gdk.Color(170,220,170));
+			entry_paciente.ModifyBase(StateType.Normal, new Gdk.Color(170,220,170));
+            entry_dia_ocupacion.ModifyBase(StateType.Normal, new Gdk.Color(170,220,170));
+			entry_mes_ocupacion.ModifyBase(StateType.Normal, new Gdk.Color(170,220,170));
+			entry_anno_ocupacion.ModifyBase(StateType.Normal, new Gdk.Color(170,220,170));
 			
 			llenacombo_areas();
 			crea_treeview_busqueda_habitacion();//treeview habitacion
@@ -158,7 +158,7 @@ namespace osiris
 			on_buscar_paciente_clicked();
 			on_busca_paciente_Asigancion();
             			
-			this.lista_de_Pacientes_asignados.Sensitive = false;
+			lista_de_Pacientes_asignados.Sensitive = false;
             			
 			if(this.tipo_admicion_clase != 0){
 				this.checkbutton_todas.Sensitive = false;
@@ -1000,25 +1000,25 @@ namespace osiris
 				
                if (oldPac == false && activoPac == false){
                     activoPac = true;	
-					this.entry_paciente.Text = lista_de_Pacientes.Model.GetValue(iter,3) + " " +lista_de_Pacientes.Model.GetValue(iter,4) + " "+ lista_de_Pacientes.Model.GetValue(iter,5) + " " + lista_de_Pacientes.Model.GetValue(iter,6);
+					entry_paciente.Text = lista_de_Pacientes.Model.GetValue(iter,3) + " " +lista_de_Pacientes.Model.GetValue(iter,4) + " "+ lista_de_Pacientes.Model.GetValue(iter,5) + " " + lista_de_Pacientes.Model.GetValue(iter,6);
  			        pid = (int) lista_de_Pacientes.Model.GetValue(iter,2);
 				    folio_atencion = (int) lista_de_Pacientes.Model.GetValue(iter,1);						
 					
-					this.entry_folio.Text =  Convert.ToString(lista_de_Pacientes.Model.GetValue(iter,1)); 
-					this.entry_dia_ocupacion.Text = DateTime.Today.ToString("dd");
-					this.entry_mes_ocupacion.Text = DateTime.Today.ToString("MM");
-					this.entry_anno_ocupacion.Text = DateTime.Today.ToString("yyyy");
+					entry_folio.Text =  Convert.ToString(lista_de_Pacientes.Model.GetValue(iter,1)); 
+					entry_dia_ocupacion.Text = DateTime.Today.ToString("dd");
+					entry_mes_ocupacion.Text = DateTime.Today.ToString("MM");
+					entry_anno_ocupacion.Text = DateTime.Today.ToString("yyyy");
 				}
 				
 				if (oldPac == true && activoPac == true){
 					activoPac = false;
-					this.entry_folio.Text = "";	
-					this.entry_anno_ocupacion.Text = "";
-					this.entry_dia_ocupacion.Text = "";
-					this.entry_mes_ocupacion.Text = "";
-					this.entry_paciente.Text = "";
-					this.folio_atencion = 0;
-					this.pid = 0;				
+					entry_folio.Text = "";	
+					entry_anno_ocupacion.Text = "";
+					entry_dia_ocupacion.Text = "";
+					entry_mes_ocupacion.Text = "";
+					entry_paciente.Text = "";
+					folio_atencion = 0;
+					pid = 0;				
 				}
 			}
 		}		
@@ -1028,7 +1028,7 @@ namespace osiris
 			
 			TreeIter iter;
 			TreePath path = new TreePath (args.Path);
-			if (this.lista_de_Pacientes_asignados.Model.GetIter (out iter, path)){
+			if (lista_de_Pacientes_asignados.Model.GetIter (out iter, path)){
 				bool oldPac = (bool) lista_de_Pacientes_asignados.Model.GetValue (iter,0);
 				lista_de_Pacientes_asignados.Model.SetValue(iter,0,!oldPac);
 				
@@ -1060,13 +1060,13 @@ namespace osiris
 												
 							if ((bool) lector.Read()){
 								id_habitacion_proveniente =  ((int) lector["id_habitacion"]); //guarda en la variable la habitacion de la que proviene (cambio de habitacion)
-								this.entry_id_habitacion.Text = Convert.ToString ((int) lector["id_habitacion"]);
-								this.entry_area.Text = Convert.ToString ((int) lector["id_tipo_admisiones"]); 			
-								this.entry_numero_habitacion.Text = Convert.ToString ((int) lector["numero_cuarto"]);		
-								this.entry_descripcion.Text = ((string) lector["descripcion_cuarto"]);			
-								this.entry_dia_ocupacion.Text = Convert.ToString((string) lector["fechadeocupacion"]).Substring(0,2);
-								this.entry_mes_ocupacion.Text = Convert.ToString((string) lector["fechadeocupacion"]).Substring(3,2);
-								this.entry_anno_ocupacion.Text = Convert.ToString((string) lector["fechadeocupacion"]).Substring(6,4);
+								entry_id_habitacion.Text = Convert.ToString ((int) lector["id_habitacion"]);
+								entry_area.Text = Convert.ToString ((int) lector["id_tipo_admisiones"]); 			
+								entry_numero_habitacion.Text = Convert.ToString ((int) lector["numero_cuarto"]);		
+								entry_descripcion.Text = ((string) lector["descripcion_cuarto"]);			
+								entry_dia_ocupacion.Text = Convert.ToString((string) lector["fechadeocupacion"]).Substring(0,2);
+								entry_mes_ocupacion.Text = Convert.ToString((string) lector["fechadeocupacion"]).Substring(3,2);
+								entry_anno_ocupacion.Text = Convert.ToString((string) lector["fechadeocupacion"]).Substring(6,4);
 							}									
 						}catch (NpgsqlException ex){
 								MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,	MessageType.Error, ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
@@ -1075,29 +1075,29 @@ namespace osiris
 						conexion.Close ();
 										
 						activoPac = true;		
-						this.treeview_habitaciones.Sensitive = true;
+						treeview_habitaciones.Sensitive = true;
 						pid_pasingado = (int) lista_de_Pacientes_asignados.Model.GetValue(iter,2);
 						folio_atencion_pasignado = (int) lista_de_Pacientes_asignados.Model.GetValue(iter,1);						
-						this.entry_folio.Text =  Convert.ToString(lista_de_Pacientes_asignados.Model.GetValue(iter,1)); 
-                        this.entry_paciente.Text = (string) lista_de_Pacientes_asignados.Model.GetValue(iter,4);
+						entry_folio.Text =  Convert.ToString(lista_de_Pacientes_asignados.Model.GetValue(iter,1)); 
+                        entry_paciente.Text = (string) lista_de_Pacientes_asignados.Model.GetValue(iter,4);
 				}				
 			  
 				if (oldPac == true && activoPac == true){
 					activoPac = false;
-					this.treeview_habitaciones.Sensitive = false;
-					this.treeViewEngineBuscahabitacion.Clear();
-					this.descripcion_area = "";
-					this.entry_id_habitacion.Text = "";
-					this.entry_area.Text = "";	
-					this.entry_descripcion.Text = "";
-					this.entry_numero_habitacion.Text = "";
-					this.entry_folio.Text = "";
-				    this.entry_anno_ocupacion.Text = "";
-				    this.entry_dia_ocupacion.Text = "";
-	        	    this.entry_mes_ocupacion.Text = "";
-				    this.entry_paciente.Text = "";
-				    this.folio_atencion = 0;
-				    this.pid_pasingado = 0;				
+					treeview_habitaciones.Sensitive = false;
+					treeViewEngineBuscahabitacion.Clear();
+					descripcion_area = "";
+					entry_id_habitacion.Text = "";
+					entry_area.Text = "";	
+					entry_descripcion.Text = "";
+					entry_numero_habitacion.Text = "";
+					entry_folio.Text = "";
+				    entry_anno_ocupacion.Text = "";
+				    entry_dia_ocupacion.Text = "";
+	        	    entry_mes_ocupacion.Text = "";
+				    entry_paciente.Text = "";
+				    folio_atencion = 0;
+				    pid_pasingado = 0;				
 					llena_lista_habitaciones();				
 				}
 			}	

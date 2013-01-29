@@ -109,7 +109,7 @@ namespace osiris
 
 		public pases_a_quirofano (int pidpaciente_,int folioservicio_,int idcentro_costo_,string LoginEmpleado_,
 		                          int idtipopaciente_,int idempresa_paciente_,int idaseguradora_paciente_,
-									bool altamedicapaciente,string tipo_pase_,bool elimina_pase,bool imprimir_pase)
+									bool altamedicapaciente,string tipo_pase_,bool elimina_pase,bool imprimir_pase,bool foliocerrado)
 		{
 			escala_en_linux_windows = classpublic.escala_linux_windows;
 			connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
@@ -148,6 +148,9 @@ namespace osiris
 	           	button_rep.Clicked += new EventHandler(on_printing_pase_qx_clcked);
 	          	checkbutton_todos_envios.Clicked += new EventHandler(on_create_pases_qxurg_clicked);
 	          	//checkbutton_seleccion_presupuestos.Hide();
+				if(foliocerrado){
+					checkbutton_todos_envios.Sensitive = false;
+				}
 				crea_treeview_pases();
 				llenado_treeview_pases();
 				

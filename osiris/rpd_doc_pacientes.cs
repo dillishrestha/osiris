@@ -83,6 +83,7 @@ namespace osiris
 		[Widget] Gtk.ComboBox combobox_tipo_cirugia = null;
 		[Widget] Gtk.CheckButton checkbutton_camb_dats;
 		[Widget] Gtk.ComboBox combobox_diagprimeravez = null;
+		[Widget] Gtk.Entry entry_estatus = null;
 				
 		// declarando tab2 quirofano
 		[Widget] Gtk.CheckButton checkbutton_lente = null;
@@ -193,6 +194,7 @@ namespace osiris
 		int iddiagnosticofinal = 1;	// toma el valor del id del diagnostico final
 		int idaseguradora_paciente = 1;
 		int idempresa_paciente = 1;
+		bool cuenta_cerrada;
 		
 		//busqueda de diagnostico
 		private TreeStore treeViewEngineBusca2;	// Para la busqueda de Productos
@@ -222,7 +224,7 @@ namespace osiris
 		string[] args_tipos_cirugias = {"","CIRUGIA AMBULATORIA","CIRUGIA PROGRAMADA","SIN CIRUGIA"};
 		string[] args_diag_primeravez = {"","SI","NO"};
 		string[] args_tipobusqueda = {"","PRIMER NOMBRE","SEGUNDO NOMBRE","APELLIDO PATERNO","APELLIDO MATERNO","CEDULA MEDICA","ESPECIALIDAD"};
-		string[] args_tipoanestesia = {"","INTRACAM","INTRACAM + SEDACION","RETROBULVAR","RETROBULVAR + SEDACION","TOPICA","NO TOPICA","EPIDURAL O RAQUEA","LOCAL + SEDACION","GENERAL","ENDOVENOSA"};
+		string[] args_tipoanestesia = {"","INTRACAM","INTRACAM + SEDACION","RETROBULVAR","RETROBULVAR + SEDACION","TOPICA","NO TOPICA","EPIDURAL O RAQUEA","LOCAL + SEDACION","GENERAL","ENDOVENOSA","TOPICA + LOCAL","TOPICA + SEDACION"};
 		string[] args_tecnicosvision = {"","ALEJANDRA DEYANIRA MARTINEZ CARDENAS","LUIS MIGUEL ALVAREZ CASTAÑEDA","GUADALUPE ROCHA PAYAN","ERICK SEBASTIAN CONRONADO MATA","AZALIA DIAZ ORTIZ"};
 		class_conexion conexion_a_DB = new class_conexion();
 		class_public classpublic = new class_public();
@@ -559,7 +561,7 @@ namespace osiris
 		
 		void on_button_pase_de_ingreso_clicked(object sender, EventArgs args)
 		{
-			new osiris.pases_a_quirofano(PidPaciente,folioservicio,idtipointernamiento,LoginEmpleado,id_tipopaciente,idempresa_paciente,idaseguradora_paciente,false,"pase_de_ingreso",false,false);
+			new osiris.pases_a_quirofano(PidPaciente,folioservicio,idtipointernamiento,LoginEmpleado,id_tipopaciente,idempresa_paciente,idaseguradora_paciente,false,"pase_de_ingreso",false,false,cuenta_cerrada);
 		}
 		
 		void on_combobox_tipo_anestecia_clicked(object sender, EventArgs args)
@@ -1386,6 +1388,12 @@ namespace osiris
 			entry_observacion_qx.Text = "";
 			entry_id_cirujano2.Text = "0";
 			entry_nombre_cirujano2.Text = "";
+			entry_estatus.Text = "";
+			checkbutton_lente.Sensitive = true;
+			checkbutton_tipo_anestesia.Sensitive = true;
+			checkbutton_anestesiologo.Sensitive = true;
+			checkbutton_observacion_qx.Sensitive = true;
+			checkbutton_cirujano2.Sensitive = true;
 			llenado_combobox(0,"",combobox_tipo_cirugia,"array","","","",args_tipos_cirugias,args_id_array,"");
 			llenado_combobox(0,"",combobox_diagprimeravez,"array","","","",args_diag_primeravez,args_id_array,"");
 			llenado_combobox(0,"",combobox_tipo_anestecia,"array","","","",args_tipoanestesia,args_id_array,"");
@@ -1404,7 +1412,7 @@ namespace osiris
 				comando.CommandText = "SELECT osiris_erp_cobros_enca.folio_de_servicio AS foliodeatencion,to_char(osiris_erp_cobros_enca.pid_paciente,'9999999999') AS pidpaciente,"+
             				"nombre1_paciente,nombre2_paciente,apellido_paterno_paciente,apellido_materno_paciente,"+
             				"telefono_particular1_paciente,numero_poliza,folio_de_servicio_dep,"+
-            				"nombre_de_cirugia,"+
+            				"nombre_de_cirugia,cerrado,"+
 							"to_char(to_number(to_char(age('"+DateTime.Now.ToString("yyyy-MM-dd")+"',osiris_his_paciente.fecha_nacimiento_paciente),'yyyy') ,'9999'),'9999') AS edad_paciente, "+
             				"to_char(fecha_nacimiento_paciente,'yyyy-MM-dd') AS fech_nacimiento,sexo_paciente,"+
 							"descripcion_diagnostico_movcargos,id_tipo_cirugia,"+
@@ -1437,13 +1445,22 @@ namespace osiris
             				"AND osiris_erp_cobros_enca.folio_de_servicio = '"+(string) foliodeservicio_+"';";
 				NpgsqlDataReader lector = comando.ExecuteReader ();
             	
-				while (lector.Read()){
+				if(lector.Read()){
 					if((bool) lector["cancelado"]){
 						MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
 													MessageType.Error, ButtonsType.Close, "ESTE FOLIO HA SIDO CANCELADO\n");
 						msgBoxError.Run ();
 						msgBoxError.Destroy();
 					}else{
+						if((bool) lector["cerrado"]){
+							entry_estatus.Text = "CERRADO";
+							checkbutton_lente.Sensitive = false;
+							checkbutton_tipo_anestesia.Sensitive = false;
+							checkbutton_anestesiologo.Sensitive = false;
+							checkbutton_observacion_qx.Sensitive = false;
+							checkbutton_cirujano2.Sensitive = false;
+						}
+						cuenta_cerrada = (bool) lector["cerrado"];
 						entry_fecha_admision.Text = (string) lector["fecha_registro"];
 						entry_hora_registro.Text = (string) lector["hora_registro"];
 						entry_fechahora_alta.Text = (string) lector["fecha_egre"]+" "+(string) lector["hora_egre"];
@@ -1556,6 +1573,10 @@ namespace osiris
 					}
 					checkbutton_camb_dats.Sensitive = true;
 					//this.button_guardar.Sensitive = true;
+				}else{
+					MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+													MessageType.Error, ButtonsType.Close, "NO existe el numero de atencion... verifique.");
+					msgBoxError.Run ();						msgBoxError.Destroy();					
 				}
 			}catch (NpgsqlException ex){
 	   			Console.WriteLine ("PostgresSQL error: {0}",ex.Message);

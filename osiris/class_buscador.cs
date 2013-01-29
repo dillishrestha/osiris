@@ -114,6 +114,7 @@ namespace osiris
 		Gtk.Entry entry_direccion_proveedor = null;
 		Gtk.Entry entry_tel_proveedor = null;
 		Gtk.Entry entry_contacto_proveedor = null;
+		Gtk.Entry entry_rfc_proveedor = null;
 				
 		// Busqueda de Especialidades Medicas
 		Gtk.Entry entry_id_especialidad = null;
@@ -280,7 +281,23 @@ namespace osiris
 				case "find_proveedores_catalogo_producto":
 					entry_id_proveedor = (object) args[0] as Gtk.Entry;
 					entry_nombre_proveedor = (object) args[1] as Gtk.Entry;
-				break;				
+				break;
+				case "find_proveedores_newoc":
+					entry_id_proveedor = (object) args[0] as Gtk.Entry;
+					entry_nombre_proveedor = (object) args[1] as Gtk.Entry;
+					entry_formapago = (object) args[2] as Gtk.Entry;
+					entry_direccion_proveedor  = (object) args[3] as Gtk.Entry;
+					entry_tel_proveedor = (object) args[4] as Gtk.Entry;
+					entry_rfc_proveedor = (object) args[5] as Gtk.Entry;
+				break;
+				case "find_proveedores_OC":
+					entry_id_proveedor = (object) args[0] as Gtk.Entry;
+					entry_nombre_proveedor = (object) args[1] as Gtk.Entry;
+					entry_direccion_proveedor  = (object) args[2] as Gtk.Entry;
+					entry_tel_proveedor  = (object) args[3] as Gtk.Entry;
+					entry_contacto_proveedor  = (object) args[4] as Gtk.Entry;
+					entry_formapago  = (object) args[5] as Gtk.Entry;
+				break;
 				case "find_especialidad_medica":
 					entry_id_especialidad = (object) args[0] as Gtk.Entry;
 					entry_especialidad = (object) args[1] as Gtk.Entry;
@@ -376,14 +393,6 @@ namespace osiris
 					lista_de_busqueda.AppendColumn(col_buscador3);
 					lista_de_busqueda.AppendColumn(col_buscador4);
 					lista_de_busqueda.AppendColumn(col_buscador5);
-				break;
-				case "find_proveedores_OC":
-					entry_id_proveedor = (object) args[0] as Gtk.Entry;
-					entry_nombre_proveedor = (object) args[1] as Gtk.Entry;
-					entry_direccion_proveedor  = (object) args[2] as Gtk.Entry;
-					entry_tel_proveedor  = (object) args[3] as Gtk.Entry;
-					entry_contacto_proveedor  = (object) args[4] as Gtk.Entry;
-					entry_formapago  = (object) args[5] as Gtk.Entry;
 				break;
 				case "find_almacen_inventario":
 					entry_id_almacen = (object) args[0] as Gtk.Entry;
@@ -656,7 +665,23 @@ namespace osiris
 													(string) lector["descripcion_forma_de_pago"]);//11
 													//(string) lector["fax_proveedor"], //12
 							                        //(int) lector["id_forma_de_pago"]);//13
-							break;							
+							break;
+							case "find_proveedores_newoc":
+								treeViewEngineBuscador.AppendValues ((string) lector["id_proveedor"].ToString(),//0
+													(string) lector["descripcion_proveedor"],//1
+							                        (bool) lector["proveedor_activo"], //, // 2
+													(string) lector["direccion_proveedor"],//3
+													(string) lector["colonia_proveedor"],//4
+													(string) lector["municipio_proveedor"],//5
+													(string) lector["estado_proveedor"],//6
+													(string) lector["telefono1_proveedor"],//7
+													(string) lector["contacto1_proveedor"],//8
+													(string) lector["rfc_proveedor"],//9
+													(string) lector["pagina_web_proveedor"],//10
+													(string) lector["descripcion_forma_de_pago"]);//11
+													//(string) lector["fax_proveedor"], //12
+							                        //(int) lector["id_forma_de_pago"]);//13
+							break;
 							case "find_proveedores_catalogo_producto":
 								treeViewEngineBuscador.AppendValues ((string) lector["id_proveedor"].ToString(),//0
 													(string) lector["descripcion_proveedor"],//1
@@ -861,15 +886,6 @@ namespace osiris
 						entry_idmarca_producto.Text = tomaid.ToString();
 						entry_descripcion_marca_producto.Text = (string) model.GetValue(iterSelected, 1);
 					break;
-					case "find_proveedores":
-						entry_id_proveedor.Text = tomaid.ToString();
-						entry_nombre_proveedor.Text = (string) model.GetValue(iterSelected, 1);
-						entry_formapago.Text = (string) model.GetValue(iterSelected, 11);
-					break;
-					case "find_proveedores_catalogo_producto":
-						entry_id_proveedor.Text = tomaid.ToString();
-						entry_nombre_proveedor.Text = (string) model.GetValue(iterSelected, 1);
-					break;
 					case "find_especialidad_medica":
 						entry_id_especialidad.Text = tomaid.ToString();
 						entry_especialidad.Text = (string) model.GetValue(iterSelected, 1);
@@ -936,6 +952,24 @@ namespace osiris
 															(string) model.GetValue(iterSelected, 5);
 						//entry_edad_paciente_cita.Text = (string) model.GetValue(iterSelected, 4);
 					break;
+					case "find_proveedores":
+						entry_id_proveedor.Text = tomaid.ToString();
+						entry_nombre_proveedor.Text = (string) model.GetValue(iterSelected, 1);
+						entry_formapago.Text = (string) model.GetValue(iterSelected, 11);
+					break;
+					case "find_proveedores_catalogo_producto":
+						entry_id_proveedor.Text = tomaid.ToString();
+						entry_nombre_proveedor.Text = (string) model.GetValue(iterSelected, 1);
+					break;
+					case "find_proveedores_newoc":						
+						entry_id_proveedor.Text = tomaid.ToString();
+						entry_nombre_proveedor.Text = (string) model.GetValue(iterSelected, 1);
+						entry_formapago.Text = (string) model.GetValue(iterSelected, 11);
+						entry_direccion_proveedor.Text = (string) model.GetValue(iterSelected, 3)+" "+(string) model.GetValue(iterSelected, 4)+" "+
+														(string) model.GetValue(iterSelected, 5)+ " " +(string) model.GetValue(iterSelected, 6);
+						entry_tel_proveedor.Text = (string) model.GetValue(iterSelected, 7);
+						entry_rfc_proveedor.Text = (string) model.GetValue(iterSelected, 9);
+					break;
 					case "find_proveedores_OC":						
 						entry_id_proveedor.Text = tomaid.ToString();
 						entry_nombre_proveedor.Text = (string) model.GetValue(iterSelected, 1);
@@ -944,7 +978,7 @@ namespace osiris
 														(string) model.GetValue(iterSelected, 5)+ " " +(string) model.GetValue(iterSelected, 6);
 						entry_tel_proveedor.Text = (string) model.GetValue(iterSelected, 7);
 						entry_contacto_proveedor.Text =  ""; //(string) model.GetValue(iterSelected, 1);
-					break;					
+					break;
 					case "find_almacen_inventario":
 						entry_id_almacen.Text = tomaid.ToString();
 						entry_almacen.Text = (string) model.GetValue(iterSelected, 1);

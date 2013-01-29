@@ -395,9 +395,9 @@ namespace osiris
 				rango2 = entry_ano_termino.Text+"-"+entry_mes_termino.Text+"-"+entry_dia_termino.Text;
 				query_fechas = " AND to_char(osiris_his_solicitudes_deta.fecha_envio_almacen,'yyyy-MM-dd') >= '"+rango1+"' "+
 								"AND to_char(osiris_his_solicitudes_deta.fecha_envio_almacen,'yyyy-MM-dd') <= '"+rango2+"' ";
-				}	
-				llenando_lista_de_solicitudes();
-			}
+			}	
+			llenando_lista_de_solicitudes();		
+		}
 			
 		void on_button_rep_clicked(object sender, EventArgs args)
 		{

@@ -544,7 +544,7 @@ namespace osiris
 		
 		void on_button_pase_quirofano_clicked(object sender, EventArgs args)
 		{
-			new osiris.pases_a_quirofano(PidPaciente,folioservicio,idcentro_costo,LoginEmpleado,id_tipopaciente,idempresa_paciente,idaseguradora_paciente,false,"pase_qx_urg",false,false);
+			new osiris.pases_a_quirofano(PidPaciente,folioservicio,idcentro_costo,LoginEmpleado,id_tipopaciente,idempresa_paciente,idaseguradora_paciente,false,"pase_qx_urg",false,false,cuenta_cerrada);
 		}
 		
 		void on_button_venta_publico_clicked(object sender, EventArgs args)
@@ -3382,10 +3382,9 @@ namespace osiris
             					
 					this.entry_descrip_cirugia.Text = cirugia;
 					entry_diagnostico.Text = (string) lector ["descripcion_diagnostico_movcargos"];
-					
-					
+										
 					cuenta_bloqueada = (bool) lector["bloqueo_de_folio"];
-					//cuenta_cerrada = (bool) lector["pagado"];
+					cuenta_cerrada = (bool) lector["cerrado"];
 					
 					deducible_caja = float.Parse((string) lector["deduciblecaja"]); 
 					coaseguro_caja = float.Parse((string) lector["coasegurocaja"]);
@@ -3429,7 +3428,7 @@ namespace osiris
 									if (procedimiento_cerrado == false){
 									
 										button_busca_producto.Sensitive = true;
-										button_pase_quirofano.Sensitive = false;
+										//button_pase_quirofano.Sensitive = false;
 										if ((bool) lector ["alta_paciente"] == false){
 											// habilitando boton para poder realizar mas cargos
 											if ((bool) lector ["bloqueo_de_folio"] == false){
@@ -3467,7 +3466,7 @@ namespace osiris
 											button_compro_caja.Sensitive = true;
 											button_compro_serv.Sensitive = true;
 											button_pagare.Sensitive = true;
-											button_pase_quirofano.Sensitive = false;
+											button_pase_quirofano.Sensitive = true;
 											button_traspasa_productos.Sensitive = true;
 											button_exportar_xls.Sensitive = true;
 											MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,

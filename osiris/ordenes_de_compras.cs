@@ -49,23 +49,33 @@ namespace osiris
 		// Declarando ventana del menu de costos
 		[Widget] Gtk.Window crea_ordenes_compras = null;
 		[Widget] Gtk.CheckButton checkbutton_all_deptos = null;
-		[Widget] Gtk.ComboBox combobox_tipo_admision = null;
+		[Widget] Gtk.ComboBox combobox_condicion_oc = null;
 		[Widget] Gtk.TreeView lista_productos_a_comprar = null;
 		[Widget] Gtk.Button button_busca_proveedores = null;
 		[Widget] Gtk.Button button_asignar_proveedor = null;
 		[Widget] Gtk.Button button_mov_productos_oc = null;
 		[Widget] Gtk.Button button_orden_compra = null;
-		[Widget] Gtk.Button button_buscar_precio = null;
 		[Widget] Gtk.Entry entry_id_proveedor = null;
 		[Widget] Gtk.Entry entry_nombre_proveedor = null;
 		[Widget] Gtk.Entry entry_formapago = null;
+		[Widget] Gtk.Entry entry_direccion_proveedor = null;
+		[Widget] Gtk.Entry entry_tel_proveedor = null;
+		[Widget] Gtk.Entry entry_rfc_proveedor = null;
 		[Widget] Gtk.Entry entry_dia_oc = null;
 		[Widget] Gtk.Entry entry_mes_oc = null;
 		[Widget] Gtk.Entry entry_ano_oc = null;
+		[Widget] Gtk.Entry entry_dia_fentrega = null;
+		[Widget] Gtk.Entry entry_mes_fentrega = null;
+		[Widget] Gtk.Entry entry_ano_fentrega = null;
+		[Widget] Gtk.Entry entry_lugar_entrega = null;
+		[Widget] Gtk.Entry entry_observaciones = null;
+		[Widget] Gtk.ComboBox combobox_facturar_a = null;
+		
 		[Widget] Gtk.Statusbar statusbar = null;
 		[Widget] Gtk.TreeView treeview_lista_departamentos = null;
 		
 		[Widget] Gtk.Button button_prod_comprado = null;
+		[Widget] Gtk.Button button_libera_producto = null; 
 				
 		string connectionString;
 		string nombrebd;
@@ -78,10 +88,17 @@ namespace osiris
 		string departamentos_seleccionados = "";
     	
     	int ultimaorden = 0;
+		int idreceptor = 1;
+		int selecciono_productos = 0;
     	
     	// Declarando las variables de publicas para uso dentro de classe
     	int idtipointernamiento;
     	string descripinternamiento = "";	// Descripcion de Centro de Costos - Solicitado por
+		
+		string tipodeordencompra = "";
+		string[] args_tipoordencompra = {"","ORDINARIA","URGENTE"};
+		string[] args_args = {""};
+		int[] args_id_array = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14};
 		
 		TreeStore treeViewEngineProductosaComprar;	// Lista de proctos que se van a comprar
 		TreeStore treeViewEngineListaDepartamentos;
@@ -89,14 +106,25 @@ namespace osiris
 		//Declaracion de ventana de error
 		protected Gtk.Window MyWinError;
 		protected Gtk.Window MyWin;		
-		
-		TreeViewColumn col_autorizar;		CellRendererToggle cel_autorizar;
-		TreeViewColumn col_solicitado_por;	CellRendererText cellr1;
-		TreeViewColumn col_numero_req;		CellRendererText cellr2;
-		TreeViewColumn col_cantidadcomprar;	CellRendererText cellr3;
-		TreeViewColumn col_descripcion;		CellRendererText cellr4;
-		TreeViewColumn col_unidades;		CellRendererText cellr5;
-		TreeViewColumn col_codigo_prod;		CellRendererText cellr6;
+				
+		TreeViewColumn col_00;	CellRendererToggle cellrt_00;
+		TreeViewColumn col_01;	CellRendererText cellrt_01;
+		TreeViewColumn col_02;	CellRendererText cellrt_02;
+		TreeViewColumn col_17;	CellRendererText cellrt_17;
+		TreeViewColumn col_18;	CellRendererText cellrt_18;
+		TreeViewColumn col_03;	CellRendererText cellrt_03;
+		TreeViewColumn col_09;	CellRendererText cellrt_09;
+		TreeViewColumn col_04;	CellRendererText cellrt_04;
+		TreeViewColumn col_05;	CellRendererText cellrt_05;
+		TreeViewColumn col_06;	CellRendererText cellrt_06;
+		TreeViewColumn col_07;	CellRendererText cellrt_07;
+		TreeViewColumn col_08;	CellRendererText cellrt_08;
+		TreeViewColumn col_10;	CellRendererText cellrt_10;
+		TreeViewColumn col_11;	CellRendererText cellrt_11;
+		TreeViewColumn col_12;	CellRendererText cellrt_12;
+		TreeViewColumn col_13;	CellRendererText cellrt_13;
+		TreeViewColumn col_14;	CellRendererText cellrt_14;
+		TreeViewColumn col_19;	CellRendererText cellrt_19;
 		
 		class_conexion conexion_a_DB = new class_conexion();
 		class_public classpublic = new class_public();
@@ -116,9 +144,15 @@ namespace osiris
 			////// Muestra ventana de Glade
 			crea_ordenes_compras.Show();
 			//this.entry_formapago.Text = "30 DIAS";
-			this.entry_dia_oc.Text = DateTime.Now.ToString("dd");
-			this.entry_mes_oc.Text = DateTime.Now.ToString("MM");
-			this.entry_ano_oc.Text = DateTime.Now.ToString("yyyy");
+			entry_dia_oc.Text = DateTime.Now.ToString("dd");
+			entry_mes_oc.Text = DateTime.Now.ToString("MM");
+			entry_ano_oc.Text = DateTime.Now.ToString("yyyy");
+			
+			entry_dia_fentrega.Text = DateTime.Now.ToString("dd");
+			entry_mes_fentrega.Text = DateTime.Now.ToString("MM");
+			entry_ano_fentrega.Text = DateTime.Now.ToString("yyyy");
+			
+			entry_lugar_entrega.Text = "ALMACEN GENERAL";
 			
 			button_orden_compra.Clicked += new EventHandler(on_button_orden_compra_clicked);
 			// 
@@ -137,6 +171,9 @@ namespace osiris
 			cree_treeview_departamentos();
 			llenado_treeview_departamentos();
 			
+			llenado_combobox(0,"",combobox_condicion_oc,"array","","","",args_tipoordencompra,args_id_array,"");
+			llenado_combobox(0,"",combobox_facturar_a,"sql","SELECT * FROM osiris_erp_emisor ORDER BY emisor;","emisor","id_emisor",args_args,args_id_array,"");
+			
 			statusbar.Pop(0);
 			statusbar.Push(1, "login: "+LoginEmpleado+"  |Usuario: "+NomEmpleado+" "+AppEmpleado+" "+ApmEmpleado);
 			statusbar.HasResizeGrip = false;
@@ -145,6 +182,71 @@ namespace osiris
 		void on_button_mov_productos_oc_clicked(object sender, EventArgs args)
 		{
 			new osiris.movimientos_productos(LoginEmpleado,NomEmpleado,AppEmpleado,ApmEmpleado,nombrebd,"productos_comprados","");	
+		}
+		
+		void llenado_combobox(int tipodellenado,string descrip_defaul,object obj,string sql_or_array,string query_SQL,string name_field_desc,string name_field_id,string[] args_array,int[] args_id_array,string name_field_id2)
+		{			
+			Gtk.ComboBox combobox_llenado = (Gtk.ComboBox) obj;
+			//Gtk.ComboBox combobox_pos_neg = obj as Gtk.ComboBox;
+			//Console.WriteLine((string) combobox_llenado.GetType().ToString());
+			combobox_llenado.Clear();
+			CellRendererText cell = new CellRendererText();
+			combobox_llenado.PackStart(cell, true);
+			combobox_llenado.AddAttribute(cell,"text",0);	        
+			ListStore store = new ListStore( typeof (string),typeof (int),typeof(bool));
+			combobox_llenado.Model = store;			
+			if ((int) tipodellenado == 1){
+				store.AppendValues ((string) descrip_defaul,0);
+			}			
+			if(sql_or_array == "array"){			
+				for (int colum_field = 0; colum_field < args_array.Length; colum_field++){
+					store.AppendValues (args_array[colum_field],args_id_array[colum_field]);
+				}
+			}
+			if(sql_or_array == "sql"){			
+				NpgsqlConnection conexion; 
+				conexion = new NpgsqlConnection (connectionString+nombrebd);
+	            // Verifica que la base de datos este conectada
+				try{
+					conexion.Open ();
+					NpgsqlCommand comando; 
+					comando = conexion.CreateCommand ();
+	               	comando.CommandText = query_SQL;					
+					NpgsqlDataReader lector = comando.ExecuteReader ();
+	               	while (lector.Read()){
+						store.AppendValues ((string) lector[name_field_desc ], (int) lector[name_field_id],false);
+					}
+				}catch (NpgsqlException ex){
+					MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+											MessageType.Error,ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
+					msgBoxError.Run ();				msgBoxError.Destroy();
+				}
+				conexion.Close ();
+			}			
+			TreeIter iter;
+			if (store.GetIterFirst(out iter)){
+				combobox_llenado.SetActiveIter (iter);
+			}
+			combobox_llenado.Changed += new EventHandler (onComboBoxChanged_llenado);			
+		}
+		
+		void onComboBoxChanged_llenado (object sender, EventArgs args)
+		{
+			
+			ComboBox onComboBoxChanged = sender as ComboBox;
+			
+			if (sender == null){	return; }
+			TreeIter iter;
+			if (onComboBoxChanged.GetActiveIter (out iter)){
+				switch (onComboBoxChanged.Name.ToString()){	
+				case "combobox_condicion_oc":
+					tipodeordencompra = (string) onComboBoxChanged.Model.GetValue(iter,0);
+					break;
+				case "combobox_facturar_a":
+					idreceptor = (int) onComboBoxChanged.Model.GetValue(iter,1);
+					break;
+				}
+			}
 		}
 		
 		void on_button_orden_compra_clicked(object sender, EventArgs args)
@@ -156,219 +258,141 @@ namespace osiris
 				msgBox.Destroy();
 		 		if (miResultado == ResponseType.Yes){							
 					ultimaorden = int.Parse(classpublic.lee_ultimonumero_registrado("osiris_erp_ordenes_compras_enca","numero_orden_compra",""));
-					bool variable_paso_01 = true;
-					string variable_paso_02 = "";   // se usa para asignar el proveedor de que se utilizo en la requisicion
 					TreeIter iterSelected;
 					//this.treeViewEngineProductosaComprar.GetSortColumnId(out iterSelected,			
 					if (treeViewEngineProductosaComprar.GetIterFirst(out iterSelected)){
-						if ((bool)lista_productos_a_comprar.Model.GetValue (iterSelected,0) == true){
-							if (variable_paso_01 == true){
-								NpgsqlConnection conexion1;
-								conexion1 = new NpgsqlConnection (connectionString+nombrebd );
-								// Verifica que la base de datos este conectada
-								try{
-									conexion1.Open ();
-									NpgsqlCommand comando; 
-									comando = conexion1.CreateCommand ();
-									
-									comando.CommandText = "INSERT INTO osiris_erp_ordenes_compras_enca ("+
-															"id_proveedor,"+
-			 												"fechahora_creacion,"+
-			 												"fecha_solicitud,"+
-			 												"fecha_de_entrega,"+
-			 												"id_quien_creo,"+
-			 												"lugar_de_entrega,"+
-			 												"embarque,"+
-			 												"condiciones_de_pago,"+
-			 												"descripcion_proveedor,"+
-			 												"numero_requisiciones,"+
-			 												"direccion_proveedor,"+
-			 												"telefonos_proveedor,"+
-			 												"contacto_proveedor,"+
-			 												"correo_electronico,"+
-			 												"rfc_proveedor,"+
-			 												"faxnextel_proveedor,"+
-															//"subtotal_orden_compra,"+
-															//"iva_orden_compra,"+
-															//"total_orden_compra,"+
-			 												"numero_orden_compra) "+
-															"VALUES ('"+
-			 												int.Parse((string) this.lista_productos_a_comprar.Model.GetValue(iterSelected,15))+"','"+//id_prod
-					 										DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"','"+//fechahora_creacion
-					 										DateTime.Now.ToString("yyyy-MM-dd")+"','"+//fechahora_solicitud
-					 										entry_ano_oc.Text+"-"+entry_mes_oc.Text+"-"+entry_dia_oc.Text+"','"+
-					 										LoginEmpleado+"','"+//id_empleado
-					 										"HOSPITAL"+"','"+
-					 										"SU CONDUCTO"+"','"+
-					 										entry_formapago.Text+"','"+
-			 												(string) lista_productos_a_comprar.Model.GetValue(iterSelected,12).ToString().Trim()+"','"+
-			 												(string) lista_productos_a_comprar.Model.GetValue(iterSelected,02).ToString().Trim()+"','"+
-			 												(string) lista_productos_a_comprar.Model.GetValue(iterSelected,16).ToString().Trim()+"','"+
-			 												(string) lista_productos_a_comprar.Model.GetValue(iterSelected,17).ToString().Trim()+"','"+
-			 												(string) lista_productos_a_comprar.Model.GetValue(iterSelected,18).ToString().Trim()+"','"+
-			 												(string) lista_productos_a_comprar.Model.GetValue(iterSelected,19).ToString().Trim()+"','"+
-			 												(string) lista_productos_a_comprar.Model.GetValue(iterSelected,20).ToString().Trim()+"','"+
-			 												(string) lista_productos_a_comprar.Model.GetValue(iterSelected,21).ToString().Trim()+"','"+
-			 													 												
-			 												//this.ultimaorden.ToString()+
-															int.Parse(classpublic.lee_ultimonumero_registrado("osiris_erp_ordenes_compras_enca","numero_orden_compra","")).ToString().Trim()+	
-			 												"');";
-									//Console.WriteLine(comando.CommandText);							
-									comando.ExecuteNonQuery(); 	    comando.Dispose();
-									variable_paso_01 = false;
-									
-								}catch (NpgsqlException ex){
-									MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
-																		MessageType.Error, 
-																		ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
-									msgBoxError.Run ();
-								}
-							}							
-							if(variable_paso_01 == false){
-								// Validando que seleccione un proveedor
-								if (this.entry_id_proveedor.Text.Trim() == ""){
-										variable_paso_02 = (string) this.lista_productos_a_comprar.Model.GetValue (iterSelected,15);
-								}else{
-										variable_paso_02 = this.entry_id_proveedor.Text;
-								}
+						if(selecciono_productos > 0){
+							// creando encabezado de la orden de compra
+							NpgsqlConnection conexion1;
+							conexion1 = new NpgsqlConnection (connectionString+nombrebd );
+							// Verifica que la base de datos este conectada
+							try{
+								conexion1.Open ();
+								NpgsqlCommand comando; 
+								comando = conexion1.CreateCommand ();
 								
-								NpgsqlConnection conexion3; 
-								conexion3 = new NpgsqlConnection (connectionString+nombrebd);
-								try{
-									conexion3.Open ();
-									NpgsqlCommand comando3; 
-									comando3 = conexion3.CreateCommand();
-									comando3.CommandText =  "UPDATE osiris_erp_requisicion_deta SET id_quien_compro = ' "+LoginEmpleado+"', "+
-													    "fechahora_compra = '"+DateTime.Now.ToString("yyyy-MM-dd")+"', "+
-													    "comprado = 'true', "+
-													    "id_proveedor = '"+variable_paso_02+"', "+
-													    "numero_orden_compra = '"+ultimaorden.ToString()+"',"+
-														"precio_costo_prov_selec ='"+(string)lista_productos_a_comprar.Model.GetValue (iterSelected,10).ToString().Trim()+"',"+
-														"precio_unitario_prov_selec ='"+(string)lista_productos_a_comprar.Model.GetValue (iterSelected,11).ToString().Trim()+"' "+
-									                    "WHERE id_requisicion ='"+(string)lista_productos_a_comprar.Model.GetValue (iterSelected,2).ToString().Trim()+"' "+
-									                    "AND id_producto ='"+(string)lista_productos_a_comprar.Model.GetValue (iterSelected,6).ToString().Trim()+"' ;"; 
-									Console.WriteLine(comando3.CommandText);
-									comando3.ExecuteNonQuery();
-									comando3.Dispose();																	
-								}catch (NpgsqlException ex){
-									MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
-								                                               MessageType.Error, 
-								                                               ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
-									msgBoxError.Run ();
+								comando.CommandText = "INSERT INTO osiris_erp_ordenes_compras_enca ("+
+														"id_proveedor,"+
+		 												"fechahora_creacion,"+
+		 												"fecha_solicitud,"+
+		 												"fecha_de_entrega," +
+		 												"fecha_deorden_compra,"+
+		 												"id_quien_creo,"+
+		 												"lugar_de_entrega,"+
+		 												"embarque,"+
+		 												"condiciones_de_pago,"+
+		 												"descripcion_proveedor,"+
+		 												"numero_requisiciones,"+
+		 												"direccion_proveedor,"+
+		 												"telefonos_proveedor,"+
+		 												"contacto_proveedor,"+
+		 												"correo_electronico,"+
+		 												"rfc_proveedor,"+
+		 												"faxnextel_proveedor,"+
+		 												"numero_orden_compra," +
+														"observaciones," +
+		 												"tipo_orden_compra," +
+		 												"id_emisor) "+
+														"VALUES ('"+
+		 												(string) this.lista_productos_a_comprar.Model.GetValue(iterSelected,15).ToString().Trim()+"','"+//id_prod
+				 										DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"','"+
+														entry_ano_fentrega.Text.Trim()+"-"+entry_mes_fentrega.Text.Trim()+"-"+entry_dia_fentrega.Text.Trim()+"','"+
+				 										DateTime.Now.ToString("yyyy-MM-dd")+"','"+//fechahora_solicitud
+				 										entry_ano_oc.Text+"-"+entry_mes_oc.Text+"-"+entry_dia_oc.Text+"','"+
+				 										LoginEmpleado+"','"+//id_empleado
+				 										"HOSPITAL"+"','"+
+				 										entry_lugar_entrega.Text.ToUpper()+"','"+
+				 										entry_formapago.Text+"','"+
+		 												(string) lista_productos_a_comprar.Model.GetValue(iterSelected,12).ToString().Trim()+"','"+
+		 												(string) lista_productos_a_comprar.Model.GetValue(iterSelected,02).ToString().Trim()+"','"+
+		 												(string) lista_productos_a_comprar.Model.GetValue(iterSelected,16).ToString().Trim()+"','"+
+		 												entry_tel_proveedor.Text.ToString().ToUpper()+"','"+
+		 												"','"+
+		 												"','"+
+		 												"','"+
+														entry_tel_proveedor.Text.ToString().ToUpper()+"','"+		 												
+														int.Parse(classpublic.lee_ultimonumero_registrado("osiris_erp_ordenes_compras_enca","numero_orden_compra","")).ToString().Trim()+"','"+	
+		 												entry_observaciones.Text.ToUpper().Trim()+"','"+
+														tipodeordencompra+"','"+											
+														idreceptor.ToString().Trim()+"');";
+								Console.WriteLine(comando.CommandText);							
+								comando.ExecuteNonQuery(); 	    comando.Dispose();								
+								if ((bool)lista_productos_a_comprar.Model.GetValue (iterSelected,0) == true){
+									NpgsqlConnection conexion3; 
+									conexion3 = new NpgsqlConnection (connectionString+nombrebd);
+									try{
+										conexion3.Open ();
+										NpgsqlCommand comando3; 
+										comando3 = conexion3.CreateCommand();
+										comando3.CommandText =  "UPDATE osiris_erp_requisicion_deta SET id_quien_compro = ' "+LoginEmpleado+"', "+
+														    "fechahora_compra = '"+DateTime.Now.ToString("yyyy-MM-dd")+"', "+
+														    "comprado = 'true', "+
+															"cantidad_comprada = '"+(string)lista_productos_a_comprar.Model.GetValue (iterSelected,3).ToString().Trim()+"', "+
+														    "id_proveedor = '"+lista_productos_a_comprar.Model.GetValue(iterSelected,15).ToString().Trim()+"', "+
+														    "numero_orden_compra = '"+ultimaorden.ToString()+"',"+
+															"precio_costo_prov_selec ='"+(string)lista_productos_a_comprar.Model.GetValue (iterSelected,10).ToString().Trim()+"',"+
+															"precio_unitario_prov_selec ='"+(string)lista_productos_a_comprar.Model.GetValue (iterSelected,11).ToString().Trim()+"' "+
+										                    "WHERE id_requisicion ='"+(string)lista_productos_a_comprar.Model.GetValue (iterSelected,2).ToString().Trim()+"' "+
+										                    "AND id_producto ='"+(string)lista_productos_a_comprar.Model.GetValue (iterSelected,6).ToString().Trim()+"' ;"; 
+										Console.WriteLine(comando3.CommandText);
+										comando3.ExecuteNonQuery();
+										comando3.Dispose();
+									}catch (NpgsqlException ex){
+										MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+									                                               MessageType.Error,
+									                                               ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
+										msgBoxError.Run ();
+									}
+									conexion3.Close();
 								}
-								conexion3.Close();
-							}					
+								while (this.treeViewEngineProductosaComprar.IterNext(ref iterSelected)){
+									if ((bool)this.lista_productos_a_comprar.Model.GetValue (iterSelected,0) == true){
+										NpgsqlConnection conexion3; 
+										conexion3 = new NpgsqlConnection (connectionString+nombrebd);
+										try{
+											conexion3.Open ();
+											NpgsqlCommand comando3; 
+											comando3 = conexion3.CreateCommand();
+											comando3.CommandText =  "UPDATE osiris_erp_requisicion_deta SET id_quien_compro = ' "+LoginEmpleado+"', "+
+															    "fechahora_compra = '"+DateTime.Now.ToString("yyyy-MM-dd")+"', "+
+															    "comprado = 'true'," +
+															    "cantidad_comprada = '"+(string)lista_productos_a_comprar.Model.GetValue (iterSelected,3).ToString().Trim()+"' "+
+															    "id_proveedor = '"+lista_productos_a_comprar.Model.GetValue(iterSelected,15).ToString().Trim()+"', "+
+															    "numero_orden_compra = '"+ultimaorden.ToString()+"',"+
+																"precio_costo_prov_selec ='"+(string)lista_productos_a_comprar.Model.GetValue (iterSelected,10).ToString().Trim()+"',"+
+																"precio_unitario_prov_selec ='"+(string)lista_productos_a_comprar.Model.GetValue (iterSelected,11).ToString().Trim()+"' "+
+											                    "WHERE id_requisicion ='"+(string)lista_productos_a_comprar.Model.GetValue (iterSelected,2).ToString().Trim()+"' "+
+											                    "AND id_producto ='"+(string)lista_productos_a_comprar.Model.GetValue (iterSelected,6).ToString().Trim()+"' ;"; 
+											Console.WriteLine(comando3.CommandText);
+											comando3.ExecuteNonQuery();
+											comando3.Dispose();
+										}catch (NpgsqlException ex){
+											MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+										                                               MessageType.Error,
+										                                               ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
+											msgBoxError.Run ();
+										}
+										conexion3.Close();
+									}
+								}
+								llena_requiciones_para_comprar(departamentos_seleccionados);
+							}catch (NpgsqlException ex){
+								MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+																	MessageType.Error, 
+																	ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
+								msgBoxError.Run ();
+							}
+						}else{
+							MessageDialog msgBoxError1 = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+								                                    MessageType.Error,ButtonsType.Close, "ERROR usted seleccionado ningun producto para generar la orden de compra, verifique...");
+							msgBoxError1.Run ();			msgBoxError1.Destroy();
 						}	
-					}					
-					while (this.treeViewEngineProductosaComprar.IterNext(ref iterSelected)){							
-						if ((bool)this.lista_productos_a_comprar.Model.GetValue (iterSelected,0) == true){
-							if (variable_paso_01 == true){
-								NpgsqlConnection conexion1;
-								conexion1 = new NpgsqlConnection (connectionString+nombrebd );
-								// Verifica que la base de datos este conectada
-								try{
-									conexion1.Open ();
-									NpgsqlCommand comando; 
-									comando = conexion1.CreateCommand ();
-									
-									comando.CommandText = "INSERT INTO osiris_erp_ordenes_compras_enca ("+
-															"id_proveedor,"+
-			 												"fechahora_creacion,"+
-			 												"fecha_solicitud,"+
-			 												"fecha_de_entrega,"+
-			 												"id_quien_creo,"+
-			 												"lugar_de_entrega,"+
-			 												"embarque,"+
-			 												"condiciones_de_pago,"+
-			 												"descripcion_proveedor,"+
-			 												"numero_requisiciones,"+
-			 												"direccion_proveedor,"+
-			 												"telefonos_proveedor,"+
-			 												"contacto_proveedor,"+
-			 												"correo_electronico,"+
-			 												"rfc_proveedor,"+
-			 												"faxnextel_proveedor,"+
-															//"subtotal_orden_compra,"+
-															//"iva_orden_compra,"+
-															//"total_orden_compra,"+
-			 												"numero_orden_compra) "+
-			 												"VALUES ('"+
-			 												int.Parse((string) this.lista_productos_a_comprar.Model.GetValue(iterSelected,15))+"','"+//id_prod
-					 										DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"','"+//fechahora_creacion
-					 										DateTime.Now.ToString("yyyy-MM-dd")+"','"+//fechahora_solicitud
-					 										this.entry_ano_oc.Text+"-"+this.entry_mes_oc.Text+"-"+this.entry_dia_oc.Text+"','"+
-					 										LoginEmpleado+"','"+//id_empleado
-					 										"HOSPITAL"+"','"+
-					 										"SU CONDUCTO"+"','"+
-					 										this.entry_formapago.Text+"','"+
-			 												(string) lista_productos_a_comprar.Model.GetValue(iterSelected,12)+"','"+
-			 												(string) lista_productos_a_comprar.Model.GetValue(iterSelected,2)+"','"+
-			 												(string) lista_productos_a_comprar.Model.GetValue(iterSelected,16)+"','"+
-			 												(string) lista_productos_a_comprar.Model.GetValue(iterSelected,17)+"','"+
-			 												(string) lista_productos_a_comprar.Model.GetValue(iterSelected,18)+"','"+
-			 												(string) lista_productos_a_comprar.Model.GetValue(iterSelected,19)+"','"+
-			 												(string) lista_productos_a_comprar.Model.GetValue(iterSelected,20)+"','"+
-			 												(string) lista_productos_a_comprar.Model.GetValue(iterSelected,21)+"','"+
-			 													 												
-			 												ultimaorden.ToString()+
-		
-			 												"');";
-									//Console.WriteLine(comando.CommandText);							
-									comando.ExecuteNonQuery(); 	    comando.Dispose();
-									variable_paso_01 = false;
-									
-								}catch (NpgsqlException ex){
-									MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
-																		MessageType.Error, 
-																		ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
-									msgBoxError.Run ();
-								}
-							}							
-							if(variable_paso_01 == false){
-								// Validando que seleccione un proveedor
-								if (entry_id_proveedor.Text.Trim() == ""){
-									variable_paso_02 = (string)lista_productos_a_comprar.Model.GetValue (iterSelected,15);
-								}else{
-									variable_paso_02 = this.entry_id_proveedor.Text;
-								}
-								
-								NpgsqlConnection conexion3; 
-								conexion3 = new NpgsqlConnection (connectionString+nombrebd);
-								try{
-									conexion3.Open ();
-									NpgsqlCommand comando3; 
-									comando3 = conexion3.CreateCommand();
-									comando3.CommandText =  "UPDATE osiris_erp_requisicion_deta SET id_quien_compro = ' "+LoginEmpleado+"', "+
-													    "fechahora_compra = '"+DateTime.Now.ToString("yyyy-MM-dd")+"', "+
-													    "comprado = 'true', "+
-													    "id_proveedor = '"+variable_paso_02+"', "+
-													    "numero_orden_compra = '"+ultimaorden.ToString()+"',"+
-														"precio_costo_prov_selec ='"+(string) lista_productos_a_comprar.Model.GetValue (iterSelected,10).ToString().Trim()+"',"+
-														"precio_unitario_prov_selec ='"+(string)lista_productos_a_comprar.Model.GetValue (iterSelected,11).ToString().Trim()+"' "+
-									                    "WHERE id_requisicion ='"+(string)lista_productos_a_comprar.Model.GetValue (iterSelected,2).ToString().Trim()+"' "+
-									                    "AND id_producto ='"+(string)lista_productos_a_comprar.Model.GetValue (iterSelected,6).ToString().Trim()+"' ;"; 
-									Console.WriteLine(comando3.CommandText);    
-									comando3.ExecuteNonQuery();
-									comando3.Dispose();																	
-								}catch (NpgsqlException ex){
-									MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
-								                                               MessageType.Error, 
-								                                               ButtonsType.Close,"PostgresSQL error: {0}",ex.Message);
-									msgBoxError.Run ();
-								}
-								conexion3.Close();
-							}					
-						}
-					}				
-					MessageDialog msgBoxError1 = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
-								                                               MessageType.Info,ButtonsType.Close, " La ORDEN DE COMPRA se creo CORRECTAMENTE con el Numero :"+ultimaorden.ToString().Trim());
-					msgBoxError1.Run ();			msgBoxError1.Destroy();				
-					llena_requiciones_para_comprar(departamentos_seleccionados);
+					}
 				}
 			}else{
-					MessageDialog msgBoxError1 = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
+				MessageDialog msgBoxError1 = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
 								                                    MessageType.Error,ButtonsType.Close, "ERROR usted no asigno ningun PROVEEDOR...");
-					msgBoxError1.Run ();			msgBoxError1.Destroy();
+				msgBoxError1.Run ();			msgBoxError1.Destroy();
 			}
 		}
 		
@@ -502,12 +526,7 @@ namespace osiris
 							lista_productos_a_comprar.Model.SetValue(iter,14,(string) lector["codigo_de_barra"]);				// Barras						
 							lista_productos_a_comprar.Model.SetValue(iter,12,(string) entry_nombre_proveedor.Text);		// Nombre Proveedor
 							lista_productos_a_comprar.Model.SetValue(iter,15,(string) entry_id_proveedor.Text);			// Id Proveedor							
-							lista_productos_a_comprar.Model.SetValue(iter,16,(string) lector["direccion_proveedor"]);					
-							//lista_productos_a_comprar.Model.SetValue(iter,17,(string) lector["telefono1_proveedor"]);		
-							//lista_productos_a_comprar.Model.SetValue(iter,18,(string) lector["contacto1_proveedor"]);	
-							lista_productos_a_comprar.Model.SetValue(iter,19,(string) lector["mail_proveedor"]);	
-							lista_productos_a_comprar.Model.SetValue(iter,20,(string) lector["rfc_proveedor"]);	
-							lista_productos_a_comprar.Model.SetValue(iter,21,(string) lector["fax_proveedor"]);
+							lista_productos_a_comprar.Model.SetValue(iter,16,(string) lector["direccion_proveedor"]);
 							contador_prod_asignados += 1;
 						}else{
 							lista_productos_a_comprar.Model.SetValue(iter,0,false);
@@ -535,18 +554,13 @@ namespace osiris
 							NpgsqlDataReader lector = comando.ExecuteReader ();						
                				if (lector.Read()){					
 								lista_productos_a_comprar.Model.SetValue(iter,0,true);
-								lista_productos_a_comprar.Model.SetValue(iter,10,(string) lector["preciocosto"]);					// precio prov
-								lista_productos_a_comprar.Model.SetValue(iter,11,(string) lector["preciocostounitario"]);			// precio unitario
+								lista_productos_a_comprar.Model.SetValue(iter,10,(string) lector["preciocosto"]);				// precio prov
+								lista_productos_a_comprar.Model.SetValue(iter,11,(string) lector["preciocostounitario"]);		// precio unitario
 								lista_productos_a_comprar.Model.SetValue(iter,13,(string) lector["codigo_producto_proveedor"]);	// Codigo
-								lista_productos_a_comprar.Model.SetValue(iter,14,(string) lector["codigo_de_barra"]);				// Barras
-								lista_productos_a_comprar.Model.SetValue(iter,12,(string) entry_nombre_proveedor.Text);		// actualiza treeview con el nombre del proveedor
+								lista_productos_a_comprar.Model.SetValue(iter,14,(string) lector["codigo_de_barra"]);			// Barras
+								lista_productos_a_comprar.Model.SetValue(iter,12,(string) entry_nombre_proveedor.Text);			// actualiza treeview con el nombre del proveedor
 								lista_productos_a_comprar.Model.SetValue(iter,15,(string) entry_id_proveedor.Text);  			// almacena el id del proveedor							
-								lista_productos_a_comprar.Model.SetValue(iter,16,(string) lector["direccion_proveedor"]);					
-								//lista_productos_a_comprar.Model.SetValue(iter,17,(string) lector["telefono1_proveedor"]);		
-								//lista_productos_a_comprar.Model.SetValue(iter,18,(string) lector["contacto1_proveedor"]);	
-								lista_productos_a_comprar.Model.SetValue(iter,19,(string) lector["mail_proveedor"]);	
-								lista_productos_a_comprar.Model.SetValue(iter,20,(string) lector["rfc_proveedor"]);	
-								lista_productos_a_comprar.Model.SetValue(iter,21,(string) lector["fax_proveedor"]);	
+								lista_productos_a_comprar.Model.SetValue(iter,16,(string) lector["direccion_proveedor"]);
 								contador_prod_asignados += 1;
 							}else{
 								lista_productos_a_comprar.Model.SetValue(iter,0,false);
@@ -571,10 +585,33 @@ namespace osiris
 		
 		void cambia_colores_fila(Gtk.TreeViewColumn column, Gtk.CellRenderer cell, Gtk.TreeModel model, Gtk.TreeIter iter)
 		{
-			if ( (int) Convert.ToSingle ((string) this.lista_productos_a_comprar.Model.GetValue (iter,15)) > 1){ 
-				(cell as Gtk.CellRendererText).Foreground = "blue";
-			}else{ 
-				(cell as Gtk.CellRendererText).Foreground = "black";
+			if((bool) this.lista_productos_a_comprar.Model.GetValue (iter,21) == false){
+				if((int) Convert.ToSingle ((string) this.lista_productos_a_comprar.Model.GetValue (iter,15)) > 1){
+					if(cell.GetType().ToString() == "Gtk.CellRendererToggle"){
+						(cell as Gtk.CellRendererToggle).CellBackground = "yellow";
+						cellrt_00.Activatable = true;
+					}
+					if(cell.GetType().ToString() == "Gtk.CellRendererText"){
+						(cell as Gtk.CellRendererText).CellBackground = "yellow";
+					}
+				}else{
+					if(cell.GetType().ToString() == "Gtk.CellRendererToggle"){
+						(cell as Gtk.CellRendererToggle).CellBackground = "white";
+					}
+					if(cell.GetType().ToString() == "Gtk.CellRendererText"){
+						(cell as Gtk.CellRendererText).CellBackground = "white";
+					}
+				}
+				cell.Sensitive = true;
+			}else{
+				cell.Sensitive = false;
+				if(cell.GetType().ToString() == "Gtk.CellRendererToggle"){
+					(cell as Gtk.CellRendererToggle).CellBackground = "red";
+					cellrt_00.Activatable = false;					
+				}
+				if(cell.GetType().ToString() == "Gtk.CellRendererText"){
+					(cell as Gtk.CellRendererText).CellBackground = "red";
+				}
 			}
 		}
 		
@@ -590,8 +627,9 @@ namespace osiris
 					conexion.Open ();
 					NpgsqlCommand comando; 
 					comando = conexion.CreateCommand ();
-	               	comando.CommandText = "SELECT to_char(osiris_erp_requisicion_deta.id_secuencia,'9999999999') AS idsecuencia,id_requisicion,to_char(osiris_erp_requisicion_deta.id_producto,'999999999999') AS idproducto,"+
-								"to_char(cantidad_solicitada,'999999.99') AS cantidadsolicitada,comprado,"+
+	               	comando.CommandText = "SELECT to_char(osiris_erp_requisicion_deta.id_secuencia,'9999999999') AS idsecuencia," +
+	               				"id_requisicion,to_char(osiris_erp_requisicion_deta.id_producto,'999999999999') AS idproducto,"+
+								"to_char(cantidad_solicitada,'999999.99') AS cantidadsolicitada,comprado,recibido,"+
 								"to_char(id_requisicion,'9999999999') AS idrequisicion,"+
 								"osiris_productos.descripcion_producto,to_char(osiris_productos.cantidad_de_embalaje,'9999.99') AS cantidadembalaje,"+
 								"osiris_productos.tipo_unidad_producto,to_char(numero_orden_compra,'9999999999') AS numeroordencompra," +
@@ -610,7 +648,7 @@ namespace osiris
 								"AND osiris_erp_requisicion_deta.id_tipo_admisiones IN('"+departamentos_seleccionados+"') "+
 								"AND autorizada = 'true' "+
 								"AND eliminado = 'false' "+
-							    "AND comprado = 'false' "+
+							    "AND recibido = 'false' "+
 								"ORDER BY id_requisicion DESC;";
 					Console.WriteLine(comando.CommandText.ToString());
 					NpgsqlDataReader lector = comando.ExecuteReader ();
@@ -633,14 +671,29 @@ namespace osiris
 												(string) lector["idproveedor"],
 												(string) lector["idsecuencia"],
 						                        (string) lector["fechahorarequisados"],
-						                        (string) lector["fechahoraautorizado"]);
-						//this.col_autorizar.SetCellDataFunc(cel_autorizar, new Gtk.TreeCellDataFunc(cambia_colores_fila));
-						col_solicitado_por.SetCellDataFunc(cellr1, new Gtk.TreeCellDataFunc(cambia_colores_fila));
-						col_numero_req.SetCellDataFunc(cellr2, new Gtk.TreeCellDataFunc(cambia_colores_fila));
-						col_cantidadcomprar.SetCellDataFunc(cellr3, new Gtk.TreeCellDataFunc(cambia_colores_fila));
-						col_descripcion.SetCellDataFunc(cellr4, new Gtk.TreeCellDataFunc(cambia_colores_fila));
-						col_unidades.SetCellDataFunc(cellr5, new Gtk.TreeCellDataFunc(cambia_colores_fila));
-						col_codigo_prod.SetCellDataFunc(cellr6, new Gtk.TreeCellDataFunc(cambia_colores_fila));
+						                        (string) lector["fechahoraautorizado"],
+						                        (string) lector["numeroordencompra"],
+						                        (bool) lector["recibido"],
+						                        (bool) lector["comprado"]);
+										
+						col_00.SetCellDataFunc(cellrt_00, new Gtk.TreeCellDataFunc(cambia_colores_fila));
+						col_01.SetCellDataFunc(cellrt_01, new Gtk.TreeCellDataFunc(cambia_colores_fila));
+						col_19.SetCellDataFunc(cellrt_19, new Gtk.TreeCellDataFunc(cambia_colores_fila));
+						col_02.SetCellDataFunc(cellrt_02, new Gtk.TreeCellDataFunc(cambia_colores_fila));
+						col_17.SetCellDataFunc(cellrt_17, new Gtk.TreeCellDataFunc(cambia_colores_fila));
+						col_18.SetCellDataFunc(cellrt_18, new Gtk.TreeCellDataFunc(cambia_colores_fila));
+						col_03.SetCellDataFunc(cellrt_03, new Gtk.TreeCellDataFunc(cambia_colores_fila));
+						col_09.SetCellDataFunc(cellrt_09, new Gtk.TreeCellDataFunc(cambia_colores_fila));
+						col_04.SetCellDataFunc(cellrt_04, new Gtk.TreeCellDataFunc(cambia_colores_fila));
+						col_05.SetCellDataFunc(cellrt_05, new Gtk.TreeCellDataFunc(cambia_colores_fila));
+						col_06.SetCellDataFunc(cellrt_06, new Gtk.TreeCellDataFunc(cambia_colores_fila));
+						col_07.SetCellDataFunc(cellrt_07, new Gtk.TreeCellDataFunc(cambia_colores_fila));
+						col_08.SetCellDataFunc(cellrt_08, new Gtk.TreeCellDataFunc(cambia_colores_fila));
+						col_10.SetCellDataFunc(cellrt_10, new Gtk.TreeCellDataFunc(cambia_colores_fila));
+						col_11.SetCellDataFunc(cellrt_11, new Gtk.TreeCellDataFunc(cambia_colores_fila));
+						col_12.SetCellDataFunc(cellrt_12, new Gtk.TreeCellDataFunc(cambia_colores_fila));
+						col_13.SetCellDataFunc(cellrt_13, new Gtk.TreeCellDataFunc(cambia_colores_fila));
+						col_14.SetCellDataFunc(cellrt_14, new Gtk.TreeCellDataFunc(cambia_colores_fila));						
 					}
 				}catch (NpgsqlException ex){
 					MessageDialog msgBoxError = new MessageDialog (MyWinError,DialogFlags.DestroyWithParent,
@@ -697,181 +750,191 @@ namespace osiris
 													typeof(string),
 													typeof(string),
 													typeof(string),
-													typeof(string),	// 15 id proveedor
-													typeof(string),	// 16 secuencia	
-													typeof(string),	// 17 fecha requisado
-													typeof(string),	// 18 fecha autorizado
+													typeof(string),
+													typeof(string),	
 													typeof(string),
 													typeof(string),
-													typeof(string));							
+													typeof(bool),
+													typeof(bool));							
 												
 			lista_productos_a_comprar.Model = treeViewEngineProductosaComprar;			
 			lista_productos_a_comprar.RulesHint = true;
 						
-			col_autorizar = new TreeViewColumn();
-			cel_autorizar = new CellRendererToggle();
-			col_autorizar.Title = "Seleccion";
-			col_autorizar.PackStart(cel_autorizar, true);
-			col_autorizar.AddAttribute (cel_autorizar, "active", 0);
-			cel_autorizar.Activatable = true;
-			cel_autorizar.Toggled += selecciona_fila;
-			col_autorizar.SortColumnId = (int) col_ordencompra.col_autorizar;
+			col_00 = new TreeViewColumn();
+			cellrt_00 = new CellRendererToggle();
+			col_00.Title = "Seleccion";
+			col_00.PackStart(cellrt_00, true);
+			col_00.AddAttribute (cellrt_00, "active", 0);
+			cellrt_00.Activatable = true;
+			cellrt_00.Toggled += selecciona_fila;
+			col_00.SortColumnId = (int) col_ordencompra.col_00;
 			
-			col_solicitado_por = new TreeViewColumn();
-			cellr1 = new CellRendererText();
-			col_solicitado_por.Title = "Solicitado Por";
-			col_solicitado_por.PackStart(cellr1, true);
-			col_solicitado_por.AddAttribute (cellr1, "text", 1);
-			col_solicitado_por.SortColumnId = (int) col_ordencompra.col_solicitado_por;
+			col_01 = new TreeViewColumn();
+			cellrt_01 = new CellRendererText();
+			col_01.Title = "Solicitado Por";
+			col_01.PackStart(cellrt_01, true);
+			col_01.AddAttribute (cellrt_01, "text", 1);
+			col_01.SortColumnId = (int) col_ordencompra.col_01;
 												
-			col_numero_req = new TreeViewColumn();
-			cellr2 = new CellRendererText();
-			col_numero_req.Title = "Nº Requi.";
-			col_numero_req.PackStart(cellr2, true);
-			col_numero_req.AddAttribute (cellr2, "text", 2);
-			col_numero_req.SortColumnId = (int) col_ordencompra.col_numero_req;
+			col_02 = new TreeViewColumn();
+			cellrt_02 = new CellRendererText();
+			col_02.Title = "Nº Requi.";
+			col_02.PackStart(cellrt_02, true);
+			col_02.AddAttribute (cellrt_02, "text", 2);
+			col_02.SortColumnId = (int) col_ordencompra.col_02;
 			
-			col_cantidadcomprar = new TreeViewColumn();
-			cellr3 = new CellRendererText();
-			col_cantidadcomprar.Title = "Cantidad";
-			col_cantidadcomprar.PackStart(cellr3, true);
-			col_cantidadcomprar.AddAttribute (cellr3, "text", 3);
-			col_cantidadcomprar.SortColumnId = (int) col_ordencompra.col_cantidadcomprar;
-			cellr3.Editable = true;
-			cellr3.Edited += NumberCellEdited_Autorizado_1;
+			col_03 = new TreeViewColumn();
+			cellrt_03 = new CellRendererText();
+			col_03.Title = "Cantidad";
+			col_03.PackStart(cellrt_03, true);
+			col_03.AddAttribute (cellrt_03, "text", 3);
+			col_03.SortColumnId = (int) col_ordencompra.col_03;
+			cellrt_03.Editable = true;
+			cellrt_03.Edited += NumberCellEdited_Autorizado_1;
 			
-			col_descripcion = new TreeViewColumn();
-			cellr4 = new CellRendererText();
-			col_descripcion.Title = "Descripcion producto";
-			col_descripcion.PackStart(cellr4, true);
-			col_descripcion.AddAttribute (cellr4, "text", 4);
-			col_descripcion.SortColumnId = (int) col_ordencompra.col_descripcion;
-			col_descripcion.Resizable = true;
-			cellr4.Width = 350;
+			col_04 = new TreeViewColumn();
+			cellrt_04 = new CellRendererText();
+			col_04.Title = "Descripcion producto";
+			col_04.PackStart(cellrt_04, true);
+			col_04.AddAttribute (cellrt_04, "text", 4);
+			col_04.SortColumnId = (int) col_ordencompra.col_04;
+			col_04.Resizable = true;
+			cellrt_04.Width = 350;
 			
-			col_unidades = new TreeViewColumn();
-			cellr5 = new CellRendererText();
-			col_unidades.Title = "Unidad Prod.";
-			col_unidades.PackStart(cellr5, true);
-			col_unidades.AddAttribute (cellr5, "text", 5);
-			col_unidades.SortColumnId = (int) col_ordencompra.col_unidades;
+			col_05 = new TreeViewColumn();
+			cellrt_05 = new CellRendererText();
+			col_05.Title = "Unidad Prod.";
+			col_05.PackStart(cellrt_05, true);
+			col_05.AddAttribute (cellrt_05, "text", 5);
+			col_05.SortColumnId = (int) col_ordencompra.col_05;
 						
-			col_codigo_prod = new TreeViewColumn();
-			cellr6 = new CellRendererText();
-			col_codigo_prod.Title = "Codigo Producto";
-			col_codigo_prod.PackStart(cellr6, true);
-			col_codigo_prod.AddAttribute (cellr6, "text", 6);
-			col_codigo_prod.SortColumnId = (int) col_ordencompra.col_codigo_prod;
+			col_06 = new TreeViewColumn();
+			cellrt_06 = new CellRendererText();
+			col_06.Title = "Codigo Producto";
+			col_06.PackStart(cellrt_06, true);
+			col_06.AddAttribute (cellrt_06, "text", 6);
+			col_06.SortColumnId = (int) col_ordencompra.col_06;
 						
-			TreeViewColumn col_precio_unit_hsc = new TreeViewColumn();
-			CellRendererText cellr7 = new CellRendererText();
-			col_precio_unit_hsc.Title = "Precio Unit.";
-			col_precio_unit_hsc.PackStart(cellr7, true);
-			col_precio_unit_hsc.AddAttribute (cellr7, "text", 7);
-			col_precio_unit_hsc.SortColumnId = (int) col_ordencompra.col_precio_unit_hsc;
+			col_07 = new TreeViewColumn();
+			cellrt_07 = new CellRendererText();
+			col_07.Title = "Precio Unit.";
+			col_07.PackStart(cellrt_07, true);
+			col_07.AddAttribute (cellrt_07, "text", 7);
+			col_07.SortColumnId = (int) col_ordencompra.col_07;
 			
-			TreeViewColumn col_precio_prod_hsc = new TreeViewColumn();
-			CellRendererText cellr8 = new CellRendererText();
-			col_precio_prod_hsc.Title = "Precio Produ.";
-			col_precio_prod_hsc.PackStart(cellr8, true);
-			col_precio_prod_hsc.AddAttribute (cellr8, "text", 8);
-			col_precio_prod_hsc.SortColumnId = (int) col_ordencompra.col_precio_prod_hsc;
-			cellr8.Editable = true;
+			col_08 = new TreeViewColumn();
+			cellrt_08 = new CellRendererText();
+			col_08.Title = "Precio Produ.";
+			col_08.PackStart(cellrt_08, true);
+			col_08.AddAttribute (cellrt_08, "text", 8);
+			col_08.SortColumnId = (int) col_ordencompra.col_08;
+			cellrt_08.Editable = true;
 			
-			TreeViewColumn col_embalaje = new TreeViewColumn();
-			CellRendererText cellr9 = new CellRendererText();
-			col_embalaje.Title = "Embalaje";
-			col_embalaje.PackStart(cellr9, true);
-			col_embalaje.AddAttribute (cellr9, "text", 9);
-			col_embalaje.SortColumnId = (int) col_ordencompra.col_embalaje;
-			cellr9.Editable = true;
-			cellr9.Edited += NumberCellEdited_Autorizado_2;
+			col_09 = new TreeViewColumn();
+			cellrt_09 = new CellRendererText();
+			col_09.Title = "Embalaje";
+			col_09.PackStart(cellrt_09, true);
+			col_09.AddAttribute (cellrt_09, "text", 9);
+			col_09.SortColumnId = (int) col_ordencompra.col_09;
+			cellrt_09.Editable = true;
+			cellrt_09.Edited += NumberCellEdited_Autorizado_2;
 			
-			TreeViewColumn col_precioprove = new TreeViewColumn();
-			CellRendererText cell10 = new CellRendererText();
-			col_precioprove.Title = "Precio Prov.";
-			col_precioprove.PackStart(cell10, true);
-			col_precioprove.AddAttribute (cell10, "text", 10);
-			col_precioprove.SortColumnId = (int) col_ordencompra.col_precioprove;
+			col_10 = new TreeViewColumn();
+			cellrt_10 = new CellRendererText();
+			col_10.Title = "Precio Prov.";
+			col_10.PackStart(cellrt_10, true);
+			col_10.AddAttribute (cellrt_10, "text", 10);
+			col_10.SortColumnId = (int) col_ordencompra.col_10;
 			
-			TreeViewColumn col_preciouniprov = new TreeViewColumn();
-			CellRendererText cellr11 = new CellRendererText();
-			col_preciouniprov.Title = "Precio Unit.Prov.";
-			col_preciouniprov.PackStart(cellr11, true);
-			col_preciouniprov.AddAttribute (cellr11, "text", 11);
-			col_preciouniprov.SortColumnId = (int) col_ordencompra.col_preciouniprov;
+			col_11 = new TreeViewColumn();
+			cellrt_11 = new CellRendererText();
+			col_11.Title = "Precio Unit.Prov.";
+			col_11.PackStart(cellrt_11, true);
+			col_11.AddAttribute (cellrt_11, "text", 11);
+			col_11.SortColumnId = (int) col_ordencompra.col_11;
 									
-			TreeViewColumn col_descrprove = new TreeViewColumn();
-			CellRendererText cellr12 = new CellRendererText();
-			col_descrprove.Title = "Nombre Proveedor";
-			col_descrprove.PackStart(cellr12, true);
-			col_descrprove.AddAttribute (cellr12, "text", 12);
-			col_descrprove.SortColumnId = (int) col_ordencompra.col_descrprove;
+			col_12 = new TreeViewColumn();
+			cellrt_12 = new CellRendererText();
+			col_12.Title = "Nombre Proveedor";
+			col_12.PackStart(cellrt_12, true);
+			col_12.AddAttribute (cellrt_12, "text", 12);
+			col_12.SortColumnId = (int) col_ordencompra.col_12;
 			
-			TreeViewColumn col_codprodprov = new TreeViewColumn();
-			CellRendererText cellr13 = new CellRendererText();
-			col_codprodprov.Title = "Cod.Prod.Prove.";
-			col_codprodprov.PackStart(cellr13, true);
-			col_codprodprov.AddAttribute (cellr13, "text", 13);
-			col_codprodprov.SortColumnId = (int) col_ordencompra.col_codprodprov;
+			col_13 = new TreeViewColumn();
+			cellrt_13 = new CellRendererText();
+			col_13.Title = "Cod.Prod.Prove.";
+			col_13.PackStart(cellrt_13, true);
+			col_13.AddAttribute (cellrt_13, "text", 13);
+			col_13.SortColumnId = (int) col_ordencompra.col_13;
 			
-			TreeViewColumn col_codigbarras = new TreeViewColumn();
-			CellRendererText cellr14 = new CellRendererText();
-			col_codigbarras.Title = "Cod. Barras";
-			col_codigbarras.PackStart(cellr14, true);
-			col_codigbarras.AddAttribute (cellr14, "text", 14);
-			col_codigbarras.SortColumnId = (int) col_ordencompra.col_codigbarras;
+			col_14 = new TreeViewColumn();
+			cellrt_14 = new CellRendererText();
+			col_14.Title = "Cod. Barras";
+			col_14.PackStart(cellrt_14, true);
+			col_14.AddAttribute (cellrt_14, "text", 14);
+			col_14.SortColumnId = (int) col_ordencompra.col_14;
 			
-			TreeViewColumn col_fecharequisado = new TreeViewColumn();
-			CellRendererText cellr17 = new CellRendererText();
-			col_fecharequisado.Title = "Fech/Requi.";
-			col_fecharequisado.PackStart(cellr17, true);
-			col_fecharequisado.AddAttribute (cellr17, "text", 17);
-			col_fecharequisado.SortColumnId = (int) col_ordencompra.col_fecharequisado;
+			col_17 = new TreeViewColumn();
+			cellrt_17 = new CellRendererText();
+			col_17.Title = "Fech/Requi.";
+			col_17.PackStart(cellrt_17, true);
+			col_17.AddAttribute (cellrt_17, "text", 17);
+			col_17.SortColumnId = (int) col_ordencompra.col_17;
 			
-			TreeViewColumn col_fechaautorizado = new TreeViewColumn();
-			CellRendererText cellr18 = new CellRendererText();
-			col_fechaautorizado.Title = "Fech/Autori.";
-			col_fechaautorizado.PackStart(cellr18, true);
-			col_fechaautorizado.AddAttribute (cellr18, "text", 18);
-			col_fechaautorizado.SortColumnId = (int) col_ordencompra.col_fechaautorizado;
+			col_18 = new TreeViewColumn();
+			cellrt_18 = new CellRendererText();
+			col_18.Title = "Fech/Autori.";
+			col_18.PackStart(cellrt_18, true);
+			col_18.AddAttribute (cellrt_18, "text", 18);
+			col_18.SortColumnId = (int) col_ordencompra.col_18;
 			
-			lista_productos_a_comprar.AppendColumn(col_autorizar);				// 0
-			lista_productos_a_comprar.AppendColumn(col_solicitado_por);			// 1
-			lista_productos_a_comprar.AppendColumn(col_numero_req);				// 2
-			lista_productos_a_comprar.AppendColumn(col_fecharequisado);			// 17
-			lista_productos_a_comprar.AppendColumn(col_fechaautorizado);		// 18
-			lista_productos_a_comprar.AppendColumn(col_cantidadcomprar);		// 3
-			lista_productos_a_comprar.AppendColumn(col_embalaje);				// 9
-			lista_productos_a_comprar.AppendColumn(col_descripcion);			// 4
-			lista_productos_a_comprar.AppendColumn(col_unidades);				// 5
-			lista_productos_a_comprar.AppendColumn(col_codigo_prod);			// 6
-			lista_productos_a_comprar.AppendColumn(col_precio_unit_hsc);		// 7
-			lista_productos_a_comprar.AppendColumn(col_precio_prod_hsc);		// 8
-			lista_productos_a_comprar.AppendColumn(col_precioprove);			// 10
-			lista_productos_a_comprar.AppendColumn(col_preciouniprov);			// 11			
-			lista_productos_a_comprar.AppendColumn(col_descrprove);				// 12
-			lista_productos_a_comprar.AppendColumn(col_codprodprov);			// 13
-			lista_productos_a_comprar.AppendColumn(col_codigbarras);			// 14
+			col_19 = new TreeViewColumn();
+			cellrt_19 = new CellRendererText();
+			col_19.Title = "N° O.C.";
+			col_19.PackStart(cellrt_19, true);
+			col_19.AddAttribute (cellrt_19, "text", 19);
+			col_19.SortColumnId = (int) col_ordencompra.col_19;
+			
+			lista_productos_a_comprar.AppendColumn(col_00);
+			lista_productos_a_comprar.AppendColumn(col_01);
+			lista_productos_a_comprar.AppendColumn(col_19);
+			lista_productos_a_comprar.AppendColumn(col_02);
+			lista_productos_a_comprar.AppendColumn(col_17);
+			lista_productos_a_comprar.AppendColumn(col_18);
+			lista_productos_a_comprar.AppendColumn(col_03);
+			lista_productos_a_comprar.AppendColumn(col_09);
+			lista_productos_a_comprar.AppendColumn(col_04);
+			lista_productos_a_comprar.AppendColumn(col_05);
+			lista_productos_a_comprar.AppendColumn(col_06);
+			lista_productos_a_comprar.AppendColumn(col_07);
+			lista_productos_a_comprar.AppendColumn(col_08);
+			lista_productos_a_comprar.AppendColumn(col_10);
+			lista_productos_a_comprar.AppendColumn(col_11);			
+			lista_productos_a_comprar.AppendColumn(col_12);
+			lista_productos_a_comprar.AppendColumn(col_13);
+			lista_productos_a_comprar.AppendColumn(col_14);
 		}
 		
 		enum col_ordencompra
 		{
-			col_autorizar,	
-			col_solicitado_por,
-			col_numero_req,
-			col_cantidadcomprar,
-			col_descripcion,
-			col_unidades,
-			col_codigo_prod,
-			col_precio_unit_hsc,
-			col_precio_prod_hsc,
-			col_embalaje,
-			col_precioprove,
-			col_preciouniprov,
-			col_descrprove,
-			col_codprodprov,
-			col_codigbarras,col_fecharequisado,col_fechaautorizado
+			col_00,	
+			col_01,
+			col_19,
+			col_02,
+			col_17,
+			col_18,
+			col_03,
+			col_09,
+			col_04,
+			col_05,
+			col_06,
+			col_07,
+			col_08,
+			col_10,
+			col_11,
+			col_12,
+			col_13,
+			col_14
 		}
 		
 		void cree_treeview_departamentos()
@@ -933,7 +996,7 @@ namespace osiris
 				var_paso += 1;
 			}
 			if (esnumerico == true){
-				treeViewEngineProductosaComprar.SetValue(iter,(int) col_ordencompra.col_cantidadcomprar,args.NewText);
+				treeViewEngineProductosaComprar.SetValue(iter,(int) col_ordencompra.col_03,args.NewText);
 			}
  		}
 		
@@ -969,7 +1032,7 @@ namespace osiris
 				var_paso += 1;
 			}
 			if (esnumerico == true){
-				treeViewEngineProductosaComprar.SetValue(iter,(int) col_ordencompra.col_embalaje,args.NewText);
+				treeViewEngineProductosaComprar.SetValue(iter,(int) col_ordencompra.col_09,args.NewText);
 			}
  		}
 		
@@ -978,7 +1041,7 @@ namespace osiris
 			// Los parametros de del SQL siempre es primero cuando busca todo y la otra por expresion
 			// la clase recibe tambien el orden del query
 			// es importante definir que tipo de busqueda es para que los objetos caigan ahi mismo
-			object[] parametros_objetos = {entry_id_proveedor,entry_nombre_proveedor,entry_formapago};
+			object[] parametros_objetos = {entry_id_proveedor,entry_nombre_proveedor,entry_formapago,entry_direccion_proveedor,entry_tel_proveedor,entry_rfc_proveedor};
 			string[] parametros_sql = {"SELECT descripcion_proveedor,direccion_proveedor,rfc_proveedor,curp_proveedor, "+
 								"colonia_proveedor,municipio_proveedor,estado_proveedor,telefono1_proveedor, "+ 
 								"telefono2_proveedor,celular_proveedor,rfc_proveedor, proveedor_activo, "+
@@ -995,7 +1058,7 @@ namespace osiris
 								"WHERE osiris_erp_proveedores.id_forma_de_pago = osiris_erp_forma_de_pago.id_forma_de_pago "+
 								"AND descripcion_proveedor LIKE '%"};
 			string[] parametros_string = {};
-			classfind_data.buscandor(parametros_objetos,parametros_sql,parametros_string,"find_proveedores"," ORDER BY descripcion_proveedor;","%' ",0);
+			classfind_data.buscandor(parametros_objetos,parametros_sql,parametros_string,"find_proveedores_newoc"," ORDER BY descripcion_proveedor;","%' ",0);
 		}
 			
 		// Cuando seleccion campos para la autorizacion de compras  
@@ -1005,6 +1068,12 @@ namespace osiris
 			TreePath path = new TreePath (args.Path);
 			if (lista_productos_a_comprar.Model.GetIter (out iter, path)){					
 				bool old = (bool) this.lista_productos_a_comprar.Model.GetValue(iter,0);
+				if(!old == true){
+					selecciono_productos += 1;
+				}else{
+					selecciono_productos -= 1;
+				}
+				//Console.WriteLine(selecciono_productos.ToString());
 				lista_productos_a_comprar.Model.SetValue(iter,0,!old);
 			}				
 		}

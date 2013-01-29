@@ -1,18 +1,23 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.Workbench ActiveDocument="osiris/rpt_orden_compras.cs">
     <Files>
-      <File FileName="osiris/class_conexion.cs" Line="14" Column="53" />
-      <File FileName="osiris/calendario_quirofano.cs" Line="1389" Column="27" />
-      <File FileName="osiris/cagos_modulos_medicos.cs" Line="1342" Column="3" />
-      <File FileName="osiris/ordenes_de_compras.cs" Line="1010" Column="47" />
+      <File FileName="osiris/class_conexion.cs" Line="20" Column="1" />
+      <File FileName="osiris/ordenes_de_compras.cs" Line="360" Column="112" />
+      <File FileName="osiris/lista_ordenes_compra.cs" Line="262" Column="4" />
+      <File FileName="osiris/rpt_orden_compras.cs" Line="167" Column="120" />
+      <File FileName="osiris/rpt_solicitud_subalmacenes.cs" Line="110" Column="39" />
+      <File FileName="osiris/rpt_envio_mat_almacen.cs" Line="338" Column="72" />
+      <File FileName="osiris/captura_fac_ordenes_compra.cs" Line="1211" Column="14" />
+      <File FileName="osiris/pases_a_quirofano.cs" Line="229" Column="29" />
+      <File FileName="osiris/rpd_doc_pacientes.cs" Line="228" Column="63" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
         <State expanded="True">
           <Node name="osiris" expanded="True">
             <Node name="References" expanded="True" />
-            <Node name="cagos_modulos_medicos.cs" selected="True" />
+            <Node name="rpt_orden_compras.cs" selected="True" />
           </Node>
         </State>
       </Pad>
@@ -26,9 +31,6 @@
       </Pad>
       <Pad Id="MonoDevelop.Debugger.WatchPad">
         <State />
-      </Pad>
-      <Pad Id="MonoDevelop.NUnit.TestPad">
-        <State expanded="True" selected="True" />
       </Pad>
     </Pads>
   </MonoDevelop.Ide.Workbench>

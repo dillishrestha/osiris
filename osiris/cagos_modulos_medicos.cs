@@ -373,7 +373,7 @@ namespace osiris
 		
 		void on_button_pase_quirofano_clicked(object sender, EventArgs args)
 		{
-			new osiris.pases_a_quirofano(PidPaciente,folioservicio,idtipointernamiento,LoginEmpleado,id_tipopaciente,idempresa_paciente,idaseguradora_paciente,false,"pase_qx_urg",false,false);
+			new osiris.pases_a_quirofano(PidPaciente,folioservicio,idtipointernamiento,LoginEmpleado,id_tipopaciente,idempresa_paciente,idaseguradora_paciente,false,"pase_qx_urg",false,false,cuenta_cerrada);
 		}
 		
 		void on_button_paquetes_qx_clicked(object sender, EventArgs args)
@@ -1602,7 +1602,7 @@ namespace osiris
 					entry_id_habitacion.Text = entry_id_habitacion.Text.Trim()+"/"+(string) lector["descripcion_cuarto"];
 					
 					entry_descrip_cirugia.Text = (string) lector["nombre_de_cirugia"];
-					
+					cuenta_cerrada = (bool) lector ["cerrado"];
 					sexopaciente = (string) lector["sexo_paciente"];
 					id_tipopaciente = (int) lector["idtipopaciente"];
 					entry_edad.Text = (string) lector["edad"];
@@ -1828,10 +1828,8 @@ namespace osiris
 				string numerofolioexamen = "";
 				string fechasolicitudexamen = "";
 				
-				while (lector.Read()){
-				
-					if (!(bool) lector["eliminado"]){
-					
+				while (lector.Read()){				
+					if (!(bool) lector["eliminado"]){					
 						toma_cantaplicada = float.Parse((string) lector["cantidadaplicada"]);
 						toma_subtotal = float.Parse((string) lector["ppcantidad_"])+float.Parse((string) lector["ivaproducto"]);
 					

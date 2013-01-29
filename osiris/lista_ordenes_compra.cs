@@ -26,6 +26,7 @@
 // Proposito	: 
 // Objeto		: 
 //////////////////////////////////////////////////////
+
 using System;
 using Gtk;
 using Npgsql;
@@ -69,6 +70,11 @@ namespace osiris
 		string connectionString;
 		string nombrebd;
 		
+		string query_fechas = " ";
+		string rango1 = "";
+		string rango2 = "";
+		string query_general = "";
+		
 		class_conexion conexion_a_DB = new class_conexion();
 		
 		public lista_ordenes_compra ()
@@ -98,13 +104,21 @@ namespace osiris
 			button_salir.Clicked += new EventHandler(on_cierraventanas_clicked);
             button_buscar.Clicked += new EventHandler(on_buscar_ordencompra_clicked);
            	button_rep.Clicked += new EventHandler(on_button_rep_clicked);
-          	//checkbutton_todos_envios.Clicked += new EventHandler(on_checkbutton_todos_envios);
+          	checkbutton_todos_envios.Clicked += new EventHandler(on_checkbutton_todos_envios);
 			
 			crea_treeview_ordendecompra();
 		}
 		
 		void on_buscar_ordencompra_clicked(object sender, EventArgs args)
 		{
+			treeViewEngineordendecompra.Clear();			
+			if (checkbutton_todos_envios.Active == true) {
+				query_fechas = " ";				
+			}else{
+				query_fechas = "AND to_char(osiris_erp_ordenes_compras_enca.fechahora_creacion,'yyyy-MM-dd') >= '"+(string) entry_ano_inicio.Text.ToString()+"-"+(string) entry_mes_inicio.Text.ToString()+"-"+(string) entry_dia_inicio.Text.ToString()+"' "+
+									"AND to_char(osiris_erp_ordenes_compras_enca.fechahora_creacion,'yyyy-MM-dd') <= '"+(string) entry_ano_termino.Text.ToString()+"-"+(string) entry_mes_termino.Text.ToString()+"-"+(string) entry_dia_termino.Text.ToString()+"' ";
+			}
+						
 			NpgsqlConnection conexion; 
 			conexion = new NpgsqlConnection (connectionString+nombrebd);
 			try{
@@ -114,7 +128,8 @@ namespace osiris
 				comando.CommandText = "SELECT numero_orden_compra,osiris_erp_ordenes_compras_enca.id_proveedor,osiris_erp_ordenes_compras_enca.descripcion_proveedor," +
 					"to_char(fechahora_creacion,'yyyy-MM-dd') AS fechahoracreacion "+
 					"FROM osiris_erp_ordenes_compras_enca,osiris_erp_proveedores " +
-					"WHERE osiris_erp_ordenes_compras_enca.id_proveedor = osiris_erp_proveedores.id_proveedor;";
+					"WHERE osiris_erp_ordenes_compras_enca.id_proveedor = osiris_erp_proveedores.id_proveedor " +
+					query_fechas+";";
 				//Console.WriteLine(comando.CommandText);
 				NpgsqlDataReader lector = comando.ExecuteReader ();
 				while (lector.Read()){
@@ -141,7 +156,9 @@ namespace osiris
 														typeof(string),
 														typeof(string),
 														typeof(string),
-			                                        	typeof(string),typeof(string),typeof(string));
+			                                        	typeof(string),
+			                                            typeof(string),
+			                                            typeof(string));
 				
 			lista_almacenes.Model = treeViewEngineordendecompra;
 			lista_almacenes.RulesHint = true;
@@ -152,7 +169,7 @@ namespace osiris
 			col_seleccion.PackStart(cellr0, true);
 			col_seleccion.AddAttribute (cellr0, "active", 0);
 			cellr0.Activatable = true;
-			//cellr0.Toggled += selecciona_fila_grupo; 
+			cellr0.Toggled += selecciona_fila_grupo; 
 		
 			TreeViewColumn col_nro_oc = new TreeViewColumn();
 			CellRendererText cellr1 = new CellRendererText();
@@ -213,15 +230,86 @@ namespace osiris
 			lista_almacenes.AppendColumn(col_nombrepaciente);		
 		}
 		
+		//Seleccionar todos los del treeview, un check_button 
+		void on_checkbutton_todos_envios(object sender, EventArgs args)
+		{
+			if ((bool)checkbutton_todos_envios.Active == true){
+				TreeIter iter2;
+				if (treeViewEngineordendecompra.GetIterFirst (out iter2)){
+					lista_almacenes.Model.SetValue(iter2,0,true);
+					while (treeViewEngineordendecompra.IterNext(ref iter2)){
+						lista_almacenes.Model.SetValue(iter2,0,true);
+					}
+				}
+			}else{
+				TreeIter iter2;
+				if (treeViewEngineordendecompra.GetIterFirst (out iter2)){
+					lista_almacenes.Model.SetValue(iter2,0,false);
+					while (treeViewEngineordendecompra.IterNext(ref iter2)){
+						lista_almacenes.Model.SetValue(iter2,0,false);
+					}
+				}
+			}
+		}
+		
+		void selecciona_fila_grupo(object sender, ToggledArgs args)
+		{
+			TreeIter iter;
+			TreePath path = new TreePath (args.Path);
+			if (lista_almacenes.Model.GetIter (out iter, path)) {
+				bool old = (bool) lista_almacenes.Model.GetValue (iter,0);
+				lista_almacenes.Model.SetValue(iter,0,!old);
+			}
+		}
+		
 		void on_button_rep_clicked(object sender, EventArgs args)
 		{
-			int num_ordencompra = 0;
-			TreeModel model;
-			TreeIter iterSelected;
- 			if (lista_almacenes.Selection.GetSelected(out model, out iterSelected)){
-				num_ordencompra = int.Parse((string) lista_almacenes.Model.GetValue (iterSelected,1));
-				new osiris.rpt_orden_compras(num_ordencompra);   // imprime la orden de compra
+			string numeros_seleccionado = "";
+			int variable_paso_02_1 = 0;
+			string query_in_num = "";
+ 				
+			if (this.checkbutton_todos_envios.Active == true) { 
+				query_fechas = " ";	 
+				rango1 = "";
+				rango2 = "";
+			}else{
+				rango1 = entry_ano_inicio.Text+"-"+entry_mes_inicio.Text+"-"+entry_dia_inicio.Text;
+				rango2 = entry_ano_termino.Text+"-"+entry_mes_termino.Text+"-"+entry_dia_termino.Text;				
+				query_fechas = " AND to_char(osiris_erp_ordenes_compras_enca.fechahora_creacion,'yyyy-MM-dd') >= '"+rango1+"' "+
+								"AND to_char(osiris_erp_ordenes_compras_enca.fechahora_creacion,'yyyy-MM-dd') <= '"+rango2+"' ";
 			}
+		
+			//poder elegir una fila del treeview
+			TreeIter iter;
+			if(treeViewEngineordendecompra.GetIterFirst (out iter)){
+			
+ 				if ((bool) lista_almacenes.Model.GetValue (iter,0) == true){
+					numeros_seleccionado = (string) lista_almacenes.Model.GetValue (iter,1);
+ 					variable_paso_02_1 += 1;		
+ 				}
+ 				while(treeViewEngineordendecompra.IterNext(ref iter)){
+ 					if ((bool) lista_almacenes.Model.GetValue (iter,0) == true){
+						if (variable_paso_02_1 == 0){ 				    	
+ 							numeros_seleccionado = (string) lista_almacenes.Model.GetValue (iter,1);
+ 							variable_paso_02_1 += 1;
+ 						}else{
+ 							numeros_seleccionado = numeros_seleccionado.Trim() + "','" + (string) lista_almacenes.Model.GetValue (iter,1);
+ 						}
+ 					}
+ 				}
+ 			}
+ 						
+ 			if (variable_paso_02_1 > 0){
+	 			query_in_num = " AND osiris_erp_ordenes_compras_enca.numero_orden_compra IN ('"+numeros_seleccionado+"') ";
+			}
+			if (treeViewEngineordendecompra.GetIterFirst (out iter)){
+				if (variable_paso_02_1 > 0){
+					//new osiris.rpt_solicitud_subalmacenes(idsubalmacen,query_in_num,query_in_almacen,query_fechas);
+					new osiris.rpt_orden_compras(query_in_num,query_fechas);   // imprime la orden de compra
+				}
+			}
+			
+			
 		}
 		// cierra ventanas emergentes
 		void on_cierraventanas_clicked (object sender, EventArgs args)

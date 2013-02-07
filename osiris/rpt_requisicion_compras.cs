@@ -189,6 +189,7 @@ namespace osiris
 					desc.Size = (int)(fontSize * pangoScale);		layout.FontDescription = desc;
 					// Precio del Producto
 					cr.MoveTo(477*escala_en_linux_windows,comienzo_linea*escala_en_linux_windows);			layout.SetText(String.Format("${0,10:F}",float.Parse((string) this.lista_requisicion_productos.Model.GetValue (iter,22).ToString().Trim())));					Pango.CairoHelper.ShowLayout (cr, layout);
+					
 					desc = Pango.FontDescription.FromString ("Sans");									
 					// cr.Rotate(90)  Imprimir Orizontalmente rota la hoja cambian las posiciones de las lineas y columna					
 					fontSize = 7.0;			layout = null;			layout = context.CreatePangoLayout ();

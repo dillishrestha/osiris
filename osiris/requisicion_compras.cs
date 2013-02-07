@@ -167,6 +167,7 @@ namespace osiris
 		bool requi_urgente = false;
 		int idtiporequi;
 		bool enviadacompras = false;			// Verifica que la requisicion este enviada a compras
+		float valoriva;
 				
 		string nombre_proveedor1;
 		string nombre_proveedor2;
@@ -237,7 +238,7 @@ namespace osiris
     		accesomodulo = accesomodulo_;
 			connectionString = conexion_a_DB._url_servidor+conexion_a_DB._port_DB+conexion_a_DB._usuario_DB+conexion_a_DB._passwrd_user_DB;
 			nombrebd = conexion_a_DB._nombrebd;
-    		  
+    		valoriva = float.Parse(classpublic.ivaparaaplicar);
 			
 			if((string) classpublic.lee_registro_de_tabla("osiris_his_tipo_admisiones","id_tipo_admisiones","WHERE id_tipo_admisiones = '"+idcentrocosto.ToString().Trim()+"' ","activo_valid_prodrequi","bool") == "False"){
 				activovalidprodrequi = false;
@@ -704,7 +705,7 @@ namespace osiris
 		void on_button_busca_producto_clicked (object sender, EventArgs args)
 		{
 			Gtk.Button button_buscarproducto = sender as Gtk.Button;
-			Console.WriteLine(button_buscarproducto.Name.ToString());
+			//Console.WriteLine(button_buscarproducto.Name.ToString());
 			//Gtk.Button button_busca_producto = (Gtk.Button) sender;			
 			Glade.XML gxml = new Glade.XML (null, "almacen_costos_compras.glade", "busca_producto", null);
 			gxml.Autoconnect (this);
@@ -1041,7 +1042,7 @@ namespace osiris
 						comando.Dispose();					
 						button_busca_producto.Sensitive = false;
 						MessageDialog msgBox1 = new MessageDialog (MyWin,DialogFlags.Modal,
-										MessageType.Info,ButtonsType.Ok,"La requisicion se envio a Comnpras con Exito...");
+										MessageType.Info,ButtonsType.Ok,"La requisicion se envio a Compras con Exito...");
 						msgBox1.Run ();		msgBox1.Destroy();					
 						button_guardar_requisicion.Sensitive = false;
 						button_envio_compras.Sensitive = false;
@@ -1050,9 +1051,9 @@ namespace osiris
 							button_enviopara_autorizar.Sensitive = true;			
 						}
 						string mensaje_email = "N° Requisicion "+entry_requisicion.Text.Trim()+"<br>"+
-								"<b>Enviada a Compras </b><br><br>"+
+								"<b>Enviada a Compras   Fecha:"+DateTime.Now.ToString()+" Motivo:"+entry_observaciones.Text.ToString().ToUpper()+"</b><br><br>"+
 								"<font color=#E8A317><b>IMPORTANTE:</b> Le solicitamos no responder este correo, ya que es generado de forma automatica por el Sistema Hospitalario OSIRIS.</font> <br><br>";
-						string asuntoemail = "Sistema Hospitalario OSIRIS (ION)";
+						string asuntoemail = "Sistema Hospitalario OSIRIS (ION) "+entry_observaciones.Text.ToString().ToUpper();
 						string mailsender = "osiris@medicanoresteion.com.mx";
 						string passwdsender = "admin123456";
 						mailreceive = "sandra.salas@medicanoresteion.com.mx";
@@ -1090,7 +1091,7 @@ namespace osiris
 												"id_quien_no_autorizada = '"+LoginEmpleado+"',"+
 												"fechahora_no_autorizada = '"+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"' "+
 												"WHERE id_secuencia = '"+(string) lista_requisicion_productos.Model.GetValue (iterSelected,14).ToString().Trim()+"';";;																	
-							Console.WriteLine(comando.CommandText);
+							//Console.WriteLine(comando.CommandText);
 							// entry_status_requisicion.Text = "ENVIADA A COMPRAS "+DateTime.Now.ToString("dd-MM-yyyy");	
 							comando.ExecuteNonQuery();					comando.Dispose();
 							string mensaje_email = (string) this.lista_requisicion_productos.Model.GetValue (iterSelected,1)+"<br>" +
@@ -1198,7 +1199,7 @@ namespace osiris
 						autorizaparacompra = (bool) lector["autorizacion_para_comprar"];
 						enviadacompras = (bool) lector["enviada_a_compras"];
 						mailreceive = (string) lector["mail_centro_costo"].ToString().Trim();
-						Console.WriteLine(mailreceive);
+						//Console.WriteLine(mailreceive);
 						if ((bool) lector["enviada_a_compras"] == true && (bool) lector["cancelado"] == false){
 							button_guardar_requisicion.Sensitive = false;
 							button_envio_compras.Sensitive = false;
@@ -1681,7 +1682,9 @@ namespace osiris
 											"id_proveedor3,"+
 											"descripcion_proveedor2,"+
 											"descripcion_proveedor3,"+
-											"id_quien_requiso) "+
+											"id_quien_requiso," +
+											"tipo_unidad_producto," +
+											"porcentage_iva) "+
 											"VALUES ('"+
 											entry_requisicion.Text.Trim()+"','"+										
 											(string) lista_requisicion_productos.Model.GetValue(iter,2)+"','"+
@@ -1698,7 +1701,10 @@ namespace osiris
 											(string) lista_requisicion_productos.Model.GetValue(iter,25)+"','"+
 											(string) lista_requisicion_productos.Model.GetValue(iter,19)+"','"+
 											(string) lista_requisicion_productos.Model.GetValue(iter,20)+"','"+										
-											LoginEmpleado.Trim()+"');";																	
+											LoginEmpleado.Trim()+"','"+
+											(string) lista_requisicion_productos.Model.GetValue(iter,4)+"','"+
+											valoriva.ToString().Trim()
+											+"');";
 								//Console.WriteLine(comando.CommandText);
 								comando.ExecuteNonQuery();
 								comando.Dispose();
@@ -1732,7 +1738,9 @@ namespace osiris
 											"id_proveedor3,"+
 											"descripcion_proveedor2,"+
 											"descripcion_proveedor3,"+
-											"id_quien_requiso) "+
+											"id_quien_requiso," +
+											"tipo_unidad_producto," +
+											"porcentage_iva) "+
 											"VALUES ('"+
 											entry_requisicion.Text.Trim()+"','"+										
 											(string) lista_requisicion_productos.Model.GetValue(iter,2)+"','"+
@@ -1749,7 +1757,10 @@ namespace osiris
 											(string) lista_requisicion_productos.Model.GetValue(iter,25)+"','"+
 											(string) lista_requisicion_productos.Model.GetValue(iter,19)+"','"+
 											(string) lista_requisicion_productos.Model.GetValue(iter,20)+"','"+										
-											LoginEmpleado.Trim()+"');";																		
+											LoginEmpleado.Trim()+"','"+
+											(string) lista_requisicion_productos.Model.GetValue(iter,4)+"','"+
+											valoriva.ToString().Trim()
+											+"');";				
 									//Console.WriteLine(comando.CommandText);
 									comando.ExecuteNonQuery();
 								}else{
@@ -1780,7 +1791,9 @@ namespace osiris
 											"requisicion_urgente,"+
 											"descripcion_tipo_requisicion," +
 											"id_tipo_requisicion_compra,"+
-											"total_items_solicitados,folio_de_servicio,pid_paciente) "+
+											"total_items_solicitados," +
+											"folio_de_servicio," +
+											"pid_paciente) "+
 											"VALUES ('"+
 											DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")+"','"+
 											entry_requisicion.Text.Trim()+"','"+

@@ -911,7 +911,7 @@ namespace osiris
 				//msgBoxError.Run ();
 				//msgBoxError.Destroy();
 			//}else{
-				if(LoginEmpleado =="DOLIVARES" || LoginEmpleado =="ADMIN" || LoginEmpleado == "ROLVEDAFLORES" || LoginEmpleado == "AGUTIERREZV"){
+				if(LoginEmpleado =="DOLIVARES" || LoginEmpleado =="ADMIN" || LoginEmpleado == "ROLVEDAFLORES" || LoginEmpleado == "AGUTIERREZV" || LoginEmpleado == "VERO.ALVAREZ"){
 					if (this.checkbutton_enviar_articulos.Active == true){
 						if (idsubalmacen != 1){
 							MessageDialog msgBox = new MessageDialog (MyWin,DialogFlags.Modal,

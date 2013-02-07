@@ -1379,7 +1379,8 @@ namespace osiris
 									typeof(string),
 			                        typeof(string),
 			                        typeof(string),
-			                        typeof(string),typeof(string));
+			                        typeof(string),
+			                        typeof(string));
 			
 			lista_productos_a_recibir.Model = treeViewEngineListaProdRequi;			
 			lista_productos_a_recibir.RulesHint = true;
@@ -1735,6 +1736,7 @@ namespace osiris
 										"WHERE osiris_erp_requisicion_deta.id_producto = osiris_productos.id_producto " +
 										"AND osiris_catalogo_productos_proveedores.id_producto = osiris_erp_requisicion_deta.id_producto " +
 										"AND osiris_erp_requisicion_deta.id_proveedor = osiris_catalogo_productos_proveedores.id_proveedor "+
+										"AND osiris_catalogo_productos_proveedores.eliminado = 'false' " +
 										"AND numero_orden_compra = '"+entry_orden_de_compra.Text.Trim()+"';";
 					Console.WriteLine(comando.CommandText);
 					NpgsqlDataReader lector1 = comando.ExecuteReader ();							
@@ -2007,7 +2009,7 @@ namespace osiris
 	  		TreeIter iter;
 	  		if (combobox_tipo_unidad2.GetActiveIter (out iter)){
 	    		tipounidadproducto = (string) combobox_tipo_unidad2.Model.GetValue(iter,0);
-				Console.WriteLine("entre....."+tipounidadproducto);
+				//Console.WriteLine("entre....."+tipounidadproducto);
 			}
 		}
 				

@@ -45,7 +45,7 @@ namespace osiris
 		public string idUsuario = "";
 		
 		// Informacion de la Empresa
-		public string nombre_empresa = "CONTROL DE CLINICA S.C."; //"P R A C T I M E D"; "CONTROL DE CLINICA S.C."
+		public string nombre_empresa = "MEDICA NORESTE ION"; //"P R A C T I M E D"; "CONTROL DE CLINICA S.C."
 		public string nombre_empresa2 = "CONTROL DE CLINICA";  //"CONTROL DE CLINICA";
 		public string direccion_empresa = "Jose Angel Conchello 2880, Col. Victoria"; //"Loma Grande 2703, Col. Loma de San Francisco"; //"Jose Angel Conchello 2880, Col. Victoria"
 		public string telefonofax_empresa = "Telefono: (01)(81) 8351-3610"; //"Telefono: (01)(81) 8040-6060"; // "Telefono: (01)(81) 8351-3610"
@@ -114,6 +114,15 @@ namespace osiris
 				s.Append(b.ToString("x2").ToLower());
 			}
 			return s.ToString();			
+		}
+		
+		/// Extrae espacios en blanco de un texto y solo deja uno
+		/// </summary>
+		/// <param name="character_extract">el string que se le estraeran los espacion</param>
+		/// <returns>Regresa un string con un solo caracter en blanco</returns>
+		public string extract_spaces(string character_extract)
+		{
+			return Regex.Replace(character_extract, @"\s+", " ");
 		}
 		
 		/// <summary>

@@ -1874,7 +1874,7 @@ namespace osiris
 								"id_empresa," +
 								"id_especialidad," +
 								"telefono_paciente," +
-								"id_quiencreo_cita," +
+								"'"+LoginEmpleado+"',"+
 								"'REAGENDACION'," +
 								"fechahora_cancelacion," +
 								"id_quien_cancelo," +

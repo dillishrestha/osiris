@@ -440,8 +440,9 @@ namespace osiris
 			ResponseType miResultado = (ResponseType)
 			msgBox.Run ();				msgBox.Destroy();
 	 		if (miResultado == ResponseType.Yes){
+				TreeModel model;
 				TreeIter iterSelected;
-				if (treeViewEngineProductosaComprar.GetIterFirst(out iterSelected)){
+ 				if (lista_productos_a_comprar.Selection.GetSelected(out model, out iterSelected)){
 					NpgsqlConnection conexion; 
 					conexion = new NpgsqlConnection (connectionString+nombrebd);
 					conexion.Open ();
